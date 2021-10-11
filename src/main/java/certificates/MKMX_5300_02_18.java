@@ -325,8 +325,12 @@ public class MKMX_5300_02_18 implements Certificate {
             cell(34,32).setCellValue("менше");
         }
 
-        if (this.alarmCheck){
-            String alarm = Strings.ALARM_MESSAGE + Converter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
+        String alarm;
+        if (this.result.closeToFalse() && this.result.goodChannel()) {
+            alarm = this.values.getStringValue(Value.CALCULATION_CLOSE_TO_FALSE);
+            cell(36, 22).setCellValue(alarm);
+        } else if (this.alarmCheck) {
+            alarm = Strings.ALARM_MESSAGE + Converter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
             cell(36, 22).setCellValue(alarm);
         }
     }

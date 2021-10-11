@@ -14,8 +14,10 @@ import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
     private final Channel channel;
@@ -72,6 +74,7 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
     private ButtonCell alarmLabel;
     private ButtonCell alarm;
 
+    private JComboBox<String> advice;
 
     public MKMX_5300_02_18_Panel(Channel channel, Values values, Calculation calculation){
         super(new GridBagLayout());
@@ -235,15 +238,32 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
         }
 
         this.withAlarm = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
-        if (withAlarm){
-            this.alarmLabel = new ButtonCell(true, Strings.ALARM_MESSAGE);
-            this.alarm = new ButtonCell(false, this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
+        if (this.calculation.closeToFalse() && this.calculation.goodChannel()){
+            ArrayList<String> toComboBox = new ArrayList<>();
+            toComboBox.add("");
+            if (withAlarm){
+                toComboBox.add(Strings.ALARM_MESSAGE + this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
+            }
+            toComboBox.add(Strings.ADVICE_FIX);
+            toComboBox.add(Strings.ADVICE_FIX_PRESSURE);
+            toComboBox.add(Strings.ADVICE_RANGE);
+
+            this.advice = new JComboBox<>(toComboBox.toArray(new String[0]));
+            this.advice.setSelectedIndex(1);
+        }else {
+            if (withAlarm) {
+                this.alarmLabel = new ButtonCell(true, Strings.ALARM_MESSAGE);
+                this.alarm = new ButtonCell(false, this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
+            }
         }
     }
 
     @Override
-    public void setReactions() {
+    public void setReactions() {}
 
+    @Override
+    public String getName() {
+        return Objects.requireNonNull(this.advice.getSelectedItem()).toString();
     }
 
     @Override
@@ -311,9 +331,13 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
 
         this.add(this.resultOfCheck, new Cell(0, 36, 4));
 
-        if (this.withAlarm){
-            this.add(this.alarmLabel, new Cell(0,37,2));
-            this.add(this.alarm, new Cell(2,37,2));
+        if (this.calculation.closeToFalse() && this.calculation.goodChannel()){
+            this.add(this.advice, new Cell(0,37,4));
+        }else {
+            if (this.withAlarm) {
+                this.add(this.alarmLabel, new Cell(0, 37, 2));
+                this.add(this.alarm, new Cell(2, 37, 2));
+            }
         }
     }
 

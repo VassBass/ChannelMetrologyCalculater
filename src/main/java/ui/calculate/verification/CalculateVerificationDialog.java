@@ -121,6 +121,9 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
                     dispose();
                     if (calculation.goodChannel()) {
                         values.removeValue(Value.CHANNEL_REFERENCE);
+                        if (calculation.closeToFalse()){
+                            values.putValue(Value.CALCULATION_CLOSE_TO_FALSE, resultPanel.getName());
+                        }
                         new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
                     }else{
                         new CalculateReferenceDialog(mainScreen, channel, values, calculation).setVisible(true);

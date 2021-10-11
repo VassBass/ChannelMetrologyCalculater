@@ -231,7 +231,7 @@ public class MKMX_5300_01_18 implements Certificate {
         String valueElectro5;
         String valueElectro50;
         String valueElectro95;
-        switch (this.channel.getSensor().getType()){
+        switch (this.channel.getSensor().getType()) {
             case TXA_0395_typeK:
             case TXA_2388_typeK:
             case TP0198_2:
@@ -244,21 +244,21 @@ public class MKMX_5300_01_18 implements Certificate {
                 valueElectro50 = Converter.roundingDouble2(this.channel.getSensor().getValuesElectro(this.channel)[1], Locale.GERMAN);
                 valueElectro95 = Converter.roundingDouble2(this.channel.getSensor().getValuesElectro(this.channel)[2], Locale.GERMAN);
         }
-        cell(29,3).setCellValue(valueElectro5);
-        cell(31,3).setCellValue(valueElectro50);
-        cell(33,3).setCellValue(valueElectro95);
+        cell(29, 3).setCellValue(valueElectro5);
+        cell(31, 3).setCellValue(valueElectro50);
+        cell(33, 3).setCellValue(valueElectro95);
 
-        String[]values = new String[this.channel.getSensor().getValues(this.channel).length];
-        for (int x=0;x<values.length;x++){
+        String[] values = new String[this.channel.getSensor().getValues(this.channel).length];
+        for (int x = 0; x < values.length; x++) {
             values[x] = Converter.roundingDouble2(this.channel.getSensor().getValues(this.channel)[x], Locale.GERMAN);
         }
         int y = 29;
-        for (int x=1;x<4;x++){
-            cell(y,5).setCellValue(values[x]);
-            y = y+2;
+        for (int x = 1; x < 4; x++) {
+            cell(y, 5).setCellValue(values[x]);
+            y = y + 2;
         }
 
-        double[][]measurementValues = this.measurementValues();
+        double[][] measurementValues = this.measurementValues();
         y = 8;
         for (double[] value : measurementValues) {
             for (int z = 0; z < 6; z++) {
@@ -277,55 +277,59 @@ public class MKMX_5300_01_18 implements Certificate {
         }
 
         String u = Converter.roundingDouble(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
-        cell(23,34).setCellValue(u);
+        cell(23, 34).setCellValue(u);
 
         String errorReduced;
         String absoluteError;
         double d = this.channel.getAllowableErrorPercent() - this.result.getErrorInRange();
-        if (d <= 0.1){
+        if (d <= 0.1) {
             errorReduced = Converter.roundingDouble2(this.result.getErrorInRange(), Locale.GERMAN);
             absoluteError = Converter.roundingDouble2(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
-        }else {
+        } else {
             errorReduced = Converter.roundingDouble(this.result.getErrorInRange(), Locale.GERMAN);
             absoluteError = Converter.roundingDouble(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
         }
-        cell(25,34).setCellValue(errorReduced);
-        cell(34,38).setCellValue(errorReduced);
-        cell(26,34).setCellValue(absoluteError);
+        cell(25, 34).setCellValue(errorReduced);
+        cell(34, 38).setCellValue(errorReduced);
+        cell(26, 34).setCellValue(absoluteError);
 
         String s5;
         String s50;
         String s95;
 
-        if (this.result.getSystematicErrors()[0] < 0.1 && this.result.getSystematicErrors()[0] > -0.05){
+        if (this.result.getSystematicErrors()[0] < 0.1 && this.result.getSystematicErrors()[0] > -0.05) {
             s5 = Converter.roundingDouble2(this.result.getSystematicErrors()[0], Locale.GERMAN);
-        }else {
+        } else {
             s5 = Converter.roundingDouble(this.result.getSystematicErrors()[0], Locale.GERMAN);
         }
-        if (this.result.getSystematicErrors()[1] < 0.1 && this.result.getSystematicErrors()[1] > -0.05){
+        if (this.result.getSystematicErrors()[1] < 0.1 && this.result.getSystematicErrors()[1] > -0.05) {
             s50 = Converter.roundingDouble2(this.result.getSystematicErrors()[1], Locale.GERMAN);
-        }else {
+        } else {
             s50 = Converter.roundingDouble(this.result.getSystematicErrors()[1], Locale.GERMAN);
         }
-        if (this.result.getSystematicErrors()[2] < 0.1 && this.result.getSystematicErrors()[2] > -0.05){
+        if (this.result.getSystematicErrors()[2] < 0.1 && this.result.getSystematicErrors()[2] > -0.05) {
             s95 = Converter.roundingDouble2(this.result.getSystematicErrors()[2], Locale.GERMAN);
-        }else {
+        } else {
             s95 = Converter.roundingDouble(this.result.getSystematicErrors()[2], Locale.GERMAN);
         }
-        cell(27,33).setCellValue(s5);
-        cell(28,33).setCellValue(s50);
-        cell(29,33).setCellValue(s95);
+        cell(27, 33).setCellValue(s5);
+        cell(28, 33).setCellValue(s50);
+        cell(29, 33).setCellValue(s95);
 
-        if (!this.result.goodChannel()){
-            cell(33,25).setCellValue("не придатним до експлуатації");
-            cell(34,32).setCellValue("більше");
-        }else {
-            cell(33,25).setCellValue("придатним до експлуатації");
-            cell(34,32).setCellValue("менше");
+        if (!this.result.goodChannel()) {
+            cell(33, 25).setCellValue("не придатним до експлуатації");
+            cell(34, 32).setCellValue("більше");
+        } else {
+            cell(33, 25).setCellValue("придатним до експлуатації");
+            cell(34, 32).setCellValue("менше");
         }
 
-        if (this.alarmCheck){
-            String alarm = Strings.ALARM_MESSAGE + Converter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
+        String alarm;
+        if (this.result.closeToFalse() && this.result.goodChannel()) {
+            alarm = this.values.getStringValue(Value.CALCULATION_CLOSE_TO_FALSE);
+            cell(36, 22).setCellValue(alarm);
+        } else if (this.alarmCheck) {
+            alarm = Strings.ALARM_MESSAGE + Converter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
             cell(36, 22).setCellValue(alarm);
         }
     }

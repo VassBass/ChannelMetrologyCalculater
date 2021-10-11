@@ -42,6 +42,7 @@ public class Value {
     public final static String CALCULATION_EXTERNAL_PRESSURE = "calculation external pressure";
     public final static String CALCULATION_ALARM_PANEL = "calculation alarm panel";
     public final static String CALCULATION_ALARM_VALUE = "calculation alarm value";
+    public final static String CALCULATION_CLOSE_TO_FALSE = "calculation close to false";
 
     public final static String HEAD_OF_AREA_NAME = "head of area name";
     public final static String HEAD_OF_METROLOGY_NAME = "head of metrology name";
