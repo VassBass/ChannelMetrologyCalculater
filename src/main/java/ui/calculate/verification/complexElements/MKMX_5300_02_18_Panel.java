@@ -14,6 +14,7 @@ import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -72,6 +73,7 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
     private ButtonCell alarmLabel;
     private ButtonCell alarm;
 
+    private JComboBox<String> advice;
 
     public MKMX_5300_02_18_Panel(Channel channel, Values values, Calculation calculation){
         super(new GridBagLayout());
@@ -235,9 +237,21 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
         }
 
         this.withAlarm = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
-        if (withAlarm){
-            this.alarmLabel = new ButtonCell(true, Strings.ALARM_MESSAGE);
-            this.alarm = new ButtonCell(false, this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
+        if (this.calculation.closeToFalse()){
+            ArrayList<String> toComboBox = new ArrayList<>();
+            if (withAlarm){
+                toComboBox.add(Strings.ALARM_MESSAGE + this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
+            }
+            toComboBox.add(Strings.ADVICE_FIX);
+            toComboBox.add(Strings.ADVICE_FIX_PRESSURE);
+            toComboBox.add(Strings.ADVICE_RANGE);
+
+            this.advice = new JComboBox<>(toComboBox.toArray(new String[0]));
+        }else {
+            if (withAlarm) {
+                this.alarmLabel = new ButtonCell(true, Strings.ALARM_MESSAGE);
+                this.alarm = new ButtonCell(false, this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
+            }
         }
     }
 
@@ -311,9 +325,13 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
 
         this.add(this.resultOfCheck, new Cell(0, 36, 4));
 
-        if (this.withAlarm){
-            this.add(this.alarmLabel, new Cell(0,37,2));
-            this.add(this.alarm, new Cell(2,37,2));
+        if (this.calculation.closeToFalse()){
+            this.add(this.advice, new Cell(0,37,4));
+        }else {
+            if (this.withAlarm) {
+                this.add(this.alarmLabel, new Cell(0, 37, 2));
+                this.add(this.alarm, new Cell(2, 37, 2));
+            }
         }
     }
 
