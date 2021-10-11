@@ -16,6 +16,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 
 public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
     private final Channel channel;
@@ -85,7 +86,6 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
         this.setReactions();
         this.build();
     }
-
 
     @Override
     public void createElements() {
@@ -218,7 +218,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
         }
 
         this.withAlarm = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
-        if (this.calculation.closeToFalse()){
+        if (this.calculation.closeToFalse() && this.calculation.goodChannel()){
             ArrayList<String>toComboBox = new ArrayList<>();
             if (withAlarm){
                 toComboBox.add(Strings.ALARM_MESSAGE + this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
@@ -236,6 +236,11 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
     }
 
     @Override public void setReactions() {}
+
+    @Override
+    public String getName() {
+        return Objects.requireNonNull(this.advice.getSelectedItem()).toString();
+    }
 
     @Override
     public void build() {
@@ -302,7 +307,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
 
         this.add(this.resultOfCheck, new Cell(0, 36, 4));
 
-        if (this.calculation.closeToFalse()){
+        if (this.calculation.closeToFalse() &&this.calculation.goodChannel()){
             this.add(this.advice, new Cell(0,37,4));
         }else {
             if (this.withAlarm) {
