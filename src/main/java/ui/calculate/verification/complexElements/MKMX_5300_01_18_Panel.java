@@ -220,6 +220,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
         this.withAlarm = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
         if (this.calculation.closeToFalse() && this.calculation.goodChannel()){
             ArrayList<String>toComboBox = new ArrayList<>();
+            toComboBox.add("");
             if (withAlarm){
                 toComboBox.add(Strings.ALARM_MESSAGE + this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
             }
