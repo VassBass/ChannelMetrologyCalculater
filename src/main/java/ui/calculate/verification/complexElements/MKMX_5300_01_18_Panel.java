@@ -221,10 +221,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
         }
     }
 
-    @Override
-    public void setReactions() {
-
-    }
+    @Override public void setReactions() {}
 
     @Override
     public void build() {
