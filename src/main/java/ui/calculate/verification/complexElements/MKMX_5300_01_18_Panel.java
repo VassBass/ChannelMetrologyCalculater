@@ -228,6 +228,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
             toComboBox.add(Strings.ADVICE_RANGE);
 
             this.advice = new JComboBox<>(toComboBox.toArray(new String[0]));
+            this.advice.setSelectedItem(1);
         }else {
             if (withAlarm) {
                 this.alarmLabel = new ButtonCell(true, Strings.ALARM_MESSAGE);
