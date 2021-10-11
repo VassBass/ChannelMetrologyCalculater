@@ -95,6 +95,11 @@ public class Calculation {
 
     private double maxCalibratorPower = -999999999D;
 
+    public boolean closeToFalse(){
+        double result = Math.abs(this.getErrorInRange() - this.channel.getAllowableErrorPercent());
+        return result < 0.1;
+    }
+
     public boolean goodChannel(){
         return this.getErrorInRange() <= this.channel.getAllowableErrorPercent();
     }
