@@ -3,6 +3,7 @@ package ui.main.menu;
 import constants.Strings;
 import ui.UI_Container;
 import ui.main.MainScreen;
+import ui.pathLists.PathListsDialog;
 import ui.personsList.PersonsListDialog;
 
 import javax.swing.*;
@@ -36,6 +37,10 @@ public class MenuLists extends JMenu implements UI_Container {
 
     @Override
     public void setReactions() {
+        this.buttonDepartments.addActionListener(clickDepartments);
+        this.buttonAreas.addActionListener(clickAreas);
+        this.buttonProcesses.addActionListener(clickProcesses);
+        this.buttonInstallations.addActionListener(clickInstallations);
         this.buttonPersons.addActionListener(clickButtonPersons);
     }
 
@@ -56,6 +61,54 @@ public class MenuLists extends JMenu implements UI_Container {
                 @Override
                 public void run() {
                     new PersonsListDialog(mainScreen).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickDepartments = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new PathListsDialog(mainScreen, Strings.DEPARTMENTS_LIST).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickAreas = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new PathListsDialog(mainScreen, Strings.AREAS_LIST).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickProcesses = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new PathListsDialog(mainScreen, Strings.PROCESSES_LIST).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickInstallations = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new PathListsDialog(mainScreen, Strings.INSTALLATIONS_LIST).setVisible(true);
                 }
             });
         }
