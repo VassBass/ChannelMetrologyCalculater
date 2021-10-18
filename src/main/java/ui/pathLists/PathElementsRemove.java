@@ -1,12 +1,17 @@
 package ui.pathLists;
 
+import backgroundTasks.RemovePathElements;
 import constants.Strings;
 import support.Converter;
 import support.Lists;
 import ui.UI_Container;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Objects;
 
 public class PathElementsRemove extends JDialog implements UI_Container {
@@ -82,7 +87,13 @@ public class PathElementsRemove extends JDialog implements UI_Container {
 
     @Override
     public void setReactions() {
+        this.buttonCancel.addChangeListener(pushButton);
+        this.buttonRemoveAll.addChangeListener(pushButton);
+        this.buttonRemove.addChangeListener(pushButton);
 
+        this.buttonCancel.addActionListener(clickCancel);
+        this.buttonRemoveAll.addActionListener(clickRemoveAll);
+        this.buttonRemove.addActionListener(clickRemove);
     }
 
     @Override
@@ -92,6 +103,52 @@ public class PathElementsRemove extends JDialog implements UI_Container {
 
         this.setContentPane(new MainPanel());
     }
+
+    private final ChangeListener pushButton = new ChangeListener() {
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            JButton button = (JButton) e.getSource();
+            if (button.getModel().isPressed()){
+                button.setBackground(buttonsColor.darker());
+            }else {
+                button.setBackground(buttonsColor);
+            }
+        }
+    };
+
+    private final ActionListener clickCancel = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+        }
+    };
+
+    private final ActionListener clickRemoveAll = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmDialog(parent, elementType).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickRemove = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            dispose();
+            if (elementName == null){
+                try {
+                    new RemovePathElements(parent, elementType, elementList.getSelectedItem().toString()).execute();
+                }catch (NullPointerException ignored){}
+            }else {
+                new RemovePathElements(parent, elementType, elementName).execute();
+            }
+        }
+    };
 
     private class MainPanel extends JPanel {
         protected MainPanel(){

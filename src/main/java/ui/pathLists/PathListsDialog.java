@@ -165,12 +165,15 @@ public class PathListsDialog extends JDialog implements UI_Container {
     public void update(String elementsType){
         switch (elementsType){
             case Strings.AREA:
+            case Strings.AREAS_LIST:
                 this.title = Strings.AREAS_LIST;
                 break;
             case Strings.PROCESS:
+            case Strings.PROCESSES_LIST:
                 this.title = Strings.PROCESSES_LIST;
                 break;
             case Strings.INSTALLATION:
+            case Strings.INSTALLATIONS_LIST:
                 this.title = Strings.INSTALLATIONS_LIST;
                 break;
             default:
