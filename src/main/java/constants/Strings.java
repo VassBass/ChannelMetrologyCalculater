@@ -35,6 +35,10 @@ public class Strings {
     public static final String AREA = "Ділянка";
     public static final String PROCESS = "Лінія, секція і т.п.";
     public static final String INSTALLATION = "Установка";
+    public static final String DEPARTMENTS_LIST = "Список цехів";
+    public static final String AREAS_LIST = "Список ділянок";
+    public static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
+    public static final String INSTALLATIONS_LIST = "Список установок";
     public static final String BACK = "Назад";
     public static final String NEXT = "Далі";
     public static final String CLEAR = "Очистити";
