@@ -41,29 +41,21 @@ public class PathListsDialog extends JDialog implements UI_Container {
     @Override
     public void createElements() {
         this.buttonDepartments = new JButton(Strings.DEPARTMENTS_LIST);
-        this.buttonDepartments.setBackground(buttonsColor);
-        this.buttonDepartments.setForeground(Color.white);
         this.buttonDepartments.setFocusPainted(false);
         this.buttonDepartments.setContentAreaFilled(false);
         this.buttonDepartments.setOpaque(true);
 
         this.buttonAreas = new JButton(Strings.AREAS_LIST);
-        this.buttonAreas.setBackground(buttonsColor);
-        this.buttonAreas.setForeground(Color.white);
         this.buttonAreas.setFocusPainted(false);
         this.buttonAreas.setContentAreaFilled(false);
         this.buttonAreas.setOpaque(true);
 
         this.buttonProcesses = new JButton(Strings.PROCESSES_LIST);
-        this.buttonProcesses.setBackground(buttonsColor);
-        this.buttonProcesses.setForeground(Color.white);
         this.buttonProcesses.setFocusPainted(false);
         this.buttonProcesses.setContentAreaFilled(false);
         this.buttonProcesses.setOpaque(true);
 
         this.buttonInstallations = new JButton(Strings.INSTALLATIONS_LIST);
-        this.buttonInstallations.setBackground(buttonsColor);
-        this.buttonInstallations.setForeground(Color.white);
         this.buttonInstallations.setFocusPainted(false);
         this.buttonInstallations.setContentAreaFilled(false);
         this.buttonInstallations.setOpaque(true);
@@ -159,6 +151,7 @@ public class PathListsDialog extends JDialog implements UI_Container {
         this.buttonCancel.addActionListener(clickCancel);
         this.buttonAdd.addActionListener(clickAdd);
         this.buttonChange.addActionListener(clickChange);
+        this.buttonRemove.addActionListener(clickRemove);
     }
 
     @Override
@@ -294,6 +287,35 @@ public class PathListsDialog extends JDialog implements UI_Container {
                     }
                 });
             }
+        }
+    };
+
+    private final ActionListener clickRemove = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    String elementName = null;
+                    if (mainTable.getSelectedRow() != -1){
+                        switch (title) {
+                            case Strings.DEPARTMENTS_LIST:
+                                elementName = Objects.requireNonNull(Lists.departments()).get(mainTable.getSelectedRow());
+                                break;
+                            case Strings.AREAS_LIST:
+                                elementName = Objects.requireNonNull(Lists.areas()).get(mainTable.getSelectedRow());
+                                break;
+                            case Strings.PROCESSES_LIST:
+                                elementName = Objects.requireNonNull(Lists.processes()).get(mainTable.getSelectedRow());
+                                break;
+                            case Strings.INSTALLATIONS_LIST:
+                                elementName = Objects.requireNonNull(Lists.installations()).get(mainTable.getSelectedRow());
+                                break;
+                        }
+                    }
+                    new PathElementsRemove(current, title, elementName).setVisible(true);
+                }
+            });
         }
     };
 
