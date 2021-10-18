@@ -2,6 +2,7 @@ package ui.pathLists;
 
 import constants.Strings;
 import support.Converter;
+import support.Lists;
 import ui.UI_Container;
 import ui.main.MainScreen;
 
@@ -11,9 +12,11 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 public class PathListsDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
+    private final PathListsDialog current;
 
     private String title;
 
@@ -26,6 +29,7 @@ public class PathListsDialog extends JDialog implements UI_Container {
 
     public PathListsDialog(MainScreen mainScreen, String title){
         super(mainScreen, title, true);
+        this.current = this;
         this.mainScreen = mainScreen;
         this.title = title;
 
@@ -153,6 +157,8 @@ public class PathListsDialog extends JDialog implements UI_Container {
         this.buttonProcesses.addActionListener(clickProcesses);
         this.buttonInstallations.addActionListener(clickInstallations);
         this.buttonCancel.addActionListener(clickCancel);
+        this.buttonAdd.addActionListener(clickAdd);
+        this.buttonChange.addActionListener(clickChange);
     }
 
     @Override
@@ -161,6 +167,25 @@ public class PathListsDialog extends JDialog implements UI_Container {
         this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
+    }
+
+    public void update(String elementsType){
+        switch (elementsType){
+            case Strings.AREA:
+                this.title = Strings.AREAS_LIST;
+                break;
+            case Strings.PROCESS:
+                this.title = Strings.PROCESSES_LIST;
+                break;
+            case Strings.INSTALLATION:
+                this.title = Strings.INSTALLATIONS_LIST;
+                break;
+            default:
+                this.title = Strings.DEPARTMENTS_LIST;
+                break;
+        }
+        this.setButtonsColor();
+        this.mainTable.update(this.title);
     }
 
     private final ChangeListener pushButton = new ChangeListener() {
@@ -208,6 +233,67 @@ public class PathListsDialog extends JDialog implements UI_Container {
             title = Strings.INSTALLATIONS_LIST;
             setButtonsColor();
             mainTable.update(title);
+        }
+    };
+
+    private final ActionListener clickAdd = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    String elementType = null;
+                    switch (title){
+                        case Strings.DEPARTMENTS_LIST:
+                            elementType = Strings.DEPARTMENT;
+                            break;
+                        case Strings.AREAS_LIST:
+                            elementType = Strings.AREA;
+                            break;
+                        case Strings.PROCESSES_LIST:
+                            elementType = Strings.PROCESS;
+                            break;
+                        case Strings.INSTALLATIONS_LIST:
+                            elementType = Strings.INSTALLATION;
+                            break;
+                    }
+                    new PathElementName(current, elementType, null).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickChange = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (mainTable.getSelectedRow() != -1) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        String elementType = null;
+                        String elementName = null;
+                        switch (title) {
+                            case Strings.DEPARTMENTS_LIST:
+                                elementType = Strings.DEPARTMENT;
+                                elementName = Objects.requireNonNull(Lists.departments()).get(mainTable.getSelectedRow());
+                                break;
+                            case Strings.AREAS_LIST:
+                                elementType = Strings.AREA;
+                                elementName = Objects.requireNonNull(Lists.areas()).get(mainTable.getSelectedRow());
+                                break;
+                            case Strings.PROCESSES_LIST:
+                                elementType = Strings.PROCESS;
+                                elementName = Objects.requireNonNull(Lists.processes()).get(mainTable.getSelectedRow());
+                                break;
+                            case Strings.INSTALLATIONS_LIST:
+                                elementType = Strings.INSTALLATION;
+                                elementName = Objects.requireNonNull(Lists.installations()).get(mainTable.getSelectedRow());
+                                break;
+                        }
+                        new PathElementName(current, elementType, elementName).setVisible(true);
+                    }
+                });
+            }
         }
     };
 
