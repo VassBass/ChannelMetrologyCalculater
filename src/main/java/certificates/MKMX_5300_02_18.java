@@ -230,29 +230,24 @@ public class MKMX_5300_02_18 implements Certificate {
 
     @Override
     public void putResult() {
-        String[]values = new String[this.channel.getSensor().getValues(this.channel).length];
+        double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
+        double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
+        double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
         Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
 
-        for (int x=0;x<values.length;x++){
-            if (calibrator.getName() == CalibratorType.FLUKE718_30G && x < 2) {
-                double maxCalibratorPower = new Converter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
-                if (this.channel.getSensor().getValues(this.channel)[x] < maxCalibratorPower){
-                    values[x] = Converter.roundingDouble(maxCalibratorPower, Locale.GERMAN);
-                }else {
-                    values[x] = Converter.roundingDouble2(this.channel.getSensor().getValues(this.channel)[x], Locale.GERMAN);
-                }
-            }else {
-                values[x] = Converter.roundingDouble2(this.channel.getSensor().getValues(this.channel)[x], Locale.GERMAN);
+        if (calibrator.getName() == CalibratorType.FLUKE718_30G){
+            double maxCalibratorPower = new Converter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+            if (value5 < maxCalibratorPower){
+                value5 = maxCalibratorPower;
             }
         }
-        int y = 29;
-        for (int x=1;x<4;x++){
-            cell(y,5).setCellValue(values[x]);
-            y = y+2;
-        }
+
+        cell(29, 5).setCellValue(Converter.roundingDouble2(value5, Locale.GERMAN));
+        cell(31, 5).setCellValue(Converter.roundingDouble2(value50, Locale.GERMAN));
+        cell(33, 5).setCellValue(Converter.roundingDouble2(value95, Locale.GERMAN));
 
         double[][]measurementValues = this.measurementValues();
-        y = 8;
+        int y = 8;
         for (double[] value : measurementValues) {
             for (int z = 0; z < 6; z++) {
                 int n = 29 + z;

@@ -228,38 +228,17 @@ public class MKMX_5300_01_18 implements Certificate {
 
     @Override
     public void putResult() {
-        String valueElectro5;
-        String valueElectro50;
-        String valueElectro95;
-        switch (this.channel.getSensor().getType()) {
-            case TXA_0395_typeK:
-            case TXA_2388_typeK:
-            case TP0198_2:
-                valueElectro5 = Converter.roundingDouble3(this.channel.getSensor().getValuesElectro(this.channel)[0], Locale.GERMAN);
-                valueElectro50 = Converter.roundingDouble3(this.channel.getSensor().getValuesElectro(this.channel)[1], Locale.GERMAN);
-                valueElectro95 = Converter.roundingDouble3(this.channel.getSensor().getValuesElectro(this.channel)[2], Locale.GERMAN);
-                break;
-            default:
-                valueElectro5 = Converter.roundingDouble2(this.channel.getSensor().getValuesElectro(this.channel)[0], Locale.GERMAN);
-                valueElectro50 = Converter.roundingDouble2(this.channel.getSensor().getValuesElectro(this.channel)[1], Locale.GERMAN);
-                valueElectro95 = Converter.roundingDouble2(this.channel.getSensor().getValuesElectro(this.channel)[2], Locale.GERMAN);
-        }
-        cell(29, 3).setCellValue(valueElectro5);
-        cell(31, 3).setCellValue(valueElectro50);
-        cell(33, 3).setCellValue(valueElectro95);
 
-        String[] values = new String[this.channel.getSensor().getValues(this.channel).length];
-        for (int x = 0; x < values.length; x++) {
-            values[x] = Converter.roundingDouble2(this.channel.getSensor().getValues(this.channel)[x], Locale.GERMAN);
-        }
-        int y = 29;
-        for (int x = 1; x < 4; x++) {
-            cell(y, 5).setCellValue(values[x]);
-            y = y + 2;
-        }
+        double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
+        double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
+        double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+
+        cell(29, 5).setCellValue(Converter.roundingDouble2(value5, Locale.GERMAN));
+        cell(31, 5).setCellValue(Converter.roundingDouble2(value50, Locale.GERMAN));
+        cell(33, 5).setCellValue(Converter.roundingDouble2(value95, Locale.GERMAN));
 
         double[][] measurementValues = this.measurementValues();
-        y = 8;
+        int y = 8;
         for (double[] value : measurementValues) {
             for (int z = 0; z < 6; z++) {
                 int n = 29 + z;

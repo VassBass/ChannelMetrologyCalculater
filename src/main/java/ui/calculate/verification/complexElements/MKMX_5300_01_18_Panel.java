@@ -348,74 +348,46 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
                 }else if (x == 8){
                     cells[x] = new ButtonCell(false, "Xет,\nОм,мВ");
                     this.add(cells[x], new Cell(2, 0, 1, 2));
-                }else if (x == 9){
-                    switch (channel.getSensor().getType()){
-                        case TXA_0395_typeK:
-                        case TXA_2388_typeK:
-                        case TP0198_2:
-                            cells[x] = new ButtonCell(false, Converter.roundingDouble3(channel.getSensor().getValuesElectro(channel)[1], Locale.GERMAN));
-                            break;
-                        default:
-                            cells[x] = new ButtonCell(false, Converter.roundingDouble2(channel.getSensor().getValuesElectro(channel)[1], Locale.GERMAN));
-                            break;
-                    }
-                    this.add(cells[x], new Cell(2, 2, 1, 2));
-                }else if (x == 10){
-                    switch (channel.getSensor().getType()) {
-                        case TXA_0395_typeK:
-                        case TXA_2388_typeK:
-                        case TP0198_2:
-                            cells[x] = new ButtonCell(false, Converter.roundingDouble3(channel.getSensor().getValuesElectro(channel)[2], Locale.GERMAN));
-                            break;
-                        default:
-                            cells[x] = new ButtonCell(false, Converter.roundingDouble2(channel.getSensor().getValuesElectro(channel)[2], Locale.GERMAN));
-                            break;
-                    }
-                    this.add(cells[x], new Cell(2, 4, 1, 2));
-                }else if (x == 11){
-                    switch (channel.getSensor().getType()) {
-                        case TXA_0395_typeK:
-                        case TXA_2388_typeK:
-                        case TP0198_2:
-                            cells[x] = new ButtonCell(false, Converter.roundingDouble3(channel.getSensor().getValuesElectro(channel)[3], Locale.GERMAN));
-                            break;
-                        default:
-                            cells[x] = new ButtonCell(false, Converter.roundingDouble2(channel.getSensor().getValuesElectro(channel)[3], Locale.GERMAN));
-                            break;
-                    }
-                    this.add(cells[x], new Cell(2, 6, 1, 2));
-                }else if (x == 12){
+                }else if (x == 9) {
                     cells[x] = new ButtonCell(false, "Xет,".concat(channel.getMeasurement().getValue()));
                     this.add(cells[x], new Cell(3, 0, 1, 2));
-                }else if (x < 16){
-                    index = x - 12;
-                    cells[x] = new ButtonCell(false, Converter.roundingDouble2(channel.getSensor().getValues(channel)[index], Locale.GERMAN));
-                    this.add(cells[x], new Cell(3, index + index, 1, 2));
-                }else if (x == 16){
+                }else if (x == 10) {
+                    double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
+                    cells[x] = new ButtonCell(false, Converter.roundingDouble2(value5, Locale.GERMAN));
+                    this.add(cells[x], new Cell(3,2,1,2));
+                }else if (x == 11) {
+                    double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
+                    cells[x] = new ButtonCell(false, Converter.roundingDouble2(value50, Locale.GERMAN));
+                    this.add(cells[x], new Cell(3,4,1,2));
+                }else if (x == 12) {
+                    double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+                    cells[x] = new ButtonCell(false, Converter.roundingDouble2(value95, Locale.GERMAN));
+                    this.add(cells[x], new Cell(3,6,1,2));
+                }else if (x == 13){
                     cells[x] = new ButtonCell(false, "Отримані значення, Хі");
                     this.add(cells[x], new Cell(4, 0, 5, 1));
-                }else if (x < 22){
-                    index = x - 16;
+                }else if (x < 19){
+                    index = x - 13;
                     cells[x] = new ButtonCell(false, String.valueOf(index));
                     this.add(cells[x], new Cell(index + 3, 1, 1, 1));
-                }else if (x < 28){
-                    index = x - 21;
+                }else if (x < 25){
+                    index = x - 18;
                     cells[x] = new ButtonCell(false, Converter.roundingDouble(calculation.getIn()[0][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(4, index + 1, 1, 1));
-                }else if (x < 34){
-                    index = x - 27;
+                }else if (x < 31){
+                    index = x - 24;
                     cells[x] = new ButtonCell(false, Converter.roundingDouble(calculation.getIn()[1][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(5, index + 1, 1, 1));
-                }else if (x < 40){
-                    index = x - 33;
+                }else if (x < 37){
+                    index = x - 30;
                     cells[x] = new ButtonCell(false, Converter.roundingDouble(calculation.getIn()[2][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(6, index + 1, 1, 1));
-                }else if (x < 46){
-                    index = x - 39;
+                }else if (x < 43){
+                    index = x - 36;
                     cells[x] = new ButtonCell(false, Converter.roundingDouble(calculation.getIn()[3][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(7, index + 1, 1, 1));
                 }else {
-                    index = x -45;
+                    index = x - 42;
                     cells[x] = new ButtonCell(false, Converter.roundingDouble(calculation.getIn()[4][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(8, index + 1, 1, 1));
                 }

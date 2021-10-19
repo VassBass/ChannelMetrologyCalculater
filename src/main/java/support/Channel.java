@@ -79,6 +79,10 @@ public class Channel implements Serializable {
         return builder.toString();
     }
 
+    public double getRange(){
+        return this.rangeMax - this.rangeMin;
+    }
+
     //Setters
     public void setCode(String code) {this.code = code;}
     public void setName(String name) {this.name = name;}

@@ -144,21 +144,23 @@ public class Calculation {
 
     public double[][] getErrorsAbsolute() {
         if (this.errorsAbsolute == null) {
-            double[]values = this.channel.getSensor().getValues(this.channel);
-            if (maxCalibratorPower != 999999999D && values[1] < maxCalibratorPower){
-                values[1] = maxCalibratorPower;
+            double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
+            double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
+            double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+            if (maxCalibratorPower != 999999999D && value5 < maxCalibratorPower){
+                value5 = maxCalibratorPower;
             }
             switch (this.method) {
                 case MKMX_5300_01_18:
                 case MKMX_5300_02_18:
                     this.errorsAbsolute = new double[in.length][6];
                     for (int n = 0; n < in.length; n++) {
-                        this.errorsAbsolute[n][0] = in[n][1] - values[1];
-                        this.errorsAbsolute[n][1] = in[n][2] - values[1];
-                        this.errorsAbsolute[n][2] = in[n][3] - values[2];
-                        this.errorsAbsolute[n][3] = in[n][4] - values[2];
-                        this.errorsAbsolute[n][4] = in[n][5] - values[3];
-                        this.errorsAbsolute[n][5] = in[n][6] - values[3];
+                        this.errorsAbsolute[n][0] = in[n][1] - value5;
+                        this.errorsAbsolute[n][1] = in[n][2] - value5;
+                        this.errorsAbsolute[n][2] = in[n][3] - value50;
+                        this.errorsAbsolute[n][3] = in[n][4] - value50;
+                        this.errorsAbsolute[n][4] = in[n][5] - value95;
+                        this.errorsAbsolute[n][5] = in[n][6] - value95;
                     }
                     return this.errorsAbsolute;
                 default: return null;

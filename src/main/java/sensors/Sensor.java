@@ -36,14 +36,6 @@ public class Sensor implements Serializable {
     public String getValue(){return this.value;}
     public String getMeasurement(){return this.measurement;}
 
-    public double[]getValuesElectro(Channel channel){
-        return new double[5];
-    }
-
-    public double[]getValues(Channel channel){
-        return new double[5];
-    }
-
     @Override
     public boolean equals(Object object) {
         if (!object.getClass().equals(this.getClass())){

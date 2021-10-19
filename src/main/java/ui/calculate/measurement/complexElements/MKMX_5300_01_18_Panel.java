@@ -18,7 +18,6 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
 
     private JButton[] columnsHeader;
     private JButton[] labelPercent;
-    private JButton[] labelValueElectro;
     private JButton[] labelValue;
     private JButton[] motions;
 
@@ -60,15 +59,12 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double[] valuesElectro = this.channel.getSensor().getValuesElectro(this.channel);
-        this.labelValueElectro = new JButton[5];
-        this.labelValueElectro[0] = new ButtonCell(false, valuesElectro[0] + valueElectro);
-        this.labelValueElectro[1] = new ButtonCell(false, valuesElectro[1] + valueElectro);
-        this.labelValueElectro[2] = new ButtonCell(false, valuesElectro[2] + valueElectro);
-        this.labelValueElectro[3] = new ButtonCell(false, valuesElectro[3] + valueElectro);
-        this.labelValueElectro[4] = new ButtonCell(false, valuesElectro[4] + valueElectro);
-
-        this.values = this.channel.getSensor().getValues(this.channel);
+        double value0 = channel.getRangeMin();
+        double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
+        double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
+        double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+        double value100 = channel.getRangeMax();
+        this.values = new double[]{value0, value5, value50, value95, value100};
 
         this.labelValue = new JButton[5];
         this.labelValue[0] = new ButtonCell(false, String.format(Locale.ENGLISH, "%.2f", this.values[0]) + value);
@@ -120,35 +116,29 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
         this.add(this.labelPercent[3], new Cell(0,6,2));
         this.add(this.labelPercent[4], new Cell(0,8));
 
-        this.add(this.labelValueElectro[0], new Cell(1,1));
-        this.add(this.labelValueElectro[1], new Cell(1,2,2));
-        this.add(this.labelValueElectro[2], new Cell(1,4,2));
-        this.add(this.labelValueElectro[3], new Cell(1,6,2));
-        this.add(this.labelValueElectro[4], new Cell(1,8));
+        this.add(this.labelValue[0], new Cell(1,1));
+        this.add(this.labelValue[1], new Cell(1,2,2));
+        this.add(this.labelValue[2], new Cell(1,4,2));
+        this.add(this.labelValue[3], new Cell(1,6,2));
+        this.add(this.labelValue[4], new Cell(1,8));
 
-        this.add(this.labelValue[0], new Cell(2,1));
-        this.add(this.labelValue[1], new Cell(2,2,2));
-        this.add(this.labelValue[2], new Cell(2,4,2));
-        this.add(this.labelValue[3], new Cell(2,6,2));
-        this.add(this.labelValue[4], new Cell(2,8));
+        this.add(new ButtonCell(false, "-"), new Cell(2,1));
+        this.add(this.motions[0], new Cell(2,2));
+        this.add(this.motions[1], new Cell(2,3));
+        this.add(this.motions[2], new Cell(2,4));
+        this.add(this.motions[3], new Cell(2,5));
+        this.add(this.motions[4], new Cell(2,6));
+        this.add(this.motions[5], new Cell(2,7));
+        this.add(new ButtonCell(false, "-"), new Cell(2,8));
 
-        this.add(new ButtonCell(false, "-"), new Cell(3,1));
-        this.add(this.motions[0], new Cell(3,2));
-        this.add(this.motions[1], new Cell(3,3));
-        this.add(this.motions[2], new Cell(3,4));
-        this.add(this.motions[3], new Cell(3,5));
-        this.add(this.motions[4], new Cell(3,6));
-        this.add(this.motions[5], new Cell(3,7));
-        this.add(new ButtonCell(false, "-"), new Cell(3,8));
-
-        this.add(this.userMeasurements[0], new Cell(4,1));
-        this.add(this.userMeasurements[1], new Cell(4,2));
-        this.add(this.userMeasurements[2], new Cell(4,3));
-        this.add(this.userMeasurements[3], new Cell(4,4));
-        this.add(this.userMeasurements[4], new Cell(4,5));
-        this.add(this.userMeasurements[5], new Cell(4,6));
-        this.add(this.userMeasurements[6], new Cell(4,7));
-        this.add(this.userMeasurements[7], new Cell(4,8));
+        this.add(this.userMeasurements[0], new Cell(3,1));
+        this.add(this.userMeasurements[1], new Cell(3,2));
+        this.add(this.userMeasurements[2], new Cell(3,3));
+        this.add(this.userMeasurements[3], new Cell(3,4));
+        this.add(this.userMeasurements[4], new Cell(3,5));
+        this.add(this.userMeasurements[5], new Cell(3,6));
+        this.add(this.userMeasurements[6], new Cell(3,7));
+        this.add(this.userMeasurements[7], new Cell(3,8));
     }
 
     @Override

@@ -367,27 +367,31 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
                 }else if (x == 7){
                     cells[x] = new ButtonCell(false, "95");
                     this.add(cells[x], new Cell(1, 6, 1, 2));
-                }else if (x == 8){
+                }else if (x == 8) {
                     cells[x] = new ButtonCell(false, "Xет,".concat(channel.getMeasurement().getValue()));
                     this.add(cells[x], new Cell(3, 0, 1, 2));
-                }else if (x < 12){
-                    index = x - 8;
-                    if (x == 9){
-                        Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
-                        if (calibrator.getName() == CalibratorType.FLUKE718_30G) {
-                            double maxCalibratorPower = new Converter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
-                            if (channel.getSensor().getValues(channel)[index] < maxCalibratorPower){
-                                cells[x] = new ButtonCell(false, Converter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
-                            }else {
-                                cells[x] = new ButtonCell(false, Converter.roundingDouble2(channel.getSensor().getValues(channel)[index], Locale.GERMAN));
-                            }
+                }else if (x == 9) {
+                    Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
+                    double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
+                    if (calibrator.getName() == CalibratorType.FLUKE718_30G) {
+                        double maxCalibratorPower = new Converter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
+                        if (value5 < maxCalibratorPower){
+                            cells[x] = new ButtonCell(false, Converter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
                         }else {
-                            cells[x] = new ButtonCell(false, Converter.roundingDouble2(channel.getSensor().getValues(channel)[index], Locale.GERMAN));
+                            cells[x] = new ButtonCell(false, Converter.roundingDouble2(value5, Locale.GERMAN));
                         }
                     }else {
-                        cells[x] = new ButtonCell(false, Converter.roundingDouble2(channel.getSensor().getValues(channel)[index], Locale.GERMAN));
+                        cells[x] = new ButtonCell(false, Converter.roundingDouble2(value5, Locale.GERMAN));
                     }
-                    this.add(cells[x], new Cell(3, index + index, 1, 2));
+                    this.add(cells[x], new Cell(3,2,1,2));
+                }else if (x == 10) {
+                    double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
+                    cells[x] = new ButtonCell(false, Converter.roundingDouble2(value50, Locale.GERMAN));
+                    this.add(cells[x], new Cell(3,4,1,2));
+                }else if (x == 11) {
+                    double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+                    cells[x] = new ButtonCell(false, Converter.roundingDouble2(value95, Locale.GERMAN));
+                    this.add(cells[x], new Cell(3,6,1,2));
                 }else if (x == 12){
                     cells[x] = new ButtonCell(false, "Отримані значення, Хі");
                     this.add(cells[x], new Cell(4, 0, 5, 1));
