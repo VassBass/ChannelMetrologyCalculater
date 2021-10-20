@@ -31,6 +31,28 @@ public class UnZipper {
                 java.nio.file.Files.copy(in, out, REPLACE_EXISTING);
                 in.close();
             }
+
+            zip = "forms/"
+                    + Strings.FILE_NAME_FORM_MKMX_5300_01_18_BAD_v3_5;
+            in = UnZipper.class.getClassLoader().getResourceAsStream(zip);
+            if (in == null){
+                System.out.println("File no find at: " + zip);
+            }else {
+                Path out = Paths.get(Files.FILE_FORM_MKMX_5300_01_18_BAD_v3_5.getAbsolutePath());
+                java.nio.file.Files.copy(in, out, REPLACE_EXISTING);
+                in.close();
+            }
+
+            zip = "forms/"
+                    + Strings.FILE_NAME_FORM_MKMX_5300_01_18_GOOD_v3_5;
+            in = UnZipper.class.getClassLoader().getResourceAsStream(zip);
+            if (in == null){
+                System.out.println("File no find at: " + zip);
+            }else {
+                Path out = Paths.get(Files.FILE_FORM_MKMX_5300_01_18_GOOD_v3_5.getAbsolutePath());
+                java.nio.file.Files.copy(in, out, REPLACE_EXISTING);
+                in.close();
+            }
             
             zip = "forms/".concat(Strings.FILE_NAME_FORM_MKMX_5300_02_18_GOOD);
             in = UnZipper.class.getClassLoader().getResourceAsStream(zip);

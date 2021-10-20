@@ -25,6 +25,8 @@ public class Files {
     public static final File FILE_FORM_MKMX_5300_02_18_BAD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_02_18_BAD);
     public static final File FILE_FORM_MKMX_5300_01_18_GOOD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_01_18_GOOD);
     public static final File FILE_FORM_MKMX_5300_02_18_GOOD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_02_18_GOOD);
+    public static final File FILE_FORM_MKMX_5300_01_18_GOOD_v3_5 = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_01_18_GOOD_v3_5);
+    public static final File FILE_FORM_MKMX_5300_01_18_BAD_v3_5 = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_01_18_BAD_v3_5);
 
     public static File certificateFile(String fileName){
         File file = new File(CERTIFICATES_DIR, fileName);

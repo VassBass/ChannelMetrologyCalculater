@@ -158,6 +158,8 @@ public class Strings {
     public static final String FILE_NAME_FORM_MKMX_5300_02_18_BAD = "form_MKMX_5300_02_18.xls";
     public static final String FILE_NAME_FORM_MKMX_5300_01_18_GOOD = "Form_MKMX_5300_01_18_good.xls";
     public static final String FILE_NAME_FORM_MKMX_5300_02_18_GOOD = "form_MKMX_5300_02_18_good.xls";
+    public static final String FILE_NAME_FORM_MKMX_5300_01_18_BAD_v3_5 = "form_MKMX_5300_01_18.xls";
+    public static final String FILE_NAME_FORM_MKMX_5300_01_18_GOOD_v3_5 = "form_MKMX_5300_01_18_good.xls";
 
     public static final String MKMX_5300_01_18 = "МКМХ №5300.01:18";
     public static final String MKMX_5300_02_18 = "МКМХ №5300.02:18";
