@@ -35,8 +35,6 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
     @Override
     public void createElements() {
         String value = this.channel.getMeasurement().getValue();
-        String valueElectro = this.channel.getSensor().getValue();
-        String columnElectroValue = "Задано в [" + valueElectro + "]";
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
         String columnPercent = "% від шкали";
@@ -46,10 +44,9 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
 
         this.columnsHeader = new JButton[5];
         this.columnsHeader[0] = new ButtonCell(true, columnPercent);
-        this.columnsHeader[1] = new ButtonCell(true, columnElectroValue);
-        this.columnsHeader[2] = new ButtonCell(true, columnValue);
-        this.columnsHeader[3] = new ButtonCell(true, columnMotion);
-        this.columnsHeader[4] = new ButtonCell(true, columnMeasurement);
+        this.columnsHeader[1] = new ButtonCell(true, columnValue);
+        this.columnsHeader[2] = new ButtonCell(true, columnMotion);
+        this.columnsHeader[3] = new ButtonCell(true, columnMeasurement);
 
         int[] valuesPercent = new int[]{0, 5, 50, 95, 100};
         this.labelPercent = new JButton[5];
@@ -108,7 +105,6 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
         this.add(this.columnsHeader[1], new Cell(1,0));
         this.add(this.columnsHeader[2], new Cell(2,0));
         this.add(this.columnsHeader[3], new Cell(3,0));
-        this.add(this.columnsHeader[4], new Cell(4,0));
 
         this.add(this.labelPercent[0], new Cell(0,1));
         this.add(this.labelPercent[1], new Cell(0,2,2));

@@ -52,7 +52,7 @@ public class MKMX_5300_01_18 implements Certificate {
 
         if (this.result.goodChannel()){
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_MKMX_5300_01_18_GOOD));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_MKMX_5300_01_18_GOOD_v3_5));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();
@@ -60,7 +60,7 @@ public class MKMX_5300_01_18 implements Certificate {
         }else{
             this.numberOfReference = values.getStringValue(Value.CHANNEL_REFERENCE);
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_MKMX_5300_01_18_BAD));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_MKMX_5300_01_18_BAD_v3_5));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();

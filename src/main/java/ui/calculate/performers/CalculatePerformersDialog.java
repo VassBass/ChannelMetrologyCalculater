@@ -249,7 +249,9 @@ public class CalculatePerformersDialog extends JDialog implements UI_Container {
             if (index == 0){
                 performer1Position.setText(Strings.EMPTY_ARRAY);
             }else {
-                performer1Position.setText(Objects.requireNonNull(Lists.persons()).get(index - 1).getPosition());
+                try {
+                    performer1Position.setText(Objects.requireNonNull(Lists.persons()).get(index - 1).getPosition());
+                }catch (IndexOutOfBoundsException ignored){}
             }
         }
     };
@@ -262,7 +264,9 @@ public class CalculatePerformersDialog extends JDialog implements UI_Container {
             if (index == 0){
                 performer2Position.setText(Strings.EMPTY_ARRAY);
             }else {
-                performer2Position.setText(Objects.requireNonNull(Lists.persons()).get(index - 1).getPosition());
+                try {
+                    performer2Position.setText(Objects.requireNonNull(Lists.persons()).get(index - 1).getPosition());
+                }catch (IndexOutOfBoundsException ignored){}
             }
         }
     };
@@ -275,7 +279,9 @@ public class CalculatePerformersDialog extends JDialog implements UI_Container {
             if (index == 0){
                 calculaterPosition.setText(Strings.EMPTY_ARRAY);
             }else {
-                calculaterPosition.setText(Objects.requireNonNull(Lists.persons()).get(index - 1).getPosition());
+                try {
+                    calculaterPosition.setText(Objects.requireNonNull(Lists.persons()).get(index - 1).getPosition());
+                }catch (IndexOutOfBoundsException ignored){}
             }
         }
     };
