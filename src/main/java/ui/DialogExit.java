@@ -1,7 +1,7 @@
 package ui;
 
-import support.Converter;
 import constants.Strings;
+import converters.ConverterUI;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -59,7 +59,7 @@ public class DialogExit extends JDialog implements UI_Container {
     public void build() {
         this.setSize(250, 75);
         this.setResizable(false);
-        this.setLocation(Converter.POINT_CENTER(this.parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.content.add(this.positiveButton);
         this.content.add(this.negativeButton);

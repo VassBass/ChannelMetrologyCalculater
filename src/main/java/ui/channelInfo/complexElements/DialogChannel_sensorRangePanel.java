@@ -1,6 +1,6 @@
 package ui.channelInfo.complexElements;
 
-import support.Converter;
+import converters.VariableConverter;
 import measurements.Measurement;
 import sensors.Sensor;
 import support.Lists;
@@ -70,8 +70,8 @@ public class DialogChannel_sensorRangePanel extends JPanel implements UI_Contain
 
     public void update(Sensor sensor) {
         if (sensor != null) {
-            this.min.setText(Converter.roundingDouble2(sensor.getRangeMin(), Locale.ENGLISH));
-            this.max.setText(Converter.roundingDouble2(sensor.getRangeMax(), Locale.ENGLISH));
+            this.min.setText(VariableConverter.roundingDouble2(sensor.getRangeMin(), Locale.ENGLISH));
+            this.max.setText(VariableConverter.roundingDouble2(sensor.getRangeMax(), Locale.ENGLISH));
             this.value.setSelectedItem(sensor.getValue());
         }
     }
@@ -91,7 +91,7 @@ public class DialogChannel_sensorRangePanel extends JPanel implements UI_Contain
                 source.setText("0.00");
             }
             String forCheck = source.getText();
-            source.setText(Converter.doubleString(forCheck));
+            source.setText(VariableConverter.doubleString(forCheck));
 
             if (source.equals(min)) {
                 double minD = Double.parseDouble(min.getText());

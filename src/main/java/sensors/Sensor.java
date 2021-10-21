@@ -1,7 +1,6 @@
 package sensors;
 
 import constants.SensorType;
-import support.Channel;
 
 import java.io.Serializable;
 

@@ -1,6 +1,6 @@
 package ui.importChannels.compareChannels.complexElements;
 
-import support.Converter;
+import converters.VariableConverter;
 import support.Channel;
 import constants.Strings;
 import ui.ButtonCell;
@@ -299,14 +299,14 @@ public class CompareChannels_infoPanel extends JPanel implements UI_Container {
 
         labels[19] = new ButtonCell(Color.white, Color.black, Strings.CONTROL_INFO);
 
-        if (Converter.dateToString(old.getDate()).equals(Converter.dateToString(imported.getDate()))){
+        if (VariableConverter.dateToString(old.getDate()).equals(VariableConverter.dateToString(imported.getDate()))){
             labels[20] = new ButtonCell(Color.green.darker(), Color.white, Strings.THIS_DATE);
-            oldInfo[15] = new ButtonCell(Color.green.darker(), Color.white, Converter.dateToString(old.getDate()));
-            newInfo[15] = new ButtonCell(Color.green.darker(), Color.white, Converter.dateToString(imported.getDate()));
+            oldInfo[15] = new ButtonCell(Color.green.darker(), Color.white, VariableConverter.dateToString(old.getDate()));
+            newInfo[15] = new ButtonCell(Color.green.darker(), Color.white, VariableConverter.dateToString(imported.getDate()));
         }else {
             labels[20] = new ButtonCell(Color.red.darker(), Color.white, Strings.THIS_DATE);
-            oldInfo[15] = new ButtonCell(Color.red.darker(), Color.white, Converter.dateToString(old.getDate()));
-            newInfo[15] = new ButtonCell(Color.red.darker(), Color.white, Converter.dateToString(imported.getDate()));
+            oldInfo[15] = new ButtonCell(Color.red.darker(), Color.white, VariableConverter.dateToString(old.getDate()));
+            newInfo[15] = new ButtonCell(Color.red.darker(), Color.white, VariableConverter.dateToString(imported.getDate()));
         }
 
         String fo = String.format(Locale.ENGLISH, "%.0f", old.getFrequency()).concat(Strings.YEAR_WORD(old.getFrequency()));

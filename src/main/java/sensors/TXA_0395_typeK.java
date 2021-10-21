@@ -2,7 +2,6 @@ package sensors;
 
 import constants.MeasurementConstants;
 import constants.SensorType;
-import support.Channel;
 
 public class TXA_0395_typeK extends Sensor {
 

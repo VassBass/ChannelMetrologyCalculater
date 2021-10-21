@@ -1,7 +1,7 @@
 package ui.pathLists;
 
 import constants.Strings;
-import support.Converter;
+import converters.ConverterUI;
 import support.Lists;
 import ui.UI_Container;
 import ui.main.MainScreen;
@@ -157,7 +157,7 @@ public class PathListsDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(800,500);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }

@@ -1,7 +1,7 @@
 package ui.importChannels.compareChannels;
 
 import backgroundTasks.SaveChannelsToFile;
-import support.Converter;
+import converters.ConverterUI;
 import support.Channel;
 import constants.Strings;
 import ui.UI_Container;
@@ -112,7 +112,7 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(800,700);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }

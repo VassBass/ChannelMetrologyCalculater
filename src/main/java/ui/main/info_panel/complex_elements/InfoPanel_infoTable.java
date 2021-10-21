@@ -1,6 +1,6 @@
 package ui.main.info_panel.complex_elements;
 
-import support.Converter;
+import converters.VariableConverter;
 import support.Channel;
 import constants.Strings;
 import ui.ButtonCell;
@@ -53,7 +53,7 @@ public class InfoPanel_infoTable extends JPanel implements UI_Container {
             this.path.setText(" - ");
             this.sensor.setText(" - ");
         }else {
-            this.nextDate.setText(Converter.dateToString(channel.getNextDate()));
+            this.nextDate.setText(VariableConverter.dateToString(channel.getNextDate()));
             this.nextDate.setBackground(setBackgroundColorFromDate(channel.getNextDate()));
             this.path.setText(channel.getFullPath());
             this.sensor.setText(channel.getSensor().getType().getType());

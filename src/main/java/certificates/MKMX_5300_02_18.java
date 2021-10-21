@@ -2,8 +2,9 @@ package certificates;
 
 import calculation.Calculation;
 import constants.*;
-import support.Converter;
 import calibrators.Calibrator;
+import converters.PressureConverter;
+import converters.VariableConverter;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -81,7 +82,7 @@ public class MKMX_5300_02_18 implements Certificate {
         cell(11,31).setCellValue(this.numberOfCertificate);
 
         this.checkDate = (Calendar) this.values.getValue(Value.CHANNEL_DATE);
-        String date = Converter.dateToString(this.checkDate);
+        String date = VariableConverter.dateToString(this.checkDate);
         cell(11,12).setCellValue(date);
         cell(11,34).setCellValue(date);
         if (!this.result.goodChannel()){
@@ -141,10 +142,10 @@ public class MKMX_5300_02_18 implements Certificate {
         cell(15,3).setCellValue(code);
         cell(15,25).setCellValue(code);
 
-        String rangeMin = Converter.roundingDouble(this.channel.getRangeMin(), Locale.GERMAN);
+        String rangeMin = VariableConverter.roundingDouble(this.channel.getRangeMin(), Locale.GERMAN);
         cell(16,10).setCellValue(rangeMin);
 
-        String rangeMax = Converter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN);
+        String rangeMax = VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN);
         cell(16,12).setCellValue(rangeMax);
 
         this.measurementValue = this.channel.getMeasurement().getValue();
@@ -158,14 +159,14 @@ public class MKMX_5300_02_18 implements Certificate {
         cell(28,36).setCellValue(this.measurementValue);
         cell(29,36).setCellValue(this.measurementValue);
 
-        String errorPercent = Converter.roundingDouble2(this.channel.getAllowableErrorPercent(), Locale.GERMAN);
+        String errorPercent = VariableConverter.roundingDouble2(this.channel.getAllowableErrorPercent(), Locale.GERMAN);
         cell(17,12).setCellValue(errorPercent);
         cell(34,34).setCellValue(errorPercent);
 
-        String error = Converter.roundingDouble2(this.channel.getAllowableError(), Locale.GERMAN);
+        String error = VariableConverter.roundingDouble2(this.channel.getAllowableError(), Locale.GERMAN);
         cell(17,16).setCellValue(error);
 
-        String frequency = Converter.roundingDouble(this.channel.getFrequency(), Locale.GERMAN);
+        String frequency = VariableConverter.roundingDouble(this.channel.getFrequency(), Locale.GERMAN);
         cell(26,40).setCellValue(frequency);
         cell(26,41).setCellValue(Strings.YEAR_WORD(this.channel.getFrequency()));
 
@@ -174,7 +175,7 @@ public class MKMX_5300_02_18 implements Certificate {
             long l = (long) (31536000000L * this.channel.getFrequency());
             Calendar nextDateCal = new GregorianCalendar();
             nextDateCal.setTimeInMillis(this.checkDate.getTimeInMillis() + l);
-            nextDate = Converter.dateToString(nextDateCal);
+            nextDate = VariableConverter.dateToString(nextDateCal);
         }else {
             nextDate = Strings.EXTRAORDINARY;
         }
@@ -191,10 +192,10 @@ public class MKMX_5300_02_18 implements Certificate {
         String type = sensor.getType().getType();
         cell(19,11).setCellValue(type);
 
-        String errorPercent = Converter.roundingDouble2(this.result.getErrorSensor()[1], Locale.GERMAN);
+        String errorPercent = VariableConverter.roundingDouble2(this.result.getErrorSensor()[1], Locale.GERMAN);
         cell(20,12).setCellValue(errorPercent);
 
-        String error = Converter.roundingDouble2(this.result.getErrorSensor()[0], Locale.GERMAN);
+        String error = VariableConverter.roundingDouble2(this.result.getErrorSensor()[0], Locale.GERMAN);
         cell(20,16).setCellValue(error);
     }
 
@@ -216,14 +217,14 @@ public class MKMX_5300_02_18 implements Certificate {
         String certificate = calibrator.getCertificate().getFullName();
         cell(18,30).setCellValue(certificate);
 
-        String errorPercent = Converter.roundingDouble2(this.result.getErrorCalibrator()[1], Locale.GERMAN);
+        String errorPercent = VariableConverter.roundingDouble2(this.result.getErrorCalibrator()[1], Locale.GERMAN);
         cell(19,31).setCellValue(errorPercent);
 
         String error;
         if (this.result.getErrorCalibrator()[0] < 0.01){
-            error = Converter.roundingDouble3(this.result.getErrorCalibrator()[0], Locale.GERMAN);
+            error = VariableConverter.roundingDouble3(this.result.getErrorCalibrator()[0], Locale.GERMAN);
         }else {
-            error = Converter.roundingDouble2(this.result.getErrorCalibrator()[0], Locale.GERMAN);
+            error = VariableConverter.roundingDouble2(this.result.getErrorCalibrator()[0], Locale.GERMAN);
         }
         cell(19,37).setCellValue(error);
     }
@@ -236,22 +237,22 @@ public class MKMX_5300_02_18 implements Certificate {
         Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
 
         if (calibrator.getName() == CalibratorType.FLUKE718_30G){
-            double maxCalibratorPower = new Converter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+            double maxCalibratorPower = new PressureConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
             if (value5 < maxCalibratorPower){
                 value5 = maxCalibratorPower;
             }
         }
 
-        cell(29, 5).setCellValue(Converter.roundingDouble2(value5, Locale.GERMAN));
-        cell(31, 5).setCellValue(Converter.roundingDouble2(value50, Locale.GERMAN));
-        cell(33, 5).setCellValue(Converter.roundingDouble2(value95, Locale.GERMAN));
+        cell(29, 5).setCellValue(VariableConverter.roundingDouble2(value5, Locale.GERMAN));
+        cell(31, 5).setCellValue(VariableConverter.roundingDouble2(value50, Locale.GERMAN));
+        cell(33, 5).setCellValue(VariableConverter.roundingDouble2(value95, Locale.GERMAN));
 
         double[][]measurementValues = this.measurementValues();
         int y = 8;
         for (double[] value : measurementValues) {
             for (int z = 0; z < 6; z++) {
                 int n = 29 + z;
-                cell(n, y).setCellValue(Converter.roundingDouble3(value[z + 1], Locale.GERMAN));
+                cell(n, y).setCellValue(VariableConverter.roundingDouble3(value[z + 1], Locale.GERMAN));
             }
             if (y == 8) {
                 y = 11;
@@ -266,24 +267,24 @@ public class MKMX_5300_02_18 implements Certificate {
 
         String u;
         if (this.result.getExtendedIndeterminacy() < 0.01 && this.result.getExtendedIndeterminacy() > -0.01) {
-            u = Converter.roundingDouble3(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
+            u = VariableConverter.roundingDouble3(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
         }else {
-            u = Converter.roundingDouble2(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
+            u = VariableConverter.roundingDouble2(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
         }
         cell(23,34).setCellValue(u);
 
         String errorReduced;
         if (this.result.getErrorInRange() < 0.01 && this.result.getErrorInRange() > -0.01) {
-            errorReduced = Converter.roundingDouble3(this.result.getErrorInRange(), Locale.GERMAN);
+            errorReduced = VariableConverter.roundingDouble3(this.result.getErrorInRange(), Locale.GERMAN);
         }else {
-            errorReduced = Converter.roundingDouble2(this.result.getErrorInRange(), Locale.GERMAN);
+            errorReduced = VariableConverter.roundingDouble2(this.result.getErrorInRange(), Locale.GERMAN);
         }
 
         String absoluteError;
         if (this.result.getAbsoluteErrorWithSensorError() < 0.01 && this.result.getAbsoluteErrorWithSensorError() > -0.01) {
-            absoluteError = Converter.roundingDouble3(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
+            absoluteError = VariableConverter.roundingDouble3(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
         }else {
-            absoluteError = Converter.roundingDouble2(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
+            absoluteError = VariableConverter.roundingDouble2(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
         }
         cell(25,34).setCellValue(errorReduced);
         cell(34,38).setCellValue(errorReduced);
@@ -294,19 +295,19 @@ public class MKMX_5300_02_18 implements Certificate {
         String s95;
 
         if (this.result.getSystematicErrors()[0] < 0.01 && this.result.getSystematicErrors()[0] > -0.01){
-            s5 = Converter.roundingDouble3(this.result.getSystematicErrors()[0], Locale.GERMAN);
+            s5 = VariableConverter.roundingDouble3(this.result.getSystematicErrors()[0], Locale.GERMAN);
         }else {
-            s5 = Converter.roundingDouble2(this.result.getSystematicErrors()[0], Locale.GERMAN);
+            s5 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[0], Locale.GERMAN);
         }
         if (this.result.getSystematicErrors()[1] < 0.01 && this.result.getSystematicErrors()[1] > -0.01){
-            s50 = Converter.roundingDouble3(this.result.getSystematicErrors()[1], Locale.GERMAN);
+            s50 = VariableConverter.roundingDouble3(this.result.getSystematicErrors()[1], Locale.GERMAN);
         }else {
-            s50 = Converter.roundingDouble2(this.result.getSystematicErrors()[1], Locale.GERMAN);
+            s50 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[1], Locale.GERMAN);
         }
         if (this.result.getSystematicErrors()[2] < 0.01 && this.result.getSystematicErrors()[2] > -0.01){
-            s95 = Converter.roundingDouble3(this.result.getSystematicErrors()[2], Locale.GERMAN);
+            s95 = VariableConverter.roundingDouble3(this.result.getSystematicErrors()[2], Locale.GERMAN);
         }else {
-            s95 = Converter.roundingDouble2(this.result.getSystematicErrors()[2], Locale.GERMAN);
+            s95 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[2], Locale.GERMAN);
         }
         cell(27,33).setCellValue(s5);
         cell(28,33).setCellValue(s50);
@@ -325,7 +326,7 @@ public class MKMX_5300_02_18 implements Certificate {
             alarm = this.values.getStringValue(Value.CALCULATION_CLOSE_TO_FALSE);
             cell(36, 22).setCellValue(alarm);
         } else if (this.alarmCheck) {
-            alarm = Strings.ALARM_MESSAGE + Converter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
+            alarm = Strings.ALARM_MESSAGE + VariableConverter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
             cell(36, 22).setCellValue(alarm);
         }
     }
@@ -420,7 +421,7 @@ public class MKMX_5300_02_18 implements Certificate {
         String fileName = "№"
                 + this.numberOfCertificate
                 + " ("
-                + Converter.dateToString(this.checkDate)
+                + VariableConverter.dateToString(this.checkDate)
                 + ").xls";
         this.certificateFile = Files.certificateFile(fileName);
         try {

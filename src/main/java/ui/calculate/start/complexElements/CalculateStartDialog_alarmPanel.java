@@ -1,6 +1,6 @@
 package ui.calculate.start.complexElements;
 
-import support.Converter;
+import converters.VariableConverter;
 import support.Channel;
 import constants.Strings;
 import ui.UI_Container;
@@ -71,7 +71,7 @@ public class CalculateStartDialog_alarmPanel extends JPanel implements UI_Contai
         if (this.value.getText().length()==0 || this.value.getText().equals("-")){
             this.value.setText("0.00");
         }else{
-            String check = Converter.doubleString(this.value.getText());
+            String check = VariableConverter.doubleString(this.value.getText());
             double d = Double.parseDouble(check);
             this.value.setText(String.format(Locale.ENGLISH, "%.2f", d));
         }

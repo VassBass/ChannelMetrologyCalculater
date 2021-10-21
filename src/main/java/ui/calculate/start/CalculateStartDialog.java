@@ -2,8 +2,8 @@ package ui.calculate.start;
 
 import constants.CalibratorType;
 import constants.Value;
-import support.Converter;
 import calibrators.Calibrator;
+import converters.ConverterUI;
 import measurements.Measurement;
 import support.Channel;
 import support.Lists;
@@ -276,7 +276,7 @@ public class CalculateStartDialog extends JDialog implements UI_Container {
             }else {
                 current.setSize(820,300);
             }
-            current.setLocation(Converter.POINT_CENTER(mainScreen, current));
+            current.setLocation(ConverterUI.POINT_CENTER(mainScreen, current));
         }
 
         private class Cell extends GridBagConstraints {

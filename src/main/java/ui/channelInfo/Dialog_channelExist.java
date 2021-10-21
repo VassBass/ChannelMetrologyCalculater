@@ -1,6 +1,6 @@
 package ui.channelInfo;
 
-import support.Converter;
+import converters.ConverterUI;
 import ui.UI_Container;
 
 import javax.swing.*;
@@ -46,7 +46,7 @@ public class Dialog_channelExist extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(500, 60);
-        this.setLocation(Converter.POINT_CENTER(parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(parent, this));
         this.setResizable(false);
         this.setAlwaysOnTop(true);
 

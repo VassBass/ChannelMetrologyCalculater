@@ -2,7 +2,7 @@ package ui.pathLists;
 
 import backgroundTasks.PutPathElementInList;
 import constants.Strings;
-import support.Converter;
+import converters.ConverterUI;
 import ui.UI_Container;
 
 import javax.swing.*;
@@ -68,7 +68,7 @@ public class PathElementName extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(230,100);
-        this.setLocation(Converter.POINT_CENTER(parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(parent, this));
 
         this.setContentPane(new MainPanel());
     }

@@ -1,7 +1,8 @@
 package ui.channelInfo.complexElements;
 
 import constants.MeasurementConstants;
-import support.Converter;
+import converters.ErrorConverter;
+import converters.VariableConverter;
 import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
@@ -56,7 +57,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
 
     public void update(double range) {
         double errorPercent = Double.parseDouble(this.errorPercent.getText());
-        double error = Converter.getErrorFrom(errorPercent, true, range);
+        double error = ErrorConverter.getErrorFrom(errorPercent, true, range);
         String errorString;
         if (range < 10D){
             errorString = String.format(Locale.ENGLISH,"%.3f", error);
@@ -77,9 +78,9 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
         if (inPercent){
             errorPercent = String.format(Locale.ENGLISH, "%.2f", error);
             if (range < 10D){
-                errorValue = String.format(Locale.ENGLISH, "%.3f", Converter.getErrorFrom(error, true, range));
+                errorValue = String.format(Locale.ENGLISH, "%.3f", ErrorConverter.getErrorFrom(error, true, range));
             }else {
-                errorValue = String.format(Locale.ENGLISH, "%.2f", Converter.getErrorFrom(error, true, range));
+                errorValue = String.format(Locale.ENGLISH, "%.2f", ErrorConverter.getErrorFrom(error, true, range));
             }
         }else {
             if (range < 10D){
@@ -87,7 +88,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
             }else {
                 errorValue = String.format(Locale.ENGLISH, "%.2f", error);
             }
-            errorPercent = String.format(Locale.ENGLISH, "%.2f", Converter.getErrorFrom(error, false, range));
+            errorPercent = String.format(Locale.ENGLISH, "%.2f", ErrorConverter.getErrorFrom(error, false, range));
         }
         this.errorPercent.setText(errorPercent);
         this.errorValue.setText(errorValue);
@@ -105,7 +106,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
             JTextField item = (JTextField) e.getSource();
             double range = parent.rangePanel.getRange();
             if (item.getText().length() > 0) {
-                String text = Converter.doubleString(item.getText());
+                String text = VariableConverter.doubleString(item.getText());
                 item.setText(text);
             }else {
                 item.setText("0.00");
@@ -113,7 +114,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
             String errorString;
             if (item.equals(errorPercent)) {
                 double errorPercent = Double.parseDouble(item.getText());
-                double error = Converter.getErrorFrom(errorPercent, true, range);
+                double error = ErrorConverter.getErrorFrom(errorPercent, true, range);
                 if (range < 10D) {
                     errorString = String.format(Locale.ENGLISH, "%.3f", error);
                 } else {
@@ -122,7 +123,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
                 errorValue.setText(errorString);
             }else if (item.equals((errorValue))){
                 double error = Double.parseDouble(item.getText());
-                double errorPercentD = Converter.getErrorFrom(error, false, range);
+                double errorPercentD = ErrorConverter.getErrorFrom(error, false, range);
                 errorString = String.format(Locale.ENGLISH, "%.2f", errorPercentD);
                 errorPercent.setText(errorString);
             }

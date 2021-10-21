@@ -3,7 +3,7 @@ package ui.calculate.measurement;
 import backgroundTasks.CalculateChannel;
 import calibrators.Calibrator;
 import constants.Value;
-import support.Converter;
+import converters.ConverterUI;
 import support.Channel;
 import constants.Strings;
 import support.Values;
@@ -102,7 +102,7 @@ public class CalculateMeasurementDialog extends JDialog implements UI_Container 
     @Override
     public void build() {
         this.setSize(670,400);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }

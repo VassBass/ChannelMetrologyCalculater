@@ -1,7 +1,7 @@
 package ui;
 
-import support.Converter;
 import constants.Strings;
+import converters.ConverterUI;
 import ui.main.MainScreen;
 
 import javax.swing.*;
@@ -26,7 +26,7 @@ public class LoadDialog extends JDialog implements UI_Container {
     public LoadDialog(Container parent){
         super();
         this.parent = parent;
-        this.setLocation(Converter.POINT_CENTER(parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(parent, this));
 
         this.createElements();
         this.setReactions();
@@ -52,7 +52,7 @@ public class LoadDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(300, 60);
-        this.setLocation(Converter.POINT_CENTER(MainScreen.sizeOfMainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.sizeOfMainScreen, this));
         this.setResizable(false);
         this.setAlwaysOnTop(true);
 

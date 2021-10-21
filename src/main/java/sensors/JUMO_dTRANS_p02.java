@@ -2,7 +2,6 @@ package sensors;
 
 import constants.MeasurementConstants;
 import constants.SensorType;
-import support.Channel;
 
 public class JUMO_dTRANS_p02 extends Sensor {
 

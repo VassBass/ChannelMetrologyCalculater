@@ -1,7 +1,7 @@
 package ui.searchChannel.complexElements;
 
-import support.Converter;
 import constants.ChannelConstants;
+import converters.VariableConverter;
 import support.Channel;
 import support.Lists;
 import ui.searchChannel.DialogSearch;
@@ -156,7 +156,7 @@ public class DialogSearch_searchPanel extends JPanel {
                 return channel.getFullPath();
             case THIS_DATE:
             case NEXT_DATE:
-                return Converter.dateToString(this.datePanel.getDate());
+                return VariableConverter.dateToString(this.datePanel.getDate());
             default:
                 return null;
         }

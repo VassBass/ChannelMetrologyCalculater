@@ -2,8 +2,8 @@ package ui.calculate.end;
 
 import backgroundTasks.CertificateFormation;
 import calculation.Calculation;
-import support.Converter;
 import certificates.Certificate;
+import converters.ConverterUI;
 import support.Channel;
 import support.Lists;
 import constants.Strings;
@@ -105,7 +105,7 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(400,180);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel(this.certificate.getCertificateFile().exists()));
     }

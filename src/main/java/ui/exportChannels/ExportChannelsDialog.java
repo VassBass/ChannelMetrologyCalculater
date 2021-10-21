@@ -1,8 +1,8 @@
 package ui.exportChannels;
 
 import backgroundTasks.ExportChannels;
-import support.Converter;
 import constants.Files;
+import converters.ConverterUI;
 import support.Lists;
 import constants.Strings;
 import ui.UI_Container;
@@ -73,7 +73,7 @@ public class ExportChannelsDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(300,200);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }

@@ -2,7 +2,7 @@ package ui.channelInfo;
 
 import backgroundTasks.PutChannelInList;
 import constants.MeasurementConstants;
-import support.Converter;
+import converters.ConverterUI;
 import measurements.Measurement;
 import sensors.Sensor;
 import support.Channel;
@@ -153,7 +153,7 @@ public class DialogChannel extends JDialog implements UI_Container {
 
         }
 
-        this.setLocation(Converter.POINT_CENTER(this.parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         this.setContentPane(new MainPanel());
     }
 
@@ -236,7 +236,7 @@ public class DialogChannel extends JDialog implements UI_Container {
                 this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
                 break;
         }
-        this.setLocation(Converter.POINT_CENTER(this.parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         this.setContentPane(new MainPanel());
     }
 

@@ -2,7 +2,7 @@ package ui.pathLists;
 
 import backgroundTasks.RemovePathElements;
 import constants.Strings;
-import support.Converter;
+import converters.ConverterUI;
 import support.Lists;
 import ui.UI_Container;
 
@@ -99,7 +99,7 @@ public class PathElementsRemove extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(400,100);
-        this.setLocation(Converter.POINT_CENTER(this.parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }
@@ -142,7 +142,7 @@ public class PathElementsRemove extends JDialog implements UI_Container {
             dispose();
             if (elementName == null){
                 try {
-                    new RemovePathElements(parent, elementType, elementList.getSelectedItem().toString()).execute();
+                    new RemovePathElements(parent, elementType, Objects.requireNonNull(elementList.getSelectedItem()).toString()).execute();
                 }catch (NullPointerException ignored){}
             }else {
                 new RemovePathElements(parent, elementType, elementName).execute();

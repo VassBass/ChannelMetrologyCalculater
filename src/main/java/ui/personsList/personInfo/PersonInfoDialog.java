@@ -1,8 +1,8 @@
 package ui.personsList.personInfo;
 
 import backgroundTasks.PutPersonInList;
-import support.Converter;
 import constants.Strings;
+import converters.ConverterUI;
 import ui.UI_Container;
 import ui.personsList.PersonsListDialog;
 import ui.personsList.personInfo.complexElements.PersonInfoPanel;
@@ -70,7 +70,7 @@ public class PersonInfoDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(500,300);
-        this.setLocation(Converter.POINT_CENTER(this.parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }

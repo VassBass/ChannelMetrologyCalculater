@@ -2,7 +2,6 @@ package sensors;
 
 import constants.MeasurementConstants;
 import constants.SensorType;
-import support.Channel;
 
 public class Fisher_Rosemount_3051S extends Sensor {
 

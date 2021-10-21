@@ -1,8 +1,8 @@
 package ui.personsList.personInfo.removePerson;
 
 import backgroundTasks.RemovePerson;
-import support.Converter;
 import constants.Strings;
+import converters.ConverterUI;
 import ui.UI_Container;
 import ui.personsList.PersonsListDialog;
 import workers.Worker;
@@ -78,7 +78,7 @@ public class RemovePersonDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(700,150);
-        this.setLocation(Converter.POINT_CENTER(this.parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }

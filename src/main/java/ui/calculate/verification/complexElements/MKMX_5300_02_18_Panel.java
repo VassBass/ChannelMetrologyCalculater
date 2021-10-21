@@ -4,8 +4,9 @@ import calculation.Calculation;
 import constants.CalibratorType;
 import constants.MeasurementConstants;
 import constants.Value;
-import support.Converter;
 import calibrators.Calibrator;
+import converters.PressureConverter;
+import converters.VariableConverter;
 import support.Channel;
 import constants.Strings;
 import support.Values;
@@ -138,7 +139,7 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
 
         this.channelName.setText(this.channel.getName());
         this.number.setText(this.values.getStringValue(Value.CHANNEL_PROTOCOL_NUMBER));
-        this.date.setText(Converter.dateToString((Calendar) values.getValue(Value.CHANNEL_DATE)));
+        this.date.setText(VariableConverter.dateToString((Calendar) values.getValue(Value.CHANNEL_DATE)));
 
         String path = this.channel.getArea()
                 + " "
@@ -149,18 +150,18 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
         this.code.setText(this.channel.getCode());
 
         String rangeChannel = "Від "
-                + Converter.roundingDouble(this.channel.getRangeMin(), Locale.GERMAN)
+                + VariableConverter.roundingDouble(this.channel.getRangeMin(), Locale.GERMAN)
                 + " до "
-                + Converter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN)
+                + VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN)
                 + " "
                 + this.channel.getMeasurement().getValue();
         this.rangeChannel.setText(rangeChannel);
 
         String allowableErrorChannel = Strings.PLUS_MINUS
-                + Converter.roundingDouble(this.channel.getAllowableErrorPercent(), Locale.GERMAN)
+                + VariableConverter.roundingDouble(this.channel.getAllowableErrorPercent(), Locale.GERMAN)
                 + "% або "
                 + Strings.PLUS_MINUS
-                + Converter.roundingDouble3(this.channel.getAllowableError(), Locale.GERMAN)
+                + VariableConverter.roundingDouble3(this.channel.getAllowableError(), Locale.GERMAN)
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorChannel.setText(allowableErrorChannel);
 
@@ -168,16 +169,16 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
 
         String errorSensorPercent;
         if (this.calculation.getErrorSensor()[1] < 0.01){
-            errorSensorPercent = Converter.roundingDouble3(this.calculation.getErrorSensor()[1], Locale.GERMAN);
+            errorSensorPercent = VariableConverter.roundingDouble3(this.calculation.getErrorSensor()[1], Locale.GERMAN);
         }else {
-            errorSensorPercent = Converter.roundingDouble2(this.calculation.getErrorSensor()[1], Locale.GERMAN);
+            errorSensorPercent = VariableConverter.roundingDouble2(this.calculation.getErrorSensor()[1], Locale.GERMAN);
         }
 
         String errorSensorValue;
         if (this.calculation.getErrorSensor()[0] < 0.01){
-            errorSensorValue = Converter.roundingDouble3(this.calculation.getErrorSensor()[0], Locale.GERMAN);
+            errorSensorValue = VariableConverter.roundingDouble3(this.calculation.getErrorSensor()[0], Locale.GERMAN);
         }else {
-            errorSensorValue = Converter.roundingDouble2(this.calculation.getErrorSensor()[0], Locale.GERMAN);
+            errorSensorValue = VariableConverter.roundingDouble2(this.calculation.getErrorSensor()[0], Locale.GERMAN);
         }
         String allowableErrorSensor = Strings.PLUS_MINUS
                 + errorSensorPercent
@@ -188,9 +189,9 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
         String rangeSensor = "Від "
-                + Converter.roundingDouble(this.channel.getSensor().getRangeMin(), Locale.GERMAN)
+                + VariableConverter.roundingDouble(this.channel.getSensor().getRangeMin(), Locale.GERMAN)
                 + " до "
-                + Converter.roundingDouble(this.channel.getSensor().getRangeMax(), Locale.GERMAN)
+                + VariableConverter.roundingDouble(this.channel.getSensor().getRangeMax(), Locale.GERMAN)
                 + " "
                 + this.channel.getSensor().getValue();
         this.rangeSensor.setText(rangeSensor);
@@ -208,19 +209,19 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
 
         String certificateCalibrator = calibrator.getCertificate().getName()
                 + " від "
-                + Converter.dateToString(calibrator.getCertificate().getDate())
+                + VariableConverter.dateToString(calibrator.getCertificate().getDate())
                 + "р. "
                 + calibrator.getCertificate().getCompany();
         this.calibratorCertificate.setText(certificateCalibrator);
 
         String error;
         if (this.calculation.getErrorCalibrator()[0] < 0.01){
-            error = Converter.roundingDouble3(this.calculation.getErrorCalibrator()[0], Locale.GERMAN);
+            error = VariableConverter.roundingDouble3(this.calculation.getErrorCalibrator()[0], Locale.GERMAN);
         }else {
-            error = Converter.roundingDouble2(this.calculation.getErrorCalibrator()[0], Locale.GERMAN);
+            error = VariableConverter.roundingDouble2(this.calculation.getErrorCalibrator()[0], Locale.GERMAN);
         }
         String allowableErrorCalibrator = Strings.PLUS_MINUS
-                + Converter.roundingDouble(this.calculation.getErrorCalibrator()[1], Locale.GERMAN)
+                + VariableConverter.roundingDouble(this.calculation.getErrorCalibrator()[1], Locale.GERMAN)
                 + "% або "
                 + Strings.PLUS_MINUS
                 + error
@@ -374,23 +375,23 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
                     Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
                     double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
                     if (calibrator.getName() == CalibratorType.FLUKE718_30G) {
-                        double maxCalibratorPower = new Converter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
+                        double maxCalibratorPower = new PressureConverter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
                         if (value5 < maxCalibratorPower){
-                            cells[x] = new ButtonCell(false, Converter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
+                            cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
                         }else {
-                            cells[x] = new ButtonCell(false, Converter.roundingDouble2(value5, Locale.GERMAN));
+                            cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value5, Locale.GERMAN));
                         }
                     }else {
-                        cells[x] = new ButtonCell(false, Converter.roundingDouble2(value5, Locale.GERMAN));
+                        cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value5, Locale.GERMAN));
                     }
                     this.add(cells[x], new Cell(3,2,1,2));
                 }else if (x == 10) {
                     double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
-                    cells[x] = new ButtonCell(false, Converter.roundingDouble2(value50, Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value50, Locale.GERMAN));
                     this.add(cells[x], new Cell(3,4,1,2));
                 }else if (x == 11) {
                     double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
-                    cells[x] = new ButtonCell(false, Converter.roundingDouble2(value95, Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value95, Locale.GERMAN));
                     this.add(cells[x], new Cell(3,6,1,2));
                 }else if (x == 12){
                     cells[x] = new ButtonCell(false, "Отримані значення, Хі");
@@ -401,23 +402,23 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
                     this.add(cells[x], new Cell(index + 3, 1, 1, 1));
                 }else if (x < 24){
                     index = x - 17;
-                    cells[x] = new ButtonCell(false, Converter.roundingDouble3(calculation.getIn()[0][index], Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[0][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(4, index + 1, 1, 1));
                 }else if (x < 30){
                     index = x - 23;
-                    cells[x] = new ButtonCell(false, Converter.roundingDouble3(calculation.getIn()[1][index], Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[1][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(5, index + 1, 1, 1));
                 }else if (x < 36){
                     index = x - 29;
-                    cells[x] = new ButtonCell(false, Converter.roundingDouble3(calculation.getIn()[2][index], Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[2][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(6, index + 1, 1, 1));
                 }else if (x < 42){
                     index = x - 35;
-                    cells[x] = new ButtonCell(false, Converter.roundingDouble3(calculation.getIn()[3][index], Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[3][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(7, index + 1, 1, 1));
                 }else {
                     index = x -41;
-                    cells[x] = new ButtonCell(false, Converter.roundingDouble3(calculation.getIn()[4][index], Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[4][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(8, index + 1, 1, 1));
                 }
             }
@@ -444,9 +445,9 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
 
             String u;
             if (calculation.getExtendedIndeterminacy() < 0.01 && calculation.getExtendedIndeterminacy() > -0.01){
-                u  = Converter.roundingDouble3(calculation.getExtendedIndeterminacy(), Locale.GERMAN);
+                u  = VariableConverter.roundingDouble3(calculation.getExtendedIndeterminacy(), Locale.GERMAN);
             }else {
-                u  = Converter.roundingDouble2(calculation.getExtendedIndeterminacy(), Locale.GERMAN);
+                u  = VariableConverter.roundingDouble2(calculation.getExtendedIndeterminacy(), Locale.GERMAN);
             }
             cells[6].setText("U = "
                     + Strings.PLUS_MINUS
@@ -455,9 +456,9 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
 
             String gamma;
             if (calculation.getErrorInRange() < 0.01 && calculation.getErrorInRange() > -0.01){
-                gamma  = Converter.roundingDouble3(calculation.getErrorInRange(), Locale.GERMAN);
+                gamma  = VariableConverter.roundingDouble3(calculation.getErrorInRange(), Locale.GERMAN);
             }else {
-                gamma  = Converter.roundingDouble2(calculation.getErrorInRange(), Locale.GERMAN);
+                gamma  = VariableConverter.roundingDouble2(calculation.getErrorInRange(), Locale.GERMAN);
             }
             cells[7].setText(Strings.GAMMA
                     + " вк = "
@@ -467,9 +468,9 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
 
             String delta;
             if (calculation.getAbsoluteErrorWithSensorError() < 0.01 && calculation.getAbsoluteErrorWithSensorError() > -0.01){
-                delta  = Converter.roundingDouble3(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
+                delta  = VariableConverter.roundingDouble3(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
             }else {
-                delta  = Converter.roundingDouble2(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
+                delta  = VariableConverter.roundingDouble2(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
             }
             cells[8].setText(Strings.DELTA
                     + " вк = "
@@ -485,46 +486,46 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
                 s5 = "5% "
                         + Strings.DELTA
                         + "s = "
-                        + Converter.roundingDouble3(calculation.getSystematicErrors()[0], Locale.GERMAN)
+                        + VariableConverter.roundingDouble3(calculation.getSystematicErrors()[0], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
             }else {
                 s5 = "5% "
                         + Strings.DELTA
                         + "s = "
-                        + Converter.roundingDouble2(calculation.getSystematicErrors()[0], Locale.GERMAN)
+                        + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[0], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
             }
             if (calculation.getSystematicErrors()[1] < 0.01 && calculation.getSystematicErrors()[1] > -0.01){
                 s50 = "50% "
                         + Strings.DELTA
                         + "s = "
-                        + Converter.roundingDouble3(calculation.getSystematicErrors()[1], Locale.GERMAN)
+                        + VariableConverter.roundingDouble3(calculation.getSystematicErrors()[1], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
             }else {
                 s50 = "50% "
                         + Strings.DELTA
                         + "s = "
-                        + Converter.roundingDouble2(calculation.getSystematicErrors()[1], Locale.GERMAN)
+                        + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[1], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
             }
             if (calculation.getSystematicErrors()[2] < 0.01 && calculation.getSystematicErrors()[2] > -0.01){
                 s95 = "95% "
                         + Strings.DELTA
                         + "s = "
-                        + Converter.roundingDouble3(calculation.getSystematicErrors()[2], Locale.GERMAN)
+                        + VariableConverter.roundingDouble3(calculation.getSystematicErrors()[2], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
             }else {
                 s95 = "95% "
                         + Strings.DELTA
                         + "s = "
-                        + Converter.roundingDouble2(calculation.getSystematicErrors()[2], Locale.GERMAN)
+                        + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[2], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
             }
             cells[9].setText(s5);
             cells[10].setText(s50);
             cells[11].setText(s95);
             cells[12].setText("Міжконтрольний інтервал");
-            cells[13].setText(Converter.roundingDouble(channel.getFrequency(), Locale.GERMAN)
+            cells[13].setText(VariableConverter.roundingDouble(channel.getFrequency(), Locale.GERMAN)
                     + Strings.YEAR_WORD(channel.getFrequency()));
 
             this.add(cells[0], new Cell(0, 0, 1, 1));

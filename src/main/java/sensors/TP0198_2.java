@@ -2,7 +2,6 @@ package sensors;
 
 import constants.MeasurementConstants;
 import constants.SensorType;
-import support.Channel;
 
 public class TP0198_2 extends Sensor {
 

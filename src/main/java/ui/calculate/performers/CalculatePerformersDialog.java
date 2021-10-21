@@ -3,7 +3,7 @@ package ui.calculate.performers;
 import backgroundTasks.CertificateFormation;
 import calculation.Calculation;
 import constants.Value;
-import support.Converter;
+import converters.ConverterUI;
 import support.Channel;
 import support.Lists;
 import constants.Strings;
@@ -135,7 +135,7 @@ public class CalculatePerformersDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(600,350);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }

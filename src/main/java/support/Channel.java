@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import converters.VariableConverter;
 import measurements.Measurement;
 import sensors.Sensor;
 
@@ -145,7 +146,7 @@ public class Channel implements Serializable {
                     && channel.getArea().equals(this.area)
                     && channel.getProcess().equals(this.process)
                     && channel.getInstallation().equals(this.installation)
-                    && Converter.dateToString(channel.getDate()).equals(Converter.dateToString(this.date))
+                    && VariableConverter.dateToString(channel.getDate()).equals(VariableConverter.dateToString(this.date))
                     && channel.getFrequency() == this.frequency
                     && channel.getTechnologyNumber().equals(this.numberT)
                     && channel.getSensor().equals(this.sensor)

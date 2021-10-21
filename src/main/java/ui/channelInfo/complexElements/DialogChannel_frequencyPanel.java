@@ -1,7 +1,7 @@
 package ui.channelInfo.complexElements;
 
-import support.Converter;
 import constants.Strings;
+import converters.VariableConverter;
 import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
@@ -50,7 +50,7 @@ public class DialogChannel_frequencyPanel extends JPanel implements UI_Container
     }
 
     public void update(double frequency, Calendar date) {
-        String frequencyString = Converter.roundingDouble2(frequency, Locale.ENGLISH);
+        String frequencyString = VariableConverter.roundingDouble2(frequency, Locale.ENGLISH);
         this.frequency.setText(frequencyString);
         if (date == null){
             this.setNextDate(this.parent.datePanel.getDate());
@@ -76,7 +76,7 @@ public class DialogChannel_frequencyPanel extends JPanel implements UI_Container
                 frequency.setText("1.00");
             }
             String forCheck = frequency.getText();
-            String afterCheck = Converter.doubleString(forCheck);
+            String afterCheck = VariableConverter.doubleString(forCheck);
             if (afterCheck.equals("0.00")) {
                 frequency.setText("1.00");
             }else {
@@ -90,7 +90,7 @@ public class DialogChannel_frequencyPanel extends JPanel implements UI_Container
     private void setNextDate(Calendar date){
         Calendar nextDate = new GregorianCalendar();
         nextDate.setTimeInMillis(date.getTimeInMillis() + ((long) (31536000000L * Double.parseDouble(this.frequency.getText()))));
-        this.nextDate.setText(Converter.dateToString(nextDate));
+        this.nextDate.setText(VariableConverter.dateToString(nextDate));
     }
 
     public double getFrequency(){

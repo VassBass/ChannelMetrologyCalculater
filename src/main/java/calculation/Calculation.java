@@ -2,8 +2,8 @@ package calculation;
 
 import constants.CalibratorType;
 import constants.MeasurementConstants;
-import support.Converter;
 import calibrators.Calibrator;
+import converters.PressureConverter;
 import org.apache.commons.lang3.math.NumberUtils;
 import sensors.*;
 import support.Channel;
@@ -115,7 +115,7 @@ public class Calculation {
 
     public void setCalibrator(Calibrator calibrator){
         if (calibrator.getName() == CalibratorType.FLUKE718_30G){
-            this.maxCalibratorPower = new Converter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+            this.maxCalibratorPower = new PressureConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
         }
         this.calibrator = calibrator;
     }
@@ -241,7 +241,7 @@ public class Calculation {
                     }
 
                     double dSensor_notConverted = this.getRangeSensor();
-                    double dSensor = new Converter(MeasurementConstants.getConstantFromString(this.channel.getSensor().getValue()),
+                    double dSensor = new PressureConverter(MeasurementConstants.getConstantFromString(this.channel.getSensor().getValue()),
                             this.channel.getMeasurement().getValueConstant()).get(dSensor_notConverted);
                     this.errorSensor[0] = (dSensor / 100) * this.errorSensor[1];
 
@@ -287,7 +287,7 @@ public class Calculation {
                             break;
                     }
 
-                    double dCalibrator = new Converter(MeasurementConstants.getConstantFromString(this.calibrator.getValue()),
+                    double dCalibrator = new PressureConverter(MeasurementConstants.getConstantFromString(this.calibrator.getValue()),
                             this.channel.getMeasurement().getValueConstant()).get(this.calibrator.getRange());
                     this.errorCalibrator[0] = (dCalibrator / 100) * this.errorCalibrator[1];
 

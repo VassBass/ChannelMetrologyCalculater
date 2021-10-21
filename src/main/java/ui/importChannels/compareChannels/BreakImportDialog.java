@@ -1,7 +1,7 @@
 package ui.importChannels.compareChannels;
 
-import support.Converter;
 import constants.Strings;
+import converters.ConverterUI;
 import ui.UI_Container;
 import ui.main.MainScreen;
 
@@ -60,7 +60,7 @@ public class BreakImportDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(250, 60);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.content.add(this.positiveButton);
         this.content.add(this.negativeButton);

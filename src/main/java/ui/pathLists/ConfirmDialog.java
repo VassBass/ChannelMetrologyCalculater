@@ -2,7 +2,7 @@ package ui.pathLists;
 
 import backgroundTasks.RemovePathElements;
 import constants.Strings;
-import support.Converter;
+import converters.ConverterUI;
 import ui.UI_Container;
 
 import javax.swing.*;
@@ -92,7 +92,7 @@ public class ConfirmDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(450,100);
-        this.setLocation(Converter.POINT_CENTER(dialog,this));
+        this.setLocation(ConverterUI.POINT_CENTER(dialog,this));
 
         this.setContentPane(new MainPanel());
     }

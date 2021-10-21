@@ -2,7 +2,8 @@ package ui.calculate.reference;
 
 import calculation.Calculation;
 import constants.Value;
-import support.Converter;
+import converters.ConverterUI;
+import converters.VariableConverter;
 import support.Channel;
 import constants.Strings;
 import support.Values;
@@ -84,7 +85,7 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(600,200);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
@@ -97,7 +98,7 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
 
         @Override
         public void focusLost(FocusEvent e) {
-            String s = Converter.intString(number.getText());
+            String s = VariableConverter.intString(number.getText());
             number.setText(s);
         }
     };
@@ -105,19 +106,19 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
     private final DocumentListener changeNumber = new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
-            String s = Converter.intString(number.getText());
+            String s = VariableConverter.intString(number.getText());
             buttonNext.setEnabled(Integer.parseInt(s) != 0);
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-            String s = Converter.intString(number.getText());
+            String s = VariableConverter.intString(number.getText());
             buttonNext.setEnabled(Integer.parseInt(s) != 0);
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
-            String s = Converter.intString(number.getText());
+            String s = VariableConverter.intString(number.getText());
             buttonNext.setEnabled(Integer.parseInt(s) != 0);
         }
     };

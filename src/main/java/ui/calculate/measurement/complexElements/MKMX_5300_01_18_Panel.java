@@ -1,6 +1,6 @@
 package ui.calculate.measurement.complexElements;
 
-import support.Converter;
+import converters.VariableConverter;
 import support.Channel;
 import ui.ButtonCell;
 import ui.UI_Container;
@@ -189,7 +189,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
                     }
                 }
             }else{
-                String check = Converter.doubleString(cell.getText());
+                String check = VariableConverter.doubleString(cell.getText());
                 double d = Double.parseDouble(check);
                 cell.setText(String.format(Locale.ENGLISH, "%.2f", d));
             }

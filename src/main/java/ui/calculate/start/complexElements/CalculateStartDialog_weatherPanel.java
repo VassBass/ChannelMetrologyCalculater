@@ -1,8 +1,8 @@
 package ui.calculate.start.complexElements;
 
 import constants.MeasurementConstants;
-import support.Converter;
 import constants.Strings;
+import converters.VariableConverter;
 import ui.ButtonCell;
 import ui.UI_Container;
 
@@ -85,7 +85,7 @@ public class CalculateStartDialog_weatherPanel extends JPanel implements UI_Cont
         @Override
         public void focusLost(FocusEvent e){
             if (temperature.getText().length()>0){
-                String check = Converter.intString(temperature.getText());
+                String check = VariableConverter.intString(temperature.getText());
                 temperature.setText(check);
             }else{
                 temperature.setText("21");
@@ -102,7 +102,7 @@ public class CalculateStartDialog_weatherPanel extends JPanel implements UI_Cont
         @Override
         public void focusLost(FocusEvent e){
             if (humidity.getText().length()>0){
-                String check = Converter.intString(humidity.getText());
+                String check = VariableConverter.intString(humidity.getText());
                 humidity.setText(check);
             }else{
                 humidity.setText("70");
@@ -119,7 +119,7 @@ public class CalculateStartDialog_weatherPanel extends JPanel implements UI_Cont
         @Override
         public void focusLost(FocusEvent e){
             if (pressure.getText().length()>0){
-                String check = Converter.intString(pressure.getText());
+                String check = VariableConverter.intString(pressure.getText());
                 pressure.setText(check);
             }else{
                 pressure.setText("750");

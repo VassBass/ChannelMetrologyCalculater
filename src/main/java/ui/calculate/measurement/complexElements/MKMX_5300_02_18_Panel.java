@@ -3,7 +3,8 @@ package ui.calculate.measurement.complexElements;
 import calibrators.Calibrator;
 import constants.CalibratorType;
 import constants.MeasurementConstants;
-import support.Converter;
+import converters.PressureConverter;
+import converters.VariableConverter;
 import support.Channel;
 import ui.ButtonCell;
 import ui.UI_Container;
@@ -59,7 +60,7 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container, Measu
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double maxCalibratorPower = new Converter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+        double maxCalibratorPower = new PressureConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
 
         double value0 = this.channel.getRangeMin();
         double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
@@ -70,18 +71,18 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container, Measu
         if (this.calibrator.getName() == CalibratorType.FLUKE718_30G && value0 < maxCalibratorPower) {
             if (value5 <= maxCalibratorPower) {
                 this.labelValue[0] = new ButtonCell(false, " - ");
-                this.labelValue[1] = new ButtonCell(false, Converter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
+                this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
             }else {
-                this.labelValue[0] = new ButtonCell(false, Converter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
-                this.labelValue[1] = new ButtonCell(false, Converter.roundingDouble3(value5, Locale.ENGLISH) + value);
+                this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
+                this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(value5, Locale.ENGLISH) + value);
             }
         }else {
-            this.labelValue[0] = new ButtonCell(false, Converter.roundingDouble3(value0, Locale.ENGLISH) + value);
-            this.labelValue[1] = new ButtonCell(false, Converter.roundingDouble3(value5, Locale.ENGLISH) + value);
+            this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble3(value0, Locale.ENGLISH) + value);
+            this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(value5, Locale.ENGLISH) + value);
         }
-        this.labelValue[2] = new ButtonCell(false, Converter.roundingDouble3(value50, Locale.ENGLISH) + value);
-        this.labelValue[3] = new ButtonCell(false, Converter.roundingDouble3(value95, Locale.ENGLISH) + value);
-        this.labelValue[4] = new ButtonCell(false, Converter.roundingDouble3(value100, Locale.ENGLISH) + value);
+        this.labelValue[2] = new ButtonCell(false, VariableConverter.roundingDouble3(value50, Locale.ENGLISH) + value);
+        this.labelValue[3] = new ButtonCell(false, VariableConverter.roundingDouble3(value95, Locale.ENGLISH) + value);
+        this.labelValue[4] = new ButtonCell(false, VariableConverter.roundingDouble3(value100, Locale.ENGLISH) + value);
 
         this.motions = new JButton[6];
         this.motions[0] = new ButtonCell(false, motionUp);
@@ -99,25 +100,25 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container, Measu
         }
         if (this.calibrator.getName() == CalibratorType.FLUKE718_30G && value0 < maxCalibratorPower) {
             if (value5 <= maxCalibratorPower) {
-                this.userMeasurements[0].setText(Converter.roundingDouble3(value0, Locale.ENGLISH));
+                this.userMeasurements[0].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
                 this.userMeasurements[0].setEnabled(false);
-                this.userMeasurements[1].setText(Converter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
-                this.userMeasurements[2].setText(Converter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
+                this.userMeasurements[1].setText(VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
+                this.userMeasurements[2].setText(VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
             }else {
-                this.userMeasurements[0].setText(Converter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
-                this.userMeasurements[1].setText(Converter.roundingDouble3(value5, Locale.ENGLISH));
-                this.userMeasurements[2].setText(Converter.roundingDouble3(value5, Locale.ENGLISH));
+                this.userMeasurements[0].setText(VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
+                this.userMeasurements[1].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
+                this.userMeasurements[2].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
             }
         }else {
-            this.userMeasurements[0].setText(Converter.roundingDouble3(value0, Locale.ENGLISH));
-            this.userMeasurements[1].setText(Converter.roundingDouble3(value5, Locale.ENGLISH));
-            this.userMeasurements[2].setText(Converter.roundingDouble3(value5, Locale.ENGLISH));
+            this.userMeasurements[0].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
+            this.userMeasurements[1].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
+            this.userMeasurements[2].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
         }
-        this.userMeasurements[3].setText(Converter.roundingDouble3(value50, Locale.ENGLISH));
-        this.userMeasurements[4].setText(Converter.roundingDouble3(value50, Locale.ENGLISH));
-        this.userMeasurements[5].setText(Converter.roundingDouble3(value95, Locale.ENGLISH));
-        this.userMeasurements[6].setText(Converter.roundingDouble3(value95, Locale.ENGLISH));
-        this.userMeasurements[7].setText(Converter.roundingDouble3(value100, Locale.ENGLISH));
+        this.userMeasurements[3].setText(VariableConverter.roundingDouble3(value50, Locale.ENGLISH));
+        this.userMeasurements[4].setText(VariableConverter.roundingDouble3(value50, Locale.ENGLISH));
+        this.userMeasurements[5].setText(VariableConverter.roundingDouble3(value95, Locale.ENGLISH));
+        this.userMeasurements[6].setText(VariableConverter.roundingDouble3(value95, Locale.ENGLISH));
+        this.userMeasurements[7].setText(VariableConverter.roundingDouble3(value100, Locale.ENGLISH));
     }
 
     @Override
@@ -220,9 +221,9 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container, Measu
                     }
                 }
             }else{
-                String check = Converter.doubleString(cell.getText());
+                String check = VariableConverter.doubleString(cell.getText());
                 double d = Double.parseDouble(check);
-                cell.setText(Converter.roundingDouble3(d, Locale.ENGLISH));
+                cell.setText(VariableConverter.roundingDouble3(d, Locale.ENGLISH));
             }
         }
     };

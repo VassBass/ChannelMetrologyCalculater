@@ -1,7 +1,7 @@
 package ui.removeChannels;
 
 import backgroundTasks.RemoveChannels;
-import support.Converter;
+import converters.ConverterUI;
 import support.Channel;
 import constants.Strings;
 import ui.UI_Container;
@@ -86,7 +86,7 @@ public class DialogRemoveChannels extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(800, 120);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
         this.setResizable(true);
 
         this.setContentPane(new MainPanel());

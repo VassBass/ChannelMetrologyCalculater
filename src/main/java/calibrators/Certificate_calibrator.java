@@ -1,6 +1,6 @@
 package calibrators;
 
-import support.Converter;
+import converters.VariableConverter;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -24,7 +24,7 @@ public class Certificate_calibrator implements Serializable {
     public String getFullName(){
         return this.name
                 + " від "
-                + Converter.dateToString(this.date)
+                + VariableConverter.dateToString(this.date)
                 + "р "
                 + company;
     }

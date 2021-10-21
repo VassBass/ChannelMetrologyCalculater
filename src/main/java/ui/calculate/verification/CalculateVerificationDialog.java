@@ -2,7 +2,7 @@ package ui.calculate.verification;
 
 import calculation.Calculation;
 import constants.Value;
-import support.Converter;
+import converters.ConverterUI;
 import support.Channel;
 import constants.Strings;
 import support.Values;
@@ -82,7 +82,7 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
     public void build() {
         this.setSize(850,600);
         this.setResizable(false);
-        this.setLocation(Converter.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }

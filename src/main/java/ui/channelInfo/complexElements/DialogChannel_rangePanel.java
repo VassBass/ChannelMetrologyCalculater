@@ -1,7 +1,7 @@
 package ui.channelInfo.complexElements;
 
 import constants.MeasurementConstants;
-import support.Converter;
+import converters.VariableConverter;
 import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
@@ -78,7 +78,7 @@ public class DialogChannel_rangePanel extends JPanel implements UI_Container {
                 minRange.setText("0.00");
             }
             String forCheck = minRange.getText();
-            minRange.setText(Converter.doubleString(forCheck));
+            minRange.setText(VariableConverter.doubleString(forCheck));
             double min = Double.parseDouble(minRange.getText());
             double max = Double.parseDouble(maxRange.getText());
             setTrueValues(min, max);
@@ -99,7 +99,7 @@ public class DialogChannel_rangePanel extends JPanel implements UI_Container {
                 maxRange.setText("0.00");
             }
             String forCheck = maxRange.getText();
-            maxRange.setText(Converter.doubleString(forCheck));
+            maxRange.setText(VariableConverter.doubleString(forCheck));
             double min = Double.parseDouble(minRange.getText());
             double max = Double.parseDouble(maxRange.getText());
             setTrueValues(min, max);
@@ -117,11 +117,11 @@ public class DialogChannel_rangePanel extends JPanel implements UI_Container {
 
     public void setTrueValues(double val1, double val2){
         if (val1 >= val2){
-            this.minRange.setText(Converter.roundingDouble2(val2, Locale.ENGLISH));
-            this.maxRange.setText(Converter.roundingDouble2(val1, Locale.ENGLISH));
+            this.minRange.setText(VariableConverter.roundingDouble2(val2, Locale.ENGLISH));
+            this.maxRange.setText(VariableConverter.roundingDouble2(val1, Locale.ENGLISH));
         }else {
-            this.minRange.setText(Converter.roundingDouble2(val1, Locale.ENGLISH));
-            this.maxRange.setText(Converter.roundingDouble2(val2, Locale.ENGLISH));
+            this.minRange.setText(VariableConverter.roundingDouble2(val1, Locale.ENGLISH));
+            this.maxRange.setText(VariableConverter.roundingDouble2(val2, Locale.ENGLISH));
         }
     }
 

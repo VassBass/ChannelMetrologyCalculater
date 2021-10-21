@@ -1,7 +1,7 @@
 package backgroundTasks;
 
-import support.Converter;
 import constants.ChannelConstants;
+import converters.VariableConverter;
 import support.Channel;
 import support.Lists;
 import ui.LoadDialog;
@@ -82,12 +82,12 @@ public class SearchChannels extends SwingWorker<Void, Void> {
                         }
                         break;
                     case THIS_DATE:
-                        if (Converter.dateToString(channel.getDate()).equals(this.value)) {
+                        if (VariableConverter.dateToString(channel.getDate()).equals(this.value)) {
                             this.arrayAfterSearch.add(channel);
                         }
                         break;
                     case NEXT_DATE:
-                        if (Converter.dateToString(channel.getNextDate()).equals(this.value)) {
+                        if (VariableConverter.dateToString(channel.getNextDate()).equals(this.value)) {
                             this.arrayAfterSearch.add(channel);
                         }
                         break;
