@@ -5,6 +5,7 @@ import calibrators.*;
 import java.util.ArrayList;
 
 import constants.MeasurementConstants;
+import constants.SensorType;
 import constants.WorkPositions;
 import measurements.Measurement;
 import measurements.Pressure;
@@ -21,15 +22,82 @@ public class Default {
     public static void loadSensors(){
         ArrayList<Sensor> sensors = new ArrayList<>();
 
-        sensors.add(new TCM_50M());
-        sensors.add(new TCP_100());
-        sensors.add(new TXA_2388_typeK());
-        sensors.add(new TXA_0395_typeK());
+        Sensor tcm_50m = new Sensor();
+        tcm_50m.setType(SensorType.TCM_50M);
+        tcm_50m.setName(SensorType.TCM_50M.getType());
+        tcm_50m.setRange(-50D,180D);
+        tcm_50m.setValue(MeasurementConstants.OM.getValue());
+        tcm_50m.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
+        tcm_50m.setErrorFormula("(0.005 * R) + 0.3");
+        sensors.add(tcm_50m);
+
+        Sensor tcp_100 = new Sensor();
+        tcp_100.setType(SensorType.TCP_100);
+        tcp_100.setName(SensorType.TCP_100.getType());
+        tcp_100.setRange(-50D,500D);
+        tcp_100.setValue(MeasurementConstants.OM.getValue());
+        tcp_100.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
+        tcp_100.setErrorFormula("(0.005 * R) + 0.3");
+        sensors.add(tcp_100);
+
+        Sensor txa_2388_typeK = new Sensor();
+        txa_2388_typeK.setType(SensorType.TXA_2388_typeK);
+        txa_2388_typeK.setName(SensorType.TXA_2388_typeK.getType() + " < 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
+        txa_2388_typeK.setRange(-50D,1250D);
+        txa_2388_typeK.setValue(MeasurementConstants.MV.getValue());
+        txa_2388_typeK.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
+        txa_2388_typeK.setErrorFormula("2.5");
+        sensors.add(txa_2388_typeK);
+
+        Sensor txa_2388_typeK_big = new Sensor();
+        txa_2388_typeK_big.setType(SensorType.TXA_2388_typeK);
+        txa_2388_typeK_big.setName(SensorType.TXA_2388_typeK.getType() + " > 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
+        txa_2388_typeK_big.setRange(-50D,1250D);
+        txa_2388_typeK_big.setValue(MeasurementConstants.MV.getValue());
+        txa_2388_typeK_big.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
+        txa_2388_typeK_big.setErrorFormula("0.0075 * R");
+        sensors.add(txa_2388_typeK_big);
+
+        Sensor txa_0395_typeK = new Sensor();
+        txa_0395_typeK.setType(SensorType.TXA_2388_typeK);
+        txa_0395_typeK.setName(SensorType.TXA_2388_typeK.getType() + " < 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
+        txa_0395_typeK.setRange(-50D,1250D);
+        txa_0395_typeK.setValue(MeasurementConstants.MV.getValue());
+        txa_0395_typeK.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
+        txa_0395_typeK.setErrorFormula("2.5");
+        sensors.add(txa_0395_typeK);
+
+        Sensor txa_0395_typeK_big = new Sensor();
+        txa_0395_typeK_big.setType(SensorType.TXA_0395_typeK);
+        txa_0395_typeK_big.setName(SensorType.TXA_0395_typeK.getType() + " > 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
+        txa_0395_typeK_big.setRange(-50D,1250D);
+        txa_0395_typeK_big.setValue(MeasurementConstants.MV.getValue());
+        txa_0395_typeK_big.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
+        txa_0395_typeK_big.setErrorFormula("0.0075 * R");
+        sensors.add(txa_0395_typeK_big);
+
+        Sensor tp0198_2 = new Sensor();
+        tp0198_2.setType(SensorType.TP0198_2);
+        tp0198_2.setName(SensorType.TP0198_2.getType() + " < 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
+        tp0198_2.setRange(-40D,1100D);
+        tp0198_2.setValue(MeasurementConstants.MV.getValue());
+        tp0198_2.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
+        tp0198_2.setErrorFormula("2.5");
+        sensors.add(tp0198_2);
+
+        Sensor tp0198_2_big = new Sensor();
+        tp0198_2_big.setType(SensorType.TP0198_2);
+        tp0198_2_big.setName(SensorType.TP0198_2.getType() + " > 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
+        tp0198_2_big.setRange(-40D,1100D);
+        tp0198_2_big.setValue(MeasurementConstants.MV.getValue());
+        tp0198_2_big.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
+        tp0198_2_big.setErrorFormula("0.0075 * R");
+        sensors.add(tp0198_2_big);
+
         sensors.add(new Deltabar_S());
         sensors.add(new Yokogawa());
         sensors.add(new JUMO_dTRANS_p02());
         sensors.add(new Fisher_Rosemount_3051S());
-        sensors.add(new TP0198_2());
 
         Lists.saveSensorsListToFile(sensors);
     }

@@ -27,9 +27,6 @@ public class Calculation {
      */
     private double[][] in;
 
-    private double rangeChannel = -999999999D;
-    private double rangeSensor = -999999999D;
-
     /*
      * double[error in value] [error in percent]
      */
@@ -135,13 +132,6 @@ public class Calculation {
         }
     }
 
-    public double getRangeChannel(){
-        if (this.rangeChannel == -999999999D){
-            this.rangeChannel = this.channel.getRangeMax() - this.channel.getRangeMin();
-        }
-        return this.rangeChannel;
-    }
-
     public double[][] getErrorsAbsolute() {
         if (this.errorsAbsolute == null) {
             double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
@@ -189,20 +179,12 @@ public class Calculation {
         }
     }
 
-    public double getRangeSensor(){
-        if (this.rangeSensor == -999999999D){
-            Sensor sensor = this.channel.getSensor();
-            this.rangeSensor = sensor.getRangeMax() - sensor.getRangeMin();
-        }
-        return this.rangeSensor;
-    }
-
     public double[] getErrorSensor(){
         if (this.errorSensor == null){
             this.errorSensor = new double[2];
             Sensor sensor = this.channel.getSensor();
-            double rangeChannel = this.getRangeChannel();
-            double rangeSensor = this.getRangeSensor();
+            double rangeChannel = this.channel.getRange();
+            double rangeSensor = this.channel.getSensor().getRange();
             switch (this.method){
                 case MKMX_5300_01_18:
                     switch (sensor.getType()){
@@ -240,7 +222,7 @@ public class Calculation {
                             this.errorSensor[1] = 0.2;
                     }
 
-                    double dSensor_notConverted = this.getRangeSensor();
+                    double dSensor_notConverted = this.channel.getSensor().getRange();
                     double dSensor = new PressureConverter(MeasurementConstants.getConstantFromString(this.channel.getSensor().getValue()),
                             this.channel.getMeasurement().getValueConstant()).get(dSensor_notConverted);
                     this.errorSensor[0] = (dSensor / 100) * this.errorSensor[1];
@@ -257,7 +239,7 @@ public class Calculation {
     public double[] getErrorCalibrator(){
         if (this.errorCalibrator == null){
             this.errorCalibrator = new double[2];
-            double rangeChannel = this.getRangeChannel();
+            double rangeChannel = this.channel.getRange();
             switch (this.method){
                 case MKMX_5300_01_18:
                     switch (this.calibrator.getName()){
@@ -323,7 +305,7 @@ public class Calculation {
     public double getErrorInRange(){
         if (this.errorD == -999999999D){
             double error = this.getAbsoluteErrorWithSensorError();
-            double rangeChannel = this.getRangeChannel();
+            double rangeChannel = this.channel.getRange();
             switch (this.method){
                 case MKMX_5300_01_18:
                 case MKMX_5300_02_18:
