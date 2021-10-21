@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import constants.Files;
 import measurements.Measurement;
 import sensors.Sensor;
-import workers.Worker;
 
 
 @SuppressWarnings("unchecked")

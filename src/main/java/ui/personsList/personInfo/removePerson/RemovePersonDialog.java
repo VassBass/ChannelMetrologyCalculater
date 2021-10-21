@@ -5,7 +5,7 @@ import constants.Strings;
 import converters.ConverterUI;
 import ui.UI_Container;
 import ui.personsList.PersonsListDialog;
-import workers.Worker;
+import support.Worker;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

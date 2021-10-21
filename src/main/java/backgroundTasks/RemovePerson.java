@@ -3,7 +3,7 @@ package backgroundTasks;
 import support.Lists;
 import ui.LoadDialog;
 import ui.personsList.PersonsListDialog;
-import workers.Worker;
+import support.Worker;
 
 import javax.swing.*;
 import java.awt.*;

@@ -4,7 +4,7 @@ import support.Lists;
 import constants.Strings;
 import ui.LoadDialog;
 import ui.personsList.PersonsListDialog;
-import workers.Worker;
+import support.Worker;
 
 import javax.swing.*;
 import java.awt.*;

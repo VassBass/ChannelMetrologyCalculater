@@ -5,11 +5,11 @@ import calibrators.*;
 import java.util.ArrayList;
 
 import constants.MeasurementConstants;
+import constants.WorkPositions;
 import measurements.Measurement;
 import measurements.Pressure;
 import measurements.Temperature;
 import sensors.*;
-import workers.*;
 
 public class Default {
     
@@ -169,12 +169,47 @@ public class Default {
     public static void loadPersons(){
         ArrayList<Worker>workers = new ArrayList<>();
 
-        workers.add(new Chekunov_T_M());
-        workers.add(new Fesenko_E_V());
-        workers.add(new Len_T_V());
-        workers.add(new Pohilii_O_O());
-        workers.add(new Sergienko_O_V());
-        workers.add(new Vasilev_I_S());
+        Worker chekunovTM = new Worker();
+        chekunovTM.setName("Тимофій");
+        chekunovTM.setSurname("Чекунов");
+        chekunovTM.setPatronymic("Миколайович");
+        chekunovTM.setPosition(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP);
+        workers.add(chekunovTM);
+
+        Worker fesenkoEV = new Worker();
+        fesenkoEV.setName("Євген");
+        fesenkoEV.setSurname("Фесенко");
+        fesenkoEV.setPatronymic("Вітальйович");
+        fesenkoEV.setPosition(WorkPositions.HEAD_OF_AREA + " МЗтаП");
+        workers.add(fesenkoEV);
+
+        Worker lenTV = new Worker();
+        lenTV.setName("Тетяна");
+        lenTV.setSurname("Лень");
+        lenTV.setPatronymic("Володимирівна");
+        lenTV.setPosition(WorkPositions.JUNIOR_ENGINEER);
+        workers.add(lenTV);
+
+        Worker pohiliiOO = new Worker();
+        pohiliiOO.setName("Олександр");
+        pohiliiOO.setSurname("Похилий");
+        pohiliiOO.setPatronymic("Олександрович");
+        pohiliiOO.setPosition(WorkPositions.HEAD_OF_AREA + " АСУТП");
+        workers.add(pohiliiOO);
+
+        Worker sergienkoOV = new Worker();
+        sergienkoOV.setName("Олександр");
+        sergienkoOV.setSurname("Сергієнко");
+        sergienkoOV.setPatronymic("Вікторович");
+        sergienkoOV.setPosition(WorkPositions.HEAD_OF_AREA + " АСУТП");
+        workers.add(sergienkoOV);
+
+        Worker vasilevIS = new Worker();
+        vasilevIS.setName("Ігор");
+        vasilevIS.setSurname("Васильєв");
+        vasilevIS.setPatronymic("Сергійович");
+        vasilevIS.setPosition(WorkPositions.ELECTRONIC_ENGINEER);
+        workers.add(vasilevIS);
 
         Lists.savePersonsListToFile(workers);
     }

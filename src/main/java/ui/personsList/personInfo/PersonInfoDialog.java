@@ -6,7 +6,7 @@ import converters.ConverterUI;
 import ui.UI_Container;
 import ui.personsList.PersonsListDialog;
 import ui.personsList.personInfo.complexElements.PersonInfoPanel;
-import workers.Worker;
+import support.Worker;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

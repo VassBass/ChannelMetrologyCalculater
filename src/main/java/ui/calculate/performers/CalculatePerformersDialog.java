@@ -3,6 +3,7 @@ package ui.calculate.performers;
 import backgroundTasks.CertificateFormation;
 import calculation.Calculation;
 import constants.Value;
+import constants.WorkPositions;
 import converters.ConverterUI;
 import support.Channel;
 import support.Lists;
@@ -12,7 +13,7 @@ import ui.UI_Container;
 import ui.calculate.reference.CalculateReferenceDialog;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.main.MainScreen;
-import workers.Worker;
+import support.Worker;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -72,9 +73,9 @@ public class CalculatePerformersDialog extends JDialog implements UI_Container {
         this.headsLabel = new JLabel(Strings.HEADS + ":");
         this.headsLabel.setForeground(Color.red.darker());
 
-        this.headOfMetrologyLabel = new JLabel(Worker.HEAD_OF_AREA + " МЗтаП");
-        this.headOfAreaPosition = new JLabel(Worker.HEAD_OF_AREA + " АСУТП " + this.channel.getArea());
-        this.headOfDepartmentLabel = new JLabel(Worker.HEAD_OF_DEPARTMENT_ASUTP);
+        this.headOfMetrologyLabel = new JLabel(WorkPositions.HEAD_OF_AREA + " МЗтаП");
+        this.headOfAreaPosition = new JLabel(WorkPositions.HEAD_OF_AREA + " АСУТП " + this.channel.getArea());
+        this.headOfDepartmentLabel = new JLabel(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP);
 
         this.performer1Name = new JComboBox<>(personsNames());
         this.performer1Name.setEditable(true);
@@ -156,7 +157,7 @@ public class CalculatePerformersDialog extends JDialog implements UI_Container {
         ArrayList<String>heads = new ArrayList<>();
         heads.add(Strings.EMPTY_ARRAY);
         for (Worker worker : Objects.requireNonNull(persons)){
-            if (worker.getPosition().equals(Worker.HEAD_OF_DEPARTMENT_ASUTP)){
+            if (worker.getPosition().equals(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP)){
                 heads.add(worker.getFullName());
             }
         }
