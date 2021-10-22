@@ -1,7 +1,6 @@
 package support;
 
 import constants.MeasurementConstants;
-import constants.SensorType;
 import converters.PressureConverter;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
@@ -13,7 +12,7 @@ public class Sensor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    protected SensorType type;
+    protected String type;
     protected String name = "Sensor";
     protected double rangeMin = 0D;
     protected double rangeMax = 0D;
@@ -23,7 +22,7 @@ public class Sensor implements Serializable {
     protected String errorFormula;
 
     //Setters
-    public void setType(SensorType type) {this.type = type;}
+    public void setType(String type) {this.type = type;}
     public void setName(String name){this.name = name;}
     public void setRange(double min, double max) {
         this.rangeMin = min;
@@ -37,7 +36,7 @@ public class Sensor implements Serializable {
     public void setErrorFormula(String formula){this.errorFormula = formula;}
 
     //Getters
-    public SensorType getType() {return this.type;}
+    public String getType() {return this.type;}
     public String getName(){return this.name;}
     public double getRangeMin() {return this.rangeMin;}
     public double getRangeMax() {return this.rangeMax;}

@@ -1,7 +1,6 @@
 package ui.channelInfo.complexElements;
 
 import constants.MeasurementConstants;
-import constants.SensorType;
 import support.Sensor;
 import support.Lists;
 import ui.UI_Container;
@@ -53,7 +52,7 @@ public class DialogChannel_sensorPanel extends JPanel implements UI_Container {
             if (currentMeasurement.getValue().equals(sensor.getMeasurement())) {
                 String[] sensors = this.sensorsArray(sensor.getMeasurement());
                 for (int x = 0; x < sensors.length; x++) {
-                    if (sensor.getType() == SensorType.getConstantFromString(sensors[x])) {
+                    if (sensor.getName().equals(sensors[x])) {
                         this.sensorsList.setSelectedIndex(x);
                         break;
                     }
@@ -66,7 +65,7 @@ public class DialogChannel_sensorPanel extends JPanel implements UI_Container {
         ArrayList<String> s = new ArrayList<>();
         for (int x = 0; x< Objects.requireNonNull(Lists.sensors()).size(); x++) {
             if (Objects.requireNonNull(Lists.sensors()).get(x).getMeasurement().equals(measurement)){
-                s.add(Objects.requireNonNull(Lists.sensors()).get(x).getType().getType());
+                s.add(Objects.requireNonNull(Lists.sensors()).get(x).getName());
             }
         }
         return s.toArray(new String[0]);
@@ -77,7 +76,7 @@ public class DialogChannel_sensorPanel extends JPanel implements UI_Container {
         String selectedSensor = Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString();
 
         for (Sensor sensor : Objects.requireNonNull(sensors)){
-            if (sensor.getType() == SensorType.getConstantFromString(selectedSensor)){
+            if (sensor.getName().equals(selectedSensor)){
                 return sensor;
             }
         }

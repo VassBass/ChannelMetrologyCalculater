@@ -1,7 +1,6 @@
 package backgroundTasks;
 
 import constants.MeasurementConstants;
-import constants.SensorType;
 import constants.Strings;
 import constants.Value;
 import measurements.Measurement;
@@ -101,7 +100,7 @@ public class ImportChannels extends SwingWorker<Void, Void> {
             channel.setMeasurement(measurement);
 
             Sensor sensor = new Sensor();
-            sensor.setType(SensorType.getConstantFromString(channelData.getStringValue(Value.SENSOR_TYPE)));
+            sensor.setType(Value.SENSOR_TYPE);
             ArrayList<Sensor> sensors = Lists.sensors();
             if (sensors != null) {
                 for (Sensor s : sensors) {
