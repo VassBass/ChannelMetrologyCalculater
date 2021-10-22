@@ -44,6 +44,7 @@ public class Sensor implements Serializable {
     public String getNumber(){return this.number;}
     public String getValue(){return this.value;}
     public String getMeasurement(){return this.measurement;}
+    public String getErrorFormula(){return this.errorFormula;}
 
     /*
     R - Диапазон измерения канала

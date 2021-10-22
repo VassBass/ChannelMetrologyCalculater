@@ -101,20 +101,13 @@ public class ImportChannels extends SwingWorker<Void, Void> {
 
             Sensor sensor = new Sensor();
             sensor.setType(Value.SENSOR_TYPE);
-            ArrayList<Sensor> sensors = Lists.sensors();
-            if (sensors != null) {
-                for (Sensor s : sensors) {
-                    if (s.getType().equals(sensor.getType())) {
-                        sensor = s;
-                        break;
-                    }
-                }
-            }
+            sensor.setName(Value.SENSOR_NAME);
             sensor.setRangeMin(channelData.getDoubleValue(Value.SENSOR_RANGE_MIN));
             sensor.setRangeMax(channelData.getDoubleValue(Value.SENSOR_RANGE_MAX));
             sensor.setNumber(channelData.getStringValue(Value.SENSOR_NUMBER));
             sensor.setValue(channelData.getStringValue(Value.SENSOR_VALUE));
             sensor.setMeasurement(channelData.getStringValue(Value.SENSOR_MEASUREMENT));
+            sensor.setErrorFormula(Value.SENSOR_ERROR_FORMULA);
             channel.setSensor(sensor);
 
             channels.add(channel);

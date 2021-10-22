@@ -189,7 +189,7 @@ public class MKMX_5300_02_18 implements Certificate {
     public void putSensorData() {
         Sensor sensor = this.channel.getSensor();
 
-        String type = sensor.getType().getType();
+        String type = sensor.getType();
         cell(19,11).setCellValue(type);
 
         double eP = (sensor.getError(this.channel) / (this.channel.getRange() / 100));

@@ -102,7 +102,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
                         }
                         break;
                     case SENSOR:
-                        if (channel.getSensor().getType().getType().equals(this.value)) {
+                        if (channel.getSensor().getType().equals(this.value)) {
                             this.arrayAfterSearch.add(channel);
                         }
                         break;

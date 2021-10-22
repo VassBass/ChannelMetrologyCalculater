@@ -128,6 +128,7 @@ public class Strings {
     public static final String ADVICE_FIX = "Порада: налаштувати вимірювальний канал.";
     public static final String ADVICE_FIX_PRESSURE = "Порада: ущільнити датчик, не допускаючи стравлювання.";
     public static final String ADVICE_RANGE = "Порада: для кращих показів налаштуйте вимірювальний канал на вказаний діапазон вимірювання";
+    public static final String ERROR_FORMULA = "Формула для розрахунку похибки";
 
     public static final String MAIN_DIR_NAME = "Support";
     public static final String DIR_NAME_LISTS = "Lists";

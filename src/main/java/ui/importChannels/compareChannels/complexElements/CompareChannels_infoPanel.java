@@ -79,9 +79,9 @@ public class CompareChannels_infoPanel extends JPanel implements UI_Container {
 
     @Override
     public void createElements() {
-        labels = new ButtonCell[24];
-        oldInfo = new ButtonCell[19];
-        newInfo = new ButtonCell[19];
+        labels = new ButtonCell[26];
+        oldInfo = new ButtonCell[21];
+        newInfo = new ButtonCell[21];
 
         labels[0] = new ButtonCell(Color.white, Color.black, Strings.FIELD);
         labels[1] = new ButtonCell(Color.white, Color.black, Strings.CHANNEL_IN_LIST);
@@ -230,26 +230,36 @@ public class CompareChannels_infoPanel extends JPanel implements UI_Container {
 
         labels[14] = new ButtonCell(Color.white, Color.black, Strings.SENSOR);
 
-        if (old.getSensor().getType() == imported.getSensor().getType()){
+        if (old.getSensor().getType().equals(imported.getSensor().getType())){
             labels[15] = new ButtonCell(Color.green.darker(), Color.white, Strings.TYPE);
-            oldInfo[11] = new ButtonCell(Color.green.darker(), Color.white, old.getSensor().getType().getType());
-            newInfo[11] = new ButtonCell(Color.green.darker(), Color.white, imported.getSensor().getType().getType());
+            oldInfo[11] = new ButtonCell(Color.green.darker(), Color.white, old.getSensor().getType());
+            newInfo[11] = new ButtonCell(Color.green.darker(), Color.white, imported.getSensor().getType());
         }else {
             labels[15] = new ButtonCell(Color.red.darker(), Color.white, Strings.TYPE);
-            oldInfo[11] = new ButtonCell(Color.red.darker(), Color.white, old.getSensor().getType().getType());
-            newInfo[11] = new ButtonCell(Color.red.darker(), Color.white, imported.getSensor().getType().getType());
+            oldInfo[11] = new ButtonCell(Color.red.darker(), Color.white, old.getSensor().getType());
+            newInfo[11] = new ButtonCell(Color.red.darker(), Color.white, imported.getSensor().getType());
+        }
+
+        if (old.getSensor().getName().equals(imported.getSensor().getName())){
+            labels[16] = new ButtonCell(Color.green.darker(), Color.white, Strings.NAME);
+            oldInfo[12] = new ButtonCell(Color.green.darker(), Color.white, old.getSensor().getName());
+            newInfo[12] = new ButtonCell(Color.green.darker(), Color.white, imported.getSensor().getName());
+        }else {
+            labels[16] = new ButtonCell(Color.red.darker(), Color.white, Strings.NAME);
+            oldInfo[12] = new ButtonCell(Color.red.darker(), Color.white, old.getSensor().getName());
+            newInfo[12] = new ButtonCell(Color.red.darker(), Color.white, imported.getSensor().getName());
         }
 
         String ro = String.valueOf(old.getSensor().getRangeMin()).concat(" - ").concat(String.valueOf(old.getSensor().getRangeMax()));
         String ri = String.valueOf(imported.getSensor().getRangeMin()).concat(" - ").concat(String.valueOf(imported.getSensor().getRangeMax()));
         if (old.getSensor().getRangeMin() == imported.getSensor().getRangeMin() && old.getSensor().getRangeMax() == imported.getSensor().getRangeMax()){
-            labels[16] = new ButtonCell(Color.green.darker(), Color.white, Strings.RANGE_OF_SENSOR);
-            oldInfo[12] = new ButtonCell(Color.green.darker(), Color.white, ro);
-            newInfo[12] = new ButtonCell(Color.green.darker(), Color.white, ri);
+            labels[17] = new ButtonCell(Color.green.darker(), Color.white, Strings.RANGE_OF_SENSOR);
+            oldInfo[13] = new ButtonCell(Color.green.darker(), Color.white, ro);
+            newInfo[13] = new ButtonCell(Color.green.darker(), Color.white, ri);
         }else {
-            labels[16] = new ButtonCell(Color.red.darker(), Color.white, Strings.RANGE_OF_SENSOR);
-            oldInfo[12] = new ButtonCell(Color.red.darker(), Color.white, ro);
-            newInfo[12] = new ButtonCell(Color.red.darker(), Color.white, ri);
+            labels[17] = new ButtonCell(Color.red.darker(), Color.white, Strings.RANGE_OF_SENSOR);
+            oldInfo[13] = new ButtonCell(Color.red.darker(), Color.white, ro);
+            newInfo[13] = new ButtonCell(Color.red.darker(), Color.white, ri);
         }
 
         String no;
@@ -258,77 +268,87 @@ public class CompareChannels_infoPanel extends JPanel implements UI_Container {
             no = " - ";
             if (imported.getSensor().getNumber().length() == 0){
                 ni = " - ";
-                labels[17] = new ButtonCell(Color.green.darker(), Color.white, Strings.PARENT_NUMBER);
-                oldInfo[13] = new ButtonCell(Color.green.darker(), Color.white, no);
-                newInfo[13] = new ButtonCell(Color.green.darker(), Color.white, ni);
+                labels[18] = new ButtonCell(Color.green.darker(), Color.white, Strings.PARENT_NUMBER);
+                oldInfo[14] = new ButtonCell(Color.green.darker(), Color.white, no);
+                newInfo[14] = new ButtonCell(Color.green.darker(), Color.white, ni);
             }else {
                 ni = imported.getSensor().getNumber();
-                labels[17] = new ButtonCell(Color.red.darker(), Color.white, Strings.PARENT_NUMBER);
-                oldInfo[13] = new ButtonCell(Color.red.darker(), Color.white, no);
-                newInfo[13] = new ButtonCell(Color.red.darker(), Color.white, ni);
+                labels[18] = new ButtonCell(Color.red.darker(), Color.white, Strings.PARENT_NUMBER);
+                oldInfo[14] = new ButtonCell(Color.red.darker(), Color.white, no);
+                newInfo[14] = new ButtonCell(Color.red.darker(), Color.white, ni);
             }
         }else {
             no = old.getSensor().getNumber();
             if (imported.getSensor().getNumber().length() == 0){
                 ni = " - ";
-                labels[17] = new ButtonCell(Color.red.darker(), Color.white, Strings.PARENT_NUMBER);
-                oldInfo[13] = new ButtonCell(Color.red.darker(), Color.white, no);
-                newInfo[13] = new ButtonCell(Color.red.darker(), Color.white, ni);
+                labels[18] = new ButtonCell(Color.red.darker(), Color.white, Strings.PARENT_NUMBER);
+                oldInfo[14] = new ButtonCell(Color.red.darker(), Color.white, no);
+                newInfo[14] = new ButtonCell(Color.red.darker(), Color.white, ni);
             }else if (old.getSensor().getNumber().equals(imported.getSensor().getNumber())){
                 ni = imported.getSensor().getNumber();
-                labels[17] = new ButtonCell(Color.green.darker(), Color.white, Strings.PARENT_NUMBER);
-                oldInfo[13] = new ButtonCell(Color.green.darker(), Color.white, no);
-                newInfo[13] = new ButtonCell(Color.green.darker(), Color.white, ni);
+                labels[18] = new ButtonCell(Color.green.darker(), Color.white, Strings.PARENT_NUMBER);
+                oldInfo[14] = new ButtonCell(Color.green.darker(), Color.white, no);
+                newInfo[14] = new ButtonCell(Color.green.darker(), Color.white, ni);
             }else{
                 ni = imported.getSensor().getNumber();
-                labels[17] = new ButtonCell(Color.red.darker(), Color.white, Strings.PARENT_NUMBER);
-                oldInfo[13] = new ButtonCell(Color.red.darker(), Color.white, no);
-                newInfo[13] = new ButtonCell(Color.red.darker(), Color.white, ni);
+                labels[18] = new ButtonCell(Color.red.darker(), Color.white, Strings.PARENT_NUMBER);
+                oldInfo[14] = new ButtonCell(Color.red.darker(), Color.white, no);
+                newInfo[14] = new ButtonCell(Color.red.darker(), Color.white, ni);
             }
         }
 
         if (old.getSensor().getValue().equals(imported.getSensor().getValue())){
-            labels[18] = new ButtonCell(Color.green.darker(), Color.white, Strings.OUT);
-            oldInfo[14] = new ButtonCell(Color.green.darker(), Color.white, old.getSensor().getValue());
-            newInfo[14] = new ButtonCell(Color.green.darker(), Color.white, imported.getSensor().getValue());
+            labels[19] = new ButtonCell(Color.green.darker(), Color.white, Strings.OUT);
+            oldInfo[15] = new ButtonCell(Color.green.darker(), Color.white, old.getSensor().getValue());
+            newInfo[15] = new ButtonCell(Color.green.darker(), Color.white, imported.getSensor().getValue());
         }else {
-            labels[18] = new ButtonCell(Color.red.darker(), Color.white, Strings.OUT);
-            oldInfo[14] = new ButtonCell(Color.red.darker(), Color.white, old.getSensor().getValue());
-            newInfo[14] = new ButtonCell(Color.red.darker(), Color.white, imported.getSensor().getValue());
+            labels[19] = new ButtonCell(Color.red.darker(), Color.white, Strings.OUT);
+            oldInfo[15] = new ButtonCell(Color.red.darker(), Color.white, old.getSensor().getValue());
+            newInfo[15] = new ButtonCell(Color.red.darker(), Color.white, imported.getSensor().getValue());
         }
 
-        labels[19] = new ButtonCell(Color.white, Color.black, Strings.CONTROL_INFO);
+        if (old.getSensor().getErrorFormula().equals(imported.getSensor().getErrorFormula())){
+            labels[20] = new ButtonCell(Color.green.darker(), Color.white, Strings.ERROR_FORMULA);
+            oldInfo[16] = new ButtonCell(Color.green.darker(), Color.white, old.getSensor().getErrorFormula());
+            newInfo[16] = new ButtonCell(Color.green.darker(), Color.white, imported.getSensor().getErrorFormula());
+        }else {
+            labels[20] = new ButtonCell(Color.red.darker(), Color.white, Strings.ERROR_FORMULA);
+            oldInfo[16] = new ButtonCell(Color.red.darker(), Color.white, old.getSensor().getErrorFormula());
+            newInfo[16] = new ButtonCell(Color.red.darker(), Color.white, imported.getSensor().getErrorFormula());
+        }
+
+        labels[21] = new ButtonCell(Color.white, Color.black, Strings.CONTROL_INFO);
 
         if (VariableConverter.dateToString(old.getDate()).equals(VariableConverter.dateToString(imported.getDate()))){
-            labels[20] = new ButtonCell(Color.green.darker(), Color.white, Strings.THIS_DATE);
-            oldInfo[15] = new ButtonCell(Color.green.darker(), Color.white, VariableConverter.dateToString(old.getDate()));
-            newInfo[15] = new ButtonCell(Color.green.darker(), Color.white, VariableConverter.dateToString(imported.getDate()));
+            labels[22] = new ButtonCell(Color.green.darker(), Color.white, Strings.THIS_DATE);
+            oldInfo[17] = new ButtonCell(Color.green.darker(), Color.white, VariableConverter.dateToString(old.getDate()));
+            newInfo[17] = new ButtonCell(Color.green.darker(), Color.white, VariableConverter.dateToString(imported.getDate()));
         }else {
-            labels[20] = new ButtonCell(Color.red.darker(), Color.white, Strings.THIS_DATE);
-            oldInfo[15] = new ButtonCell(Color.red.darker(), Color.white, VariableConverter.dateToString(old.getDate()));
-            newInfo[15] = new ButtonCell(Color.red.darker(), Color.white, VariableConverter.dateToString(imported.getDate()));
+            labels[22] = new ButtonCell(Color.red.darker(), Color.white, Strings.THIS_DATE);
+            oldInfo[17] = new ButtonCell(Color.red.darker(), Color.white, VariableConverter.dateToString(old.getDate()));
+            newInfo[17] = new ButtonCell(Color.red.darker(), Color.white, VariableConverter.dateToString(imported.getDate()));
         }
 
         String fo = String.format(Locale.ENGLISH, "%.0f", old.getFrequency()).concat(Strings.YEAR_WORD(old.getFrequency()));
         String fi = String.format(Locale.ENGLISH, "%.0f", imported.getFrequency()).concat(Strings.YEAR_WORD(imported.getFrequency()));
         if (old.getFrequency() == imported.getFrequency()){
-            labels[21] = new ButtonCell(Color.green.darker(), Color.white, Strings.FREQUENCY_CONTROL);
-            oldInfo[16] = new ButtonCell(Color.green.darker(), Color.white, fo);
-            newInfo[16] = new ButtonCell(Color.green.darker(), Color.white, fi);
+            labels[23] = new ButtonCell(Color.green.darker(), Color.white, Strings.FREQUENCY_CONTROL);
+            oldInfo[18] = new ButtonCell(Color.green.darker(), Color.white, fo);
+            newInfo[18] = new ButtonCell(Color.green.darker(), Color.white, fi);
         }else {
-            labels[21] = new ButtonCell(Color.red.darker(), Color.white, Strings.FREQUENCY_CONTROL);
-            oldInfo[16] = new ButtonCell(Color.red.darker(), Color.white, fo);
-            newInfo[16] = new ButtonCell(Color.red.darker(), Color.white, fi);
+            labels[23] = new ButtonCell(Color.red.darker(), Color.white, Strings.FREQUENCY_CONTROL);
+            oldInfo[18] = new ButtonCell(Color.red.darker(), Color.white, fo);
+            newInfo[18] = new ButtonCell(Color.red.darker(), Color.white, fi);
         }
 
         if (old.getNumberOfProtocol().equals(imported.getNumberOfProtocol())){
-            labels[22] = new ButtonCell(Color.green.darker(), Color.white, Strings.PROTOCOL_NUMBER);
-            oldInfo[17] = new ButtonCell(Color.green.darker(), Color.white, old.getNumberOfProtocol());
-            newInfo[17] = new ButtonCell(Color.green.darker(), Color.white, imported.getNumberOfProtocol());
+            labels[24] = new ButtonCell(Color.green.darker(), Color.white, Strings.PROTOCOL_NUMBER);
+            oldInfo[19] = new ButtonCell(Color.green.darker(), Color.white, old.getNumberOfProtocol());
+            newInfo[19] = new ButtonCell(Color.green.darker(), Color.white, imported.getNumberOfProtocol());
         }else {
-            labels[22] = new ButtonCell(Color.red.darker(), Color.white, Strings.PROTOCOL_NUMBER);
-            oldInfo[17] = new ButtonCell(Color.red.darker(), Color.white, old.getNumberOfProtocol());
-            newInfo[17] = new ButtonCell(Color.red.darker(), Color.white, imported.getNumberOfProtocol());
+            labels[24] = new ButtonCell(Color.red.darker(), Color.white, Strings.PROTOCOL_NUMBER);
+            oldInfo[19] = new ButtonCell(Color.red.darker(), Color.white, old.getNumberOfProtocol());
+            newInfo[19] = new ButtonCell(Color.red.darker(), Color.white, imported.getNumberOfProtocol());
         }
 
         String refo;
@@ -337,32 +357,32 @@ public class CompareChannels_infoPanel extends JPanel implements UI_Container {
             refo = " - ";
             if (imported.getReference() == null){
                 refi = " - ";
-                labels[23] = new ButtonCell(Color.green.darker(), Color.white, Strings.REFERENCE);
-                oldInfo[18] = new ButtonCell(Color.green.darker(), Color.white, refo);
-                newInfo[18] = new ButtonCell(Color.green.darker(), Color.white, refi);
+                labels[25] = new ButtonCell(Color.green.darker(), Color.white, Strings.REFERENCE);
+                oldInfo[20] = new ButtonCell(Color.green.darker(), Color.white, refo);
+                newInfo[20] = new ButtonCell(Color.green.darker(), Color.white, refi);
             }else {
                 refi = imported.getReference();
-                labels[23] = new ButtonCell(Color.red.darker(), Color.white, Strings.REFERENCE);
-                oldInfo[18] = new ButtonCell(Color.red.darker(), Color.white, refo);
-                newInfo[18] = new ButtonCell(Color.red.darker(), Color.white, refi);
+                labels[25] = new ButtonCell(Color.red.darker(), Color.white, Strings.REFERENCE);
+                oldInfo[20] = new ButtonCell(Color.red.darker(), Color.white, refo);
+                newInfo[20] = new ButtonCell(Color.red.darker(), Color.white, refi);
             }
         }else {
             refo = old.getReference();
             if (imported.getReference() == null){
                 refi = " - ";
-                labels[23] = new ButtonCell(Color.red.darker(), Color.white, Strings.REFERENCE);
-                oldInfo[18] = new ButtonCell(Color.red.darker(), Color.white, refo);
-                newInfo[18] = new ButtonCell(Color.red.darker(), Color.white, refi);
+                labels[25] = new ButtonCell(Color.red.darker(), Color.white, Strings.REFERENCE);
+                oldInfo[20] = new ButtonCell(Color.red.darker(), Color.white, refo);
+                newInfo[20] = new ButtonCell(Color.red.darker(), Color.white, refi);
             }else if (old.getReference().equals(imported.getReference())){
                 refi = imported.getReference();
-                labels[23] = new ButtonCell(Color.green.darker(), Color.white, Strings.REFERENCE);
-                oldInfo[18] = new ButtonCell(Color.green.darker(), Color.white, refo);
-                newInfo[18] = new ButtonCell(Color.green.darker(), Color.white, refi);
+                labels[25] = new ButtonCell(Color.green.darker(), Color.white, Strings.REFERENCE);
+                oldInfo[20] = new ButtonCell(Color.green.darker(), Color.white, refo);
+                newInfo[20] = new ButtonCell(Color.green.darker(), Color.white, refi);
             }else{
                 refi = imported.getReference();
-                labels[23] = new ButtonCell(Color.red.darker(), Color.white, Strings.REFERENCE);
-                oldInfo[18] = new ButtonCell(Color.red.darker(), Color.white, refo);
-                newInfo[18] = new ButtonCell(Color.red.darker(), Color.white, refi);
+                labels[25] = new ButtonCell(Color.red.darker(), Color.white, Strings.REFERENCE);
+                oldInfo[20] = new ButtonCell(Color.red.darker(), Color.white, refo);
+                newInfo[20] = new ButtonCell(Color.red.darker(), Color.white, refi);
             }
         }
     }
@@ -440,15 +460,15 @@ public class CompareChannels_infoPanel extends JPanel implements UI_Container {
         this.add(this.oldInfo[14], new Cell(1, 16));
         this.add(this.newInfo[14], new Cell(2, 16));
 
-        this.add(labels[19], new Cell(17));
+        this.add(this.labels[19], new Cell(0, 17));
+        this.add(this.oldInfo[15], new Cell(1, 17));
+        this.add(this.newInfo[15], new Cell(2, 17));
 
         this.add(this.labels[20], new Cell(0, 18));
-        this.add(this.oldInfo[15], new Cell(1, 18));
-        this.add(this.newInfo[15], new Cell(2, 18));
+        this.add(this.oldInfo[16], new Cell(1, 18));
+        this.add(this.newInfo[16], new Cell(2, 18));
 
-        this.add(this.labels[21], new Cell(0, 19));
-        this.add(this.oldInfo[16], new Cell(1, 19));
-        this.add(this.newInfo[16], new Cell(2, 19));
+        this.add(labels[21], new Cell(19));
 
         this.add(this.labels[22], new Cell(0, 20));
         this.add(this.oldInfo[17], new Cell(1, 20));
@@ -457,6 +477,14 @@ public class CompareChannels_infoPanel extends JPanel implements UI_Container {
         this.add(this.labels[23], new Cell(0, 21));
         this.add(this.oldInfo[18], new Cell(1, 21));
         this.add(this.newInfo[18], new Cell(2, 21));
+
+        this.add(this.labels[24], new Cell(0, 22));
+        this.add(this.oldInfo[19], new Cell(1, 22));
+        this.add(this.newInfo[19], new Cell(2, 22));
+
+        this.add(this.labels[25], new Cell(0, 23));
+        this.add(this.oldInfo[20], new Cell(1, 23));
+        this.add(this.newInfo[20], new Cell(2, 23));
     }
 
     private static class Cell extends GridBagConstraints {

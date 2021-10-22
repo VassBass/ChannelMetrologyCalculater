@@ -56,7 +56,7 @@ public class InfoPanel_infoTable extends JPanel implements UI_Container {
             this.nextDate.setText(VariableConverter.dateToString(channel.getNextDate()));
             this.nextDate.setBackground(setBackgroundColorFromDate(channel.getNextDate()));
             this.path.setText(channel.getFullPath());
-            this.sensor.setText(channel.getSensor().getType().getType());
+            this.sensor.setText(channel.getSensor().getType());
         }
     }
 

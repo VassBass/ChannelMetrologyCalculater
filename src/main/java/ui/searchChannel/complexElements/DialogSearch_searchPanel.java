@@ -125,7 +125,7 @@ public class DialogSearch_searchPanel extends JPanel {
             case SENSOR:
                 i = new String[Objects.requireNonNull(Lists.sensors()).size()];
                 for (int x=0;x<i.length;x++) {
-                    i[x] = Objects.requireNonNull(Lists.sensors()).get(x).getType().getType();
+                    i[x] = Objects.requireNonNull(Lists.sensors()).get(x).getType();
                 }
                 break;
         }

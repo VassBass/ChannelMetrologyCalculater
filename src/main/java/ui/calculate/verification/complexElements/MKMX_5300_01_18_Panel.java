@@ -163,13 +163,14 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorChannel.setText(allowableErrorChannel);
 
-        this.sensor.setText(this.channel.getSensor().getType().getType());
+        this.sensor.setText(this.channel.getSensor().getType());
 
+        double eP = this.channel.getSensor().getError(this.channel) / (this.channel.getSensor().getRange() / 100);
         String allowableErrorSensor = Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble2(this.calculation.getErrorSensor()[1], Locale.GERMAN)
+                + VariableConverter.roundingDouble2(eP, Locale.GERMAN)
                 + "% або "
                 + Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble2(this.calculation.getErrorSensor()[0], Locale.GERMAN)
+                + VariableConverter.roundingDouble2(this.channel.getSensor().getError(this.channel), Locale.GERMAN)
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorSensor.setText(allowableErrorSensor);
 

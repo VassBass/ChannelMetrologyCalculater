@@ -100,12 +100,14 @@ public class ExportChannels extends SwingWorker<Void, Integer> {
             channelData.putValue(Value.MEASUREMENT_VALUE, channel.getMeasurement().getValue());//String
 
             //Sensor info
-            channelData.putValue(Value.SENSOR_TYPE, channel.getSensor().getType().getType());//String
+            channelData.putValue(Value.SENSOR_TYPE, channel.getSensor().getType());//String
+            channelData.putValue(Value.SENSOR_NAME, channel.getSensor().getName());//String
             channelData.putValue(Value.SENSOR_RANGE_MIN, channel.getSensor().getRangeMin());//double
             channelData.putValue(Value.SENSOR_RANGE_MAX, channel.getSensor().getRangeMax());//double
             channelData.putValue(Value.SENSOR_NUMBER, channel.getSensor().getNumber());//String
             channelData.putValue(Value.SENSOR_VALUE, channel.getSensor().getValue());//String
             channelData.putValue(Value.SENSOR_MEASUREMENT, channel.getSensor().getMeasurement());//String
+            channelData.putValue(Value.SENSOR_ERROR_FORMULA, channel.getSensor().getErrorFormula());//String
 
             data.add(channelData);
             publish(x);

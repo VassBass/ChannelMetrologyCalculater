@@ -165,20 +165,21 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorChannel.setText(allowableErrorChannel);
 
-        this.sensor.setText(this.channel.getSensor().getType().getType());
+        this.sensor.setText(this.channel.getSensor().getType());
 
         String errorSensorPercent;
-        if (this.calculation.getErrorSensor()[1] < 0.01){
-            errorSensorPercent = VariableConverter.roundingDouble3(this.calculation.getErrorSensor()[1], Locale.GERMAN);
+        double eP = this.channel.getSensor().getError(this.channel) / (this.channel.getRange() / 100);
+        if (eP < 0.01){
+            errorSensorPercent = VariableConverter.roundingDouble3(eP, Locale.GERMAN);
         }else {
-            errorSensorPercent = VariableConverter.roundingDouble2(this.calculation.getErrorSensor()[1], Locale.GERMAN);
+            errorSensorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         }
 
         String errorSensorValue;
-        if (this.calculation.getErrorSensor()[0] < 0.01){
-            errorSensorValue = VariableConverter.roundingDouble3(this.calculation.getErrorSensor()[0], Locale.GERMAN);
+        if (this.channel.getSensor().getError(this.channel) < 0.01){
+            errorSensorValue = VariableConverter.roundingDouble3(this.channel.getSensor().getError(this.channel), Locale.GERMAN);
         }else {
-            errorSensorValue = VariableConverter.roundingDouble2(this.calculation.getErrorSensor()[0], Locale.GERMAN);
+            errorSensorValue = VariableConverter.roundingDouble2(this.channel.getSensor().getError(this.channel), Locale.GERMAN);
         }
         String allowableErrorSensor = Strings.PLUS_MINUS
                 + errorSensorPercent

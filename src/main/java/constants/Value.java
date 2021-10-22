@@ -31,11 +31,13 @@ public class Value {
     public final static String MEASUREMENT_VALUE = "measurement value";
 
     public final static String SENSOR_TYPE = "sensor type";
+    public final static String SENSOR_NAME = "sensor name";
     public final static String SENSOR_RANGE_MIN = "sensor rangeMin";
     public final static String SENSOR_RANGE_MAX = "sensor rangeMax";
     public final static String SENSOR_NUMBER = "sensor number";
     public final static String SENSOR_VALUE = "sensor value";
     public final static String SENSOR_MEASUREMENT = "sensor measurement";
+    public final static String SENSOR_ERROR_FORMULA = "sensor error formula";
 
     public final static String CALCULATION_EXTERNAL_TEMPERATURE = "calculation external temperature";
     public final static String CALCULATION_EXTERNAL_HUMIDITY = "calculation external humidity";
