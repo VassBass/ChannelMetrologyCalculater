@@ -5,7 +5,7 @@ import constants.SensorType;
 import constants.Strings;
 import constants.Value;
 import measurements.Measurement;
-import sensors.Sensor;
+import support.Sensor;
 import support.*;
 import ui.LoadDialog;
 import ui.importChannels.compareChannels.CompareChannelsDialog;

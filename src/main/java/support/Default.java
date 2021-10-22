@@ -10,7 +10,6 @@ import constants.WorkPositions;
 import measurements.Measurement;
 import measurements.Pressure;
 import measurements.Temperature;
-import sensors.*;
 
 public class Default {
     
@@ -94,10 +93,33 @@ public class Default {
         tp0198_2_big.setErrorFormula("0.0075 * R");
         sensors.add(tp0198_2_big);
 
-        sensors.add(new Deltabar_S());
-        sensors.add(new Yokogawa());
-        sensors.add(new JUMO_dTRANS_p02());
-        sensors.add(new Fisher_Rosemount_3051S());
+        Sensor deltabarS = new Sensor();
+        deltabarS.setType(SensorType.DELTABAR_S);
+        deltabarS.setName(SensorType.DELTABAR_S.getType());
+        deltabarS.setMeasurement(MeasurementConstants.PRESSURE.getValue());
+        deltabarS.setErrorFormula("(convR / 100) * 0.075");
+        sensors.add(deltabarS);
+
+        Sensor fisherRosemount3051s = new Sensor();
+        fisherRosemount3051s.setType(SensorType.FISHER_ROSEMOUNT_3051S);
+        fisherRosemount3051s.setName(SensorType.FISHER_ROSEMOUNT_3051S.getType());
+        fisherRosemount3051s.setMeasurement(MeasurementConstants.PRESSURE.getValue());
+        fisherRosemount3051s.setErrorFormula("(convR / 100) * 0.055");
+        sensors.add(fisherRosemount3051s);
+
+        Sensor yokogawa = new Sensor();
+        yokogawa.setType(SensorType.YOKOGAWA);
+        yokogawa.setName(SensorType.YOKOGAWA.getType());
+        yokogawa.setMeasurement(MeasurementConstants.PRESSURE.getValue());
+        yokogawa.setErrorFormula("(convR / 100) * 0.2");
+        sensors.add(yokogawa);
+
+        Sensor jumoDTransP02 = new Sensor();
+        jumoDTransP02.setType(SensorType.JUMO_dTRANS_p02);
+        jumoDTransP02.setName(SensorType.JUMO_dTRANS_p02.getType());
+        jumoDTransP02.setMeasurement(MeasurementConstants.PRESSURE.getValue());
+        jumoDTransP02.setErrorFormula("(convR / 100) * 0.1");
+        sensors.add(jumoDTransP02);
 
         Lists.saveSensorsListToFile(sensors);
     }

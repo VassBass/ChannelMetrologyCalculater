@@ -5,7 +5,6 @@ import constants.MeasurementConstants;
 import calibrators.Calibrator;
 import converters.PressureConverter;
 import org.apache.commons.lang3.math.NumberUtils;
-import sensors.*;
 import support.Channel;
 import constants.Strings;
 
@@ -30,7 +29,6 @@ public class Calculation {
     /*
      * double[error in value] [error in percent]
      */
-    private double[] errorSensor = null;
     private double[] errorCalibrator = null;
 
     /*
@@ -179,63 +177,6 @@ public class Calculation {
         }
     }
 
-    public double[] getErrorSensor(){
-        if (this.errorSensor == null){
-            this.errorSensor = new double[2];
-            Sensor sensor = this.channel.getSensor();
-            double rangeChannel = this.channel.getRange();
-            double rangeSensor = this.channel.getSensor().getRange();
-            switch (this.method){
-                case MKMX_5300_01_18:
-                    switch (sensor.getType()){
-                        case TCM_50M:
-                        case TCP_100:
-                            this.errorSensor[0] = (0.005 * rangeChannel) + 0.3;
-                            break;
-                        case TXA_0395_typeK:
-                        case TXA_2388_typeK:
-                        case TP0198_2:
-                            if (this.channel.getRangeMax() < 333.5){
-                                this.errorSensor[0] = 2.5;
-                            }else if (this.channel.getRangeMax() > 333.4 && this.channel.getRangeMax() <= 1250D){
-                                this.errorSensor[0] = 0.0075 * rangeChannel;
-                            }
-                            break;
-                    }
-
-                    this.errorSensor[1] = (this.errorSensor[0] / rangeSensor) * 100;
-
-                    return this.errorSensor;
-
-                case MKMX_5300_02_18:
-                    switch (sensor.getType()){
-                        case DELTABAR_S:
-                            this.errorSensor[1] = 0.075;
-                            break;
-                        case JUMO_dTRANS_p02:
-                            this.errorSensor[1] = 0.1;
-                            break;
-                        case FISHER_ROSEMOUNT_3051S:
-                            this.errorSensor[1] = 0.055;
-                            break;
-                        case YOKOGAWA:
-                            this.errorSensor[1] = 0.2;
-                    }
-
-                    double dSensor_notConverted = this.channel.getSensor().getRange();
-                    double dSensor = new PressureConverter(MeasurementConstants.getConstantFromString(this.channel.getSensor().getValue()),
-                            this.channel.getMeasurement().getValueConstant()).get(dSensor_notConverted);
-                    this.errorSensor[0] = (dSensor / 100) * this.errorSensor[1];
-
-                    return this.errorSensor;
-
-                default: return null;
-            }
-        }else {
-            return this.errorSensor;
-        }
-    }
-
     public double[] getErrorCalibrator(){
         if (this.errorCalibrator == null){
             this.errorCalibrator = new double[2];
@@ -285,7 +226,7 @@ public class Calculation {
     public double getAbsoluteErrorWithSensorError(){
         if (this.error == -999999999D){
             double errorMax = this.getMaxAbsoluteError();
-            double errorSensor = this.getErrorSensor()[0];
+            double errorSensor = this.channel.getSensor().getError(this.channel);
             double errorCalibrator = this.getErrorCalibrator()[0];
             switch (this.method){
                 case MKMX_5300_01_18:
@@ -393,7 +334,7 @@ public class Calculation {
 
     public double getStandardIndeterminacyB(){
         if (this.uB == -999999999D){
-            double errorSensor = this.getErrorSensor()[0];
+            double errorSensor = this.channel.getSensor().getError(this.channel);
             double errorCalibrator = this.getErrorCalibrator()[0];
             switch (this.method){
                 case MKMX_5300_01_18:

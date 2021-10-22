@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import constants.Files;
 import measurements.Measurement;
-import sensors.Sensor;
 
 
 @SuppressWarnings("unchecked")

@@ -10,7 +10,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import sensors.Sensor;
+import support.Sensor;
 import support.Channel;
 import support.Values;
 
@@ -192,10 +192,11 @@ public class MKMX_5300_02_18 implements Certificate {
         String type = sensor.getType().getType();
         cell(19,11).setCellValue(type);
 
-        String errorPercent = VariableConverter.roundingDouble2(this.result.getErrorSensor()[1], Locale.GERMAN);
+        double eP = (sensor.getError(this.channel) / (this.channel.getRange() / 100));
+        String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(20,12).setCellValue(errorPercent);
 
-        String error = VariableConverter.roundingDouble2(this.result.getErrorSensor()[0], Locale.GERMAN);
+        String error = VariableConverter.roundingDouble2(sensor.getError(this.channel), Locale.GERMAN);
         cell(20,16).setCellValue(error);
     }
 

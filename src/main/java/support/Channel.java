@@ -7,7 +7,6 @@ import java.util.GregorianCalendar;
 
 import converters.VariableConverter;
 import measurements.Measurement;
-import sensors.Sensor;
 
 public class Channel implements Serializable {
 

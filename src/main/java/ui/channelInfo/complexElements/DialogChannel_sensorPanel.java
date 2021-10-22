@@ -2,7 +2,7 @@ package ui.channelInfo.complexElements;
 
 import constants.MeasurementConstants;
 import constants.SensorType;
-import sensors.Sensor;
+import support.Sensor;
 import support.Lists;
 import ui.UI_Container;
 

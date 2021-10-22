@@ -4,7 +4,7 @@ import backgroundTasks.PutChannelInList;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
 import measurements.Measurement;
-import sensors.Sensor;
+import support.Sensor;
 import support.Channel;
 import constants.Strings;
 import ui.UI_Container;
