@@ -2,6 +2,7 @@ package support;
 
 import constants.MeasurementConstants;
 import converters.PressureConverter;
+import converters.VariableConverter;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
@@ -51,7 +52,8 @@ public class Sensor implements Serializable {
     r - Диапазон измерения датчика
      */
     public double getError(Channel channel){
-        Function f = new Function("At(R,r,convR) = " + this.errorFormula);
+        String formula = VariableConverter.commasToDots(this.errorFormula);
+        Function f = new Function("At(R,r,convR) = " + formula);
         Argument R = new Argument("R = " + channel.getRange());
         Argument r = new Argument("r = " + this.getRange());
         double cR = new PressureConverter(MeasurementConstants.getConstantFromString(this.value),

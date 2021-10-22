@@ -6,6 +6,17 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class VariableConverter {
+
+    public static String commasToDots(String string){
+        char[] chars = string.toCharArray();
+        for (int x=0;x<chars.length;x++){
+            if (chars[x] == ','){
+                chars[x] = '.';
+            }
+        }
+        return String.valueOf(chars);
+    }
+
     public static String dateToString(Calendar date) {
         if (date == null){
             return Strings.EXTRAORDINARY;
