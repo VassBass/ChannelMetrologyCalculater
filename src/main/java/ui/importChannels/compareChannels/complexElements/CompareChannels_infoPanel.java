@@ -241,11 +241,11 @@ public class CompareChannels_infoPanel extends JPanel implements UI_Container {
         }
 
         if (old.getSensor().getName().equals(imported.getSensor().getName())){
-            labels[16] = new ButtonCell(Color.green.darker(), Color.white, Strings.NAME);
+            labels[16] = new ButtonCell(Color.green.darker(), Color.white, Strings._NAME);
             oldInfo[12] = new ButtonCell(Color.green.darker(), Color.white, old.getSensor().getName());
             newInfo[12] = new ButtonCell(Color.green.darker(), Color.white, imported.getSensor().getName());
         }else {
-            labels[16] = new ButtonCell(Color.red.darker(), Color.white, Strings.NAME);
+            labels[16] = new ButtonCell(Color.red.darker(), Color.white, Strings._NAME);
             oldInfo[12] = new ButtonCell(Color.red.darker(), Color.white, old.getSensor().getName());
             newInfo[12] = new ButtonCell(Color.red.darker(), Color.white, imported.getSensor().getName());
         }

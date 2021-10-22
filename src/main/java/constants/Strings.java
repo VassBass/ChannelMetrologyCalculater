@@ -26,6 +26,7 @@ public class Strings {
     public static final String NEXT_DATE = "Дата наступної перевірки";
     public static final String PATH = "Розташування";
     public static final String SENSOR = "Первинний вимірювальний пристрій";
+    public static final String SENSORS_LIST = "Список первинних вимірювальних пристроїв";
     public static final String LOADING_PLEASE_WAIT = "Завантаження...будь ласка зачекайте...";
     public static final String PROTOCOL_NUMBER = "Номер протоколу";
     public static final String CALIBRATOR = "Калібратор";

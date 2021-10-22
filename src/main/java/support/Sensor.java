@@ -69,21 +69,6 @@ public class Sensor implements Serializable {
             return false;
         }
         Sensor s = (Sensor)object;
-        if (this.type.equals(s.getType())
-                && this.rangeMin==s.getRangeMin()
-                && this.rangeMax==s.getRangeMax()
-                && this.value.equals(s.getValue())) {
-            if (this.number.length() == 0) {
-                return s.getNumber().length() == 0;
-            }else {
-                if (s.getNumber().length() == 0){
-                    return false;
-                }else {
-                    return this.number.equals(s.getNumber());
-                }
-            }
-        }else {
-            return false;
-        }
+        return this.name.equals(s.getName());
     }
 }
