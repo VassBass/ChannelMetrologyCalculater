@@ -5,6 +5,7 @@ import converters.ConverterUI;
 import support.Lists;
 import ui.UI_Container;
 import ui.main.MainScreen;
+import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -12,6 +13,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 public class SensorsListDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
@@ -74,11 +76,13 @@ public class SensorsListDialog extends JDialog implements UI_Container {
 
         this.buttonCancel.addActionListener(clickCancel);
         this.buttonRemove.addActionListener(clickRemove);
+        this.buttonDetails.addActionListener(clickDetails);
+        this.buttonAdd.addActionListener(clickAdd);
     }
 
     @Override
     public void build() {
-        this.setSize(500,500);
+        this.setSize(800,500);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
@@ -114,6 +118,32 @@ public class SensorsListDialog extends JDialog implements UI_Container {
                 @Override
                 public void run() {
                     new SensorRemoveDialog(current).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickDetails = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (mainTable.getSelectedRow() != -1){
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new SensorInfoDialog(current, Objects.requireNonNull(Lists.sensors()).get(mainTable.getSelectedRow())).setVisible(true);
+                    }
+                });
+            }
+        }
+    };
+
+    private final ActionListener clickAdd = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new SensorInfoDialog(current, null).setVisible(true);
                 }
             });
         }

@@ -5,6 +5,7 @@ import ui.UI_Container;
 import ui.main.MainScreen;
 import ui.pathLists.PathListsDialog;
 import ui.personsList.PersonsListDialog;
+import ui.sensorsList.SensorsListDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +17,7 @@ public class MenuLists extends JMenu implements UI_Container {
 
     private JMenuItem buttonPersons;
     private JMenuItem buttonDepartments, buttonAreas, buttonProcesses, buttonInstallations;
+    private JMenuItem buttonSensors;
 
     public MenuLists(MainScreen mainScreen){
         super(Strings.LISTS);
@@ -33,6 +35,7 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonProcesses = new JMenuItem(Strings.PROCESSES_LIST);
         this.buttonInstallations = new JMenuItem(Strings.INSTALLATIONS_LIST);
         this.buttonPersons = new JMenuItem(Strings.WORKERS);
+        this.buttonSensors = new JMenuItem(Strings.SENSORS_LIST);
     }
 
     @Override
@@ -42,10 +45,13 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonProcesses.addActionListener(clickProcesses);
         this.buttonInstallations.addActionListener(clickInstallations);
         this.buttonPersons.addActionListener(clickButtonPersons);
+        this.buttonSensors.addActionListener(clickSensors);
     }
 
     @Override
     public void build() {
+        this.add(buttonSensors);
+        this.addSeparator();
         this.add(buttonDepartments);
         this.add(buttonAreas);
         this.add(buttonProcesses);
@@ -109,6 +115,18 @@ public class MenuLists extends JMenu implements UI_Container {
                 @Override
                 public void run() {
                     new PathListsDialog(mainScreen, Strings.INSTALLATIONS_LIST).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickSensors = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new SensorsListDialog(mainScreen).setVisible(true);
                 }
             });
         }

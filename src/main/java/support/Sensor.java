@@ -20,7 +20,7 @@ public class Sensor implements Serializable {
     protected String number = "";
     protected String value = "";
     protected String measurement = "";
-    protected String errorFormula;
+    protected String errorFormula = "";
 
     //Setters
     public void setType(String type) {this.type = type;}

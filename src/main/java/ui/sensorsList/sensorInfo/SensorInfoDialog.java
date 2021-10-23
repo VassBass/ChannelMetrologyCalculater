@@ -1,6 +1,7 @@
 package ui.sensorsList.sensorInfo;
 
 import backgroundTasks.PutSensorInList;
+import constants.MeasurementConstants;
 import constants.Strings;
 import converters.ConverterUI;
 import measurements.Measurement;
@@ -17,6 +18,8 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Objects;
 
 public class SensorInfoDialog extends JDialog implements UI_Container {
@@ -119,6 +122,8 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
 
         this.buttonCancel.addActionListener(clickCancel);
         this.buttonSave.addActionListener(clickSave);
+
+        this.measurementsList.addItemListener(changeMeasurement);
     }
 
     @Override
@@ -151,17 +156,49 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Sensor sensor = new Sensor();
-            sensor.setType(typeText.getText());
-            sensor.setName(nameText.getText());
-            sensor.setMeasurement(Objects.requireNonNull(measurementsList.getSelectedItem()).toString());
-            sensor.setRangeMin(rangePanel.getRangeMin());
-            sensor.setRangeMax(rangePanel.getRangeMax());
-            sensor.setValue(rangePanel.getValue());
-            sensor.setErrorFormula(errorFormulaText.getText());
-            new PutSensorInList(parent, current, sensor, oldSensor).execute();
+            if (checkSensor()) {
+                Sensor sensor = new Sensor();
+                sensor.setType(typeText.getText());
+                sensor.setName(nameText.getText());
+                sensor.setMeasurement(Objects.requireNonNull(measurementsList.getSelectedItem()).toString());
+                if (rangePanel.isEnabled()) {
+                    sensor.setRangeMin(rangePanel.getRangeMin());
+                    sensor.setRangeMax(rangePanel.getRangeMax());
+                    sensor.setValue(rangePanel.getValue());
+                }
+                sensor.setErrorFormula(errorFormulaText.getText());
+                new PutSensorInList(parent, current, sensor, oldSensor).execute();
+            }
         }
     };
+
+    private final ItemListener changeMeasurement = new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED){
+                if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.TEMPERATURE.getValue())){
+                    rangePanel.setEnabled(true);
+                }else if (measurementsList.getSelectedItem().toString().equals(MeasurementConstants.PRESSURE.getValue())){
+                    rangePanel.setEnabled(false);
+                }
+            }
+        }
+    };
+
+    private boolean checkSensor(){
+        if (this.typeText.getText().length() == 0){
+            JOptionPane.showMessageDialog(this, "Ви не ввели тип ПВП");
+            return false;
+        }else if (this.nameText.getText().length() == 0){
+            JOptionPane.showMessageDialog(this, "Ви не ввели назву ПВП");
+            return false;
+        }else if (this.errorFormulaText.getText().length() == 0){
+            JOptionPane.showMessageDialog(this, "Ви не ввели похибку ПВП");
+            return false;
+        }else {
+            return true;
+        }
+    }
 
     private class MainPanel extends JPanel {
         protected MainPanel(){
