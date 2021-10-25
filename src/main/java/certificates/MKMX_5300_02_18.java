@@ -3,7 +3,7 @@ package certificates;
 import calculation.Calculation;
 import constants.*;
 import calibrators.Calibrator;
-import converters.PressureConverter;
+import converters.ValueConverter;
 import converters.VariableConverter;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -238,7 +238,7 @@ public class MKMX_5300_02_18 implements Certificate {
         Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
 
         if (calibrator.getName() == CalibratorType.FLUKE718_30G){
-            double maxCalibratorPower = new PressureConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+            double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
             if (value5 < maxCalibratorPower){
                 value5 = maxCalibratorPower;
             }

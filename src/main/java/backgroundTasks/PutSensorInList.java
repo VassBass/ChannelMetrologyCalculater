@@ -94,6 +94,7 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
                     m = "ПВП успішно змінено!";
                 }
                 JOptionPane.showMessageDialog(this.mainDialog, m, Strings.SUCCESS, JOptionPane.INFORMATION_MESSAGE);
+                mainDialog.mainTable.update();
             }else {
                 String m = "ПВП з такою назвою вже існує в списку!";
                 JOptionPane.showMessageDialog(this.mainDialog, m, Strings.ERROR, JOptionPane.ERROR_MESSAGE);

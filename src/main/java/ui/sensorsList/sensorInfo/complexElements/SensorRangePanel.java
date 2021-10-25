@@ -25,9 +25,15 @@ public class SensorRangePanel extends JPanel implements UI_Container {
 
     @Override
     public void createElements() {
-        this.rangeMin = new JTextField("0.00",4);
-        this.rangeMax = new JTextField("0.00",4);
+        this.rangeMin = new JTextField("0.0",4);
+        this.rangeMin.setHorizontalAlignment(SwingConstants.CENTER);
+
+        this.rangeMax = new JTextField("0.0",4);
+        this.rangeMax.setHorizontalAlignment(SwingConstants.CENTER);
+
         this.t = new JLabel(" - ");
+        this.t.setHorizontalAlignment(SwingConstants.CENTER);
+
         this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS.getValue());
     }
 
@@ -59,7 +65,6 @@ public class SensorRangePanel extends JPanel implements UI_Container {
 
     @Override
     public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
         if (enabled){
             this.value.setText(MeasurementConstants.DEGREE_CELSIUS.getValue());
             this.rangeMin.setText(this.rMin);
@@ -71,6 +76,8 @@ public class SensorRangePanel extends JPanel implements UI_Container {
             this.rangeMin.setText(" - ");
             this.rangeMax.setText(" - ");
         }
+        this.rangeMin.setEnabled(enabled);
+        this.rangeMax.setEnabled(enabled);
     }
 
     public String getValue(){
@@ -99,10 +106,10 @@ public class SensorRangePanel extends JPanel implements UI_Container {
         @Override
         public void focusLost(FocusEvent e) {
             if (rangeMin.getText().length() == 0){
-                rangeMin.setText("0.00");
+                rangeMin.setText("0.0");
             }
             if (rangeMax.getText().length() == 0){
-                rangeMax.setText("0.00");
+                rangeMax.setText("0.0");
             }
             double r1 = Double.parseDouble(VariableConverter.doubleString(rangeMin.getText()));
             double r2 = Double.parseDouble(VariableConverter.doubleString(rangeMax.getText()));

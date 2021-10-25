@@ -3,7 +3,7 @@ package ui.calculate.measurement.complexElements;
 import calibrators.Calibrator;
 import constants.CalibratorType;
 import constants.MeasurementConstants;
-import converters.PressureConverter;
+import converters.ValueConverter;
 import converters.VariableConverter;
 import support.Channel;
 import ui.ButtonCell;
@@ -60,7 +60,7 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container, Measu
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double maxCalibratorPower = new PressureConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
 
         double value0 = this.channel.getRangeMin();
         double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();

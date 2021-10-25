@@ -128,6 +128,10 @@ public class MainScreen extends JFrame implements UI_Container {
         UIManager.put("FileChooser.refreshActionLabelText", Strings.UPDATE);
         UIManager.put("FileChooser.upFolderToolTipText", Strings.UP_FOLDER);
         UIManager.put("FileChooser.viewMenuLabelText", Strings.MODE_OF_VIEW);
+
+        //ToolTip
+        UIManager.put("ToolTip.background", Color.BLACK);
+        UIManager.put("ToolTip.foreground", Color.WHITE);
     }
 
     private static class Cell extends GridBagConstraints {

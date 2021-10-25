@@ -17,7 +17,7 @@ import java.util.Objects;
 public class SensorRemoveDialog extends JDialog implements UI_Container {
     private final SensorsListDialog parent;
 
-    private JLabel message;
+    private JLabel message1, message2, message3;
     private JButton buttonCancel, buttonRemove;
 
     public SensorRemoveDialog(SensorsListDialog parent){
@@ -38,10 +38,17 @@ public class SensorRemoveDialog extends JDialog implements UI_Container {
 
     @Override
     public void createElements() {
-        String m = "Ви впевнені що хочете відалити данний ПВП? " +
-                "\nПісля його видалення, разом з ним будуть видалені всі канали, які використовують данний ПВП." +
-                "\nПОРАДА: Перед виконанням данної дії виконайте екпорт каналів, для збереження резервної копії каналів";
-        this.message = new JLabel(m);
+        String m1 = "Ви впевнені що хочете відалити данний ПВП? ";
+        this.message1 = new JLabel(m1);
+        this.message1.setHorizontalAlignment(SwingConstants.CENTER);
+
+        String m2 = "Після його видалення, разом з ним будуть видалені всі канали, які використовують данний ПВП.";
+        this.message2 = new JLabel(m2);
+        this.message2.setHorizontalAlignment(SwingConstants.CENTER);
+
+        String m3 = "ПОРАДА: Перед виконанням данної дії виконайте екпорт каналів, для збереження резервної копії каналів.";
+        this.message3 = new JLabel(m3);
+        this.message3.setHorizontalAlignment(SwingConstants.CENTER);
 
         this.buttonCancel = new JButton(Strings.CANCEL);
         this.buttonCancel.setBackground(new Color(51,51,51));
@@ -69,7 +76,7 @@ public class SensorRemoveDialog extends JDialog implements UI_Container {
 
     @Override
     public void build() {
-        this.setSize(500,500);
+        this.setSize(800,100);
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
@@ -116,9 +123,11 @@ public class SensorRemoveDialog extends JDialog implements UI_Container {
         protected MainPanel(){
             super(new GridBagLayout());
 
-            this.add(message, new Cell(0,0,2));
-            this.add(buttonCancel, new Cell(0,1,1));
-            this.add(buttonRemove, new Cell(1,1,1));
+            this.add(message1, new Cell(0,0,2));
+            this.add(message2, new Cell(0,1,2));
+            this.add(message3, new Cell(0,2,2, 5));
+            this.add(buttonCancel, new Cell(0,3,1));
+            this.add(buttonRemove, new Cell(1,3,1));
         }
 
         private class Cell extends GridBagConstraints {
@@ -131,6 +140,18 @@ public class SensorRemoveDialog extends JDialog implements UI_Container {
                 this.gridx = x;
                 this.gridy = y;
                 this.gridwidth = width;
+            }
+
+            protected Cell(int x, int y, int width, int marginBottom){
+                super();
+
+                this.fill = BOTH;
+                this.weightx = 1D;
+
+                this.gridx = x;
+                this.gridy = y;
+                this.gridwidth = width;
+                this.insets = new Insets(0,0, marginBottom, 0);
             }
         }
     }

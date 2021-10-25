@@ -5,7 +5,7 @@ import constants.CalibratorType;
 import constants.MeasurementConstants;
 import constants.Value;
 import calibrators.Calibrator;
-import converters.PressureConverter;
+import converters.ValueConverter;
 import converters.VariableConverter;
 import support.Channel;
 import constants.Strings;
@@ -376,7 +376,7 @@ public class MKMX_5300_02_18_Panel extends JPanel implements UI_Container {
                     Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
                     double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
                     if (calibrator.getName() == CalibratorType.FLUKE718_30G) {
-                        double maxCalibratorPower = new PressureConverter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
+                        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
                         if (value5 < maxCalibratorPower){
                             cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
                         }else {

@@ -2,23 +2,42 @@ package converters;
 
 import constants.MeasurementConstants;
 
-public class PressureConverter {
+public class ValueConverter {
 
     private final MeasurementConstants inValue;
     private final MeasurementConstants outValue;
 
-    public PressureConverter(MeasurementConstants inValue, MeasurementConstants outValue){
+    public ValueConverter(MeasurementConstants inValue, MeasurementConstants outValue){
         this.inValue = inValue;
         this.outValue = outValue;
     }
 
     public Double get(double from){
+
+        if (this.outValue == this.inValue){
+            return from;
+        }
+
         switch (this.outValue){
+
+            case DEGREE_CELSIUS:
+                switch (this.inValue){
+                    case KELVIN:
+                        return from - 273.15;
+                    default:
+                        return null;
+                }
+
+            case KELVIN:
+                switch (this.inValue){
+                    case DEGREE_CELSIUS:
+                        return from + 273.15;
+                    default:
+                        return null;
+                }
 
             case MM_ACVA:
                 switch (this.inValue){
-                    case MM_ACVA:
-                        return from;
                     case KPA:
                         return from * 101.9716;
                     case PA:
@@ -39,8 +58,6 @@ public class PressureConverter {
                 switch (this.inValue){
                     case MM_ACVA:
                         return from * (9.807750 * 0.001);
-                    case KPA:
-                        return from;
                     case PA:
                         return from * 0.001;
                     case KG_SM2:
@@ -61,8 +78,6 @@ public class PressureConverter {
                         return from * 9.80665;
                     case KPA:
                         return from * 1000D;
-                    case PA:
-                        return from;
                     case KG_SM2:
                         return from * 98066.5;
                     case BAR:
@@ -77,8 +92,6 @@ public class PressureConverter {
 
             case KG_SM2:
                 switch (this.inValue){
-                    case KG_SM2:
-                        return from;
                     case MM_ACVA:
                         return from * 0.0001;
                     case KPA:
@@ -97,8 +110,6 @@ public class PressureConverter {
 
             case BAR:
                 switch (this.inValue){
-                    case BAR:
-                        return from;
                     case KG_SM2:
                         return from * 0.980665;
                     case MM_ACVA:
@@ -119,8 +130,6 @@ public class PressureConverter {
                 switch (this.inValue){
                     case BAR:
                         return from * 0.01019716212978;
-                    case KG_MM2:
-                        return from;
                     case KG_SM2:
                         return from * 0.01;
                     case MM_ACVA:
