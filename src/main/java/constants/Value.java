@@ -55,4 +55,9 @@ public class Value {
     public final static String CALCULATER_NAME = "calculater name";
     public final static String CALCULATER_POSITION = "calculater position";
     public final static String HEAD_OF_DEPARTMENT = "head of department";
+
+    public final static String PERSON_SURNAME = "person surname";
+    public final static String PERSON_NAME = "person name";
+    public final static String PERSON_PATRONYMIC = "person patronymic";
+    public final static String PERSON_POSITION = "person position";
 }

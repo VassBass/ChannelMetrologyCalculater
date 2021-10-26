@@ -14,17 +14,16 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Objects;
 
-public class ExportChannels extends SwingWorker<Void, Integer> {
+public class ExportData extends SwingWorker<Void, Void>{
     private final MainScreen mainScreen;
     private final ArrayList<Channel> channels;
     private final LoadDialog loadDialog;
-    private final JProgressBar loadProgress;
 
     private int channelsNumber = 0;
 
-    public ExportChannels(MainScreen mainScreen){
+    public ExportData(MainScreen mainScreen){
         super();
         this.mainScreen = mainScreen;
         this.channels = Lists.channels();
@@ -33,9 +32,6 @@ public class ExportChannels extends SwingWorker<Void, Integer> {
         }
 
         this.loadDialog = new LoadDialog(mainScreen);
-        this.loadProgress = this.loadDialog.progressBar;
-        this.loadProgress.setIndeterminate(false);
-        this.loadProgress.setMaximum(this.channelsNumber);
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -51,28 +47,24 @@ public class ExportChannels extends SwingWorker<Void, Integer> {
     }
 
     @Override
-    protected void process(List<Integer> chunks){
-        int i = chunks.get(chunks.size() - 1);
-        this.loadProgress.setValue(i);
-        if (i == this.channels.size() - 1){
-            this.loadProgress.setString("Створення файлу експорту");
-        }else {
-            this.loadProgress.setString(Strings.EXPORT
-                    + " "
-                    + i
-                    + "/"
-                    + this.channelsNumber);
-        }
-    }
-
-    @Override
     protected void done() {
         this.loadDialog.dispose();
         JOptionPane.showMessageDialog(this.mainScreen, Strings.EXPORT_SUCCESS, Strings.EXPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private ArrayList<Values> createExportData(){
-        ArrayList<Values>data = new ArrayList<>();
+    /*
+     * [0] = Channels list
+     * [1] = Sensors list
+     * [2] = Persons list
+     * [3] = Departments list
+     * [4] = Areas list
+     * [5] = Processes list
+     * [6] = Installations list
+     */
+    private ArrayList<ArrayList<Values>> createExportData(){
+        ArrayList<ArrayList<Values>>data = new ArrayList<>();
+
+        ArrayList<Values>channels = new ArrayList<>();
         for (int x=0;x<this.channelsNumber;x++){
             Channel channel = this.channels.get(x);
             Values channelData = new Values();
@@ -109,19 +101,87 @@ public class ExportChannels extends SwingWorker<Void, Integer> {
             channelData.putValue(Value.SENSOR_MEASUREMENT, channel.getSensor().getMeasurement());//String
             channelData.putValue(Value.SENSOR_ERROR_FORMULA, channel.getSensor().getErrorFormula());//String
 
-            data.add(channelData);
-            publish(x);
+            channels.add(channelData);
         }
+
+        ArrayList<Values>sensors = new ArrayList<>();
+        ArrayList<Sensor>sensorsList = Lists.sensors();
+        for (Sensor sensor : Objects.requireNonNull(sensorsList)){
+            Values sensorData = new Values();
+
+            sensorData.putValue(Value.SENSOR_TYPE, sensor.getType());//String
+            sensorData.putValue(Value.SENSOR_NAME, sensor.getName());//String
+            sensorData.putValue(Value.SENSOR_RANGE_MIN, sensor.getRangeMin());//double
+            sensorData.putValue(Value.SENSOR_RANGE_MAX, sensor.getRangeMax());//double
+            sensorData.putValue(Value.SENSOR_NUMBER, sensor.getNumber());//String
+            sensorData.putValue(Value.SENSOR_VALUE, sensor.getValue());//String
+            sensorData.putValue(Value.SENSOR_MEASUREMENT, sensor.getMeasurement());//String
+            sensorData.putValue(Value.SENSOR_ERROR_FORMULA, sensor.getErrorFormula());//String
+
+            sensors.add(sensorData);
+        }
+
+        ArrayList<Values>persons = new ArrayList<>();
+        ArrayList<Worker>personsList = Lists.persons();
+        for (Worker person : Objects.requireNonNull(personsList)){
+            Values personData = new Values();
+
+            personData.putValue(Value.PERSON_NAME, person.getName());
+            personData.putValue(Value.PERSON_SURNAME, person.getSurname());
+            personData.putValue(Value.PERSON_PATRONYMIC, person.getPatronymic());
+            personData.putValue(Value.PERSON_POSITION, person.getPosition());
+
+            persons.add(personData);
+        }
+
+        ArrayList<Values>departments = new ArrayList<>();
+        ArrayList<String>departmentsList = Lists.departments();
+        for (String department : Objects.requireNonNull(departmentsList)){
+            Values departmentData = new Values();
+            departmentData.putValue(Value.CHANNEL_DEPARTMENT, department);
+            departments.add(departmentData);
+        }
+
+        ArrayList<Values>areas = new ArrayList<>();
+        ArrayList<String>areasList = Lists.areas();
+        for (String area : Objects.requireNonNull(areasList)){
+            Values areaData = new Values();
+            areaData.putValue(Value.CHANNEL_AREA, area);
+            areas.add(areaData);
+        }
+
+        ArrayList<Values>processes = new ArrayList<>();
+        ArrayList<String>processesList = Lists.processes();
+        for (String process : Objects.requireNonNull(processesList)){
+            Values processData = new Values();
+            processData.putValue(Value.CHANNEL_PROCESS, process);
+            processes.add(processData);
+        }
+
+        ArrayList<Values>installations = new ArrayList<>();
+        ArrayList<String>installationsList = Lists.installations();
+        for (String installation : Objects.requireNonNull(installationsList)){
+            Values installationData = new Values();
+            installationData.putValue(Value.CHANNEL_INSTALLATION, installation);
+            installations.add(installationData);
+        }
+
+        data.add(channels);     // 0
+        data.add(sensors);      // 1
+        data.add(persons);      // 2
+        data.add(departments);  // 3
+        data.add(areas);        // 4
+        data.add(processes);    // 5
+        data.add(installations);// 6
         return data;
     }
 
-    private void saveData(ArrayList<Values>data){
-        this.loadProgress.setIndeterminate(true);
+    private void saveData(ArrayList<ArrayList<Values>>data){
         try {
-            File file = new File(Files.EXPORT_DIR, Strings.FILE_NAME_EXPORTED_CHANNELS(Calendar.getInstance()));
+            File file = new File(Files.EXPORT_DIR, Strings.FILE_NAME_EXPORTED_DATA(Calendar.getInstance()));
             if (!file.exists()){
                 if (!file.createNewFile()){
-                    JOptionPane.showMessageDialog(mainScreen, Strings.ERROR, "Файл експорту не вдалось створити",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, Strings.ERROR, "Файл експорту не вдалось створити", JOptionPane.ERROR_MESSAGE);
                 }
             }
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));

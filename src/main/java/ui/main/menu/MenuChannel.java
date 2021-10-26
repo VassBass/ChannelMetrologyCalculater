@@ -5,8 +5,6 @@ import constants.Strings;
 import ui.UI_Container;
 import ui.calculate.start.CalculateStartDialog;
 import ui.channelInfo.DialogChannel;
-import ui.exportChannels.ExportChannelsDialog;
-import ui.importChannels.ImportChannelsDialog;
 import ui.main.MainScreen;
 import ui.removeChannels.DialogRemoveChannels;
 import ui.searchChannel.DialogSearch;
@@ -24,8 +22,6 @@ public class MenuChannel extends JMenu implements UI_Container {
     private JMenuItem buttonDetails = null;
     private JMenuItem buttonRemove = null;
     private JMenuItem buttonSearch = null;
-    private JMenuItem buttonImport = null;
-    private JMenuItem buttonExport = null;
 
     public MenuChannel(MainScreen mainScreen){
         super(Strings.CHANNEL);
@@ -43,8 +39,6 @@ public class MenuChannel extends JMenu implements UI_Container {
         this.buttonDetails = new JMenuItem(Strings.DETAILS);
         this.buttonRemove = new JMenuItem(Strings.REMOVE);
         this.buttonSearch = new JMenuItem(Strings.SEARCH);
-        this.buttonImport = new JMenuItem(Strings.IMPORT);
-        this.buttonExport = new JMenuItem(Strings.EXPORT);
     }
 
     @Override
@@ -54,8 +48,6 @@ public class MenuChannel extends JMenu implements UI_Container {
         this.buttonRemove.addActionListener(this.clickRemove);
         this.buttonCalculate.addActionListener(this.clickCalculate);
         this.buttonSearch.addActionListener(this.clickSearch);
-        this.buttonExport.addActionListener(this.clickExport);
-        this.buttonImport.addActionListener(clickImport);
     }
 
     @Override
@@ -67,9 +59,6 @@ public class MenuChannel extends JMenu implements UI_Container {
         this.add(this.buttonCalculate);
         this.addSeparator();
         this.add(this.buttonSearch);
-        this.addSeparator();
-        this.add(this.buttonImport);
-        this.add(this.buttonExport);
     }
 
     private final ActionListener clickDetails = new ActionListener() {
@@ -136,30 +125,6 @@ public class MenuChannel extends JMenu implements UI_Container {
             }else {
                 mainScreen.update(Lists.channels(), false, null, null);
             }
-        }
-    };
-
-    private final ActionListener clickExport = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ExportChannelsDialog(mainScreen).setVisible(true);
-                }
-            });
-        }
-    };
-
-    private final ActionListener clickImport = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ImportChannelsDialog(mainScreen).setVisible(true);
-                }
-            });
         }
     };
 }

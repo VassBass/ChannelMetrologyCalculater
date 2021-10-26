@@ -85,7 +85,7 @@ public class Strings {
     public static final String IMPORT = "Імпорт";
     public static final String EXPORT = "Експорт";
     public static final String EXPORTED_FILES = "Файли експорту";
-    public static final String EXPORT_SUCCESS = "Канали вдало експортовані";
+    public static final String EXPORT_SUCCESS = "Дані вдало експортовані";
     public static final String FILE_NAME = "Назва файлу";
     public static final String TYPES_OF_FILES = "Типи файлів";
     public static final String DIRECTORY = "Директорія";
@@ -130,7 +130,9 @@ public class Strings {
     public static final String ADVICE_FIX_PRESSURE = "Порада: ущільнити датчик, не допускаючи стравлювання.";
     public static final String ADVICE_RANGE = "Порада: для кращих показів налаштуйте вимірювальний канал на вказаний діапазон вимірювання";
     public static final String ERROR_FORMULA = "Формула для розрахунку похибки";
-    public static final String HELP = "Допомога";
+    public static final String EXPORT_IMPORT = "Експорт/Імпорт";
+    public static final String EXPORT_DATA = "Експорт даних";
+    public static final String IMPORT_DATA = "Імпорт даних";
 
     public static final String MAIN_DIR_NAME = "Support";
     public static final String DIR_NAME_LISTS = "Lists";
@@ -147,8 +149,8 @@ public class Strings {
     public static final String FILE_NAME_MEASUREMENTS = "Measurements.dat";
     public static final String FILE_NAME_PERSONS = "Persons.dat";
 
-    public static String FILE_NAME_EXPORTED_CHANNELS(Calendar date){
-        return "Channels ["
+    public static String FILE_NAME_EXPORTED_DATA(Calendar date){
+        return "EXPORT ["
                 + date.get(Calendar.DAY_OF_MONTH)
                 + "."
                 + (date.get(Calendar.MONTH) + 1)

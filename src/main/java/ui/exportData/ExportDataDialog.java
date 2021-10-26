@@ -1,10 +1,8 @@
-package ui.exportChannels;
+package ui.exportData;
 
-import backgroundTasks.ExportChannels;
-import constants.Files;
-import converters.ConverterUI;
-import support.Lists;
+import backgroundTasks.ExportData;
 import constants.Strings;
+import converters.ConverterUI;
 import ui.UI_Container;
 import ui.main.MainScreen;
 
@@ -14,15 +12,14 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
-public class ExportChannelsDialog extends JDialog implements UI_Container {
+public class ExportDataDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
 
     private JLabel label;
-    private JButton buttonExport, buttonCancel, buttonFolder;
+    private JButton buttonExport, buttonCancel;
 
-    public ExportChannelsDialog(MainScreen mainScreen){
+    public ExportDataDialog(MainScreen mainScreen){
         super(mainScreen, Strings.EXPORT, true);
         this.mainScreen = mainScreen;
 
@@ -33,9 +30,7 @@ public class ExportChannelsDialog extends JDialog implements UI_Container {
 
     @Override
     public void createElements() {
-        String message = "Експортувати канали? (кількість["
-                + Objects.requireNonNull(Lists.channels()).size()
-                + "])";
+        String message = "Експортувати дані?";
         this.label = new JLabel(message);
 
         this.buttonExport = new JButton(Strings.EXPORT);
@@ -49,12 +44,6 @@ public class ExportChannelsDialog extends JDialog implements UI_Container {
         this.buttonCancel.setFocusPainted(false);
         this.buttonCancel.setContentAreaFilled(false);
         this.buttonCancel.setOpaque(true);
-
-        this.buttonFolder = new JButton(Strings.EXPORTED_FILES);
-        this.buttonFolder.setBackground(Color.white);
-        this.buttonFolder.setFocusPainted(false);
-        this.buttonFolder.setContentAreaFilled(false);
-        this.buttonFolder.setOpaque(true);
     }
 
     @Override
@@ -63,9 +52,7 @@ public class ExportChannelsDialog extends JDialog implements UI_Container {
 
         this.buttonExport.addChangeListener(this.pushButton);
         this.buttonCancel.addChangeListener(this.pushButton);
-        this.buttonFolder.addChangeListener(this.pushButton);
 
-        this.buttonFolder.addActionListener(this.clickFolder);
         this.buttonCancel.addActionListener(this.clickCancel);
         this.buttonExport.addActionListener(this.clickExport);
     }
@@ -90,21 +77,6 @@ public class ExportChannelsDialog extends JDialog implements UI_Container {
         }
     };
 
-    private final ActionListener clickFolder = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Desktop desktop;
-            if (Desktop.isDesktopSupported()){
-                desktop = Desktop.getDesktop();
-                try {
-                    desktop.open(Files.EXPORT_DIR);
-                }catch (Exception ex){
-                    ex.printStackTrace();
-                }
-            }
-        }
-    };
-
     private final ActionListener clickCancel = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -116,7 +88,7 @@ public class ExportChannelsDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            new ExportChannels(mainScreen).execute();
+            new ExportData(mainScreen).execute();
         }
     };
 
@@ -125,10 +97,9 @@ public class ExportChannelsDialog extends JDialog implements UI_Container {
         protected MainPanel(){
             super(new GridBagLayout());
 
-            this.add(label, new Cell(0,0,2));
-            this.add(buttonCancel, new Cell(0,1,1));
-            this.add(buttonExport, new Cell(1,1,1));
-            this.add(buttonFolder, new Cell(0,2,2));
+            this.add(label, new MainPanel.Cell(0,0,2));
+            this.add(buttonCancel, new MainPanel.Cell(0,1,1));
+            this.add(buttonExport, new MainPanel.Cell(1,1,1));
         }
 
         private class Cell extends GridBagConstraints{

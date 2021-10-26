@@ -2,6 +2,7 @@ package backgroundTasks;
 
 import support.Channel;
 import support.Lists;
+import support.Sensor;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -13,12 +14,14 @@ public class SaveChannelsToFile extends SwingWorker<Void, Void> {
     private final MainScreen mainScreen;
     private final LoadDialog loadDialog;
     private final ArrayList<Channel>channels;
+    private final ArrayList<Sensor>sensors;
 
-    public SaveChannelsToFile(MainScreen mainScreen, ArrayList<Channel> channels){
+    public SaveChannelsToFile(MainScreen mainScreen, ArrayList<Channel> channels, ArrayList<Sensor>sensors){
         super();
 
         this.mainScreen = mainScreen;
         this.channels = channels;
+        this.sensors = sensors;
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -30,6 +33,7 @@ public class SaveChannelsToFile extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
+        Lists.saveSensorsListToFile(this.sensors);
         Lists.saveChannelsListToFile(this.channels);
         return null;
     }
