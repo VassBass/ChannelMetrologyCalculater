@@ -32,6 +32,7 @@ public class ExportDataDialog extends JDialog implements UI_Container {
     public void createElements() {
         String message = "Експортувати дані?";
         this.label = new JLabel(message);
+        this.label.setHorizontalAlignment(SwingConstants.CENTER);
 
         this.buttonExport = new JButton(Strings.EXPORT);
         this.buttonExport.setBackground(Color.white);
@@ -59,7 +60,7 @@ public class ExportDataDialog extends JDialog implements UI_Container {
 
     @Override
     public void build() {
-        this.setSize(300,200);
+        this.setSize(300,100);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());

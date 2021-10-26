@@ -1,4 +1,4 @@
-package ui.importChannels.compareChannels;
+package ui.importData;
 
 import constants.Strings;
 import converters.ConverterUI;

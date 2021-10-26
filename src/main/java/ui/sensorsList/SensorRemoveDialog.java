@@ -30,10 +30,14 @@ public class SensorRemoveDialog extends JDialog implements UI_Container {
     }
 
     private static String title(int indexOfSensor){
-        return Strings.REMOVE
-                + " \""
-                + Objects.requireNonNull(Lists.sensors()).get(indexOfSensor).getName()
-                + "\"?";
+        try {
+            return Strings.REMOVE
+                    + " \""
+                    + Objects.requireNonNull(Lists.sensors()).get(indexOfSensor).getName()
+                    + "\"?";
+        }catch (Exception ex){
+            return Strings.REMOVE;
+        }
     }
 
     @Override

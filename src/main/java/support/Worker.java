@@ -34,7 +34,6 @@ public class Worker implements Serializable {
     public boolean equalsPerson(Worker person){
         return this.name.equals(person.getName())
                 && this.surname.equals(person.getSurname())
-                && this.patronymic.equals(person.getPatronymic())
-                && this.position.equals(person.getPosition());
+                && this.patronymic.equals(person.getPatronymic());
     }
 }

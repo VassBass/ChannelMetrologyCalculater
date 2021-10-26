@@ -72,4 +72,14 @@ public class Sensor implements Serializable {
         Sensor s = (Sensor)object;
         return this.name.equals(s.getName());
     }
+
+    public boolean matchingFields(Sensor sensor){
+        return this.type.equals(sensor.getType()) &&
+                this.rangeMin == sensor.getRangeMin() &&
+                this.rangeMax == sensor.getRangeMax() &&
+                this.number.equals(sensor.getNumber()) &&
+                this.value.equals(sensor.getValue()) &&
+                this.measurement.equals(sensor.getMeasurement()) &&
+                this.errorFormula.equals(sensor.getErrorFormula());
+    }
 }

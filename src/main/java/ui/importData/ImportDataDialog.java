@@ -1,6 +1,6 @@
-package ui.importChannels;
+package ui.importData;
 
-import backgroundTasks.ImportChannels;
+import backgroundTasks.ImportData;
 import constants.Files;
 import constants.Strings;
 import ui.main.MainScreen;
@@ -10,12 +10,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.util.Objects;
 
-public class ImportChannelsDialog extends JFileChooser {
+public class ImportDataDialog extends JFileChooser {
 
-    public ImportChannelsDialog(final MainScreen mainScreen){
+    public ImportDataDialog(final MainScreen mainScreen){
         super();
 
-        this.setDialogTitle(Strings.IMPORT);
+        this.setDialogTitle(Strings.IMPORT_DATA);
         this.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Файли експорту (*.exp)", "exp");
@@ -24,7 +24,7 @@ public class ImportChannelsDialog extends JFileChooser {
         int result = this.showOpenDialog(mainScreen);
         if (result == JFileChooser.APPROVE_OPTION){
             if (Objects.requireNonNull(Files.getFileExtension(this.getSelectedFile())).equals("exp")){
-                new ImportChannels(mainScreen, this.getSelectedFile()).execute();
+                new ImportData(mainScreen, this.getSelectedFile()).execute();
             }else{
                 EventQueue.invokeLater(new Runnable() {
                     @Override

@@ -1,0 +1,342 @@
+package backgroundTasks;
+
+import constants.MeasurementConstants;
+import constants.Value;
+import measurements.Measurement;
+import support.*;
+import ui.LoadDialog;
+import ui.importData.compareSensors.CompareSensorsDialog;
+import ui.main.MainScreen;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Objects;
+
+@SuppressWarnings("unchecked")
+public class ImportData extends SwingWorker<Void, Void> {
+    private final MainScreen mainScreen;
+    private final File importDataFile;
+    private final LoadDialog loadDialog;
+
+    private ArrayList<ArrayList<Values>>data;
+
+    private final ArrayList<Channel>oldChannels;
+    private ArrayList<Channel>importedChannels;
+    private final ArrayList<Channel>newChannelsList;
+    private final ArrayList<Integer[]>channelsIndexes;
+
+    private ArrayList<Sensor>importedSensors;
+    private final ArrayList<Sensor>oldSensors;
+    private final ArrayList<Sensor>newSensorsList;
+    private final ArrayList<Integer[]>sensorsIndexes;
+
+    private ArrayList<Worker>importedPersons;
+    private final ArrayList<Worker>oldPersons;
+    private final ArrayList<Worker>newPersonsList;
+    private final ArrayList<Integer[]>personsIndexes;
+
+    private final ArrayList<String>newDepartmentsList, newAreasList, newProcessesList, newInstallationsList;
+
+    public ImportData(final MainScreen mainScreen, File importDataFile){
+        super();
+        this.mainScreen = mainScreen;
+        this.importDataFile = importDataFile;
+
+        this.oldSensors = Lists.sensors();
+        this.newSensorsList = new ArrayList<>();
+        this.sensorsIndexes = new ArrayList<>();
+
+        this.oldChannels = Lists.channels();
+        this.newChannelsList = new ArrayList<>();
+        this.channelsIndexes = new ArrayList<>();
+
+        this.oldPersons = Lists.persons();
+        this.newPersonsList = new ArrayList<>();
+        this.personsIndexes = new ArrayList<>();
+
+        this.newDepartmentsList = new ArrayList<>();
+        this.newAreasList = new ArrayList<>();
+        this.newProcessesList = new ArrayList<>();
+        this.newInstallationsList = new ArrayList<>();
+
+        this.loadDialog = new LoadDialog(mainScreen);
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                loadDialog.setVisible(true);
+            }
+        });
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        this.data = this.dataExtraction();
+        this.importedSensors = this.sensorsExtraction();
+        this.importedChannels = this.channelsExtraction();
+        this.importedPersons = this.personsExtraction();
+
+        this.copySensors();
+        this.copyChannels();
+        this.copyPersons();
+        this.copyPathElements();
+
+        return null;
+    }
+
+    @Override
+    protected void done() {
+        this.loadDialog.dispose();
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new CompareSensorsDialog(mainScreen,
+                        newSensorsList, importedSensors, sensorsIndexes,
+                        newChannelsList,importedChannels, channelsIndexes,
+                        newPersonsList, importedPersons, personsIndexes,
+                        newDepartmentsList, newAreasList, newProcessesList, newInstallationsList);
+            }
+        });
+    }
+
+    private ArrayList<ArrayList<Values>>dataExtraction(){
+        ArrayList<ArrayList<Values>>data;
+        try {
+            ObjectInputStream oos = new ObjectInputStream(new FileInputStream(this.importDataFile));
+            data = (ArrayList<ArrayList<Values>>) oos.readObject();
+            oos.close();
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+        return data;
+    }
+
+    private ArrayList<Channel>channelsExtraction(){
+        ArrayList<Channel>channels = new ArrayList<>();
+        ArrayList<Values>data = this.data.get(0);
+
+        for (Values channelData : data) {
+            Channel channel = new Channel();
+
+            channel.setCode(channelData.getStringValue(Value.CHANNEL_CODE));
+            channel.setName(channelData.getStringValue(Value.CHANNEL_NAME));
+            channel.setDepartment(channelData.getStringValue(Value.CHANNEL_DEPARTMENT));
+            channel.setArea(channelData.getStringValue(Value.CHANNEL_AREA));
+            channel.setProcess(channelData.getStringValue(Value.CHANNEL_PROCESS));
+            channel.setInstallation(channelData.getStringValue(Value.CHANNEL_INSTALLATION));
+            channel.setDate((Calendar) channelData.getValue(Value.CHANNEL_DATE));
+            channel.setFrequency(channelData.getDoubleValue(Value.CHANNEL_FREQUENCY));
+            channel.setTechnologyNumber(channelData.getStringValue(Value.CHANNEL_TECHNOLOGY_NUMBER));
+            channel.setNumberOfProtocol(channelData.getStringValue(Value.CHANNEL_PROTOCOL_NUMBER));
+            channel.setReference(channelData.getStringValue(Value.CHANNEL_REFERENCE));
+            channel.setRangeMin(channelData.getDoubleValue(Value.CHANNEL_RANGE_MIN));
+            channel.setRangeMax(channelData.getDoubleValue(Value.CHANNEL_RANGE_MAX));
+            channel.setAllowableError(channelData.getDoubleValue(Value.CHANNEL_ALLOWABLE_ERROR_PERCENT),
+                    channelData.getDoubleValue(Value.CHANNEL_ALLOWABLE_ERROR_VALUE));
+            channel.isGood = channelData.getBooleanValue(Value.CHANNEL_IS_GOOD);
+
+            MeasurementConstants measurementName = MeasurementConstants.getConstantFromString(channelData.getStringValue(Value.MEASUREMENT_NAME));
+            MeasurementConstants measurementValue = MeasurementConstants.getConstantFromString(channelData.getStringValue(Value.MEASUREMENT_VALUE));
+            Measurement measurement = new Measurement(measurementName, measurementValue);
+            channel.setMeasurement(measurement);
+
+            Sensor sensor = new Sensor();
+            sensor.setType(Value.SENSOR_TYPE);
+            sensor.setName(Value.SENSOR_NAME);
+            sensor.setRangeMin(channelData.getDoubleValue(Value.SENSOR_RANGE_MIN));
+            sensor.setRangeMax(channelData.getDoubleValue(Value.SENSOR_RANGE_MAX));
+            sensor.setNumber(channelData.getStringValue(Value.SENSOR_NUMBER));
+            sensor.setValue(channelData.getStringValue(Value.SENSOR_VALUE));
+            sensor.setMeasurement(channelData.getStringValue(Value.SENSOR_MEASUREMENT));
+            sensor.setErrorFormula(Value.SENSOR_ERROR_FORMULA);
+            channel.setSensor(sensor);
+
+            channels.add(channel);
+        }
+        return channels;
+    }
+
+    private ArrayList<Sensor>sensorsExtraction(){
+        ArrayList<Sensor>sensors = new ArrayList<>();
+        ArrayList<Values>data = this.data.get(1);
+
+        for (Values sensorData : data){
+            Sensor sensor = new Sensor();
+
+            sensor.setType(sensorData.getStringValue(Value.SENSOR_TYPE));
+            sensor.setName(sensorData.getStringValue(Value.SENSOR_NAME));
+            sensor.setRangeMin(sensorData.getDoubleValue(Value.SENSOR_RANGE_MIN));
+            sensor.setRangeMax(sensorData.getDoubleValue(Value.SENSOR_RANGE_MAX));
+            sensor.setNumber(sensorData.getStringValue(Value.SENSOR_NUMBER));
+            sensor.setValue(sensorData.getStringValue(Value.SENSOR_VALUE));
+            sensor.setMeasurement(sensorData.getStringValue(Value.SENSOR_MEASUREMENT));
+            sensor.setErrorFormula(sensorData.getStringValue(Value.SENSOR_ERROR_FORMULA));
+
+            sensors.add(sensor);
+        }
+        return sensors;
+    }
+
+    private ArrayList<Worker>personsExtraction(){
+        ArrayList<Worker>persons = new ArrayList<>();
+        ArrayList<Values>data = this.data.get(2);
+
+        for (Values personData : data){
+            Worker person = new Worker();
+
+            person.setName(personData.getStringValue(Value.PERSON_NAME));
+            person.setSurname(personData.getStringValue(Value.PERSON_SURNAME));
+            person.setPatronymic(personData.getStringValue(Value.PERSON_PATRONYMIC));
+            person.setPosition(personData.getStringValue(Value.PERSON_POSITION));
+
+            persons.add(person);
+        }
+        return persons;
+    }
+
+    private void copySensors(){
+        for (int imp=0;imp<this.importedSensors.size();imp++){
+            boolean exist = false;
+            for (int old=0;old<this.oldSensors.size();old++){
+                if (this.importedSensors.get(imp).getName().equals(this.oldSensors.get(old).getName())){
+                    exist = true;
+                    if (this.importedSensors.get(imp).matchingFields(this.oldSensors.get(old))){
+                        this.newSensorsList.add(this.importedSensors.get(imp));
+                    }else {
+                        this.sensorsIndexes.add(new Integer[]{old, imp});
+                    }
+                    break;
+                }
+            }
+            if (!exist){
+                this.newSensorsList.add(this.importedSensors.get(imp));
+            }
+        }
+    }
+
+    private void copyChannels(){
+        for (int imp=0;imp<this.importedChannels.size();imp++){
+            boolean exist = false;
+            for (int old=0;old<this.oldChannels.size();old++){
+                if (this.oldChannels.get(old).getCode().equals(this.importedChannels.get(imp).getCode())){
+                    exist = true;
+                    if (this.oldChannels.get(old).equals(this.importedChannels.get(imp))){
+                        this.newChannelsList.add(this.oldChannels.get(old));
+                    }else {
+                        this.channelsIndexes.add(new Integer[]{old, imp});
+                    }
+                    break;
+                }
+            }
+            if (!exist){
+                this.newChannelsList.add(this.importedChannels.get(imp));
+            }
+        }
+    }
+
+    private void copyPersons(){
+        for (int imp=0;imp<this.importedPersons.size();imp++){
+            boolean exist = false;
+            for (int old=0;old<this.oldPersons.size();old++){
+                if (this.importedPersons.get(imp).equalsPerson(this.oldPersons.get(old))){
+                    exist = true;
+                    if (this.importedPersons.get(imp).getPosition().equals(this.oldPersons.get(old).getPosition())){
+                        this.newPersonsList.add(this.oldPersons.get(old));
+                    }else {
+                        this.personsIndexes.add(new Integer[]{old, imp});
+                    }
+                    break;
+                }
+            }
+            if (!exist){
+                this.newPersonsList.add(this.importedPersons.get(imp));
+            }
+        }
+    }
+
+    private void copyPathElements(){
+        ArrayList<String>old;
+        ArrayList<String>imported = new ArrayList<>();
+        ArrayList<Values>data;
+
+        old = Lists.departments();
+        data = this.data.get(3);
+        for (Values department : data){
+            imported.add(department.getStringValue(Value.CHANNEL_DEPARTMENT));
+        }
+        for (String imp : imported){
+            boolean exist = false;
+            for (String o : Objects.requireNonNull(old)){
+                if (imp.equals(o)){
+                    exist = true;
+                    this.newDepartmentsList.add(o);
+                }
+            }
+            if (!exist){
+                this.newDepartmentsList.add(imp);
+            }
+        }
+
+        imported.clear();
+        old = Lists.areas();
+        data = this.data.get(4);
+        for (Values area : data){
+            imported.add(area.getStringValue(Value.CHANNEL_AREA));
+        }
+        for (String imp : imported){
+            boolean exist = false;
+            for (String o : Objects.requireNonNull(old)){
+                if (imp.equals(o)){
+                    exist = true;
+                    this.newAreasList.add(o);
+                }
+            }
+            if (!exist){
+                this.newAreasList.add(imp);
+            }
+        }
+
+        imported.clear();
+        old = Lists.processes();
+        data = this.data.get(5);
+        for (Values process : data){
+            imported.add(process.getStringValue(Value.CHANNEL_PROCESS));
+        }
+        for (String imp : imported){
+            boolean exist = false;
+            for (String o : Objects.requireNonNull(old)){
+                if (imp.equals(o)){
+                    exist = true;
+                    this.newProcessesList.add(o);
+                }
+            }
+            if (!exist){
+                this.newProcessesList.add(imp);
+            }
+        }
+
+        imported.clear();
+        old = Lists.installations();
+        data = this.data.get(6);
+        for (Values installation : data){
+            imported.add(installation.getStringValue(Value.CHANNEL_INSTALLATION));
+        }
+        for (String imp : imported){
+            boolean exist = false;
+            for (String o : Objects.requireNonNull(old)){
+                if (imp.equals(o)){
+                    exist = true;
+                    this.newInstallationsList.add(o);
+                }
+            }
+            if (!exist){
+                this.newInstallationsList.add(imp);
+            }
+        }
+    }
+}

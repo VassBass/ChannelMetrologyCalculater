@@ -115,8 +115,8 @@ public class Strings {
     public static final String OUT = "Вихід";
     public static final String CONTROL_INFO = "Дані перевірки";
     public static final String REFERENCE = "Довідка";
-    public static final String CHANGE_CHANNEL = "Замінити";
-    public static final String CHANGE_ALL_CHANNELS = "Замінити все";
+    public static final String _CHANGE = "Замінити";
+    public static final String CHANGE_ALL = "Замінити все";
     public static final String SKIP = "Пропустити";
     public static final String REMOVE_ALL = "Видалити всі";
     public static final String REMOVE_ALL_QUESTION = "Ви впевнені що хочете видалити всі канали? Загальна кількість: ";
@@ -133,6 +133,10 @@ public class Strings {
     public static final String EXPORT_IMPORT = "Експорт/Імпорт";
     public static final String EXPORT_DATA = "Експорт даних";
     public static final String IMPORT_DATA = "Імпорт даних";
+    public static final String SENSOR_IN_LIST = "ПВП з переліку";
+    public static final String IMPORTED_SENSOR = "Імпортуємий ПВП";
+    public static final String WORKER_IN_LIST = "Данні працівника зі списку";
+    public static final String IMPORTED_WORKER = "Імпортуємі данні працівника";
 
     public static final String MAIN_DIR_NAME = "Support";
     public static final String DIR_NAME_LISTS = "Lists";

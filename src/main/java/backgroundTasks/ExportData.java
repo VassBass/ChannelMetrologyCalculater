@@ -126,10 +126,10 @@ public class ExportData extends SwingWorker<Void, Void>{
         for (Worker person : Objects.requireNonNull(personsList)){
             Values personData = new Values();
 
-            personData.putValue(Value.PERSON_NAME, person.getName());
-            personData.putValue(Value.PERSON_SURNAME, person.getSurname());
-            personData.putValue(Value.PERSON_PATRONYMIC, person.getPatronymic());
-            personData.putValue(Value.PERSON_POSITION, person.getPosition());
+            personData.putValue(Value.PERSON_NAME, person.getName());//String
+            personData.putValue(Value.PERSON_SURNAME, person.getSurname());//String
+            personData.putValue(Value.PERSON_PATRONYMIC, person.getPatronymic());//String
+            personData.putValue(Value.PERSON_POSITION, person.getPosition());//String
 
             persons.add(personData);
         }
@@ -138,7 +138,7 @@ public class ExportData extends SwingWorker<Void, Void>{
         ArrayList<String>departmentsList = Lists.departments();
         for (String department : Objects.requireNonNull(departmentsList)){
             Values departmentData = new Values();
-            departmentData.putValue(Value.CHANNEL_DEPARTMENT, department);
+            departmentData.putValue(Value.CHANNEL_DEPARTMENT, department);//String
             departments.add(departmentData);
         }
 
@@ -146,7 +146,7 @@ public class ExportData extends SwingWorker<Void, Void>{
         ArrayList<String>areasList = Lists.areas();
         for (String area : Objects.requireNonNull(areasList)){
             Values areaData = new Values();
-            areaData.putValue(Value.CHANNEL_AREA, area);
+            areaData.putValue(Value.CHANNEL_AREA, area);//String
             areas.add(areaData);
         }
 
@@ -154,7 +154,7 @@ public class ExportData extends SwingWorker<Void, Void>{
         ArrayList<String>processesList = Lists.processes();
         for (String process : Objects.requireNonNull(processesList)){
             Values processData = new Values();
-            processData.putValue(Value.CHANNEL_PROCESS, process);
+            processData.putValue(Value.CHANNEL_PROCESS, process);//String
             processes.add(processData);
         }
 
@@ -162,7 +162,7 @@ public class ExportData extends SwingWorker<Void, Void>{
         ArrayList<String>installationsList = Lists.installations();
         for (String installation : Objects.requireNonNull(installationsList)){
             Values installationData = new Values();
-            installationData.putValue(Value.CHANNEL_INSTALLATION, installation);
+            installationData.putValue(Value.CHANNEL_INSTALLATION, installation);//String
             installations.add(installationData);
         }
 

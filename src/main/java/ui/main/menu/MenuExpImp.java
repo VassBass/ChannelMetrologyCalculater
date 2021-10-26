@@ -4,6 +4,7 @@ import constants.Files;
 import constants.Strings;
 import ui.UI_Container;
 import ui.exportData.ExportDataDialog;
+import ui.importData.ImportDataDialog;
 import ui.main.MainScreen;
 
 import javax.swing.*;
@@ -36,18 +37,17 @@ public class MenuExpImp extends JMenu implements UI_Container {
     @Override
     public void setReactions() {
         this.buttonExport.addActionListener(clickExport);
-        this.buttonImport.addActionListener(clickFolder);
+        this.buttonImport.addActionListener(clickImport);
+        this.buttonFolder.addActionListener(clickFolder);
     }
 
     @Override
     public void build() {
-        this.addSeparator();
         this.add(this.buttonExport);
         this.addSeparator();
         this.add(this.buttonImport);
         this.addSeparator();
         this.add(this.buttonFolder);
-        this.addSeparator();
     }
 
     private final ActionListener clickExport = new ActionListener() {
@@ -57,6 +57,18 @@ public class MenuExpImp extends JMenu implements UI_Container {
                 @Override
                 public void run() {
                     new ExportDataDialog(mainScreen).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImport = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ImportDataDialog(mainScreen).setVisible(true);
                 }
             });
         }
