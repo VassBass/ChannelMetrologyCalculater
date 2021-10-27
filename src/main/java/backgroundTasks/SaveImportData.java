@@ -1,5 +1,6 @@
 package backgroundTasks;
 
+import constants.Strings;
 import support.Channel;
 import support.Lists;
 import support.Sensor;
@@ -59,5 +60,6 @@ public class SaveImportData extends SwingWorker<Void, Void> {
     protected void done() {
         this.loadDialog.dispose();
         this.mainScreen.update(this.channels, false, null, null);
+        JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

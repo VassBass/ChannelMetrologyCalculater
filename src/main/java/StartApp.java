@@ -1,6 +1,7 @@
 import support.Default;
 import constants.Files;
 import support.Lists;
+import support.Settings;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -36,6 +37,7 @@ public class StartApp {
         {
             Files.create();
             Lists.create();
+            Settings.checkSettings();
             return null;
         }
 

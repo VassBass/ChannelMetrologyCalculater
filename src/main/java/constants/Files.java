@@ -28,6 +28,8 @@ public class Files {
     public static final File FILE_FORM_MKMX_5300_01_18_GOOD_v3_5 = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_01_18_GOOD_v3_5);
     public static final File FILE_FORM_MKMX_5300_01_18_BAD_v3_5 = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_01_18_BAD_v3_5);
 
+    public static final File FILE_SETTINGS = new File(MAIN_DIR, Strings.FILE_NAME_SETTINGS);
+
     public static File certificateFile(String fileName){
         File file = new File(CERTIFICATES_DIR, fileName);
         if (!file.exists()){
@@ -68,6 +70,9 @@ public class Files {
             }
 
             //Files
+            if (!FILE_SETTINGS.exists() && !FILE_SETTINGS.createNewFile()) {
+                System.out.println("settings file was not created");
+            }
             if (!FILE_LIST_SENSORS.exists() && !FILE_LIST_SENSORS.createNewFile()) {
                 System.out.println("sensors list was not created");
             }

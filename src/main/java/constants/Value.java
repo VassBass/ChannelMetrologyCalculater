@@ -60,4 +60,7 @@ public class Value {
     public final static String PERSON_NAME = "person name";
     public final static String PERSON_PATRONYMIC = "person patronymic";
     public final static String PERSON_POSITION = "person position";
+
+    public final static String NAME_MKMX_5300_01 = "name mkmx 5300/01";
+    public final static String NAME_MKMX_5300_02 = "name mkmx 5300/02";
 }

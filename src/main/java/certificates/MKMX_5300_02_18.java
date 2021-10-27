@@ -12,6 +12,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import support.Sensor;
 import support.Channel;
+import support.Settings;
 import support.Values;
 
 import java.awt.*;
@@ -101,6 +102,9 @@ public class MKMX_5300_02_18 implements Certificate {
 
         this.alarmCheck = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
         this.alarmValue = this.values.getStringValue(Value.CALCULATION_ALARM_VALUE);
+
+        String methodName = Settings.getSettingValue(Value.NAME_MKMX_5300_02);
+        cell(30,36).setCellValue(methodName);
     }
 
     @Override

@@ -13,6 +13,7 @@ import support.Sensor;
 import support.Channel;
 import constants.Files;
 import constants.Strings;
+import support.Settings;
 import support.Values;
 
 import java.awt.*;
@@ -105,6 +106,9 @@ public class MKMX_5300_01_18 implements Certificate {
 
         this.alarmCheck = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
         this.alarmValue = this.values.getStringValue(Value.CALCULATION_ALARM_VALUE);
+
+        String methodName = Settings.getSettingValue(Value.NAME_MKMX_5300_01);
+        cell(30,36).setCellValue(methodName);
     }
 
     @Override

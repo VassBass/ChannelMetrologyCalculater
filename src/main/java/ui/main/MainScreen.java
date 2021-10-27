@@ -82,6 +82,12 @@ public class MainScreen extends JFrame implements UI_Container {
         this.infoTable.update((Channel) null);
     }
 
+    public void refreshMenu(){
+        this.setJMenuBar(new MenuBar(this));
+        this.setVisible(false);
+        this.setVisible(true);
+    }
+
     private final WindowListener windowListener = new WindowListener() {
         @Override public void windowOpened(WindowEvent e) {}
         @Override public void windowClosed(WindowEvent e) {}

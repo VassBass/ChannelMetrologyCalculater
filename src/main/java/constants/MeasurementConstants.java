@@ -6,7 +6,6 @@ public enum MeasurementConstants {
     PRESSURE("Тиск"),
 
     DEGREE_CELSIUS("\u2103"),
-    KELVIN("K"),
     KPA("кПа"),
     PA("Па"),
     MM_ACVA("мм вод ст"),

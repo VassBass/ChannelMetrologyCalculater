@@ -14,27 +14,14 @@ public class ValueConverter {
 
     public Double get(double from){
 
+        System.out.println(this.inValue);
+        System.out.println(this.outValue);
+
         if (this.outValue == this.inValue){
             return from;
         }
 
         switch (this.outValue){
-
-            case DEGREE_CELSIUS:
-                switch (this.inValue){
-                    case KELVIN:
-                        return from - 273.15;
-                    default:
-                        return null;
-                }
-
-            case KELVIN:
-                switch (this.inValue){
-                    case DEGREE_CELSIUS:
-                        return from + 273.15;
-                    default:
-                        return null;
-                }
 
             case MM_ACVA:
                 switch (this.inValue){

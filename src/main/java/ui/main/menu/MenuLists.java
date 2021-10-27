@@ -1,8 +1,12 @@
 package ui.main.menu;
 
+import calculation.Method;
 import constants.Strings;
+import constants.Value;
+import support.Settings;
 import ui.UI_Container;
 import ui.main.MainScreen;
+import ui.methodInfo.MethodInfoDialog;
 import ui.pathLists.PathListsDialog;
 import ui.personsList.PersonsListDialog;
 import ui.sensorsList.SensorsListDialog;
@@ -18,6 +22,7 @@ public class MenuLists extends JMenu implements UI_Container {
     private JMenuItem buttonPersons;
     private JMenuItem buttonDepartments, buttonAreas, buttonProcesses, buttonInstallations;
     private JMenuItem buttonSensors;
+    private JMenuItem mkmx_5300_01, mkmx_5300_02;
 
     public MenuLists(MainScreen mainScreen){
         super(Strings.LISTS);
@@ -36,6 +41,9 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonInstallations = new JMenuItem(Strings.INSTALLATIONS_LIST);
         this.buttonPersons = new JMenuItem(Strings.WORKERS);
         this.buttonSensors = new JMenuItem(Strings.SENSORS_LIST);
+
+        this.mkmx_5300_01 = new JMenuItem(Settings.getSettingValue(Value.NAME_MKMX_5300_01));
+        this.mkmx_5300_02 = new JMenuItem(Settings.getSettingValue(Value.NAME_MKMX_5300_02));
     }
 
     @Override
@@ -46,6 +54,8 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonInstallations.addActionListener(clickInstallations);
         this.buttonPersons.addActionListener(clickButtonPersons);
         this.buttonSensors.addActionListener(clickSensors);
+        this.mkmx_5300_01.addActionListener(clickMKMX_5300_01);
+        this.mkmx_5300_02.addActionListener(clickMKMX_5300_02);
     }
 
     @Override
@@ -58,6 +68,11 @@ public class MenuLists extends JMenu implements UI_Container {
         this.add(buttonInstallations);
         this.addSeparator();
         this.add(this.buttonPersons);
+        this.addSeparator();
+        JMenu methods = new JMenu(Strings.METHODS);
+        methods.add(this.mkmx_5300_01);
+        methods.add(this.mkmx_5300_02);
+        this.add(methods);
     }
 
     private final ActionListener clickButtonPersons = new ActionListener() {
@@ -127,6 +142,30 @@ public class MenuLists extends JMenu implements UI_Container {
                 @Override
                 public void run() {
                     new SensorsListDialog(mainScreen).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickMKMX_5300_01 = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new MethodInfoDialog(mainScreen, Method.MKMX_5300_01_18).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickMKMX_5300_02 = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new MethodInfoDialog(mainScreen, Method.MKMX_5300_02_18).setVisible(true);
                 }
             });
         }

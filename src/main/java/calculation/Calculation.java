@@ -3,10 +3,12 @@ package calculation;
 import constants.CalibratorType;
 import constants.MeasurementConstants;
 import calibrators.Calibrator;
+import constants.Value;
 import converters.ValueConverter;
 import org.apache.commons.lang3.math.NumberUtils;
 import support.Channel;
 import constants.Strings;
+import support.Settings;
 
 public class Calculation {
     private final Channel channel;
@@ -122,9 +124,9 @@ public class Calculation {
     public String getName(){
         switch (this.method){
             case MKMX_5300_01_18:
-                return Strings.MKMX_5300_01_18;
+                return Settings.getSettingValue(Value.NAME_MKMX_5300_01);
             case MKMX_5300_02_18:
-                return Strings.MKMX_5300_02_18;
+                return Settings.getSettingValue(Value.NAME_MKMX_5300_02);
             default:
                 return null;
         }

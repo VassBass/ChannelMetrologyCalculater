@@ -137,6 +137,8 @@ public class Strings {
     public static final String IMPORTED_SENSOR = "Імпортуємий ПВП";
     public static final String WORKER_IN_LIST = "Данні працівника зі списку";
     public static final String IMPORTED_WORKER = "Імпортуємі данні працівника";
+    public static final String METHODS = "Методи розрахунку";
+    public static final String OLD_NAME = "Стара назва";
 
     public static final String MAIN_DIR_NAME = "Support";
     public static final String DIR_NAME_LISTS = "Lists";
@@ -152,6 +154,8 @@ public class Strings {
     public static final String FILE_NAME_CALIBRATORS = "Calibrators.dat";
     public static final String FILE_NAME_MEASUREMENTS = "Measurements.dat";
     public static final String FILE_NAME_PERSONS = "Persons.dat";
+
+    public static final String FILE_NAME_SETTINGS = "settings.dat";
 
     public static String FILE_NAME_EXPORTED_DATA(Calendar date){
         return "EXPORT ["
@@ -169,9 +173,6 @@ public class Strings {
     public static final String FILE_NAME_FORM_MKMX_5300_02_18_GOOD = "form_MKMX_5300_02_18_good.xls";
     public static final String FILE_NAME_FORM_MKMX_5300_01_18_BAD_v3_5 = "form_MKMX_5300_01_18.xls";
     public static final String FILE_NAME_FORM_MKMX_5300_01_18_GOOD_v3_5 = "form_MKMX_5300_01_18_good.xls";
-
-    public static final String MKMX_5300_01_18 = "МКМХ №5300.01:18";
-    public static final String MKMX_5300_02_18 = "МКМХ №5300.02:18";
 
     public static final String PLUS_MINUS = "\u00B1";
     public static final String GAMMA = "\u03B3";

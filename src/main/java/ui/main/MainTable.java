@@ -49,20 +49,30 @@ public class MainTable extends JTable {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col){
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+                try {
+                    long nextDate = channelsList.get(row).getNextDate().getTimeInMillis();
 
-                long nextDate = channelsList.get(row).getNextDate().getTimeInMillis();
-                long toNextControl = nextDate - Calendar.getInstance().getTimeInMillis();
-                long days90 = 7776000000L;
+                    long toNextControl = nextDate - Calendar.getInstance().getTimeInMillis();
+                    long days90 = 7776000000L;
 
-                if (toNextControl <= days90 && toNextControl >= 0L){
-                    setBackground(Color.yellow);
-                    setForeground(Color.black);
-                }else if (toNextControl < 0L){
-                    setBackground(Color.red);
+                    if (toNextControl <= days90 && toNextControl >= 0L){
+                        setBackground(Color.yellow);
+                        setForeground(Color.black);
+                    }else if (toNextControl < 0L){
+                        setBackground(Color.red);
+                        setForeground(Color.white);
+                    }else {
+                        setBackground(table.getBackground());
+                        setForeground(table.getForeground());
+                    }
+                }catch (NullPointerException ex){
+                    if (isRowSelected(row)){
+                        setBackground(Color.blue);
+                    }else {
+                        setBackground(Color.red);
+                    }
                     setForeground(Color.white);
-                }else {
-                    setBackground(table.getBackground());
-                    setForeground(table.getForeground());
+                    return this;
                 }
 
                 if (isRowSelected(row)){

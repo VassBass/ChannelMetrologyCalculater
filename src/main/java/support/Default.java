@@ -5,6 +5,7 @@ import calibrators.*;
 import java.util.ArrayList;
 
 import constants.MeasurementConstants;
+import constants.Value;
 import constants.WorkPositions;
 import measurements.Measurement;
 import measurements.Pressure;
@@ -17,6 +18,15 @@ public class Default {
         unzipper.unzip();
     }
 
+    public static void loadSettings(){
+
+        String nameMKMX_5300_01 = "МКМХ №5300.01:18";
+        String nameMKMX_5300_02 = "МКМХ №5300.02:18";
+
+        Settings.setSettingValue(Value.NAME_MKMX_5300_01, nameMKMX_5300_01);
+        Settings.setSettingValue(Value.NAME_MKMX_5300_02, nameMKMX_5300_02);
+    }
+
     public static void loadSensors(){
         ArrayList<Sensor> sensors = new ArrayList<>();
 
@@ -24,7 +34,7 @@ public class Default {
         tcm_50m.setType("ТСМ-50М");
         tcm_50m.setName("ТСМ-50М");
         tcm_50m.setRange(-50D,180D);
-        tcm_50m.setValue(MeasurementConstants.OM.getValue());
+        tcm_50m.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         tcm_50m.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
         tcm_50m.setErrorFormula("(0.005 * R) + 0.3");
         sensors.add(tcm_50m);
@@ -33,7 +43,7 @@ public class Default {
         tcp_100.setType("ТОП  Pt 100");
         tcp_100.setName("ТОП  Pt 100");
         tcp_100.setRange(-50D,500D);
-        tcp_100.setValue(MeasurementConstants.OM.getValue());
+        tcp_100.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         tcp_100.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
         tcp_100.setErrorFormula("(0.005 * R) + 0.3");
         sensors.add(tcp_100);
@@ -42,7 +52,7 @@ public class Default {
         txa_2388_typeK.setType("Термопара TXA-2388 (тип К)");
         txa_2388_typeK.setName("Термопара TXA-2388 (тип К) < 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
         txa_2388_typeK.setRange(-50D,1250D);
-        txa_2388_typeK.setValue(MeasurementConstants.MV.getValue());
+        txa_2388_typeK.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         txa_2388_typeK.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
         txa_2388_typeK.setErrorFormula("2.5");
         sensors.add(txa_2388_typeK);
@@ -51,7 +61,7 @@ public class Default {
         txa_2388_typeK_big.setType("Термопара TXA-2388 (тип К)");
         txa_2388_typeK_big.setName("Термопара TXA-2388 (тип К) > 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
         txa_2388_typeK_big.setRange(-50D,1250D);
-        txa_2388_typeK_big.setValue(MeasurementConstants.MV.getValue());
+        txa_2388_typeK_big.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         txa_2388_typeK_big.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
         txa_2388_typeK_big.setErrorFormula("0.0075 * R");
         sensors.add(txa_2388_typeK_big);
@@ -60,7 +70,7 @@ public class Default {
         txa_0395_typeK.setType("Термопара TXA-0395 (тип К)");
         txa_0395_typeK.setName("Термопара TXA-0395 (тип К) < 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
         txa_0395_typeK.setRange(-50D,1250D);
-        txa_0395_typeK.setValue(MeasurementConstants.MV.getValue());
+        txa_0395_typeK.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         txa_0395_typeK.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
         txa_0395_typeK.setErrorFormula("2.5");
         sensors.add(txa_0395_typeK);
@@ -69,7 +79,7 @@ public class Default {
         txa_0395_typeK_big.setType("Термопара TXA-0395 (тип К)");
         txa_0395_typeK_big.setName("Термопара TXA-0395 (тип К) > 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
         txa_0395_typeK_big.setRange(-50D,1250D);
-        txa_0395_typeK_big.setValue(MeasurementConstants.MV.getValue());
+        txa_0395_typeK_big.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         txa_0395_typeK_big.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
         txa_0395_typeK_big.setErrorFormula("0.0075 * R");
         sensors.add(txa_0395_typeK_big);
@@ -78,7 +88,7 @@ public class Default {
         tp0198_2.setType("ТП 0198/2");
         tp0198_2.setName("ТП 0198/2 < 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
         tp0198_2.setRange(-40D,1100D);
-        tp0198_2.setValue(MeasurementConstants.MV.getValue());
+        tp0198_2.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         tp0198_2.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
         tp0198_2.setErrorFormula("2.5");
         sensors.add(tp0198_2);
@@ -87,7 +97,7 @@ public class Default {
         tp0198_2_big.setType("ТП 0198/2");
         tp0198_2_big.setName("ТП 0198/2 > 333.5" + MeasurementConstants.DEGREE_CELSIUS.getValue());
         tp0198_2_big.setRange(-40D,1100D);
-        tp0198_2_big.setValue(MeasurementConstants.MV.getValue());
+        tp0198_2_big.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         tp0198_2_big.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
         tp0198_2_big.setErrorFormula("0.0075 * R");
         sensors.add(tp0198_2_big);
@@ -243,7 +253,6 @@ public class Default {
         ArrayList<Measurement>measurements = new ArrayList<>();
 
         measurements.add(new Temperature(MeasurementConstants.DEGREE_CELSIUS));
-        measurements.add(new Temperature(MeasurementConstants.KELVIN));
         measurements.add(new Pressure(MeasurementConstants.KPA));
         measurements.add(new Pressure(MeasurementConstants.PA));
         measurements.add(new Pressure(MeasurementConstants.MM_ACVA));
