@@ -54,7 +54,7 @@ public class TemperatureCertificate implements Certificate {
 
         if (this.result.goodChannel()){
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_MKMX_5300_01_18_GOOD_v3_5));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_TEMPERATURE_GOOD));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();
@@ -62,7 +62,7 @@ public class TemperatureCertificate implements Certificate {
         }else{
             this.numberOfReference = values.getStringValue(Value.CHANNEL_REFERENCE);
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_MKMX_5300_01_18_BAD_v3_5));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_TEMPERATURE_BAD));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();

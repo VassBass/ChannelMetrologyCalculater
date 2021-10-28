@@ -1,5 +1,9 @@
 package ui.calculate.measurement.complexElements;
 
+import calibrators.Calibrator;
+import constants.CalibratorType;
+import constants.MeasurementConstants;
+import converters.ValueConverter;
 import converters.VariableConverter;
 import support.Channel;
 import ui.ButtonCell;
@@ -11,10 +15,9 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
 
-public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, MeasurementPanel {
+public class PressurePanel extends JPanel implements UI_Container, MeasurementPanel {
     private final Channel channel;
-
-    private double[] values;
+    private final Calibrator calibrator;
 
     private JButton[] columnsHeader;
     private JButton[] labelPercent;
@@ -23,9 +26,10 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
 
     private JTextField[] userMeasurements;
 
-    public MKMX_5300_01_18_Panel(Channel channel){
+    public PressurePanel(Channel channel, Calibrator calibrator){
         super(new GridBagLayout());
         this.channel = channel;
+        this.calibrator = calibrator;
 
         this.createElements();
         this.setReactions();
@@ -42,7 +46,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
         String motionUp = "Прямий";
         String motionDown = "Зворотній";
 
-        this.columnsHeader = new JButton[5];
+        this.columnsHeader = new JButton[4];
         this.columnsHeader[0] = new ButtonCell(true, columnPercent);
         this.columnsHeader[1] = new ButtonCell(true, columnValue);
         this.columnsHeader[2] = new ButtonCell(true, columnMotion);
@@ -56,19 +60,29 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double value0 = channel.getRangeMin();
-        double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
-        double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
-        double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
-        double value100 = channel.getRangeMax();
-        this.values = new double[]{value0, value5, value50, value95, value100};
+        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
 
+        double value0 = this.channel.getRangeMin();
+        double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
+        double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
+        double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+        double value100 = this.channel.getRangeMax();
         this.labelValue = new JButton[5];
-        this.labelValue[0] = new ButtonCell(false, String.format(Locale.ENGLISH, "%.2f", this.values[0]) + value);
-        this.labelValue[1] = new ButtonCell(false, String.format(Locale.ENGLISH, "%.2f", this.values[1]) + value);
-        this.labelValue[2] = new ButtonCell(false, String.format(Locale.ENGLISH, "%.2f", this.values[2]) + value);
-        this.labelValue[3] = new ButtonCell(false, String.format(Locale.ENGLISH, "%.2f",this.values[3]) + value);
-        this.labelValue[4] = new ButtonCell(false, String.format(Locale.ENGLISH, "%.2f",this.values[4]) + value);
+        if (this.calibrator.getName() == CalibratorType.FLUKE718_30G && value0 < maxCalibratorPower) {
+            if (value5 <= maxCalibratorPower) {
+                this.labelValue[0] = new ButtonCell(false, " - ");
+                this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
+            }else {
+                this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
+                this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(value5, Locale.ENGLISH) + value);
+            }
+        }else {
+            this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble3(value0, Locale.ENGLISH) + value);
+            this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(value5, Locale.ENGLISH) + value);
+        }
+        this.labelValue[2] = new ButtonCell(false, VariableConverter.roundingDouble3(value50, Locale.ENGLISH) + value);
+        this.labelValue[3] = new ButtonCell(false, VariableConverter.roundingDouble3(value95, Locale.ENGLISH) + value);
+        this.labelValue[4] = new ButtonCell(false, VariableConverter.roundingDouble3(value100, Locale.ENGLISH) + value);
 
         this.motions = new JButton[6];
         this.motions[0] = new ButtonCell(false, motionUp);
@@ -84,14 +98,27 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
             this.userMeasurements[x].setHorizontalAlignment(SwingConstants.CENTER);
             this.userMeasurements[x].addFocusListener(focusMeasurement);
         }
-        this.userMeasurements[0].setText(String.format(Locale.ENGLISH, "%.2f",this.values[0]));
-        this.userMeasurements[1].setText(String.format(Locale.ENGLISH, "%.2f",this.values[1]));
-        this.userMeasurements[2].setText(String.format(Locale.ENGLISH, "%.2f",this.values[1]));
-        this.userMeasurements[3].setText(String.format(Locale.ENGLISH, "%.2f",this.values[2]));
-        this.userMeasurements[4].setText(String.format(Locale.ENGLISH, "%.2f",this.values[2]));
-        this.userMeasurements[5].setText(String.format(Locale.ENGLISH, "%.2f",this.values[3]));
-        this.userMeasurements[6].setText(String.format(Locale.ENGLISH, "%.2f",this.values[3]));
-        this.userMeasurements[7].setText(String.format(Locale.ENGLISH, "%.2f",this.values[4]));
+        if (this.calibrator.getName() == CalibratorType.FLUKE718_30G && value0 < maxCalibratorPower) {
+            if (value5 <= maxCalibratorPower) {
+                this.userMeasurements[0].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
+                this.userMeasurements[0].setEnabled(false);
+                this.userMeasurements[1].setText(VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
+                this.userMeasurements[2].setText(VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
+            }else {
+                this.userMeasurements[0].setText(VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
+                this.userMeasurements[1].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
+                this.userMeasurements[2].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
+            }
+        }else {
+            this.userMeasurements[0].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
+            this.userMeasurements[1].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
+            this.userMeasurements[2].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
+        }
+        this.userMeasurements[3].setText(VariableConverter.roundingDouble3(value50, Locale.ENGLISH));
+        this.userMeasurements[4].setText(VariableConverter.roundingDouble3(value50, Locale.ENGLISH));
+        this.userMeasurements[5].setText(VariableConverter.roundingDouble3(value95, Locale.ENGLISH));
+        this.userMeasurements[6].setText(VariableConverter.roundingDouble3(value95, Locale.ENGLISH));
+        this.userMeasurements[7].setText(VariableConverter.roundingDouble3(value100, Locale.ENGLISH));
     }
 
     @Override
@@ -164,26 +191,31 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
         public void focusLost(FocusEvent e){
             JTextField cell = (JTextField) e.getSource();
             if (cell.getText().length()==0 || cell.getText().equals("-")){
+                double value0 = channel.getRangeMin();
+                double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
+                double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
+                double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+                double value100 = channel.getRangeMax();
                 for (int x=0;x<userMeasurements.length;x++){
                     if (cell.equals(userMeasurements[x])){
                         switch (x){
                             case 0:
-                                cell.setText(String.valueOf(values[0]));
+                                cell.setText(String.valueOf(value0));
                                 break;
                             case 1:
                             case 2:
-                                cell.setText(String.valueOf(values[1]));
+                                cell.setText(String.valueOf(value5));
                                 break;
                             case 3:
                             case 4:
-                                cell.setText(String.valueOf(values[2]));
+                                cell.setText(String.valueOf(value50));
                                 break;
                             case 5:
                             case 6:
-                                cell.setText(String.valueOf(values[3]));
+                                cell.setText(String.valueOf(value95));
                                 break;
                             case 7:
-                                cell.setText(String.valueOf(values[4]));
+                                cell.setText(String.valueOf(value100));
                                 break;
                         }
                     }
@@ -191,7 +223,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container, Measu
             }else{
                 String check = VariableConverter.doubleString(cell.getText());
                 double d = Double.parseDouble(check);
-                cell.setText(String.format(Locale.ENGLISH, "%.2f", d));
+                cell.setText(VariableConverter.roundingDouble3(d, Locale.ENGLISH));
             }
         }
     };

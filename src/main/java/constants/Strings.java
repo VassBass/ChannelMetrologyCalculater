@@ -167,12 +167,12 @@ public class Strings {
                 + "].exp";
     }
     
-    public static final String FILE_NAME_FORM_MKMX_5300_01_18_BAD = "Form_MKMX_5300_01_18.xls";
-    public static final String FILE_NAME_FORM_MKMX_5300_02_18_BAD = "form_MKMX_5300_02_18.xls";
-    public static final String FILE_NAME_FORM_MKMX_5300_01_18_GOOD = "Form_MKMX_5300_01_18_good.xls";
-    public static final String FILE_NAME_FORM_MKMX_5300_02_18_GOOD = "form_MKMX_5300_02_18_good.xls";
-    public static final String FILE_NAME_FORM_MKMX_5300_01_18_BAD_v3_5 = "form_MKMX_5300_01_18.xls";
-    public static final String FILE_NAME_FORM_MKMX_5300_01_18_GOOD_v3_5 = "form_MKMX_5300_01_18_good.xls";
+    public static final String FILE_NAME_FORM_TEMPERATURE_BAD_v3_4 = "form_temperature_bad_v3.4.xls";
+    public static final String FILE_NAME_FORM_TEMPERATURE_GOOD_v3_4 = "form_temperature_good_v3.4.xls";
+    public static final String FILE_NAME_FORM_PRESSURE_BAD = "form_pressure_bad.xls";
+    public static final String FILE_NAME_FORM_PRESSURE_GOOD = "form_pressure_good.xls";
+    public static final String FILE_NAME_FORM_TEMPERATURE_BAD = "form_temperature_bad.xls";
+    public static final String FILE_NAME_FORM_TEMPERATURE_GOOD = "form_temperature_good.xls";
 
     public static final String PLUS_MINUS = "\u00B1";
     public static final String GAMMA = "\u03B3";

@@ -8,9 +8,9 @@ import support.Channel;
 import constants.Strings;
 import support.Values;
 import ui.UI_Container;
-import ui.calculate.measurement.complexElements.MKMX_5300_01_18_Panel;
-import ui.calculate.measurement.complexElements.MKMX_5300_02_18_Panel;
 import ui.calculate.measurement.complexElements.MeasurementPanel;
+import ui.calculate.measurement.complexElements.PressurePanel;
+import ui.calculate.measurement.complexElements.TemperaturePanel;
 import ui.calculate.start.CalculateStartDialog;
 import ui.main.MainScreen;
 
@@ -141,12 +141,12 @@ public class CalculateMeasurementDialog extends JDialog implements UI_Container 
     private void createMeasurementPanel(int index, double[] values){
         switch (this.channel.getMeasurement().getNameConstant()){
             case TEMPERATURE:
-                MKMX_5300_01_18_Panel temperaturePanel = new MKMX_5300_01_18_Panel(this.channel);
+                TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
                 this.measurementsPanels[index] = temperaturePanel;
                 this.duplicateOfMeasurementsPanels[index] = temperaturePanel;
                 break;
             case PRESSURE:
-                MKMX_5300_02_18_Panel pressurePanel = new MKMX_5300_02_18_Panel(this.channel,(Calibrator) this.values.getValue(Value.CALIBRATOR));
+                PressurePanel pressurePanel = new PressurePanel(this.channel,(Calibrator) this.values.getValue(Value.CALIBRATOR));
                 this.measurementsPanels[index] = pressurePanel;
                 this.duplicateOfMeasurementsPanels[index] = pressurePanel;
                 break;

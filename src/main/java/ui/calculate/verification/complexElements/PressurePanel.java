@@ -1,12 +1,14 @@
 package ui.calculate.verification.complexElements;
 
-import measurements.calculation.Calculation;
-import constants.MeasurementConstants;
-import constants.Value;
 import calibrators.Calibrator;
-import converters.VariableConverter;
-import support.Channel;
+import constants.CalibratorType;
+import constants.MeasurementConstants;
 import constants.Strings;
+import constants.Value;
+import converters.ValueConverter;
+import converters.VariableConverter;
+import measurements.calculation.Calculation;
+import support.Channel;
 import support.Values;
 import ui.ButtonCell;
 import ui.UI_Container;
@@ -18,7 +20,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 
-public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
+public class PressurePanel extends JPanel implements UI_Container {
     private final Channel channel;
     private final Values values;
     private final Calculation calculation;
@@ -69,13 +71,13 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
 
     private ButtonCell resultOfCheck;
 
+    private boolean withAlarm;
     private ButtonCell alarmLabel;
     private ButtonCell alarm;
-    private boolean withAlarm;
 
-    private JComboBox<String>advice;
+    private JComboBox<String> advice;
 
-    public MKMX_5300_01_18_Panel(Channel channel, Values values, Calculation calculation){
+    public PressurePanel(Channel channel, Values values, Calculation calculation){
         super(new GridBagLayout());
         this.channel = channel;
         this.values = values;
@@ -131,9 +133,9 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
         this.allowableErrorCalibrator = new ButtonCell(false);
     }
 
-    private void setValues() {
-        this.resultsTable = new TableProtocol(this.channel, this.calculation);
-        this.metrologyTable = new TableCertificate(this.channel, this.calculation);
+    private void setValues(){
+        this.resultsTable = new TableProtocol();
+        this.metrologyTable = new TableCertificate();
 
         this.channelName.setText(this.channel.getName());
         this.number.setText(this.values.getStringValue(Value.CHANNEL_PROTOCOL_NUMBER));
@@ -165,12 +167,25 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
 
         this.sensor.setText(this.channel.getSensor().getType());
 
-        double eP = this.channel.getSensor().getError(this.channel) / (this.channel.getSensor().getRange() / 100);
+        String errorSensorPercent;
+        double eP = this.channel.getSensor().getError(this.channel) / (this.channel.getRange() / 100);
+        if (eP < 0.01){
+            errorSensorPercent = VariableConverter.roundingDouble3(eP, Locale.GERMAN);
+        }else {
+            errorSensorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
+        }
+
+        String errorSensorValue;
+        if (this.channel.getSensor().getError(this.channel) < 0.01){
+            errorSensorValue = VariableConverter.roundingDouble3(this.channel.getSensor().getError(this.channel), Locale.GERMAN);
+        }else {
+            errorSensorValue = VariableConverter.roundingDouble2(this.channel.getSensor().getError(this.channel), Locale.GERMAN);
+        }
         String allowableErrorSensor = Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble2(eP, Locale.GERMAN)
+                + errorSensorPercent
                 + "% або "
                 + Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble2(this.channel.getSensor().getError(this.channel), Locale.GERMAN)
+                + errorSensorValue
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
@@ -179,7 +194,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
                 + " до "
                 + VariableConverter.roundingDouble(this.channel.getSensor().getRangeMax(), Locale.GERMAN)
                 + " "
-                + this.channel.getMeasurement().getValue();
+                + this.channel.getSensor().getValue();
         this.rangeSensor.setText(rangeSensor);
 
         this.externalTemperature.setText(this.values.getStringValue(Value.CALCULATION_EXTERNAL_TEMPERATURE)
@@ -200,11 +215,17 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
                 + calibrator.getCertificate().getCompany();
         this.calibratorCertificate.setText(certificateCalibrator);
 
+        String error;
+        if (this.calculation.getErrorCalibrator()[0] < 0.01){
+            error = VariableConverter.roundingDouble3(this.calculation.getErrorCalibrator()[0], Locale.GERMAN);
+        }else {
+            error = VariableConverter.roundingDouble2(this.calculation.getErrorCalibrator()[0], Locale.GERMAN);
+        }
         String allowableErrorCalibrator = Strings.PLUS_MINUS
                 + VariableConverter.roundingDouble(this.calculation.getErrorCalibrator()[1], Locale.GERMAN)
                 + "% або "
                 + Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble(this.calculation.getErrorCalibrator()[0], Locale.GERMAN)
+                + error
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorCalibrator.setText(allowableErrorCalibrator);
 
@@ -220,12 +241,13 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
 
         this.withAlarm = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
         if (this.calculation.closeToFalse() && this.calculation.goodChannel()){
-            ArrayList<String>toComboBox = new ArrayList<>();
+            ArrayList<String> toComboBox = new ArrayList<>();
             toComboBox.add("");
             if (withAlarm){
                 toComboBox.add(Strings.ALARM_MESSAGE + this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
             }
             toComboBox.add(Strings.ADVICE_FIX);
+            toComboBox.add(Strings.ADVICE_FIX_PRESSURE);
             toComboBox.add(Strings.ADVICE_RANGE);
 
             this.advice = new JComboBox<>(toComboBox.toArray(new String[0]));
@@ -238,7 +260,8 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
         }
     }
 
-    @Override public void setReactions() {}
+    @Override
+    public void setReactions() {}
 
     @Override
     public String getName() {
@@ -310,7 +333,7 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
 
         this.add(this.resultOfCheck, new Cell(0, 36, 4));
 
-        if (this.calculation.closeToFalse() &&this.calculation.goodChannel()){
+        if (this.calculation.closeToFalse() && this.calculation.goodChannel()){
             this.add(this.advice, new Cell(0,37,4));
         }else {
             if (this.withAlarm) {
@@ -320,13 +343,13 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
         }
     }
 
-    private static class TableProtocol extends JPanel {
+    private class TableProtocol extends JPanel {
 
-        protected TableProtocol(Channel channel, Calculation calculation){
+        protected TableProtocol(){
             super(new GridBagLayout());
             int index;
             JButton[] cells = new JButton[48];
-            for (int x = 0; x< cells.length; x++){
+            for (int x = 0; x < cells.length; x++){
                 if (x==0){
                     cells[x] = new ButtonCell(false, "№");
                     this.add(cells[x], new Cell(0, 0, 1, 2));
@@ -350,8 +373,18 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
                     cells[x] = new ButtonCell(false, "Xет,".concat(channel.getMeasurement().getValue()));
                     this.add(cells[x], new Cell(3, 0, 1, 2));
                 }else if (x == 9) {
+                    Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
                     double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
-                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value5, Locale.GERMAN));
+                    if (calibrator.getName() == CalibratorType.FLUKE718_30G) {
+                        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
+                        if (value5 < maxCalibratorPower){
+                            cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
+                        }else {
+                            cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value5, Locale.GERMAN));
+                        }
+                    }else {
+                        cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value5, Locale.GERMAN));
+                    }
                     this.add(cells[x], new Cell(3,2,1,2));
                 }else if (x == 10) {
                     double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
@@ -370,32 +403,33 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
                     this.add(cells[x], new Cell(index + 3, 1, 1, 1));
                 }else if (x < 24){
                     index = x - 17;
-                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble(calculation.getIn()[0][index], Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[0][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(4, index + 1, 1, 1));
                 }else if (x < 30){
                     index = x - 23;
-                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble(calculation.getIn()[1][index], Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[1][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(5, index + 1, 1, 1));
                 }else if (x < 36){
                     index = x - 29;
-                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble(calculation.getIn()[2][index], Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[2][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(6, index + 1, 1, 1));
                 }else if (x < 42){
                     index = x - 35;
-                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble(calculation.getIn()[3][index], Locale.GERMAN));
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[3][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(7, index + 1, 1, 1));
                 }else {
-                    index = x - 41;
-                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble(calculation.getIn()[4][index], Locale.GERMAN));
+                    index = x -41;
+                    cells[x] = new ButtonCell(false, VariableConverter.roundingDouble3(calculation.getIn()[4][index], Locale.GERMAN));
                     this.add(cells[x], new Cell(8, index + 1, 1, 1));
                 }
             }
         }
+
     }
 
-    private static class TableCertificate extends JPanel {
+    private class TableCertificate extends JPanel {
 
-        protected TableCertificate(Channel channel, Calculation calculation){
+        protected TableCertificate(){
             super(new GridBagLayout());
 
             JButton[] cells = new JButton[14];
@@ -409,76 +443,83 @@ public class MKMX_5300_01_18_Panel extends JPanel implements UI_Container {
             cells[3].setText("Абсолютна похибка");
             cells[4].setText("Не усуненна систематична похибка");
             cells[5].setText("Отримані значення МХ");
+
+            String u;
+            if (calculation.getExtendedIndeterminacy() < 0.01 && calculation.getExtendedIndeterminacy() > -0.01){
+                u  = VariableConverter.roundingDouble3(calculation.getExtendedIndeterminacy(), Locale.GERMAN);
+            }else {
+                u  = VariableConverter.roundingDouble2(calculation.getExtendedIndeterminacy(), Locale.GERMAN);
+            }
             cells[6].setText("U = "
                     + Strings.PLUS_MINUS
-                    + VariableConverter.roundingDouble(calculation.getExtendedIndeterminacy(), Locale.GERMAN)
+                    + u
                     + channel.getMeasurement().getValue());
-            double d = channel.getAllowableErrorPercent() - calculation.getErrorInRange();
-            if (d <= 0.1){
-                cells[7].setText(Strings.GAMMA
-                        + " вк = "
-                        + Strings.PLUS_MINUS
-                        + VariableConverter.roundingDouble2(calculation.getErrorInRange(), Locale.GERMAN)
-                        + "%");
-                cells[8].setText(Strings.DELTA
-                        + " вк = "
-                        + Strings.PLUS_MINUS
-                        + VariableConverter.roundingDouble2(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN)
-                        + channel.getMeasurement().getValue());
+
+            String gamma;
+            if (calculation.getErrorInRange() < 0.01 && calculation.getErrorInRange() > -0.01){
+                gamma  = VariableConverter.roundingDouble3(calculation.getErrorInRange(), Locale.GERMAN);
             }else {
-                cells[7].setText(Strings.GAMMA
-                        + " вк = "
-                        + Strings.PLUS_MINUS
-                        + VariableConverter.roundingDouble(calculation.getErrorInRange(), Locale.GERMAN)
-                        + "%");
-                cells[8].setText(Strings.DELTA
-                        + " вк = "
-                        + Strings.PLUS_MINUS
-                        + VariableConverter.roundingDouble(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN)
-                        + channel.getMeasurement().getValue());
+                gamma  = VariableConverter.roundingDouble2(calculation.getErrorInRange(), Locale.GERMAN);
             }
+            cells[7].setText(Strings.GAMMA
+                    + " вк = "
+                    + Strings.PLUS_MINUS
+                    + gamma
+                    + "%");
+
+            String delta;
+            if (calculation.getAbsoluteErrorWithSensorError() < 0.01 && calculation.getAbsoluteErrorWithSensorError() > -0.01){
+                delta  = VariableConverter.roundingDouble3(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
+            }else {
+                delta  = VariableConverter.roundingDouble2(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
+            }
+            cells[8].setText(Strings.DELTA
+                    + " вк = "
+                    + Strings.PLUS_MINUS
+                    + delta
+                    + channel.getMeasurement().getValue());
 
             String s5;
             String s50;
             String s95;
 
-            if (calculation.getSystematicErrors()[0] < 0.1 && calculation.getSystematicErrors()[0] > -0.05){
+            if (calculation.getSystematicErrors()[0] < 0.01 && calculation.getSystematicErrors()[0] > -0.01){
+                s5 = "5% "
+                        + Strings.DELTA
+                        + "s = "
+                        + VariableConverter.roundingDouble3(calculation.getSystematicErrors()[0], Locale.GERMAN)
+                        + channel.getMeasurement().getValue();
+            }else {
                 s5 = "5% "
                         + Strings.DELTA
                         + "s = "
                         + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[0], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
-            }else {
-                s5 = "5% "
+            }
+            if (calculation.getSystematicErrors()[1] < 0.01 && calculation.getSystematicErrors()[1] > -0.01){
+                s50 = "50% "
                         + Strings.DELTA
                         + "s = "
-                        + VariableConverter.roundingDouble(calculation.getSystematicErrors()[0], Locale.GERMAN)
+                        + VariableConverter.roundingDouble3(calculation.getSystematicErrors()[1], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
-            }
-            if (calculation.getSystematicErrors()[1] < 0.1 && calculation.getSystematicErrors()[1] > -0.05){
+            }else {
                 s50 = "50% "
                         + Strings.DELTA
                         + "s = "
                         + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[1], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
-            }else {
-                s50 = "50% "
+            }
+            if (calculation.getSystematicErrors()[2] < 0.01 && calculation.getSystematicErrors()[2] > -0.01){
+                s95 = "95% "
                         + Strings.DELTA
                         + "s = "
-                        + VariableConverter.roundingDouble(calculation.getSystematicErrors()[1], Locale.GERMAN)
+                        + VariableConverter.roundingDouble3(calculation.getSystematicErrors()[2], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
-            }
-            if (calculation.getSystematicErrors()[2] < 0.1 && calculation.getSystematicErrors()[2] > -0.05){
+            }else {
                 s95 = "95% "
                         + Strings.DELTA
                         + "s = "
                         + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[2], Locale.GERMAN)
-                        + channel.getMeasurement().getValue();
-            }else {
-                s95 = "95% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble(calculation.getSystematicErrors()[2], Locale.GERMAN)
                         + channel.getMeasurement().getValue();
             }
             cells[9].setText(s5);

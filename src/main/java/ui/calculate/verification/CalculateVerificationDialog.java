@@ -10,8 +10,8 @@ import ui.UI_Container;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.performers.CalculatePerformersDialog;
 import ui.calculate.reference.CalculateReferenceDialog;
-import ui.calculate.verification.complexElements.MKMX_5300_01_18_Panel;
-import ui.calculate.verification.complexElements.MKMX_5300_02_18_Panel;
+import ui.calculate.verification.complexElements.PressurePanel;
+import ui.calculate.verification.complexElements.TemperaturePanel;
 import ui.main.MainScreen;
 
 import javax.swing.*;
@@ -47,10 +47,10 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
     public void createElements() {
         switch (this.channel.getMeasurement().getNameConstant()){
             case TEMPERATURE:
-                this.resultPanel = new MKMX_5300_01_18_Panel(this.channel, this.values, this.calculation);
+                this.resultPanel = new TemperaturePanel(this.channel, this.values, this.calculation);
                 break;
             case PRESSURE:
-                this.resultPanel = new MKMX_5300_02_18_Panel(this.channel, this.values, this.calculation);
+                this.resultPanel = new PressurePanel(this.channel, this.values, this.calculation);
                 break;
         }
 

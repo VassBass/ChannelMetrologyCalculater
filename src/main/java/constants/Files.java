@@ -21,12 +21,12 @@ public class Files {
     public static final File FILE_LIST_MEASUREMENTS = new File(LIST_DIR, Strings.FILE_NAME_MEASUREMENTS);
     public static final File FILE_LIST_PERSONS = new File(LIST_DIR, Strings.FILE_NAME_PERSONS);
     
-    public static final File FILE_FORM_MKMX_5300_01_18_BAD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_01_18_BAD);
-    public static final File FILE_FORM_MKMX_5300_02_18_BAD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_02_18_BAD);
-    public static final File FILE_FORM_MKMX_5300_01_18_GOOD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_01_18_GOOD);
-    public static final File FILE_FORM_MKMX_5300_02_18_GOOD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_02_18_GOOD);
-    public static final File FILE_FORM_MKMX_5300_01_18_GOOD_v3_5 = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_01_18_GOOD_v3_5);
-    public static final File FILE_FORM_MKMX_5300_01_18_BAD_v3_5 = new File(FORMS_DIR, Strings.FILE_NAME_FORM_MKMX_5300_01_18_BAD_v3_5);
+    public static final File FILE_FORM_TEMPERATURE_BAD_v3_4 = new File(FORMS_DIR, Strings.FILE_NAME_FORM_TEMPERATURE_BAD_v3_4);
+    public static final File FILE_FORM_TEMPERATURE_GOOD_v3_4 = new File(FORMS_DIR, Strings.FILE_NAME_FORM_TEMPERATURE_GOOD_v3_4);
+    public static final File FILE_FORM_PRESSURE_BAD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_PRESSURE_BAD);
+    public static final File FILE_FORM_PRESSURE_GOOD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_PRESSURE_GOOD);
+    public static final File FILE_FORM_TEMPERATURE_BAD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_TEMPERATURE_BAD);
+    public static final File FILE_FORM_TEMPERATURE_GOOD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_TEMPERATURE_GOOD);
 
     public static final File FILE_SETTINGS = new File(MAIN_DIR, Strings.FILE_NAME_SETTINGS);
 

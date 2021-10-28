@@ -13,7 +13,7 @@ public class Calculation {
     private Calibrator calibrator;
     /*
      * double[Quantity of measurements] [control points]
-     * control points: for Method.MKMX №5300.01:18, Method.MKMX №5300.02:18
+     * control points: for temperature, pressure
      * [0] = 0%
      * [1] = 5% Up
      * [2] = 5% Down
@@ -32,7 +32,7 @@ public class Calculation {
 
     /*
      * double[Quantity of measurements] [control points]
-     * control points: for Method.MKMX №5300.01:18, Method.MKMX №5300.02:18
+     * control points: for temperature, pressure
      * [0] = 5% Up
      * [1] = 5% Down
      * [2] = 50% Up
@@ -60,7 +60,7 @@ public class Calculation {
     /*
      * Systematic errors
      * double[control points]
-     * control points: for Method.MKMX №5300.01:18, Method.MKMX №5300.02:18
+     * control points: for temperature, pressure
      * [0] = 5%
      * [1] = 50%
      * [2] = 95%

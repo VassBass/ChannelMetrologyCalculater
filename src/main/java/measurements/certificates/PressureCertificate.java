@@ -52,7 +52,7 @@ public class PressureCertificate implements Certificate {
 
         if (this.result.goodChannel()){
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_MKMX_5300_02_18_GOOD));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_PRESSURE_GOOD));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();
@@ -60,7 +60,7 @@ public class PressureCertificate implements Certificate {
         }else{
             this.numberOfReference = values.getStringValue(Value.CHANNEL_REFERENCE);
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_MKMX_5300_02_18_BAD));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_PRESSURE_BAD));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();
