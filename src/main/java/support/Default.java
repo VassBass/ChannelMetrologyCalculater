@@ -20,11 +20,11 @@ public class Default {
 
     public static void loadSettings(){
 
-        String nameMKMX_5300_01 = "МКМХ №5300.01:18";
-        String nameMKMX_5300_02 = "МКМХ №5300.02:18";
+        String nameTemperatureMethod = "МКМХ №5300.01:18";
+        String namePressureMethod = "МКМХ №5300.02:18";
 
-        Settings.setSettingValue(Value.NAME_MKMX_5300_01, nameMKMX_5300_01);
-        Settings.setSettingValue(Value.NAME_MKMX_5300_02, nameMKMX_5300_02);
+        Settings.setSettingValue(MeasurementConstants.TEMPERATURE.getValue(), nameTemperatureMethod);
+        Settings.setSettingValue(MeasurementConstants.PRESSURE.getValue(), namePressureMethod);
     }
 
     public static void loadSensors(){

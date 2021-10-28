@@ -1,8 +1,7 @@
 package ui.main.menu;
 
-import calculation.Method;
+import constants.MeasurementConstants;
 import constants.Strings;
-import constants.Value;
 import support.Settings;
 import ui.UI_Container;
 import ui.main.MainScreen;
@@ -22,7 +21,7 @@ public class MenuLists extends JMenu implements UI_Container {
     private JMenuItem buttonPersons;
     private JMenuItem buttonDepartments, buttonAreas, buttonProcesses, buttonInstallations;
     private JMenuItem buttonSensors;
-    private JMenuItem mkmx_5300_01, mkmx_5300_02;
+    private JMenuItem buttonTemperature, buttonPressure;
 
     public MenuLists(MainScreen mainScreen){
         super(Strings.LISTS);
@@ -42,8 +41,10 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonPersons = new JMenuItem(Strings.WORKERS);
         this.buttonSensors = new JMenuItem(Strings.SENSORS_LIST);
 
-        this.mkmx_5300_01 = new JMenuItem(Settings.getSettingValue(Value.NAME_MKMX_5300_01));
-        this.mkmx_5300_02 = new JMenuItem(Settings.getSettingValue(Value.NAME_MKMX_5300_02));
+        this.buttonTemperature = new JMenuItem(MeasurementConstants.TEMPERATURE.getValue());
+        this.buttonTemperature.setToolTipText(Settings.getSettingValue(MeasurementConstants.TEMPERATURE.getValue()));
+        this.buttonPressure = new JMenuItem(MeasurementConstants.PRESSURE.getValue());
+        this.buttonPressure.setToolTipText(Settings.getSettingValue(MeasurementConstants.PRESSURE.getValue()));
     }
 
     @Override
@@ -54,8 +55,8 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonInstallations.addActionListener(clickInstallations);
         this.buttonPersons.addActionListener(clickButtonPersons);
         this.buttonSensors.addActionListener(clickSensors);
-        this.mkmx_5300_01.addActionListener(clickMKMX_5300_01);
-        this.mkmx_5300_02.addActionListener(clickMKMX_5300_02);
+        this.buttonTemperature.addActionListener(clickTemperature);
+        this.buttonPressure.addActionListener(clickPressure);
     }
 
     @Override
@@ -70,8 +71,8 @@ public class MenuLists extends JMenu implements UI_Container {
         this.add(this.buttonPersons);
         this.addSeparator();
         JMenu methods = new JMenu(Strings.METHODS);
-        methods.add(this.mkmx_5300_01);
-        methods.add(this.mkmx_5300_02);
+        methods.add(this.buttonTemperature);
+        methods.add(this.buttonPressure);
         this.add(methods);
     }
 
@@ -147,25 +148,25 @@ public class MenuLists extends JMenu implements UI_Container {
         }
     };
 
-    private final ActionListener clickMKMX_5300_01 = new ActionListener() {
+    private final ActionListener clickTemperature = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new MethodInfoDialog(mainScreen, Method.MKMX_5300_01_18).setVisible(true);
+                    new MethodInfoDialog(mainScreen, MeasurementConstants.TEMPERATURE).setVisible(true);
                 }
             });
         }
     };
 
-    private final ActionListener clickMKMX_5300_02 = new ActionListener() {
+    private final ActionListener clickPressure = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new MethodInfoDialog(mainScreen, Method.MKMX_5300_02_18).setVisible(true);
+                    new MethodInfoDialog(mainScreen, MeasurementConstants.PRESSURE).setVisible(true);
                 }
             });
         }

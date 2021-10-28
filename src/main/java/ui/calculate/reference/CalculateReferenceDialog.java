@@ -1,6 +1,6 @@
 package ui.calculate.reference;
 
-import calculation.Calculation;
+import measurements.calculation.Calculation;
 import constants.Value;
 import converters.ConverterUI;
 import converters.VariableConverter;

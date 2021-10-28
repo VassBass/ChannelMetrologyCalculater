@@ -1,6 +1,6 @@
-package certificates;
+package measurements.certificates;
 
-import calculation.Calculation;
+import measurements.calculation.Calculation;
 import support.Channel;
 import support.Values;
 

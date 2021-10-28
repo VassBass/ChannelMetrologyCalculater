@@ -1,8 +1,8 @@
 package ui.calculate.end;
 
 import backgroundTasks.CertificateFormation;
-import calculation.Calculation;
-import certificates.Certificate;
+import measurements.calculation.Calculation;
+import measurements.certificates.Certificate;
 import converters.ConverterUI;
 import support.Channel;
 import support.Lists;

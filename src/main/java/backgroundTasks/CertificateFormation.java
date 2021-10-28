@@ -1,10 +1,10 @@
 package backgroundTasks;
 
-import calculation.Calculation;
-import certificates.Certificate;
-import certificates.MKMX_5300_01_18;
-import certificates.MKMX_5300_02_18;
+import measurements.calculation.Calculation;
+import measurements.certificates.Certificate;
 import constants.Value;
+import measurements.certificates.PressureCertificate;
+import measurements.certificates.TemperatureCertificate;
 import support.Channel;
 import support.Lists;
 import support.Values;
@@ -49,10 +49,10 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         switch (this.channel.getMeasurement().getNameConstant()){
             case TEMPERATURE:
-                this.certificate = new MKMX_5300_01_18();
+                this.certificate = new TemperatureCertificate();
                 break;
             case PRESSURE:
-                this.certificate = new MKMX_5300_02_18();
+                this.certificate = new PressureCertificate();
                 break;
         }
 

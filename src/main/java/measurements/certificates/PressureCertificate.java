@@ -1,17 +1,17 @@
-package certificates;
+package measurements.certificates;
 
-import calculation.Calculation;
-import constants.*;
 import calibrators.Calibrator;
+import constants.*;
 import converters.ValueConverter;
 import converters.VariableConverter;
+import measurements.calculation.Calculation;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import support.Sensor;
 import support.Channel;
+import support.Sensor;
 import support.Settings;
 import support.Values;
 
@@ -24,7 +24,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Objects;
 
-public class MKMX_5300_02_18 implements Certificate {
+public class PressureCertificate implements Certificate {
     private Calculation result;
     private Values values;
     private Channel channel;
@@ -103,7 +103,7 @@ public class MKMX_5300_02_18 implements Certificate {
         this.alarmCheck = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
         this.alarmValue = this.values.getStringValue(Value.CALCULATION_ALARM_VALUE);
 
-        String methodName = Settings.getSettingValue(Value.NAME_MKMX_5300_02);
+        String methodName = Settings.getSettingValue(MeasurementConstants.PRESSURE.getValue());
         cell(30,36).setCellValue(methodName);
     }
 

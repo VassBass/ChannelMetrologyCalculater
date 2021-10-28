@@ -1,18 +1,15 @@
-package calculation;
+package measurements.calculation;
 
 import constants.CalibratorType;
 import constants.MeasurementConstants;
 import calibrators.Calibrator;
-import constants.Value;
 import converters.ValueConverter;
 import org.apache.commons.lang3.math.NumberUtils;
 import support.Channel;
-import constants.Strings;
 import support.Settings;
 
 public class Calculation {
     private final Channel channel;
-    private final Method method;
     private Calibrator calibrator;
     /*
      * double[Quantity of measurements] [control points]
@@ -101,9 +98,8 @@ public class Calculation {
         return this.getErrorInRange() <= this.channel.getAllowableErrorPercent();
     }
 
-    public Calculation(Channel channel, Method method){
+    public Calculation(Channel channel){
         this.channel = channel;
-        this.method = method;
     }
 
     public void setIn(double[][]in){
@@ -122,14 +118,7 @@ public class Calculation {
     }
 
     public String getName(){
-        switch (this.method){
-            case MKMX_5300_01_18:
-                return Settings.getSettingValue(Value.NAME_MKMX_5300_01);
-            case MKMX_5300_02_18:
-                return Settings.getSettingValue(Value.NAME_MKMX_5300_02);
-            default:
-                return null;
-        }
+        return Settings.getSettingValue(this.channel.getMeasurement().getName());
     }
 
     public double[][] getErrorsAbsolute() {
@@ -140,9 +129,9 @@ public class Calculation {
             if (maxCalibratorPower != 999999999D && value5 < maxCalibratorPower){
                 value5 = maxCalibratorPower;
             }
-            switch (this.method) {
-                case MKMX_5300_01_18:
-                case MKMX_5300_02_18:
+            switch (this.channel.getMeasurement().getNameConstant()) {
+                case TEMPERATURE:
+                case PRESSURE:
                     this.errorsAbsolute = new double[in.length][6];
                     for (int n = 0; n < in.length; n++) {
                         this.errorsAbsolute[n][0] = in[n][1] - value5;
@@ -162,9 +151,9 @@ public class Calculation {
 
     public double getMaxAbsoluteError(){
         if (this.errorMax == -999999999D){
-            switch (this.method){
-                case MKMX_5300_01_18:
-                case MKMX_5300_02_18:
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
+                case PRESSURE:
                     double[][]errorsAbsolute = this.getErrorsAbsolute();
                     double[] biggest = new double[errorsAbsolute.length];
                     for (int n=0;n<errorsAbsolute.length;n++) {
@@ -183,8 +172,8 @@ public class Calculation {
         if (this.errorCalibrator == null){
             this.errorCalibrator = new double[2];
             double rangeChannel = this.channel.getRange();
-            switch (this.method){
-                case MKMX_5300_01_18:
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
                     switch (this.calibrator.getName()){
                         case FLUKE725:
                         case FLUKE724:
@@ -203,7 +192,7 @@ public class Calculation {
 
                     return this.errorCalibrator;
 
-                case MKMX_5300_02_18:
+                case PRESSURE:
                     switch (this.calibrator.getName()){
                         case FLUKE750PD2:
                         case FLUKE718_30G:
@@ -230,9 +219,9 @@ public class Calculation {
             double errorMax = this.getMaxAbsoluteError();
             double errorSensor = this.channel.getSensor().getError(this.channel);
             double errorCalibrator = this.getErrorCalibrator()[0];
-            switch (this.method){
-                case MKMX_5300_01_18:
-                case MKMX_5300_02_18:
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
+                case PRESSURE:
                     double e = (errorMax * errorMax) + (errorSensor * errorSensor) + (errorCalibrator * errorCalibrator);
                     this.error = Math.sqrt(e);
 
@@ -249,9 +238,9 @@ public class Calculation {
         if (this.errorD == -999999999D){
             double error = this.getAbsoluteErrorWithSensorError();
             double rangeChannel = this.channel.getRange();
-            switch (this.method){
-                case MKMX_5300_01_18:
-                case MKMX_5300_02_18:
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
+                case PRESSURE:
                     this.errorD = (error * 100D) / rangeChannel;
 
                     return this.errorD;
@@ -266,9 +255,9 @@ public class Calculation {
     public double[] getSystematicErrors(){
         if (this.errorsS == null){
             double[][]errorsAbsolute = this.getErrorsAbsolute();
-            switch (this.method){
-                case MKMX_5300_01_18:
-                case MKMX_5300_02_18:
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
+                case PRESSURE:
                     this.errorsS = new double[3];
 
                     double s5 = 0D;
@@ -313,9 +302,9 @@ public class Calculation {
     public double getStandardIndeterminacyA(){
         if (this.uA == -999999999D){
             double[][]errorsAbsolute = this.getErrorsAbsolute();
-            switch (this.method){
-                case MKMX_5300_01_18:
-                case MKMX_5300_02_18:
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
+                case PRESSURE:
                     double sum = 0D;
                     for (double[] doubles : errorsAbsolute) {
                         sum = sum + (doubles[0] + doubles[1] + doubles[2] + doubles[3] + doubles[4] + doubles[5]);
@@ -338,9 +327,9 @@ public class Calculation {
         if (this.uB == -999999999D){
             double errorSensor = this.channel.getSensor().getError(this.channel);
             double errorCalibrator = this.getErrorCalibrator()[0];
-            switch (this.method){
-                case MKMX_5300_01_18:
-                case MKMX_5300_02_18:
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
+                case PRESSURE:
                     double sum = (errorSensor * errorSensor) + (errorCalibrator * errorCalibrator);
                     this.uB = Math.sqrt(sum);
 
@@ -358,9 +347,9 @@ public class Calculation {
         if (this.uC == -999999999D){
             double uA = this.getStandardIndeterminacyA();
             double uB = this.getStandardIndeterminacyB();
-            switch (this.method){
-                case MKMX_5300_01_18:
-                case MKMX_5300_02_18:
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
+                case PRESSURE:
                     double sum = (uA * uA) + (uB * uB);
                     this.uC = Math.sqrt(sum);
 
@@ -377,9 +366,9 @@ public class Calculation {
         if (this.u == -999999999D){
             double uC = this.getStandardIndeterminacyTotal();
             double k = 2D;
-            switch (this.method){
-                case MKMX_5300_01_18:
-                case MKMX_5300_02_18:
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
+                case PRESSURE:
                     this.u = k * uC;
                     break;
                 default: return 0D;

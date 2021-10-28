@@ -1,8 +1,7 @@
 package backgroundTasks;
 
 
-import calculation.Calculation;
-import calculation.Method;
+import measurements.calculation.Calculation;
 import calibrators.Calibrator;
 import constants.Value;
 import support.Channel;
@@ -68,15 +67,7 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
         measurements[3] = measurement4;
         measurements[4] = measurement5;
 
-        switch (this.channel.getMeasurement().getNameConstant()){
-            case TEMPERATURE:
-                this.calculation = new Calculation(this.channel, Method.MKMX_5300_01_18);
-                break;
-            case PRESSURE:
-                this.calculation = new Calculation(this.channel, Method.MKMX_5300_02_18);
-                break;
-        }
-
+        this.calculation = new Calculation(this.channel);
         this.calculation.setIn(measurements);
         this.calculation.setCalibrator((Calibrator) this.values.getValue(Value.CALIBRATOR));
         return null;

@@ -1,13 +1,11 @@
 package ui.methodInfo;
 
-import calculation.Method;
+import constants.MeasurementConstants;
 import constants.Strings;
-import constants.Value;
 import converters.ConverterUI;
 import support.Settings;
 import ui.UI_Container;
 import ui.main.MainScreen;
-import ui.sensorsList.SensorsListDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -18,17 +16,17 @@ import java.awt.event.ActionListener;
 
 public class MethodInfoDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
-    private final Method method;
+    private final MeasurementConstants measurement;
 
     private JTextField userName;
     private JButton buttonCancel, buttonSave;
 
     private final Color buttonsColor = new Color(51,51,51);
 
-    public MethodInfoDialog(MainScreen mainScreen, Method method){
+    public MethodInfoDialog(MainScreen mainScreen, MeasurementConstants measurement){
         super(mainScreen, Strings.METHODS, true);
         this.mainScreen = mainScreen;
-        this.method = method;
+        this.measurement = measurement;
 
         this.createElements();
         this.setReactions();
@@ -39,15 +37,7 @@ public class MethodInfoDialog extends JDialog implements UI_Container {
     public void createElements() {
         this.userName = new JTextField(10);
         this.userName.setHorizontalAlignment(SwingConstants.CENTER);
-        String name = "";
-        switch (this.method){
-            case MKMX_5300_01_18:
-                name = Settings.getSettingValue(Value.NAME_MKMX_5300_01);
-                break;
-            case MKMX_5300_02_18:
-                name = Settings.getSettingValue(Value.NAME_MKMX_5300_02);
-                break;
-        }
+        String name = Settings.getSettingValue(this.measurement.getValue());
         this.userName.setToolTipText(Strings.OLD_NAME + " : " + name);
         this.userName.setText(name);
 
@@ -105,14 +95,7 @@ public class MethodInfoDialog extends JDialog implements UI_Container {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            switch (method){
-                case MKMX_5300_01_18:
-                    Settings.setSettingValue(Value.NAME_MKMX_5300_01, userName.getText());
-                    break;
-                case MKMX_5300_02_18:
-                    Settings.setSettingValue(Value.NAME_MKMX_5300_02, userName.getText());
-                    break;
-            }
+            Settings.setSettingValue(measurement.getValue(), userName.getText());
             dispose();
             mainScreen.refreshMenu();
         }

@@ -12,10 +12,7 @@ public enum MeasurementConstants {
     KG_SM2("кг/см" + Strings.SQUARE),
     BAR("бар"),
     KG_MM2("кг/мм" + Strings.SQUARE),
-    ML_BAR("мбар"),
-
-    OM("Ом"),
-    MV("мВ");
+    ML_BAR("мбар");
 
     private final String value;
     MeasurementConstants(String value){this.value = value;}

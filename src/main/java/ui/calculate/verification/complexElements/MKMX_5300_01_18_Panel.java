@@ -1,6 +1,6 @@
 package ui.calculate.verification.complexElements;
 
-import calculation.Calculation;
+import measurements.calculation.Calculation;
 import constants.MeasurementConstants;
 import constants.Value;
 import calibrators.Calibrator;
