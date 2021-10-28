@@ -1,11 +1,10 @@
 package support;
 
-import calibrators.*;
-
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import constants.MeasurementConstants;
-import constants.Value;
 import constants.WorkPositions;
 import measurements.Measurement;
 import measurements.Pressure;
@@ -239,12 +238,88 @@ public class Default {
     public static void loadCalibrators(){
         ArrayList<Calibrator>calibrators = new ArrayList<>();
 
-        calibrators.add(new Fluke725());
-        calibrators.add(new Fluke724());
-        calibrators.add(new Prova_123());
-        calibrators.add(new Fluke718_30G());
-        calibrators.add(new Fluke750PD2());
-        calibrators.add(new Fluke750PD2_small());
+        Calibrator fluke725 = new Calibrator();
+        fluke725.setType("Fluke 725");
+        fluke725.setName("Fluke 725");
+        fluke725.setNumber("1988293");
+        fluke725.addMeasurement(MeasurementConstants.TEMPERATURE);
+        fluke725.setCertificateName("№06/2647К");
+        fluke725.setCertificateDate(new GregorianCalendar(2020, Calendar.NOVEMBER, 16));
+        fluke725.setCertificateCompany("ДП\"ХарківСтандартМетрологія\"");
+        fluke725.setErrorFormula("0.7");
+        calibrators.add(fluke725);
+
+        Calibrator fluke724 = new Calibrator();
+        fluke724.setType("Fluke 724");
+        fluke725.setName("Fluke 724");
+        fluke724.setNumber("1988293");
+        fluke724.addMeasurement(MeasurementConstants.TEMPERATURE);
+        fluke724.setCertificateName("№06/1777К");
+        fluke724.setCertificateDate(new GregorianCalendar(2019, Calendar.OCTOBER, 22));
+        fluke724.setCertificateCompany("ДП\"ХарківСтандартМетрологія\"");
+        fluke725.setErrorFormula("0.7");
+        calibrators.add(fluke724);
+
+        Calibrator prova123_minus = new Calibrator();
+        prova123_minus.setType("Prova-123");
+        prova123_minus.setName("Prova-123 t < 0" + MeasurementConstants.DEGREE_CELSIUS.getValue());
+        prova123_minus.setNumber("13180302");
+        prova123_minus.addMeasurement(MeasurementConstants.TEMPERATURE);
+        prova123_minus.setCertificateName("№06/2315К");
+        prova123_minus.setCertificateDate(new GregorianCalendar(2020, Calendar.JULY, 21));
+        prova123_minus.setCertificateCompany("ДП\"ХарківСтандартМетрологія\"");
+        prova123_minus.setErrorFormula("1.1");
+        calibrators.add(prova123_minus);
+
+        Calibrator prova123 = new Calibrator();
+        prova123.setType("Prova-123");
+        prova123.setName("Prova-123 t > 0" + MeasurementConstants.DEGREE_CELSIUS.getValue());
+        prova123.setNumber("13180302");
+        prova123.addMeasurement(MeasurementConstants.TEMPERATURE);
+        prova123.setCertificateName("№06/2315К");
+        prova123.setCertificateDate(new GregorianCalendar(2020, Calendar.JULY, 21));
+        prova123.setCertificateCompany("ДП\"ХарківСтандартМетрологія\"");
+        prova123.setErrorFormula("0.8");
+        calibrators.add(prova123);
+
+        Calibrator fluke718_30g = new Calibrator();
+        fluke718_30g.setType("Fluke 718 30G");
+        fluke718_30g.setNumber("2427047");
+        fluke718_30g.addMeasurement(MeasurementConstants.PRESSURE);
+        fluke718_30g.setRangeMin(-83D);
+        fluke718_30g.setRangeMax(207D);
+        fluke718_30g.setValue(MeasurementConstants.KPA.getValue());
+        fluke718_30g.setCertificateName("№05/3570К");
+        fluke718_30g.setCertificateDate(new GregorianCalendar(2020, Calendar.SEPTEMBER, 2));
+        fluke718_30g.setCertificateCompany("ДП\"ХарківСтандартМетрологія\"");
+        fluke718_30g.setErrorFormula("(convR / 100) * 0.05");
+        calibrators.add(fluke718_30g);
+
+        Calibrator fluke750pd2 = new Calibrator();
+        fluke750pd2.setType("Fluke 750PD2");
+        fluke750pd2.setNumber("4043273");
+        fluke750pd2.addMeasurement(MeasurementConstants.PRESSURE);
+        fluke750pd2.setRangeMin(-7D);
+        fluke750pd2.setRangeMax(7D);
+        fluke750pd2.setValue(MeasurementConstants.KPA.getValue());
+        fluke750pd2.setCertificateName("№05/3570К");
+        fluke750pd2.setCertificateDate(new GregorianCalendar(2020, Calendar.SEPTEMBER, 2));
+        fluke750pd2.setCertificateCompany("ДП\"ХарківСтандартМетрологія\"");
+        fluke750pd2.setErrorFormula("(convR / 100) * 0.05");
+        calibrators.add(fluke750pd2);
+
+        Calibrator fluke750pd2_smallPressure = new Calibrator();
+        fluke750pd2_smallPressure.setType("Fluke 750PD2");
+        fluke750pd2_smallPressure.setNumber("4043273");
+        fluke750pd2_smallPressure.addMeasurement(MeasurementConstants.PRESSURE);
+        fluke750pd2_smallPressure.setRangeMin(-4.5);
+        fluke750pd2_smallPressure.setRangeMax(4.5);
+        fluke750pd2_smallPressure.setValue(MeasurementConstants.KPA.getValue());
+        fluke750pd2_smallPressure.setCertificateName("№05/3570К");
+        fluke750pd2_smallPressure.setCertificateDate(new GregorianCalendar(2020, Calendar.SEPTEMBER, 2));
+        fluke750pd2_smallPressure.setCertificateCompany("ДП\"ХарківСтандартМетрологія\"");
+        fluke750pd2_smallPressure.setErrorFormula("(convR / 100) * 0.05");
+        calibrators.add(fluke750pd2_smallPressure);
 
         Lists.saveCalibratorsListToFile(calibrators);
     }

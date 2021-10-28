@@ -13,14 +13,14 @@ public class Sensor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    protected String type;
-    protected String name = "Sensor";
-    protected double rangeMin = 0D;
-    protected double rangeMax = 0D;
-    protected String number = "";
-    protected String value = "";
-    protected String measurement = "";
-    protected String errorFormula = "";
+    private String type;
+    private String name = "Sensor";
+    private double rangeMin = 0D;
+    private double rangeMax = 0D;
+    private String number = "";
+    private String value = "";
+    private String measurement = "";
+    private String errorFormula = "";
 
     //Setters
     public void setType(String type) {this.type = type;}
@@ -55,10 +55,17 @@ public class Sensor implements Serializable {
     public double getError(Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
         Function f = new Function("At(R,r,convR) = " + formula);
-        Argument R = new Argument("R = " + channel.getRange());
+        Argument R;
+        double cR;
+        if (channel == null){
+            R = new Argument("R = 0");
+            cR = 0D;
+        }else {
+            R = new Argument("R = " + channel.getRange());
+            cR = new ValueConverter(MeasurementConstants.getConstantFromString(this.value),
+                    channel.getMeasurement().getValueConstant()).get(this.getRange());
+        }
         Argument r = new Argument("r = " + this.getRange());
-        double cR = new ValueConverter(MeasurementConstants.getConstantFromString(this.value),
-                channel.getMeasurement().getValueConstant()).get(this.getRange());
         Argument convR = new Argument("convR = " + cR);
         Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
         return expression.calculate();

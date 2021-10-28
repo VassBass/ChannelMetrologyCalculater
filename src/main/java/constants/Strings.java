@@ -179,6 +179,9 @@ public class Strings {
     public static final String DELTA = "\u0394";
     public static final String SQUARE = "\u00B2";
 
+    //Default calibrators types
+    public static final String CALIBRATOR_FLUKE718_30G = "Fluke 718 30G";
+
     public static String YEAR_WORD(double d){
         if (d == 0D){
             return "років";

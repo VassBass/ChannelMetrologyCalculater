@@ -12,13 +12,4 @@ public enum CalibratorType {
     private final String type;
     CalibratorType(String type){this.type = type;}
     public String getType(){return this.type;}
-
-    public static CalibratorType getConstantFromString(String string){
-        for (CalibratorType type : CalibratorType.values()){
-            if (string.equals(type.getType())){
-                return type;
-            }
-        }
-        return null;
-    }
 }
