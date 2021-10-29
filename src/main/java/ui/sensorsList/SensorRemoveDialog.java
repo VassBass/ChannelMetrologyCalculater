@@ -42,7 +42,7 @@ public class SensorRemoveDialog extends JDialog implements UI_Container {
 
     @Override
     public void createElements() {
-        String m1 = "Ви впевнені що хочете відалити данний ПВП? ";
+        String m1 = "Ви впевнені що хочете відалити даний ПВП? ";
         this.message1 = new JLabel(m1);
         this.message1.setHorizontalAlignment(SwingConstants.CENTER);
 

@@ -139,6 +139,10 @@ public class Strings {
     public static final String IMPORTED_WORKER = "Імпортуємі данні працівника";
     public static final String METHODS = "Методи розрахунку";
     public static final String OLD_NAME = "Стара назва";
+    public static final String CALIBRATORS_LIST = "Список калібраторів";
+    public static final String NOT_REMOVED_CALIBRATOR_MESSAGE = "Даний калібратор не може бути видалений зі списку";
+    public static final String FROM = "від";
+    public static final String RANGE_OF_CALIBRATOR = "Діапазон калібратора";
 
     public static final String MAIN_DIR_NAME = "Support";
     public static final String DIR_NAME_LISTS = "Lists";

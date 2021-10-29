@@ -4,6 +4,7 @@ import constants.MeasurementConstants;
 import constants.Strings;
 import support.Settings;
 import ui.UI_Container;
+import ui.calibratorsList.CalibratorsListDialog;
 import ui.main.MainScreen;
 import ui.methodInfo.MethodInfoDialog;
 import ui.pathLists.PathListsDialog;
@@ -22,6 +23,7 @@ public class MenuLists extends JMenu implements UI_Container {
     private JMenuItem buttonDepartments, buttonAreas, buttonProcesses, buttonInstallations;
     private JMenuItem buttonSensors;
     private JMenuItem buttonTemperature, buttonPressure;
+    private JMenuItem buttonCalibrators;
 
     public MenuLists(MainScreen mainScreen){
         super(Strings.LISTS);
@@ -40,6 +42,7 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonInstallations = new JMenuItem(Strings.INSTALLATIONS_LIST);
         this.buttonPersons = new JMenuItem(Strings.WORKERS);
         this.buttonSensors = new JMenuItem(Strings.SENSORS_LIST);
+        this.buttonCalibrators = new JMenuItem(Strings.CALIBRATORS_LIST);
 
         this.buttonTemperature = new JMenuItem(MeasurementConstants.TEMPERATURE.getValue());
         this.buttonTemperature.setToolTipText(Settings.getSettingValue(MeasurementConstants.TEMPERATURE.getValue()));
@@ -57,11 +60,14 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonSensors.addActionListener(clickSensors);
         this.buttonTemperature.addActionListener(clickTemperature);
         this.buttonPressure.addActionListener(clickPressure);
+        this.buttonCalibrators.addActionListener(clickCalibrators);
     }
 
     @Override
     public void build() {
         this.add(buttonSensors);
+        this.addSeparator();
+        this.add(buttonCalibrators);
         this.addSeparator();
         this.add(buttonDepartments);
         this.add(buttonAreas);
@@ -167,6 +173,18 @@ public class MenuLists extends JMenu implements UI_Container {
                 @Override
                 public void run() {
                     new MethodInfoDialog(mainScreen, MeasurementConstants.PRESSURE).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickCalibrators = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new CalibratorsListDialog(mainScreen).setVisible(true);
                 }
             });
         }
