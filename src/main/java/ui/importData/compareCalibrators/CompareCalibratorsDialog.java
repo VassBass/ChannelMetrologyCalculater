@@ -1,11 +1,13 @@
-package ui.importData.comparePersons;
+package ui.importData.compareCalibrators;
 
+import backgroundTasks.SaveImportData;
 import constants.Strings;
 import converters.ConverterUI;
 import support.*;
 import ui.UI_Container;
 import ui.importData.BreakImportDialog;
-import ui.importData.compareCalibrators.CompareCalibratorsDialog;
+import ui.importData.compareCalibrators.complexElements.CompareCalibratorsInfoPanel;
+import ui.importData.comparePersons.ComparePersonsDialog;
 import ui.importData.comparePersons.complexElements.ComparePersonsInfoPanel;
 import ui.main.MainScreen;
 
@@ -16,16 +18,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class ComparePersonsDialog extends JDialog implements UI_Container {
+public class CompareCalibratorsDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
     private final JDialog current;
 
-    private final ArrayList<Sensor>sensors;
+    private final ArrayList<Sensor> sensors;
     private final ArrayList<Channel>channels;
-    private final ArrayList<Worker>newPersonsList, oldPersonsList, importedPersonsList;
-    private final ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
+    private final ArrayList<Worker>persons;
+    private final ArrayList<Calibrator>newCalibratorsList, oldCalibratorsList, importedCalibratorsList;
     private final ArrayList<String>departments, areas, processes, installations;
-    private final ArrayList<Integer[]>personsIndexes, calibratorsIndexes;
+    private final ArrayList<Integer[]>calibratorsIndexes;
 
     private int marker = 0;
 
@@ -33,22 +35,18 @@ public class ComparePersonsDialog extends JDialog implements UI_Container {
 
     private JButton buttonChange, buttonSkip, buttonChangeAll, buttonSkipAll;
 
-    public ComparePersonsDialog(final MainScreen mainScreen, final ArrayList<Sensor>sensors, final ArrayList<Channel>channels,
-                                final ArrayList<Worker>newPersonsList, final ArrayList<Worker>importedPersonsList, final ArrayList<Integer[]>personsIndexes,
+    public CompareCalibratorsDialog(MainScreen mainScreen, ArrayList<Sensor>sensors, ArrayList<Channel>channels, ArrayList<Worker>persons,
                                 final ArrayList<Calibrator>newCalibratorsList, final ArrayList<Calibrator>importedCalibratorsList, final ArrayList<Integer[]>calibratorsIndexes,
-                                final ArrayList<String>departments, final ArrayList<String>areas, final ArrayList<String>processes, final ArrayList<String>installations){
+                                ArrayList<String>departments, ArrayList<String>areas, ArrayList<String>processes, ArrayList<String>installations){
         super(mainScreen, Strings.IMPORT, true);
         this.mainScreen = mainScreen;
         this.current = this;
         this.sensors = sensors;
         this.channels = channels;
-
-        this.newPersonsList = newPersonsList;
-        this.oldPersonsList = Lists.persons();
-        this.importedPersonsList = importedPersonsList;
-        this.personsIndexes = personsIndexes;
+        this.persons = persons;
 
         this.newCalibratorsList = newCalibratorsList;
+        this.oldCalibratorsList = Lists.calibrators();
         this.importedCalibratorsList = importedCalibratorsList;
         this.calibratorsIndexes = calibratorsIndexes;
 
@@ -57,15 +55,9 @@ public class ComparePersonsDialog extends JDialog implements UI_Container {
         this.processes = processes;
         this.installations = installations;
 
-        if (personsIndexes.size() == 0){
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new CompareCalibratorsDialog(mainScreen, sensors, channels, newPersonsList,
-                            newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
-                            departments, areas, processes, installations);
-                }
-            });
+        if (calibratorsIndexes.size() == 0){
+            new SaveImportData(this.mainScreen, this.sensors, this.channels, this.persons, newCalibratorsList,
+                    this.departments, this.areas, this.processes, this.installations).execute();
         }else {
             this.createElements();
             this.setReactions();
@@ -76,21 +68,15 @@ public class ComparePersonsDialog extends JDialog implements UI_Container {
 
     private void next(){
         marker++;
-        if (marker >= personsIndexes.size()) {
+        if (marker >= calibratorsIndexes.size()) {
             this.dispose();
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new CompareCalibratorsDialog(mainScreen, sensors, channels, newPersonsList,
-                            newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
-                            departments, areas, processes, installations);
-                }
-            });
+            new SaveImportData(this.mainScreen, this.sensors, this.channels, this.persons, newCalibratorsList,
+                    this.departments, this.areas, this.processes, this.installations).execute();
         }else {
-            Integer[] index = personsIndexes.get(marker);
+            Integer[] index = calibratorsIndexes.get(marker);
             int indexOld = index[0];
             int indexImport = index[1];
-            this.infoPanel = new ComparePersonsInfoPanel(this.oldPersonsList.get(indexOld), this.importedPersonsList.get(indexImport));
+            this.infoPanel = new CompareCalibratorsInfoPanel(this.oldPersonsList.get(indexOld), this.importedPersonsList.get(indexImport));
             this.setContentPane(new MainPanel());
             this.setVisible(false);
             this.setVisible(true);
@@ -150,7 +136,7 @@ public class ComparePersonsDialog extends JDialog implements UI_Container {
         this.setSize(800,700);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
-        this.setContentPane(new MainPanel());
+        this.setContentPane(new ComparePersonsDialog.MainPanel());
     }
 
     private final ChangeListener pushButton = new ChangeListener() {
@@ -220,14 +206,14 @@ public class ComparePersonsDialog extends JDialog implements UI_Container {
 
             JScrollPane scroll = new JScrollPane(infoPanel);
             scroll.setPreferredSize(new Dimension(800,650));
-            this.add(scroll, new Cell(0, 0.95));
+            this.add(scroll, new ComparePersonsDialog.MainPanel.Cell(0, 0.95));
 
             JPanel buttonsPanel = new JPanel();
             buttonsPanel.add(buttonSkip);
             buttonsPanel.add(buttonSkipAll);
             buttonsPanel.add(buttonChangeAll);
             buttonsPanel.add(buttonChange);
-            this.add(buttonsPanel, new Cell(1, 0.05));
+            this.add(buttonsPanel, new ComparePersonsDialog.MainPanel.Cell(1, 0.05));
         }
 
         private class Cell extends GridBagConstraints{

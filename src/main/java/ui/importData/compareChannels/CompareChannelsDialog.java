@@ -1,11 +1,8 @@
 package ui.importData.compareChannels;
 
 import converters.ConverterUI;
-import support.Channel;
+import support.*;
 import constants.Strings;
-import support.Lists;
-import support.Sensor;
-import support.Worker;
 import ui.UI_Container;
 import ui.importData.BreakImportDialog;
 import ui.importData.compareChannels.complexElements.CompareChannels_infoPanel;
@@ -26,8 +23,9 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
     private final ArrayList<Sensor>sensors;
     private final ArrayList<Channel>newChannelsList, oldChannelsList, importedChannelsList;
     private final ArrayList<Worker>newPersonsList, importedPersonsList;
+    private final ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
     private final ArrayList<String>departments, areas, processes, installations;
-    private final ArrayList<Integer[]>channelIndexes, personsIndexes;
+    private final ArrayList<Integer[]>channelIndexes, personsIndexes, calibratorsIndexes;
 
     private int marker = 0;
 
@@ -38,6 +36,7 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
     public CompareChannelsDialog(final MainScreen mainScreen, final ArrayList<Sensor>sensors,
                                  final ArrayList<Channel>newChannelsList, ArrayList<Channel>importedChannelsList, ArrayList<Integer[]>channelIndexes,
                                  final ArrayList<Worker>newPersonsList, final ArrayList<Worker>importedPersonsList, final ArrayList<Integer[]>personsIndexes,
+                                 final ArrayList<Calibrator>newCalibratorsList, final ArrayList<Calibrator>importedCalibratorsList, final ArrayList<Integer[]>calibratorsIndexes,
                                  final ArrayList<String>departments, final ArrayList<String>areas, final ArrayList<String>processes, final ArrayList<String>installations) {
         super(mainScreen, Strings.IMPORT, true);
         this.mainScreen = mainScreen;
@@ -53,6 +52,10 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
         this.importedPersonsList = importedPersonsList;
         this.personsIndexes = personsIndexes;
 
+        this.newCalibratorsList = newCalibratorsList;
+        this.importedCalibratorsList = importedCalibratorsList;
+        this.calibratorsIndexes = calibratorsIndexes;
+
         this.departments = departments;
         this.areas = areas;
         this.processes = processes;
@@ -62,7 +65,9 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ComparePersonsDialog(mainScreen, sensors, newChannelsList, newPersonsList, importedPersonsList, personsIndexes,
+                    new ComparePersonsDialog(mainScreen, sensors, newChannelsList,
+                            newPersonsList, importedPersonsList, personsIndexes,
+                            newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
                             departments, areas, processes, installations);
                 }
             });
@@ -81,7 +86,9 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ComparePersonsDialog(mainScreen, sensors, newChannelsList, newPersonsList, importedPersonsList, personsIndexes,
+                    new ComparePersonsDialog(mainScreen, sensors, newChannelsList,
+                            newPersonsList, importedPersonsList, personsIndexes,
+                            newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
                             departments, areas, processes, installations);
                 }
             });

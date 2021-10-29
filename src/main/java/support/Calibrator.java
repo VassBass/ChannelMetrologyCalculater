@@ -30,6 +30,7 @@ public class Calibrator implements Serializable {
     public String getType() {return this.type;}
     public String getName(){return this.name;}
     public String getNumber(){return this.number;}
+    public Certificate getCertificate(){return this.certificate;}
     public double getRangeMin(){return this.rangeMin;}
     public double getRangeMax(){return this.rangeMax;}
     public double getRange(){return this.rangeMax - this.rangeMin;}
@@ -89,6 +90,17 @@ public class Calibrator implements Serializable {
         protected String name = "";
         protected Calendar date = Calendar.getInstance();
         protected String company = "";
+
+        @Override
+        public boolean equals(Object object){
+            if (!object.getClass().equals(this.getClass())){
+                return false;
+            }
+            Certificate c = (Certificate) object;
+            return this.name.equals(c.name) &&
+                    this.company.equals(c.company) &&
+                    VariableConverter.dateToString(this.date).equals(VariableConverter.dateToString(c.date));
+        }
     }
 
     @Override
@@ -97,7 +109,15 @@ public class Calibrator implements Serializable {
             return false;
         }
         Calibrator c = (Calibrator)object;
-        return this.type.equals(c.getType());
+        return this.type.equals(c.getType()) &&
+                this.name.equals(c.getName()) &&
+                this.number.equals(c.getNumber()) &&
+                this.measurement.equals(c.getMeasurement()) &&
+                this.errorFormula.equals(c.getErrorFormula()) &&
+                this.value.equals(c.getValue()) &&
+                this.certificate.equals(c.getCertificate()) &&
+                this.rangeMin == c.getRangeMin() &&
+                this.rangeMax == c.getRangeMax();
     }
 
 }

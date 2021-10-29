@@ -40,6 +40,11 @@ public class ImportData extends SwingWorker<Void, Void> {
     private final ArrayList<Worker>newPersonsList;
     private final ArrayList<Integer[]>personsIndexes;
 
+    private ArrayList<Calibrator>importedCalibrators;
+    private final ArrayList<Calibrator>oldCalibrators;
+    private final ArrayList<Calibrator>newCalibratorsList;
+    private final ArrayList<Integer[]>calibratorsIndexes;
+
     private final ArrayList<String>newDepartmentsList, newAreasList, newProcessesList, newInstallationsList;
 
     public ImportData(final MainScreen mainScreen, File importDataFile){
@@ -58,6 +63,10 @@ public class ImportData extends SwingWorker<Void, Void> {
         this.oldPersons = Lists.persons();
         this.newPersonsList = new ArrayList<>();
         this.personsIndexes = new ArrayList<>();
+
+        this.oldCalibrators = Lists.calibrators();
+        this.newCalibratorsList = new ArrayList<>();
+        this.calibratorsIndexes = new ArrayList<>();
 
         this.newDepartmentsList = new ArrayList<>();
         this.newAreasList = new ArrayList<>();
@@ -79,10 +88,12 @@ public class ImportData extends SwingWorker<Void, Void> {
         this.importedSensors = this.sensorsExtraction();
         this.importedChannels = this.channelsExtraction();
         this.importedPersons = this.personsExtraction();
+        this.importedCalibrators = this.calibratorsExtraction();
 
         this.copySensors();
         this.copyChannels();
         this.copyPersons();
+        this.copyCalibrators();
         this.copyPathElements();
 
         return null;
@@ -98,6 +109,7 @@ public class ImportData extends SwingWorker<Void, Void> {
                         newSensorsList, importedSensors, sensorsIndexes,
                         newChannelsList,importedChannels, channelsIndexes,
                         newPersonsList, importedPersons, personsIndexes,
+                        newCalibratorsList, importedCalibrators, calibratorsIndexes,
                         newDepartmentsList, newAreasList, newProcessesList, newInstallationsList);
             }
         });
@@ -199,6 +211,30 @@ public class ImportData extends SwingWorker<Void, Void> {
         return persons;
     }
 
+    private ArrayList<Calibrator>calibratorsExtraction(){
+        ArrayList<Calibrator>calibrators = new ArrayList<>();
+        ArrayList<Values>data = this.data.get(7);
+
+        for (Values calibratorData : data){
+            Calibrator calibrator = new Calibrator();
+
+            calibrator.setType(calibratorData.getStringValue(Value.CALIBRATOR_TYPE));
+            calibrator.setName(calibratorData.getStringValue(Value.CALIBRATOR_NAME));
+            calibrator.setNumber(calibratorData.getStringValue(Value.CALIBRATOR_NUMBER));
+            calibrator.setMeasurement(calibratorData.getStringValue(Value.CALIBRATOR_MEASUREMENT));
+            calibrator.setRangeMin(calibratorData.getDoubleValue(Value.CALIBRATOR_RANGE_MIN));
+            calibrator.setRangeMax(calibratorData.getDoubleValue(Value.CALIBRATOR_RANGE_MAX));
+            calibrator.setValue(calibratorData.getStringValue(Value.CALIBRATOR_VALUE));
+            calibrator.setErrorFormula(calibratorData.getStringValue(Value.CALIBRATOR_ERROR));
+            calibrator.setCertificateName(calibratorData.getStringValue(Value.CALIBRATOR_CERTIFICATE_NAME));
+            calibrator.setCertificateDate((Calendar) calibratorData.getValue(Value.CALIBRATOR_CERTIFICATE_DATE));
+            calibrator.setCertificateCompany(calibratorData.getStringValue(Value.CALIBRATOR_CERTIFICATE_COMPANY));
+
+            calibrators.add(calibrator);
+        }
+        return calibrators;
+    }
+
     private void copySensors(){
         for (int imp=0;imp<this.importedSensors.size();imp++){
             boolean exist = false;
@@ -255,6 +291,26 @@ public class ImportData extends SwingWorker<Void, Void> {
             }
             if (!exist){
                 this.newPersonsList.add(this.importedPersons.get(imp));
+            }
+        }
+    }
+
+    private void copyCalibrators(){
+        for (int imp=0;imp<this.importedCalibrators.size();imp++){
+            boolean exist = false;
+            for (int old=0;old<this.oldCalibrators.size();old++){
+                if (this.oldCalibrators.get(old).getName().equals(this.importedCalibrators.get(imp).getName())){
+                    exist = true;
+                    if (this.oldCalibrators.get(old).equals(this.importedCalibrators.get(imp))){
+                        this.newCalibratorsList.add(this.oldCalibrators.get(old));
+                    }else {
+                        this.calibratorsIndexes.add(new Integer[]{old, imp});
+                    }
+                    break;
+                }
+            }
+            if (!exist){
+                this.newCalibratorsList.add(this.importedCalibrators.get(imp));
             }
         }
     }

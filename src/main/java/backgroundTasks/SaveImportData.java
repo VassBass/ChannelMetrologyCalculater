@@ -1,10 +1,7 @@
 package backgroundTasks;
 
 import constants.Strings;
-import support.Channel;
-import support.Lists;
-import support.Sensor;
-import support.Worker;
+import support.*;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -21,7 +18,7 @@ public class SaveImportData extends SwingWorker<Void, Void> {
     private final ArrayList<String>departments, areas, processes, installations;
 
     public SaveImportData(MainScreen mainScreen,
-                          ArrayList<Sensor>sensors, ArrayList<Channel>channels, ArrayList<Worker>persons,
+                          ArrayList<Sensor>sensors, ArrayList<Channel>channels, ArrayList<Worker>persons, ArrayList<Calibrator>calibrators,
                           ArrayList<String>departments, ArrayList<String>areas, ArrayList<String>processes, ArrayList<String>installations){
         super();
 
