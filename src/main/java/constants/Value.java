@@ -9,6 +9,17 @@ public class Value {
     public final static String MEASUREMENT_5 = "measurement5";
 
     public final static String CALIBRATOR = "calibrator";
+    public final static String CALIBRATOR_TYPE = "calibrator type";
+    public final static String CALIBRATOR_NAME = "calibrator name";
+    public final static String CALIBRATOR_NUMBER = "calibrator number";
+    public final static String CALIBRATOR_MEASUREMENT = "calibrator measurement";
+    public final static String CALIBRATOR_RANGE_MIN = "calibrator rangeMin";
+    public final static String CALIBRATOR_RANGE_MAX = "calibrator rangeMax";
+    public final static String CALIBRATOR_VALUE = "calibrator value";
+    public final static String CALIBRATOR_ERROR = "calibrator error";
+    public final static String CALIBRATOR_CERTIFICATE_NAME = "calibrator certificate name";
+    public final static String CALIBRATOR_CERTIFICATE_DATE = "calibrator certificate date";
+    public final static String CALIBRATOR_CERTIFICATE_COMPANY = "calibrator certificate company";
 
     public final static String CHANNEL_CODE = "channel code";
     public final static String CHANNEL_NAME = "channel name";

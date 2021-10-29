@@ -12,14 +12,14 @@ import java.util.Calendar;
 
 public class Calibrator implements Serializable {
 
-    private String type;
-    private String name;
+    private String type = "";
+    private String name = "";
     private final Certificate certificate;
-    private String number = null;
+    private String number = "";
     private String measurement = "";
     private double rangeMin = 0D;
     private double rangeMax = 0D;
-    private String value = null;
+    private String value = "";
     private String errorFormula = "";
 
     public Calibrator(){
