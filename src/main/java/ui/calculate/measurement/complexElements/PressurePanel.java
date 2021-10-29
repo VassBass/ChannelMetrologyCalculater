@@ -1,7 +1,7 @@
 package ui.calculate.measurement.complexElements;
 
-import calibrators.Calibrator;
-import constants.CalibratorType;
+import constants.Strings;
+import support.Calibrator;
 import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
@@ -68,7 +68,7 @@ public class PressurePanel extends JPanel implements UI_Container, MeasurementPa
         double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
         double value100 = this.channel.getRangeMax();
         this.labelValue = new JButton[5];
-        if (this.calibrator.getName() == CalibratorType.FLUKE718_30G && value0 < maxCalibratorPower) {
+        if (this.calibrator.getType().equals(Strings.CALIBRATOR_FLUKE718_30G) && value0 < maxCalibratorPower) {
             if (value5 <= maxCalibratorPower) {
                 this.labelValue[0] = new ButtonCell(false, " - ");
                 this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
@@ -98,7 +98,7 @@ public class PressurePanel extends JPanel implements UI_Container, MeasurementPa
             this.userMeasurements[x].setHorizontalAlignment(SwingConstants.CENTER);
             this.userMeasurements[x].addFocusListener(focusMeasurement);
         }
-        if (this.calibrator.getName() == CalibratorType.FLUKE718_30G && value0 < maxCalibratorPower) {
+        if (this.calibrator.getType().equals(Strings.CALIBRATOR_FLUKE718_30G) && value0 < maxCalibratorPower) {
             if (value5 <= maxCalibratorPower) {
                 this.userMeasurements[0].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
                 this.userMeasurements[0].setEnabled(false);

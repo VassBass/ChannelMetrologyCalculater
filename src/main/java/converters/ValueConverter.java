@@ -14,9 +14,6 @@ public class ValueConverter {
 
     public Double get(double from){
 
-        System.out.println(this.inValue);
-        System.out.println(this.outValue);
-
         if (this.outValue == this.inValue){
             return from;
         }

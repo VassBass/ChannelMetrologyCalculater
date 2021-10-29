@@ -8,7 +8,6 @@ import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Calibrator implements Serializable {
@@ -17,26 +16,25 @@ public class Calibrator implements Serializable {
     private String name;
     private final Certificate certificate;
     private String number = null;
-    private final ArrayList<MeasurementConstants> measurements;
+    private String measurement = "";
     private double rangeMin = 0D;
     private double rangeMax = 0D;
     private String value = null;
     private String errorFormula = "";
 
     public Calibrator(){
-        this.measurements = new ArrayList<>();
         this.certificate = new Certificate();
     }
 
     //Getters
     public String getType() {return this.type;}
     public String getName(){return this.name;}
-    public Certificate getCertificate(){return this.certificate;}
     public String getNumber(){return this.number;}
     public double getRangeMin(){return this.rangeMin;}
     public double getRangeMax(){return this.rangeMax;}
     public double getRange(){return this.rangeMax - this.rangeMin;}
     public String getValue(){return this.value;}
+    public String getMeasurement(){return this.measurement;}
     public String getCertificateName(){return this.certificate.name;}
     public Calendar getCertificateDate(){return this.certificate.date;}
     public String getCertificateCompany(){return this.certificate.company;}
@@ -53,28 +51,7 @@ public class Calibrator implements Serializable {
     public void setCertificateDate(Calendar date){this.certificate.date = date;}
     public void setCertificateCompany(String company){this.certificate.company = company;}
     public void setErrorFormula(String errorFormula){this.errorFormula = errorFormula;}
-
-    public ArrayList<MeasurementConstants>getMeasurements(){return this.measurements;}
-    public void addMeasurement(MeasurementConstants measurement){
-        boolean exist = false;
-        for (MeasurementConstants m : this.measurements){
-            if (m == measurement){
-                exist = true;
-                break;
-            }
-        }
-        if (!exist) {
-            this.measurements.add(measurement);
-        }
-    }
-    public void removeMeasurement(MeasurementConstants measurement){
-        for (MeasurementConstants m : this.measurements){
-            if (m == measurement){
-                this.measurements.remove(m);
-                break;
-            }
-        }
-    }
+    public void setMeasurement(String measurement){this.measurement = measurement;}
 
     public String getCertificateToString(){
         return this.certificate.name

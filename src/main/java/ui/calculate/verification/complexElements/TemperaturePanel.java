@@ -1,6 +1,6 @@
 package ui.calculate.verification.complexElements;
 
-import calibrators.Calibrator;
+import support.Calibrator;
 import constants.MeasurementConstants;
 import constants.Strings;
 import constants.Value;
@@ -165,12 +165,13 @@ public class TemperaturePanel extends JPanel implements UI_Container {
 
         this.sensor.setText(this.channel.getSensor().getType());
 
-        double eP = this.channel.getSensor().getError(this.channel) / (this.channel.getSensor().getRange() / 100);
+        double errorSensor = this.channel.getSensor().getError(this.channel);
+        double ePS = errorSensor / (this.channel.getSensor().getRange() / 100);
         String allowableErrorSensor = Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble2(eP, Locale.GERMAN)
+                + VariableConverter.roundingDouble2(ePS, Locale.GERMAN)
                 + "% або "
                 + Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble2(this.channel.getSensor().getError(this.channel), Locale.GERMAN)
+                + VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN)
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
@@ -190,21 +191,23 @@ public class TemperaturePanel extends JPanel implements UI_Container {
                 + "мм рт ст");
 
         Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
-        this.calibratorName.setText(calibrator.getName().getType());
+        this.calibratorName.setText(calibrator.getType());
         this.calibratorNumber.setText(calibrator.getNumber());
 
-        String certificateCalibrator = calibrator.getCertificate().getName()
+        String certificateCalibrator = calibrator.getCertificateName()
                 + " від "
-                + VariableConverter.dateToString(calibrator.getCertificate().getDate())
+                + VariableConverter.dateToString(calibrator.getCertificateDate())
                 + "р. "
-                + calibrator.getCertificate().getCompany();
+                + calibrator.getCertificateCompany();
         this.calibratorCertificate.setText(certificateCalibrator);
 
+        double errorCalibrator = calibrator.getError(this.channel);
+        double ePC = errorCalibrator / (this.channel.getRange() / 100);
         String allowableErrorCalibrator = Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble(this.calculation.getErrorCalibrator()[1], Locale.GERMAN)
+                + VariableConverter.roundingDouble(ePC, Locale.GERMAN)
                 + "% або "
                 + Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble(this.calculation.getErrorCalibrator()[0], Locale.GERMAN)
+                + VariableConverter.roundingDouble(errorCalibrator, Locale.GERMAN)
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorCalibrator.setText(allowableErrorCalibrator);
 
