@@ -143,6 +143,11 @@ public class Strings {
     public static final String NOT_REMOVED_CALIBRATOR_MESSAGE = "Даний калібратор не може бути видалений зі списку";
     public static final String FROM = "від";
     public static final String RANGE_OF_CALIBRATOR = "Діапазон калібратора";
+    public static final String CALIBRATOR_IN_LIST = "Калібратор зі списку";
+    public static final String IMPORTED_CALIBRATOR = "Імпортуємий калібратор";
+    public static final String CERTIFICATE_NAME = "Назва сертифікату";
+    public static final String CERTIFICATE_DATE = "Дата повірки";
+    public static final String CERTIFICATE_COMPANY = "Компанія яка проводила повірку";
 
     public static final String MAIN_DIR_NAME = "Support";
     public static final String DIR_NAME_LISTS = "Lists";

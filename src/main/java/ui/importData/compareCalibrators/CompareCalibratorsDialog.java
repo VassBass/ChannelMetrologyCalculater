@@ -7,8 +7,6 @@ import support.*;
 import ui.UI_Container;
 import ui.importData.BreakImportDialog;
 import ui.importData.compareCalibrators.complexElements.CompareCalibratorsInfoPanel;
-import ui.importData.comparePersons.ComparePersonsDialog;
-import ui.importData.comparePersons.complexElements.ComparePersonsInfoPanel;
 import ui.main.MainScreen;
 
 import javax.swing.*;
@@ -31,7 +29,7 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
 
     private int marker = 0;
 
-    private ComparePersonsInfoPanel infoPanel;
+    private CompareCalibratorsInfoPanel infoPanel;
 
     private JButton buttonChange, buttonSkip, buttonChangeAll, buttonSkipAll;
 
@@ -70,13 +68,13 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
         marker++;
         if (marker >= calibratorsIndexes.size()) {
             this.dispose();
-            new SaveImportData(this.mainScreen, this.sensors, this.channels, this.persons, newCalibratorsList,
+            new SaveImportData(this.mainScreen, this.sensors, this.channels, this.persons, this.newCalibratorsList,
                     this.departments, this.areas, this.processes, this.installations).execute();
         }else {
             Integer[] index = calibratorsIndexes.get(marker);
             int indexOld = index[0];
             int indexImport = index[1];
-            this.infoPanel = new CompareCalibratorsInfoPanel(this.oldPersonsList.get(indexOld), this.importedPersonsList.get(indexImport));
+            this.infoPanel = new CompareCalibratorsInfoPanel(this.oldCalibratorsList.get(indexOld), this.importedCalibratorsList.get(indexImport));
             this.setContentPane(new MainPanel());
             this.setVisible(false);
             this.setVisible(true);
@@ -85,10 +83,10 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
 
     @Override
     public void createElements() {
-        Integer[] index = personsIndexes.get(marker);
+        Integer[] index = calibratorsIndexes.get(marker);
         int indexOld = index[0];
         int indexImport = index[1];
-        this.infoPanel = new ComparePersonsInfoPanel(this.oldPersonsList.get(indexOld), this.importedPersonsList.get(indexImport));
+        this.infoPanel = new CompareCalibratorsInfoPanel(this.oldCalibratorsList.get(indexOld), this.importedCalibratorsList.get(indexImport));
 
         this.buttonChange = new JButton(Strings.CHANGE);
         this.buttonChange.setBackground(Color.white);
@@ -136,7 +134,7 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
         this.setSize(800,700);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
-        this.setContentPane(new ComparePersonsDialog.MainPanel());
+        this.setContentPane(new MainPanel());
     }
 
     private final ChangeListener pushButton = new ChangeListener() {
@@ -162,8 +160,8 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
     private final ActionListener clickSkip = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Integer[]i = personsIndexes.get(marker);
-            newPersonsList.add(i[0], oldPersonsList.get(i[0]));
+            Integer[]i = calibratorsIndexes.get(marker);
+            newCalibratorsList.add(i[0], oldCalibratorsList.get(i[0]));
             next();
         }
     };
@@ -171,8 +169,8 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
     private final ActionListener clickChange = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            Integer[]i = personsIndexes.get(marker);
-            newPersonsList.add(i[0], importedPersonsList.get(i[1]));
+            Integer[]i = calibratorsIndexes.get(marker);
+            newCalibratorsList.add(i[0], importedCalibratorsList.get(i[1]));
             next();
         }
     };
@@ -180,9 +178,9 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
     private final ActionListener clickSkipAll = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            for (;marker<personsIndexes.size();marker++){
-                Integer[]i = personsIndexes.get(marker);
-                newPersonsList.add(i[0], oldPersonsList.get(i[0]));
+            for (;marker<calibratorsIndexes.size();marker++){
+                Integer[]i = calibratorsIndexes.get(marker);
+                newCalibratorsList.add(i[0], oldCalibratorsList.get(i[0]));
             }
             next();
         }
@@ -191,9 +189,9 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
     private final ActionListener clickChangeAll = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            for (;marker<personsIndexes.size();marker++){
-                Integer[]i = personsIndexes.get(marker);
-                newPersonsList.add(i[0], importedPersonsList.get(i[1]));
+            for (;marker<calibratorsIndexes.size();marker++){
+                Integer[]i = calibratorsIndexes.get(marker);
+                newCalibratorsList.add(i[0], importedCalibratorsList.get(i[1]));
             }
             next();
         }
@@ -206,14 +204,14 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
 
             JScrollPane scroll = new JScrollPane(infoPanel);
             scroll.setPreferredSize(new Dimension(800,650));
-            this.add(scroll, new ComparePersonsDialog.MainPanel.Cell(0, 0.95));
+            this.add(scroll, new Cell(0, 0.95));
 
             JPanel buttonsPanel = new JPanel();
             buttonsPanel.add(buttonSkip);
             buttonsPanel.add(buttonSkipAll);
             buttonsPanel.add(buttonChangeAll);
             buttonsPanel.add(buttonChange);
-            this.add(buttonsPanel, new ComparePersonsDialog.MainPanel.Cell(1, 0.05));
+            this.add(buttonsPanel, new Cell(1, 0.05));
         }
 
         private class Cell extends GridBagConstraints{

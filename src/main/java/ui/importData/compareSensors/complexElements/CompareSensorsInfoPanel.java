@@ -77,15 +77,15 @@ public class CompareSensorsInfoPanel extends JPanel implements UI_Container {
 
         if (old.getRangeMin() == imported.getRangeMin() && old.getRangeMax() == imported.getRangeMax()){
             labels[5] = new ButtonCell(Color.green.darker(), Color.white, Strings.RANGE_OF_SENSOR);
-            String o = String.valueOf(old.getRangeMin()).concat(" - ").concat(String.valueOf(old.getRangeMax()));
+            String o = old.getRangeMin() + " - " + old.getRangeMax();
             oldInfo[2] = new ButtonCell(Color.green.darker(), Color.white, o);
-            String i = String.valueOf(imported.getRangeMin()).concat(" - ").concat(String.valueOf(imported.getRangeMax()));
+            String i = imported.getRangeMin() + " - " + imported.getRangeMax();
             newInfo[2] = new ButtonCell(Color.green.darker(), Color.white, i);
         }else {
             labels[5] = new ButtonCell(Color.red.darker(), Color.white, Strings.RANGE_OF_SENSOR);
-            String o = String.valueOf(old.getRangeMin()).concat(" - ").concat(String.valueOf(old.getRangeMax()));
+            String o = old.getRangeMin() + " - " + old.getRangeMax();
             oldInfo[2] = new ButtonCell(Color.red.darker(), Color.white, o);
-            String i = String.valueOf(imported.getRangeMin()).concat(" - ").concat(String.valueOf(imported.getRangeMax()));
+            String i = imported.getRangeMin() + " - " + imported.getRangeMax();
             newInfo[2] = new ButtonCell(Color.red.darker(), Color.white, i);
         }
 

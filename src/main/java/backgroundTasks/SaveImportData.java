@@ -15,6 +15,7 @@ public class SaveImportData extends SwingWorker<Void, Void> {
     private final ArrayList<Channel> channels;
     private final ArrayList<Sensor>sensors;
     private final ArrayList<Worker>persons;
+    private final ArrayList<Calibrator>calibrators;
     private final ArrayList<String>departments, areas, processes, installations;
 
     public SaveImportData(MainScreen mainScreen,
@@ -27,6 +28,7 @@ public class SaveImportData extends SwingWorker<Void, Void> {
         this.sensors = sensors;
         this.channels = channels;
         this.persons = persons;
+        this.calibrators = calibrators;
         this.departments = departments;
         this.areas = areas;
         this.processes = processes;
@@ -46,6 +48,7 @@ public class SaveImportData extends SwingWorker<Void, Void> {
         Lists.saveSensorsListToFile(this.sensors);
         Lists.saveChannelsListToFile(this.channels);
         Lists.savePersonsListToFile(this.persons);
+        Lists.saveCalibratorsListToFile(this.calibrators);
         Lists.saveDepartmentsListToFile(this.departments);
         Lists.saveAreasListToFile(this.areas);
         Lists.saveProcessesListToFile(this.processes);
