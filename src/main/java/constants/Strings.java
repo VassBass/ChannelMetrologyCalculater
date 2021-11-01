@@ -148,6 +148,10 @@ public class Strings {
     public static final String CERTIFICATE_NAME = "Назва сертифікату";
     public static final String CERTIFICATE_DATE = "Дата повірки";
     public static final String CERTIFICATE_COMPANY = "Компанія яка проводила повірку";
+    public static final String EXPORT_CHANNELS = "Експортувати канали";
+    public static final String EXPORT_SENSORS = "Експортувати ПВП";
+    public static final String EXPORT_CALIBRATORS = "Експортувати калібратори";
+    public static final String EXPORT_ALL_DATA = "Експортувати все";
 
     public static final String MAIN_DIR_NAME = "Support";
     public static final String DIR_NAME_LISTS = "Lists";
@@ -168,6 +172,36 @@ public class Strings {
 
     public static String FILE_NAME_EXPORTED_DATA(Calendar date){
         return "EXPORT ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].exp";
+    }
+
+    public static String FILE_NAME_EXPORTED_CHANNELS(Calendar date){
+        return "EXPORT_CHANNELS ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].exp";
+    }
+
+    public static String FILE_NAME_EXPORTED_SENSORS(Calendar date){
+        return "EXPORT_SENSORS ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].exp";
+    }
+
+    public static String FILE_NAME_EXPORTED_CALIBRATORS(Calendar date){
+        return "EXPORT_CALIBRATORS ["
                 + date.get(Calendar.DAY_OF_MONTH)
                 + "."
                 + (date.get(Calendar.MONTH) + 1)
