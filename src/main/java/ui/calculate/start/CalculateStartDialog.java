@@ -1,8 +1,7 @@
 package ui.calculate.start;
 
-import constants.CalibratorType;
 import constants.Value;
-import calibrators.Calibrator;
+import support.Calibrator;
 import converters.ConverterUI;
 import measurements.Measurement;
 import support.Channel;
@@ -137,7 +136,7 @@ public class CalculateStartDialog extends JDialog implements UI_Container {
             String[] calibrators = this.calibratorsArray(this.channel.getMeasurement());
             Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
             for (int x=0;x<calibrators.length;x++){
-                if (calibrator.getName() == CalibratorType.getConstantFromString(calibrators[x])){
+                if (calibrator.getName().equals(calibrators[x])){
                     this.calibrator.setSelectedIndex(x);
                     break;
                 }
@@ -163,7 +162,7 @@ public class CalculateStartDialog extends JDialog implements UI_Container {
         values.putValue(Value.CHANNEL_PROTOCOL_NUMBER, this.numberOfProtocol.getText());
         values.putValue(Value.CHANNEL_DATE, this.datePanel.getDate());
         for (Calibrator calibrator : Objects.requireNonNull(Lists.calibrators())){
-            if (calibrator.getName() == CalibratorType.getConstantFromString(Objects.requireNonNull(this.calibrator.getSelectedItem()).toString())){
+            if (calibrator.getName().equals(Objects.requireNonNull(this.calibrator.getSelectedItem()).toString())){
                 values.putValue(Value.CALIBRATOR, calibrator);
                 break;
             }
@@ -179,12 +178,10 @@ public class CalculateStartDialog extends JDialog implements UI_Container {
 
     private String[]calibratorsArray(Measurement measurement){
         ArrayList<String> c = new ArrayList<>();
-        for (int x = 0; x< Objects.requireNonNull(Lists.calibrators()).size(); x++) {
-            for (int m = 0; m< Objects.requireNonNull(Lists.calibrators()).get(x).getMeasurements().size(); m++){
-                if (Objects.requireNonNull(Lists.calibrators()).get(x).getMeasurements().get(m) == measurement.getNameConstant()){
-                    c.add(Objects.requireNonNull(Lists.calibrators()).get(x).getName().getType());
-                    break;
-                }
+        ArrayList<Calibrator>calibrators = Lists.calibrators();
+        for (Calibrator calibrator : Objects.requireNonNull(calibrators)) {
+            if (calibrator.getMeasurement().equals(measurement.getName())){
+                c.add(calibrator.getName());
             }
         }
         return c.toArray(new String[0]);

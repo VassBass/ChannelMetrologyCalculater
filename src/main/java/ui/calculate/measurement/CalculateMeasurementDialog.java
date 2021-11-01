@@ -1,7 +1,7 @@
 package ui.calculate.measurement;
 
 import backgroundTasks.CalculateChannel;
-import calibrators.Calibrator;
+import support.Calibrator;
 import constants.Value;
 import converters.ConverterUI;
 import support.Channel;

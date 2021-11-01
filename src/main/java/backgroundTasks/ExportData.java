@@ -60,6 +60,7 @@ public class ExportData extends SwingWorker<Void, Void>{
      * [4] = Areas list
      * [5] = Processes list
      * [6] = Installations list
+     * [7] = Calibrators list
      */
     private ArrayList<ArrayList<Values>> createExportData(){
         ArrayList<ArrayList<Values>>data = new ArrayList<>();
@@ -166,6 +167,26 @@ public class ExportData extends SwingWorker<Void, Void>{
             installations.add(installationData);
         }
 
+        ArrayList<Values>calibrators = new ArrayList<>();
+        ArrayList<Calibrator>calibratorsList = Lists.calibrators();
+        for (Calibrator calibrator : Objects.requireNonNull(calibratorsList)){
+            Values calibratorData = new Values();
+
+            calibratorData.putValue(Value.CALIBRATOR_TYPE, calibrator.getType());//String
+            calibratorData.putValue(Value.CALIBRATOR_NAME, calibrator.getName());//String
+            calibratorData.putValue(Value.CALIBRATOR_NUMBER, calibrator.getNumber());//String
+            calibratorData.putValue(Value.CALIBRATOR_MEASUREMENT, calibrator.getMeasurement());//String
+            calibratorData.putValue(Value.CALIBRATOR_RANGE_MIN, calibrator.getRangeMin());//double
+            calibratorData.putValue(Value.CALIBRATOR_RANGE_MAX, calibrator.getRangeMax());//double
+            calibratorData.putValue(Value.CALIBRATOR_VALUE, calibrator.getValue());//String
+            calibratorData.putValue(Value.CALIBRATOR_ERROR, calibrator.getErrorFormula());//String
+            calibratorData.putValue(Value.CALIBRATOR_CERTIFICATE_NAME, calibrator.getCertificateName());//String
+            calibratorData.putValue(Value.CALIBRATOR_CERTIFICATE_DATE, calibrator.getCertificateDate());//String
+            calibratorData.putValue(Value.CALIBRATOR_CERTIFICATE_COMPANY, calibrator.getCertificateCompany());//String
+
+            calibrators.add(calibratorData);
+        }
+
         data.add(channels);     // 0
         data.add(sensors);      // 1
         data.add(persons);      // 2
@@ -173,6 +194,7 @@ public class ExportData extends SwingWorker<Void, Void>{
         data.add(areas);        // 4
         data.add(processes);    // 5
         data.add(installations);// 6
+        data.add(calibrators);  // 7
         return data;
     }
 

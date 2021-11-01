@@ -1,6 +1,6 @@
 package measurements.certificates;
 
-import calibrators.Calibrator;
+import support.Calibrator;
 import constants.Files;
 import constants.MeasurementConstants;
 import constants.Strings;
@@ -198,11 +198,12 @@ public class TemperatureCertificate implements Certificate {
         String type = sensor.getType();
         cell(19,11).setCellValue(type);
 
-        double eP = (sensor.getError(this.channel) / (sensor.getRange() / 100));
+        double errorSensor = sensor.getError(this.channel);
+        double eP = errorSensor / (sensor.getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(20,12).setCellValue(errorPercent);
 
-        String error = VariableConverter.roundingDouble2(sensor.getError(this.channel), Locale.GERMAN);
+        String error = VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN);
         cell(20,17).setCellValue(error);
 
         String rangeMin = VariableConverter.roundingDouble(sensor.getRangeMin(), Locale.GERMAN);
@@ -216,19 +217,21 @@ public class TemperatureCertificate implements Certificate {
     public void putCalibratorData() {
         Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
 
-        String name = calibrator.getName().getType();
-        cell(16,39).setCellValue(name);
+        String type = calibrator.getType();
+        cell(16,39).setCellValue(type);
 
         String number = calibrator.getNumber();
         cell(17,27).setCellValue(number);
 
-        String certificate = calibrator.getCertificate().getFullName();
+        String certificate = calibrator.getCertificateToString();
         cell(18,30).setCellValue(certificate);
 
-        String errorPercent = VariableConverter.roundingDouble2(this.result.getErrorCalibrator()[1], Locale.GERMAN);
+        double errorCalibrator = calibrator.getError(this.channel);
+        double eP = errorCalibrator / (this.channel.getRange() / 100);
+        String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(19,31).setCellValue(errorPercent);
 
-        String error = VariableConverter.roundingDouble2(this.result.getErrorCalibrator()[0], Locale.GERMAN);
+        String error = VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN);
         cell(19,37).setCellValue(error);
     }
 

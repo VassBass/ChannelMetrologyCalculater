@@ -1,6 +1,6 @@
 package measurements.certificates;
 
-import calibrators.Calibrator;
+import support.Calibrator;
 import constants.*;
 import converters.ValueConverter;
 import converters.VariableConverter;
@@ -196,11 +196,12 @@ public class PressureCertificate implements Certificate {
         String type = sensor.getType();
         cell(19,11).setCellValue(type);
 
-        double eP = (sensor.getError(this.channel) / (this.channel.getRange() / 100));
+        double errorSensor = sensor.getError(this.channel);
+        double eP = errorSensor / (this.channel.getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(20,12).setCellValue(errorPercent);
 
-        String error = VariableConverter.roundingDouble2(sensor.getError(this.channel), Locale.GERMAN);
+        String error = VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN);
         cell(20,16).setCellValue(error);
     }
 
@@ -208,28 +209,25 @@ public class PressureCertificate implements Certificate {
     public void putCalibratorData() {
         Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
 
-        String name;
-        if (calibrator.getName() == CalibratorType.FLUKE750PD2_small){
-            name = CalibratorType.FLUKE750PD2.getType();
-        }else {
-            name = calibrator.getName().getType();
-        }
-        cell(16,39).setCellValue(name);
+        String type = calibrator.getType();
+        cell(16,39).setCellValue(type);
 
         String number = calibrator.getNumber();
         cell(17,27).setCellValue(number);
 
-        String certificate = calibrator.getCertificate().getFullName();
+        String certificate = calibrator.getCertificateToString();
         cell(18,30).setCellValue(certificate);
 
-        String errorPercent = VariableConverter.roundingDouble2(this.result.getErrorCalibrator()[1], Locale.GERMAN);
+        double errorCalibrator = calibrator.getError(this.channel);
+        double eP = errorCalibrator / (this.channel.getRange() / 100);
+        String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(19,31).setCellValue(errorPercent);
 
         String error;
-        if (this.result.getErrorCalibrator()[0] < 0.01){
-            error = VariableConverter.roundingDouble3(this.result.getErrorCalibrator()[0], Locale.GERMAN);
+        if (errorCalibrator < 0.01){
+            error = VariableConverter.roundingDouble3(errorCalibrator, Locale.GERMAN);
         }else {
-            error = VariableConverter.roundingDouble2(this.result.getErrorCalibrator()[0], Locale.GERMAN);
+            error = VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN);
         }
         cell(19,37).setCellValue(error);
     }
@@ -241,7 +239,7 @@ public class PressureCertificate implements Certificate {
         double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
         Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
 
-        if (calibrator.getName() == CalibratorType.FLUKE718_30G){
+        if (calibrator.getType().equals(Strings.CALIBRATOR_FLUKE718_30G)){
             double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
             if (value5 < maxCalibratorPower){
                 value5 = maxCalibratorPower;

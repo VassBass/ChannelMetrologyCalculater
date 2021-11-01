@@ -1,7 +1,6 @@
 package ui.calculate.verification.complexElements;
 
-import calibrators.Calibrator;
-import constants.CalibratorType;
+import support.Calibrator;
 import constants.MeasurementConstants;
 import constants.Strings;
 import constants.Value;
@@ -167,19 +166,20 @@ public class PressurePanel extends JPanel implements UI_Container {
 
         this.sensor.setText(this.channel.getSensor().getType());
 
+        double errorSensor = this.channel.getSensor().getError(this.channel);
+        double ePS = errorSensor / (this.channel.getRange() / 100);
         String errorSensorPercent;
-        double eP = this.channel.getSensor().getError(this.channel) / (this.channel.getRange() / 100);
-        if (eP < 0.01){
-            errorSensorPercent = VariableConverter.roundingDouble3(eP, Locale.GERMAN);
+        if (ePS < 0.01){
+            errorSensorPercent = VariableConverter.roundingDouble3(ePS, Locale.GERMAN);
         }else {
-            errorSensorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
+            errorSensorPercent = VariableConverter.roundingDouble2(ePS, Locale.GERMAN);
         }
 
         String errorSensorValue;
-        if (this.channel.getSensor().getError(this.channel) < 0.01){
-            errorSensorValue = VariableConverter.roundingDouble3(this.channel.getSensor().getError(this.channel), Locale.GERMAN);
+        if (errorSensor < 0.01){
+            errorSensorValue = VariableConverter.roundingDouble3(errorSensor, Locale.GERMAN);
         }else {
-            errorSensorValue = VariableConverter.roundingDouble2(this.channel.getSensor().getError(this.channel), Locale.GERMAN);
+            errorSensorValue = VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN);
         }
         String allowableErrorSensor = Strings.PLUS_MINUS
                 + errorSensorPercent
@@ -205,24 +205,26 @@ public class PressurePanel extends JPanel implements UI_Container {
                 + "мм рт ст");
 
         Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
-        this.calibratorName.setText(calibrator.getName().getType());
+        this.calibratorName.setText(calibrator.getType());
         this.calibratorNumber.setText(calibrator.getNumber());
 
-        String certificateCalibrator = calibrator.getCertificate().getName()
+        String certificateCalibrator = calibrator.getCertificateName()
                 + " від "
-                + VariableConverter.dateToString(calibrator.getCertificate().getDate())
+                + VariableConverter.dateToString(calibrator.getCertificateDate())
                 + "р. "
-                + calibrator.getCertificate().getCompany();
+                + calibrator.getCertificateCompany();
         this.calibratorCertificate.setText(certificateCalibrator);
 
+        double errorCalibrator = calibrator.getError(this.channel);
+        double ePC = errorCalibrator / (this.channel.getRange() / 100);
         String error;
-        if (this.calculation.getErrorCalibrator()[0] < 0.01){
-            error = VariableConverter.roundingDouble3(this.calculation.getErrorCalibrator()[0], Locale.GERMAN);
+        if (errorCalibrator < 0.01){
+            error = VariableConverter.roundingDouble3(errorCalibrator, Locale.GERMAN);
         }else {
-            error = VariableConverter.roundingDouble2(this.calculation.getErrorCalibrator()[0], Locale.GERMAN);
+            error = VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN);
         }
         String allowableErrorCalibrator = Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble(this.calculation.getErrorCalibrator()[1], Locale.GERMAN)
+                + VariableConverter.roundingDouble(ePC, Locale.GERMAN)
                 + "% або "
                 + Strings.PLUS_MINUS
                 + error
@@ -375,7 +377,7 @@ public class PressurePanel extends JPanel implements UI_Container {
                 }else if (x == 9) {
                     Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
                     double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
-                    if (calibrator.getName() == CalibratorType.FLUKE718_30G) {
+                    if (calibrator.getType().equals(Strings.CALIBRATOR_FLUKE718_30G)) {
                         double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
                         if (value5 < maxCalibratorPower){
                             cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));

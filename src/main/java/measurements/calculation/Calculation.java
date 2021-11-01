@@ -1,8 +1,8 @@
 package measurements.calculation;
 
-import constants.CalibratorType;
 import constants.MeasurementConstants;
-import calibrators.Calibrator;
+import constants.Strings;
+import support.Calibrator;
 import converters.ValueConverter;
 import org.apache.commons.lang3.math.NumberUtils;
 import support.Channel;
@@ -24,11 +24,6 @@ public class Calculation {
      * [7] = 100%
      */
     private double[][] in;
-
-    /*
-     * double[error in value] [error in percent]
-     */
-    private double[] errorCalibrator = null;
 
     /*
      * double[Quantity of measurements] [control points]
@@ -107,7 +102,7 @@ public class Calculation {
     }
 
     public void setCalibrator(Calibrator calibrator){
-        if (calibrator.getName() == CalibratorType.FLUKE718_30G){
+        if (calibrator.getType().equals(Strings.CALIBRATOR_FLUKE718_30G)){
             this.maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
         }
         this.calibrator = calibrator;
@@ -168,57 +163,11 @@ public class Calculation {
         }
     }
 
-    public double[] getErrorCalibrator(){
-        if (this.errorCalibrator == null){
-            this.errorCalibrator = new double[2];
-            double rangeChannel = this.channel.getRange();
-            switch (this.channel.getMeasurement().getNameConstant()){
-                case TEMPERATURE:
-                    switch (this.calibrator.getName()){
-                        case FLUKE725:
-                        case FLUKE724:
-                            this.errorCalibrator[0] = 0.7;
-                            break;
-                        case PROVA123:
-                            if (this.channel.getRangeMin() > -200D && this.channel.getRangeMax() <= 0D){
-                                this.errorCalibrator[0] = 1.1;
-                            }else if (this.channel.getRangeMin() >= 0D && this.channel.getRangeMax() <= 1370D){
-                                this.errorCalibrator[0] = 0.8;
-                            }
-                            break;
-                    }
-
-                    this.errorCalibrator[1] = (this.errorCalibrator[0] / rangeChannel) * 100;
-
-                    return this.errorCalibrator;
-
-                case PRESSURE:
-                    switch (this.calibrator.getName()){
-                        case FLUKE750PD2:
-                        case FLUKE718_30G:
-                        case FLUKE750PD2_small:
-                            this.errorCalibrator[1] = 0.05;
-                            break;
-                    }
-
-                    double dCalibrator = new ValueConverter(MeasurementConstants.getConstantFromString(this.calibrator.getValue()),
-                            this.channel.getMeasurement().getValueConstant()).get(this.calibrator.getRange());
-                    this.errorCalibrator[0] = (dCalibrator / 100) * this.errorCalibrator[1];
-
-                    return this.errorCalibrator;
-
-                default: return null;
-            }
-        }else {
-            return this.errorCalibrator;
-        }
-    }
-
     public double getAbsoluteErrorWithSensorError(){
         if (this.error == -999999999D){
             double errorMax = this.getMaxAbsoluteError();
             double errorSensor = this.channel.getSensor().getError(this.channel);
-            double errorCalibrator = this.getErrorCalibrator()[0];
+            double errorCalibrator = this.calibrator.getError(this.channel);
             switch (this.channel.getMeasurement().getNameConstant()){
                 case TEMPERATURE:
                 case PRESSURE:
@@ -326,7 +275,7 @@ public class Calculation {
     public double getStandardIndeterminacyB(){
         if (this.uB == -999999999D){
             double errorSensor = this.channel.getSensor().getError(this.channel);
-            double errorCalibrator = this.getErrorCalibrator()[0];
+            double errorCalibrator = this.calibrator.getError(this.channel);
             switch (this.channel.getMeasurement().getNameConstant()){
                 case TEMPERATURE:
                 case PRESSURE:
