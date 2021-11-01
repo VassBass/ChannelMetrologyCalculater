@@ -15,7 +15,6 @@ import java.awt.event.ActionListener;
 
 public class ConfirmExportDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
-    private final JDialog parent;
     private final int exportData;
 
     private JLabel message;
@@ -23,10 +22,9 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
 
     private final Color buttonColor = new Color(51,51,51);
 
-    public ConfirmExportDialog(MainScreen mainScreen, JDialog parent, int exportData){
-        super(parent, Strings.EXPORT, true);
+    public ConfirmExportDialog(MainScreen mainScreen, int exportData){
+        super(mainScreen, Strings.EXPORT, true);
         this.mainScreen = mainScreen;
-        this.parent = parent;
         this.exportData = exportData;
 
         this.createElements();
@@ -49,7 +47,24 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
             case 3:
                 this.message = new JLabel("Експортувати всі калібратори?");
                 break;
+            case 4:
+                this.message = new JLabel("Експортувати всі цехи?");
+                break;
+            case 5:
+                this.message = new JLabel("Експортувати всі ділянки?");
+                break;
+            case 6:
+                this.message = new JLabel("Експортувати всі лінії, секції і т.п.?");
+                break;
+            case 7:
+                this.message = new JLabel("Експортувати всі установки?");
+                break;
+            case 8:
+                this.message = new JLabel("Експортувати всі елементи розташування каналів?");
+                break;
         }
+        this.message.setHorizontalAlignment(SwingConstants.CENTER);
+
         this.positiveButton = new JButton(Strings.EXPORT);
         this.positiveButton.setBackground(this.buttonColor);
         this.positiveButton.setForeground(Color.WHITE);
@@ -67,13 +82,17 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
 
     @Override
     public void setReactions() {
+        this.negativeButton.addChangeListener(pushButton);
+        this.positiveButton.addChangeListener(pushButton);
 
+        this.negativeButton.addActionListener(clickCancel);
+        this.positiveButton.addActionListener(clickExport);
     }
 
     @Override
     public void build() {
-        this.setSize(200,200);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        this.setSize(400,100);
+        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
         this.setContentPane(new MainPanel());
     }
 
@@ -99,7 +118,8 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
     private final ActionListener clickExport = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            dispose();
+            new ExportData(mainScreen, exportData).execute();
         }
     };
 
@@ -124,6 +144,9 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
                 this.gridx = x;
                 this.gridy = y;
                 this.gridwidth = width;
+                if (width == 2){
+                    this.insets = new Insets(0,0,10,0);
+                }
             }
         }
     }

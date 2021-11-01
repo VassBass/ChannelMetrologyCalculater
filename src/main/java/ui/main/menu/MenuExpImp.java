@@ -1,8 +1,10 @@
 package ui.main.menu;
 
+import backgroundTasks.ExportData;
 import constants.Files;
 import constants.Strings;
 import ui.UI_Container;
+import ui.exportData.ConfirmExportDialog;
 import ui.importData.ImportDataDialog;
 import ui.main.MainScreen;
 
@@ -52,7 +54,15 @@ public class MenuExpImp extends JMenu implements UI_Container {
 
     @Override
     public void setReactions() {
-        this.buttonExportAllData.addActionListener(clickExport);
+        this.buttonExportAllData.addActionListener(clickExportAllData);
+        this.buttonExportChannels.addActionListener(clickExportChannels);
+        this.buttonExportSensors.addActionListener(clickExportSensors);
+        this.buttonExportCalibrators.addActionListener(clickExportCalibrators);
+        this.buttonExportDepartments.addActionListener(clickExportDepartments);
+        this.buttonExportAreas.addActionListener(clickExportAreas);
+        this.buttonExportProcesses.addActionListener(clickExportProcesses);
+        this.buttonExportInstallations.addActionListener(clickExportInstallations);
+        this.buttonExportAllPathElements.addActionListener(clickExportAllPathElements);
         this.buttonImport.addActionListener(clickImport);
         this.buttonFolder.addActionListener(clickFolder);
     }
@@ -78,9 +88,111 @@ public class MenuExpImp extends JMenu implements UI_Container {
         this.add(this.buttonFolder);
     }
 
-    private final ActionListener clickExport = new ActionListener() {
+    private final ActionListener clickExportAllData = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.ALL_DATA).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickExportChannels = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.CHANNELS).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickExportSensors = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.SENSORS).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickExportCalibrators = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.CALIBRATORS).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickExportDepartments = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.DEPARTMENTS).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickExportAreas = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.AREAS).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickExportProcesses = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.PROCESSES).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickExportInstallations = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.INSTALLATIONS).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickExportAllPathElements = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.ALL_PATH_ELEMENTS).setVisible(true);
+                }
+            });
         }
     };
 
