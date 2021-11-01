@@ -20,16 +20,23 @@ public class ExportData extends SwingWorker<Void, Void>{
     private final MainScreen mainScreen;
     private final ArrayList<Channel> channels;
     private final LoadDialog loadDialog;
+    private final int exportData;
 
-    private int channelsNumber = 0;
+    public static final int ALL_DATA = 0;
+    public static final int CHANNELS = 1;
+    public static final int SENSORS = 2;
+    public static final int CALIBRATORS = 3;
+    public static final int DEPARTMENTS = 4;
+    public static final int AREAS = 5;
+    public static final int PROCESSES = 6;
+    public static final int INSTALLATIONS = 7;
+    public static final int ALL_PATH_ELEMENTS = 8;
 
-    public ExportData(MainScreen mainScreen){
+    public ExportData(MainScreen mainScreen, int exportData){
         super();
         this.mainScreen = mainScreen;
+        this.exportData = exportData;
         this.channels = Lists.channels();
-        if (this.channels != null) {
-            this.channelsNumber = this.channels.size();
-        }
 
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
@@ -52,21 +59,56 @@ public class ExportData extends SwingWorker<Void, Void>{
         JOptionPane.showMessageDialog(this.mainScreen, Strings.EXPORT_SUCCESS, Strings.EXPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    /*
-     * [0] = Channels list
-     * [1] = Sensors list
-     * [2] = Persons list
-     * [3] = Departments list
-     * [4] = Areas list
-     * [5] = Processes list
-     * [6] = Installations list
-     * [7] = Calibrators list
-     */
     private ArrayList<ArrayList<Values>> createExportData(){
         ArrayList<ArrayList<Values>>data = new ArrayList<>();
 
-        ArrayList<Values>channels = new ArrayList<>();
-        for (int x=0;x<this.channelsNumber;x++){
+        switch (this.exportData) {
+            case ALL_DATA:
+                data.add(createExportDataChannels());       // 0
+                data.add(createExportDataSensors());        // 1
+                data.add(createExportDataPersons());        // 2
+                data.add(createExportDataDepartments());    // 3
+                data.add(createExportDataAreas());          // 4
+                data.add(createExportDataProcesses());      // 5
+                data.add(createExportDataInstallations());  // 6
+                data.add(createExportDataCalibrators());    // 7
+                break;
+            case CHANNELS:
+                data.add(createExportDataChannels());       //0
+                data.add(createExportDataSensors());        //1
+                break;
+            case SENSORS:
+                data.add(createExportDataSensors());        //0
+                break;
+            case CALIBRATORS:
+                data.add(createExportDataCalibrators());    //0
+                break;
+            case DEPARTMENTS:
+                data.add(createExportDataDepartments());    //0
+                break;
+            case AREAS:
+                data.add(createExportDataAreas());          //0
+                break;
+            case PROCESSES:
+                data.add(createExportDataProcesses());      //0
+                break;
+            case INSTALLATIONS:
+                data.add(createExportDataInstallations());  //0
+                break;
+            case ALL_PATH_ELEMENTS:
+                data.add(createExportDataDepartments());    //0
+                data.add(createExportDataAreas());          //1
+                data.add(createExportDataProcesses());      //2
+                data.add(createExportDataInstallations());  //3
+                break;
+        }
+        return data;
+    }
+
+    private ArrayList<Values>createExportDataChannels(){
+        ArrayList<Values> channels = new ArrayList<>();
+        ArrayList<Channel> channelsList = Lists.channels();
+        for (int x = 0; x < Objects.requireNonNull(channelsList).size(); x++) {
             Channel channel = this.channels.get(x);
             Values channelData = new Values();
 
@@ -104,10 +146,13 @@ public class ExportData extends SwingWorker<Void, Void>{
 
             channels.add(channelData);
         }
+        return channels;
+    }
 
-        ArrayList<Values>sensors = new ArrayList<>();
-        ArrayList<Sensor>sensorsList = Lists.sensors();
-        for (Sensor sensor : Objects.requireNonNull(sensorsList)){
+    private ArrayList<Values>createExportDataSensors(){
+        ArrayList<Values> sensors = new ArrayList<>();
+        ArrayList<Sensor> sensorsList = Lists.sensors();
+        for (Sensor sensor : Objects.requireNonNull(sensorsList)) {
             Values sensorData = new Values();
 
             sensorData.putValue(Value.SENSOR_TYPE, sensor.getType());//String
@@ -121,7 +166,10 @@ public class ExportData extends SwingWorker<Void, Void>{
 
             sensors.add(sensorData);
         }
+        return sensors;
+    }
 
+    private ArrayList<Values>createExportDataPersons(){
         ArrayList<Values>persons = new ArrayList<>();
         ArrayList<Worker>personsList = Lists.persons();
         for (Worker person : Objects.requireNonNull(personsList)){
@@ -134,7 +182,10 @@ public class ExportData extends SwingWorker<Void, Void>{
 
             persons.add(personData);
         }
+        return persons;
+    }
 
+    private ArrayList<Values>createExportDataDepartments(){
         ArrayList<Values>departments = new ArrayList<>();
         ArrayList<String>departmentsList = Lists.departments();
         for (String department : Objects.requireNonNull(departmentsList)){
@@ -142,7 +193,10 @@ public class ExportData extends SwingWorker<Void, Void>{
             departmentData.putValue(Value.CHANNEL_DEPARTMENT, department);//String
             departments.add(departmentData);
         }
+        return departments;
+    }
 
+    private ArrayList<Values>createExportDataAreas(){
         ArrayList<Values>areas = new ArrayList<>();
         ArrayList<String>areasList = Lists.areas();
         for (String area : Objects.requireNonNull(areasList)){
@@ -150,7 +204,10 @@ public class ExportData extends SwingWorker<Void, Void>{
             areaData.putValue(Value.CHANNEL_AREA, area);//String
             areas.add(areaData);
         }
+        return areas;
+    }
 
+    private ArrayList<Values>createExportDataProcesses(){
         ArrayList<Values>processes = new ArrayList<>();
         ArrayList<String>processesList = Lists.processes();
         for (String process : Objects.requireNonNull(processesList)){
@@ -158,7 +215,10 @@ public class ExportData extends SwingWorker<Void, Void>{
             processData.putValue(Value.CHANNEL_PROCESS, process);//String
             processes.add(processData);
         }
+        return processes;
+    }
 
+    private ArrayList<Values>createExportDataInstallations(){
         ArrayList<Values>installations = new ArrayList<>();
         ArrayList<String>installationsList = Lists.installations();
         for (String installation : Objects.requireNonNull(installationsList)){
@@ -166,7 +226,10 @@ public class ExportData extends SwingWorker<Void, Void>{
             installationData.putValue(Value.CHANNEL_INSTALLATION, installation);//String
             installations.add(installationData);
         }
+        return installations;
+    }
 
+    private ArrayList<Values>createExportDataCalibrators(){
         ArrayList<Values>calibrators = new ArrayList<>();
         ArrayList<Calibrator>calibratorsList = Lists.calibrators();
         for (Calibrator calibrator : Objects.requireNonNull(calibratorsList)){
@@ -186,16 +249,7 @@ public class ExportData extends SwingWorker<Void, Void>{
 
             calibrators.add(calibratorData);
         }
-
-        data.add(channels);     // 0
-        data.add(sensors);      // 1
-        data.add(persons);      // 2
-        data.add(departments);  // 3
-        data.add(areas);        // 4
-        data.add(processes);    // 5
-        data.add(installations);// 6
-        data.add(calibrators);  // 7
-        return data;
+        return calibrators;
     }
 
     private void saveData(ArrayList<ArrayList<Values>>data){

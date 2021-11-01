@@ -151,6 +151,11 @@ public class Strings {
     public static final String EXPORT_CHANNELS = "Експортувати канали";
     public static final String EXPORT_SENSORS = "Експортувати ПВП";
     public static final String EXPORT_CALIBRATORS = "Експортувати калібратори";
+    public static final String EXPORT_ALL_PATH = "Експортувати всі елементи розташування каналів";
+    public static final String EXPORT_DEPARTMENTS = "Експортувати цехи";
+    public static final String EXPORT_AREAS = "Експортувати ділянки";
+    public static final String EXPORT_PROCESSES = "Експортувати лінії, секції і т.п.";
+    public static final String EXPORT_INSTALLATIONS = "Експортувати установки";
     public static final String EXPORT_ALL_DATA = "Експортувати все";
 
     public static final String MAIN_DIR_NAME = "Support";
@@ -202,6 +207,56 @@ public class Strings {
 
     public static String FILE_NAME_EXPORTED_CALIBRATORS(Calendar date){
         return "EXPORT_CALIBRATORS ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].exp";
+    }
+
+    public static String FILE_NAME_EXPORTED_ALL_PATH_ELEMENTS(Calendar date){
+        return "EXPORT_PATH_ELEMENTS ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].exp";
+    }
+
+    public static String FILE_NAME_EXPORTED_DEPARTMENTS(Calendar date){
+        return "EXPORT_DEPARTMENTS ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].exp";
+    }
+
+    public static String FILE_NAME_EXPORTED_AREAS(Calendar date){
+        return "EXPORT_AREAS ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].exp";
+    }
+
+    public static String FILE_NAME_EXPORTED_PROCESSES(Calendar date){
+        return "EXPORT_DEPARTMENTS ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].exp";
+    }
+
+    public static String FILE_NAME_EXPORTED_INSTALLATIONS(Calendar date){
+        return "EXPORT_DEPARTMENTS ["
                 + date.get(Calendar.DAY_OF_MONTH)
                 + "."
                 + (date.get(Calendar.MONTH) + 1)
