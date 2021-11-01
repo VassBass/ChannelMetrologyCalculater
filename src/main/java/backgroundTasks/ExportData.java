@@ -22,6 +22,8 @@ public class ExportData extends SwingWorker<Void, Void>{
     private final LoadDialog loadDialog;
     private final int exportData;
 
+    private String fileName;
+
     public static final int ALL_DATA = 0;
     public static final int CHANNELS = 1;
     public static final int SENSORS = 2;
@@ -72,34 +74,52 @@ public class ExportData extends SwingWorker<Void, Void>{
                 data.add(createExportDataProcesses());      // 5
                 data.add(createExportDataInstallations());  // 6
                 data.add(createExportDataCalibrators());    // 7
+
+                fileName = Strings.FILE_NAME_EXPORTED_DATA(Calendar.getInstance());
                 break;
             case CHANNELS:
                 data.add(createExportDataChannels());       //0
                 data.add(createExportDataSensors());        //1
+
+                fileName = Strings.FILE_NAME_EXPORTED_CHANNELS(Calendar.getInstance());
                 break;
             case SENSORS:
                 data.add(createExportDataSensors());        //0
+
+                fileName = Strings.FILE_NAME_EXPORTED_SENSORS(Calendar.getInstance());
                 break;
             case CALIBRATORS:
                 data.add(createExportDataCalibrators());    //0
+
+                fileName = Strings.FILE_NAME_EXPORTED_CALIBRATORS(Calendar.getInstance());
                 break;
             case DEPARTMENTS:
                 data.add(createExportDataDepartments());    //0
+
+                fileName = Strings.FILE_NAME_EXPORTED_DEPARTMENTS(Calendar.getInstance());
                 break;
             case AREAS:
                 data.add(createExportDataAreas());          //0
+
+                fileName = Strings.FILE_NAME_EXPORTED_AREAS(Calendar.getInstance());
                 break;
             case PROCESSES:
                 data.add(createExportDataProcesses());      //0
+
+                fileName = Strings.FILE_NAME_EXPORTED_PROCESSES(Calendar.getInstance());
                 break;
             case INSTALLATIONS:
                 data.add(createExportDataInstallations());  //0
+
+                fileName = Strings.FILE_NAME_EXPORTED_INSTALLATIONS(Calendar.getInstance());
                 break;
             case ALL_PATH_ELEMENTS:
                 data.add(createExportDataDepartments());    //0
                 data.add(createExportDataAreas());          //1
                 data.add(createExportDataProcesses());      //2
                 data.add(createExportDataInstallations());  //3
+
+                fileName = Strings.FILE_NAME_EXPORTED_ALL_PATH_ELEMENTS(Calendar.getInstance());
                 break;
         }
         return data;
@@ -253,8 +273,9 @@ public class ExportData extends SwingWorker<Void, Void>{
     }
 
     private void saveData(ArrayList<ArrayList<Values>>data){
+
         try {
-            File file = new File(Files.EXPORT_DIR, Strings.FILE_NAME_EXPORTED_DATA(Calendar.getInstance()));
+            File file = new File(Files.EXPORT_DIR, fileName);
             if (!file.exists()){
                 if (!file.createNewFile()){
                     JOptionPane.showMessageDialog(mainScreen, Strings.ERROR, "Файл експорту не вдалось створити", JOptionPane.ERROR_MESSAGE);
