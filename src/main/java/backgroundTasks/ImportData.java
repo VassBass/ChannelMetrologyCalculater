@@ -130,9 +130,16 @@ public class ImportData extends SwingWorker<Void, Void> {
 
     private ArrayList<Channel>channelsExtraction(){
         ArrayList<Channel>channels = new ArrayList<>();
-        ArrayList<Values>data = this.data.get(0);
+        ArrayList<Values>data = new ArrayList<>();
+        for (ArrayList<Values> datum : this.data) {
+            if (datum.get(0).getStringValue(Value.DATA_TYPE).equals(Value.CHANNEL)) {
+                data = datum;
+                break;
+            }
+        }
 
-        for (Values channelData : data) {
+        for (int x = 1; x< Objects.requireNonNull(data).size(); x++) {
+            Values channelData = data.get(x);
             Channel channel = new Channel();
 
             channel.setCode(channelData.getStringValue(Value.CHANNEL_CODE));
@@ -175,9 +182,16 @@ public class ImportData extends SwingWorker<Void, Void> {
 
     private ArrayList<Sensor>sensorsExtraction(){
         ArrayList<Sensor>sensors = new ArrayList<>();
-        ArrayList<Values>data = this.data.get(1);
+        ArrayList<Values>data = new ArrayList<>();
+        for (ArrayList<Values> datum : this.data) {
+            if (datum.get(0).getStringValue(Value.DATA_TYPE).equals(Value.SENSOR)) {
+                data = datum;
+                break;
+            }
+        }
 
-        for (Values sensorData : data){
+        for (int x = 1; x< Objects.requireNonNull(data).size(); x++){
+            Values sensorData = data.get(x);
             Sensor sensor = new Sensor();
 
             sensor.setType(sensorData.getStringValue(Value.SENSOR_TYPE));
@@ -196,9 +210,16 @@ public class ImportData extends SwingWorker<Void, Void> {
 
     private ArrayList<Worker>personsExtraction(){
         ArrayList<Worker>persons = new ArrayList<>();
-        ArrayList<Values>data = this.data.get(2);
+        ArrayList<Values>data = new ArrayList<>();
+        for (ArrayList<Values> datum : this.data) {
+            if (datum.get(0).getStringValue(Value.DATA_TYPE).equals(Value.PERSON)) {
+                data = datum;
+                break;
+            }
+        }
 
-        for (Values personData : data){
+        for (int x = 1; x< Objects.requireNonNull(data).size(); x++){
+            Values personData = data.get(x);
             Worker person = new Worker();
 
             person.setName(personData.getStringValue(Value.PERSON_NAME));
@@ -213,9 +234,15 @@ public class ImportData extends SwingWorker<Void, Void> {
 
     private ArrayList<Calibrator>calibratorsExtraction(){
         ArrayList<Calibrator>calibrators = new ArrayList<>();
-        ArrayList<Values>data = this.data.get(7);
-
-        for (Values calibratorData : data){
+        ArrayList<Values>data = new ArrayList<>();
+        for (ArrayList<Values> datum : this.data) {
+            if (datum.get(0).getStringValue(Value.DATA_TYPE).equals(Value.CALIBRATOR)) {
+                data = datum;
+                break;
+            }
+        }
+        for (int x = 1; x< Objects.requireNonNull(data).size(); x++){
+            Values calibratorData = data.get(x);
             Calibrator calibrator = new Calibrator();
 
             calibrator.setType(calibratorData.getStringValue(Value.CALIBRATOR_TYPE));
@@ -316,13 +343,18 @@ public class ImportData extends SwingWorker<Void, Void> {
     }
 
     private void copyPathElements(){
-        ArrayList<String>old;
+        ArrayList<String>old = Lists.departments();
         ArrayList<String>imported = new ArrayList<>();
-        ArrayList<Values>data;
+        ArrayList<Values>data = new ArrayList<>();
+        for (ArrayList<Values> datum : this.data) {
+            if (datum.get(0).getStringValue(Value.DATA_TYPE).equals(Value.DEPARTMENT)) {
+                data = datum;
+                break;
+            }
+        }
 
-        old = Lists.departments();
-        data = this.data.get(3);
-        for (Values department : data){
+        for (int x = 1; x< Objects.requireNonNull(data).size(); x++){
+            Values department = data.get(x);
             imported.add(department.getStringValue(Value.CHANNEL_DEPARTMENT));
         }
         for (String imp : imported){
@@ -340,8 +372,14 @@ public class ImportData extends SwingWorker<Void, Void> {
 
         imported.clear();
         old = Lists.areas();
-        data = this.data.get(4);
-        for (Values area : data){
+        for (ArrayList<Values> datum : this.data) {
+            if (datum.get(0).getStringValue(Value.DATA_TYPE).equals(Value.AREA)) {
+                data = datum;
+                break;
+            }
+        }
+        for (int x=1;x<data.size();x++){
+            Values area = data.get(x);
             imported.add(area.getStringValue(Value.CHANNEL_AREA));
         }
         for (String imp : imported){
@@ -359,8 +397,14 @@ public class ImportData extends SwingWorker<Void, Void> {
 
         imported.clear();
         old = Lists.processes();
-        data = this.data.get(5);
-        for (Values process : data){
+        for (ArrayList<Values> datum : this.data) {
+            if (datum.get(0).getStringValue(Value.DATA_TYPE).equals(Value.PROCESS)) {
+                data = datum;
+                break;
+            }
+        }
+        for (int x=1;x<data.size();x++){
+            Values process = data.get(x);
             imported.add(process.getStringValue(Value.CHANNEL_PROCESS));
         }
         for (String imp : imported){
@@ -378,8 +422,14 @@ public class ImportData extends SwingWorker<Void, Void> {
 
         imported.clear();
         old = Lists.installations();
-        data = this.data.get(6);
-        for (Values installation : data){
+        for (ArrayList<Values> datum : this.data) {
+            if (datum.get(0).getStringValue(Value.DATA_TYPE).equals(Value.INSTALLATION)) {
+                data = datum;
+                break;
+            }
+        }
+        for (int x=1;x<data.size();x++){
+            Values installation = data.get(x);
             imported.add(installation.getStringValue(Value.CHANNEL_INSTALLATION));
         }
         for (String imp : imported){

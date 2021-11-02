@@ -67,7 +67,7 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
 
         if (sensorsIndexes.size() == 0){
             this.dispose();
-            EventQueue.invokeLater(new Runnable() {
+                EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     new CompareChannelsDialog(mainScreen, newSensorsList,

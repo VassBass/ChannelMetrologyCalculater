@@ -114,12 +114,14 @@ public class SensorsListDialog extends JDialog implements UI_Container {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new SensorRemoveDialog(current).setVisible(true);
-                }
-            });
+            if (mainTable.getSelectedRow() >= 0) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new SensorRemoveDialog(current).setVisible(true);
+                    }
+                });
+            }
         }
     };
 
