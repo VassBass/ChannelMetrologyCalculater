@@ -128,6 +128,11 @@ public class ExportData extends SwingWorker<Void, Void>{
     private ArrayList<Values>createExportDataChannels(){
         ArrayList<Values> channels = new ArrayList<>();
         ArrayList<Channel> channelsList = Lists.channels();
+
+        Values dataType = new Values();
+        dataType.putValue(Value.DATA_TYPE, Value.CHANNEL);
+        channels.add(dataType);
+
         for (int x = 0; x < Objects.requireNonNull(channelsList).size(); x++) {
             Channel channel = this.channels.get(x);
             Values channelData = new Values();
@@ -172,6 +177,11 @@ public class ExportData extends SwingWorker<Void, Void>{
     private ArrayList<Values>createExportDataSensors(){
         ArrayList<Values> sensors = new ArrayList<>();
         ArrayList<Sensor> sensorsList = Lists.sensors();
+
+        Values dataType = new Values();
+        dataType.putValue(Value.DATA_TYPE, Value.SENSOR);
+        sensors.add(dataType);
+
         for (Sensor sensor : Objects.requireNonNull(sensorsList)) {
             Values sensorData = new Values();
 
@@ -192,6 +202,11 @@ public class ExportData extends SwingWorker<Void, Void>{
     private ArrayList<Values>createExportDataPersons(){
         ArrayList<Values>persons = new ArrayList<>();
         ArrayList<Worker>personsList = Lists.persons();
+
+        Values dataType = new Values();
+        dataType.putValue(Value.DATA_TYPE, Value.PERSON);
+        persons.add(dataType);
+
         for (Worker person : Objects.requireNonNull(personsList)){
             Values personData = new Values();
 
@@ -208,6 +223,11 @@ public class ExportData extends SwingWorker<Void, Void>{
     private ArrayList<Values>createExportDataDepartments(){
         ArrayList<Values>departments = new ArrayList<>();
         ArrayList<String>departmentsList = Lists.departments();
+
+        Values dataType = new Values();
+        dataType.putValue(Value.DATA_TYPE, Value.DEPARTMENT);
+        departments.add(dataType);
+
         for (String department : Objects.requireNonNull(departmentsList)){
             Values departmentData = new Values();
             departmentData.putValue(Value.CHANNEL_DEPARTMENT, department);//String
@@ -219,6 +239,11 @@ public class ExportData extends SwingWorker<Void, Void>{
     private ArrayList<Values>createExportDataAreas(){
         ArrayList<Values>areas = new ArrayList<>();
         ArrayList<String>areasList = Lists.areas();
+
+        Values dataType = new Values();
+        dataType.putValue(Value.DATA_TYPE, Value.AREA);
+        areas.add(dataType);
+
         for (String area : Objects.requireNonNull(areasList)){
             Values areaData = new Values();
             areaData.putValue(Value.CHANNEL_AREA, area);//String
@@ -230,6 +255,11 @@ public class ExportData extends SwingWorker<Void, Void>{
     private ArrayList<Values>createExportDataProcesses(){
         ArrayList<Values>processes = new ArrayList<>();
         ArrayList<String>processesList = Lists.processes();
+
+        Values dataType = new Values();
+        dataType.putValue(Value.DATA_TYPE, Value.PROCESS);
+        processes.add(dataType);
+
         for (String process : Objects.requireNonNull(processesList)){
             Values processData = new Values();
             processData.putValue(Value.CHANNEL_PROCESS, process);//String
@@ -241,6 +271,11 @@ public class ExportData extends SwingWorker<Void, Void>{
     private ArrayList<Values>createExportDataInstallations(){
         ArrayList<Values>installations = new ArrayList<>();
         ArrayList<String>installationsList = Lists.installations();
+
+        Values dataType = new Values();
+        dataType.putValue(Value.DATA_TYPE, Value.INSTALLATION);
+        installations.add(dataType);
+
         for (String installation : Objects.requireNonNull(installationsList)){
             Values installationData = new Values();
             installationData.putValue(Value.CHANNEL_INSTALLATION, installation);//String
@@ -252,6 +287,11 @@ public class ExportData extends SwingWorker<Void, Void>{
     private ArrayList<Values>createExportDataCalibrators(){
         ArrayList<Values>calibrators = new ArrayList<>();
         ArrayList<Calibrator>calibratorsList = Lists.calibrators();
+
+        Values dataType = new Values();
+        dataType.putValue(Value.DATA_TYPE, Value.CALIBRATOR);
+        calibrators.add(dataType);
+
         for (Calibrator calibrator : Objects.requireNonNull(calibratorsList)){
             Values calibratorData = new Values();
 

@@ -21,6 +21,7 @@ public class Value {
     public final static String CALIBRATOR_CERTIFICATE_DATE = "calibrator certificate date";
     public final static String CALIBRATOR_CERTIFICATE_COMPANY = "calibrator certificate company";
 
+    public final static String CHANNEL = "channel";
     public final static String CHANNEL_CODE = "channel code";
     public final static String CHANNEL_NAME = "channel name";
     public final static String CHANNEL_DEPARTMENT = "channel department";
@@ -41,6 +42,7 @@ public class Value {
     public final static String MEASUREMENT_NAME = "measurement name";
     public final static String MEASUREMENT_VALUE = "measurement value";
 
+    public final static String SENSOR = "sensor";
     public final static String SENSOR_TYPE = "sensor type";
     public final static String SENSOR_NAME = "sensor name";
     public final static String SENSOR_RANGE_MIN = "sensor rangeMin";
@@ -67,8 +69,16 @@ public class Value {
     public final static String CALCULATER_POSITION = "calculater position";
     public final static String HEAD_OF_DEPARTMENT = "head of department";
 
+    public final static String PERSON = "person";
     public final static String PERSON_SURNAME = "person surname";
     public final static String PERSON_NAME = "person name";
     public final static String PERSON_PATRONYMIC = "person patronymic";
     public final static String PERSON_POSITION = "person position";
+
+    public final static String DEPARTMENT = "department";
+    public final static String AREA = "area";
+    public final static String PROCESS = "process";
+    public final static String INSTALLATION = "installation";
+
+    public final static String DATA_TYPE = "data type";
 }
