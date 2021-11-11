@@ -89,11 +89,19 @@ public class SensorRangePanel extends JPanel implements UI_Container {
     }
 
     public double getRangeMin(){
-        return Double.parseDouble(VariableConverter.doubleString(rangeMin.getText()));
+        try {
+            return Double.parseDouble(VariableConverter.doubleString(rangeMin.getText()));
+        }catch (Exception e){
+            return 0D;
+        }
     }
 
     public double getRangeMax(){
-        return Double.parseDouble(VariableConverter.doubleString(rangeMax.getText()));
+        try {
+            return Double.parseDouble(VariableConverter.doubleString(rangeMax.getText()));
+        }catch (Exception e){
+            return 0D;
+        }
     }
 
     private final FocusListener rangeFocus = new FocusListener() {

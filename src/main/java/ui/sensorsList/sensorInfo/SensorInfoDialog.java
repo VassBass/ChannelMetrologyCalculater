@@ -199,6 +199,10 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
             this.nameText.setText(this.oldSensor.getName());
             this.rangePanel.setRange(this.oldSensor.getRangeMax(), this.oldSensor.getRangeMin());
             this.errorFormulaText.setText(this.oldSensor.getErrorFormula());
+
+            if (this.oldSensor.getMeasurement().equals(MeasurementConstants.PRESSURE.getValue())){
+                this.rangePanel.setEnabled(false);
+            }
         }
     }
 
