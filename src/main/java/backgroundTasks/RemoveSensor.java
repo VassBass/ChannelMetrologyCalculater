@@ -35,7 +35,7 @@ public class RemoveSensor extends SwingWorker<Void, Void> {
         Sensor sensor = Objects.requireNonNull(sensors).get(this.dialog.mainTable.getSelectedRow());
         ArrayList<Integer>indexes = new ArrayList<>();
         for (int x = 0; x< Objects.requireNonNull(channels).size(); x++){
-            if (channels.get(x).getSensor().equals(sensor)){
+            if (channels.get(x).getSensor().getName().equals(sensor.getName())){
                 indexes.add(x);
             }
         }

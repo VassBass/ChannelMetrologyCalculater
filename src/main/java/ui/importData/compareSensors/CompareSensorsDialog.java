@@ -1,5 +1,8 @@
 package ui.importData.compareSensors;
 
+import backgroundTasks.ExportData;
+import backgroundTasks.SaveImportData;
+import backgroundTasks.SaveImportedSensors;
 import constants.Strings;
 import converters.ConverterUI;
 import support.*;
@@ -21,17 +24,41 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
     private final JDialog current;
 
     private final ArrayList<Sensor>newSensorsList, oldSensorsList, importedSensorsList;
-    private final ArrayList<Channel>newChannelsList, importedChannelsList;
-    private final ArrayList<Worker>newPersonsList, importedPersonsList;
-    private final ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
-    private final ArrayList<String>departments, areas, processes, installations;
-    private final ArrayList<Integer[]>sensorsIndexes, channelIndexes, personsIndexes, calibratorsIndexes;
+    private ArrayList<Channel>newChannelsList, importedChannelsList;
+    private ArrayList<Worker>newPersonsList, importedPersonsList;
+    private ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
+    private ArrayList<String>departments, areas, processes, installations;
+    private final ArrayList<Integer[]>sensorsIndexes;
+    private ArrayList<Integer[]> channelIndexes, personsIndexes, calibratorsIndexes;
 
     private int marker = 0;
+    private int exportData;
 
     private CompareSensorsInfoPanel infoPanel;
 
     private JButton buttonChange, buttonSkip, buttonChangeAll, buttonSkipAll;
+
+    public CompareSensorsDialog(final MainScreen mainScreen, int exportData,
+                                final ArrayList<Sensor> newSensorsList, ArrayList<Sensor> importedSensorsList, ArrayList<Integer[]> sensorsIndexes){
+        super(mainScreen, Strings.IMPORT, true);
+        this.mainScreen = mainScreen;
+        this.exportData = exportData;
+        this.current = this;
+
+        this.newSensorsList = newSensorsList;
+        this.oldSensorsList = Lists.sensors();
+        this.importedSensorsList = importedSensorsList;
+        this.sensorsIndexes = sensorsIndexes;
+
+        if (importedSensorsList == null || sensorsIndexes == null){
+            new SaveImportData(mainScreen, newSensorsList).execute();
+        }else {
+            this.createElements();
+            this.setReactions();
+            this.build();
+            this.setVisible(true);
+        }
+    }
 
     public CompareSensorsDialog(final MainScreen mainScreen,
                                 final ArrayList<Sensor>newSensorsList, ArrayList<Sensor>importedSensorsList, ArrayList<Integer[]>sensorsIndexes,
@@ -89,16 +116,20 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
         marker++;
         if (marker >= sensorsIndexes.size()) {
             this.dispose();
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new CompareChannelsDialog(mainScreen, newSensorsList,
-                            newChannelsList, importedChannelsList, channelIndexes,
-                            newPersonsList, importedPersonsList, personsIndexes,
-                            newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
-                            departments, areas, processes, installations);
-                }
-            });
+            if (exportData == ExportData.SENSORS){
+                new SaveImportedSensors(this.mainScreen, this.newSensorsList).execute();
+            }else {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new CompareChannelsDialog(mainScreen, newSensorsList,
+                                newChannelsList, importedChannelsList, channelIndexes,
+                                newPersonsList, importedPersonsList, personsIndexes,
+                                newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
+                                departments, areas, processes, installations);
+                    }
+                });
+            }
         }else {
             Integer[] index = this.sensorsIndexes.get(marker);
             int indexOld = index[0];

@@ -1,6 +1,7 @@
 package ui.exportData;
 
 import backgroundTasks.ExportData;
+import backgroundTasks.ExportSensors;
 import constants.Strings;
 import converters.ConverterUI;
 import ui.UI_Container;
@@ -35,31 +36,31 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
     @Override
     public void createElements() {
         switch (this.exportData){
-            case 0:
+            case 0://AllData
                 this.message = new JLabel("Експортувати всі данні?");
                 break;
-            case 1:
+            case 1://Channels
                 this.message = new JLabel("Експортувати всі вимірювальні канали?");
                 break;
-            case 2:
+            case 2://Sensors
                 this.message = new JLabel("Експортувати всі ПВП?");
                 break;
-            case 3:
+            case 3://Calibrators
                 this.message = new JLabel("Експортувати всі калібратори?");
                 break;
-            case 4:
+            case 4://Departments
                 this.message = new JLabel("Експортувати всі цехи?");
                 break;
-            case 5:
+            case 5://Areas
                 this.message = new JLabel("Експортувати всі ділянки?");
                 break;
-            case 6:
+            case 6://Processes
                 this.message = new JLabel("Експортувати всі лінії, секції і т.п.?");
                 break;
-            case 7:
+            case 7://Installations
                 this.message = new JLabel("Експортувати всі установки?");
                 break;
-            case 8:
+            case 8://Path elements
                 this.message = new JLabel("Експортувати всі елементи розташування каналів?");
                 break;
         }
@@ -119,7 +120,27 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            new ExportData(mainScreen, exportData).execute();
+            switch (exportData){
+                case 0://All data
+                    break;
+                case 1://Channels
+                    break;
+                case 2://Sensors
+                    new ExportSensors(mainScreen).execute();
+                    break;
+                case 3://Calibrators
+                    break;
+                case 4://Departments
+                    break;
+                case 5://Areas
+                    break;
+                case 6://Processes
+                    break;
+                case 7://Installations
+                    break;
+                case 8://Path elements
+                    break;
+            }
         }
     };
 

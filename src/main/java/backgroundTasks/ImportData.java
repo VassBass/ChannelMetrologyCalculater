@@ -268,11 +268,11 @@ public class ImportData extends SwingWorker<Void, Void> {
             for (int old=0;old<this.oldSensors.size();old++){
                 if (this.importedSensors.get(imp).getName().equals(this.oldSensors.get(old).getName())){
                     exist = true;
-                    if (this.importedSensors.get(imp).matchingFields(this.oldSensors.get(old))){
+                    /*if (this.importedSensors.get(imp).matchingFields(this.oldSensors.get(old))){
                         this.newSensorsList.add(this.importedSensors.get(imp));
                     }else {
                         this.sensorsIndexes.add(new Integer[]{old, imp});
-                    }
+                    }*/
                     break;
                 }
             }

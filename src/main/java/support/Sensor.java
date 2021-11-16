@@ -70,23 +70,4 @@ public class Sensor implements Serializable {
         Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
         return expression.calculate();
     }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!object.getClass().equals(this.getClass())){
-            return false;
-        }
-        Sensor s = (Sensor)object;
-        return this.name.equals(s.getName());
-    }
-
-    public boolean matchingFields(Sensor sensor){
-        return this.type.equals(sensor.getType()) &&
-                this.rangeMin == sensor.getRangeMin() &&
-                this.rangeMax == sensor.getRangeMax() &&
-                this.number.equals(sensor.getNumber()) &&
-                this.value.equals(sensor.getValue()) &&
-                this.measurement.equals(sensor.getMeasurement()) &&
-                this.errorFormula.equals(sensor.getErrorFormula());
-    }
 }
