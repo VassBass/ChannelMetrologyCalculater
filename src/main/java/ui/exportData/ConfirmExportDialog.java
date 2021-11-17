@@ -1,7 +1,6 @@
 package ui.exportData;
 
-import backgroundTasks.export.ExportCalibrators;
-import backgroundTasks.export.ExportSensors;
+import backgroundTasks.export.*;
 import constants.Strings;
 import converters.ConverterUI;
 import ui.UI_Container;
@@ -132,14 +131,19 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
                     new ExportCalibrators(mainScreen).execute();
                     break;
                 case 4://Departments
+                    new ExportDepartments(mainScreen).execute();
                     break;
                 case 5://Areas
+                    new ExportAreas(mainScreen).execute();
                     break;
                 case 6://Processes
+                    new ExportProcesses(mainScreen).execute();
                     break;
                 case 7://Installations
+                    new ExportInstallations(mainScreen).execute();
                     break;
                 case 8://Path elements
+                    new ExportPathElements(mainScreen).execute();
                     break;
             }
         }
