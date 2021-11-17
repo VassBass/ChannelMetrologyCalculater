@@ -1,8 +1,8 @@
 package ui.importData.compareSensors;
 
-import backgroundTasks.ExportData;
-import backgroundTasks.SaveImportData;
-import backgroundTasks.SaveImportedSensors;
+import backgroundTasks.export.ExportData;
+import backgroundTasks.tasks_for_import.SaveImportData;
+import backgroundTasks.tasks_for_import.SaveImportedSensors;
 import constants.Strings;
 import converters.ConverterUI;
 import support.*;

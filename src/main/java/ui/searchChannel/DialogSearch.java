@@ -1,5 +1,6 @@
 package ui.searchChannel;
 
+import backgroundTasks.controllers.SearchChannels;
 import constants.ChannelConstants;
 import constants.Strings;
 import converters.ConverterUI;
@@ -123,7 +124,7 @@ public class DialogSearch extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             ChannelConstants field = ChannelConstants.getConstantFromInt(searchField.getSelectedIndex());
-            new backgroundTasks.SearchChannels(mainScreen, field, searchPanel.getValue()).execute();
+            new SearchChannels(mainScreen, field, searchPanel.getValue()).execute();
             dispose();
         }
     };

@@ -1,6 +1,6 @@
 package ui.sensorsList;
 
-import backgroundTasks.RemoveSensor;
+import backgroundTasks.controllers.RemoveSensor;
 import constants.Strings;
 import converters.ConverterUI;
 import support.Lists;

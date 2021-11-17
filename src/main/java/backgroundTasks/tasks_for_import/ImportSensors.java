@@ -1,5 +1,6 @@
-package backgroundTasks;
+package backgroundTasks.tasks_for_import;
 
+import backgroundTasks.export.ExportData;
 import constants.Strings;
 import support.Comparator;
 import support.Lists;

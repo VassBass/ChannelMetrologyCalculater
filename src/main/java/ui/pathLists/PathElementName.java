@@ -1,6 +1,6 @@
 package ui.pathLists;
 
-import backgroundTasks.PutPathElementInList;
+import backgroundTasks.controllers.PutPathElementInList;
 import constants.Strings;
 import converters.ConverterUI;
 import ui.UI_Container;

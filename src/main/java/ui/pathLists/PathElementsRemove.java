@@ -1,6 +1,6 @@
 package ui.pathLists;
 
-import backgroundTasks.RemovePathElements;
+import backgroundTasks.controllers.RemovePathElements;
 import constants.Strings;
 import converters.ConverterUI;
 import support.Lists;

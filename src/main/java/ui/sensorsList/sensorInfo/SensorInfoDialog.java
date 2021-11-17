@@ -1,6 +1,6 @@
 package ui.sensorsList.sensorInfo;
 
-import backgroundTasks.PutSensorInList;
+import backgroundTasks.controllers.PutSensorInList;
 import constants.MeasurementConstants;
 import constants.Strings;
 import converters.ConverterUI;

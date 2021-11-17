@@ -1,6 +1,6 @@
 package ui.personsList.personInfo;
 
-import backgroundTasks.PutPersonInList;
+import backgroundTasks.controllers.PutPersonInList;
 import constants.Strings;
 import converters.ConverterUI;
 import ui.UI_Container;

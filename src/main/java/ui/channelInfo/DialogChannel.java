@@ -1,6 +1,6 @@
 package ui.channelInfo;
 
-import backgroundTasks.PutChannelInList;
+import backgroundTasks.controllers.PutChannelInList;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
 import measurements.Measurement;

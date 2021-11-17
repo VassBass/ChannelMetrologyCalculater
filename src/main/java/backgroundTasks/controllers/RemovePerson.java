@@ -1,4 +1,4 @@
-package backgroundTasks;
+package backgroundTasks.controllers;
 
 import support.Lists;
 import ui.LoadDialog;

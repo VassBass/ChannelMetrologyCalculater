@@ -1,8 +1,8 @@
 package ui.importData.compareCalibrators;
 
-import backgroundTasks.ExportData;
-import backgroundTasks.SaveImportData;
-import backgroundTasks.SaveImportedCalibrators;
+import backgroundTasks.export.ExportData;
+import backgroundTasks.tasks_for_import.SaveImportData;
+import backgroundTasks.tasks_for_import.SaveImportedCalibrators;
 import constants.Strings;
 import converters.ConverterUI;
 import support.*;

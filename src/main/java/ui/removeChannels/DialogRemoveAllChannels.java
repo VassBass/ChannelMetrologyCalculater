@@ -1,6 +1,6 @@
 package ui.removeChannels;
 
-import backgroundTasks.RemoveChannels;
+import backgroundTasks.controllers.RemoveChannels;
 import constants.Strings;
 import converters.ConverterUI;
 import ui.UI_Container;

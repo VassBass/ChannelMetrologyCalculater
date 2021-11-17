@@ -1,7 +1,7 @@
 package ui.importData;
 
-import backgroundTasks.ImportCalibrators;
-import backgroundTasks.ImportSensors;
+import backgroundTasks.tasks_for_import.ImportCalibrators;
+import backgroundTasks.tasks_for_import.ImportSensors;
 import constants.Files;
 import constants.Strings;
 import ui.main.MainScreen;

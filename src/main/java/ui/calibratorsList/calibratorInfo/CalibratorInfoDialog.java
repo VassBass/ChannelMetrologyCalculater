@@ -1,6 +1,6 @@
 package ui.calibratorsList.calibratorInfo;
 
-import backgroundTasks.PutCalibratorInList;
+import backgroundTasks.controllers.PutCalibratorInList;
 import constants.Strings;
 import converters.ConverterUI;
 import converters.VariableConverter;

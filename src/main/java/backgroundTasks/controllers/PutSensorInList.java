@@ -1,4 +1,4 @@
-package backgroundTasks;
+package backgroundTasks.controllers;
 
 import constants.Strings;
 import support.Channel;
