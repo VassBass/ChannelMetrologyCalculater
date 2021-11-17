@@ -86,7 +86,7 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
     private ArrayList<Calibrator>calibratorsExtraction() throws Exception {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.exportDataFile));
         ArrayList<Calibrator>calibrators = (ArrayList<Calibrator>) ois.readObject();
-        if (calibrators.size() == 0){
+        if (calibrators.isEmpty()){
             return null;
         }else {
             return calibrators;
@@ -130,12 +130,12 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
             }
         }
 
-        if (newList.size() == 0){
+        if (newList.isEmpty()){
             this.newCalibratorsList = null;
         }else {
             this.newCalibratorsList = newList;
         }
-        if (indexes.size() == 0){
+        if (indexes.isEmpty()){
             this.calibratorsIndexes = null;
         }else {
             this.calibratorsIndexes = indexes;

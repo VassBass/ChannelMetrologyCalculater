@@ -129,12 +129,12 @@ public class ImportSensors extends SwingWorker<Integer, Void> {
             }
         }
 
-        if (newList.size() == 0){
+        if (newList.isEmpty()){
             this.newSensorsList = null;
         }else {
             this.newSensorsList = newList;
         }
-        if (indexes.size() == 0){
+        if (indexes.isEmpty()){
             this.sensorsIndexes = null;
         }else {
             this.sensorsIndexes = indexes;
