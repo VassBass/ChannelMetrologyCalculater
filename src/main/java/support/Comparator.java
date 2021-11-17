@@ -26,4 +26,16 @@ public class Comparator {
             return false;
         }
     }
+
+    public static boolean calibratorsMatch(Calibrator calibrator1, Calibrator calibrator2){
+        return calibrator1.getName().equals(calibrator2.getName()) &&
+                calibrator1.getType().equals(calibrator2.getType()) &&
+                calibrator1.getNumber().equals(calibrator2.getNumber()) &&
+                calibrator1.getMeasurement().equals(calibrator2.getMeasurement()) &&
+                calibrator1.getCertificate().equals(calibrator2.getCertificate()) &&
+                calibrator1.getRangeMin() == calibrator2.getRangeMin() &&
+                calibrator1.getRangeMax() == calibrator2.getRangeMax() &&
+                calibrator1.getValue().equals(calibrator2.getValue()) &&
+                calibrator1.getErrorFormula().equals(calibrator2.getErrorFormula());
+    }
 }

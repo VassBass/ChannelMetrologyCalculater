@@ -18,6 +18,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CompareSensorsDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
@@ -116,7 +117,7 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
         marker++;
         if (marker >= sensorsIndexes.size()) {
             this.dispose();
-            if (exportData == ExportData.SENSORS){
+            if (this.exportData == ExportData.SENSORS){
                 new SaveImportedSensors(this.mainScreen, this.newSensorsList).execute();
             }else {
                 EventQueue.invokeLater(new Runnable() {
@@ -221,7 +222,7 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             Integer[]i = sensorsIndexes.get(marker);
-            newSensorsList.add(i[0], oldSensorsList.get(i[0]));
+            newSensorsList.add(i[0], Objects.requireNonNull(oldSensorsList).get(i[0]));
             next();
         }
     };
@@ -240,7 +241,7 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             for (;marker<sensorsIndexes.size();marker++){
                 Integer[]i = sensorsIndexes.get(marker);
-                newSensorsList.add(i[0], oldSensorsList.get(i[0]));
+                newSensorsList.add(i[0], Objects.requireNonNull(oldSensorsList).get(i[0]));
             }
             next();
         }

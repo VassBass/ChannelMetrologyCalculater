@@ -238,6 +238,8 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
             this.certificateNameText.setText(this.oldCalibrator.getCertificateName());
             this.certificateDatePanel.setDate(this.oldCalibrator.getCertificateDate());
             this.certificateCompanyText.setText(this.oldCalibrator.getCertificateCompany());
+
+            this.measurementsList.setEnabled(false);
         }else {
             this.rangePanel.setValues(Objects.requireNonNull(this.measurementsList.getSelectedItem()).toString(),null);
         }

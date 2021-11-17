@@ -2,8 +2,8 @@ package backgroundTasks;
 
 import constants.Files;
 import constants.Strings;
+import support.Calibrator;
 import support.Lists;
-import support.Sensor;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -15,25 +15,25 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class ExportSensors extends SwingWorker<Boolean, Void> {
+public class ExportCalibrators extends SwingWorker<Boolean, Void> {
     private final MainScreen mainScreen;
     private final LoadDialog loadDialog;
 
     private String fileName(Calendar date){
-        return "export_sensors ["
+        return "export_calibrators ["
                 + date.get(Calendar.DAY_OF_MONTH)
                 + "."
                 + (date.get(Calendar.MONTH) + 1)
                 + "."
                 + date.get(Calendar.YEAR)
-                + "].sen";
+                + "].cal";
     }
 
     private File exportFile(){
         return new File(Files.EXPORT_DIR, this.fileName(Calendar.getInstance()));
     }
 
-    public ExportSensors(MainScreen mainScreen){
+    public ExportCalibrators(MainScreen mainScreen){
         super();
         this.mainScreen = mainScreen;
         this.loadDialog = new LoadDialog(mainScreen);
@@ -47,7 +47,7 @@ public class ExportSensors extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        ArrayList<Sensor>sensors = Lists.sensors();
+        ArrayList<Calibrator> calibrators = Lists.calibrators();
         File file = this.exportFile();
         if (!file.exists()){
             if (!file.createNewFile()){
@@ -55,7 +55,7 @@ public class ExportSensors extends SwingWorker<Boolean, Void> {
             }
         }
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.exportFile()));
-        oos.writeObject(sensors);
+        oos.writeObject(calibrators);
         oos.close();
         return true;
     }

@@ -102,24 +102,6 @@ public class Calibrator implements Serializable {
                     VariableConverter.dateToString(this.date).equals(VariableConverter.dateToString(c.date));
         }
     }
-
-    @Override
-    public boolean equals(Object object) {
-        if (!object.getClass().equals(this.getClass())){
-            return false;
-        }
-        Calibrator c = (Calibrator)object;
-        return this.type.equals(c.getType()) &&
-                this.name.equals(c.getName()) &&
-                this.number.equals(c.getNumber()) &&
-                this.measurement.equals(c.getMeasurement()) &&
-                this.errorFormula.equals(c.getErrorFormula()) &&
-                this.value.equals(c.getValue()) &&
-                this.certificate.equals(c.getCertificate()) &&
-                this.rangeMin == c.getRangeMin() &&
-                this.rangeMax == c.getRangeMax();
-    }
-
 }
 
 

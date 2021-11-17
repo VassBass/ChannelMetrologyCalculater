@@ -1,5 +1,6 @@
 package ui.importData;
 
+import backgroundTasks.ImportCalibrators;
 import backgroundTasks.ImportSensors;
 import constants.Files;
 import constants.Strings;
@@ -17,7 +18,7 @@ public class ImportDataDialog extends JFileChooser {
         this.setDialogTitle(Strings.IMPORT_DATA);
         this.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Файли експорту (*.exp, *.sen)","sen", "exp");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Файли експорту (*.exp, *.sen, *cal)","sen", "exp", "cal");
         this.setAcceptAllFileFilterUsed(false);
         this.setFileFilter(filter);
 
@@ -26,6 +27,9 @@ public class ImportDataDialog extends JFileChooser {
             switch (Objects.requireNonNull(Files.getFileExtension(this.getSelectedFile()))){
                 case "sen":
                     new ImportSensors(mainScreen, this.getSelectedFile()).execute();
+                    break;
+                case "cal":
+                    new ImportCalibrators(mainScreen, this.getSelectedFile()).execute();
                     break;
                 default:
                     JOptionPane.showMessageDialog(mainScreen, Strings.WRONG_FILE_EXTENSION, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
