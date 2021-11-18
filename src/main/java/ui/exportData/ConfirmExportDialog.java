@@ -62,6 +62,9 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
             case 8://Path elements
                 this.message = new JLabel("Експортувати всі елементи розташування каналів?");
                 break;
+            case 9://Persons
+                this.message = new JLabel("Експортувати всх працівників?");
+                break;
         }
         this.message.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -145,6 +148,9 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
                     break;
                 case 8://Path elements
                     new ExportPathElements(mainScreen).execute();
+                    break;
+                case 9://Persons
+                    new ExportPersons(mainScreen).execute();
                     break;
             }
         }

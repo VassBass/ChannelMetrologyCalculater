@@ -18,8 +18,8 @@ public class ImportDataDialog extends JFileChooser {
         this.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "Файли експорту (*.exp, *.sen, *cal, *dep, *are, *prc, *ins, *pat, *chn)",
-                "sen", "exp", "cal", "dep", "are", "prc", "ins", "pat", "chn");
+                "Файли експорту (*.exp, *.sen, *cal, *dep, *are, *prc, *ins, *pat, *chn, *per)",
+                "sen", "exp", "cal", "dep", "are", "prc", "ins", "pat", "chn", "per");
         this.setAcceptAllFileFilterUsed(false);
         this.setFileFilter(filter);
 
@@ -49,6 +49,9 @@ public class ImportDataDialog extends JFileChooser {
                     break;
                 case "chn":
                     new ImportChannels(mainScreen, this.getSelectedFile()).execute();
+                    break;
+                case "per":
+                    new ImportPersons(mainScreen, this.getSelectedFile()).execute();
                     break;
                 default:
                     JOptionPane.showMessageDialog(mainScreen, Strings.WRONG_FILE_EXTENSION, Strings.ERROR, JOptionPane.ERROR_MESSAGE);

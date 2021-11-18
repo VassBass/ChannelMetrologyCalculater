@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class Worker implements Serializable {
 
-    protected String surname = null;
-    protected String name = null;
-    protected String patronymic = null;
-    protected String position = null;
+    private String surname = null;
+    private String name = null;
+    private String patronymic = null;
+    private String position = null;
 
     public String getSurname(){return this.surname;}
     public String getName(){return this.name;}
@@ -30,10 +30,4 @@ public class Worker implements Serializable {
     public void setName(String name){this.name = name;}
     public void setPatronymic(String patronymic){this.patronymic = patronymic;}
     public void setPosition(String position){this.position = position;}
-
-    public boolean equalsPerson(Worker person){
-        return this.name.equals(person.getName())
-                && this.surname.equals(person.getSurname())
-                && this.patronymic.equals(person.getPatronymic());
-    }
 }
