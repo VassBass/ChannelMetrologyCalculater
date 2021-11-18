@@ -123,6 +123,7 @@ public class ConfirmExportDialog extends JDialog implements UI_Container {
                 case 0://All data
                     break;
                 case 1://Channels
+                    new ExportChannels(mainScreen).execute();
                     break;
                 case 2://Sensors
                     new ExportSensors(mainScreen).execute();

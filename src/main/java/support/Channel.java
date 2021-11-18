@@ -131,31 +131,4 @@ public class Channel implements Serializable {
         this.isGood = channel.isGood;
         return this;
     }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this.getClass()!=object.getClass()) {
-            return false;
-        }else {
-            Channel channel = (Channel) object;
-            return channel.getCode().equals(this.code)
-                    && channel.getName().equals(this.name)
-                    && channel.getMeasurement().equals(this.measurement)
-                    && channel.getDepartment().equals(this.department)
-                    && channel.getArea().equals(this.area)
-                    && channel.getProcess().equals(this.process)
-                    && channel.getInstallation().equals(this.installation)
-                    && VariableConverter.dateToString(channel.getDate()).equals(VariableConverter.dateToString(this.date))
-                    && channel.getFrequency() == this.frequency
-                    && channel.getTechnologyNumber().equals(this.numberT)
-                    && channel.getSensor().equals(this.sensor)
-                    && channel.getNumberOfProtocol().equals(this.numberP)
-                    && channel.getReference().equals(this.reference)
-                    && channel.getRangeMin() == this.rangeMin
-                    && channel.getRangeMax() == this.rangeMax
-                    && channel.getAllowableErrorPercent() == this.allowableErrorPercent
-                    && channel.getAllowableError() == this.allowableError
-                    && channel.isGood == this.isGood;
-        }
-    }
 }

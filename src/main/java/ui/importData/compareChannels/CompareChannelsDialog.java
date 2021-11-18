@@ -1,5 +1,7 @@
 package ui.importData.compareChannels;
 
+import backgroundTasks.export.ExportData;
+import backgroundTasks.tasks_for_import.SaveImportedChannels;
 import converters.ConverterUI;
 import support.*;
 import constants.Strings;
@@ -15,6 +17,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CompareChannelsDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
@@ -22,16 +25,41 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
 
     private final ArrayList<Sensor>sensors;
     private final ArrayList<Channel>newChannelsList, oldChannelsList, importedChannelsList;
-    private final ArrayList<Worker>newPersonsList, importedPersonsList;
-    private final ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
-    private final ArrayList<String>departments, areas, processes, installations;
-    private final ArrayList<Integer[]>channelIndexes, personsIndexes, calibratorsIndexes;
+    private ArrayList<Worker>newPersonsList, importedPersonsList;
+    private ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
+    private ArrayList<String>departments, areas, processes, installations;
+    private final ArrayList<Integer[]>channelIndexes;
+    private ArrayList<Integer[]> personsIndexes, calibratorsIndexes;
 
     private int marker = 0;
+    private int exportData;
 
     private CompareChannels_infoPanel infoPanel;
 
     private JButton buttonChange, buttonSkip, buttonChangeAll, buttonSkipAll;
+
+    public CompareChannelsDialog(MainScreen mainScreen, int exportData, ArrayList<Sensor>sensors,
+                                 ArrayList<Channel>newChannelsList, ArrayList<Channel>importedChannels, ArrayList<Integer[]>channelIndexes){
+        super(mainScreen, Strings.IMPORT, true);
+        this.mainScreen = mainScreen;
+        this.exportData = exportData;
+        this.sensors = sensors;
+        this.current = this;
+
+        this.newChannelsList = newChannelsList;
+        this.oldChannelsList = Lists.channels();
+        this.importedChannelsList = importedChannels;
+        this.channelIndexes = channelIndexes;
+
+        if (importedChannels == null || channelIndexes == null){
+            new SaveImportedChannels(mainScreen, newChannelsList, sensors).execute();
+        }else {
+            this.createElements();
+            this.setReactions();
+            this.build();
+            this.setVisible(true);
+        }
+    }
 
     public CompareChannelsDialog(final MainScreen mainScreen, final ArrayList<Sensor>sensors,
                                  final ArrayList<Channel>newChannelsList, ArrayList<Channel>importedChannelsList, ArrayList<Integer[]>channelIndexes,
@@ -83,15 +111,19 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
         marker++;
         if (marker >= channelIndexes.size()) {
             this.dispose();
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ComparePersonsDialog(mainScreen, sensors, newChannelsList,
-                            newPersonsList, importedPersonsList, personsIndexes,
-                            newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
-                            departments, areas, processes, installations);
-                }
-            });
+            if (this.exportData == ExportData.CHANNELS){
+                new SaveImportedChannels(this.mainScreen, this.newChannelsList, this.sensors).execute();
+            }else {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new ComparePersonsDialog(mainScreen, sensors, newChannelsList,
+                                newPersonsList, importedPersonsList, personsIndexes,
+                                newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
+                                departments, areas, processes, installations);
+                    }
+                });
+            }
         }else {
             Integer[] index = channelIndexes.get(marker);
             int indexOld = index[0];
@@ -183,7 +215,7 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             Integer[]i = channelIndexes.get(marker);
-            newChannelsList.add(i[0], oldChannelsList.get(i[0]));
+            newChannelsList.add(i[0], Objects.requireNonNull(oldChannelsList).get(i[0]));
             next();
         }
     };
@@ -202,7 +234,7 @@ public class CompareChannelsDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             for (;marker<channelIndexes.size();marker++){
                 Integer[]i = channelIndexes.get(marker);
-                newChannelsList.add(i[0], oldChannelsList.get(i[0]));
+                newChannelsList.add(i[0], Objects.requireNonNull(oldChannelsList).get(i[0]));
             }
             next();
         }

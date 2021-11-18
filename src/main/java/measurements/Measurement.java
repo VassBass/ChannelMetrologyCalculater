@@ -23,13 +23,4 @@ public class Measurement implements Serializable {
     //Setters
     public void setName(MeasurementConstants name) {this.name = name;}
     public void setValue(MeasurementConstants value){this.value = value;}
-
-    @Override
-    public boolean equals(Object object) {
-        if (!object.getClass().equals(this.getClass())){
-            return false;
-        }
-        Measurement m = (Measurement)object;
-        return this.name == m.getNameConstant() && this.value == m.getValueConstant();
-    }
 }
