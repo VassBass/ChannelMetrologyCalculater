@@ -99,7 +99,7 @@ public class Calibrator implements Serializable {
             Certificate c = (Certificate) object;
             return this.name.equals(c.name) &&
                     this.company.equals(c.company) &&
-                    VariableConverter.dateToString(this.date).equals(VariableConverter.dateToString(c.date));
+                    Comparator.datesMatch(this.date, c.date);
         }
     }
 }

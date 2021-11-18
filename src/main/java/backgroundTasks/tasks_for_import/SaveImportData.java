@@ -61,28 +61,28 @@ public class SaveImportData extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        if (this.sensors != null) {
+        if (this.sensors != null && !this.sensors.isEmpty()) {
             Lists.saveSensorsListToFile(this.sensors);
         }
-        if (this.channels != null) {
+        if (this.channels != null && !this.channels.isEmpty()) {
             Lists.saveChannelsListToFile(this.channels);
         }
-        if (this.persons != null) {
+        if (this.persons != null && !this.persons.isEmpty()) {
             Lists.savePersonsListToFile(this.persons);
         }
-        if (this.calibrators != null) {
+        if (this.calibrators != null && !this.calibrators.isEmpty()) {
             Lists.saveCalibratorsListToFile(this.calibrators);
         }
-        if (this.departments != null) {
+        if (this.departments != null && !this.departments.isEmpty()) {
             Lists.saveDepartmentsListToFile(this.departments);
         }
-        if (this.areas != null) {
+        if (this.areas != null && !this.areas.isEmpty()) {
             Lists.saveAreasListToFile(this.areas);
         }
-        if (this.processes != null) {
+        if (this.processes != null && !this.processes.isEmpty()) {
             Lists.saveProcessesListToFile(this.processes);
         }
-        if (this.installations != null) {
+        if (this.installations != null && !this.installations.isEmpty()) {
             Lists.saveInstallationsListToFile(this.installations);
         }
         return null;
@@ -91,10 +91,7 @@ public class SaveImportData extends SwingWorker<Void, Void> {
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        if (this.channels == null){
-            this.channels = Lists.channels();
-        }
-        this.mainScreen.update(this.channels, false, null, null);
+        this.mainScreen.update(Lists.channels(), false, null, null);
         JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

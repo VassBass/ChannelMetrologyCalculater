@@ -20,6 +20,7 @@ public class MenuExpImp extends JMenu implements UI_Container {
     private JMenuItem buttonExportChannels;
     private JMenuItem buttonExportSensors;
     private JMenuItem buttonExportCalibrators;
+    private JMenuItem buttonExportPersons;
     private JMenuItem buttonExportDepartments;
     private JMenuItem buttonExportAreas;
     private JMenuItem buttonExportProcesses;
@@ -43,6 +44,7 @@ public class MenuExpImp extends JMenu implements UI_Container {
         this.buttonExportChannels = new JMenuItem(Strings.EXPORT_CHANNELS);
         this.buttonExportSensors = new JMenuItem(Strings.EXPORT_SENSORS);
         this.buttonExportCalibrators = new JMenuItem(Strings.EXPORT_CALIBRATORS);
+        this.buttonExportPersons = new JMenuItem(Strings.EXPORT_PERSONS);
         this.buttonExportDepartments = new JMenuItem(Strings.EXPORT_DEPARTMENTS);
         this.buttonExportAreas = new JMenuItem(Strings.EXPORT_AREAS);
         this.buttonExportProcesses = new JMenuItem(Strings.EXPORT_PROCESSES);
@@ -58,6 +60,7 @@ public class MenuExpImp extends JMenu implements UI_Container {
         this.buttonExportChannels.addActionListener(clickExportChannels);
         this.buttonExportSensors.addActionListener(clickExportSensors);
         this.buttonExportCalibrators.addActionListener(clickExportCalibrators);
+        this.buttonExportPersons.addActionListener(clickExportPersons);
         this.buttonExportDepartments.addActionListener(clickExportDepartments);
         this.buttonExportAreas.addActionListener(clickExportAreas);
         this.buttonExportProcesses.addActionListener(clickExportProcesses);
@@ -76,6 +79,8 @@ public class MenuExpImp extends JMenu implements UI_Container {
         this.add(this.buttonExportSensors);
         this.addSeparator();
         this.add(this.buttonExportCalibrators);
+        this.addSeparator();
+        this.add(this.buttonExportPersons);
         this.addSeparator();
         this.add(this.buttonExportDepartments);
         this.add(this.buttonExportAreas);
@@ -131,6 +136,18 @@ public class MenuExpImp extends JMenu implements UI_Container {
                 @Override
                 public void run() {
                     new ConfirmExportDialog(mainScreen, ExportData.CALIBRATORS).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickExportPersons = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ConfirmExportDialog(mainScreen, ExportData.PERSONS).setVisible(true);
                 }
             });
         }

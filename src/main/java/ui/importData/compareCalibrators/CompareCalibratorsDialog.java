@@ -31,7 +31,7 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
     private final ArrayList<Integer[]>calibratorsIndexes;
 
     private int marker = 0;
-    private int exportData;
+    private final int exportData;
 
     private CompareCalibratorsInfoPanel infoPanel;
 
@@ -59,11 +59,14 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
         }
     }
 
-    public CompareCalibratorsDialog(MainScreen mainScreen, ArrayList<Sensor>sensors, ArrayList<Channel>channels, ArrayList<Worker>persons,
-                                final ArrayList<Calibrator>newCalibratorsList, final ArrayList<Calibrator>importedCalibratorsList, final ArrayList<Integer[]>calibratorsIndexes,
-                                ArrayList<String>departments, ArrayList<String>areas, ArrayList<String>processes, ArrayList<String>installations){
+    public CompareCalibratorsDialog(MainScreen mainScreen, int exportData,
+                                    ArrayList<Sensor>sensors, ArrayList<Channel>channels,
+                                    ArrayList<Calibrator>newCalibratorsList, ArrayList<Calibrator>importedCalibratorsList, ArrayList<Integer[]>calibratorsIndexes,
+                                    ArrayList<Worker>persons,
+                                    ArrayList<String>departments, ArrayList<String>areas, ArrayList<String>processes, ArrayList<String>installations){
         super(mainScreen, Strings.IMPORT, true);
         this.mainScreen = mainScreen;
+        this.exportData = exportData;
         this.current = this;
         this.sensors = sensors;
         this.channels = channels;
@@ -79,7 +82,7 @@ public class CompareCalibratorsDialog extends JDialog implements UI_Container {
         this.processes = processes;
         this.installations = installations;
 
-        if (calibratorsIndexes.size() == 0){
+        if (importedCalibratorsList == null || calibratorsIndexes == null){
             new SaveImportData(this.mainScreen, this.sensors, this.channels, this.persons, newCalibratorsList,
                     this.departments, this.areas, this.processes, this.installations).execute();
         }else {

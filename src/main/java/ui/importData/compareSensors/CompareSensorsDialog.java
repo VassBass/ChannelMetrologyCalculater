@@ -26,14 +26,16 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
 
     private final ArrayList<Sensor>newSensorsList, oldSensorsList, importedSensorsList;
     private ArrayList<Channel>newChannelsList, importedChannelsList;
-    private ArrayList<Worker>newPersonsList, importedPersonsList;
     private ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
+
+    private ArrayList<Worker>persons;
     private ArrayList<String>departments, areas, processes, installations;
+
     private final ArrayList<Integer[]>sensorsIndexes;
-    private ArrayList<Integer[]> channelIndexes, personsIndexes, calibratorsIndexes;
+    private ArrayList<Integer[]> channelIndexes, calibratorsIndexes;
 
     private int marker = 0;
-    private int exportData;
+    private final int exportData;
 
     private CompareSensorsInfoPanel infoPanel;
 
@@ -61,14 +63,15 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
         }
     }
 
-    public CompareSensorsDialog(final MainScreen mainScreen,
+    public CompareSensorsDialog(final MainScreen mainScreen, final int exportData,
                                 final ArrayList<Sensor>newSensorsList, ArrayList<Sensor>importedSensorsList, ArrayList<Integer[]>sensorsIndexes,
                                 final ArrayList<Channel>newChannelsList, final ArrayList<Channel>importedChannelsList, ArrayList<Integer[]>channelsIndexes,
-                                final ArrayList<Worker>newPersonsList, final ArrayList<Worker>importedPersonsList, final ArrayList<Integer[]>personsIndexes,
-                                final ArrayList<Calibrator>newCalibratorList, final ArrayList<Calibrator>importedCalibratorsList, final ArrayList<Integer[]>calibratorsIndexes,
+                                ArrayList<Calibrator>newCalibratorList, final ArrayList<Calibrator>importedCalibratorsList, final ArrayList<Integer[]>calibratorsIndexes,
+                                final ArrayList<Worker>persons,
                                 final ArrayList<String>departments, final ArrayList<String>areas, final ArrayList<String>processes, final ArrayList<String>installations){
         super(mainScreen, Strings.IMPORT, true);
         this.mainScreen = mainScreen;
+        this.exportData = exportData;
         this.current = this;
 
         this.newSensorsList = newSensorsList;
@@ -80,31 +83,22 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
         this.importedChannelsList = importedChannelsList;
         this.channelIndexes = channelsIndexes;
 
-        this.newPersonsList = newPersonsList;
-        this.importedPersonsList = importedPersonsList;
-        this.personsIndexes = personsIndexes;
-
         this.newCalibratorsList = newCalibratorList;
         this.importedCalibratorsList = importedCalibratorsList;
         this.calibratorsIndexes = calibratorsIndexes;
 
+        this.persons = persons;
         this.departments = departments;
         this.areas = areas;
         this.processes = processes;
         this.installations = installations;
 
-        if (sensorsIndexes.size() == 0){
+        if (importedSensorsList == null || sensorsIndexes == null){
             this.dispose();
-                EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new CompareChannelsDialog(mainScreen, newSensorsList,
-                            newChannelsList, importedChannelsList, channelIndexes,
-                            newPersonsList, importedPersonsList, personsIndexes,
-                            newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
-                            departments, areas, processes, installations);
-                }
-            });
+            new CompareChannelsDialog(mainScreen, exportData, newSensorsList,
+                    newChannelsList, importedChannelsList, channelIndexes,
+                    newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
+                    persons, departments, areas, processes, installations);
         }else {
             this.createElements();
             this.setReactions();
@@ -123,11 +117,10 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new CompareChannelsDialog(mainScreen, newSensorsList,
+                        new CompareChannelsDialog(mainScreen, exportData, newSensorsList,
                                 newChannelsList, importedChannelsList, channelIndexes,
-                                newPersonsList, importedPersonsList, personsIndexes,
                                 newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
-                                departments, areas, processes, installations);
+                                persons, departments, areas, processes, installations);
                     }
                 });
             }

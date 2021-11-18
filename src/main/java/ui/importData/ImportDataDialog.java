@@ -53,6 +53,8 @@ public class ImportDataDialog extends JFileChooser {
                 case "per":
                     new ImportPersons(mainScreen, this.getSelectedFile()).execute();
                     break;
+                case "exp":
+                    new ImportData(mainScreen, this.getSelectedFile()).execute();
                 default:
                     JOptionPane.showMessageDialog(mainScreen, Strings.WRONG_FILE_EXTENSION, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
                     break;

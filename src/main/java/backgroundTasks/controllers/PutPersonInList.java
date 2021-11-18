@@ -1,5 +1,6 @@
 package backgroundTasks.controllers;
 
+import support.Comparator;
 import support.Lists;
 import constants.Strings;
 import ui.LoadDialog;
@@ -41,7 +42,7 @@ public class PutPersonInList extends SwingWorker<Void, Void> {
                     workers.add(this.newWorker);
                 } else {
                     for (int x = 0; x < workers.size(); x++) {
-                        if (oldWorker.equalsPerson(workers.get(x))) {
+                        if (Comparator.personsMatch(workers.get(x), this.oldWorker)) {
                             workers.set(x, this.newWorker);
                             break;
                         }
@@ -63,7 +64,7 @@ public class PutPersonInList extends SwingWorker<Void, Void> {
         ArrayList<Worker>workers = Lists.persons();
         if (workers != null) {
             for (Worker value : workers) {
-                if (worker.equalsPerson(value)) {
+                if (Comparator.personsMatch(worker, value)) {
                     return true;
                 }
             }

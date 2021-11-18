@@ -135,8 +135,6 @@ public class Strings {
     public static final String IMPORT_DATA = "Імпорт даних";
     public static final String SENSOR_IN_LIST = "ПВП з переліку";
     public static final String IMPORTED_SENSOR = "Імпортуємий ПВП";
-    public static final String WORKER_IN_LIST = "Данні працівника зі списку";
-    public static final String IMPORTED_WORKER = "Імпортуємі данні працівника";
     public static final String METHODS = "Методи розрахунку";
     public static final String OLD_NAME = "Стара назва";
     public static final String CALIBRATORS_LIST = "Список калібраторів";
@@ -156,6 +154,7 @@ public class Strings {
     public static final String EXPORT_AREAS = "Експортувати ділянки";
     public static final String EXPORT_PROCESSES = "Експортувати лінії, секції і т.п.";
     public static final String EXPORT_INSTALLATIONS = "Експортувати установки";
+    public static final String EXPORT_PERSONS = "Експортувати інформацію про робітників";
     public static final String EXPORT_ALL_DATA = "Експортувати все";
 
     public static final String MAIN_DIR_NAME = "Support";

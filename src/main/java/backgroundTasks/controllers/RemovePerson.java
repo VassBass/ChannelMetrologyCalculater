@@ -1,5 +1,6 @@
 package backgroundTasks.controllers;
 
+import support.Comparator;
 import support.Lists;
 import ui.LoadDialog;
 import ui.personsList.PersonsListDialog;
@@ -33,7 +34,7 @@ public class RemovePerson extends SwingWorker<Void, Void> {
         ArrayList<Worker>workers = Lists.persons();
         if (workers != null) {
             for (int x = 0; x < workers.size(); x++) {
-                if (workers.get(x).equalsPerson(this.worker)) {
+                if (Comparator.personsMatch(workers.get(x), this.worker)) {
                     workers.remove(x);
                     break;
                 }
