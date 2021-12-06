@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 
 import constants.MeasurementConstants;
 import constants.WorkPositions;
+import measurements.Consumption;
 import measurements.Measurement;
 import measurements.Pressure;
 import measurements.Temperature;
@@ -21,9 +22,11 @@ public class Default {
 
         String nameTemperatureMethod = "МКМХ №5300.01:18";
         String namePressureMethod = "МКМХ №5300.02:18";
+        String nameConsumptionMethod = "МКМХ №5300.07:20";
 
         Settings.setSettingValue(MeasurementConstants.TEMPERATURE.getValue(), nameTemperatureMethod);
         Settings.setSettingValue(MeasurementConstants.PRESSURE.getValue(), namePressureMethod);
+        Settings.setSettingValue(MeasurementConstants.CONSUMPTION.getValue(), nameConsumptionMethod);
     }
 
     public static void loadSensors(){
@@ -335,6 +338,7 @@ public class Default {
         ArrayList<Measurement>measurements = new ArrayList<>();
 
         measurements.add(new Temperature(MeasurementConstants.DEGREE_CELSIUS));
+
         measurements.add(new Pressure(MeasurementConstants.KPA));
         measurements.add(new Pressure(MeasurementConstants.PA));
         measurements.add(new Pressure(MeasurementConstants.MM_ACVA));
@@ -342,6 +346,8 @@ public class Default {
         measurements.add(new Pressure(MeasurementConstants.KG_MM2));
         measurements.add(new Pressure(MeasurementConstants.BAR));
         measurements.add(new Pressure(MeasurementConstants.ML_BAR));
+
+        measurements.add(new Consumption(MeasurementConstants.M3_HOUR));
 
         Lists.saveMeasurementsListToFile(measurements);
     }

@@ -180,11 +180,14 @@ public class Strings {
     public static final String FILE_NAME_FORM_PRESSURE_GOOD = "form_pressure_good.xls";
     public static final String FILE_NAME_FORM_TEMPERATURE_BAD = "form_temperature_bad.xls";
     public static final String FILE_NAME_FORM_TEMPERATURE_GOOD = "form_temperature_good.xls";
+    public static final String FILE_NAME_FORM_CONSUMPTION_YOKOGAWA_BAD = "form_consumption_yokogawa_bad.xls";
+    public static final String FILE_NAME_FORM_CONSUMPTION_YOKOGAWA_GOOD = "form_consumption_yokogawa_good.xls";
 
     public static final String PLUS_MINUS = "\u00B1";
     public static final String GAMMA = "\u03B3";
     public static final String DELTA = "\u0394";
     public static final String SQUARE = "\u00B2";
+    public static final String CUBE = "\u00B3";
 
     //Default calibrators types
     public static final String CALIBRATOR_FLUKE718_30G = "Fluke 718 30G";

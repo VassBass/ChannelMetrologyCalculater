@@ -22,7 +22,7 @@ public class MenuLists extends JMenu implements UI_Container {
     private JMenuItem buttonPersons;
     private JMenuItem buttonDepartments, buttonAreas, buttonProcesses, buttonInstallations;
     private JMenuItem buttonSensors;
-    private JMenuItem buttonTemperature, buttonPressure;
+    private JMenuItem buttonTemperature, buttonPressure, buttonConsumption;
     private JMenuItem buttonCalibrators;
 
     public MenuLists(MainScreen mainScreen){
@@ -48,6 +48,8 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonTemperature.setToolTipText(Settings.getSettingValue(MeasurementConstants.TEMPERATURE.getValue()));
         this.buttonPressure = new JMenuItem(MeasurementConstants.PRESSURE.getValue());
         this.buttonPressure.setToolTipText(Settings.getSettingValue(MeasurementConstants.PRESSURE.getValue()));
+        this.buttonConsumption = new JMenuItem(MeasurementConstants.CONSUMPTION.getValue());
+        this.buttonConsumption.setToolTipText(Settings.getSettingValue(MeasurementConstants.CONSUMPTION.getValue()));
     }
 
     @Override
@@ -60,6 +62,7 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonSensors.addActionListener(clickSensors);
         this.buttonTemperature.addActionListener(clickTemperature);
         this.buttonPressure.addActionListener(clickPressure);
+        this.buttonConsumption.addActionListener(clickConsumption);
         this.buttonCalibrators.addActionListener(clickCalibrators);
     }
 
@@ -79,6 +82,7 @@ public class MenuLists extends JMenu implements UI_Container {
         JMenu methods = new JMenu(Strings.METHODS);
         methods.add(this.buttonTemperature);
         methods.add(this.buttonPressure);
+        methods.add(this.buttonConsumption);
         this.add(methods);
     }
 
@@ -173,6 +177,18 @@ public class MenuLists extends JMenu implements UI_Container {
                 @Override
                 public void run() {
                     new MethodInfoDialog(mainScreen, MeasurementConstants.PRESSURE).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickConsumption = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new MethodInfoDialog(mainScreen, MeasurementConstants.CONSUMPTION).setVisible(true);
                 }
             });
         }

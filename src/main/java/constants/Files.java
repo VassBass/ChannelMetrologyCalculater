@@ -27,6 +27,8 @@ public class Files {
     public static final File FILE_FORM_PRESSURE_GOOD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_PRESSURE_GOOD);
     public static final File FILE_FORM_TEMPERATURE_BAD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_TEMPERATURE_BAD);
     public static final File FILE_FORM_TEMPERATURE_GOOD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_TEMPERATURE_GOOD);
+    public static final File FILE_FORM_CONSUMPTION_YOKOGAWA_BAD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_CONSUMPTION_YOKOGAWA_BAD);
+    public static final File FILE_FORM_CONSUMPTION_YOKOGAWA_GOOD = new File(FORMS_DIR, Strings.FILE_NAME_FORM_CONSUMPTION_YOKOGAWA_GOOD);
 
     public static final File FILE_SETTINGS = new File(MAIN_DIR, Strings.FILE_NAME_SETTINGS);
 
