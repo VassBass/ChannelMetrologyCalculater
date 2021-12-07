@@ -268,8 +268,8 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             if (checkSensor()) {
                 Sensor sensor = new Sensor();
-                if (measurementsList.getSelectedItem().toString().equals(MeasurementConstants.CONSUMPTION.getValue())){
-                    String type = Objects.requireNonNull(typesList.getSelectedItem()).toString() + " " + typeText.getText();
+                if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION.getValue())){
+                    String type = Objects.requireNonNull(typesList.getSelectedItem()) + " " + typeText.getText();
                     sensor.setType(type);
                 }else {
                     sensor.setType(typeText.getText());
