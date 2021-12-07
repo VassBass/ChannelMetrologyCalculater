@@ -192,6 +192,10 @@ public class Strings {
     //Default calibrators types
     public static final String CALIBRATOR_FLUKE718_30G = "Fluke 718 30G";
 
+    //Default sensors types
+    public static final String SENSOR_YOKOGAWA = "YOKOGAWA";
+    public static final String SENSOR_ROSEMOUNT = "ROSEMOUNT";
+
     public static String YEAR_WORD(double d){
         if (d == 0D){
             return "років";

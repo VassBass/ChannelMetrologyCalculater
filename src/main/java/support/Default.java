@@ -331,6 +331,28 @@ public class Default {
         fluke750pd2_smallPressure.setErrorFormula("(convR / 100) * 0.05");
         calibrators.add(fluke750pd2_smallPressure);
 
+        Calibrator YAKOGAWA_AM012 = new Calibrator();
+        YAKOGAWA_AM012.setType("AM012");
+        YAKOGAWA_AM012.setName("YAKOGAWA AM012");
+        YAKOGAWA_AM012.setNumber("S5T800358");
+        YAKOGAWA_AM012.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
+        YAKOGAWA_AM012.setCertificateName("№UA/24/200717/265");
+        YAKOGAWA_AM012.setCertificateDate(new GregorianCalendar(2020, Calendar.JULY, 17));
+        YAKOGAWA_AM012.setCertificateCompany("ДП\"Укрметртестстандарт\"");
+        YAKOGAWA_AM012.setErrorFormula("(R / 100) * 0.06");
+        calibrators.add(YAKOGAWA_AM012);
+
+        Calibrator ROSEMOUNT_8714DQ4 = new Calibrator();
+        ROSEMOUNT_8714DQ4.setType("ROSEMOUNT 8714DQ4");
+        ROSEMOUNT_8714DQ4.setName("ROSEMOUNT 8714DQ4");
+        ROSEMOUNT_8714DQ4.setNumber("14972506");
+        ROSEMOUNT_8714DQ4.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
+        ROSEMOUNT_8714DQ4.setCertificateName("відповідно до стандарту ISO 10474.3.1B");
+        ROSEMOUNT_8714DQ4.setCertificateDate(new GregorianCalendar(2019, Calendar.NOVEMBER, 22));
+        ROSEMOUNT_8714DQ4.setCertificateCompany("\"EMERSON\"");
+        ROSEMOUNT_8714DQ4.setErrorFormula("(R / 100) * 0.1");
+        calibrators.add(ROSEMOUNT_8714DQ4);
+
         Lists.saveCalibratorsListToFile(calibrators);
     }
 
