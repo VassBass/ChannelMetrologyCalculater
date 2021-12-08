@@ -1,8 +1,9 @@
-package support;
+package model;
 
 import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
+import model.Channel;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;

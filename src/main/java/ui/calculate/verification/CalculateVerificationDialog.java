@@ -3,7 +3,7 @@ package ui.calculate.verification;
 import measurements.calculation.Calculation;
 import constants.Value;
 import converters.ConverterUI;
-import support.Channel;
+import model.Channel;
 import constants.Strings;
 import support.Values;
 import ui.UI_Container;

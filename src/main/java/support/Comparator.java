@@ -3,6 +3,10 @@ package support;
 import constants.MeasurementConstants;
 import converters.VariableConverter;
 import measurements.Measurement;
+import model.Calibrator;
+import model.Channel;
+import model.Sensor;
+import model.Worker;
 
 import java.util.Calendar;
 

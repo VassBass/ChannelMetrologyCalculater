@@ -1,6 +1,6 @@
 package backgroundTasks.controllers;
 
-import support.Calibrator;
+import model.Calibrator;
 import support.Lists;
 import ui.LoadDialog;
 import ui.calibratorsList.CalibratorsListDialog;

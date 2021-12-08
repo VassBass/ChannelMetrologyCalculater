@@ -1,4 +1,4 @@
-package support;
+package model;
 
 import java.io.Serializable;
 

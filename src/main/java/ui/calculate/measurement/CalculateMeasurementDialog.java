@@ -1,10 +1,10 @@
 package ui.calculate.measurement;
 
 import backgroundTasks.CalculateChannel;
-import support.Calibrator;
+import model.Calibrator;
 import constants.Value;
 import converters.ConverterUI;
-import support.Channel;
+import model.Channel;
 import constants.Strings;
 import support.Values;
 import ui.UI_Container;

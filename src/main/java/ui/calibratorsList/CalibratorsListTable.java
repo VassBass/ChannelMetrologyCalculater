@@ -1,7 +1,7 @@
 package ui.calibratorsList;
 
 import constants.Strings;
-import support.Calibrator;
+import model.Calibrator;
 import support.Lists;
 
 import javax.swing.*;

@@ -1,7 +1,7 @@
 package ui.calculate.measurement.complexElements;
 
 import converters.VariableConverter;
-import support.Channel;
+import model.Channel;
 import ui.ButtonCell;
 import ui.UI_Container;
 

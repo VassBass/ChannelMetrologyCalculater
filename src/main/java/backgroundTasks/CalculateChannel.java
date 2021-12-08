@@ -2,9 +2,9 @@ package backgroundTasks;
 
 
 import measurements.calculation.Calculation;
-import support.Calibrator;
+import model.Calibrator;
 import constants.Value;
-import support.Channel;
+import model.Channel;
 import support.Values;
 import ui.LoadDialog;
 import ui.calculate.verification.CalculateVerificationDialog;

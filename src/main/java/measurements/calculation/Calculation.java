@@ -2,10 +2,10 @@ package measurements.calculation;
 
 import constants.MeasurementConstants;
 import constants.Strings;
-import support.Calibrator;
+import model.Calibrator;
 import converters.ValueConverter;
 import org.apache.commons.lang3.math.NumberUtils;
-import support.Channel;
+import model.Channel;
 import support.Settings;
 
 public class Calculation {

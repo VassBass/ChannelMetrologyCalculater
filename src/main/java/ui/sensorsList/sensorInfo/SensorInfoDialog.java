@@ -10,7 +10,7 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import support.Lists;
-import support.Sensor;
+import model.Sensor;
 import ui.ButtonCell;
 import ui.UI_Container;
 import ui.sensorsList.SensorsListDialog;

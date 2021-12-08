@@ -1,7 +1,7 @@
 package ui.calculate.start.complexElements;
 
 import converters.VariableConverter;
-import support.Channel;
+import model.Channel;
 import constants.Strings;
 import ui.UI_Container;
 

@@ -2,7 +2,7 @@ package backgroundTasks.controllers;
 
 import constants.ChannelConstants;
 import converters.VariableConverter;
-import support.Channel;
+import model.Channel;
 import support.Lists;
 import ui.LoadDialog;
 import ui.main.MainScreen;

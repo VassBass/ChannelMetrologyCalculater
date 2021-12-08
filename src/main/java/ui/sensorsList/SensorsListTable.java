@@ -2,7 +2,7 @@ package ui.sensorsList;
 
 import constants.Strings;
 import support.Lists;
-import support.Sensor;
+import model.Sensor;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

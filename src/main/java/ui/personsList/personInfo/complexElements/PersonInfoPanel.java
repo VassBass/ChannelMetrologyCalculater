@@ -2,7 +2,7 @@ package ui.personsList.personInfo.complexElements;
 
 import constants.Strings;
 import ui.UI_Container;
-import support.Worker;
+import model.Worker;
 
 import javax.swing.*;
 import java.awt.*;

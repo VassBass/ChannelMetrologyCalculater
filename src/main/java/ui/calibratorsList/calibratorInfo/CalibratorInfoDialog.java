@@ -9,7 +9,7 @@ import measurements.Measurement;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
-import support.Calibrator;
+import model.Calibrator;
 import support.Lists;
 import ui.ButtonCell;
 import ui.UI_Container;

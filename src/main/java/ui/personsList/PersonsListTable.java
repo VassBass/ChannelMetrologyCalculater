@@ -2,7 +2,7 @@ package ui.personsList;
 
 import support.Lists;
 import constants.Strings;
-import support.Worker;
+import model.Worker;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;

@@ -1,7 +1,7 @@
 package ui.main.info_panel.complex_elements;
 
 import converters.VariableConverter;
-import support.Channel;
+import model.Channel;
 import constants.Strings;
 import ui.ButtonCell;
 import ui.UI_Container;

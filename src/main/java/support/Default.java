@@ -10,6 +10,10 @@ import measurements.Consumption;
 import measurements.Measurement;
 import measurements.Pressure;
 import measurements.Temperature;
+import model.Calibrator;
+import model.Channel;
+import model.Sensor;
+import model.Worker;
 
 public class Default {
     
@@ -131,6 +135,20 @@ public class Default {
         jumoDTransP02.setMeasurement(MeasurementConstants.PRESSURE.getValue());
         jumoDTransP02.setErrorFormula("(convR / 100) * 0.1");
         sensors.add(jumoDTransP02);
+
+        Sensor yokogawa_axf050g = new Sensor();
+        yokogawa_axf050g.setType("YOKOGAWA AXF050G");
+        yokogawa_axf050g.setName("YOKOGAWA AXF050G");
+        yokogawa_axf050g.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
+        yokogawa_axf050g.setErrorFormula("(R / 100) * 0.35");
+        sensors.add(yokogawa_axf050g);
+
+        Sensor rosemount_8750 = new Sensor();
+        rosemount_8750.setType("ROSEMOUNT 8750");
+        rosemount_8750.setName("ROSEMOUNT 8750");
+        rosemount_8750.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
+        rosemount_8750.setErrorFormula("(R / 100) * 0.5");
+        sensors.add(rosemount_8750);
 
         Lists.saveSensorsListToFile(sensors);
     }

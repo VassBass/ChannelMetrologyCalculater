@@ -1,13 +1,13 @@
 package ui.calculate.verification.complexElements;
 
-import support.Calibrator;
+import model.Calibrator;
 import constants.MeasurementConstants;
 import constants.Strings;
 import constants.Value;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import measurements.calculation.Calculation;
-import support.Channel;
+import model.Channel;
 import support.Values;
 import ui.ButtonCell;
 import ui.UI_Container;

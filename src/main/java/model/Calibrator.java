@@ -1,4 +1,4 @@
-package support;
+package model;
 
 import constants.MeasurementConstants;
 import converters.ValueConverter;
@@ -6,6 +6,7 @@ import converters.VariableConverter;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
+import support.Comparator;
 
 import java.io.Serializable;
 import java.util.Calendar;
@@ -86,7 +87,7 @@ public class Calibrator implements Serializable {
         return expression.calculate();
     }
 
-    protected static class Certificate implements Serializable {
+    public static class Certificate implements Serializable {
         protected String name = "";
         protected Calendar date = Calendar.getInstance();
         protected String company = "";

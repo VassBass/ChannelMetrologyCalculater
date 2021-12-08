@@ -5,7 +5,7 @@ import measurements.certificates.Certificate;
 import constants.Value;
 import measurements.certificates.PressureCertificate;
 import measurements.certificates.TemperatureCertificate;
-import support.Channel;
+import model.Channel;
 import support.Lists;
 import support.Values;
 import ui.LoadDialog;

@@ -5,7 +5,7 @@ import measurements.calculation.Calculation;
 import constants.Value;
 import constants.WorkPositions;
 import converters.ConverterUI;
-import support.Channel;
+import model.Channel;
 import support.Lists;
 import constants.Strings;
 import support.Values;
@@ -13,7 +13,7 @@ import ui.UI_Container;
 import ui.calculate.reference.CalculateReferenceDialog;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.main.MainScreen;
-import support.Worker;
+import model.Worker;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

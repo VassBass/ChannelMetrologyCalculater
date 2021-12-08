@@ -1,6 +1,6 @@
 package ui.main;
 
-import support.Channel;
+import model.Channel;
 import constants.Strings;
 
 import javax.swing.*;

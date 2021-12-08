@@ -4,7 +4,7 @@ import support.Comparator;
 import support.Lists;
 import ui.LoadDialog;
 import ui.personsList.PersonsListDialog;
-import support.Worker;
+import model.Worker;
 
 import javax.swing.*;
 import java.awt.*;

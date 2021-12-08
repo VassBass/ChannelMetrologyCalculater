@@ -1,6 +1,6 @@
 package measurements.certificates;
 
-import support.Calibrator;
+import model.Calibrator;
 import constants.*;
 import converters.ValueConverter;
 import converters.VariableConverter;
@@ -10,8 +10,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import support.Channel;
-import support.Sensor;
+import model.Channel;
+import model.Sensor;
 import support.Settings;
 import support.Values;
 

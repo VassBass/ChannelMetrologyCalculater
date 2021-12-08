@@ -1,6 +1,6 @@
 package ui.main;
 
-import support.Channel;
+import model.Channel;
 import constants.Strings;
 import ui.DialogExit;
 import ui.UI_Container;

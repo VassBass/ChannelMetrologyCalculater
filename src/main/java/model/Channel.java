@@ -1,11 +1,10 @@
-package support;
+package model;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import converters.VariableConverter;
 import measurements.Measurement;
 
 public class Channel implements Serializable {
