@@ -135,7 +135,7 @@ public class DialogChannel extends JDialog implements UI_Container {
             this.setMeasurement(this.oldChannel.getMeasurement());
             this.userCode.setText(this.oldChannel.getCode());
             this.userName.setText(this.oldChannel.getName());
-            this.measurementPanel.update(this.oldChannel.getMeasurement());
+            this.measurementPanel.update(this.oldChannel.getMeasurement().getName());
             this.userTechnologyNumber.setText(this.oldChannel.getTechnologyNumber());
             this.datePanel.update(this.oldChannel.getDate());
             this.frequencyPanel.update(this.oldChannel.getFrequency(), this.oldChannel.getDate());
@@ -204,6 +204,9 @@ public class DialogChannel extends JDialog implements UI_Container {
             sensor.setRange(this.sensorRangePanel.getRangeMin(), this.sensorRangePanel.getRangeMax());
             sensor.setValue(this.sensorRangePanel.getValue());
         }
+        if (channel.getMeasurement().getNameConstant() == MeasurementConstants.CONSUMPTION){
+            sensor.setNumber(this.sensorPanel.getSerialNumber());
+        }
         channel.setSensor(sensor);
         channel.setNumberOfProtocol(this.userProtocolNumber.getText());
         channel.setRange(this.rangePanel.getRangeMin(), this.rangePanel.getRangeMax());
@@ -224,7 +227,7 @@ public class DialogChannel extends JDialog implements UI_Container {
         }else {
             measurementName = MeasurementConstants.TEMPERATURE;
         }
-        this.measurementPanel.update(measurement);
+        this.measurementPanel.update(measurementName.getValue());
         this.sensorPanel.update(measurementName);
         switch (measurementName){
             case TEMPERATURE:
@@ -232,6 +235,7 @@ public class DialogChannel extends JDialog implements UI_Container {
                 this.sensorRangePanel = null;
                 break;
             case PRESSURE:
+            case CONSUMPTION:
                 this.setSize(1000, 650);
                 this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
                 break;
@@ -315,7 +319,7 @@ public class DialogChannel extends JDialog implements UI_Container {
             JPanel buttonsPanel = new JPanel();
             buttonsPanel.add(positiveButton);
             buttonsPanel.add(negativeButton);
-            this.add(buttonsPanel, new Cell(0,11, new Insets(40,20,20,20), 2));
+            this.add(buttonsPanel, new Cell(0,11, new Insets(40,0,20,0), 1));
         }
 
         private class Cell extends GridBagConstraints {
