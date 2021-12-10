@@ -8,9 +8,7 @@ import model.Channel;
 import constants.Strings;
 import support.Values;
 import ui.UI_Container;
-import ui.calculate.measurement.complexElements.MeasurementPanel;
-import ui.calculate.measurement.complexElements.PressurePanel;
-import ui.calculate.measurement.complexElements.TemperaturePanel;
+import ui.calculate.measurement.complexElements.*;
 import ui.calculate.start.CalculateStartDialog;
 import ui.main.MainScreen;
 
@@ -150,6 +148,10 @@ public class CalculateMeasurementDialog extends JDialog implements UI_Container 
                 this.measurementsPanels[index] = pressurePanel;
                 this.duplicateOfMeasurementsPanels[index] = pressurePanel;
                 break;
+            case CONSUMPTION:
+                ConsumptionPanel consumptionPanel = new ConsumptionPanel(this.channel);
+                this.measurementsPanels[index] = consumptionPanel;
+                this.duplicateOfMeasurementsPanels[index] = consumptionPanel;
         }
         if (values != null){
             this.measurementsPanels[index].setValues(values);

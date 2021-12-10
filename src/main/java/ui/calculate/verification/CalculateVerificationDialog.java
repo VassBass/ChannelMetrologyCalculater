@@ -10,6 +10,7 @@ import ui.UI_Container;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.performers.CalculatePerformersDialog;
 import ui.calculate.reference.CalculateReferenceDialog;
+import ui.calculate.verification.complexElements.ConsumptionPanel;
 import ui.calculate.verification.complexElements.PressurePanel;
 import ui.calculate.verification.complexElements.TemperaturePanel;
 import ui.main.MainScreen;
@@ -51,6 +52,9 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
                 break;
             case PRESSURE:
                 this.resultPanel = new PressurePanel(this.channel, this.values, this.calculation);
+                break;
+            case CONSUMPTION:
+                this.resultPanel = new ConsumptionPanel(this.channel, this.values, this.calculation);
                 break;
         }
 

@@ -154,4 +154,28 @@ public class VariableConverter {
             return s;
         }
     }
+
+    public static String roundingDouble4(double d, Locale locale){
+        String s = String.format(locale, "%.4f", d);
+
+        char[] chars = s.toCharArray();
+        int index = chars.length - 1;
+        if (chars[index] == '0') {
+            if (chars[index - 1] == '0') {
+                if (chars[index - 2] == '0') {
+                    if (chars[index - 3] == '0') {
+                        return String.format(locale, "%.0f", d);
+                    } else {
+                        return String.format(locale, "%.1f", d);
+                    }
+                } else {
+                    return String.format(locale, "%.2f", d);
+                }
+            } else {
+                return String.format(locale, "%.3f", d);
+            }
+        } else {
+            return s;
+        }
+    }
 }

@@ -43,6 +43,14 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         double[][]measurements = new double[5][8];
+        switch (this.channel.getMeasurement().getNameConstant()){
+            case TEMPERATURE:
+            case PRESSURE:
+                measurements = new double[5][8];
+                break;
+            case CONSUMPTION:
+                measurements = new double[5][10];
+        }
         double[]measurement1 = (double[]) values.getValue(Value.MEASUREMENT_1);
         double[]measurement2 = (double[]) values.getValue(Value.MEASUREMENT_2);
         double[]measurement3 = (double[]) values.getValue(Value.MEASUREMENT_3);
