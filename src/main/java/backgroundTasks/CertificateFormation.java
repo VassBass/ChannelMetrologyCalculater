@@ -3,6 +3,7 @@ package backgroundTasks;
 import measurements.calculation.Calculation;
 import measurements.certificates.Certificate;
 import constants.Value;
+import measurements.certificates.ConsumptionCertificate;
 import measurements.certificates.PressureCertificate;
 import measurements.certificates.TemperatureCertificate;
 import model.Channel;
@@ -53,6 +54,9 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
                 break;
             case PRESSURE:
                 this.certificate = new PressureCertificate();
+                break;
+            case CONSUMPTION:
+                this.certificate = new ConsumptionCertificate();
                 break;
         }
 

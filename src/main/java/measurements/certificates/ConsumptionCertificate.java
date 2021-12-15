@@ -1,19 +1,19 @@
 package measurements.certificates;
 
-import model.Calibrator;
 import constants.Files;
 import constants.MeasurementConstants;
 import constants.Strings;
 import constants.Value;
 import converters.VariableConverter;
 import measurements.calculation.Calculation;
+import model.Calibrator;
+import model.Channel;
+import model.Sensor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import model.Channel;
-import model.Sensor;
 import support.Settings;
 import support.Values;
 
@@ -26,7 +26,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Objects;
 
-public class TemperatureCertificate implements Certificate {
+public class ConsumptionCertificate implements Certificate {
     private Calculation result;
     private Values values;
     private Channel channel;
@@ -39,6 +39,7 @@ public class TemperatureCertificate implements Certificate {
     private HSSFWorkbook book;
     private File certificateFile;
     private String numberOfReference;
+    private String badMessage;
 
     private HSSFCell cell(int row, int column){
         HSSFSheet sheet = this.book.getSheetAt(0);
@@ -54,15 +55,16 @@ public class TemperatureCertificate implements Certificate {
 
         if (this.result.goodChannel()){
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_TEMPERATURE_GOOD));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_CONSUMPTION_YOKOGAWA_GOOD));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();
             }
         }else{
             this.numberOfReference = values.getStringValue(Value.CHANNEL_REFERENCE);
+            this.badMessage = values.getStringValue(Value.CHANNEL_IS_GOOD);
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_TEMPERATURE_BAD));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_CONSUMPTION_YOKOGAWA_BAD));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();
@@ -81,111 +83,107 @@ public class TemperatureCertificate implements Certificate {
     @Override
     public void putCertificateData() {
         this.numberOfCertificate = this.values.getStringValue(Value.CHANNEL_PROTOCOL_NUMBER);
-        cell(11,10).setCellValue(numberOfCertificate);
-        cell(11,31).setCellValue(numberOfCertificate);
+        cell(11,10).setCellValue(this.numberOfCertificate);
+        cell(11,32).setCellValue(this.numberOfCertificate);
         if (!this.result.goodChannel()){
-            cell(15,62).setCellValue(numberOfCertificate);
+            cell(15,65).setCellValue(this.numberOfCertificate);
         }
 
         this.checkDate = (Calendar) this.values.getValue(Value.CHANNEL_DATE);
-        String date = VariableConverter.dateToString(checkDate);
+        String date = VariableConverter.dateToString(this.checkDate);
         cell(11,12).setCellValue(date);
-        cell(11,34).setCellValue(date);
+        cell(11,35).setCellValue(date);
         if (!this.result.goodChannel()){
-            cell(9,55).setCellValue(date);
-            cell(16,46).setCellValue(date);
+            cell(10,58).setCellValue(date);
+            cell(16,49).setCellValue(date);
         }
 
         String externalTemperature = values.getStringValue(Value.CALCULATION_EXTERNAL_TEMPERATURE);
-        cell(23,11).setCellValue(externalTemperature);
+        cell(19,12).setCellValue(externalTemperature);
 
         String humidity = this.values.getStringValue(Value.CALCULATION_EXTERNAL_HUMIDITY);
-        cell(24,11).setCellValue(humidity);
+        cell(20,12).setCellValue(humidity);
 
         String atmospherePressure = this.values.getStringValue(Value.CALCULATION_EXTERNAL_PRESSURE);
-        cell(25,11).setCellValue(atmospherePressure);
+        cell(21,12).setCellValue(atmospherePressure);
 
         this.alarmCheck = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
         this.alarmValue = this.values.getStringValue(Value.CALCULATION_ALARM_VALUE);
 
-        String methodName = Settings.getSettingValue(MeasurementConstants.TEMPERATURE.getValue());
-        cell(30,36).setCellValue(methodName);
+        String methodName = Settings.getSettingValue(MeasurementConstants.CONSUMPTION.getValue());
+        cell(32,37).setCellValue(methodName);
     }
 
     @Override
     public void putChannelData() {
         String name = this.channel.getName();
-        cell(9,0).setCellValue(name);
-        cell(9,22).setCellValue(name);
-        cell(32,22).setCellValue(name);
+        cell(10, 0).setCellValue(name);
+        cell(10, 23).setCellValue(name);
+        if (!this.result.goodChannel()) {
+            cell(13, 49).setCellValue(name);
+        }
 
         String area = this.channel.getArea();
-        cell(13,11).setCellValue(area);
-        cell(36,8).setCellValue(area);
-        cell(13,33).setCellValue(area);
-        cell(38,30).setCellValue(area);
-        if (!this.result.goodChannel()){
-            cell(11,60).setCellValue(area);
-            cell(13,11).setCellValue(area);
+        cell(13, 11).setCellValue(area);
+        cell(36, 8).setCellValue(area);
+        cell(13, 34).setCellValue(area);
+        cell(38, 31).setCellValue(area);
+        if (!this.result.goodChannel()) {
+            cell(11, 63).setCellValue(area);
+            cell(28, 55).setCellValue(area);
         }
 
         String process = this.channel.getProcess();
-        cell(13,14).setCellValue(process);
-        cell(13,37).setCellValue(process);
-        if (!this.result.goodChannel()){
-            cell(12,60).setCellValue(process);
+        cell(13, 14).setCellValue(process);
+        cell(13, 38).setCellValue(process);
+        if (!this.result.goodChannel()) {
+            cell(12, 63).setCellValue(process);
         }
 
         String technologyNumber = this.channel.getTechnologyNumber();
-        cell(14,7).setCellValue(technologyNumber);
-        cell(14,29).setCellValue(technologyNumber);
-        if (!this.result.goodChannel()){
-            String name_ = name + "  " + technologyNumber;
-            cell(13,46).setCellValue(name_);
-        }
+        cell(14, 7).setCellValue(technologyNumber);
+        cell(14, 30).setCellValue(technologyNumber);
 
         String code = this.channel.getCode();
-        cell(15,3).setCellValue(code);
+        cell(15, 3).setCellValue(code);
 
         String rangeMin = VariableConverter.roundingDouble(this.channel.getRangeMin(), Locale.GERMAN);
-        cell(16,10).setCellValue(rangeMin);
+        cell(16, 10).setCellValue(rangeMin);
 
         String rangeMax = VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN);
-        cell(16,12).setCellValue(rangeMax);
+        cell(16, 12).setCellValue(rangeMax);
 
         this.measurementValue = this.channel.getMeasurement().getValue();
-        cell(16,14).setCellValue(this.measurementValue);
-        cell(17,19).setCellValue(this.measurementValue);
-        cell(20,19).setCellValue(this.measurementValue);
-        cell(21,14).setCellValue(this.measurementValue);
-        cell(19,39).setCellValue(this.measurementValue);
-        cell(23,36).setCellValue(this.measurementValue);
-        cell(26,36).setCellValue(this.measurementValue);
-        cell(27,36).setCellValue(this.measurementValue);
-        cell(28,36).setCellValue(this.measurementValue);
-        cell(29,36).setCellValue(this.measurementValue);
+        cell(16, 14).setCellValue(this.measurementValue);
+        cell(19, 40).setCellValue(this.measurementValue);
+        cell(23, 37).setCellValue(this.measurementValue);
+        cell(26, 37).setCellValue(this.measurementValue);
+        cell(27, 37).setCellValue(this.measurementValue);
+        cell(28, 37).setCellValue(this.measurementValue);
+        cell(29, 37).setCellValue(this.measurementValue);
+        cell(30, 37).setCellValue(this.measurementValue);
+        cell(31, 37).setCellValue(this.measurementValue);
 
         String errorPercent = VariableConverter.roundingDouble2(this.channel.getAllowableErrorPercent(), Locale.GERMAN);
-        cell(17,12).setCellValue(errorPercent);
-        cell(34,34).setCellValue(errorPercent);
+        cell(17, 12).setCellValue(errorPercent);
 
-        String error = VariableConverter.roundingDouble2(this.channel.getAllowableError(), Locale.GERMAN);
-        cell(17,17).setCellValue(error);
+        String error = VariableConverter.roundingDouble3(this.channel.getAllowableError(), Locale.GERMAN);
+        cell(17, 17).setCellValue(error);
 
         String frequency = VariableConverter.roundingDouble(this.channel.getFrequency(), Locale.GERMAN);
-        cell(26,40).setCellValue(frequency);
-        cell(26,41).setCellValue(Strings.YEAR_WORD(this.channel.getFrequency()));
+        cell(26, 41).setCellValue(frequency);
+        cell(26, 42).setCellValue(Strings.YEAR_WORD(this.channel.getFrequency()));
 
         String nextDate;
-        if (this.result.goodChannel()){
+        if (this.result.goodChannel()) {
             long l = (long) (31536000000L * this.channel.getFrequency());
             Calendar nextDateCal = new GregorianCalendar();
             nextDateCal.setTimeInMillis(this.checkDate.getTimeInMillis() + l);
             nextDate = VariableConverter.dateToString(nextDateCal);
-        }else {
+        } else {
             nextDate = Strings.EXTRAORDINARY;
         }
-        cell(35,36).setCellValue(nextDate);
+        cell(36, 36).setCellValue(nextDate);
 
         putSensorData();
         putResult();
@@ -196,120 +194,151 @@ public class TemperatureCertificate implements Certificate {
         Sensor sensor = this.channel.getSensor();
 
         String type = sensor.getType();
-        cell(19,11).setCellValue(type);
+        cell(9,5).setCellValue(type);
+        cell(9,28).setCellValue(type);
 
-        double errorSensor = sensor.getError(this.channel);
-        double eP = errorSensor / (sensor.getRange() / 100);
-        String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
-        cell(20,12).setCellValue(errorPercent);
+        String sensorNum = sensor.getNumber();
+        cell(14,15).setCellValue(sensorNum);
+        cell(14,37).setCellValue(sensorNum);
+        cell(33,41).setCellValue(sensorNum);
 
-        String error = VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN);
-        cell(20,17).setCellValue(error);
-
-        String rangeMin = VariableConverter.roundingDouble(sensor.getRangeMin(), Locale.GERMAN);
-        cell(21,10).setCellValue(rangeMin);
-
-        String rangeMax = VariableConverter.roundingDouble(sensor.getRangeMax(), Locale.GERMAN);
-        cell(21,12).setCellValue(rangeMax);
+        String value= sensor.getValue();
+        cell(17,19).setCellValue(value);
     }
 
     @Override
     public void putCalibratorData() {
-        Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
+        Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
 
         String type = calibrator.getType();
-        cell(16,39).setCellValue(type);
+        cell(16,40).setCellValue(type);
 
         String number = calibrator.getNumber();
-        cell(17,27).setCellValue(number);
+        cell(17,28).setCellValue(number);
 
         String certificate = calibrator.getCertificateToString();
-        cell(18,30).setCellValue(certificate);
+        cell(18,31).setCellValue(certificate);
 
         double errorCalibrator = calibrator.getError(this.channel);
         double eP = errorCalibrator / (this.channel.getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
-        cell(19,31).setCellValue(errorPercent);
+        cell(19,32).setCellValue(errorPercent);
 
-        String error = VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN);
-        cell(19,37).setCellValue(error);
+        String error;
+        if (errorCalibrator < 0.001) {
+            error = VariableConverter.roundingDouble4(errorCalibrator, Locale.GERMAN);
+        }else if (errorCalibrator < 0.01){
+            error = VariableConverter.roundingDouble3(errorCalibrator, Locale.GERMAN);
+        }else {
+            error = VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN);
+        }
+        cell(19,38).setCellValue(error);
     }
 
     @Override
     public void putResult() {
-
-        double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
+        double value0 = this.channel.getRangeMin();
+        double value25 = ((this.channel.getRange() / 100) * 25) + this.channel.getRangeMin();
         double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-        double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+        double value75 = ((this.channel.getRange() / 100) * 75) + this.channel.getRangeMin();
+        double value100 = this.channel.getRangeMax();
 
-        cell(29, 5).setCellValue(VariableConverter.roundingDouble2(value5, Locale.GERMAN));
-        cell(31, 5).setCellValue(VariableConverter.roundingDouble2(value50, Locale.GERMAN));
-        cell(33, 5).setCellValue(VariableConverter.roundingDouble2(value95, Locale.GERMAN));
+        cell(25, 4).setCellValue(VariableConverter.roundingDouble2(value0, Locale.GERMAN));
+        cell(27, 4).setCellValue(VariableConverter.roundingDouble2(value25, Locale.GERMAN));
+        cell(29, 4).setCellValue(VariableConverter.roundingDouble2(value50, Locale.GERMAN));
+        cell(31, 4).setCellValue(VariableConverter.roundingDouble2(value75, Locale.GERMAN));
+        cell(33, 4).setCellValue(VariableConverter.roundingDouble2(value100, Locale.GERMAN));
 
-        double[][] measurementValues = this.measurementValues();
-        int y = 8;
-        for (double[] value : measurementValues) {
-            for (int z = 0; z < 6; z++) {
-                int n = 29 + z;
-                cell(n, y).setCellValue(VariableConverter.roundingDouble2(value[z + 1], Locale.GERMAN));
+        double[][]measurementValues = this.measurementValues();
+        for (int x=0;x<measurementValues.length;x++){
+            int column;
+            switch (x){
+                default: column = 7; break;
+                case 1: column = 11; break;
+                case 2: column = 13; break;
+                case 3: column = 15; break;
+                case 4: column = 18; break;
+
             }
-            if (y == 8) {
-                y = 11;
-            } else if (y == 11) {
-                y = 13;
-            } else if (y == 13) {
-                y = 15;
-            } else if (y == 15) {
-                y = 18;
+            double[]mv = measurementValues[x];
+            for (int y=0;y<mv.length;y++){
+                int row = 25 + y;
+                cell(row,column).setCellValue(VariableConverter.roundingDouble3(measurementValues[x][y], Locale.GERMAN));
             }
         }
 
-        String u = VariableConverter.roundingDouble(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
-        cell(23, 34).setCellValue(u);
+        String u;
+        if (this.result.getExtendedIndeterminacy() < 0.01 && this.result.getExtendedIndeterminacy() > -0.01) {
+            u = VariableConverter.roundingDouble3(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
+        }else {
+            u = VariableConverter.roundingDouble2(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
+        }
+        cell(23,35).setCellValue(u);
 
         String errorReduced;
+        if (this.result.getErrorInRange() < 0.01 && this.result.getErrorInRange() > -0.01) {
+            errorReduced = VariableConverter.roundingDouble3(this.result.getErrorInRange(), Locale.GERMAN);
+        }else {
+            errorReduced = VariableConverter.roundingDouble2(this.result.getErrorInRange(), Locale.GERMAN);
+        }
+
         String absoluteError;
-        double d = this.channel.getAllowableErrorPercent() - this.result.getErrorInRangeWidthSensorError();
-        if (d <= 0.1) {
-            errorReduced = VariableConverter.roundingDouble2(this.result.getErrorInRangeWidthSensorError(), Locale.GERMAN);
-            absoluteError = VariableConverter.roundingDouble2(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
-        } else {
-            errorReduced = VariableConverter.roundingDouble(this.result.getErrorInRangeWidthSensorError(), Locale.GERMAN);
-            absoluteError = VariableConverter.roundingDouble(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
+        if (this.result.getMaxAbsoluteError() < 0.01 && this.result.getMaxAbsoluteError() > -0.01) {
+            absoluteError = VariableConverter.roundingDouble3(this.result.getMaxAbsoluteError(), Locale.GERMAN);
+        }else {
+            absoluteError = VariableConverter.roundingDouble2(this.result.getMaxAbsoluteError(), Locale.GERMAN);
         }
-        cell(25, 34).setCellValue(errorReduced);
-        cell(34, 38).setCellValue(errorReduced);
-        cell(26, 34).setCellValue(absoluteError);
+        cell(25,35).setCellValue(errorReduced);
+        cell(26,35).setCellValue(absoluteError);
 
-        String s5;
+        String s0;
+        String s25;
         String s50;
-        String s95;
+        String s75;
+        String s100;
 
-        if (this.result.getSystematicErrors()[0] < 0.1 && this.result.getSystematicErrors()[0] > -0.05) {
-            s5 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[0], Locale.GERMAN);
-        } else {
-            s5 = VariableConverter.roundingDouble(this.result.getSystematicErrors()[0], Locale.GERMAN);
+        if (this.result.getSystematicErrors()[0] < 0.01 && this.result.getSystematicErrors()[0] > -0.01){
+            s0 = VariableConverter.roundingDouble3(this.result.getSystematicErrors()[0], Locale.GERMAN);
+        }else {
+            s0 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[0], Locale.GERMAN);
         }
-        if (this.result.getSystematicErrors()[1] < 0.1 && this.result.getSystematicErrors()[1] > -0.05) {
-            s50 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[1], Locale.GERMAN);
-        } else {
-            s50 = VariableConverter.roundingDouble(this.result.getSystematicErrors()[1], Locale.GERMAN);
+        if (this.result.getSystematicErrors()[1] < 0.01 && this.result.getSystematicErrors()[1] > -0.01){
+            s25 = VariableConverter.roundingDouble3(this.result.getSystematicErrors()[1], Locale.GERMAN);
+        }else {
+            s25 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[1], Locale.GERMAN);
         }
-        if (this.result.getSystematicErrors()[2] < 0.1 && this.result.getSystematicErrors()[2] > -0.05) {
-            s95 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[2], Locale.GERMAN);
-        } else {
-            s95 = VariableConverter.roundingDouble(this.result.getSystematicErrors()[2], Locale.GERMAN);
+        if (this.result.getSystematicErrors()[2] < 0.01 && this.result.getSystematicErrors()[2] > -0.01){
+            s50 = VariableConverter.roundingDouble3(this.result.getSystematicErrors()[2], Locale.GERMAN);
+        }else {
+            s50 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[2], Locale.GERMAN);
         }
-        cell(27, 33).setCellValue(s5);
-        cell(28, 33).setCellValue(s50);
-        cell(29, 33).setCellValue(s95);
+        if (this.result.getSystematicErrors()[3] < 0.01 && this.result.getSystematicErrors()[3] > -0.01){
+            s75 = VariableConverter.roundingDouble3(this.result.getSystematicErrors()[3], Locale.GERMAN);
+        }else {
+            s75 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[3], Locale.GERMAN);
+        }
+        if (this.result.getSystematicErrors()[4] < 0.01 && this.result.getSystematicErrors()[4] > -0.01){
+            s100 = VariableConverter.roundingDouble3(this.result.getSystematicErrors()[4], Locale.GERMAN);
+        }else {
+            s100 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[4], Locale.GERMAN);
+        }
 
-        if (!this.result.goodChannel()) {
-            cell(33, 25).setCellValue("не придатним до експлуатації");
-            cell(34, 32).setCellValue("більше");
-        } else {
-            cell(33, 25).setCellValue("придатним до експлуатації");
-            cell(34, 32).setCellValue("менше");
+        cell(27,34).setCellValue(s0);
+        cell(28,34).setCellValue(s25);
+        cell(29,34).setCellValue(s50);
+        cell(30,34).setCellValue(s75);
+        cell(31,34).setCellValue(s100);
+
+        if (!this.result.goodChannel()){
+            if (this.badMessage.equals(Strings.CHANNEL_IS_BAD)){
+                cell(34,26).setCellValue("не придатним до експлуатації");
+            }else {
+                cell(34, 26).setCellValue("не придатним до експлуатації".toUpperCase(Locale.ROOT) + " для комерційного обліку");
+                cell(35, 23).setCellValue("але" + " придатним".toUpperCase(Locale.ROOT) + " в якості " + "індикатора".toUpperCase(Locale.ROOT));
+            }
+            return;
+        }else {
+            cell(34,26).setCellValue("придатним до експлуатації".toUpperCase(Locale.ROOT));
         }
 
         String alarm;
@@ -329,9 +358,9 @@ public class TemperatureCertificate implements Certificate {
             headOfArea = "________________";
         }
         cell(36,16).setCellValue(headOfArea);
-        cell(38,38).setCellValue(headOfArea);
+        cell(38,39).setCellValue(headOfArea);
         if (!this.result.goodChannel()){
-            cell(28,59).setCellValue(headOfArea);
+            cell(28,62).setCellValue(headOfArea);
         }
 
         String headOfMetrologyArea = this.values.getStringValue(Value.HEAD_OF_METROLOGY_NAME);
@@ -339,10 +368,10 @@ public class TemperatureCertificate implements Certificate {
             headOfMetrologyArea = "________________";
         }
         cell(38,16).setCellValue(headOfMetrologyArea);
-        cell(40,38).setCellValue(headOfMetrologyArea);
+        cell(40,39).setCellValue(headOfMetrologyArea);
         if (!this.result.goodChannel()){
-            cell(30,59).setCellValue(headOfMetrologyArea);
-            cell(40,59).setCellValue(headOfMetrologyArea);
+            cell(30,62).setCellValue(headOfMetrologyArea);
+            cell(40,62).setCellValue(headOfMetrologyArea);
         }
 
         String performer1Name = this.values.getStringValue(Value.PERFORMER1_NAME);
@@ -381,18 +410,18 @@ public class TemperatureCertificate implements Certificate {
         if (calculaterName == null){
             calculaterName = "________________";
         }
-        cell(42,38).setCellValue(calculaterName);
+        cell(42,39).setCellValue(calculaterName);
         if (!this.result.goodChannel()){
-            cell(32,59).setCellValue(calculaterName);
+            cell(32,62).setCellValue(calculaterName);
         }
 
         String calculaterPosition = this.values.getStringValue(Value.CALCULATER_POSITION);
         if (calculaterPosition == null){
             calculaterPosition = "________________";
         }
-        cell(42,22).setCellValue(calculaterPosition);
+        cell(42,23).setCellValue(calculaterPosition);
         if (!this.result.goodChannel()){
-            cell(32,45).setCellValue(calculaterPosition);
+            cell(32,48).setCellValue(calculaterPosition);
         }
 
         if (!this.result.goodChannel()){
@@ -400,9 +429,9 @@ public class TemperatureCertificate implements Certificate {
             if (headOfASUTPDepartment == null){
                 headOfASUTPDepartment = "________________";
             }
-            cell(26,59).setCellValue(headOfASUTPDepartment);
+            cell(26,62).setCellValue(headOfASUTPDepartment);
 
-            cell(9,52).setCellValue(this.numberOfReference);
+            cell(10,55).setCellValue(this.numberOfReference);
 
         }
     }
@@ -410,8 +439,8 @@ public class TemperatureCertificate implements Certificate {
     @Override
     public void save() {
         String fileName = "№"
-                + this.numberOfCertificate +
-                " ("
+                + this.numberOfCertificate
+                + " ("
                 + VariableConverter.dateToString(this.checkDate)
                 + ").xls";
         this.certificateFile = Files.certificateFile(fileName);

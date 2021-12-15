@@ -85,12 +85,26 @@ public class Calculation {
     private double maxCalibratorPower = -999999999D;
 
     public boolean closeToFalse(){
-        double result = Math.abs(this.getErrorInRange() - this.channel.getAllowableErrorPercent());
+        double er;
+        if (this.channel.getMeasurement().getNameConstant() == MeasurementConstants.CONSUMPTION) {
+            er = this.getErrorInRange();
+        } else {
+            er = this.getErrorInRangeWidthSensorError();
+        }
+        double result = Math.abs(er - this.channel.getAllowableErrorPercent());
         return result < 0.1;
     }
 
     public boolean goodChannel(){
-        return this.getErrorInRange() <= this.channel.getAllowableErrorPercent();
+        switch (this.channel.getMeasurement().getNameConstant()){
+            case TEMPERATURE:
+            case PRESSURE:
+                return this.getErrorInRangeWidthSensorError() <= this.channel.getAllowableErrorPercent();
+            case CONSUMPTION:
+                return this.getErrorInRange() <= this.channel.getAllowableErrorPercent();
+            default:
+                return false;
+        }
     }
 
     public Calculation(Channel channel){
@@ -175,10 +189,17 @@ public class Calculation {
                 case CONSUMPTION:
                     double[][]errorsAbsolute = this.getErrorsAbsolute();
                     double[] biggest = new double[errorsAbsolute.length];
+                    double[] smallest = new double[errorsAbsolute.length];
                     for (int n=0;n<errorsAbsolute.length;n++) {
                         biggest[n] = NumberUtils.max(errorsAbsolute[n]);
+                        smallest[n] = NumberUtils.min(errorsAbsolute[n]);
                     }
-                    this.errorMax = NumberUtils.max(biggest);
+
+                    double biggestNum = Math.abs(NumberUtils.max(biggest));
+                    double smallestNum = Math.abs(NumberUtils.min(smallest));
+
+                    this.errorMax = Math.max(biggestNum, smallestNum);
+
                     return this.errorMax;
                 default: return 0D;
             }
@@ -200,7 +221,6 @@ public class Calculation {
                     this.error = Math.sqrt(e);
 
                     return this.error;
-
                 default: return 0D;
             }
         }else {
@@ -209,6 +229,25 @@ public class Calculation {
     }
 
     public double getErrorInRange(){
+        if (this.errorD == -999999999D){
+            double error = this.getMaxAbsoluteError();
+            double rangeChannel = this.channel.getRange();
+            switch (this.channel.getMeasurement().getNameConstant()){
+                case TEMPERATURE:
+                case PRESSURE:
+                case CONSUMPTION:
+                    this.errorD = (error * 100D) / rangeChannel;
+
+                    return this.errorD;
+
+                default: return 0D;
+            }
+        }else {
+            return this.errorD;
+        }
+    }
+
+    public double getErrorInRangeWidthSensorError(){
         if (this.errorD == -999999999D){
             double error = this.getAbsoluteErrorWithSensorError();
             double rangeChannel = this.channel.getRange();
@@ -339,6 +378,7 @@ public class Calculation {
             switch (this.channel.getMeasurement().getNameConstant()){
                 case TEMPERATURE:
                 case PRESSURE:
+                case CONSUMPTION:
                     double sum = 0D;
                     for (double[] doubles : errorsAbsolute) {
                         sum = sum + (doubles[0] + doubles[1] + doubles[2] + doubles[3] + doubles[4]

@@ -416,12 +416,12 @@ public class TemperaturePanel extends JPanel implements UI_Container {
                     + Strings.PLUS_MINUS
                     + VariableConverter.roundingDouble(calculation.getExtendedIndeterminacy(), Locale.GERMAN)
                     + channel.getMeasurement().getValue());
-            double d = channel.getAllowableErrorPercent() - calculation.getErrorInRange();
+            double d = channel.getAllowableErrorPercent() - calculation.getErrorInRangeWidthSensorError();
             if (d <= 0.1){
                 cells[7].setText(Strings.GAMMA
                         + " вк = "
                         + Strings.PLUS_MINUS
-                        + VariableConverter.roundingDouble2(calculation.getErrorInRange(), Locale.GERMAN)
+                        + VariableConverter.roundingDouble2(calculation.getErrorInRangeWidthSensorError(), Locale.GERMAN)
                         + "%");
                 cells[8].setText(Strings.DELTA
                         + " вк = "
@@ -432,7 +432,7 @@ public class TemperaturePanel extends JPanel implements UI_Container {
                 cells[7].setText(Strings.GAMMA
                         + " вк = "
                         + Strings.PLUS_MINUS
-                        + VariableConverter.roundingDouble(calculation.getErrorInRange(), Locale.GERMAN)
+                        + VariableConverter.roundingDouble(calculation.getErrorInRangeWidthSensorError(), Locale.GERMAN)
                         + "%");
                 cells[8].setText(Strings.DELTA
                         + " вк = "

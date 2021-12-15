@@ -90,7 +90,7 @@ public class DialogChannel extends JDialog implements UI_Container {
         this.pathPanel = new DialogChannel_pathPanel();
 
         this.sensorLabel = new JLabel(Strings.SENSOR.concat(": "));
-        this.sensorPanel = new DialogChannel_sensorPanel();
+        this.sensorPanel = new DialogChannel_sensorPanel(this);
 
         this.rangeLabel = new JLabel(Strings.RANGE_OF_CHANNEL.concat(": "));
         this.rangePanel = new DialogChannel_rangePanel(this);
@@ -206,6 +206,9 @@ public class DialogChannel extends JDialog implements UI_Container {
         }
         if (channel.getMeasurement().getNameConstant() == MeasurementConstants.CONSUMPTION){
             sensor.setNumber(this.sensorPanel.getSerialNumber());
+            sensor.setRangeMin(this.rangePanel.getRangeMin());
+            sensor.setRangeMax(this.rangePanel.getRangeMax());
+            sensor.setValue(this.measurementPanel.getMeasurement().getValue());
         }
         channel.setSensor(sensor);
         channel.setNumberOfProtocol(this.userProtocolNumber.getText());
@@ -233,11 +236,28 @@ public class DialogChannel extends JDialog implements UI_Container {
             case TEMPERATURE:
                 this.setSize(800, 650);
                 this.sensorRangePanel = null;
+                this.rangeLabel.setText(Strings.RANGE_OF_CHANNEL);
+                this.allowableErrorPanel.setEnabled(true);
                 break;
             case PRESSURE:
-            case CONSUMPTION:
                 this.setSize(1000, 650);
                 this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
+                this.rangeLabel.setText(Strings.RANGE_OF_CHANNEL);
+                this.allowableErrorPanel.setEnabled(true);
+                break;
+            case CONSUMPTION:
+                this.setSize(800,650);
+                this.sensorRangePanel = null;
+                this.rangeLabel.setText(Strings.RANGE_OF_SENSOR);
+                Channel channel = new Channel();
+                channel.setMeasurement(this.measurementPanel.getMeasurement());
+                channel.setRangeMin(this.rangePanel.getRangeMin());
+                channel.setRangeMax(this.rangePanel.getRangeMax());
+                Sensor sensor = this.sensorPanel.getSensor();
+                sensor.setValue(channel.getMeasurement().getValue());
+                double errorSensor = sensor.getError(channel);
+                this.allowableErrorPanel.update(errorSensor, false, channel.getRange());
+                this.allowableErrorPanel.setEnabled(false);
                 break;
         }
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));

@@ -111,6 +111,7 @@ public class Strings {
     public static final String FIELD = "Поле";
     public static final String CHANNEL_IS_GOOD = "Канал придатний";
     public static final String CHANNEL_IS_BAD = "Канал не придатний";
+    public static final String CHANNEL_IS_BAD_BUT = "Канал непридатний для комерційного обліку, але придатний як індикатор";
     public static final String CHANNEL_SUITABILITY = "Придатність каналу";
     public static final String OUT = "Вихід";
     public static final String CONTROL_INFO = "Дані перевірки";

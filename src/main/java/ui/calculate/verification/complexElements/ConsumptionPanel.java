@@ -30,10 +30,8 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
     private ButtonCell technologyNumberLabel;
     private ButtonCell codeLabel;
     private ButtonCell rangeChannelLabel;
-    private ButtonCell allowableErrorChannelLabel;
     private ButtonCell sensorLabel;
     private ButtonCell allowableErrorSensorLabel;
-    private ButtonCell rangeSensorLabel;
     private ButtonCell controlConditionsLabel;
     private ButtonCell externalTemperatureLabel;
     private ButtonCell humidityLabel;
@@ -52,10 +50,8 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
     private ButtonCell technologyNumber;
     private ButtonCell code;
     private ButtonCell rangeChannel;
-    private ButtonCell allowableErrorChannel;
     private ButtonCell sensor;
     private ButtonCell allowableErrorSensor;
-    private ButtonCell rangeSensor;
     private ButtonCell externalTemperature;
     private ButtonCell humidity;
     private ButtonCell atmospherePressure;
@@ -96,10 +92,8 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
         this.technologyNumberLabel = new ButtonCell(true, Strings.TECHNOLOGY_NUMBER);
         this.codeLabel = new ButtonCell(true, Strings.CODE);
         this.rangeChannelLabel = new ButtonCell(true, Strings.RANGE_OF_CHANNEL);
-        this.allowableErrorChannelLabel = new ButtonCell(true, Strings.ALLOWABLE_ERROR_OF_CHANNEL);
         this.sensorLabel = new ButtonCell(true, Strings.SENSOR);
         this.allowableErrorSensorLabel = new ButtonCell(true, Strings.ALLOWABLE_ERROR_OF_SENSOR);
-        this.rangeSensorLabel = new ButtonCell(true, Strings.RANGE_OF_SENSOR);
         this.controlConditionsLabel = new ButtonCell(true, Strings.CONDITIONS_FOR_CONTROL);
         this.externalTemperatureLabel = new ButtonCell(true, Strings.TEMPERATURE_EXTERNAL_ENVIRONMENT);
         this.humidityLabel = new ButtonCell(true, Strings.RELATIVE_HUMIDITY);
@@ -118,10 +112,8 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
         this.technologyNumber = new ButtonCell(false);
         this.code = new ButtonCell(false);
         this.rangeChannel = new ButtonCell(false);
-        this.allowableErrorChannel = new ButtonCell(false);
         this.sensor = new ButtonCell(false);
         this.allowableErrorSensor = new ButtonCell(false);
-        this.rangeSensor = new ButtonCell(false);
         this.externalTemperature = new ButtonCell(false);
         this.humidity = new ButtonCell(false);
         this.atmospherePressure = new ButtonCell(false);
@@ -155,14 +147,6 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                 + this.channel.getMeasurement().getValue();
         this.rangeChannel.setText(rangeChannel);
 
-        String allowableErrorChannel = Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble(this.channel.getAllowableErrorPercent(), Locale.GERMAN)
-                + "% або "
-                + Strings.PLUS_MINUS
-                + VariableConverter.roundingDouble3(this.channel.getAllowableError(), Locale.GERMAN)
-                + this.channel.getMeasurement().getValue();
-        this.allowableErrorChannel.setText(allowableErrorChannel);
-
         this.sensor.setText(this.channel.getSensor().getType());
 
         double errorSensor = this.channel.getSensor().getError(this.channel);
@@ -187,14 +171,6 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                 + errorSensorValue
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorSensor.setText(allowableErrorSensor);
-
-        String rangeSensor = "Від "
-                + VariableConverter.roundingDouble(this.channel.getSensor().getRangeMin(), Locale.GERMAN)
-                + " до "
-                + VariableConverter.roundingDouble(this.channel.getSensor().getRangeMax(), Locale.GERMAN)
-                + " "
-                + this.channel.getSensor().getValue();
-        this.rangeSensor.setText(rangeSensor);
 
         this.externalTemperature.setText(this.values.getStringValue(Value.CALCULATION_EXTERNAL_TEMPERATURE)
                 + MeasurementConstants.DEGREE_CELSIUS.getValue());
@@ -238,8 +214,9 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
             this.resultOfCheck.setBackground(Color.GREEN);
             this.resultOfCheck.setText(Strings.CHANNEL_IS_GOOD);
         }else{
-            this.resultOfCheck.setBackground(Color.RED);
-            this.resultOfCheck.setText(Strings.CHANNEL_IS_BAD);
+            String[]toComboBox = new String[]{Strings.CHANNEL_IS_BAD, Strings.CHANNEL_IS_BAD_BUT};
+            this.advice = new JComboBox<>(toComboBox);
+            return;
         }
 
         this.withAlarm = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
@@ -250,7 +227,6 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                 toComboBox.add(Strings.ALARM_MESSAGE + this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
             }
             toComboBox.add(Strings.ADVICE_FIX);
-            toComboBox.add(Strings.ADVICE_FIX_PRESSURE);
             toComboBox.add(Strings.ADVICE_RANGE);
 
             this.advice = new JComboBox<>(toComboBox.toArray(new String[0]));
@@ -293,56 +269,51 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
         this.add(this.rangeChannelLabel, new Cell(0, 6, 2));
         this.add(this.rangeChannel, new Cell(2, 6, 2));
 
-        this.add(this.allowableErrorChannelLabel, new Cell(0, 7, 2));
-        this.add(this.allowableErrorChannel, new Cell(2, 7, 2));
+        this.add(this.sensorLabel, new Cell(0, 7, 2));
+        this.add(this.sensor, new Cell(2, 7, 2));
 
-        this.add(this.sensorLabel, new Cell(0, 8, 2));
-        this.add(this.sensor, new Cell(2, 8, 2));
+        this.add(this.allowableErrorSensorLabel, new Cell(0, 8, 2));
+        this.add(this.allowableErrorSensor, new Cell(2, 8, 2));
 
-        this.add(this.allowableErrorSensorLabel, new Cell(0, 9, 2));
-        this.add(this.allowableErrorSensor, new Cell(2, 9, 2));
+        this.add(this.controlConditionsLabel, new Cell(0, 9, 4));
 
-        this.add(this.rangeSensorLabel, new Cell(0, 10, 2));
-        this.add(this.rangeSensor, new Cell(2, 10, 2));
+        this.add(this.externalTemperatureLabel, new Cell(0, 10, 2));
+        this.add(this.externalTemperature, new Cell(2, 10, 2));
 
-        this.add(this.controlConditionsLabel, new Cell(0, 11, 4));
+        this.add(this.humidityLabel, new Cell(0, 11, 2));
+        this.add(this.humidity, new Cell(2, 11, 2));
 
-        this.add(this.externalTemperatureLabel, new Cell(0, 12, 2));
-        this.add(this.externalTemperature, new Cell(2, 12, 2));
+        this.add(this.atmospherePressureLabel, new Cell(0, 12, 2));
+        this.add(this.atmospherePressure, new Cell(2, 12, 2));
 
-        this.add(this.humidityLabel, new Cell(0, 13, 2));
-        this.add(this.humidity, new Cell(2, 13, 2));
+        this.add(this.resultsTableLabel, new Cell(0, 13, 4));
+        this.add(this.resultsTable, new Cell(0, 14, 4, 8));
 
-        this.add(this.atmospherePressureLabel, new Cell(0, 14, 2));
-        this.add(this.atmospherePressure, new Cell(2, 14, 2));
+        this.add(this.calibratorNameLabel, new Cell(0, 22, 2));
+        this.add(this.calibratorName, new Cell(2, 22, 2));
 
-        this.add(this.resultsTableLabel, new Cell(0, 15, 4));
-        this.add(this.resultsTable, new Cell(0, 16, 4, 8));
+        this.add(this.calibratorNumberLabel, new Cell(0, 23, 2));
+        this.add(this.calibratorNumber, new Cell(2, 23, 2));
 
-        this.add(this.calibratorNameLabel, new Cell(0, 24, 2));
-        this.add(this.calibratorName, new Cell(2, 24, 2));
+        this.add(this.calibratorCertificateLabel, new Cell(0, 24, 2));
+        this.add(this.calibratorCertificate, new Cell(2, 24, 2));
 
-        this.add(this.calibratorNumberLabel, new Cell(0, 25, 2));
-        this.add(this.calibratorNumber, new Cell(2, 25, 2));
+        this.add(this.allowableErrorCalibratorLabel, new Cell(0, 25, 2));
+        this.add(this.allowableErrorCalibrator, new Cell(2, 25, 2));
 
-        this.add(this.calibratorCertificateLabel, new Cell(0, 26, 2));
-        this.add(this.calibratorCertificate, new Cell(2, 26, 2));
+        this.add(this.metrologyTableLabel, new Cell(0, 26, 4));
+        this.add(this.metrologyTable, new Cell(0, 27, 4, 7));
 
-        this.add(this.allowableErrorCalibratorLabel, new Cell(0, 27, 2));
-        this.add(this.allowableErrorCalibrator, new Cell(2, 27, 2));
-
-        this.add(this.metrologyTableLabel, new Cell(0, 28, 4));
-        this.add(this.metrologyTable, new Cell(0, 29, 4, 7));
-
-        this.add(this.resultOfCheck, new Cell(0, 36, 4));
-
-        if (this.calculation.closeToFalse() && this.calculation.goodChannel()){
-            this.add(this.advice, new Cell(0,37,4));
-        }else {
-            if (this.withAlarm) {
-                this.add(this.alarmLabel, new Cell(0, 37, 2));
-                this.add(this.alarm, new Cell(2, 37, 2));
+        if (this.calculation.goodChannel()){
+            this.add(this.resultOfCheck, new Cell(0, 34, 4));
+            if (this.calculation.closeToFalse()){
+                this.add(this.advice, new Cell(0, 35, 4));
+            }else if (this.withAlarm){
+                this.add(this.alarmLabel, new Cell(0, 35, 2));
+                this.add(this.alarm, new Cell(2, 35, 2));
             }
+        }else {
+            this.add(this.advice, new Cell(0,34,4));
         }
     }
 
@@ -477,11 +448,11 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                     + "%");
 
             String delta;
-            double absoluteErrorWithSensorError = calculation.getAbsoluteErrorWithSensorError();
-            if (absoluteErrorWithSensorError < 0.01 && absoluteErrorWithSensorError > -0.01){
-                delta  = VariableConverter.roundingDouble3(absoluteErrorWithSensorError, Locale.GERMAN);
+            double absoluteError = calculation.getMaxAbsoluteError();
+            if (absoluteError < 0.01 && absoluteError > -0.01){
+                delta  = VariableConverter.roundingDouble3(absoluteError, Locale.GERMAN);
             }else {
-                delta  = VariableConverter.roundingDouble2(absoluteErrorWithSensorError, Locale.GERMAN);
+                delta  = VariableConverter.roundingDouble2(absoluteError, Locale.GERMAN);
             }
             cells[8].setText(Strings.DELTA
                     + " вк = "
