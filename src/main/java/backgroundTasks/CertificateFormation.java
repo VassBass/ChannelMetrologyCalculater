@@ -1,11 +1,9 @@
 package backgroundTasks;
 
+import constants.Strings;
 import measurements.calculation.Calculation;
-import measurements.certificates.Certificate;
+import measurements.certificates.*;
 import constants.Value;
-import measurements.certificates.ConsumptionCertificate;
-import measurements.certificates.PressureCertificate;
-import measurements.certificates.TemperatureCertificate;
 import model.Channel;
 import support.Lists;
 import support.Values;
@@ -56,7 +54,11 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
                 this.certificate = new PressureCertificate();
                 break;
             case CONSUMPTION:
-                this.certificate = new ConsumptionCertificate();
+                if (this.channel.getSensor().getType().contains(Strings.SENSOR_YOKOGAWA)) {
+                    this.certificate = new ConsumptionCertificate_YOKOGAWA();
+                }else if (this.channel.getSensor().getType().contains(Strings.SENSOR_ROSEMOUNT)){
+                    this.certificate = new ConsumptionCertificate_ROSEMOUNT();
+            }
                 break;
         }
 

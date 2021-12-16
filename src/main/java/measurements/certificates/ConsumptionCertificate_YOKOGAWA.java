@@ -26,7 +26,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Objects;
 
-public class ConsumptionCertificate implements Certificate {
+public class ConsumptionCertificate_YOKOGAWA implements Certificate {
     private Calculation result;
     private Values values;
     private Channel channel;
@@ -194,8 +194,7 @@ public class ConsumptionCertificate implements Certificate {
         Sensor sensor = this.channel.getSensor();
 
         String type = sensor.getType();
-        cell(9,5).setCellValue(type);
-        cell(9,28).setCellValue(type);
+        cell(9,5).setCellValue("витратомір " + type);
 
         String sensorNum = sensor.getNumber();
         cell(14,15).setCellValue(sensorNum);
