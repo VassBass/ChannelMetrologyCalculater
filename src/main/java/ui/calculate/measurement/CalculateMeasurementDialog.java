@@ -149,9 +149,16 @@ public class CalculateMeasurementDialog extends JDialog implements UI_Container 
                 this.duplicateOfMeasurementsPanels[index] = pressurePanel;
                 break;
             case CONSUMPTION:
-                ConsumptionPanel consumptionPanel = new ConsumptionPanel(this.channel);
-                this.measurementsPanels[index] = consumptionPanel;
-                this.duplicateOfMeasurementsPanels[index] = consumptionPanel;
+                Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
+                if (calibrator.getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+                    ConsumptionPanel_ROSEMOUNT consumptionPanel = new ConsumptionPanel_ROSEMOUNT(this.channel);
+                    this.measurementsPanels[index] = consumptionPanel;
+                    this.duplicateOfMeasurementsPanels[index] = consumptionPanel;
+                }else {
+                    ConsumptionPanel consumptionPanel = new ConsumptionPanel(this.channel);
+                    this.measurementsPanels[index] = consumptionPanel;
+                    this.duplicateOfMeasurementsPanels[index] = consumptionPanel;
+                }
         }
         if (values != null){
             this.measurementsPanels[index].setValues(values);

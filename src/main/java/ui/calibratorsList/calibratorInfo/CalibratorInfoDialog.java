@@ -228,7 +228,8 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
             this.typeText.setText(this.oldCalibrator.getType());
             this.nameText.setText(this.oldCalibrator.getName());
             this.rangePanel.setRange(this.oldCalibrator.getRangeMax(), this.oldCalibrator.getRangeMin());
-            if (this.oldCalibrator.getName().equals(Strings.CALIBRATOR_FLUKE718_30G)){
+            if (this.oldCalibrator.getName().equals(Strings.CALIBRATOR_FLUKE718_30G)
+            || this.oldCalibrator.getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
                 this.typeText.setEnabled(false);
                 this.nameText.setEnabled(false);
                 this.measurementsList.setEnabled(false);

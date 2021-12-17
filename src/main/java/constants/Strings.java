@@ -181,8 +181,10 @@ public class Strings {
     public static final String FILE_NAME_FORM_PRESSURE_GOOD = "form_pressure_good.xls";
     public static final String FILE_NAME_FORM_TEMPERATURE_BAD = "form_temperature_bad.xls";
     public static final String FILE_NAME_FORM_TEMPERATURE_GOOD = "form_temperature_good.xls";
-    public static final String FILE_NAME_FORM_CONSUMPTION_YOKOGAWA_BAD = "form_consumption_yokogawa_bad.xls";
-    public static final String FILE_NAME_FORM_CONSUMPTION_YOKOGAWA_GOOD = "form_consumption_yokogawa_good.xls";
+    public static final String FILE_NAME_FORM_CONSUMPTION_BAD = "form_consumption_bad.xls";
+    public static final String FILE_NAME_FORM_CONSUMPTION_GOOD = "form_consumption_good.xls";
+    public static final String FILE_NAME_FORM_CONSUMPTION_ROSEMOUNT_BAD = "form_consumption_rosemount_bad.xls";
+    public static final String FILE_NAME_FORM_CONSUMPTION_ROSEMOUNT_GOOD = "form_consumption_rosemount_good.xls";
 
     public static final String PLUS_MINUS = "\u00B1";
     public static final String GAMMA = "\u03B3";
@@ -192,6 +194,7 @@ public class Strings {
 
     //Default calibrators types
     public static final String CALIBRATOR_FLUKE718_30G = "Fluke 718 30G";
+    public static final String CALIBRATOR_ROSEMOUNT_8714DQ4 = "ROSEMOUNT 8714DQ4";
 
     //Default sensors types
     public static final String SENSOR_YOKOGAWA = "YOKOGAWA";

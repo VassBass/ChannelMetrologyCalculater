@@ -150,7 +150,7 @@ public class DialogChannel extends JDialog implements UI_Container {
             if (this.sensorRangePanel != null){
                 this.sensorRangePanel.update(this.oldChannel.getSensor());
             }
-
+            this.measurementPanel.setSelectedValue(this.oldChannel.getMeasurement().getValue());
         }
 
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
@@ -250,7 +250,7 @@ public class DialogChannel extends JDialog implements UI_Container {
                 this.sensorRangePanel = null;
                 this.rangeLabel.setText(Strings.RANGE_OF_SENSOR);
                 Channel channel = new Channel();
-                channel.setMeasurement(this.measurementPanel.getMeasurement());
+                channel.setMeasurement(measurement);
                 channel.setRangeMin(this.rangePanel.getRangeMin());
                 channel.setRangeMax(this.rangePanel.getRangeMax());
                 Sensor sensor = this.sensorPanel.getSensor();

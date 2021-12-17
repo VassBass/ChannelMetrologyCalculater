@@ -1,6 +1,7 @@
 package ui.channelInfo.complexElements;
 
 import constants.MeasurementConstants;
+import constants.Strings;
 import model.Channel;
 import model.Sensor;
 import support.Lists;
@@ -12,6 +13,7 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Objects;
 
 public class DialogChannel_sensorPanel extends JPanel implements UI_Container {
@@ -64,10 +66,19 @@ public class DialogChannel_sensorPanel extends JPanel implements UI_Container {
                     sensor.setValue(channel.getMeasurement().getValue());
                     double errorSensorInPercent = sensor.getError(channel);
                     parent.allowableErrorPanel.update(errorSensorInPercent, true, channel.getRange());
+                    if (sensor.getType().toUpperCase(Locale.ROOT).contains(Strings.SENSOR_ROSEMOUNT)){
+                        setRosemountValues();
+                    }else {
+                        parent.measurementPanel.update(MeasurementConstants.CONSUMPTION.getValue());
+                    }
                 }
             }
         }
     };
+
+    private void setRosemountValues(){
+        this.parent.measurementPanel.setRosemountValues();
+    }
 
     public void update(MeasurementConstants measurementName) {
         this.removeAll();
@@ -77,6 +88,9 @@ public class DialogChannel_sensorPanel extends JPanel implements UI_Container {
             String[]sensors = this.sensorsArray(measurementName.getValue());
             DefaultComboBoxModel<String>model = new DefaultComboBoxModel<>(sensors);
             this.sensorsList.setModel(model);
+        }
+        if (Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString().contains(Strings.SENSOR_ROSEMOUNT)){
+            this.setRosemountValues();
         }
 
         this.add(this.sensorsList);

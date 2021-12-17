@@ -59,11 +59,31 @@ public class DialogChannel_measurementPanel extends JPanel implements UI_Contain
         this.add(this.measurementValue);
     }
 
+    public void setSelectedValue(String value){
+        this.measurementValue.setSelectedItem(value);
+    }
+
     public void update(String measurementName){
         if (measurementName != null) {
             this.measurementName.setSelectedItem(measurementName);
             this.measurementValue.setModel(new DefaultComboBoxModel<>(measurementValues(measurementName)));
         }
+    }
+
+    public void setRosemountValues(){
+        this.measurementValue.setModel(new DefaultComboBoxModel<>(rosemountValues()));
+    }
+
+    private String[] rosemountValues(){
+        ArrayList<String> values  = new ArrayList<>();
+        for (int x = 0; x< Objects.requireNonNull(Lists.measurements()).size(); x++){
+            if (Objects.requireNonNull(Lists.measurements()).get(x).getNameConstant() == MeasurementConstants.CONSUMPTION){
+                values.add(Objects.requireNonNull(Lists.measurements()).get(x).getValue());
+            }
+        }
+        values.add(MeasurementConstants.M_S.getValue());
+        values.add(MeasurementConstants.CM_S.getValue());
+        return values.toArray(new String[0]);
     }
 
     private String[] measurementNames(){

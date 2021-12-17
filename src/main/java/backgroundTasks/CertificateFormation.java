@@ -54,17 +54,22 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
                 this.certificate = new PressureCertificate();
                 break;
             case CONSUMPTION:
-                if (this.channel.getSensor().getType().contains(Strings.SENSOR_YOKOGAWA)) {
-                    this.certificate = new ConsumptionCertificate_YOKOGAWA();
-                }else if (this.channel.getSensor().getType().contains(Strings.SENSOR_ROSEMOUNT)){
+                if (this.calculation.getCalibrator().getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
                     this.certificate = new ConsumptionCertificate_ROSEMOUNT();
-            }
+                }else {
+                    this.certificate = new ConsumptionCertificate();
+                }
                 break;
         }
 
-        this.certificate.init(this.calculation, this.values, this.channel);
-        this.certificate.formation();
-        this.certificate.save();
+        try {
+            this.certificate.init(this.calculation, this.values, this.channel);
+            this.certificate.formation();
+            this.certificate.save();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
         this.setChannel();
         return null;

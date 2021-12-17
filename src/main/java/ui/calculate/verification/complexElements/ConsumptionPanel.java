@@ -322,12 +322,14 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
         protected TableProtocol(){
             super(new GridBagLayout());
 
-            if (channel.getSensor().getType().contains(Strings.SENSOR_YOKOGAWA)){
-                createYokogawaForm();
+            if (calculation.getCalibrator().getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+                createRosemountForm();
+            }else {
+                createStandardForm();
             }
         }
 
-        private void createYokogawaForm(){
+        private void createStandardForm(){
             //create cells
             ButtonCell headerNum = new ButtonCell(false, "№");
             ButtonCell headerPercent = new ButtonCell(false, "%");
@@ -401,6 +403,79 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                 }
             }
         }
+
+        private void createRosemountForm(){
+            String value = channel.getMeasurement().getValue();
+            //create cells
+            ButtonCell headerNum = new ButtonCell(false, "№");
+            ButtonCell headerXet = new ButtonCell(false, "Xет," + value);
+            ButtonCell headerXi = new ButtonCell(false, "Отримані значення, Хі");
+
+            ButtonCell[] valuesNum1 = new ButtonCell[]{
+                    new ButtonCell(false, "1"),
+                    new ButtonCell(false, "2"),
+                    new ButtonCell(false, "3"),
+                    new ButtonCell(false, "4"),
+                    new ButtonCell(false, "5")
+            };
+            ButtonCell[] valuesNum2 = new ButtonCell[5];
+            for (int x=1;x < 6;x++){
+                valuesNum2[x-1] = new ButtonCell(false, String.valueOf(x));
+            }
+
+            double value0 = 0D;
+            double value91 = 0.91;
+            double value305 = 3.05;
+            double value914 = 9.14;
+            if (value.equals(MeasurementConstants.CM_S.getValue())){
+                value91 = value91 * 100;
+                value305 = value305 * 100;
+                value914 = value914 * 100;
+            }
+            ButtonCell[] valuesXet = new ButtonCell[]{
+                    new ButtonCell(false, VariableConverter.roundingDouble2(value0, Locale.GERMAN)),
+                    new ButtonCell(false, VariableConverter.roundingDouble2(value91, Locale.GERMAN)),
+                    new ButtonCell(false, VariableConverter.roundingDouble2(value305, Locale.GERMAN)),
+                    new ButtonCell(false, VariableConverter.roundingDouble2(value914, Locale.GERMAN)),
+            };
+
+            double[][]in = calculation.getIn();
+            ButtonCell[][] valuesXi = new ButtonCell[in.length][in[0].length];
+            for (int x=0;x<in.length;x++){
+                double[]values = in[x];
+                valuesXi[x] = new ButtonCell[values.length];
+                for (int y=0;y<values.length;y++){
+                    valuesXi[x][y] = new ButtonCell(false, VariableConverter.roundingDouble3(values[y], Locale.GERMAN));
+                }
+            }
+
+            //build table
+            this.removeAll();
+            this.add(headerNum, new Cell(0,0,1,2));
+            this.add(headerXet, new Cell(1,0,1,2));
+            this.add(headerXi, new Cell(2,0,5,1));
+
+            int x = 2;
+            int y = 0;
+            for (int index=0;index<valuesNum1.length;index++){
+                y = y + 2;
+                if (index == 4){
+                    this.add(valuesNum2[index], new Cell(x++, 1, 1, 1));
+                }else {
+                    this.add(valuesNum1[index], new Cell(0, y, 1, 2));
+                    this.add(valuesNum2[index], new Cell(x++, 1, 1, 1));
+                    this.add(valuesXet[index], new Cell(1, y, 1, 2));
+                }
+            }
+
+            for (int index1=0;index1<valuesXi.length;index1++){
+                x = 2 + index1;
+                for (int index2=0;index2<valuesXi[index1].length;index2++){
+                    y = 2 + index2;
+                    this.add(valuesXi[index1][index2], new Cell(x,y,1,1));
+                }
+            }
+        }
     }
 
     private class TableCertificate extends JPanel {
@@ -460,92 +535,165 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                     + delta
                     + value);
 
-            String s0;
-            String s25;
-            String s50;
-            String s75;
-            String s100;
+            Calibrator calibrator = calculation.getCalibrator();
+            if (calibrator.getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+                String s0;
+                String s91;
+                String s305;
+                String s914;
 
-            double[] systematicErrors = calculation.getSystematicErrors();
+                double[] systematicErrors = calculation.getSystematicErrors();
 
-            if (systematicErrors[0] < 0.01 && systematicErrors[0] > -0.01){
-                s0 = "0% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble3(systematicErrors[0], Locale.GERMAN)
-                        + value;
+                if (systematicErrors[0] < 0.01 && systematicErrors[0] > -0.01){
+                    s0 = Strings.DELTA
+                            + "s0 = "
+                            + VariableConverter.roundingDouble3(systematicErrors[0], Locale.GERMAN)
+                            + value;
+                }else {
+                    s0 = Strings.DELTA
+                            + "s0 = "
+                            + VariableConverter.roundingDouble2(systematicErrors[0], Locale.GERMAN)
+                            + value;
+                }
+
+                if (systematicErrors[1] < 0.01 && systematicErrors[1] > -0.01){
+                    s91 = Strings.DELTA
+                            + "s91 = "
+                            + VariableConverter.roundingDouble3(systematicErrors[1], Locale.GERMAN)
+                            + value;
+                }else {
+                    s91 = Strings.DELTA
+                            + "s91 = "
+                            + VariableConverter.roundingDouble2(systematicErrors[1], Locale.GERMAN)
+                            + value;
+                }
+
+                if (systematicErrors[2] < 0.01 && systematicErrors[2] > -0.01){
+                    s305 = Strings.DELTA
+                            + "s305 = "
+                            + VariableConverter.roundingDouble3(systematicErrors[2], Locale.GERMAN)
+                            + value;
+                }else {
+                    s305 = Strings.DELTA
+                            + "s305 = "
+                            + VariableConverter.roundingDouble2(systematicErrors[2], Locale.GERMAN)
+                            + value;
+                }
+
+                if (systematicErrors[3] < 0.01 && systematicErrors[3] > -0.01){
+                    s914 = Strings.DELTA
+                            + "s914 = "
+                            + VariableConverter.roundingDouble3(systematicErrors[3], Locale.GERMAN)
+                            + value;
+                }else {
+                    s914 = Strings.DELTA
+                            + "s914 = "
+                            + VariableConverter.roundingDouble2(systematicErrors[3], Locale.GERMAN)
+                            + value;
+                }
+
+                cells[9].setText(s0);
+                cells[10].setText(s91);
+                cells[11].setText(s305);
+                cells[12].setText(s914);
+                cells[13].setText("Міжконтрольний інтервал");
+                double frequency = channel.getFrequency();
+                cells[14].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + Strings.YEAR_WORD(frequency));
+
+                this.add(cells[13], new Cell(2,0,1,1));
+                this.add(cells[14], new Cell(2,1,1,8));
             }else {
-                s0 = "0% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble2(systematicErrors[0], Locale.GERMAN)
-                        + value;
-            }
+                String s0;
+                String s25;
+                String s50;
+                String s75;
+                String s100;
 
-            if (systematicErrors[1] < 0.01 && systematicErrors[1] > -0.01){
-                s25 = "25% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble3(systematicErrors[1], Locale.GERMAN)
-                        + value;
-            }else {
-                s25 = "25% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble2(systematicErrors[1], Locale.GERMAN)
-                        + value;
-            }
+                double[] systematicErrors = calculation.getSystematicErrors();
 
-            if (systematicErrors[2] < 0.01 && systematicErrors[2] > -0.01){
-                s50 = "50% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble3(systematicErrors[2], Locale.GERMAN)
-                        + value;
-            }else {
-                s50 = "50% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble2(systematicErrors[2], Locale.GERMAN)
-                        + value;
-            }
+                if (systematicErrors[0] < 0.01 && systematicErrors[0] > -0.01){
+                    s0 = "0% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble3(systematicErrors[0], Locale.GERMAN)
+                            + value;
+                }else {
+                    s0 = "0% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble2(systematicErrors[0], Locale.GERMAN)
+                            + value;
+                }
 
-            if (systematicErrors[3] < 0.01 && systematicErrors[3] > -0.01){
-                s75 = "75% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble3(systematicErrors[3], Locale.GERMAN)
-                        + value;
-            }else {
-                s75 = "75% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble2(systematicErrors[3], Locale.GERMAN)
-                        + value;
-            }
+                if (systematicErrors[1] < 0.01 && systematicErrors[1] > -0.01){
+                    s25 = "25% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble3(systematicErrors[1], Locale.GERMAN)
+                            + value;
+                }else {
+                    s25 = "25% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble2(systematicErrors[1], Locale.GERMAN)
+                            + value;
+                }
 
-            if (systematicErrors[4] < 0.01 && systematicErrors[4] > -0.01){
-                s100 = "100% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble3(systematicErrors[4], Locale.GERMAN)
-                        + value;
-            }else {
-                s100 = "100% "
-                        + Strings.DELTA
-                        + "s = "
-                        + VariableConverter.roundingDouble2(systematicErrors[4], Locale.GERMAN)
-                        + value;
-            }
+                if (systematicErrors[2] < 0.01 && systematicErrors[2] > -0.01){
+                    s50 = "50% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble3(systematicErrors[2], Locale.GERMAN)
+                            + value;
+                }else {
+                    s50 = "50% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble2(systematicErrors[2], Locale.GERMAN)
+                            + value;
+                }
 
-            cells[9].setText(s0);
-            cells[10].setText(s25);
-            cells[11].setText(s50);
-            cells[12].setText(s75);
-            cells[13].setText(s100);
-            cells[14].setText("Міжконтрольний інтервал");
-            double frequency = channel.getFrequency();
-            cells[15].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + Strings.YEAR_WORD(frequency));
+                if (systematicErrors[3] < 0.01 && systematicErrors[3] > -0.01){
+                    s75 = "75% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble3(systematicErrors[3], Locale.GERMAN)
+                            + value;
+                }else {
+                    s75 = "75% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble2(systematicErrors[3], Locale.GERMAN)
+                            + value;
+                }
+
+                if (systematicErrors[4] < 0.01 && systematicErrors[4] > -0.01){
+                    s100 = "100% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble3(systematicErrors[4], Locale.GERMAN)
+                            + value;
+                }else {
+                    s100 = "100% "
+                            + Strings.DELTA
+                            + "s = "
+                            + VariableConverter.roundingDouble2(systematicErrors[4], Locale.GERMAN)
+                            + value;
+                }
+
+                cells[9].setText(s0);
+                cells[10].setText(s25);
+                cells[11].setText(s50);
+                cells[12].setText(s75);
+                cells[13].setText(s100);
+                cells[14].setText("Міжконтрольний інтервал");
+                double frequency = channel.getFrequency();
+                cells[15].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + Strings.YEAR_WORD(frequency));
+
+                this.add(cells[13], new Cell(1,8,1,1));
+                this.add(cells[14], new Cell(2,0,1,1));
+                this.add(cells[15], new Cell(2,1,1,8));
+            }
 
             this.add(cells[0], new Cell( 0,0,1,1));
             this.add(cells[1], new Cell( 0,1,1,1));
@@ -560,9 +708,6 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
             this.add(cells[10], new Cell(1,5,1,1));
             this.add(cells[11], new Cell(1,6,1,1));
             this.add(cells[12], new Cell(1,7,1,1));
-            this.add(cells[13], new Cell(1,8,1,1));
-            this.add(cells[14], new Cell(2,0,1,1));
-            this.add(cells[15], new Cell(2,1,1,8));
         }
     }
 

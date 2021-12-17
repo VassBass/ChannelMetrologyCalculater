@@ -149,6 +149,9 @@ public class CalculateStartDialog extends JDialog implements UI_Container {
             this.setContentPane(new MainPanel(withAlarmPanel));
         }else {
             this.values = new Values();
+            if (this.channel.getSensor().getType().contains(Strings.SENSOR_ROSEMOUNT)){
+                this.calibrator.setSelectedItem(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4);
+            }
             this.setContentPane(new MainPanel(false));
         }
 

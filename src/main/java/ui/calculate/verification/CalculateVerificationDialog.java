@@ -130,7 +130,9 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
                         }
                         new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
                     }else{
-                        values.putValue(Value.CHANNEL_IS_GOOD, resultPanel.getName());
+                        try {
+                            values.putValue(Value.CHANNEL_IS_GOOD, resultPanel.getName());
+                        }catch (Exception ignored){}
                         new CalculateReferenceDialog(mainScreen, channel, values, calculation).setVisible(true);
                     }
                 }

@@ -403,7 +403,6 @@ public class TemperatureCertificate implements Certificate {
             cell(26,59).setCellValue(headOfASUTPDepartment);
 
             cell(9,52).setCellValue(this.numberOfReference);
-
         }
     }
 

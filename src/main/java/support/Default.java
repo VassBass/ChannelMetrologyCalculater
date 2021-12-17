@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import constants.MeasurementConstants;
+import constants.Strings;
 import constants.WorkPositions;
 import measurements.Consumption;
 import measurements.Measurement;
@@ -361,8 +362,8 @@ public class Default {
         calibrators.add(YAKOGAWA_AM012);
 
         Calibrator ROSEMOUNT_8714DQ4 = new Calibrator();
-        ROSEMOUNT_8714DQ4.setType("ROSEMOUNT 8714DQ4");
-        ROSEMOUNT_8714DQ4.setName("ROSEMOUNT 8714DQ4");
+        ROSEMOUNT_8714DQ4.setType(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4);
+        ROSEMOUNT_8714DQ4.setName(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4);
         ROSEMOUNT_8714DQ4.setNumber("14972506");
         ROSEMOUNT_8714DQ4.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
         ROSEMOUNT_8714DQ4.setCertificateName("відповідно до стандарту ISO 10474.3.1B");

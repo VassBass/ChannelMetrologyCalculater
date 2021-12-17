@@ -72,22 +72,42 @@ public class UnZipper {
                 in.close();
             }
 
-            zip = "forms/".concat(Strings.FILE_NAME_FORM_CONSUMPTION_YOKOGAWA_BAD);
+            zip = "forms/".concat(Strings.FILE_NAME_FORM_CONSUMPTION_BAD);
             in = UnZipper.class.getClassLoader().getResourceAsStream(zip);
             if (in == null){
                 System.out.println("File no find at: " + zip);
             }else {
-                Path out = Paths.get(Files.FILE_FORM_CONSUMPTION_YOKOGAWA_BAD.getAbsolutePath());
+                Path out = Paths.get(Files.FILE_FORM_CONSUMPTION_BAD.getAbsolutePath());
                 java.nio.file.Files.copy(in, out, REPLACE_EXISTING);
                 in.close();
             }
 
-            zip = "forms/".concat(Strings.FILE_NAME_FORM_CONSUMPTION_YOKOGAWA_GOOD);
+            zip = "forms/".concat(Strings.FILE_NAME_FORM_CONSUMPTION_GOOD);
             in = UnZipper.class.getClassLoader().getResourceAsStream(zip);
             if (in == null){
                 System.out.println("File no find at: " + zip);
             }else {
-                Path out = Paths.get(Files.FILE_FORM_CONSUMPTION_YOKOGAWA_GOOD.getAbsolutePath());
+                Path out = Paths.get(Files.FILE_FORM_CONSUMPTION_GOOD.getAbsolutePath());
+                java.nio.file.Files.copy(in, out, REPLACE_EXISTING);
+                in.close();
+            }
+
+            zip = "forms/".concat(Strings.FILE_NAME_FORM_CONSUMPTION_ROSEMOUNT_BAD);
+            in = UnZipper.class.getClassLoader().getResourceAsStream(zip);
+            if (in == null){
+                System.out.println("File no find at: " + zip);
+            }else {
+                Path out = Paths.get(Files.FILE_FORM_CONSUMPTION_ROSEMOUNT_BAD.getAbsolutePath());
+                java.nio.file.Files.copy(in, out, REPLACE_EXISTING);
+                in.close();
+            }
+
+            zip = "forms/".concat(Strings.FILE_NAME_FORM_CONSUMPTION_ROSEMOUNT_GOOD);
+            in = UnZipper.class.getClassLoader().getResourceAsStream(zip);
+            if (in == null){
+                System.out.println("File no find at: " + zip);
+            }else {
+                Path out = Paths.get(Files.FILE_FORM_CONSUMPTION_ROSEMOUNT_GOOD.getAbsolutePath());
                 java.nio.file.Files.copy(in, out, REPLACE_EXISTING);
                 in.close();
             }

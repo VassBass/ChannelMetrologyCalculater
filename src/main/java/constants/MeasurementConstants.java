@@ -16,7 +16,10 @@ public enum MeasurementConstants {
     KG_MM2("кг/мм" + Strings.SQUARE),
     ML_BAR("мбар"),
 
-    M3_HOUR("м" + Strings.CUBE + "/h");
+    M3_HOUR("м" + Strings.CUBE + "/h"),
+
+    M_S("м/с"),
+    CM_S("см/с");
 
     private final String value;
     MeasurementConstants(String value){this.value = value;}
