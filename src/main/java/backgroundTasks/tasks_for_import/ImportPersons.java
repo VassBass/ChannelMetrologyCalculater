@@ -3,7 +3,7 @@ package backgroundTasks.tasks_for_import;
 import constants.Strings;
 import support.Comparator;
 import support.Lists;
-import support.Worker;
+import model.Worker;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 

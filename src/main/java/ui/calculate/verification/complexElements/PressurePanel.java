@@ -1,13 +1,13 @@
 package ui.calculate.verification.complexElements;
 
-import support.Calibrator;
+import model.Calibrator;
 import constants.MeasurementConstants;
 import constants.Strings;
 import constants.Value;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import measurements.calculation.Calculation;
-import support.Channel;
+import model.Channel;
 import support.Values;
 import ui.ButtonCell;
 import ui.UI_Container;
@@ -458,10 +458,10 @@ public class PressurePanel extends JPanel implements UI_Container {
                     + channel.getMeasurement().getValue());
 
             String gamma;
-            if (calculation.getErrorInRange() < 0.01 && calculation.getErrorInRange() > -0.01){
-                gamma  = VariableConverter.roundingDouble3(calculation.getErrorInRange(), Locale.GERMAN);
+            if (calculation.getErrorInRangeWidthSensorError() < 0.01 && calculation.getErrorInRangeWidthSensorError() > -0.01){
+                gamma  = VariableConverter.roundingDouble3(calculation.getErrorInRangeWidthSensorError(), Locale.GERMAN);
             }else {
-                gamma  = VariableConverter.roundingDouble2(calculation.getErrorInRange(), Locale.GERMAN);
+                gamma  = VariableConverter.roundingDouble2(calculation.getErrorInRangeWidthSensorError(), Locale.GERMAN);
             }
             cells[7].setText(Strings.GAMMA
                     + " вк = "

@@ -119,8 +119,12 @@ public class SensorRangePanel extends JPanel implements UI_Container {
             if (rangeMax.getText().length() == 0){
                 rangeMax.setText("0.0");
             }
-            double r1 = Double.parseDouble(VariableConverter.doubleString(rangeMin.getText()));
-            double r2 = Double.parseDouble(VariableConverter.doubleString(rangeMax.getText()));
+            double r1 = 0D;
+            double r2 = 0D;
+            try {
+                r1 = Double.parseDouble(VariableConverter.doubleString(rangeMin.getText()));
+                r2 = Double.parseDouble(VariableConverter.doubleString(rangeMax.getText()));
+            }catch (Exception ignored){}
             setRange(r1, r2);
         }
     };

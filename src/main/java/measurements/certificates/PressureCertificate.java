@@ -1,6 +1,6 @@
 package measurements.certificates;
 
-import support.Calibrator;
+import model.Calibrator;
 import constants.*;
 import converters.ValueConverter;
 import converters.VariableConverter;
@@ -10,8 +10,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import support.Channel;
-import support.Sensor;
+import model.Channel;
+import model.Sensor;
 import support.Settings;
 import support.Values;
 
@@ -277,10 +277,10 @@ public class PressureCertificate implements Certificate {
         cell(23,34).setCellValue(u);
 
         String errorReduced;
-        if (this.result.getErrorInRange() < 0.01 && this.result.getErrorInRange() > -0.01) {
-            errorReduced = VariableConverter.roundingDouble3(this.result.getErrorInRange(), Locale.GERMAN);
+        if (this.result.getErrorInRangeWidthSensorError() < 0.01 && this.result.getErrorInRangeWidthSensorError() > -0.01) {
+            errorReduced = VariableConverter.roundingDouble3(this.result.getErrorInRangeWidthSensorError(), Locale.GERMAN);
         }else {
-            errorReduced = VariableConverter.roundingDouble2(this.result.getErrorInRange(), Locale.GERMAN);
+            errorReduced = VariableConverter.roundingDouble2(this.result.getErrorInRangeWidthSensorError(), Locale.GERMAN);
         }
 
         String absoluteError;

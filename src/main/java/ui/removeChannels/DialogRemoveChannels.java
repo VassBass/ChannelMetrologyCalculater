@@ -2,7 +2,7 @@ package ui.removeChannels;
 
 import backgroundTasks.controllers.RemoveChannels;
 import converters.ConverterUI;
-import support.Channel;
+import model.Channel;
 import constants.Strings;
 import ui.UI_Container;
 import ui.main.MainScreen;

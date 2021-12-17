@@ -1,6 +1,10 @@
 package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
+import model.Calibrator;
+import model.Channel;
+import model.Sensor;
+import model.Worker;
 import support.*;
 import ui.LoadDialog;
 import ui.main.MainScreen;

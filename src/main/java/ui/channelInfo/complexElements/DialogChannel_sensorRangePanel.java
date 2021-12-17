@@ -2,7 +2,7 @@ package ui.channelInfo.complexElements;
 
 import converters.VariableConverter;
 import measurements.Measurement;
-import support.Sensor;
+import model.Sensor;
 import support.Lists;
 import ui.UI_Container;
 

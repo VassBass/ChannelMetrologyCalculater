@@ -1,10 +1,11 @@
 package backgroundTasks;
 
 
+import constants.Strings;
 import measurements.calculation.Calculation;
-import support.Calibrator;
+import model.Calibrator;
 import constants.Value;
-import support.Channel;
+import model.Channel;
 import support.Values;
 import ui.LoadDialog;
 import ui.calculate.verification.CalculateVerificationDialog;
@@ -42,7 +43,20 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
+        Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
         double[][]measurements = new double[5][8];
+        switch (this.channel.getMeasurement().getNameConstant()){
+            case TEMPERATURE:
+            case PRESSURE:
+                measurements = new double[5][8];
+                break;
+            case CONSUMPTION:
+                if (calibrator.getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+                    measurements = new double[5][8];
+                }else {
+                    measurements = new double[5][10];
+                }
+        }
         double[]measurement1 = (double[]) values.getValue(Value.MEASUREMENT_1);
         double[]measurement2 = (double[]) values.getValue(Value.MEASUREMENT_2);
         double[]measurement3 = (double[]) values.getValue(Value.MEASUREMENT_3);
@@ -69,7 +83,7 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
 
         this.calculation = new Calculation(this.channel);
         this.calculation.setIn(measurements);
-        this.calculation.setCalibrator((Calibrator) this.values.getValue(Value.CALIBRATOR));
+        this.calculation.setCalibrator(calibrator);
         return null;
     }
 

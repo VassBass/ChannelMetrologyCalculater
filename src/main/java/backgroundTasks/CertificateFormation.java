@@ -1,11 +1,10 @@
 package backgroundTasks;
 
+import constants.Strings;
 import measurements.calculation.Calculation;
-import measurements.certificates.Certificate;
+import measurements.certificates.*;
 import constants.Value;
-import measurements.certificates.PressureCertificate;
-import measurements.certificates.TemperatureCertificate;
-import support.Channel;
+import model.Channel;
 import support.Lists;
 import support.Values;
 import ui.LoadDialog;
@@ -54,11 +53,23 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
             case PRESSURE:
                 this.certificate = new PressureCertificate();
                 break;
+            case CONSUMPTION:
+                if (this.calculation.getCalibrator().getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+                    this.certificate = new ConsumptionCertificate_ROSEMOUNT();
+                }else {
+                    this.certificate = new ConsumptionCertificate();
+                }
+                break;
         }
 
-        this.certificate.init(this.calculation, this.values, this.channel);
-        this.certificate.formation();
-        this.certificate.save();
+        try {
+            this.certificate.init(this.calculation, this.values, this.channel);
+            this.certificate.formation();
+            this.certificate.save();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
         this.setChannel();
         return null;

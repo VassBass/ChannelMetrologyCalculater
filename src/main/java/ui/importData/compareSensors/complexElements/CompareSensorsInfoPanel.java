@@ -1,7 +1,7 @@
 package ui.importData.compareSensors.complexElements;
 
 import constants.Strings;
-import support.Sensor;
+import model.Sensor;
 import ui.ButtonCell;
 import ui.UI_Container;
 

@@ -4,6 +4,7 @@ import constants.CalendarConstants;
 import ui.UI_Container;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Calendar;
@@ -52,6 +53,7 @@ public class CertificateDatePanel extends JPanel implements UI_Container {
         this.add(month);
         this.add(dot2);
         this.add(year);
+        this.setBackground(Color.WHITE);
     }
 
     public void setDate(Calendar date) {

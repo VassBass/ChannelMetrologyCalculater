@@ -2,7 +2,7 @@ package ui.importData.compareCalibrators.complexElements;
 
 import constants.Strings;
 import converters.VariableConverter;
-import support.Calibrator;
+import model.Calibrator;
 import ui.ButtonCell;
 import ui.UI_Container;
 

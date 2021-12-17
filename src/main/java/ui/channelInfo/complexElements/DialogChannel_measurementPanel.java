@@ -59,12 +59,31 @@ public class DialogChannel_measurementPanel extends JPanel implements UI_Contain
         this.add(this.measurementValue);
     }
 
-    public void update(Measurement measurement){
-        if (measurement != null) {
-            this.measurementName.setSelectedItem(measurement.getName());
-            this.measurementValue.setModel(new DefaultComboBoxModel<>(measurementValues(measurement.getName())));
-            this.measurementValue.setSelectedItem(measurement.getValue());
+    public void setSelectedValue(String value){
+        this.measurementValue.setSelectedItem(value);
+    }
+
+    public void update(String measurementName){
+        if (measurementName != null) {
+            this.measurementName.setSelectedItem(measurementName);
+            this.measurementValue.setModel(new DefaultComboBoxModel<>(measurementValues(measurementName)));
         }
+    }
+
+    public void setRosemountValues(){
+        this.measurementValue.setModel(new DefaultComboBoxModel<>(rosemountValues()));
+    }
+
+    private String[] rosemountValues(){
+        ArrayList<String> values  = new ArrayList<>();
+        for (int x = 0; x< Objects.requireNonNull(Lists.measurements()).size(); x++){
+            if (Objects.requireNonNull(Lists.measurements()).get(x).getNameConstant() == MeasurementConstants.CONSUMPTION){
+                values.add(Objects.requireNonNull(Lists.measurements()).get(x).getValue());
+            }
+        }
+        values.add(MeasurementConstants.M_S.getValue());
+        values.add(MeasurementConstants.CM_S.getValue());
+        return values.toArray(new String[0]);
     }
 
     private String[] measurementNames(){
@@ -110,15 +129,14 @@ public class DialogChannel_measurementPanel extends JPanel implements UI_Contain
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 JComboBox<String> item = (JComboBox<String>) e.getSource();
 
+                String measurementName = Objects.requireNonNull(item.getSelectedItem()).toString();
+                currentPanel.update(measurementName);
                 String measurementVal = Objects.requireNonNull(measurementValue.getSelectedItem()).toString();
-                Measurement measurement1 = new Measurement(MeasurementConstants.getConstantFromString(Objects.requireNonNull(item.getSelectedItem()).toString()),
-                        MeasurementConstants.getConstantFromString(measurementVal));
-                currentPanel.update(measurement1);
                 parent.allowableErrorPanel.update(measurementVal);
                 parent.rangePanel.update(measurementVal);
-                parent.sensorPanel.update(MeasurementConstants.getConstantFromString(measurement1.getName()));
+                parent.sensorPanel.update(MeasurementConstants.getConstantFromString(measurementName));
 
-                Measurement measurement = new Measurement(MeasurementConstants.getConstantFromString(measurement1.getName()),
+                Measurement measurement = new Measurement(MeasurementConstants.getConstantFromString(measurementName),
                         MeasurementConstants.getConstantFromString(measurementVal));
                 parent.update(measurement);
             }

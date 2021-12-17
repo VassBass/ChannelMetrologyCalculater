@@ -1,10 +1,10 @@
 package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
-import support.Channel;
+import model.Channel;
 import support.Comparator;
 import support.Lists;
-import support.Sensor;
+import model.Sensor;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 

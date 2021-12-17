@@ -1,11 +1,11 @@
 package ui.calculate.measurement.complexElements;
 
 import constants.Strings;
-import support.Calibrator;
+import model.Calibrator;
 import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
-import support.Channel;
+import model.Channel;
 import ui.ButtonCell;
 import ui.UI_Container;
 

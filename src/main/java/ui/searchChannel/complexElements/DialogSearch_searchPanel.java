@@ -2,7 +2,7 @@ package ui.searchChannel.complexElements;
 
 import constants.ChannelConstants;
 import converters.VariableConverter;
-import support.Channel;
+import model.Channel;
 import support.Lists;
 import ui.searchChannel.DialogSearch;
 

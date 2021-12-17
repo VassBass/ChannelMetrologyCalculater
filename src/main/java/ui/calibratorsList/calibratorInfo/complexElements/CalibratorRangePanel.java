@@ -1,5 +1,6 @@
 package ui.calibratorsList.calibratorInfo.complexElements;
 
+import constants.MeasurementConstants;
 import converters.VariableConverter;
 import measurements.Measurement;
 import support.Lists;
@@ -55,11 +56,15 @@ public class CalibratorRangePanel extends JPanel implements UI_Container {
 
         public void setList(String measurement){
             this.list.clear();
-            ArrayList<Measurement>measurements = Lists.measurements();
-            for (Measurement m : Objects.requireNonNull(measurements)){
-                if (m.getName().equals(measurement)){
-                    this.list.add(m.getValue());
+            if (measurement != null && measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
+                ArrayList<Measurement> measurements = Lists.measurements();
+                for (Measurement m : Objects.requireNonNull(measurements)) {
+                    if (m.getName().equals(measurement)) {
+                        this.list.add(m.getValue());
+                    }
                 }
+            }else {
+                this.list.add(" - ");
             }
         }
 
@@ -137,13 +142,29 @@ public class CalibratorRangePanel extends JPanel implements UI_Container {
         this.rangeMax.setEnabled(enabled);
     }
 
+    private void setDisabledAndEmpty(boolean disabledAndEmpty){
+        if (disabledAndEmpty){
+            this.setEnabled(false);
+            this.value.setModel(new DefaultComboBoxModel<>(new String[]{" - "}));
+            this.rangeMin.setText("0.0");
+            this.rangeMax.setText("0.0");
+        }else {
+            this.setEnabled(true);
+        }
+    }
+
     public void setValues(String measurement, String selected){
         this.measurement = measurement;
         valuesModel.setList(measurement);
-        if (selected == null){
-            valuesModel.setSelectedIndex(0);
-        }else {
-            valuesModel.setSelectedItem(selected);
+        if (measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
+            setDisabledAndEmpty(false);
+            if (selected == null) {
+                valuesModel.setSelectedIndex(0);
+            } else {
+                valuesModel.setSelectedItem(selected);
+            }
+        } else {
+            this.setDisabledAndEmpty(true);
         }
     }
 

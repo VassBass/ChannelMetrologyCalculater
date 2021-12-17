@@ -1,6 +1,7 @@
 package ui.calibratorsList.calibratorInfo;
 
 import backgroundTasks.controllers.PutCalibratorInList;
+import constants.MeasurementConstants;
 import constants.Strings;
 import converters.ConverterUI;
 import converters.VariableConverter;
@@ -8,7 +9,7 @@ import measurements.Measurement;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
-import support.Calibrator;
+import model.Calibrator;
 import support.Lists;
 import ui.ButtonCell;
 import ui.UI_Container;
@@ -227,7 +228,8 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
             this.typeText.setText(this.oldCalibrator.getType());
             this.nameText.setText(this.oldCalibrator.getName());
             this.rangePanel.setRange(this.oldCalibrator.getRangeMax(), this.oldCalibrator.getRangeMin());
-            if (this.oldCalibrator.getName().equals(Strings.CALIBRATOR_FLUKE718_30G)){
+            if (this.oldCalibrator.getName().equals(Strings.CALIBRATOR_FLUKE718_30G)
+            || this.oldCalibrator.getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
                 this.typeText.setEnabled(false);
                 this.nameText.setEnabled(false);
                 this.measurementsList.setEnabled(false);
@@ -294,8 +296,10 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
                 calibrator.setName(nameText.getText());
                 calibrator.setNumber(numberText.getText());
                 calibrator.setMeasurement(Objects.requireNonNull(measurementsList.getSelectedItem()).toString());
-                calibrator.setRangeMin(rangePanel.getRangeMin());
-                calibrator.setRangeMax(rangePanel.getRangeMax());
+                if (measurementsList.getSelectedItem().toString().equals(MeasurementConstants.PRESSURE.getValue())) {
+                    calibrator.setRangeMin(rangePanel.getRangeMin());
+                    calibrator.setRangeMax(rangePanel.getRangeMax());
+                }
                 calibrator.setValue(rangePanel.getValue());
                 calibrator.setErrorFormula(errorFormulaText.getText());
                 calibrator.setCertificateName(certificateNameText.getText());
@@ -345,7 +349,8 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
     };
 
     private boolean checkCalibrator(){
-        if (this.typeText.getText().length() == 0){
+        if (this.typeText.getText().length() == 0 &&
+                !Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION.getValue())){
             JOptionPane.showMessageDialog(this, "Ви не ввели тип калібратора");
             return false;
         }else if (this.nameText.getText().length() == 0){
@@ -382,10 +387,10 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
             this.add(measurementsList, new Cell(1, 1,1));
             this.add(labelCertificateName, new Cell(2,1,1));
             this.add(certificateNameText, new Cell(3,1,1));
-            this.add(labelType, new Cell(0, 2,1));
-            this.add(typeText, new Cell(1, 2,1));
-            this.add(labelCertificateCompany, new Cell(2,2,1));
-            this.add(certificateCompanyText, new Cell(3,2,1));
+            this.add(labelType, new Cell(0, 2, 1));
+            this.add(typeText, new Cell(1, 2, 1));
+            this.add(labelCertificateCompany, new Cell(2, 2, 1));
+            this.add(certificateCompanyText, new Cell(3, 2, 1));
             this.add(labelName, new Cell(0, 3,1));
             this.add(nameText, new Cell(1, 3,1));
             this.add(labelCertificateDate, new Cell(2,3,1));
@@ -397,21 +402,21 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
             this.add(labelErrorFormula, new Cell(0, 6,1));
             this.add(errorFormulaText, new Cell(1, 6,1));
 
-            this.add(buttonCancel, new Cell(1,7,1));
-            this.add(buttonSave, new Cell(2,7,1));
+            this.add(helpFormula1, new Cell(0,7,4));
+            this.add(helpFormula2, new Cell(0,8,4));
+            this.add(helpFormula3, new Cell(0,9,4));
+            this.add(helpFormula4, new Cell(0,10,4));
+            this.add(helpFormula5, new Cell(0,11,4));
+            this.add(helpFormula6, new Cell(0,12,4));
+            this.add(helpFormula7, new Cell(0,13,4));
+            this.add(helpFormula8, new Cell(0,14,4));
+            this.add(helpFormula9, new Cell(0,15,4));
+            this.add(helpFormula10, new Cell(0,16,4));
+            this.add(helpFormula11, new Cell(0,17,4));
+            this.add(helpFormula12, new Cell(0,18,4));
 
-            this.add(helpFormula1, new Cell(0,8,4));
-            this.add(helpFormula2, new Cell(0,9,4));
-            this.add(helpFormula3, new Cell(0,10,4));
-            this.add(helpFormula4, new Cell(0,11,4));
-            this.add(helpFormula5, new Cell(0,12,4));
-            this.add(helpFormula6, new Cell(0,13,4));
-            this.add(helpFormula7, new Cell(0,14,4));
-            this.add(helpFormula8, new Cell(0,15,4));
-            this.add(helpFormula9, new Cell(0,16,4));
-            this.add(helpFormula10, new Cell(0,17,4));
-            this.add(helpFormula11, new Cell(0,18,4));
-            this.add(helpFormula12, new Cell(0,19,4));
+            this.add(buttonCancel, new Cell(2,19,1));
+            this.add(buttonSave, new Cell(3,19,1));
         }
 
         private class Cell extends GridBagConstraints {

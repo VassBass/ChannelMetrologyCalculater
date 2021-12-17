@@ -1,6 +1,6 @@
 package measurements.certificates;
 
-import support.Calibrator;
+import model.Calibrator;
 import constants.Files;
 import constants.MeasurementConstants;
 import constants.Strings;
@@ -12,8 +12,8 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import support.Channel;
-import support.Sensor;
+import model.Channel;
+import model.Sensor;
 import support.Settings;
 import support.Values;
 
@@ -269,12 +269,12 @@ public class TemperatureCertificate implements Certificate {
 
         String errorReduced;
         String absoluteError;
-        double d = this.channel.getAllowableErrorPercent() - this.result.getErrorInRange();
+        double d = this.channel.getAllowableErrorPercent() - this.result.getErrorInRangeWidthSensorError();
         if (d <= 0.1) {
-            errorReduced = VariableConverter.roundingDouble2(this.result.getErrorInRange(), Locale.GERMAN);
+            errorReduced = VariableConverter.roundingDouble2(this.result.getErrorInRangeWidthSensorError(), Locale.GERMAN);
             absoluteError = VariableConverter.roundingDouble2(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
         } else {
-            errorReduced = VariableConverter.roundingDouble(this.result.getErrorInRange(), Locale.GERMAN);
+            errorReduced = VariableConverter.roundingDouble(this.result.getErrorInRangeWidthSensorError(), Locale.GERMAN);
             absoluteError = VariableConverter.roundingDouble(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
         }
         cell(25, 34).setCellValue(errorReduced);
@@ -403,7 +403,6 @@ public class TemperatureCertificate implements Certificate {
             cell(26,59).setCellValue(headOfASUTPDepartment);
 
             cell(9,52).setCellValue(this.numberOfReference);
-
         }
     }
 

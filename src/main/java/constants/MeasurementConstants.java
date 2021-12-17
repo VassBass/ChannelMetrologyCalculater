@@ -4,15 +4,22 @@ package constants;
 public enum MeasurementConstants {
     TEMPERATURE("Температура"),
     PRESSURE("Тиск"),
+    CONSUMPTION("Витрата"),
 
     DEGREE_CELSIUS("\u2103"),
+
     KPA("кПа"),
     PA("Па"),
     MM_ACVA("мм вод ст"),
     KG_SM2("кг/см" + Strings.SQUARE),
     BAR("бар"),
     KG_MM2("кг/мм" + Strings.SQUARE),
-    ML_BAR("мбар");
+    ML_BAR("мбар"),
+
+    M3_HOUR("м" + Strings.CUBE + "/h"),
+
+    M_S("м/с"),
+    CM_S("см/с");
 
     private final String value;
     MeasurementConstants(String value){this.value = value;}

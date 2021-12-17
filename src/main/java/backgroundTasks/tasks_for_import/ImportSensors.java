@@ -4,7 +4,7 @@ import backgroundTasks.export.ExportData;
 import constants.Strings;
 import support.Comparator;
 import support.Lists;
-import support.Sensor;
+import model.Sensor;
 import ui.LoadDialog;
 import ui.importData.compareSensors.CompareSensorsDialog;
 import ui.main.MainScreen;

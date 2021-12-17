@@ -73,6 +73,12 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
         }
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.errorPercent.setEnabled(enabled);
+        this.errorValue.setEnabled(enabled);
+    }
+
     public void update(double error, boolean inPercent, double range){
         String errorPercent, errorValue;
         if (inPercent){

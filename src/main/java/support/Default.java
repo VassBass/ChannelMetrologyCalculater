@@ -5,10 +5,16 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import constants.MeasurementConstants;
+import constants.Strings;
 import constants.WorkPositions;
+import measurements.Consumption;
 import measurements.Measurement;
 import measurements.Pressure;
 import measurements.Temperature;
+import model.Calibrator;
+import model.Channel;
+import model.Sensor;
+import model.Worker;
 
 public class Default {
     
@@ -21,9 +27,11 @@ public class Default {
 
         String nameTemperatureMethod = "МКМХ №5300.01:18";
         String namePressureMethod = "МКМХ №5300.02:18";
+        String nameConsumptionMethod = "МКМХ №5300.07:20";
 
         Settings.setSettingValue(MeasurementConstants.TEMPERATURE.getValue(), nameTemperatureMethod);
         Settings.setSettingValue(MeasurementConstants.PRESSURE.getValue(), namePressureMethod);
+        Settings.setSettingValue(MeasurementConstants.CONSUMPTION.getValue(), nameConsumptionMethod);
     }
 
     public static void loadSensors(){
@@ -128,6 +136,20 @@ public class Default {
         jumoDTransP02.setMeasurement(MeasurementConstants.PRESSURE.getValue());
         jumoDTransP02.setErrorFormula("(convR / 100) * 0.1");
         sensors.add(jumoDTransP02);
+
+        Sensor yokogawa_axf050g = new Sensor();
+        yokogawa_axf050g.setType("YOKOGAWA AXF050G");
+        yokogawa_axf050g.setName("YOKOGAWA AXF050G");
+        yokogawa_axf050g.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
+        yokogawa_axf050g.setErrorFormula("(R / 100) * 0.35");
+        sensors.add(yokogawa_axf050g);
+
+        Sensor rosemount_8750 = new Sensor();
+        rosemount_8750.setType("ROSEMOUNT 8750");
+        rosemount_8750.setName("ROSEMOUNT 8750");
+        rosemount_8750.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
+        rosemount_8750.setErrorFormula("(R / 100) * 0.5");
+        sensors.add(rosemount_8750);
 
         Lists.saveSensorsListToFile(sensors);
     }
@@ -328,6 +350,28 @@ public class Default {
         fluke750pd2_smallPressure.setErrorFormula("(convR / 100) * 0.05");
         calibrators.add(fluke750pd2_smallPressure);
 
+        Calibrator YAKOGAWA_AM012 = new Calibrator();
+        YAKOGAWA_AM012.setType("AM012");
+        YAKOGAWA_AM012.setName("YAKOGAWA AM012");
+        YAKOGAWA_AM012.setNumber("S5T800358");
+        YAKOGAWA_AM012.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
+        YAKOGAWA_AM012.setCertificateName("№UA/24/200717/265");
+        YAKOGAWA_AM012.setCertificateDate(new GregorianCalendar(2020, Calendar.JULY, 17));
+        YAKOGAWA_AM012.setCertificateCompany("ДП\"Укрметртестстандарт\"");
+        YAKOGAWA_AM012.setErrorFormula("(R / 100) * 0.06");
+        calibrators.add(YAKOGAWA_AM012);
+
+        Calibrator ROSEMOUNT_8714DQ4 = new Calibrator();
+        ROSEMOUNT_8714DQ4.setType(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4);
+        ROSEMOUNT_8714DQ4.setName(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4);
+        ROSEMOUNT_8714DQ4.setNumber("14972506");
+        ROSEMOUNT_8714DQ4.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
+        ROSEMOUNT_8714DQ4.setCertificateName("відповідно до стандарту ISO 10474.3.1B");
+        ROSEMOUNT_8714DQ4.setCertificateDate(new GregorianCalendar(2019, Calendar.NOVEMBER, 22));
+        ROSEMOUNT_8714DQ4.setCertificateCompany("\"EMERSON\"");
+        ROSEMOUNT_8714DQ4.setErrorFormula("(R / 100) * 0.1");
+        calibrators.add(ROSEMOUNT_8714DQ4);
+
         Lists.saveCalibratorsListToFile(calibrators);
     }
 
@@ -335,6 +379,7 @@ public class Default {
         ArrayList<Measurement>measurements = new ArrayList<>();
 
         measurements.add(new Temperature(MeasurementConstants.DEGREE_CELSIUS));
+
         measurements.add(new Pressure(MeasurementConstants.KPA));
         measurements.add(new Pressure(MeasurementConstants.PA));
         measurements.add(new Pressure(MeasurementConstants.MM_ACVA));
@@ -342,6 +387,8 @@ public class Default {
         measurements.add(new Pressure(MeasurementConstants.KG_MM2));
         measurements.add(new Pressure(MeasurementConstants.BAR));
         measurements.add(new Pressure(MeasurementConstants.ML_BAR));
+
+        measurements.add(new Consumption(MeasurementConstants.M3_HOUR));
 
         Lists.saveMeasurementsListToFile(measurements);
     }

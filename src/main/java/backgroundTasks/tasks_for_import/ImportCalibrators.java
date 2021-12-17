@@ -2,7 +2,7 @@ package backgroundTasks.tasks_for_import;
 
 import backgroundTasks.export.ExportData;
 import constants.Strings;
-import support.Calibrator;
+import model.Calibrator;
 import support.Comparator;
 import support.Lists;
 import ui.LoadDialog;

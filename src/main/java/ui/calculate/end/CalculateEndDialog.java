@@ -4,7 +4,7 @@ import backgroundTasks.CertificateFormation;
 import measurements.calculation.Calculation;
 import measurements.certificates.Certificate;
 import converters.ConverterUI;
-import support.Channel;
+import model.Channel;
 import support.Lists;
 import constants.Strings;
 import support.Values;
