@@ -6,7 +6,6 @@ import repository.Repository;
 import ui.main.MainScreen;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class InstallationsController implements Controller<String> {
@@ -71,15 +70,16 @@ public class InstallationsController implements Controller<String> {
 
     @Override
     public ArrayList<String> getAll() {
-        return installations;
+        return this.installations;
     }
 
     @Override
-    public void add(String object) {
+    public ArrayList<String> add(String object) {
         if (!this.installations.contains(object)){
             this.installations.add(object);
             this.save();
         }
+        return this.installations;
     }
 
     @Override

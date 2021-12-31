@@ -6,7 +6,6 @@ import repository.Repository;
 import ui.main.MainScreen;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class AreasController implements Controller<String> {
@@ -41,15 +40,16 @@ public class AreasController implements Controller<String> {
 
     @Override
     public ArrayList<String> getAll() {
-        return areas;
+        return this.areas;
     }
 
     @Override
-    public void add(String object) {
+    public ArrayList<String> add(String object) {
         if (!this.areas.contains(object)){
             this.areas.add(object);
             this.save();
         }
+        return this.areas;
     }
 
     @Override

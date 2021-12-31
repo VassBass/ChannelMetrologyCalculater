@@ -6,7 +6,6 @@ import repository.Repository;
 import ui.main.MainScreen;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ProcessesController implements Controller<String> {
@@ -37,15 +36,16 @@ public class ProcessesController implements Controller<String> {
 
     @Override
     public ArrayList<String> getAll() {
-        return processes;
+        return this.processes;
     }
 
     @Override
-    public void add(String object) {
+    public ArrayList<String> add(String object) {
         if (!this.processes.contains(object)){
             this.processes.add(object);
             this.save();
         }
+        return this.processes;
     }
 
     @Override

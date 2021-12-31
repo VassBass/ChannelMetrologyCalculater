@@ -9,7 +9,6 @@ import support.Comparator;
 import ui.main.MainScreen;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class PersonsController implements Controller<Worker> {
@@ -72,13 +71,14 @@ public class PersonsController implements Controller<Worker> {
 
     @Override
     public ArrayList<Worker> getAll() {
-        return persons;
+        return this.persons;
     }
 
     @Override
-    public void add(Worker worker) {
+    public ArrayList<Worker> add(Worker worker) {
         this.persons.add(worker);
         this.save();
+        return this.persons;
     }
 
     @Override

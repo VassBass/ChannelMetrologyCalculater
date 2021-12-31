@@ -6,7 +6,6 @@ import repository.Repository;
 import ui.main.MainScreen;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class DepartmentsController implements Controller<String> {
@@ -33,15 +32,16 @@ public class DepartmentsController implements Controller<String> {
 
     @Override
     public ArrayList<String> getAll() {
-        return departments;
+        return this.departments;
     }
 
     @Override
-    public void add(String object) {
+    public ArrayList<String> add(String object) {
         if (!this.departments.contains(object)){
             this.departments.add(object);
             this.save();
         }
+        return this.departments;
     }
 
     @Override
