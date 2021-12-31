@@ -1,5 +1,5 @@
+import controller.FileBrowser;
 import support.Default;
-import constants.Files;
 import support.Lists;
 import support.Settings;
 import ui.LoadDialog;
@@ -35,7 +35,7 @@ public class StartApp {
 
         protected Void doInBackground() throws Exception
         {
-            Files.create();
+            FileBrowser.init();
             Lists.create();
             Settings.checkSettings();
             return null;
