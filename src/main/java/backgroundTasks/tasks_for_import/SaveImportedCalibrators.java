@@ -30,14 +30,14 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Lists.saveCalibratorsListToFile(this.calibrators);
+        //Lists.saveCalibratorsListToFile(this.calibrators);
         return null;
     }
 
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        this.mainScreen.update(Lists.channels(), false, null, null);
+        //this.mainScreen.update(Lists.channels(), false, null, null);
         JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

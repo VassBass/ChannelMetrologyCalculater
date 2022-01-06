@@ -3,7 +3,6 @@ package ui.searchChannel.complexElements;
 import constants.ChannelConstants;
 import converters.VariableConverter;
 import model.Channel;
-import support.Lists;
 import ui.searchChannel.DialogSearch;
 
 import javax.swing.*;
@@ -11,7 +10,7 @@ import java.awt.*;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class DialogSearch_searchPanel extends JPanel {
+public class DialogSearch_searchPanel extends JPanel {/*
     private final DialogSearch parent;
 
     private JTextField userText;
@@ -176,4 +175,4 @@ public class DialogSearch_searchPanel extends JPanel {
         }
 
     }
-}
+*/}

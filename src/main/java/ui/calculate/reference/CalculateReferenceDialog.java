@@ -139,7 +139,7 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            new CalculateVerificationDialog(mainScreen, channel, values, calculation).setVisible(true);
+            //new CalculateVerificationDialog(mainScreen, channel, values, calculation).setVisible(true);
         }
     };
 
@@ -148,7 +148,7 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             values.putValue(Value.CHANNEL_REFERENCE, number.getText());
             dispose();
-            new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
+            //new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
         }
     };
 

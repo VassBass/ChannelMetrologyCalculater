@@ -27,7 +27,7 @@ public class MainTable extends JTable {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (current.getSelectedRow() != -1) {
-                    parent.update(channelsList.get(current.getSelectedRow()));
+                    parent.updateChannelInfo(channelsList.get(current.getSelectedRow()));
                 }
             }
         };
@@ -38,7 +38,7 @@ public class MainTable extends JTable {
         }
     }
 
-    public void update(ArrayList<Channel>channelsList){
+    public void setList(ArrayList<Channel>channelsList){
         this.channelsList = channelsList;
         this.setModel(tableModel(channelsList));
         this.setRowsColor();

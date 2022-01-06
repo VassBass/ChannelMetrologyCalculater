@@ -1,6 +1,5 @@
 package ui.personsList;
 
-import support.Lists;
 import constants.Strings;
 import model.Worker;
 
@@ -36,7 +35,7 @@ public class PersonsListTable extends JTable {
         String[]columnsHeader = new String[]{Strings.FIO, Strings.POSITION};
         model.setColumnIdentifiers(columnsHeader);
 
-        String[][] list = new String[Objects.requireNonNull(Lists.persons()).size()][2];
+        /*String[][] list = new String[Objects.requireNonNull(Lists.persons()).size()][2];
         for (int x = 0; x < list.length; x++){
             Worker worker = Objects.requireNonNull(Lists.persons()).get(x);
             String fullName = worker.getSurname()
@@ -48,7 +47,7 @@ public class PersonsListTable extends JTable {
             list[x][1] = worker.getPosition();
 
             model.addRow(list[x]);
-        }
+        }*/
 
         return model;
     }

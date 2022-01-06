@@ -128,7 +128,7 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
                         if (calculation.closeToFalse()){
                             values.putValue(Value.CALCULATION_CLOSE_TO_FALSE, resultPanel.getName());
                         }
-                        new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
+                        //new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
                     }else{
                         try {
                             values.putValue(Value.CHANNEL_IS_GOOD, resultPanel.getName());

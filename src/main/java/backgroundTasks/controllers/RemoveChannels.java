@@ -1,7 +1,6 @@
 package backgroundTasks.controllers;
 
 import model.Channel;
-import support.Lists;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -51,7 +50,7 @@ public class RemoveChannels extends SwingWorker<Void, Void> {
         }else {
             this.removeChannel();
         }
-        Lists.saveChannelsListToFile(this.channelsListAfterDone);
+        //Lists.saveChannelsListToFile(this.channelsListAfterDone);
         return null;
     }
 
@@ -70,7 +69,7 @@ public class RemoveChannels extends SwingWorker<Void, Void> {
     }
 
     private void removeChannel(){
-        this.channelsListAfterDone = Lists.channels();
+        //this.channelsListAfterDone = Lists.channels();
         if (this.channelsListAfterDone != null) {
             for (int x = 0; x < this.channelsListAfterDone.size(); x++) {
                 if (this.channel.getCode().equals(this.channelsListAfterDone.get(x).getCode())) {
@@ -82,7 +81,7 @@ public class RemoveChannels extends SwingWorker<Void, Void> {
     }
 
     private void removeChannelsArray(){
-        this.channelsListAfterDone = Lists.channels();
+        //this.channelsListAfterDone = Lists.channels();
         ArrayList<Integer>indexes = new ArrayList<>();
         if (this.channelsListAfterDone != null) {
             for (int x = 0; x < this.channelsListAfterDone.size(); x++) {

@@ -3,7 +3,6 @@ package backgroundTasks.export;
 import constants.Files;
 import constants.Strings;
 import model.Channel;
-import support.Lists;
 import model.Sensor;
 import ui.LoadDialog;
 import ui.main.MainScreen;
@@ -48,7 +47,7 @@ public class ExportChannels extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        ArrayList<Channel>channels = Lists.channels();
+        /*ArrayList<Channel>channels = Lists.channels();
         ArrayList<Sensor> sensors = Lists.sensors();
         ArrayList<?>[]data = new ArrayList<?>[]{channels, sensors};
         File file = this.exportFile();
@@ -59,7 +58,7 @@ public class ExportChannels extends SwingWorker<Boolean, Void> {
         }
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.exportFile()));
         oos.writeObject(data);
-        oos.close();
+        oos.close();*/
         return true;
     }
 

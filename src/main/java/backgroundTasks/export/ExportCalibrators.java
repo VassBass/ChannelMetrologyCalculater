@@ -3,7 +3,6 @@ package backgroundTasks.export;
 import constants.Files;
 import constants.Strings;
 import model.Calibrator;
-import support.Lists;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -47,7 +46,7 @@ public class ExportCalibrators extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        ArrayList<Calibrator> calibrators = Lists.calibrators();
+        /*ArrayList<Calibrator> calibrators = Lists.calibrators();
         File file = this.exportFile();
         if (!file.exists()){
             if (!file.createNewFile()){
@@ -56,7 +55,7 @@ public class ExportCalibrators extends SwingWorker<Boolean, Void> {
         }
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.exportFile()));
         oos.writeObject(calibrators);
-        oos.close();
+        oos.close();*/
         return true;
     }
 

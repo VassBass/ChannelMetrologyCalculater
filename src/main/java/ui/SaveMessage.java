@@ -1,16 +1,15 @@
 package ui;
 
-import ui.main.MainScreen;
-
 import javax.swing.*;
+import java.awt.*;
 
 public class SaveMessage extends JWindow implements UI_Container {
-    private final MainScreen mainScreen;
+    private final Window window;
     private JLabel message;
 
-    public SaveMessage(MainScreen mainScreen){
-        super(mainScreen);
-        this.mainScreen = mainScreen;
+    public SaveMessage(Window window){
+        super(window);
+        this.window = window;
     }
     @Override
     public void createElements() {
@@ -22,7 +21,7 @@ public class SaveMessage extends JWindow implements UI_Container {
     @Override
     public void build() {
         this.setSize(200,100);
-        this.setLocation(this.mainScreen.getLocation().x, this.mainScreen.getLocation().y);
+        this.setLocation(this.window.getLocation().x, this.window.getLocation().y);
         this.add(this.message);
     }
 }

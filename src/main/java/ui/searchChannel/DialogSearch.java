@@ -42,7 +42,7 @@ public class DialogSearch extends JDialog implements UI_Container {
         this.searchField = new JComboBox<>(searchFields());
         this.searchField.setBackground(Color.white);
 
-        this.searchPanel = new DialogSearch_searchPanel(this);
+        //this.searchPanel = new DialogSearch_searchPanel(this);
 
         this.positiveButton = new JButton(Strings.SEARCH);
         this.positiveButton.setBackground(Color.white);
@@ -102,7 +102,7 @@ public class DialogSearch extends JDialog implements UI_Container {
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                searchPanel.update(ChannelConstants.getConstantFromInt(searchField.getSelectedIndex()));
+                //searchPanel.update(ChannelConstants.getConstantFromInt(searchField.getSelectedIndex()));
             }
         }
     };
@@ -124,7 +124,7 @@ public class DialogSearch extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             ChannelConstants field = ChannelConstants.getConstantFromInt(searchField.getSelectedIndex());
-            new SearchChannels(mainScreen, field, searchPanel.getValue()).execute();
+            //new SearchChannels(mainScreen, field, searchPanel.getValue()).execute();
             dispose();
         }
     };

@@ -5,7 +5,6 @@ import model.Calibrator;
 import converters.ConverterUI;
 import measurements.Measurement;
 import model.Channel;
-import support.Lists;
 import constants.Strings;
 import support.Values;
 import ui.UI_Container;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class CalculateStartDialog extends JDialog implements UI_Container {
+public class CalculateStartDialog /*extends JDialog implements UI_Container*/ {/*
     private final MainScreen mainScreen;
     private final Channel channel;
     private Values values;
@@ -299,4 +298,4 @@ public class CalculateStartDialog extends JDialog implements UI_Container {
             }
         }
     }
-}
+*/}

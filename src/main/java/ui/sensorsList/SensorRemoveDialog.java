@@ -1,9 +1,9 @@
 package ui.sensorsList;
 
+import application.Application;
 import backgroundTasks.controllers.RemoveSensor;
 import constants.Strings;
 import converters.ConverterUI;
-import support.Lists;
 import ui.UI_Container;
 
 import javax.swing.*;
@@ -12,7 +12,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class SensorRemoveDialog extends JDialog implements UI_Container {
     private final SensorsListDialog parent;
@@ -33,7 +32,7 @@ public class SensorRemoveDialog extends JDialog implements UI_Container {
         try {
             return Strings.REMOVE
                     + " \""
-                    + Objects.requireNonNull(Lists.sensors()).get(indexOfSensor).getName()
+                    + Application.context.sensorsController.get(indexOfSensor).getName()
                     + "\"?";
         }catch (Exception ex){
             return Strings.REMOVE;

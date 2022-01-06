@@ -3,23 +3,29 @@ package controller;
 import constants.Strings;
 import model.Model;
 import repository.Repository;
-import ui.main.MainScreen;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
-public class DepartmentsController implements Controller<String> {
-    private final MainScreen mainScreen;
-    private final ArrayList<String>departments;
+public class DepartmentsController {
+    private Window window;
+    private ArrayList<String>departments;
 
-    public DepartmentsController(MainScreen mainScreen){
-        this.mainScreen = mainScreen;
-        this.departments = new Repository<String>(null, Model.DEPARTMENT).readList();
+    public void init(Window window){
+        this.window = window;
+        try {
+            this.departments = new Repository<String>(null, Model.DEPARTMENT).readList();
+        }catch (Exception e){
+            System.out.println("File \"" + FileBrowser.FILE_DEPARTMENTS.getName() + "\" is empty");
+            this.departments = this.resetToDefault();
+        }
     }
 
-    @Override
-    public void resetToDefault() {
-        this.departments.clear();
+    public ArrayList<String> resetToDefault() {
+        if (this.departments == null){
+            this.departments = new ArrayList<>();
+        }else this.departments.clear();
 
         String CPO = "ЦВО";
         String DOF = "ДЗФ";
@@ -28,14 +34,17 @@ public class DepartmentsController implements Controller<String> {
         this.departments.add(DOF);
 
         this.save();
+        return this.departments;
     }
 
-    @Override
     public ArrayList<String> getAll() {
         return this.departments;
     }
 
-    @Override
+    public String[] getAllInStrings(){
+        return this.departments.toArray(new String[0]);
+    }
+
     public ArrayList<String> add(String object) {
         if (!this.departments.contains(object)){
             this.departments.add(object);
@@ -44,18 +53,17 @@ public class DepartmentsController implements Controller<String> {
         return this.departments;
     }
 
-    @Override
-    public void remove(String object) {
+    public ArrayList<String> remove(String object) {
         if (this.departments.contains(object)){
             this.departments.remove(object);
             this.save();
         }else {
             this.showNotFoundMessage();
         }
+        return this.departments;
     }
 
-    @Override
-    public void set(String oldObject, String newObject) {
+    public ArrayList<String> set(String oldObject, String newObject) {
         if (oldObject != null){
             if (newObject == null){
                 this.remove(oldObject);
@@ -65,20 +73,13 @@ public class DepartmentsController implements Controller<String> {
             }
             this.save();
         }
+        return this.departments;
     }
 
-    @Override
-    public String get(String object) {
-        int index = this.departments.indexOf(object);
-        if (index >= 0) {
-            return this.departments.get(index);
-        }else {
-            this.showNotFoundMessage();
-            return null;
-        }
+    public int getIndex(String object) {
+        return this.departments.indexOf(object);
     }
 
-    @Override
     public String get(int index) {
         if (index >= 0) {
             return this.departments.get(index);
@@ -87,20 +88,17 @@ public class DepartmentsController implements Controller<String> {
         }
     }
 
-    @Override
     public void clear() {
         this.departments.clear();
         this.save();
     }
 
-    @Override
-    public void save() {
-        new Repository<String>(this.mainScreen, Model.DEPARTMENT).writeList(this.departments);
+    private void save() {
+        new Repository<String>(this.window, Model.DEPARTMENT).writeList(this.departments);
     }
 
-    @Override
-    public void showNotFoundMessage() {
+    private void showNotFoundMessage() {
         String message = "Цех з такою назвою не знайдено в списку цехів.";
-        JOptionPane.showMessageDialog(this.mainScreen, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

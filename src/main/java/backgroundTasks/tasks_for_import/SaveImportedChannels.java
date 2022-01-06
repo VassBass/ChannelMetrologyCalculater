@@ -2,7 +2,6 @@ package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
 import model.Channel;
-import support.Lists;
 import model.Sensor;
 import ui.LoadDialog;
 import ui.main.MainScreen;
@@ -58,7 +57,7 @@ public class SaveImportedChannels extends SwingWorker<Void, Void> {
             }
         }
 
-        ArrayList<Sensor>oldSensorsList = Lists.sensors();
+        /*ArrayList<Sensor>oldSensorsList = Lists.sensors();
         for (Sensor imp : importedSensors){
             boolean exist = false;
             for (int o = 0; o< Objects.requireNonNull(oldSensorsList).size(); o++){
@@ -75,14 +74,14 @@ public class SaveImportedChannels extends SwingWorker<Void, Void> {
         }
 
         Lists.saveSensorsListToFile(oldSensorsList);
-        Lists.saveChannelsListToFile(this.channels);
+        Lists.saveChannelsListToFile(this.channels);*/
         return null;
     }
 
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        this.mainScreen.update(Lists.channels(), false, null, null);
+        //this.mainScreen.update(Lists.channels(), false, null, null);
         JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

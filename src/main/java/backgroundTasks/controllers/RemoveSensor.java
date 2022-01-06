@@ -2,7 +2,6 @@ package backgroundTasks.controllers;
 
 import constants.Strings;
 import model.Channel;
-import support.Lists;
 import model.Sensor;
 import ui.LoadDialog;
 import ui.sensorsList.SensorsListDialog;
@@ -32,7 +31,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        ArrayList<Sensor>sensors = Lists.sensors();
+        /*ArrayList<Sensor>sensors = Lists.sensors();
         ArrayList<Channel>channels = Lists.channels();
         Sensor sensor = Objects.requireNonNull(sensors).get(this.dialog.mainTable.getSelectedRow());
 
@@ -59,7 +58,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
         sensors.remove(this.dialog.mainTable.getSelectedRow());
 
         Lists.saveChannelsListToFile(channels);
-        Lists.saveSensorsListToFile(sensors);
+        Lists.saveSensorsListToFile(sensors);*/
         return true;
     }
 

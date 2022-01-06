@@ -2,7 +2,6 @@ package backgroundTasks.controllers;
 
 import constants.Strings;
 import model.Calibrator;
-import support.Lists;
 import ui.LoadDialog;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
@@ -40,7 +39,7 @@ public class PutCalibratorInList extends SwingWorker<Boolean, Void> {
      */
     @Override
     protected Boolean doInBackground() throws Exception {
-        ArrayList<Calibrator> calibrators = Lists.calibrators();
+        /*ArrayList<Calibrator> calibrators = Lists.calibrators();
         if (this.oldCalibrator == null){
             for (Calibrator calibrator : Objects.requireNonNull(calibrators)){
                 if (calibrator.getName().equals(this.newCalibrator.getName())){
@@ -73,7 +72,7 @@ public class PutCalibratorInList extends SwingWorker<Boolean, Void> {
                 calibrators.set(oldIndex, this.newCalibrator);
             }
         }
-        Lists.saveCalibratorsListToFile(calibrators);
+        Lists.saveCalibratorsListToFile(calibrators);*/
         return true;
     }
 

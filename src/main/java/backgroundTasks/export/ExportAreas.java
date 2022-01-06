@@ -2,7 +2,6 @@ package backgroundTasks.export;
 
 import constants.Files;
 import constants.Strings;
-import support.Lists;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -46,7 +45,7 @@ public class ExportAreas extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        ArrayList<String> areas = Lists.areas();
+        /*ArrayList<String> areas = Lists.areas();
         File file = this.exportFile();
         if (!file.exists()){
             if (!file.createNewFile()){
@@ -55,7 +54,7 @@ public class ExportAreas extends SwingWorker<Boolean, Void> {
         }
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.exportFile()));
         oos.writeObject(areas);
-        oos.close();
+        oos.close();*/
         return true;
     }
 

@@ -1,7 +1,5 @@
 package controller;
 
-import support.UnZipper;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,6 +14,7 @@ public class FileBrowser {
     private static final String DIR_NAME_CERTIFICATES = "Certificates";
     private static final String DIR_NAME_EXPORT = "Export";
     private static final String DIR_NAME_FORMS = "forms";
+    private static final String DIR_NAME_IMAGES = "images";
 
     private static final String FILE_NAME_SETTINGS = "settings.dat";
     private static final String FILE_NAME_SENSORS = "Sensors.dat";
@@ -37,12 +36,15 @@ public class FileBrowser {
     private static final String FILE_NAME_CONSUMPTION_GOOD = "form_consumption_good.xls";
     private static final String FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD = "form_consumption_rosemount_bad.xls";
     private static final String FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD = "form_consumption_rosemount_good.xls";
+    private static final String FILE_NAME_IMAGE_ANIM_LOAD = "anim_load.gif";
+    private static final String FILE_NAME_IMAGE_NAME_LOGO = "name_logo.png";
 
     private static final File DIR_MAIN = new File(DIR_NAME_MAIN);
     private static final File DIR_LISTS = new File(DIR_MAIN, DIR_NAME_LISTS);
     private static final File DIR_CERTIFICATES = new File(DIR_MAIN, DIR_NAME_CERTIFICATES);
     private static final File DIR_EXPORT = new File(DIR_MAIN, DIR_NAME_EXPORT);
     private static final File DIR_FORMS = new File(DIR_MAIN, DIR_NAME_FORMS);
+    private static final File DIR_IMAGES = new File(DIR_MAIN, DIR_NAME_IMAGES);
 
     private static final File FILE_SETTINGS = new File(DIR_MAIN, FILE_NAME_SETTINGS);
     public static final File FILE_SENSORS = new File(DIR_LISTS, FILE_NAME_SENSORS);
@@ -64,11 +66,14 @@ public class FileBrowser {
     private static final File FILE_CONSUMPTION_GOOD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_GOOD);
     private static final File FILE_CONSUMPTION_ROSEMOUNT_BAD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD);
     private static final File FILE_CONSUMPTION_ROSEMOUNT_GOOD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD);
+    public static final File FILE_IMAGE_ANIM_LOAD = new File(DIR_IMAGES, FILE_NAME_IMAGE_ANIM_LOAD);
+    public static final File FILE_IMAGE_NAME_LOGO = new File(DIR_IMAGES, FILE_NAME_IMAGE_NAME_LOGO);
 
     public static void init() throws IOException {
         createDirsIfNotExists();
         createFilesIfNotExists();
         unpackForms();
+        unpackImages();
     }
 
     private static void createFilesIfNotExists() throws IOException {
@@ -124,12 +129,16 @@ public class FileBrowser {
         if (!DIR_FORMS.exists() && !DIR_FORMS.mkdir()){
             System.out.println("formsDir was not created");
         }
+
+        if (!DIR_IMAGES.exists() && !DIR_IMAGES.mkdir()){
+            System.out.println("imagesDir was not created");
+        }
     }
 
     private static void unpackForms(){
         try {
             String packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_TEMPERATURE_BAD_v3_4;
-            InputStream in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            InputStream in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
@@ -139,7 +148,7 @@ public class FileBrowser {
             }
 
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_TEMPERATURE_GOOD_v3_4;
-            in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
@@ -149,7 +158,7 @@ public class FileBrowser {
             }
 
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_TEMPERATURE_BAD;
-            in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
@@ -159,7 +168,7 @@ public class FileBrowser {
             }
 
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_TEMPERATURE_GOOD;
-            in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
@@ -169,7 +178,7 @@ public class FileBrowser {
             }
 
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_PRESSURE_GOOD;
-            in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
@@ -179,7 +188,7 @@ public class FileBrowser {
             }
 
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_PRESSURE_BAD;
-            in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
@@ -189,7 +198,7 @@ public class FileBrowser {
             }
 
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_CONSUMPTION_BAD;
-            in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
@@ -199,7 +208,7 @@ public class FileBrowser {
             }
 
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_CONSUMPTION_GOOD;
-            in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
@@ -209,7 +218,7 @@ public class FileBrowser {
             }
 
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD;
-            in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
@@ -219,11 +228,37 @@ public class FileBrowser {
             }
 
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD;
-            in = UnZipper.class.getClassLoader().getResourceAsStream(packedPath);
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
                 System.out.println("File no find at: " + packedPath);
             }else {
                 Path unpackingPath = Paths.get(FILE_CONSUMPTION_ROSEMOUNT_GOOD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+    private static void unpackImages(){
+        try {
+            String packedPath = DIR_NAME_IMAGES + "/" + FILE_NAME_IMAGE_ANIM_LOAD;
+            InputStream in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                System.out.println("File no find at: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(FILE_IMAGE_ANIM_LOAD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+
+            packedPath = DIR_NAME_IMAGES + "/" + FILE_NAME_IMAGE_NAME_LOGO;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                System.out.println("File no find at: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(FILE_IMAGE_NAME_LOGO.getAbsolutePath());
                 Files.copy(in, unpackingPath, REPLACE_EXISTING);
                 in.close();
             }

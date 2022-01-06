@@ -24,7 +24,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CompareSensorsDialog extends JDialog implements UI_Container {
+public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/*
     private final MainScreen mainScreen;
     private final JDialog current;
 
@@ -285,4 +285,4 @@ public class CompareSensorsDialog extends JDialog implements UI_Container {
             }
         }
     }
-}
+*/}

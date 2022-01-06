@@ -1,11 +1,7 @@
 package ui.main.info_panel.complex_elements;
 
-import support.Lists;
-import constants.Strings;
-import ui.ButtonCell;
-import ui.UI_Container;
+import application.Application;
 import ui.main.MainScreen;
-import ui.searchChannel.DialogSearch;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -13,14 +9,42 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
-public class InfoPanel_searchPanel extends JPanel implements UI_Container {
+public class InfoPanel_searchPanel extends JPanel {
+    private static final String NAME = "Назва каналу";
+    private static final String MEASUREMENT_NAME = "Вид вимірювання";
+    private static final String MEASUREMENT_VALUE = "Одиниці вимірювання";
+    private static final String DEPARTMENT = "Цех";
+    private static final String AREA = "Ділянка";
+    private static final String PROCESS = "Процесс";
+    private static final String INSTALLATION = "Установка";
+    private static final String DATE = "Дата останньої перевірки";
+    private static final String FREQUENCY = "Міжконтрольний інтервал";
+    private static final String TECHNOLOGY_NUMBER = "Технологічний номер";
+    private static final String SENSOR_NAME = "Назва ПВП";
+    private static final String SENSOR_TYPE = "Тип ПВП";
+    private static final String PROTOCOL_NUMBER = "Номер протоколу(сертифікату)";
+    private static final String REFERENCE = "Номер довідки";
+    private static final String SUITABILITY = "Придатність";
+    private static final String SUITABLE = "Придатний";
+    private static final String START_SEARCH = "Шукати";
+    private static final String FINISH_SEARCH = "Відмінити";
+
+    private static final int TEXT = 0;
+    private static final int LIST = 1;
+    private static final int CHECK = 3;
+
     private final MainScreen mainScreen;
 
     private final Color buttonsColor = new Color(51,51,51);
 
     private JButton buttonSearch;
-    private JButton field, value;
+    private JComboBox<String>field;
+    private JTextField valueText;
+    private JComboBox<String>valueComboBox;
+    private JCheckBox valueSuitability;
 
     public InfoPanel_searchPanel(MainScreen mainScreen){
         super(new GridBagLayout());
@@ -28,56 +52,88 @@ public class InfoPanel_searchPanel extends JPanel implements UI_Container {
 
         this.createElements();
         this.setReactions();
-        this.build();
+        this.build(TEXT);
     }
 
-    @Override
-    public void createElements() {
-        this.buttonSearch = new JButton(Strings.SEARCH);
+    private void createElements() {
+        this.buttonSearch = new JButton(START_SEARCH);
         this.buttonSearch.setBackground(buttonsColor);
         this.buttonSearch.setForeground(Color.white);
         this.buttonSearch.setFocusPainted(false);
         this.buttonSearch.setContentAreaFilled(false);
         this.buttonSearch.setOpaque(true);
 
-        this.field = new ButtonCell(false," - ");
-        this.value = new ButtonCell(false," - ");
+        this.field = new JComboBox<>(new String[]{
+                NAME, MEASUREMENT_NAME, MEASUREMENT_VALUE,
+                DEPARTMENT,AREA, PROCESS, INSTALLATION,
+                DATE, FREQUENCY, TECHNOLOGY_NUMBER,
+                SENSOR_NAME, SENSOR_TYPE, PROTOCOL_NUMBER,
+                REFERENCE, SUITABILITY
+        });
+        this.field.setAlignmentX(JComboBox.CENTER_ALIGNMENT);
+        this.valueText = new JTextField(10);
+        this.valueComboBox = new JComboBox<>();
+        this.valueSuitability = new JCheckBox(SUITABLE);
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonSearch.addChangeListener(pushButton);
+    private void setReactions() {
+        this.buttonSearch.addChangeListener(this.pushButton);
 
-        this.buttonSearch.addActionListener(clickSearch);
+        this.buttonSearch.addActionListener(this.clickSearch);
+
+        this.valueComboBox.addItemListener(this.changeField);
     }
 
-    @Override
-    public void build() {
-        this.add(this.buttonSearch, new Cell(0));
-        this.add(this.field, new Cell(1));
-        this.add(this.value, new Cell(2));
-    }
-
-    public void update(boolean searchOn, String field, String value){
-        if (searchOn){
-            this.buttonSearch.setText(Strings.SEARCH_CANCEL);
-            this.field.setText(field);
-            this.value.setText(value);
-        }else {
-            this.buttonSearch.setText(Strings.SEARCH);
-            this.field.setText(" - ");
-            this.value.setText(" - ");
+    private void build(int element) {
+        this.removeAll();
+        this.add(this.field, new Cell(0));
+        switch (element){
+            default:
+                this.add(this.valueText, new Cell(1));
+                break;
+            case LIST:
+                this.setModelToComboBox();
+                this.add(this.valueComboBox, new Cell(1));
+                break;
+            case CHECK:
+                this.add(this.valueSuitability, new Cell(1));
+                break;
         }
+        this.add(this.buttonSearch, new Cell(2));
+    }
+
+    private void setModelToComboBox(){
+        switch (this.field.getSelectedIndex()){
+            case 1:
+                this.valueComboBox.setModel(this.model_measurementsNames());
+                break;
+            case 2:
+                this.valueComboBox.setModel(this.model_measurementsValues());
+                break;
+            case 11:
+                this.valueComboBox.setModel(this.model_sensorsTypes());
+                break;
+        }
+    }
+
+    private ComboBoxModel<String>model_measurementsNames(){
+        return new DefaultComboBoxModel<>(Application.context.measurementsController.getAllNames());
+    }
+
+    private ComboBoxModel<String>model_measurementsValues(){
+        return new DefaultComboBoxModel<>(Application.context.measurementsController.getAllValues());
+    }
+
+    private ComboBoxModel<String>model_sensorsTypes(){
+        return new DefaultComboBoxModel<>(Application.context.sensorsController.getAllTypes());
     }
 
     private final ActionListener clickSearch = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (buttonSearch.getText().equals(Strings.SEARCH)){
-                new DialogSearch(mainScreen).setVisible(true);
-            }else {
-                mainScreen.update(Lists.channels(), false, null, null);
-            }
+            if (buttonSearch.getText().equals(START_SEARCH)){
+                buttonSearch.setText(FINISH_SEARCH);
+            }else buttonSearch.setText(START_SEARCH);
         }
     };
 
@@ -91,6 +147,28 @@ public class InfoPanel_searchPanel extends JPanel implements UI_Container {
                 button.setBackground(buttonsColor);
             }
 
+        }
+    };
+
+    private final ItemListener changeField = new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED){
+                switch (field.getSelectedIndex()){
+                    default:
+                        build(TEXT);
+                        break;
+                    case 1:
+                    case 2:
+                    case 11:
+                        build(LIST);
+                        break;
+                    case 14:
+                        build(CHECK);
+                        break;
+                }
+                mainScreen.refresh();
+            }
         }
     };
 

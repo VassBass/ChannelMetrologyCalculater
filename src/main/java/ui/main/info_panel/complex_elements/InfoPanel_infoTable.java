@@ -46,7 +46,7 @@ public class InfoPanel_infoTable extends JPanel implements UI_Container {
         this.add(this.sensor, new Cell(2, 1));
     }
 
-    public void update(Channel channel){
+    public void updateInfo(Channel channel){
         if (channel == null){
             this.nextDate.setText("XX.XX.XXXX");
             this.nextDate.setBackground(Color.white);

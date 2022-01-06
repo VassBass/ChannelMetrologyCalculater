@@ -65,7 +65,7 @@ public class Comparator {
                 && channel1.getRangeMax() == channel2.getRangeMax()
                 && channel1.getAllowableErrorPercent() == channel2.getAllowableErrorPercent()
                 && channel1.getAllowableError() == channel2.getAllowableError()
-                && channel1.isGood == channel2.isGood;
+                && channel1.isSuitability() == channel2.isSuitability();
     }
 
     public static boolean measurementsMatch(Measurement measurement1, Measurement measurement2){

@@ -4,7 +4,6 @@ import backgroundTasks.export.ExportData;
 import constants.Strings;
 import model.Calibrator;
 import support.Comparator;
-import support.Lists;
 import ui.LoadDialog;
 import ui.importData.compareCalibrators.CompareCalibratorsDialog;
 import ui.main.MainScreen;
@@ -69,7 +68,7 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            new CompareCalibratorsDialog(mainScreen, ExportData.CALIBRATORS, newCalibratorsList, importedCalibrators, calibratorsIndexes);
+                            //new CompareCalibratorsDialog(mainScreen, ExportData.CALIBRATORS, newCalibratorsList, importedCalibrators, calibratorsIndexes);
                         }
                     });
                     break;
@@ -94,7 +93,7 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
     }
 
     private void copyCalibrators(){
-        ArrayList<Calibrator>oldCalibratorsList = Lists.calibrators();
+        /*ArrayList<Calibrator>oldCalibratorsList = Lists.calibrators();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Calibrator>newList = new ArrayList<>();
 
@@ -139,6 +138,6 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
             this.calibratorsIndexes = null;
         }else {
             this.calibratorsIndexes = indexes;
-        }
+        }*/
     }
 }

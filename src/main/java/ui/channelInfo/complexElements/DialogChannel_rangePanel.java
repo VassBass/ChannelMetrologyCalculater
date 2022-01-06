@@ -84,7 +84,7 @@ public class DialogChannel_rangePanel extends JPanel implements UI_Container {
             setTrueValues(min, max);
             double range = max - min;
 
-            parent.allowableErrorPanel.update(range);
+            //parent.allowableErrorPanel.update(range);
         }
     };
 
@@ -105,7 +105,7 @@ public class DialogChannel_rangePanel extends JPanel implements UI_Container {
             setTrueValues(min, max);
             double range = max - min;
 
-            parent.allowableErrorPanel.update(range);
+            //parent.allowableErrorPanel.update(range);
         }
     };
 

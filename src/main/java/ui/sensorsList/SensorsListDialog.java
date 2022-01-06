@@ -1,8 +1,8 @@
 package ui.sensorsList;
 
+import application.Application;
 import constants.Strings;
 import converters.ConverterUI;
-import support.Lists;
 import ui.UI_Container;
 import ui.main.MainScreen;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
@@ -13,7 +13,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class SensorsListDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
@@ -89,7 +88,7 @@ public class SensorsListDialog extends JDialog implements UI_Container {
     }
 
     public void updateMain(){
-        this.mainScreen.update(Lists.channels(), false, null, null);
+        this.mainScreen.update(Application.context.channelsController.getAll(), false, null, null);
     }
 
     private final ChangeListener pushButton = new ChangeListener() {
@@ -132,7 +131,7 @@ public class SensorsListDialog extends JDialog implements UI_Container {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new SensorInfoDialog(current, Objects.requireNonNull(Lists.sensors()).get(mainTable.getSelectedRow())).setVisible(true);
+                        new SensorInfoDialog(current, Application.context.sensorsController.get(mainTable.getSelectedRow())).setVisible(true);
                     }
                 });
             }

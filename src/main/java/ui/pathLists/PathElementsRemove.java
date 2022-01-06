@@ -3,7 +3,6 @@ package ui.pathLists;
 import backgroundTasks.controllers.RemovePathElements;
 import constants.Strings;
 import converters.ConverterUI;
-import support.Lists;
 import ui.UI_Container;
 
 import javax.swing.*;
@@ -41,16 +40,16 @@ public class PathElementsRemove extends JDialog implements UI_Container {
     public void createElements() {
         switch (elementType){
             case Strings.DEPARTMENTS_LIST:
-                elements = Objects.requireNonNull(Lists.departments()).toArray(new String[0]);
+                //elements = Objects.requireNonNull(Lists.departments()).toArray(new String[0]);
                 break;
             case Strings.AREAS_LIST:
-                elements = Objects.requireNonNull(Lists.areas()).toArray(new String[0]);
+                //elements = Objects.requireNonNull(Lists.areas()).toArray(new String[0]);
                 break;
             case Strings.PROCESSES_LIST:
-                elements = Objects.requireNonNull(Lists.processes()).toArray(new String[0]);
+                //elements = Objects.requireNonNull(Lists.processes()).toArray(new String[0]);
                 break;
             case Strings.INSTALLATIONS_LIST:
-                elements = Objects.requireNonNull(Lists.installations()).toArray(new String[0]);
+                //elements = Objects.requireNonNull(Lists.installations()).toArray(new String[0]);
                 break;
         }
         if (elementName == null){

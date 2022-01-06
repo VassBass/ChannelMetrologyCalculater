@@ -18,7 +18,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ImportData extends SwingWorker<Integer, Void> {
+public class ImportData /*extends SwingWorker<Integer, Void> */{/*
     private final MainScreen mainScreen;
     private final File importDataFile;
     private final LoadDialog loadDialog;
@@ -257,4 +257,4 @@ public class ImportData extends SwingWorker<Integer, Void> {
             this.calibratorsIndexes = indexes;
         }
     }
-}
+*/}

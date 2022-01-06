@@ -1,7 +1,7 @@
 package backgroundTasks.tasks_for_import;
 
+import application.Application;
 import constants.Strings;
-import support.Lists;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -45,7 +45,7 @@ public class ImportAreas extends SwingWorker<Integer, Void> {
         if (list == null){
             return 1;
         }else {
-            Lists.saveAreasListToFile(list);
+            Application.context.areasController.rewrite(list);
             return 0;
         }
     }
@@ -79,7 +79,7 @@ public class ImportAreas extends SwingWorker<Integer, Void> {
             return null;
         }
 
-        ArrayList<String>oldList = Lists.areas();
+        ArrayList<String>oldList = Application.context.areasController.getAll();
         ArrayList<String>toAdd = new ArrayList<>();
         for (String imp : importedAreas){
             boolean exist = false;

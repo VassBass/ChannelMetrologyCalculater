@@ -2,7 +2,6 @@ package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
 import support.Comparator;
-import support.Lists;
 import model.Worker;
 import ui.LoadDialog;
 import ui.main.MainScreen;
@@ -75,7 +74,7 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.exportDataFile));
         ArrayList<Worker> importedPersons = (ArrayList<Worker>) ois.readObject();
         if (!importedPersons.isEmpty()) {
-            ArrayList<Worker> oldPersonsList = Lists.persons();
+            /*ArrayList<Worker> oldPersonsList = Lists.persons();
 
             for (Worker imp : importedPersons) {
                 boolean exist = false;
@@ -89,7 +88,7 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
                     oldPersonsList.add(imp);
                 }
             }
-            Lists.savePersonsListToFile(oldPersonsList);
+            Lists.savePersonsListToFile(oldPersonsList);*/
             return true;
         }else {
             return false;

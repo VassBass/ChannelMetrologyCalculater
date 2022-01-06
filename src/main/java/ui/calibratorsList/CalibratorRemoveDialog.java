@@ -3,7 +3,6 @@ package ui.calibratorsList;
 import backgroundTasks.controllers.RemoveCalibrator;
 import constants.Strings;
 import converters.ConverterUI;
-import support.Lists;
 import ui.UI_Container;
 
 import javax.swing.*;
@@ -33,7 +32,7 @@ public class CalibratorRemoveDialog extends JDialog implements UI_Container {
         try {
             return Strings.REMOVE
                     + " \""
-                    + Objects.requireNonNull(Lists.calibrators()).get(indexOfSensor).getName()
+                    //+ Objects.requireNonNull(Lists.calibrators()).get(indexOfSensor).getName()
                     + "\"?";
         }catch (Exception ex){
             return Strings.REMOVE;
@@ -111,7 +110,7 @@ public class CalibratorRemoveDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            new RemoveCalibrator(parent, Objects.requireNonNull(Lists.calibrators()).get(parent.mainTable.getSelectedRow())).execute();
+            //new RemoveCalibrator(parent, Objects.requireNonNull(Lists.calibrators()).get(parent.mainTable.getSelectedRow())).execute();
         }
     };
 

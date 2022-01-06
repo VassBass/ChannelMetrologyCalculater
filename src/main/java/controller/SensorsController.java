@@ -5,23 +5,29 @@ import constants.Strings;
 import model.Model;
 import model.Sensor;
 import repository.Repository;
-import ui.main.MainScreen;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
-public class SensorsController implements Controller<Sensor> {
-    private final MainScreen mainScreen;
-    private final ArrayList<Sensor> sensors;
+public class SensorsController {
+    private Window window;
+    private ArrayList<Sensor> sensors;
 
-    public SensorsController(MainScreen mainScreen){
-        this.mainScreen = mainScreen;
-        this.sensors = new Repository<Sensor>(null, Model.SENSOR).readList();
+    public void init(Window window){
+        this.window = window;
+        try {
+            this.sensors = new Repository<Sensor>(null, Model.SENSOR).readList();
+        }catch (Exception e){
+            System.out.println("File \"" + FileBrowser.FILE_SENSORS.getName() + "\" is empty");
+            this.sensors = this.resetToDefault();
+        }
     }
 
-    @Override
-    public void resetToDefault() {
-        this.sensors.clear();
+    public ArrayList<Sensor> resetToDefault() {
+        if (this.sensors == null){
+            this.sensors = new ArrayList<>();
+        }else this.sensors.clear();
 
         Sensor tcm_50m = new Sensor();
         tcm_50m.setType("ТСМ-50М");
@@ -138,14 +144,31 @@ public class SensorsController implements Controller<Sensor> {
         this.sensors.add(rosemount_8750);
 
         this.save();
+        return this.sensors;
     }
 
-    @Override
+    public String[]getAllTypes(){
+        ArrayList<String>types = new ArrayList<>();
+        for (Sensor sensor : this.sensors){
+            String type = sensor.getType();
+            boolean exist = false;
+            for (String t : types){
+                if (t.equals(type)){
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist){
+                types.add(type);
+            }
+        }
+        return types.toArray(new String[0]);
+    }
+
     public ArrayList<Sensor> getAll() {
         return this.sensors;
     }
 
-    @Override
     public ArrayList<Sensor> add(Sensor sensor) {
         boolean exist = false;
         for (Sensor sen : this.sensors){
@@ -163,8 +186,7 @@ public class SensorsController implements Controller<Sensor> {
         return this.sensors;
     }
 
-    @Override
-    public void remove(Sensor sensor) {
+    public ArrayList<Sensor> remove(Sensor sensor) {
         boolean removed = false;
 
         for (Sensor sen : this.sensors){
@@ -180,10 +202,10 @@ public class SensorsController implements Controller<Sensor> {
         }else {
             this.showNotFoundMessage();
         }
+        return this.sensors;
     }
 
-    @Override
-    public void set(Sensor oldSensor, Sensor newSensor) {
+    public ArrayList<Sensor> set(Sensor oldSensor, Sensor newSensor) {
         if (oldSensor != null){
             if (newSensor == null){
                 this.remove(oldSensor);
@@ -198,9 +220,20 @@ public class SensorsController implements Controller<Sensor> {
             }
             this.save();
         }
+        return this.sensors;
     }
 
-    @Override
+    public int getIndex(String sensorName) {
+        for (int index=0;index<this.sensors.size();index++) {
+            Sensor sensor = this.sensors.get(index);
+            if (sensor.getName().equals(sensorName)) {
+                return index;
+            }
+        }
+        this.showNotFoundMessage();
+        return -1;
+    }
+
     public Sensor get(String sensorName) {
         for (Sensor sensor : this.sensors) {
             if (sensor.getName().equals(sensorName)) {
@@ -211,7 +244,6 @@ public class SensorsController implements Controller<Sensor> {
         return null;
     }
 
-    @Override
     public Sensor get(int index) {
         if (index >= 0) {
             return this.sensors.get(index);
@@ -220,25 +252,22 @@ public class SensorsController implements Controller<Sensor> {
         }
     }
 
-    @Override
     public void clear() {
         this.sensors.clear();
         this.save();
     }
 
-    @Override
-    public void save() {
-        new Repository<Sensor>(this.mainScreen, Model.SENSOR).writeList(this.sensors);
+    private void save() {
+        new Repository<Sensor>(this.window, Model.SENSOR).writeList(this.sensors);
     }
 
-    @Override
-    public void showNotFoundMessage() {
+    private void showNotFoundMessage() {
         String message = "ПВП з данною назвою не знайдено в списку ПВП.";
-        JOptionPane.showMessageDialog(this.mainScreen, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
-    public void showExistMessage() {
+    private void showExistMessage() {
         String message = "ПВП з данною назвою вже існує в списку ПВП. Змініть будь ласка назву.";
-        JOptionPane.showMessageDialog(this.mainScreen, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

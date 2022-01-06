@@ -1,8 +1,8 @@
 package ui.pathLists;
 
+import application.Application;
 import constants.Strings;
 import converters.ConverterUI;
-import support.Lists;
 import ui.UI_Container;
 import ui.main.MainScreen;
 
@@ -12,7 +12,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class PathListsDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
@@ -271,19 +270,19 @@ public class PathListsDialog extends JDialog implements UI_Container {
                         switch (title) {
                             case Strings.DEPARTMENTS_LIST:
                                 elementType = Strings.DEPARTMENT;
-                                elementName = Objects.requireNonNull(Lists.departments()).get(mainTable.getSelectedRow());
+                                elementName = Application.context.departmentsController.get(mainTable.getSelectedRow());
                                 break;
                             case Strings.AREAS_LIST:
                                 elementType = Strings.AREA;
-                                elementName = Objects.requireNonNull(Lists.areas()).get(mainTable.getSelectedRow());
+                                elementName = Application.context.areasController.get(mainTable.getSelectedRow());
                                 break;
                             case Strings.PROCESSES_LIST:
                                 elementType = Strings.PROCESS;
-                                elementName = Objects.requireNonNull(Lists.processes()).get(mainTable.getSelectedRow());
+                                elementName = Application.context.processesController.get(mainTable.getSelectedRow());
                                 break;
                             case Strings.INSTALLATIONS_LIST:
                                 elementType = Strings.INSTALLATION;
-                                elementName = Objects.requireNonNull(Lists.installations()).get(mainTable.getSelectedRow());
+                                elementName = Application.context.installationsController.get(mainTable.getSelectedRow());
                                 break;
                         }
                         new PathElementName(current, elementType, elementName).setVisible(true);
@@ -303,16 +302,16 @@ public class PathListsDialog extends JDialog implements UI_Container {
                     if (mainTable.getSelectedRow() != -1){
                         switch (title) {
                             case Strings.DEPARTMENTS_LIST:
-                                elementName = Objects.requireNonNull(Lists.departments()).get(mainTable.getSelectedRow());
+                                elementName = Application.context.departmentsController.get(mainTable.getSelectedRow());
                                 break;
                             case Strings.AREAS_LIST:
-                                elementName = Objects.requireNonNull(Lists.areas()).get(mainTable.getSelectedRow());
+                                elementName = Application.context.areasController.get(mainTable.getSelectedRow());
                                 break;
                             case Strings.PROCESSES_LIST:
-                                elementName = Objects.requireNonNull(Lists.processes()).get(mainTable.getSelectedRow());
+                                elementName = Application.context.processesController.get(mainTable.getSelectedRow());
                                 break;
                             case Strings.INSTALLATIONS_LIST:
-                                elementName = Objects.requireNonNull(Lists.installations()).get(mainTable.getSelectedRow());
+                                elementName = Application.context.installationsController.get(mainTable.getSelectedRow());
                                 break;
                         }
                     }

@@ -50,13 +50,13 @@ public class ExportData extends SwingWorker<Void, Void>{
 
     @Override
     protected Void doInBackground() throws Exception {
-        ArrayList<?>[]data = new ArrayList<?>[]{
+        /*ArrayList<?>[]data = new ArrayList<?>[]{
                 Lists.sensors(), Lists.channels(), Lists.calibrators(), Lists.persons(),
                 Lists.departments(), Lists.areas(), Lists.processes(), Lists.installations()
         };
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.fileName(Calendar.getInstance())));
         oos.writeObject(data);
-        oos.close();
+        oos.close();*/
         return null;
     }
 

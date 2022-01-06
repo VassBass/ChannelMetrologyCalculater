@@ -2,7 +2,6 @@ package ui.calibratorsList;
 
 import constants.Strings;
 import converters.ConverterUI;
-import support.Lists;
 import ui.UI_Container;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 import ui.main.MainScreen;
@@ -116,10 +115,10 @@ public class CalibratorsListDialog extends JDialog implements UI_Container {
                     public void run() {
                         int index = mainTable.getSelectedRow();
                         if (index != -1) {
-                            if (Objects.requireNonNull(Lists.calibrators()).get(index).getName().equals(Strings.CALIBRATOR_FLUKE718_30G)
+                            /*if (Objects.requireNonNull(Lists.calibrators()).get(index).getName().equals(Strings.CALIBRATOR_FLUKE718_30G)
                             || Objects.requireNonNull(Lists.calibrators()).get(index).getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)) {
                                 JOptionPane.showMessageDialog(current, Strings.NOT_REMOVED_CALIBRATOR_MESSAGE, Strings.ERROR, JOptionPane.WARNING_MESSAGE);
-                            }
+                            }*/
                         } else {
                             new CalibratorRemoveDialog(current).setVisible(true);
                         }
@@ -136,7 +135,7 @@ public class CalibratorsListDialog extends JDialog implements UI_Container {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new CalibratorInfoDialog(current, Objects.requireNonNull(Lists.calibrators()).get(mainTable.getSelectedRow())).setVisible(true);
+                        //new CalibratorInfoDialog(current, Objects.requireNonNull(Lists.calibrators()).get(mainTable.getSelectedRow())).setVisible(true);
                     }
                 });
             }

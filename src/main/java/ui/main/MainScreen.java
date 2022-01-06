@@ -1,9 +1,9 @@
 package ui.main;
 
+import application.Application;
 import model.Channel;
 import constants.Strings;
 import ui.DialogExit;
-import ui.UI_Container;
 import ui.main.info_panel.InfoPanel;
 import ui.main.info_panel.complex_elements.InfoPanel_buttonsPanel;
 import ui.main.info_panel.complex_elements.InfoPanel_infoTable;
@@ -16,8 +16,10 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
-public class MainScreen extends JFrame implements UI_Container {
+public class MainScreen extends JFrame {
     private final JFrame current;
+
+    private static final String windowHeader = "Вимірювальні канали";
 
     private MenuBar menuBar;
     private InfoPanel infoPanel;
@@ -29,11 +31,12 @@ public class MainScreen extends JFrame implements UI_Container {
     public InfoPanel_searchPanel searchPanel;
     public MainTable mainTable;
 
-    public static Dimension sizeOfMainScreen = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
-
-    public MainScreen(ArrayList<Channel>channelsList){
-        super(Strings.WINDOW_TITLE_CHANNELS);
+    public MainScreen(){
+        super(windowHeader);
         this.current = this;
+    }
+
+    public void init(ArrayList<Channel>channelsList){
         this.channelsList = channelsList;
 
         this.createElements();
@@ -41,8 +44,7 @@ public class MainScreen extends JFrame implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         this.menuBar = new MenuBar(this);
         this.mainTable = new MainTable(this);
         this.infoPanel = new InfoPanel(this);
@@ -51,17 +53,15 @@ public class MainScreen extends JFrame implements UI_Container {
         this.searchPanel = this.infoPanel.searchPanel;
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(windowListener);
 
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.localizationOfComponents();
-        this.setSize(sizeOfMainScreen);
+        this.setSize(Application.sizeOfScreen);
         this.setJMenuBar(this.menuBar);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
@@ -71,19 +71,29 @@ public class MainScreen extends JFrame implements UI_Container {
         this.setContentPane(mainPanel);
     }
 
-    public void update(Channel channel) {
-        this.infoTable.update(channel);
+    public void updateChannelInfo(Channel channel) {
+        this.infoTable.updateInfo(channel);
+    }
+
+    public void setChannelsList(ArrayList<Channel>list){
+        this.channelsList = list;
+        this.mainTable.setList(channelsList);
+        this.infoTable.updateInfo(null);
     }
 
     public void update(ArrayList<Channel>channelsList, boolean searchOn, String searchFiled, String searchValue){
-        this.searchPanel.update(searchOn, searchFiled, searchValue);
+        //this.searchPanel.update(searchOn, searchFiled, searchValue);
         this.channelsList = channelsList;
-        this.mainTable.update(channelsList);
-        this.infoTable.update((Channel) null);
+        this.mainTable.setList(channelsList);
+        this.infoTable.updateInfo(null);
     }
 
     public void refreshMenu(){
         this.setJMenuBar(new MenuBar(this));
+        this.refresh();
+    }
+
+    public void refresh(){
         this.setVisible(false);
         this.setVisible(true);
     }

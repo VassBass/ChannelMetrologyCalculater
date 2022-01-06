@@ -2,7 +2,6 @@ package backgroundTasks.controllers;
 
 import constants.Strings;
 import model.Channel;
-import support.Lists;
 import model.Sensor;
 import ui.LoadDialog;
 import ui.sensorsList.SensorsListDialog;
@@ -40,7 +39,7 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
      */
     @Override
     protected Boolean doInBackground() throws Exception {
-        ArrayList<Sensor>sensors = Lists.sensors();
+        /*ArrayList<Sensor>sensors = Lists.sensors();
         if (this.oldSensor == null){
             for (Sensor sensor : Objects.requireNonNull(sensors)){
                 if (sensor.getName().equals(this.newSensor.getName())){
@@ -77,7 +76,7 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
 
             Lists.saveChannelsListToFile(channels);
         }
-        Lists.saveSensorsListToFile(sensors);
+        Lists.saveSensorsListToFile(sensors);*/
         return true;
     }
 

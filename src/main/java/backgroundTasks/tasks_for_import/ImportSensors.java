@@ -3,7 +3,6 @@ package backgroundTasks.tasks_for_import;
 import backgroundTasks.export.ExportData;
 import constants.Strings;
 import support.Comparator;
-import support.Lists;
 import model.Sensor;
 import ui.LoadDialog;
 import ui.importData.compareSensors.CompareSensorsDialog;
@@ -17,7 +16,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ImportSensors extends SwingWorker<Integer, Void> {
+public class ImportSensors /*extends SwingWorker<Integer, Void>*/ {/*
     private final MainScreen mainScreen;
     private final File exportDataFile;
     private final LoadDialog loadDialog;
@@ -140,4 +139,4 @@ public class ImportSensors extends SwingWorker<Integer, Void> {
             this.sensorsIndexes = indexes;
         }
     }
-}
+*/}

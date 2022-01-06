@@ -3,23 +3,29 @@ package controller;
 import constants.Strings;
 import model.Model;
 import repository.Repository;
-import ui.main.MainScreen;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
-public class AreasController implements Controller<String> {
-    private final MainScreen mainScreen;
-    private final ArrayList<String>areas;
+public class AreasController {
+    private Window window;
+    private ArrayList<String>areas;
 
-    public AreasController(MainScreen mainScreen){
-        this.mainScreen = mainScreen;
-        this.areas = new Repository<String>(null, Model.AREA).readList();
+    public void init(Window window){
+        this.window = window;
+        try {
+            this.areas = new Repository<String>(null, Model.AREA).readList();
+        }catch (Exception e){
+            System.out.println("File \"" + FileBrowser.FILE_AREAS.getName() + "\" is empty");
+            this.areas = this.resetToDefault();
+        }
     }
 
-    @Override
-    public void resetToDefault() {
-        this.areas.clear();
+    public ArrayList<String> resetToDefault() {
+        if (this.areas == null){
+            this.areas = new ArrayList<>();
+        }else this.areas.clear();
 
         String OPU1 = "ОВДЗ-1";
         String OPU2 = "ОВДЗ-2";
@@ -36,14 +42,22 @@ public class AreasController implements Controller<String> {
         this.areas.add(CPO2);
 
         this.save();
+        return this.areas;
     }
 
-    @Override
+    public void rewrite(ArrayList<String>newAreasList){
+        this.areas = newAreasList;
+        this.save();
+    }
+
     public ArrayList<String> getAll() {
         return this.areas;
     }
 
-    @Override
+    public String[] getAllInStrings(){
+        return this.areas.toArray(new String[0]);
+    }
+
     public ArrayList<String> add(String object) {
         if (!this.areas.contains(object)){
             this.areas.add(object);
@@ -52,18 +66,17 @@ public class AreasController implements Controller<String> {
         return this.areas;
     }
 
-    @Override
-    public void remove(String object) {
+    public ArrayList<String> remove(String object) {
         if (this.areas.contains(object)){
             this.areas.remove(object);
             this.save();
         }else {
             this.showNotFoundMessage();
         }
+        return this.areas;
     }
 
-    @Override
-    public void set(String oldObject, String newObject) {
+    public ArrayList<String> set(String oldObject, String newObject) {
         if (oldObject != null){
             if (newObject == null){
                 this.remove(oldObject);
@@ -73,20 +86,13 @@ public class AreasController implements Controller<String> {
             }
             this.save();
         }
+        return this.areas;
     }
 
-    @Override
-    public String get(String object) {
-        int index = this.areas.indexOf(object);
-        if (index >= 0) {
-            return this.areas.get(index);
-        }else {
-            this.showNotFoundMessage();
-            return null;
-        }
+    public int getIndex(String object) {
+        return this.areas.indexOf(object);
     }
 
-    @Override
     public String get(int index) {
         if (index >= 0) {
             return this.areas.get(index);
@@ -95,20 +101,17 @@ public class AreasController implements Controller<String> {
         }
     }
 
-    @Override
     public void clear() {
         this.areas.clear();
         this.save();
     }
 
-    @Override
-    public void save() {
-        new Repository<String>(this.mainScreen, Model.AREA).writeList(this.areas);
+    private void save() {
+        new Repository<String>(this.window, Model.AREA).writeList(this.areas);
     }
 
-    @Override
-    public void showNotFoundMessage() {
+    private void showNotFoundMessage() {
         String message = "Ділянка з такою назвою не знайдена в списку ділянок.";
-        JOptionPane.showMessageDialog(this.mainScreen, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

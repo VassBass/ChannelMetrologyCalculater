@@ -1,7 +1,6 @@
 package backgroundTasks.controllers;
 
 import support.Comparator;
-import support.Lists;
 import constants.Strings;
 import ui.LoadDialog;
 import ui.personsList.PersonsListDialog;
@@ -33,7 +32,7 @@ public class PutPersonInList extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        ArrayList<Worker>workers = Lists.persons();
+        /*ArrayList<Worker>workers = Lists.persons();
         if (workers != null) {
             if (this.workerIsExists(this.newWorker)) {
                 JOptionPane.showMessageDialog(this.parent, "Робітник з такими данними вже є у списку", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
@@ -50,7 +49,7 @@ public class PutPersonInList extends SwingWorker<Void, Void> {
                 }
                 Lists.savePersonsListToFile(workers);
             }
-        }
+        }*/
         return null;
     }
 
@@ -61,14 +60,14 @@ public class PutPersonInList extends SwingWorker<Void, Void> {
     }
 
     private boolean workerIsExists(Worker worker){
-        ArrayList<Worker>workers = Lists.persons();
+        /*ArrayList<Worker>workers = Lists.persons();
         if (workers != null) {
             for (Worker value : workers) {
                 if (Comparator.personsMatch(worker, value)) {
                     return true;
                 }
             }
-        }
+        }*/
         return false;
     }
 }

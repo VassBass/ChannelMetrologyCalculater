@@ -6,23 +6,29 @@ import model.Model;
 import model.Worker;
 import repository.Repository;
 import support.Comparator;
-import ui.main.MainScreen;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
-public class PersonsController implements Controller<Worker> {
-    private final MainScreen mainScreen;
-    private final ArrayList<Worker> persons;
+public class PersonsController {
+    private Window window;
+    private ArrayList<Worker> persons;
 
-    public PersonsController(MainScreen mainScreen){
-        this.mainScreen = mainScreen;
-        this.persons = new Repository<Worker>(null, Model.PERSON).readList();
+    public void init(Window window){
+        this.window = window;
+        try {
+            this.persons = new Repository<Worker>(null, Model.PERSON).readList();
+        }catch (Exception e){
+            System.out.println("File \"" + FileBrowser.FILE_PERSONS.getName() + "\" is empty");
+            this.persons = this.resetToDefault();
+        }
     }
 
-    @Override
-    public void resetToDefault() {
-        this.persons.clear();
+    public ArrayList<Worker> resetToDefault() {
+        if (this.persons == null){
+            this.persons = new ArrayList<>();
+        }else this.persons.clear();
 
         Worker chekunovTM = new Worker();
         chekunovTM.setName("Тимофій");
@@ -67,22 +73,20 @@ public class PersonsController implements Controller<Worker> {
         this.persons.add(vasilevIS);
 
         this.save();
+        return this.persons;
     }
 
-    @Override
     public ArrayList<Worker> getAll() {
         return this.persons;
     }
 
-    @Override
     public ArrayList<Worker> add(Worker worker) {
         this.persons.add(worker);
         this.save();
         return this.persons;
     }
 
-    @Override
-    public void remove(Worker person) {
+    public ArrayList<Worker> remove(Worker person) {
         boolean removed = false;
 
         for (Worker worker : this.persons){
@@ -98,10 +102,10 @@ public class PersonsController implements Controller<Worker> {
         }else {
             this.showNotFoundMessage();
         }
+        return this.persons;
     }
 
-    @Override
-    public void set(Worker oldPerson, Worker newPerson) {
+    public ArrayList<Worker> set(Worker oldPerson, Worker newPerson) {
         if (oldPerson != null){
             if (newPerson == null){
                 this.remove(oldPerson);
@@ -118,20 +122,20 @@ public class PersonsController implements Controller<Worker> {
             }
             this.save();
         }
+        return this.persons;
     }
 
-    @Override
-    public Worker get(String fullName) {
-        for (Worker person : this.persons) {
-            if (person.getFullName().equals(fullName)) {
-                return person;
+    public int getIndex(Worker person) {
+        for (int index=0;index<this.persons.size();index++) {
+            Worker p = this.persons.get(index);
+            if (Comparator.personsMatch(p, person)) {
+                return index;
             }
         }
         this.showNotFoundMessage();
-        return null;
+        return -1;
     }
 
-    @Override
     public Worker get(int index) {
         if (index >= 0) {
             return this.persons.get(index);
@@ -140,20 +144,17 @@ public class PersonsController implements Controller<Worker> {
         }
     }
 
-    @Override
     public void clear() {
         this.persons.clear();
         this.save();
     }
 
-    @Override
-    public void save() {
-        new Repository<Worker>(this.mainScreen, Model.PERSON).writeList(this.persons);
+    private void save() {
+        new Repository<Worker>(this.window, Model.PERSON).writeList(this.persons);
     }
 
-    @Override
-    public void showNotFoundMessage() {
+    private void showNotFoundMessage() {
         String message = "Працівник не знайден в списку працівників.";
-        JOptionPane.showMessageDialog(this.mainScreen, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

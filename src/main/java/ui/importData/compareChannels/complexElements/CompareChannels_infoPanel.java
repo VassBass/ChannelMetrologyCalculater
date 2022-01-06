@@ -212,17 +212,17 @@ public class CompareChannels_infoPanel extends JPanel implements UI_Container {
 
         String so;
         String si;
-        if (old.isGood){
+        if (old.isSuitability()){
             so = Strings.CHANNEL_IS_GOOD;
         }else {
             so = Strings.CHANNEL_IS_BAD;
         }
-        if (imported.isGood){
+        if (imported.isSuitability()){
             si = Strings.CHANNEL_IS_GOOD;
         }else {
             si = Strings.CHANNEL_IS_BAD;
         }
-        if (old.isGood == imported.isGood){
+        if (old.isSuitability() == imported.isSuitability()){
             labels[13] = new ButtonCell(Color.green.darker(), Color.white, Strings.CHANNEL_SUITABILITY);
             oldInfo[10] = new ButtonCell(Color.green.darker(), Color.white, so);
             newInfo[10] = new ButtonCell(Color.green.darker(), Color.white, si);

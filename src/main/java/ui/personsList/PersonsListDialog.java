@@ -1,7 +1,6 @@
 package ui.personsList;
 
 import converters.ConverterUI;
-import support.Lists;
 import constants.Strings;
 import ui.UI_Container;
 import ui.main.MainScreen;
@@ -128,7 +127,7 @@ public class PersonsListDialog extends JDialog implements UI_Container {
                 @Override
                 public void run() {
                     int index = mainTable.getSelectedRow();
-                    new PersonInfoDialog(current, Objects.requireNonNull(Lists.persons()).get(index)).setVisible(true);
+                    //new PersonInfoDialog(current, Objects.requireNonNull(Lists.persons()).get(index)).setVisible(true);
                 }
             });
         }
@@ -141,7 +140,7 @@ public class PersonsListDialog extends JDialog implements UI_Container {
                 @Override
                 public void run() {
                     int index = mainTable.getSelectedRow();
-                    new RemovePersonDialog(current, Objects.requireNonNull(Lists.persons()).get(index)).setVisible(true);
+                    //new RemovePersonDialog(current, Objects.requireNonNull(Lists.persons()).get(index)).setVisible(true);
                 }
             });
         }

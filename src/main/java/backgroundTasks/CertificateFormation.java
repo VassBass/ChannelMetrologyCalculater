@@ -1,11 +1,11 @@
 package backgroundTasks;
 
+import application.Application;
 import constants.Strings;
 import measurements.calculation.Calculation;
 import measurements.certificates.*;
 import constants.Value;
 import model.Channel;
-import support.Lists;
 import support.Values;
 import ui.LoadDialog;
 import ui.calculate.end.CalculateEndDialog;
@@ -13,7 +13,6 @@ import ui.main.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class CertificateFormation extends SwingWorker<Void, Void> {
@@ -86,23 +85,13 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
 
         newChannel.setDate((Calendar) this.values.getValue(Value.CHANNEL_DATE));
         newChannel.setNumberOfProtocol(this.values.getStringValue(Value.CHANNEL_PROTOCOL_NUMBER));
-        newChannel.isGood = this.calculation.goodChannel();
+        newChannel.setSuitability(this.calculation.goodChannel());
 
-        if (newChannel.isGood){
+        if (newChannel.isSuitability()){
             newChannel.setReference("");
         }else{
             newChannel.setReference(this.values.getStringValue(Value.CHANNEL_REFERENCE));
         }
-
-        ArrayList<Channel>channels = Lists.channels();
-        if (channels != null) {
-            for (int x = 0; x < channels.size(); x++) {
-                if (channels.get(x).getCode().equals(this.channel.getCode())) {
-                    channels.set(x, newChannel);
-                    Lists.saveChannelsListToFile(channels);
-                    break;
-                }
-            }
-        }
+        Application.context.channelsController.set(this.channel, newChannel);
     }
 }

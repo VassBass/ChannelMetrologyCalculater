@@ -1,14 +1,12 @@
 package backgroundTasks.controllers;
 
+import application.Application;
 import constants.Strings;
-import support.Lists;
 import ui.LoadDialog;
 import ui.pathLists.PathListsDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class RemovePathElements extends SwingWorker<Void, Void> {
     private final PathListsDialog dialog;
@@ -36,40 +34,31 @@ public class RemovePathElements extends SwingWorker<Void, Void> {
         if (elementName == null){
             switch (elementsType){
                 case Strings.DEPARTMENTS_LIST:
-                    Lists.saveDepartmentsListToFile(new ArrayList<String>());
+                    Application.context.departmentsController.clear();
                     break;
                 case Strings.AREAS_LIST:
-                    Lists.saveAreasListToFile(new ArrayList<String>());
+                    Application.context.areasController.clear();
                     break;
                 case Strings.PROCESSES_LIST:
-                    Lists.saveProcessesListToFile(new ArrayList<String>());
+                    Application.context.processesController.clear();
                     break;
                 case Strings.INSTALLATIONS_LIST:
-                    Lists.saveInstallationsListToFile(new ArrayList<String>());
+                    Application.context.installationsController.clear();
                     break;
             }
         }else {
-            ArrayList<String>elements;
             switch (elementsType){
                 case Strings.DEPARTMENTS_LIST:
-                    elements = Lists.departments();
-                    Objects.requireNonNull(elements).remove(this.elementName);
-                    Lists.saveDepartmentsListToFile(elements);
+                    Application.context.departmentsController.remove(this.elementName);
                     break;
                 case Strings.AREAS_LIST:
-                    elements = Lists.areas();
-                    Objects.requireNonNull(elements).remove(this.elementName);
-                    Lists.saveAreasListToFile(elements);
+                    Application.context.areasController.remove(this.elementName);
                     break;
                 case Strings.PROCESSES_LIST:
-                    elements = Lists.processes();
-                    Objects.requireNonNull(elements).remove(this.elementName);
-                    Lists.saveProcessesListToFile(elements);
+                    Application.context.processesController.remove(this.elementName);
                     break;
                 case Strings.INSTALLATIONS_LIST:
-                    elements = Lists.installations();
-                    Objects.requireNonNull(elements).remove(this.elementName);
-                    Lists.saveInstallationsListToFile(elements);
+                    Application.context.installationsController.remove(this.elementName);
                     break;
             }
         }

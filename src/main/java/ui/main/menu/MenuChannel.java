@@ -1,6 +1,5 @@
 package ui.main.menu;
 
-import support.Lists;
 import constants.Strings;
 import ui.UI_Container;
 import ui.calculate.start.CalculateStartDialog;
@@ -69,7 +68,7 @@ public class MenuChannel extends JMenu implements UI_Container {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
+                        //new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
                     }
                 });
             }
@@ -82,7 +81,7 @@ public class MenuChannel extends JMenu implements UI_Container {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new DialogChannel(mainScreen, null).setVisible(true);
+                    //new DialogChannel(mainScreen, null).setVisible(true);
                 }
             });
         }
@@ -96,7 +95,7 @@ public class MenuChannel extends JMenu implements UI_Container {
                 public void run() {
                     int index = mainScreen.mainTable.getSelectedRow();
                     if (index != -1){
-                        new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
+                        //new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
                     }
                 }
             });
@@ -123,7 +122,7 @@ public class MenuChannel extends JMenu implements UI_Container {
             if (buttonSearch.getText().equals(Strings.SEARCH)){
                 new DialogSearch(mainScreen).setVisible(true);
             }else {
-                mainScreen.update(Lists.channels(), false, null, null);
+                //mainScreen.update(Lists.channels(), false, null, null);
             }
         }
     };

@@ -6,7 +6,6 @@ import constants.Value;
 import constants.WorkPositions;
 import converters.ConverterUI;
 import model.Channel;
-import support.Lists;
 import constants.Strings;
 import support.Values;
 import ui.UI_Container;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public class CalculatePerformersDialog extends JDialog implements UI_Container {
+public class CalculatePerformersDialog /*extends JDialog implements UI_Container*/ {/*
     private final MainScreen mainScreen;
     private final Channel channel;
     private final Values values;
@@ -373,4 +372,4 @@ public class CalculatePerformersDialog extends JDialog implements UI_Container {
             }
         }
     }
-}
+*/}

@@ -2,7 +2,6 @@ package ui.channelInfo.complexElements;
 
 import constants.MeasurementConstants;
 import measurements.Measurement;
-import support.Lists;
 import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public class DialogChannel_measurementPanel extends JPanel implements UI_Container {
+public class DialogChannel_measurementPanel /*extends JPanel implements UI_Container*/ {/*
 
     private final DialogChannel parent;
     private final DialogChannel_measurementPanel currentPanel;
@@ -169,4 +168,4 @@ public class DialogChannel_measurementPanel extends JPanel implements UI_Contain
             parent.rangePanel.update(measurementVal);
         }
     };
-}
+*/}

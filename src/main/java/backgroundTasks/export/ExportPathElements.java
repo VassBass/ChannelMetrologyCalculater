@@ -1,8 +1,8 @@
 package backgroundTasks.export;
 
+import application.Application;
 import constants.Files;
 import constants.Strings;
-import support.Lists;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -47,7 +47,10 @@ public class ExportPathElements extends SwingWorker<Boolean, Void> {
     @Override
     protected Boolean doInBackground() throws Exception {
         ArrayList<?>[]elements = new ArrayList[]{
-                Lists.departments(), Lists.areas(), Lists.processes(), Lists.installations()
+                Application.context.departmentsController.getAll(),
+                Application.context.areasController.getAll(),
+                Application.context.processesController.getAll(),
+                Application.context.installationsController.getAll()
         };
         File file = this.exportFile();
         if (!file.exists()){

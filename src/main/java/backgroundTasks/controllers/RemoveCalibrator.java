@@ -1,7 +1,6 @@
 package backgroundTasks.controllers;
 
 import model.Calibrator;
-import support.Lists;
 import ui.LoadDialog;
 import ui.calibratorsList.CalibratorsListDialog;
 
@@ -30,7 +29,7 @@ public class RemoveCalibrator extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        ArrayList<Calibrator> calibrators = Lists.calibrators();
+        /*ArrayList<Calibrator> calibrators = Lists.calibrators();
         if (calibrators != null) {
             for (int x = 0; x < calibrators.size(); x++) {
                 if (calibrators.get(x).getName().equals(this.calibrator.getName())) {
@@ -40,7 +39,7 @@ public class RemoveCalibrator extends SwingWorker<Void, Void> {
             }
 
             Lists.saveCalibratorsListToFile(calibrators);
-        }
+        }*/
         return null;
     }
 

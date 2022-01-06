@@ -42,8 +42,8 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
 
     @Override
     public void setReactions() {
-        this.errorPercent.addFocusListener(focus);
-        this.errorValue.addFocusListener(focus);
+        //this.errorPercent.addFocusListener(focus);
+        //this.errorValue.addFocusListener(focus);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
         this.errorValue.setText(errorValue);
     }
 
-    private final FocusListener focus = new FocusListener() {
+    /*private final FocusListener focus = new FocusListener() {
         @Override
         public void focusGained(FocusEvent e) {
             JTextField item = (JTextField) e.getSource();
@@ -142,6 +142,6 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
 
     public double getAllowableErrorPercent(){
         return Double.parseDouble(this.errorPercent.getText());
-    }
+    }*/
 
 }

@@ -4,8 +4,6 @@ import java.util.Calendar;
 
 public class Strings {
 
-    public static final String WINDOW_TITLE_CHANNELS = "Вимірювальні канали";
-
     public static final String YES = "Так";
     public static final String NO = "Ні";
     public static final String CANCEL = "Відміна";

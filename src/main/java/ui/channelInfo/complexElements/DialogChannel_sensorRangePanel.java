@@ -3,7 +3,6 @@ package ui.channelInfo.complexElements;
 import converters.VariableConverter;
 import measurements.Measurement;
 import model.Sensor;
-import support.Lists;
 import ui.UI_Container;
 
 import javax.swing.*;
@@ -43,11 +42,11 @@ public class DialogChannel_sensorRangePanel extends JPanel implements UI_Contain
         this.max = new JTextField("100.00", 5);
 
         ArrayList<String> items = new ArrayList<>();
-        for (int x = 0; x< Objects.requireNonNull(Lists.measurements()).size(); x++){
+        /*for (int x = 0; x< Objects.requireNonNull(Lists.measurements()).size(); x++){
             if (Objects.requireNonNull(Lists.measurements()).get(x).getName().equals(measurement.getName())){
                 items.add(Objects.requireNonNull(Lists.measurements()).get(x).getValue());
             }
-        }
+        }*/
         this.value = new JComboBox<>(items.toArray(new String[0]));
         this.value.setEditable(false);
         this.value.setBackground(Color.white);

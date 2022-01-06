@@ -1,7 +1,6 @@
 package backgroundTasks.controllers;
 
 import support.Comparator;
-import support.Lists;
 import ui.LoadDialog;
 import ui.personsList.PersonsListDialog;
 import model.Worker;
@@ -31,7 +30,7 @@ public class RemovePerson extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        ArrayList<Worker>workers = Lists.persons();
+        /*ArrayList<Worker>workers = Lists.persons();
         if (workers != null) {
             for (int x = 0; x < workers.size(); x++) {
                 if (Comparator.personsMatch(workers.get(x), this.worker)) {
@@ -41,7 +40,7 @@ public class RemovePerson extends SwingWorker<Void, Void> {
             }
 
             Lists.savePersonsListToFile(workers);
-        }
+        }*/
         return null;
     }
 

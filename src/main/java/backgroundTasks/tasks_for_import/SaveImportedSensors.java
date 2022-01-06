@@ -3,7 +3,6 @@ package backgroundTasks.tasks_for_import;
 import constants.Strings;
 import model.Channel;
 import support.Comparator;
-import support.Lists;
 import model.Sensor;
 import ui.LoadDialog;
 import ui.main.MainScreen;
@@ -33,7 +32,7 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        ArrayList<Channel>channels = Lists.channels();
+        /*ArrayList<Channel>channels = Lists.channels();
         for (Sensor sensor : this.sensors){
             for (int c = 0; c< Objects.requireNonNull(channels).size(); c++){
                 Channel channel = channels.get(c);
@@ -46,14 +45,14 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
             }
         }
         Lists.saveChannelsListToFile(channels);
-        Lists.saveSensorsListToFile(this.sensors);
+        Lists.saveSensorsListToFile(this.sensors);*/
         return null;
     }
 
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        this.mainScreen.update(Lists.channels(), false, null, null);
+        //this.mainScreen.update(Lists.channels(), false, null, null);
         JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

@@ -1,7 +1,6 @@
 package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
-import support.Lists;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -45,7 +44,7 @@ public class ImportInstallations extends SwingWorker<Integer, Void> {
         if (list == null){
             return 1;
         }else {
-            Lists.saveInstallationsListToFile(list);
+            //Lists.saveInstallationsListToFile(list);
             return 0;
         }
     }
@@ -79,7 +78,7 @@ public class ImportInstallations extends SwingWorker<Integer, Void> {
             return null;
         }
 
-        ArrayList<String>oldList = Lists.installations();
+        /*ArrayList<String>oldList = Lists.installations();
         ArrayList<String>toAdd = new ArrayList<>();
         for (String imp : importedInstallations){
             boolean exist = false;
@@ -100,6 +99,6 @@ public class ImportInstallations extends SwingWorker<Integer, Void> {
             newList.addAll(oldList);
             newList.addAll(toAdd);
             return newList;
-        }
+        }*/return null;
     }
 }

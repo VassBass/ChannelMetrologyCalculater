@@ -2,7 +2,6 @@ package ui.calibratorsList;
 
 import constants.Strings;
 import model.Calibrator;
-import support.Lists;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -28,7 +27,7 @@ public class CalibratorsListTable extends JTable {
         String[]columnsHeader = new String[] {Strings._NAME, Strings.TYPE, Strings.TYPE_OF_MEASUREMENT};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Calibrator> calibrators = Lists.calibrators();
+        /*ArrayList<Calibrator> calibrators = Lists.calibrators();
         for (Calibrator calibrator : Objects.requireNonNull(calibrators)) {
             String[] data = new String[3];
             data[0] = calibrator.getName();
@@ -36,7 +35,7 @@ public class CalibratorsListTable extends JTable {
             data[2] = calibrator.getMeasurement();
 
             model.addRow(data);
-        }
+        }*/
 
         return model;
     }

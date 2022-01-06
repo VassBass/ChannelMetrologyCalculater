@@ -10,7 +10,6 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import model.Calibrator;
-import support.Lists;
 import ui.ButtonCell;
 import ui.UI_Container;
 import ui.calibratorsList.CalibratorsListDialog;
@@ -96,7 +95,7 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
         this.labelCertificateDate = new ButtonCell(true, Strings.FROM);
 
         ArrayList<String> measurementsNames = new ArrayList<>();
-        ArrayList<Measurement>measurements = Lists.measurements();
+        /*ArrayList<Measurement>measurements = Lists.measurements();
         for (Measurement measurement : Objects.requireNonNull(measurements)) {
             boolean exist = false;
             for (String measurementsName : measurementsNames) {
@@ -107,7 +106,7 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
             if (!exist) {
                 measurementsNames.add(measurement.getName());
             }
-        }
+        }*/
         this.measurementsList = new JComboBox<>(measurementsNames.toArray(new String[0]));
 
         String typeHint = "Тип калібратора(Застосовується у протоколі)";

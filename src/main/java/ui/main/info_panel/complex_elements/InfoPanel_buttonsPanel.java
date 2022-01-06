@@ -101,7 +101,7 @@ public class InfoPanel_buttonsPanel extends JPanel implements UI_Container {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
+                        //new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
                     }
                 });
             }
@@ -128,7 +128,7 @@ public class InfoPanel_buttonsPanel extends JPanel implements UI_Container {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new DialogChannel(mainScreen, null).setVisible(true);
+                    //new DialogChannel(mainScreen, null).setVisible(true);
                 }
             });
         }
@@ -142,7 +142,7 @@ public class InfoPanel_buttonsPanel extends JPanel implements UI_Container {
                 public void run() {
                     int index = mainScreen.mainTable.getSelectedRow();
                     if (index != -1){
-                        new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
+                        //new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
                     }
                 }
             });

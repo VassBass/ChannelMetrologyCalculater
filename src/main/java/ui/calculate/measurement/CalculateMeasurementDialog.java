@@ -201,7 +201,7 @@ public class CalculateMeasurementDialog extends JDialog implements UI_Container 
                     buttonNext.setEnabled(true);
                     if (measurementNumber == 1){
                         dispose();
-                        new CalculateStartDialog(mainScreen, channel, getValues()).setVisible(true);
+                        //new CalculateStartDialog(mainScreen, channel, getValues()).setVisible(true);
                     }else {
                         measurementNumber--;
 

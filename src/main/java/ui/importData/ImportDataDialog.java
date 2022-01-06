@@ -27,7 +27,7 @@ public class ImportDataDialog extends JFileChooser {
         if (result == JFileChooser.APPROVE_OPTION){
             switch (Objects.requireNonNull(Files.getFileExtension(this.getSelectedFile()))){
                 case "sen":
-                    new ImportSensors(mainScreen, this.getSelectedFile()).execute();
+                   // new ImportSensors(mainScreen, this.getSelectedFile()).execute();
                     break;
                 case "cal":
                     new ImportCalibrators(mainScreen, this.getSelectedFile()).execute();
@@ -48,13 +48,13 @@ public class ImportDataDialog extends JFileChooser {
                     new ImportPathElements(mainScreen, this.getSelectedFile()).execute();
                     break;
                 case "chn":
-                    new ImportChannels(mainScreen, this.getSelectedFile()).execute();
+                   // new ImportChannels(mainScreen, this.getSelectedFile()).execute();
                     break;
                 case "per":
                     new ImportPersons(mainScreen, this.getSelectedFile()).execute();
                     break;
                 case "exp":
-                    new ImportData(mainScreen, this.getSelectedFile()).execute();
+                   // new ImportData(mainScreen, this.getSelectedFile()).execute();
                 default:
                     JOptionPane.showMessageDialog(mainScreen, Strings.WRONG_FILE_EXTENSION, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
                     break;

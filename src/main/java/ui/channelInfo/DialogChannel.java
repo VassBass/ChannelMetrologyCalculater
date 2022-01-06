@@ -18,7 +18,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class DialogChannel extends JDialog implements UI_Container {
+public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
     private final MainScreen parent;
     private final DialogChannel current;
 
@@ -217,7 +217,7 @@ public class DialogChannel extends JDialog implements UI_Container {
 
         if (this.oldChannel != null){
             channel.setReference(this.oldChannel.getReference());
-            channel.isGood = this.oldChannel.isGood;
+            channel.setSuitability(this.oldChannel.isSuitability());
         }
 
         return channel;
@@ -368,5 +368,5 @@ public class DialogChannel extends JDialog implements UI_Container {
             }
         }
     }
-
+*/
 }

@@ -1,7 +1,6 @@
 package backgroundTasks.controllers;
 
 import model.Channel;
-import support.Lists;
 import ui.LoadDialog;
 import ui.channelInfo.DialogChannel;
 import ui.channelInfo.Dialog_channelExist;
@@ -11,7 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class PutChannelInList extends SwingWorker<Void, Void> {
+public class PutChannelInList /*extends SwingWorker<Void, Void> */{/*
 
     private boolean success = true;
 
@@ -43,7 +42,7 @@ public class PutChannelInList extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         Channel oldChannel = this.channelDialog.oldChannel;
         Channel newChannel = this.channelDialog.getChannel();
-        this.channelList = Lists.channels();
+        //this.channelList = Lists.channels();
 
         if (this.channelList != null) {
             if (oldChannel == null) {
@@ -71,7 +70,7 @@ public class PutChannelInList extends SwingWorker<Void, Void> {
                 this.channelList.set(index, newChannel);
             }
         }
-        Lists.saveChannelsListToFile(this.channelList);
+        //Lists.saveChannelsListToFile(this.channelList);
         return null;
     }
 
@@ -85,5 +84,5 @@ public class PutChannelInList extends SwingWorker<Void, Void> {
             Dialog_channelExist channelExist = new Dialog_channelExist(this.channelDialog);
             channelExist.setVisible(true);
         }
-    }
+    }*/
 }

@@ -1,7 +1,6 @@
 package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
-import support.Lists;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -78,16 +77,16 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
             ArrayList<String> toAdd = new ArrayList<>();
             switch (x){
                 case 0:
-                    oldList = Lists.departments();
+                    //oldList = Lists.departments();
                     break;
                 case 1:
-                    oldList  = Lists.areas();
+                    //oldList  = Lists.areas();
                     break;
                 case 2:
-                    oldList = Lists.processes();
+                    //oldList = Lists.processes();
                     break;
                 case 3:
-                    oldList = Lists.installations();
+                    //oldList = Lists.installations();
                     break;
             }
 
@@ -109,16 +108,16 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
                 newList.addAll(toAdd);
                 switch (x){
                     case 0:
-                        Lists.saveDepartmentsListToFile(newList);
+                        //Lists.saveDepartmentsListToFile(newList);
                         break;
                     case 1:
-                        Lists.saveAreasListToFile(newList);
+                        //Lists.saveAreasListToFile(newList);
                         break;
                     case 2:
-                        Lists.saveProcessesListToFile(newList);
+                        //Lists.saveProcessesListToFile(newList);
                         break;
                     case 3:
-                        Lists.saveInstallationsListToFile(newList);
+                        //Lists.saveInstallationsListToFile(newList);
                         break;
                 }
             }

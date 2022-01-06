@@ -28,7 +28,7 @@ public class Channel implements Serializable {
     private double rangeMax = 0D;
     private double allowableErrorPercent = 0D;
     private double allowableError = 0D;
-    public boolean isGood = true;
+    private boolean suitability = true;
 
     //Getters
     public String getCode() {return this.code;}
@@ -48,9 +48,10 @@ public class Channel implements Serializable {
     public String getReference(){return this.reference;}
     public double getAllowableErrorPercent(){return this.allowableErrorPercent;}
     public double getAllowableError(){return this.allowableError;}
+    public boolean isSuitability(){return this.suitability;}
 
     public Calendar getNextDate() {
-        if (this.isGood) {
+        if (this.suitability) {
             long l = (long) (31536000000L * frequency);
             Calendar nextDate = new GregorianCalendar();
             nextDate.setTimeInMillis(this.date.getTimeInMillis() + l);
@@ -98,6 +99,8 @@ public class Channel implements Serializable {
     public void setRangeMin(double rangeMin) {this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax) {this.rangeMax = rangeMax;}
     public void setReference(String reference){this.reference = reference;}
+    public void setSuitability(boolean suitability){this.suitability = suitability;}
+
 
     public void setAllowableError(double percent, double value){
         this.allowableErrorPercent = percent;
@@ -127,7 +130,7 @@ public class Channel implements Serializable {
         this.rangeMax = channel.getRangeMax();
         this.allowableErrorPercent = channel.getAllowableErrorPercent();
         this.allowableError = channel.allowableError;
-        this.isGood = channel.isGood;
+        this.suitability = channel.suitability;
         return this;
     }
 }

@@ -13,7 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class SaveImportData extends SwingWorker<Void, Void> {
+public class SaveImportData /*extends SwingWorker<Void, Void>*/ {/*
     private final MainScreen mainScreen;
     private final LoadDialog loadDialog;
     private ArrayList<Channel> channels;
@@ -98,4 +98,4 @@ public class SaveImportData extends SwingWorker<Void, Void> {
         this.mainScreen.update(Lists.channels(), false, null, null);
         JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
-}
+*/}

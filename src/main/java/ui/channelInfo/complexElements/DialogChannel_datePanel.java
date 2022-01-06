@@ -44,7 +44,7 @@ public class DialogChannel_datePanel extends JPanel implements UI_Container {
     public void setReactions(){
         this.day.addFocusListener(dayFocus);
         this.month.addFocusListener(monthFocus);
-        this.year.addFocusListener(yearFocus);
+        //this.year.addFocusListener(yearFocus);
     }
 
     @Override
@@ -136,7 +136,7 @@ public class DialogChannel_datePanel extends JPanel implements UI_Container {
                 }
             }
 
-            parent.frequencyPanel.update(getDate());
+            //parent.frequencyPanel.update(getDate());
         }
     };
 
@@ -172,7 +172,8 @@ public class DialogChannel_datePanel extends JPanel implements UI_Container {
                 }
             }
 
-            parent.frequencyPanel.update(getDate());        }
+            //parent.frequencyPanel.update(getDate());
+        }
     };
 
     private final FocusListener yearFocus = new FocusListener() {
@@ -209,7 +210,7 @@ public class DialogChannel_datePanel extends JPanel implements UI_Container {
                 year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             }
 
-            parent.frequencyPanel.update(getDate());
+            //parent.frequencyPanel.update(getDate());
         }
     };
 }

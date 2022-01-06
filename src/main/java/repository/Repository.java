@@ -2,23 +2,23 @@ package repository;
 
 import controller.FileBrowser;
 import model.Model;
-import ui.main.MainScreen;
 import ui.SaveMessage;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 public class Repository<M> extends SwingWorker<Void, Void> {
-    private final MainScreen mainScreen;
+    private final Window window;
     private final File file;
     private ArrayList<M>list;
     private SaveMessage saveMessage;
 
-    public Repository(MainScreen mainScreen, Model model){
-        this.mainScreen = mainScreen;
+    public Repository(Window window, Model model){
+        this.window = window;
         switch (model){
             case DEPARTMENT:
                 this.file = FileBrowser.FILE_DEPARTMENTS;
@@ -44,31 +44,38 @@ public class Repository<M> extends SwingWorker<Void, Void> {
             case PERSON:
                 this.file = FileBrowser.FILE_PERSONS;
                 break;
+            case MEASUREMENT:
+                this.file = FileBrowser.FILE_MEASUREMENTS;
+                break;
             default:
                 this.file = null;
         }
     }
 
     @SuppressWarnings("unchecked")
-    public ArrayList<M>readList() {
+    public ArrayList<M>readList() throws IOException, ClassNotFoundException {
         if (this.file != null) {
             try (ObjectInputStream reader = FileBrowser.getInputStream(this.file)) {
                 return (ArrayList<M>) reader.readObject();
-            }catch (Exception ex){
-                ex.printStackTrace();
-                return null;
+            } catch (IOException e) {
+                throw new IOException();
+            } catch (ClassNotFoundException e) {
+                throw new ClassNotFoundException();
             }
         }else return null;
     }
 
     public void writeList(ArrayList<M>list){
-        this.saveMessage = new SaveMessage(this.mainScreen);
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                saveMessage.setVisible(true);
-            }
-        });
+        this.list = list;
+        if (this.window != null) {
+            this.saveMessage = new SaveMessage(this.window);
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    saveMessage.setVisible(true);
+                }
+            });
+        }
         this.execute();
     }
 
@@ -79,12 +86,11 @@ public class Repository<M> extends SwingWorker<Void, Void> {
         }catch (Exception e){
             e.printStackTrace();
         }
-        Thread.sleep(3000);
         return null;
     }
 
     @Override
     protected void done() {
-        this.saveMessage.dispose();
+        if (this.saveMessage != null) this.saveMessage.dispose();
     }
 }

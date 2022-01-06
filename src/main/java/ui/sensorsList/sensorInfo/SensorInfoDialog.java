@@ -9,7 +9,6 @@ import measurements.Measurement;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
-import support.Lists;
 import model.Sensor;
 import ui.ButtonCell;
 import ui.UI_Container;
@@ -73,7 +72,7 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
         this.labelErrorFormula = new ButtonCell(true, Strings.ERROR_FORMULA);
 
         ArrayList<String>measurementsNames = new ArrayList<>();
-        ArrayList<Measurement>measurements = Lists.measurements();
+        /*ArrayList<Measurement>measurements = Lists.measurements();
         for (Measurement measurement : Objects.requireNonNull(measurements)) {
             boolean exist = false;
             for (String measurementsName : measurementsNames) {
@@ -84,7 +83,7 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
             if (!exist) {
                 measurementsNames.add(measurement.getName());
             }
-        }
+        }*/
         this.measurementsList = new JComboBox<>(measurementsNames.toArray(new String[0]));
 
         String typeHint = "Тип ПВП(Застосовується у протоколі)";

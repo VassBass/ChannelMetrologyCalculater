@@ -1,7 +1,7 @@
 package ui.sensorsList;
 
+import application.Application;
 import constants.Strings;
-import support.Lists;
 import model.Sensor;
 
 import javax.swing.*;
@@ -28,7 +28,7 @@ public class SensorsListTable extends JTable {
         String[]columnsHeader = new String[] {Strings._NAME, Strings.TYPE, Strings.TYPE_OF_MEASUREMENT};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Sensor>sensors = Lists.sensors();
+        ArrayList<Sensor>sensors = Application.context.sensorsController.getAll();
         for (Sensor sensor : Objects.requireNonNull(sensors)) {
             String[] data = new String[3];
             data[0] = sensor.getName();

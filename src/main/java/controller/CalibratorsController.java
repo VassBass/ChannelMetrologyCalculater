@@ -5,25 +5,31 @@ import constants.Strings;
 import model.Calibrator;
 import model.Model;
 import repository.Repository;
-import ui.main.MainScreen;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class CalibratorsController implements Controller<Calibrator> {
-    private final MainScreen mainScreen;
-    private final ArrayList<Calibrator> calibrators;
+public class CalibratorsController {
+    private Window window;
+    private ArrayList<Calibrator> calibrators;
 
-    public CalibratorsController(MainScreen mainScreen){
-        this.mainScreen = mainScreen;
-        this.calibrators = new Repository<Calibrator>(null, Model.CALIBRATOR).readList();
+    public void init(Window window){
+        this.window = window;
+        try {
+            this.calibrators = new Repository<Calibrator>(null, Model.CALIBRATOR).readList();
+        }catch (Exception e){
+            System.out.println("File \"" + FileBrowser.FILE_CALIBRATORS.getName() + "\" is empty");
+            this.calibrators = this.resetToDefault();
+        }
     }
 
-    @Override
-    public void resetToDefault() {
-        this.calibrators.clear();
+    public ArrayList<Calibrator> resetToDefault() {
+        if (this.calibrators == null){
+            this.calibrators = new ArrayList<>();
+        }else this.calibrators.clear();
 
         Calibrator fluke725 = new Calibrator();
         fluke725.setType("Fluke 725");
@@ -138,14 +144,13 @@ public class CalibratorsController implements Controller<Calibrator> {
         this.calibrators.add(ROSEMOUNT_8714DQ4);
 
         this.save();
+        return this.calibrators;
     }
 
-    @Override
     public ArrayList<Calibrator> getAll() {
         return this.calibrators;
     }
 
-    @Override
     public ArrayList<Calibrator> add(Calibrator calibrator) {
         boolean exist = false;
         for (Calibrator cal : this.calibrators){
@@ -163,8 +168,7 @@ public class CalibratorsController implements Controller<Calibrator> {
         return this.calibrators;
     }
 
-    @Override
-    public void remove(Calibrator calibrator) {
+    public ArrayList<Calibrator> remove(Calibrator calibrator) {
         boolean removed = false;
 
         for (Calibrator cal : this.calibrators){
@@ -180,10 +184,10 @@ public class CalibratorsController implements Controller<Calibrator> {
         }else {
             this.showNotFoundMessage();
         }
+        return this.calibrators;
     }
 
-    @Override
-    public void set(Calibrator oldCalibrator, Calibrator newCalibrator) {
+    public ArrayList<Calibrator> set(Calibrator oldCalibrator, Calibrator newCalibrator) {
         if (oldCalibrator != null){
             if (newCalibrator == null){
                 this.remove(oldCalibrator);
@@ -198,9 +202,20 @@ public class CalibratorsController implements Controller<Calibrator> {
             }
             this.save();
         }
+        return this.calibrators;
     }
 
-    @Override
+    public int getIndex(String calibratorName) {
+        for (int index=0;index<this.calibrators.size();index++) {
+            Calibrator calibrator = this.calibrators.get(index);
+            if (calibrator.getName().equals(calibratorName)) {
+                return index;
+            }
+        }
+        this.showNotFoundMessage();
+        return -1;
+    }
+
     public Calibrator get(String calibratorName) {
         for (Calibrator calibrator : this.calibrators) {
             if (calibrator.getName().equals(calibratorName)) {
@@ -211,7 +226,6 @@ public class CalibratorsController implements Controller<Calibrator> {
         return null;
     }
 
-    @Override
     public Calibrator get(int index) {
         if (index >= 0) {
             return this.calibrators.get(index);
@@ -220,25 +234,22 @@ public class CalibratorsController implements Controller<Calibrator> {
         }
     }
 
-    @Override
     public void clear() {
         this.calibrators.clear();
         this.save();
     }
 
-    @Override
-    public void save() {
-        new Repository<Calibrator>(this.mainScreen, Model.CALIBRATOR).writeList(this.calibrators);
+    private void save() {
+        new Repository<Calibrator>(this.window, Model.CALIBRATOR).writeList(this.calibrators);
     }
 
-    @Override
-    public void showNotFoundMessage() {
+    private void showNotFoundMessage() {
         String message = "Калібратор з данною назвою не знайдено в списку калібраторів.";
-        JOptionPane.showMessageDialog(this.mainScreen, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
-    public void showExistMessage() {
+    private void showExistMessage() {
         String message = "Калібратор з данною назвою вже існує в списку калібраторів. Змініть будь ласка назву.";
-        JOptionPane.showMessageDialog(this.mainScreen, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

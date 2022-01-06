@@ -1,5 +1,6 @@
 package ui;
 
+import application.Application;
 import constants.Strings;
 import converters.ConverterUI;
 import ui.main.MainScreen;
@@ -52,7 +53,7 @@ public class LoadDialog extends JDialog implements UI_Container {
     @Override
     public void build() {
         this.setSize(300, 60);
-        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.sizeOfMainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(Application.sizeOfScreen, this));
         this.setResizable(false);
         this.setAlwaysOnTop(true);
 

@@ -3,7 +3,6 @@ package backgroundTasks.controllers;
 import constants.ChannelConstants;
 import converters.VariableConverter;
 import model.Channel;
-import support.Lists;
 import ui.LoadDialog;
 import ui.main.MainScreen;
 
@@ -37,7 +36,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        ArrayList<Channel>channels = Lists.channels();
+        /*ArrayList<Channel>channels = Lists.channels();
         if (channels != null) {
             for (Channel channel : channels) {
                 switch (this.field) {
@@ -108,7 +107,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
                         break;
                 }
             }
-        }
+        }*/
         return null;
     }
 

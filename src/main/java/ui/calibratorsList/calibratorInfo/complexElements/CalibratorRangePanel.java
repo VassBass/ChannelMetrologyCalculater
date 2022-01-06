@@ -3,7 +3,6 @@ package ui.calibratorsList.calibratorInfo.complexElements;
 import constants.MeasurementConstants;
 import converters.VariableConverter;
 import measurements.Measurement;
-import support.Lists;
 import ui.UI_Container;
 
 import javax.swing.*;
@@ -57,12 +56,12 @@ public class CalibratorRangePanel extends JPanel implements UI_Container {
         public void setList(String measurement){
             this.list.clear();
             if (measurement != null && measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
-                ArrayList<Measurement> measurements = Lists.measurements();
+                /*ArrayList<Measurement> measurements = Lists.measurements();
                 for (Measurement m : Objects.requireNonNull(measurements)) {
                     if (m.getName().equals(measurement)) {
                         this.list.add(m.getValue());
                     }
-                }
+                }*/
             }else {
                 this.list.add(" - ");
             }

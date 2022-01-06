@@ -5,7 +5,6 @@ import measurements.calculation.Calculation;
 import measurements.certificates.Certificate;
 import converters.ConverterUI;
 import model.Channel;
-import support.Lists;
 import constants.Strings;
 import support.Values;
 import ui.UI_Container;
@@ -135,7 +134,7 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             certificate.print();
             dispose();
-            mainScreen.update(Lists.channels(),false, null,null);
+            //mainScreen.update(Lists.channels(),false, null,null);
         }
     };
 
@@ -144,7 +143,7 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             certificate.show();
             dispose();
-            mainScreen.update(Lists.channels(),false, null,null);
+            //mainScreen.update(Lists.channels(),false, null,null);
         }
     };
 
@@ -153,7 +152,7 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             certificate.openInExplorer();
             dispose();
-            mainScreen.update(Lists.channels(), false, null, null);
+            //mainScreen.update(Lists.channels(), false, null, null);
         }
     };
 
@@ -161,7 +160,7 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            mainScreen.update(Lists.channels(), false, null, null);
+            //mainScreen.update(Lists.channels(), false, null, null);
         }
     };
 

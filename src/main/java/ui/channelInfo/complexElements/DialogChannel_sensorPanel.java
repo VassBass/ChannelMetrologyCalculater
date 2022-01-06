@@ -1,10 +1,10 @@
 package ui.channelInfo.complexElements;
 
+import application.Application;
 import constants.MeasurementConstants;
 import constants.Strings;
 import model.Channel;
 import model.Sensor;
-import support.Lists;
 import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
-public class DialogChannel_sensorPanel extends JPanel implements UI_Container {
+public class DialogChannel_sensorPanel /*extends JPanel implements UI_Container*/ {/*
     private final DialogChannel parent;
 
     private JComboBox<String>sensorsList;
@@ -119,27 +119,22 @@ public class DialogChannel_sensorPanel extends JPanel implements UI_Container {
 
     private String[] sensorsArray(String measurement) {
         ArrayList<String> s = new ArrayList<>();
-        for (int x = 0; x< Objects.requireNonNull(Lists.sensors()).size(); x++) {
-            if (Objects.requireNonNull(Lists.sensors()).get(x).getMeasurement().equals(measurement)){
-                s.add(Objects.requireNonNull(Lists.sensors()).get(x).getName());
+        ArrayList<Sensor>sensorsList = Application.context.sensorsController.getAll();
+        for (Sensor sensor : sensorsList) {
+            if (sensor.getMeasurement().equals(measurement)) {
+                s.add(sensor.getName());
             }
         }
         return s.toArray(new String[0]);
     }
 
     public Sensor getSensor(){
-        ArrayList<Sensor>sensors = Lists.sensors();
         String selectedSensor = Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString();
 
-        for (Sensor sensor : Objects.requireNonNull(sensors)){
-            if (sensor.getName().equals(selectedSensor)){
-                return sensor;
-            }
-        }
-        return null;
+        return Application.context.sensorsController.get(selectedSensor);
     }
 
     public String getSerialNumber(){
         return this.serialNumber.getText();
     }
-}
+*/}

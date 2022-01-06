@@ -1,11 +1,10 @@
 package ui.pathLists;
 
+import application.Application;
 import constants.Strings;
-import support.Lists;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.util.Objects;
 
 public class PathListsTable extends JTable {
 
@@ -28,16 +27,16 @@ public class PathListsTable extends JTable {
         String[] elements;
         switch (list){
             case Strings.AREAS_LIST:
-                elements = Objects.requireNonNull(Lists.areas()).toArray(new String[0]);
+                elements = Application.context.areasController.getAllInStrings();
                 break;
             case Strings.PROCESSES_LIST:
-                elements = Objects.requireNonNull(Lists.processes()).toArray(new String[0]);
+                elements = Application.context.processesController.getAllInStrings();
                 break;
             case Strings.INSTALLATIONS_LIST:
-                elements = Objects.requireNonNull(Lists.installations()).toArray(new String[0]);
+                elements = Application.context.installationsController.getAllInStrings();
                 break;
             default:
-                elements = Objects.requireNonNull(Lists.departments()).toArray(new String[0]);
+                elements = Application.context.departmentsController.getAllInStrings();
                 break;
         }
 

@@ -1,7 +1,7 @@
 package backgroundTasks.controllers;
 
+import application.Application;
 import constants.Strings;
-import support.Lists;
 import ui.LoadDialog;
 import ui.pathLists.PathListsDialog;
 
@@ -38,16 +38,16 @@ public class PutPathElementInList extends SwingWorker<Void, Void> {
         ArrayList<String>elementsList = null;
         switch (this.elementType){
             case Strings.DEPARTMENT:
-                elementsList = Lists.departments();
+                elementsList = Application.context.departmentsController.getAll();
                 break;
             case Strings.AREA:
-                elementsList = Lists.areas();
+                elementsList = Application.context.areasController.getAll();
                 break;
             case Strings.PROCESS:
-                elementsList = Lists.processes();
+                elementsList = Application.context.processesController.getAll();
                 break;
             case Strings.INSTALLATION:
-                elementsList = Lists.installations();
+                elementsList = Application.context.installationsController.getAll();
                 break;
         }
         int indexToRemove = -1;
@@ -84,16 +84,16 @@ public class PutPathElementInList extends SwingWorker<Void, Void> {
 
         switch (this.elementType){
             case Strings.DEPARTMENT:
-                Lists.saveDepartmentsListToFile(elementsList);
+                //Lists.saveDepartmentsListToFile(elementsList);
                 break;
             case Strings.AREA:
-                Lists.saveAreasListToFile(elementsList);
+                //Lists.saveAreasListToFile(elementsList);
                 break;
             case Strings.PROCESS:
-                Lists.saveProcessesListToFile(elementsList);
+                //Lists.saveProcessesListToFile(elementsList);
                 break;
             case Strings.INSTALLATION:
-                Lists.saveInstallationsListToFile(elementsList);
+                //Lists.saveInstallationsListToFile(elementsList);
                 break;
         }
 

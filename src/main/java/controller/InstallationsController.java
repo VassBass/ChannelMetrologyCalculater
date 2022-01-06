@@ -3,23 +3,29 @@ package controller;
 import constants.Strings;
 import model.Model;
 import repository.Repository;
-import ui.main.MainScreen;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 
-public class InstallationsController implements Controller<String> {
-    private final MainScreen mainScreen;
-    private final ArrayList<String> installations;
+public class InstallationsController {
+    private Window window;
+    private ArrayList<String> installations;
 
-    public InstallationsController(MainScreen mainScreen){
-        this.mainScreen = mainScreen;
-        this.installations = new Repository<String>(null, Model.INSTALLATION).readList();
+    public void init(Window window){
+        this.window = window;
+        try {
+            this.installations = new Repository<String>(null, Model.INSTALLATION).readList();
+        }catch (Exception e){
+            System.out.println("File \"" + FileBrowser.FILE_INSTALLATIONS.getName() + "\" is empty");
+            this.installations = this.resetToDefault();
+        }
     }
 
-    @Override
-    public void resetToDefault() {
-        this.installations.clear();
+    public ArrayList<String> resetToDefault() {
+        if (this.installations == null){
+            this.installations = new ArrayList<>();
+        }else this.installations.clear();
 
         String conveyor = "Конвеєр";
         String KKD = "ККД (Конусна крупного дроблення)";
@@ -66,14 +72,17 @@ public class InstallationsController implements Controller<String> {
         this.installations.add(cooller);
 
         this.save();
+        return this.installations;
     }
 
-    @Override
     public ArrayList<String> getAll() {
         return this.installations;
     }
 
-    @Override
+    public String[] getAllInStrings(){
+        return this.installations.toArray(new String[0]);
+    }
+
     public ArrayList<String> add(String object) {
         if (!this.installations.contains(object)){
             this.installations.add(object);
@@ -82,18 +91,17 @@ public class InstallationsController implements Controller<String> {
         return this.installations;
     }
 
-    @Override
-    public void remove(String object) {
+    public ArrayList<String> remove(String object) {
         if (this.installations.contains(object)){
             this.installations.remove(object);
             this.save();
         }else {
             this.showNotFoundMessage();
         }
+        return this.installations;
     }
 
-    @Override
-    public void set(String oldObject, String newObject) {
+    public ArrayList<String> set(String oldObject, String newObject) {
         if (oldObject != null){
             if (newObject == null){
                 this.remove(oldObject);
@@ -103,20 +111,13 @@ public class InstallationsController implements Controller<String> {
             }
             this.save();
         }
+        return this.installations;
     }
 
-    @Override
-    public String get(String object) {
-        int index = this.installations.indexOf(object);
-        if (index >= 0) {
-            return this.installations.get(index);
-        }else {
-            this.showNotFoundMessage();
-            return null;
-        }
+    public int getIndex(String object) {
+        return this.installations.indexOf(object);
     }
 
-    @Override
     public String get(int index) {
         if (index >= 0) {
             return this.installations.get(index);
@@ -125,20 +126,17 @@ public class InstallationsController implements Controller<String> {
         }
     }
 
-    @Override
     public void clear() {
         this.installations.clear();
         this.save();
     }
 
-    @Override
-    public void save() {
-        new Repository<String>(this.mainScreen, Model.INSTALLATION).writeList(this.installations);
+    private void save() {
+        new Repository<String>(this.window, Model.INSTALLATION).writeList(this.installations);
     }
 
-    @Override
-    public void showNotFoundMessage() {
+    private void showNotFoundMessage() {
         String message = "Установка з такою назвою не знайдена в списку установок.";
-        JOptionPane.showMessageDialog(this.mainScreen, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

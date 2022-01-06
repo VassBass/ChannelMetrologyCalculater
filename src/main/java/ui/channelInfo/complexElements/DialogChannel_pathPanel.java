@@ -1,13 +1,12 @@
 package ui.channelInfo.complexElements;
 
-import support.Lists;
 import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 
-public class DialogChannel_pathPanel extends JPanel implements UI_Container {
+public class DialogChannel_pathPanel /*extends JPanel implements UI_Container*/ {/*
 
     private JComboBox<String>departments;
     private JComboBox<String>areas;
@@ -84,4 +83,4 @@ public class DialogChannel_pathPanel extends JPanel implements UI_Container {
     public String getInstallation(){
         return Objects.requireNonNull(this.installations.getSelectedItem()).toString();
     }
-}
+*/}
