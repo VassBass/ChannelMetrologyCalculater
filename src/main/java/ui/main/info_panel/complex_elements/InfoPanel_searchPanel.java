@@ -1,7 +1,6 @@
 package ui.main.info_panel.complex_elements;
 
 import application.Application;
-import ui.main.MainScreen;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -36,8 +35,6 @@ public class InfoPanel_searchPanel extends JPanel {
     private static final int LIST = 1;
     private static final int CHECK = 3;
 
-    private final MainScreen mainScreen;
-
     private final Color buttonsColor = new Color(51,51,51);
 
     private JButton buttonSearch;
@@ -46,9 +43,8 @@ public class InfoPanel_searchPanel extends JPanel {
     private JComboBox<String>valueComboBox;
     private JCheckBox valueSuitability;
 
-    public InfoPanel_searchPanel(MainScreen mainScreen){
+    public InfoPanel_searchPanel(){
         super(new GridBagLayout());
-        this.mainScreen = mainScreen;
 
         this.createElements();
         this.setReactions();
@@ -81,7 +77,7 @@ public class InfoPanel_searchPanel extends JPanel {
 
         this.buttonSearch.addActionListener(this.clickSearch);
 
-        this.valueComboBox.addItemListener(this.changeField);
+        this.field.addItemListener(this.changeField);
     }
 
     private void build(int element) {
@@ -154,20 +150,25 @@ public class InfoPanel_searchPanel extends JPanel {
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED){
-                switch (field.getSelectedIndex()){
-                    default:
-                        build(TEXT);
-                        break;
-                    case 1:
-                    case 2:
-                    case 11:
-                        build(LIST);
-                        break;
-                    case 14:
-                        build(CHECK);
-                        break;
-                }
-                mainScreen.refresh();
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        switch (field.getSelectedIndex()){
+                            default:
+                                build(TEXT);
+                                break;
+                            case 1:
+                            case 2:
+                            case 11:
+                                build(LIST);
+                                break;
+                            case 14:
+                                build(CHECK);
+                                break;
+                        }
+                        Application.context.mainScreen.refresh();
+                    }
+                });
             }
         }
     };

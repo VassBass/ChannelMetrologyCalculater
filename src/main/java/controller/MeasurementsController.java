@@ -18,28 +18,30 @@ public class MeasurementsController {
         try {
             this.measurements = new Repository<Measurement>(null, Model.MEASUREMENT).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_CHANNELS.getName() + "\" is empty");
+            System.out.println("File \"" + FileBrowser.FILE_MEASUREMENTS.getName() + "\" is empty");
             this.measurements = this.loadDefault();
         }
     }
 
     private ArrayList<Measurement> loadDefault(){
-        ArrayList<Measurement>measurements = new ArrayList<>();
+        if (this.measurements == null){
+            this.measurements = new ArrayList<>();
+        }else this.measurements.clear();
 
-        measurements.add(new Temperature(MeasurementConstants.DEGREE_CELSIUS));
+        this.measurements.add(new Temperature(MeasurementConstants.DEGREE_CELSIUS));
 
-        measurements.add(new Pressure(MeasurementConstants.KPA));
-        measurements.add(new Pressure(MeasurementConstants.PA));
-        measurements.add(new Pressure(MeasurementConstants.MM_ACVA));
-        measurements.add(new Pressure(MeasurementConstants.KG_SM2));
-        measurements.add(new Pressure(MeasurementConstants.KG_MM2));
-        measurements.add(new Pressure(MeasurementConstants.BAR));
-        measurements.add(new Pressure(MeasurementConstants.ML_BAR));
+        this.measurements.add(new Pressure(MeasurementConstants.KPA));
+        this.measurements.add(new Pressure(MeasurementConstants.PA));
+        this.measurements.add(new Pressure(MeasurementConstants.MM_ACVA));
+        this.measurements.add(new Pressure(MeasurementConstants.KG_SM2));
+        this.measurements.add(new Pressure(MeasurementConstants.KG_MM2));
+        this.measurements.add(new Pressure(MeasurementConstants.BAR));
+        this.measurements.add(new Pressure(MeasurementConstants.ML_BAR));
 
-        measurements.add(new Consumption(MeasurementConstants.M3_HOUR));
+        this.measurements.add(new Consumption(MeasurementConstants.M3_HOUR));
 
         this.save();
-        return measurements;
+        return this.measurements;
     }
 
     public String[]getAllNames(){

@@ -29,7 +29,7 @@ public class InfoPanel extends JPanel implements UI_Container {
     public void createElements() {
         this.infoTable = new InfoPanel_infoTable();
         this.buttonsPanel = new InfoPanel_buttonsPanel(mainScreen);
-        this.searchPanel = new InfoPanel_searchPanel(mainScreen);
+        this.searchPanel = new InfoPanel_searchPanel();
     }
 
     @Override

@@ -56,7 +56,6 @@ public class MainScreen extends JFrame {
     private void setReactions() {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(windowListener);
-
     }
 
     private void build() {
