@@ -66,10 +66,16 @@ public class InfoPanel_searchPanel extends JPanel {
                 SENSOR_NAME, SENSOR_TYPE, PROTOCOL_NUMBER,
                 REFERENCE, SUITABILITY
         });
-        this.field.setAlignmentX(JComboBox.CENTER_ALIGNMENT);
+        ((JLabel)this.field.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+
         this.valueText = new JTextField(10);
+        this.valueText.setHorizontalAlignment(JTextField.CENTER);
+
         this.valueComboBox = new JComboBox<>();
+        ((JLabel)this.valueComboBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+
         this.valueSuitability = new JCheckBox(SUITABLE);
+        this.valueSuitability.setHorizontalAlignment(JCheckBox.CENTER);
     }
 
     private void setReactions() {
