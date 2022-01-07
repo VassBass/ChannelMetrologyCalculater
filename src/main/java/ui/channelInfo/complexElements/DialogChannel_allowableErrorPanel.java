@@ -3,7 +3,6 @@ package ui.channelInfo.complexElements;
 import constants.MeasurementConstants;
 import converters.ErrorConverter;
 import converters.VariableConverter;
-import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -11,7 +10,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
 
-public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Container {
+public class DialogChannel_allowableErrorPanel extends JPanel {
     private final DialogChannel parent;
 
     private JLabel labelPercent;
@@ -30,7 +29,6 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
         this.build();
     }
 
-    @Override
     public void createElements() {
         this.labelPercent = new JLabel("% ");
         this.and = new JLabel(" та ");
@@ -40,13 +38,11 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
         this.errorValue = new JTextField("0.00", 5);
     }
 
-    @Override
     public void setReactions() {
-        //this.errorPercent.addFocusListener(focus);
-        //this.errorValue.addFocusListener(focus);
+        this.errorPercent.addFocusListener(focus);
+        this.errorValue.addFocusListener(focus);
     }
 
-    @Override
     public void build() {
         this.add(errorPercent);
         this.add(labelPercent);
@@ -55,7 +51,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
         this.add(value);
     }
 
-    public void update(double range) {
+    public void updateRange(double range) {
         double errorPercent = Double.parseDouble(this.errorPercent.getText());
         double error = ErrorConverter.getErrorFrom(errorPercent, true, range);
         String errorString;
@@ -67,7 +63,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
         this.errorValue.setText(errorString);
     }
 
-    public void update(String measurementValue){
+    public void updateValue(String measurementValue){
         if (measurementValue != null){
             this.value.setText(measurementValue);
         }
@@ -79,7 +75,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
         this.errorValue.setEnabled(enabled);
     }
 
-    public void update(double error, boolean inPercent, double range){
+    public void updateError(double error, boolean inPercent, double range){
         String errorPercent, errorValue;
         if (inPercent){
             errorPercent = String.format(Locale.ENGLISH, "%.2f", error);
@@ -100,7 +96,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
         this.errorValue.setText(errorValue);
     }
 
-    /*private final FocusListener focus = new FocusListener() {
+    private final FocusListener focus = new FocusListener() {
         @Override
         public void focusGained(FocusEvent e) {
             JTextField item = (JTextField) e.getSource();
@@ -142,6 +138,5 @@ public class DialogChannel_allowableErrorPanel extends JPanel implements UI_Cont
 
     public double getAllowableErrorPercent(){
         return Double.parseDouble(this.errorPercent.getText());
-    }*/
-
+    }
 }

@@ -1,10 +1,9 @@
 package backgroundTasks.controllers;
 
 import constants.ChannelConstants;
-import converters.VariableConverter;
 import model.Channel;
 import ui.LoadDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;

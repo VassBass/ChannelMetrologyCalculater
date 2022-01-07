@@ -4,12 +4,11 @@ import constants.Strings;
 import model.Channel;
 import model.Sensor;
 import ui.LoadDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class SaveImportedChannels extends SwingWorker<Void, Void> {
     private final MainScreen mainScreen;

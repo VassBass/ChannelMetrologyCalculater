@@ -2,7 +2,6 @@ package ui.channelInfo.complexElements;
 
 import constants.MeasurementConstants;
 import converters.VariableConverter;
-import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -10,7 +9,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
 
-public class DialogChannel_rangePanel extends JPanel implements UI_Container {
+public class DialogChannel_rangePanel extends JPanel {
     private final DialogChannel parent;
 
     private JTextField minRange;
@@ -29,7 +28,6 @@ public class DialogChannel_rangePanel extends JPanel implements UI_Container {
         this.build();
     }
 
-    @Override
     public void createElements() {
         this.minRange = new JTextField("0.00",5);
         this.dath = new JLabel(" - ");
@@ -37,13 +35,11 @@ public class DialogChannel_rangePanel extends JPanel implements UI_Container {
         this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS.getValue());
     }
 
-    @Override
     public void setReactions() {
         this.minRange.addFocusListener(minRangeFocus);
         this.maxRange.addFocusListener(maxRangeFocus);
     }
 
-    @Override
     public void build() {
         this.add(this.minRange);
         this.add(this.dath);
@@ -84,7 +80,7 @@ public class DialogChannel_rangePanel extends JPanel implements UI_Container {
             setTrueValues(min, max);
             double range = max - min;
 
-            //parent.allowableErrorPanel.update(range);
+            parent.allowableErrorPanel.updateRange(range);
         }
     };
 
@@ -105,7 +101,7 @@ public class DialogChannel_rangePanel extends JPanel implements UI_Container {
             setTrueValues(min, max);
             double range = max - min;
 
-            //parent.allowableErrorPanel.update(range);
+            parent.allowableErrorPanel.updateRange(range);
         }
     };
 

@@ -3,7 +3,6 @@ package ui;
 import application.Application;
 import constants.Strings;
 import converters.ConverterUI;
-import ui.main.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;

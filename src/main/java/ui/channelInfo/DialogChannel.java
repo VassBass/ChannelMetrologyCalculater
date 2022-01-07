@@ -1,15 +1,13 @@
 package ui.channelInfo;
 
-import backgroundTasks.controllers.PutChannelInList;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
 import measurements.Measurement;
 import model.Sensor;
 import model.Channel;
 import constants.Strings;
-import ui.UI_Container;
 import ui.channelInfo.complexElements.*;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -18,7 +16,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
+public class DialogChannel extends JDialog {
+    public static final String INFORMATION_ABOUT_CHANNEL = "Інформація вимірювального каналу";
+
     private final MainScreen parent;
     private final DialogChannel current;
 
@@ -56,7 +56,7 @@ public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
     private Color defaultTextColor;
 
     public DialogChannel(MainScreen parent, Channel oldChannel){
-        super(parent, Strings.INFORMATION_ABOUT_CHANNEL, true);
+        super(parent, INFORMATION_ABOUT_CHANNEL, true);
         this.parent = parent;
         this.current = this;
         this.oldChannel = oldChannel;
@@ -66,7 +66,6 @@ public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
         this.build();
     }
 
-    @Override
     public void createElements(){
         this.codeLabel = new JLabel("*".concat(Strings.CODE).concat(": "));
         this.userCode = new JTextField(10);
@@ -116,7 +115,6 @@ public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
         this.defaultTextColor = this.codeLabel.getForeground();
     }
 
-    @Override
     public void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -127,7 +125,6 @@ public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
         this.positiveButton.addActionListener(clickPositiveButton);
     }
 
-    @Override
     public void build() {
         if (this.oldChannel == null){
             this.setMeasurement(null);
@@ -145,7 +142,7 @@ public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
             this.rangePanel.update(this.oldChannel.getMeasurement().getValue());
             this.rangePanel.update(this.oldChannel.getRangeMin(), this.oldChannel.getRangeMax());
             double range = this.oldChannel.getRangeMax() - this.oldChannel.getRangeMin();
-            this.allowableErrorPanel.update(this.oldChannel.getAllowableError(), false, range);
+            this.allowableErrorPanel.updateError(this.oldChannel.getAllowableError(), false, range);
             this.userProtocolNumber.setText(this.oldChannel.getNumberOfProtocol());
             if (this.sensorRangePanel != null){
                 this.sensorRangePanel.update(this.oldChannel.getSensor());
@@ -256,7 +253,7 @@ public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
                 Sensor sensor = this.sensorPanel.getSensor();
                 sensor.setValue(channel.getMeasurement().getValue());
                 double errorSensor = sensor.getError(channel);
-                this.allowableErrorPanel.update(errorSensor, false, channel.getRange());
+                this.allowableErrorPanel.updateError(errorSensor, false, channel.getRange());
                 this.allowableErrorPanel.setEnabled(false);
                 break;
         }
@@ -276,7 +273,6 @@ public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
         public void actionPerformed(ActionEvent e) {
             if (!allFieldsAreFilled()) {return;}
 
-            new PutChannelInList(current, parent).execute();
         }
     };
 
@@ -368,5 +364,4 @@ public class DialogChannel /*extends JDialog implements UI_Container*/ {/*
             }
         }
     }
-*/
 }

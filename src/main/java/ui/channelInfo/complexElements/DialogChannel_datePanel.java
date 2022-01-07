@@ -1,7 +1,6 @@
 package ui.channelInfo.complexElements;
 
 import constants.CalendarConstants;
-import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -10,7 +9,7 @@ import java.awt.event.FocusListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class DialogChannel_datePanel extends JPanel implements UI_Container {
+public class DialogChannel_datePanel extends JPanel {
     private final DialogChannel parent;
 
     private JTextField day;
@@ -28,7 +27,6 @@ public class DialogChannel_datePanel extends JPanel implements UI_Container {
         this.build();
     }
 
-    @Override
     public void createElements(){
         this.day = new JTextField(2);
         this.day.setHorizontalAlignment(SwingConstants.CENTER);
@@ -40,14 +38,12 @@ public class DialogChannel_datePanel extends JPanel implements UI_Container {
         this.year.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    @Override
     public void setReactions(){
         this.day.addFocusListener(dayFocus);
         this.month.addFocusListener(monthFocus);
-        //this.year.addFocusListener(yearFocus);
+        this.year.addFocusListener(yearFocus);
     }
 
-    @Override
     public void build(){
         this.setDate(Calendar.getInstance());
         this.add(day);
@@ -136,7 +132,7 @@ public class DialogChannel_datePanel extends JPanel implements UI_Container {
                 }
             }
 
-            //parent.frequencyPanel.update(getDate());
+            parent.frequencyPanel.update(getDate());
         }
     };
 
@@ -172,7 +168,7 @@ public class DialogChannel_datePanel extends JPanel implements UI_Container {
                 }
             }
 
-            //parent.frequencyPanel.update(getDate());
+            parent.frequencyPanel.update(getDate());
         }
     };
 
@@ -210,7 +206,7 @@ public class DialogChannel_datePanel extends JPanel implements UI_Container {
                 year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             }
 
-            //parent.frequencyPanel.update(getDate());
+            parent.frequencyPanel.update(getDate());
         }
     };
 }

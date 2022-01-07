@@ -2,9 +2,8 @@ package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
 import model.Calibrator;
-import support.*;
 import ui.LoadDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;

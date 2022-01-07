@@ -5,18 +5,16 @@ import constants.MeasurementConstants;
 import constants.Strings;
 import model.Channel;
 import model.Sensor;
-import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
-public class DialogChannel_sensorPanel /*extends JPanel implements UI_Container*/ {/*
+public class DialogChannel_sensorPanel extends JPanel {
     private final DialogChannel parent;
 
     private JComboBox<String>sensorsList;
@@ -33,7 +31,6 @@ public class DialogChannel_sensorPanel /*extends JPanel implements UI_Container*
         this.build();
     }
 
-    @Override
     public void createElements() {
         this.sensorsList = new JComboBox<>();
         this.sensorsList.setEditable(false);
@@ -43,12 +40,10 @@ public class DialogChannel_sensorPanel /*extends JPanel implements UI_Container*
         this.serialNumber = new JTextField(10);
     }
 
-    @Override
     public void setReactions() {
         this.sensorsList.addItemListener(changeSensorName);
     }
 
-    @Override
     public void build() {
         this.add(this.sensorsList);
     }
@@ -65,7 +60,7 @@ public class DialogChannel_sensorPanel /*extends JPanel implements UI_Container*
                     Sensor sensor = getSensor();
                     sensor.setValue(channel.getMeasurement().getValue());
                     double errorSensorInPercent = sensor.getError(channel);
-                    parent.allowableErrorPanel.update(errorSensorInPercent, true, channel.getRange());
+                    parent.allowableErrorPanel.updateError(errorSensorInPercent, true, channel.getRange());
                     if (sensor.getType().toUpperCase(Locale.ROOT).contains(Strings.SENSOR_ROSEMOUNT)){
                         setRosemountValues();
                     }else {
@@ -118,14 +113,7 @@ public class DialogChannel_sensorPanel /*extends JPanel implements UI_Container*
     }
 
     private String[] sensorsArray(String measurement) {
-        ArrayList<String> s = new ArrayList<>();
-        ArrayList<Sensor>sensorsList = Application.context.sensorsController.getAll();
-        for (Sensor sensor : sensorsList) {
-            if (sensor.getMeasurement().equals(measurement)) {
-                s.add(sensor.getName());
-            }
-        }
-        return s.toArray(new String[0]);
+        return Application.context.sensorsController.getAllSensorsName(measurement);
     }
 
     public Sensor getSensor(){
@@ -137,4 +125,4 @@ public class DialogChannel_sensorPanel /*extends JPanel implements UI_Container*
     public String getSerialNumber(){
         return this.serialNumber.getText();
     }
-*/}
+}

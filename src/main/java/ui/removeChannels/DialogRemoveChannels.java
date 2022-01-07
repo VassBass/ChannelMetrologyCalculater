@@ -5,7 +5,7 @@ import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
 import ui.UI_Container;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

@@ -1,11 +1,10 @@
 package ui.searchChannel;
 
-import backgroundTasks.controllers.SearchChannels;
 import constants.ChannelConstants;
 import constants.Strings;
 import converters.ConverterUI;
 import ui.UI_Container;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 import ui.searchChannel.complexElements.DialogSearch_searchPanel;
 
 import javax.swing.*;

@@ -2,7 +2,6 @@ package ui.channelInfo.complexElements;
 
 import constants.Strings;
 import converters.VariableConverter;
-import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -12,7 +11,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-public class DialogChannel_frequencyPanel extends JPanel implements UI_Container {
+public class DialogChannel_frequencyPanel extends JPanel {
     private final DialogChannel parent;
 
     private JTextField frequency;
@@ -28,20 +27,16 @@ public class DialogChannel_frequencyPanel extends JPanel implements UI_Container
         this.build();
     }
 
-
-    @Override
     public void createElements() {
         this.frequency = new JTextField("1.00",4);
         this.nextDateLabel = new JLabel(" ".concat(Strings.NEXT_DATE).concat(": "));
         this.nextDate = new JLabel();
     }
 
-    @Override
     public void setReactions() {
         this.frequency.addFocusListener(changeFocusFromFrequency);
     }
 
-    @Override
     public void build() {
         this.setNextDate(Calendar.getInstance());
         this.add(frequency);
@@ -53,7 +48,7 @@ public class DialogChannel_frequencyPanel extends JPanel implements UI_Container
         String frequencyString = VariableConverter.roundingDouble2(frequency, Locale.ENGLISH);
         this.frequency.setText(frequencyString);
         if (date == null){
-            //this.setNextDate(this.parent.datePanel.getDate());
+            this.setNextDate(this.parent.datePanel.getDate());
         }else {
             this.setNextDate(date);
         }
@@ -83,7 +78,7 @@ public class DialogChannel_frequencyPanel extends JPanel implements UI_Container
                 frequency.setText(afterCheck);
             }
 
-            //update(parent.datePanel.getDate());
+            update(parent.datePanel.getDate());
         }
     };
 

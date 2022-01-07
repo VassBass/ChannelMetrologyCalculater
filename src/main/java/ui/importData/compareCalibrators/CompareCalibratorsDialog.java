@@ -1,28 +1,5 @@
 package ui.importData.compareCalibrators;
 
-import backgroundTasks.export.ExportData;
-import backgroundTasks.tasks_for_import.SaveImportData;
-import backgroundTasks.tasks_for_import.SaveImportedCalibrators;
-import constants.Strings;
-import converters.ConverterUI;
-import model.Calibrator;
-import model.Channel;
-import model.Sensor;
-import model.Worker;
-import support.*;
-import ui.UI_Container;
-import ui.importData.BreakImportDialog;
-import ui.importData.compareCalibrators.complexElements.CompareCalibratorsInfoPanel;
-import ui.main.MainScreen;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Objects;
-
 public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*/ {/*
     private final MainScreen mainScreen;
     private final JDialog current;

@@ -1,4 +1,4 @@
-package ui.main;
+package ui.mainScreen;
 
 import constants.Strings;
 import converters.VariableConverter;

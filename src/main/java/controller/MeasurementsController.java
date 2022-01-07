@@ -70,6 +70,36 @@ public class MeasurementsController {
         return values;
     }
 
+    public String[]getValues(Measurement measurement){
+        ArrayList<String> values  = new ArrayList<>();
+        for (Measurement m : this.measurements) {
+            if (m.getName().equals(measurement.getName())) {
+                values.add(m.getValue());
+            }
+        }
+        return values.toArray(new String[0]);
+    }
+
+    public String[]getValues(MeasurementConstants measurementName){
+        ArrayList<String> values  = new ArrayList<>();
+        for (Measurement measurement : this.measurements) {
+            if (measurement.getNameConstant() == measurementName) {
+                values.add(measurement.getValue());
+            }
+        }
+        return values.toArray(new String[0]);
+    }
+
+    public String[]getValues(String measurementName){
+        ArrayList<String> values  = new ArrayList<>();
+        for (Measurement measurement : this.measurements) {
+            if (measurement.getName().equals(measurementName)) {
+                values.add(measurement.getValue());
+            }
+        }
+        return values.toArray(new String[0]);
+    }
+
     public ArrayList<Measurement> getAll() {
         return this.measurements;
     }

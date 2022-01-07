@@ -1,30 +1,5 @@
 package ui.calculate.performers;
 
-import backgroundTasks.CertificateFormation;
-import measurements.calculation.Calculation;
-import constants.Value;
-import constants.WorkPositions;
-import converters.ConverterUI;
-import model.Channel;
-import constants.Strings;
-import support.Values;
-import ui.UI_Container;
-import ui.calculate.reference.CalculateReferenceDialog;
-import ui.calculate.verification.CalculateVerificationDialog;
-import ui.main.MainScreen;
-import model.Worker;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.util.ArrayList;
-import java.util.Objects;
-
 @SuppressWarnings("unchecked")
 public class CalculatePerformersDialog /*extends JDialog implements UI_Container*/ {/*
     private final MainScreen mainScreen;

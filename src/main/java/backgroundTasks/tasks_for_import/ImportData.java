@@ -1,23 +1,5 @@
 package backgroundTasks.tasks_for_import;
 
-import backgroundTasks.export.ExportData;
-import model.Calibrator;
-import model.Channel;
-import model.Sensor;
-import model.Worker;
-import support.*;
-import ui.LoadDialog;
-import ui.importData.compareSensors.CompareSensorsDialog;
-import ui.main.MainScreen;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Objects;
-
 public class ImportData /*extends SwingWorker<Integer, Void> */{/*
     private final MainScreen mainScreen;
     private final File importDataFile;

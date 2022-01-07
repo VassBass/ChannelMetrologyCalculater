@@ -1,4 +1,4 @@
-package ui.main;
+package ui.mainScreen;
 
 import model.Channel;
 import constants.Strings;

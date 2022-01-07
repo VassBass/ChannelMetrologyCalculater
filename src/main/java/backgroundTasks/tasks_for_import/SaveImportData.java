@@ -1,18 +1,5 @@
 package backgroundTasks.tasks_for_import;
 
-import constants.Strings;
-import model.Calibrator;
-import model.Channel;
-import model.Sensor;
-import model.Worker;
-import support.*;
-import ui.LoadDialog;
-import ui.main.MainScreen;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-
 public class SaveImportData /*extends SwingWorker<Void, Void>*/ {/*
     private final MainScreen mainScreen;
     private final LoadDialog loadDialog;

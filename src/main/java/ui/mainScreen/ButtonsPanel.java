@@ -1,7 +1,8 @@
-package ui.main;
+package ui.mainScreen;
 
 import constants.Files;
 import constants.Strings;
+import ui.channelInfo.DialogChannel;
 import ui.removeChannels.DialogRemoveChannels;
 
 import javax.swing.*;
@@ -121,7 +122,7 @@ public class ButtonsPanel extends JPanel {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    //new DialogChannel(mainScreen, null).setVisible(true);
+                    new DialogChannel(mainScreen, null).setVisible(true);
                 }
             });
         }

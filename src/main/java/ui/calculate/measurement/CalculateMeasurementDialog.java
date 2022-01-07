@@ -9,8 +9,7 @@ import constants.Strings;
 import support.Values;
 import ui.UI_Container;
 import ui.calculate.measurement.complexElements.*;
-import ui.calculate.start.CalculateStartDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

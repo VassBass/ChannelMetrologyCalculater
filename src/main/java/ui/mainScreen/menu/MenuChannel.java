@@ -1,10 +1,8 @@
-package ui.main.menu;
+package ui.mainScreen.menu;
 
 import constants.Strings;
 import ui.UI_Container;
-import ui.calculate.start.CalculateStartDialog;
-import ui.channelInfo.DialogChannel;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 import ui.removeChannels.DialogRemoveChannels;
 import ui.searchChannel.DialogSearch;
 

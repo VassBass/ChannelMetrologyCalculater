@@ -1,8 +1,8 @@
 package ui.channelInfo.complexElements;
 
+import application.Application;
 import constants.MeasurementConstants;
 import measurements.Measurement;
-import ui.UI_Container;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @SuppressWarnings("unchecked")
-public class DialogChannel_measurementPanel /*extends JPanel implements UI_Container*/ {/*
+public class DialogChannel_measurementPanel extends JPanel {
 
     private final DialogChannel parent;
     private final DialogChannel_measurementPanel currentPanel;
@@ -33,7 +33,6 @@ public class DialogChannel_measurementPanel /*extends JPanel implements UI_Conta
         this.build();
     }
 
-    @Override
     public void createElements(){
         this.measurementName = new JComboBox<>(this.measurementNames());
         this.measurementName.setEditable(false);
@@ -44,7 +43,6 @@ public class DialogChannel_measurementPanel /*extends JPanel implements UI_Conta
         this.measurementValue.setEditable(false);
     }
 
-    @Override
     public void setReactions(){
         this.measurementName.addItemListener(changeName);
         this.measurementValue.addItemListener(changeValue);
@@ -52,7 +50,6 @@ public class DialogChannel_measurementPanel /*extends JPanel implements UI_Conta
         this.measurementValue.addFocusListener(changeFocusFromValue);
     }
 
-    @Override
     public void build(){
         this.add(this.measurementName);
         this.add(this.measurementValue);
@@ -75,9 +72,10 @@ public class DialogChannel_measurementPanel /*extends JPanel implements UI_Conta
 
     private String[] rosemountValues(){
         ArrayList<String> values  = new ArrayList<>();
-        for (int x = 0; x< Objects.requireNonNull(Lists.measurements()).size(); x++){
-            if (Objects.requireNonNull(Lists.measurements()).get(x).getNameConstant() == MeasurementConstants.CONSUMPTION){
-                values.add(Objects.requireNonNull(Lists.measurements()).get(x).getValue());
+        ArrayList<Measurement>measurements = Application.context.measurementsController.getAll();
+        for (Measurement measurement : measurements) {
+            if (measurement.getNameConstant() == MeasurementConstants.CONSUMPTION) {
+                values.add(measurement.getValue());
             }
         }
         values.add(MeasurementConstants.M_S.getValue());
@@ -86,40 +84,17 @@ public class DialogChannel_measurementPanel /*extends JPanel implements UI_Conta
     }
 
     private String[] measurementNames(){
-        ArrayList<String> measurements = new ArrayList<>();
-        for (int x = 0; x< Objects.requireNonNull(Lists.measurements()).size(); x++) {
-            String name = Objects.requireNonNull(Lists.measurements()).get(x).getName();
-            if (measurements.size()>0) {
-                boolean exist = false;
-                for (String measurement : measurements) {
-                    if (measurement.equals(name)) {
-                        exist = true;
-                        break;
-                    }
-                }
-                if (!exist){
-                    measurements.add(name);
-                }
-            }else {
-                measurements.add(name);
-            }
-        }
-        return measurements.toArray(new String[0]);
+        return Application.context.measurementsController.getAllNames();
     }
 
     private String[]measurementValues(String nameOfMeasurement){
-        ArrayList<String> values  = new ArrayList<>();
-        for (int x = 0; x< Objects.requireNonNull(Lists.measurements()).size(); x++){
-            if (Objects.requireNonNull(Lists.measurements()).get(x).getName().equals(nameOfMeasurement)){
-                values.add(Objects.requireNonNull(Lists.measurements()).get(x).getValue());
-            }
-        }
-        return values.toArray(new String[0]);
+        return Application.context.measurementsController.getValues(nameOfMeasurement);
     }
 
     public Measurement getMeasurement(){
-        return new Measurement(MeasurementConstants.getConstantFromString(Objects.requireNonNull(this.measurementName.getSelectedItem()).toString()),
-                MeasurementConstants.getConstantFromString(Objects.requireNonNull(this.measurementValue.getSelectedItem()).toString()));
+        return new Measurement(
+                Objects.requireNonNull(this.measurementName.getSelectedItem()).toString(),
+                Objects.requireNonNull(this.measurementValue.getSelectedItem()).toString());
     }
 
     private final ItemListener changeName = new ItemListener() {
@@ -131,7 +106,7 @@ public class DialogChannel_measurementPanel /*extends JPanel implements UI_Conta
                 String measurementName = Objects.requireNonNull(item.getSelectedItem()).toString();
                 currentPanel.update(measurementName);
                 String measurementVal = Objects.requireNonNull(measurementValue.getSelectedItem()).toString();
-                parent.allowableErrorPanel.update(measurementVal);
+                parent.allowableErrorPanel.updateValue(measurementVal);
                 parent.rangePanel.update(measurementVal);
                 parent.sensorPanel.update(MeasurementConstants.getConstantFromString(measurementName));
 
@@ -149,7 +124,7 @@ public class DialogChannel_measurementPanel /*extends JPanel implements UI_Conta
                 JComboBox<String> item = (JComboBox<String>) e.getSource();
                 String measurementVal = Objects.requireNonNull(item.getSelectedItem()).toString();
 
-                parent.allowableErrorPanel.update(measurementVal);
+                parent.allowableErrorPanel.updateValue(measurementVal);
                 parent.rangePanel.update(measurementVal);
             }
         }
@@ -164,8 +139,8 @@ public class DialogChannel_measurementPanel /*extends JPanel implements UI_Conta
             JComboBox<String> item = (JComboBox<String>) e.getSource();
             String measurementVal = Objects.requireNonNull(item.getSelectedItem()).toString();
 
-            parent.allowableErrorPanel.update(measurementVal);
+            parent.allowableErrorPanel.updateValue(measurementVal);
             parent.rangePanel.update(measurementVal);
         }
     };
-*/}
+}

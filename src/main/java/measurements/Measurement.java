@@ -14,6 +14,17 @@ public class Measurement implements Serializable {
         this.value = value;
     }
 
+    public Measurement(String name, String value){
+        MeasurementConstants n = MeasurementConstants.getConstantFromString(name);
+        MeasurementConstants v = MeasurementConstants.getConstantFromString(value);
+        if (n == null || v == null){
+            throw new NullPointerException();
+        }else {
+            this.name = n;
+            this.value = v;
+        }
+    }
+
     //Getters
     public String getName() {return this.name.getValue();}
     public MeasurementConstants getNameConstant(){return this.name;}

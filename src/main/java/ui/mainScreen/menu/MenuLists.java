@@ -1,11 +1,11 @@
-package ui.main.menu;
+package ui.mainScreen.menu;
 
 import constants.MeasurementConstants;
 import constants.Strings;
 import support.Settings;
 import ui.UI_Container;
 import ui.calibratorsList.CalibratorsListDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 import ui.methodInfo.MethodInfoDialog;
 import ui.pathLists.PathListsDialog;
 import ui.personsList.PersonsListDialog;

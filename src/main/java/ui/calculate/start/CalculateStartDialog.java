@@ -1,28 +1,5 @@
 package ui.calculate.start;
 
-import constants.Value;
-import model.Calibrator;
-import converters.ConverterUI;
-import measurements.Measurement;
-import model.Channel;
-import constants.Strings;
-import support.Values;
-import ui.UI_Container;
-import ui.calculate.measurement.CalculateMeasurementDialog;
-import ui.calculate.start.complexElements.CalculateStartDialog_alarmPanel;
-import ui.calculate.start.complexElements.CalculateStartDialog_datePanel;
-import ui.calculate.start.complexElements.CalculateStartDialog_weatherPanel;
-import ui.main.MainScreen;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Objects;
-
 public class CalculateStartDialog /*extends JDialog implements UI_Container*/ {/*
     private final MainScreen mainScreen;
     private final Channel channel;

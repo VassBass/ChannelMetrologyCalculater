@@ -1,10 +1,10 @@
-package ui.main;
+package ui.mainScreen;
 
 import application.Application;
 import model.Channel;
 import constants.Strings;
 import ui.DialogExit;
-import ui.main.menu.MenuBar;
+import ui.mainScreen.menu.MenuBar;
 
 import javax.swing.*;
 import java.awt.*;

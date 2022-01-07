@@ -1,16 +1,13 @@
 package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
-import model.Channel;
-import support.Comparator;
 import model.Sensor;
 import ui.LoadDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class SaveImportedSensors extends SwingWorker<Void, Void> {
     private final MainScreen mainScreen;

@@ -4,7 +4,7 @@ import constants.Strings;
 import converters.ConverterUI;
 import ui.UI_Container;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -12,7 +12,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class CalibratorsListDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;

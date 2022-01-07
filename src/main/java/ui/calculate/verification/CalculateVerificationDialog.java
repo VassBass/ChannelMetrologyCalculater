@@ -8,12 +8,11 @@ import constants.Strings;
 import support.Values;
 import ui.UI_Container;
 import ui.calculate.measurement.CalculateMeasurementDialog;
-import ui.calculate.performers.CalculatePerformersDialog;
 import ui.calculate.reference.CalculateReferenceDialog;
 import ui.calculate.verification.complexElements.ConsumptionPanel;
 import ui.calculate.verification.complexElements.PressurePanel;
 import ui.calculate.verification.complexElements.TemperaturePanel;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

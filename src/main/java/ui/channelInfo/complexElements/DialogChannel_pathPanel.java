@@ -1,12 +1,12 @@
 package ui.channelInfo.complexElements;
 
-import ui.UI_Container;
+import application.Application;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 
-public class DialogChannel_pathPanel /*extends JPanel implements UI_Container*/ {/*
+public class DialogChannel_pathPanel extends JPanel {
 
     private JComboBox<String>departments;
     private JComboBox<String>areas;
@@ -17,33 +17,27 @@ public class DialogChannel_pathPanel /*extends JPanel implements UI_Container*/ 
         super();
 
         this.createElements();
-        this.setReactions();
         this.build();
     }
 
-    @Override
     public void createElements() {
-        this.departments = new JComboBox<>(Objects.requireNonNull(Lists.departments()).toArray(new String[0]));
+        this.departments = new JComboBox<>(Application.context.departmentsController.getAllInStrings());
         this.departments.setEditable(true);
         this.departments.setBackground(Color.white);
 
-        this.areas = new JComboBox<>(Objects.requireNonNull(Lists.areas()).toArray(new String[0]));
+        this.areas = new JComboBox<>(Application.context.areasController.getAllInStrings());
         this.areas.setEditable(true);
         this.areas.setBackground(Color.white);
 
-        this.processes = new JComboBox<>(Objects.requireNonNull(Lists.processes()).toArray(new String[0]));
+        this.processes = new JComboBox<>(Application.context.processesController.getAllInStrings());
         this.processes.setEditable(true);
         this.processes.setBackground(Color.white);
 
-        this.installations = new JComboBox<>(Objects.requireNonNull(Lists.installations()).toArray(new String[0]));
+        this.installations = new JComboBox<>(Application.context.installationsController.getAllInStrings());
         this.installations.setEditable(true);
         this.installations.setBackground(Color.white);
     }
 
-    @Override
-    public void setReactions() {}
-
-    @Override
     public void build() {
         this.add(this.departments);
         this.add(this.areas);
@@ -83,4 +77,4 @@ public class DialogChannel_pathPanel /*extends JPanel implements UI_Container*/ 
     public String getInstallation(){
         return Objects.requireNonNull(this.installations.getSelectedItem()).toString();
     }
-*/}
+}

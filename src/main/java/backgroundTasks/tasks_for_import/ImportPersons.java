@@ -1,10 +1,9 @@
 package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
-import support.Comparator;
 import model.Worker;
 import ui.LoadDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ImportPersons extends SwingWorker<Integer, Void> {
     private final MainScreen mainScreen;

@@ -9,7 +9,7 @@ import model.Channel;
 import support.Values;
 import ui.LoadDialog;
 import ui.calculate.end.CalculateEndDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;

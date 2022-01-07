@@ -3,7 +3,7 @@ package ui.importData;
 import backgroundTasks.tasks_for_import.*;
 import constants.Files;
 import constants.Strings;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;

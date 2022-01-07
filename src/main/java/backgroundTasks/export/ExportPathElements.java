@@ -4,7 +4,7 @@ import application.Application;
 import constants.Files;
 import constants.Strings;
 import ui.LoadDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;

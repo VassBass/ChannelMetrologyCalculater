@@ -1,7 +1,7 @@
 package application;
 
 import controller.*;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 public class ApplicationContext {
     public final MainScreen mainScreen;

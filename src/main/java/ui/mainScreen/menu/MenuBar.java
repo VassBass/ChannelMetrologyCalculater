@@ -1,7 +1,7 @@
-package ui.main.menu;
+package ui.mainScreen.menu;
 
 import ui.UI_Container;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 

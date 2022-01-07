@@ -1,7 +1,9 @@
 package controller;
 
+import application.Application;
 import constants.MeasurementConstants;
 import constants.Strings;
+import measurements.Measurement;
 import model.Model;
 import model.Sensor;
 import repository.Repository;
@@ -167,6 +169,16 @@ public class SensorsController {
 
     public ArrayList<Sensor> getAll() {
         return this.sensors;
+    }
+
+    public String[] getAllSensorsName(String measurementName){
+        ArrayList<String> names = new ArrayList<>();
+        for (Sensor sensor : this.sensors) {
+            if (sensor.getMeasurement().equals(measurementName)) {
+                names.add(sensor.getName());
+            }
+        }
+        return names.toArray(new String[0]);
     }
 
     public ArrayList<Sensor> add(Sensor sensor) {

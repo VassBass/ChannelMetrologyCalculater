@@ -1,15 +1,5 @@
 package backgroundTasks.controllers;
 
-import model.Channel;
-import ui.LoadDialog;
-import ui.channelInfo.DialogChannel;
-import ui.channelInfo.Dialog_channelExist;
-import ui.main.MainScreen;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.ArrayList;
-
 public class PutChannelInList /*extends SwingWorker<Void, Void> */{/*
 
     private boolean success = true;

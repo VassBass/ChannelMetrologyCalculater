@@ -2,16 +2,12 @@ package backgroundTasks.export;
 
 import constants.Files;
 import constants.Strings;
-import model.Sensor;
 import ui.LoadDialog;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ExportSensors extends SwingWorker<Boolean, Void> {

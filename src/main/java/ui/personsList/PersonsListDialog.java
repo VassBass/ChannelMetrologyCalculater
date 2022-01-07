@@ -3,9 +3,8 @@ package ui.personsList;
 import converters.ConverterUI;
 import constants.Strings;
 import ui.UI_Container;
-import ui.main.MainScreen;
+import ui.mainScreen.MainScreen;
 import ui.personsList.personInfo.PersonInfoDialog;
-import ui.personsList.personInfo.removePerson.RemovePersonDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -13,7 +12,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class PersonsListDialog extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
