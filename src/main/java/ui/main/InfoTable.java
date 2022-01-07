@@ -1,29 +1,26 @@
-package ui.main.info_panel.complex_elements;
+package ui.main;
 
+import constants.Strings;
 import converters.VariableConverter;
 import model.Channel;
-import constants.Strings;
 import ui.ButtonCell;
-import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Calendar;
 
-public class InfoPanel_infoTable extends JPanel implements UI_Container {
+public class InfoTable extends JPanel {
 
     private JButton nextDateTitle, pathTitle, sensorTitle;
     private JButton nextDate, path, sensor;
 
-    public InfoPanel_infoTable(){
+    public InfoTable(){
         super(new GridBagLayout());
 
         this.createElements();
-        this.setReactions();
         this.build();
     }
 
-    @Override
     public void createElements() {
         this.nextDateTitle = new ButtonCell(true, Strings.NEXT_DATE);
         this.pathTitle = new ButtonCell(true, Strings.PATH);
@@ -34,9 +31,6 @@ public class InfoPanel_infoTable extends JPanel implements UI_Container {
         this.sensor = new ButtonCell(false, " - ");
     }
 
-    @Override public void setReactions() {}
-
-    @Override
     public void build() {
         this.add(this.nextDateTitle, new Cell(0, 0));
         this.add(this.pathTitle, new Cell(1, 0));

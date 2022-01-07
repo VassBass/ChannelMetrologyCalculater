@@ -4,10 +4,6 @@ import application.Application;
 import model.Channel;
 import constants.Strings;
 import ui.DialogExit;
-import ui.main.info_panel.InfoPanel;
-import ui.main.info_panel.complex_elements.InfoPanel_buttonsPanel;
-import ui.main.info_panel.complex_elements.InfoPanel_infoTable;
-import ui.main.info_panel.complex_elements.InfoPanel_searchPanel;
 import ui.main.menu.MenuBar;
 
 import javax.swing.*;
@@ -21,15 +17,14 @@ public class MainScreen extends JFrame {
 
     private static final String windowHeader = "Вимірювальні канали";
 
+    public MainTable mainTable;
     private MenuBar menuBar;
-    private InfoPanel infoPanel;
+    private InfoTable infoTable;
+    private ButtonsPanel buttonsPanel;
+    private SearchPanel searchPanel;
 
     public ArrayList<Channel>channelsList;
 
-    public InfoPanel_infoTable infoTable;
-    public InfoPanel_buttonsPanel buttonsPanel;
-    public InfoPanel_searchPanel searchPanel;
-    public MainTable mainTable;
 
     public MainScreen(){
         super(windowHeader);
@@ -47,10 +42,9 @@ public class MainScreen extends JFrame {
     private void createElements() {
         this.menuBar = new MenuBar(this);
         this.mainTable = new MainTable(this);
-        this.infoPanel = new InfoPanel(this);
-        this.infoTable = this.infoPanel.infoTable;
-        this.buttonsPanel = this.infoPanel.buttonsPanel;
-        this.searchPanel = this.infoPanel.searchPanel;
+        this.infoTable = new InfoTable();
+        this.buttonsPanel = new ButtonsPanel(this);
+        this.searchPanel = new SearchPanel();
     }
 
     private void setReactions() {
@@ -64,8 +58,10 @@ public class MainScreen extends JFrame {
         this.setJMenuBar(this.menuBar);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.add(this.infoPanel, new Cell(0, 0, 0.1));
-        mainPanel.add(new JScrollPane(this.mainTable), new Cell(0, 1, 0.9));
+        mainPanel.add(this.infoTable, new Cell(0, 0, 2, 0.1));
+        mainPanel.add(this.searchPanel, new Cell(0,1,1,0.1));
+        mainPanel.add(this.buttonsPanel, new Cell(1,1,1,0.1));
+        mainPanel.add(new JScrollPane(this.mainTable), new Cell(0, 2, 2,0.8));
 
         this.setContentPane(mainPanel);
     }
@@ -76,13 +72,6 @@ public class MainScreen extends JFrame {
 
     public void setChannelsList(ArrayList<Channel>list){
         this.channelsList = list;
-        this.mainTable.setList(channelsList);
-        this.infoTable.updateInfo(null);
-    }
-
-    public void update(ArrayList<Channel>channelsList, boolean searchOn, String searchFiled, String searchValue){
-        //this.searchPanel.update(searchOn, searchFiled, searchValue);
-        this.channelsList = channelsList;
         this.mainTable.setList(channelsList);
         this.infoTable.updateInfo(null);
     }
@@ -153,13 +142,14 @@ public class MainScreen extends JFrame {
 
         private static final long serialVersionUID = 1L;
 
-        protected Cell(int x, int y, double weighty) {
+        protected Cell(int x, int y, int width, double height) {
             this.fill = BOTH;
             this.weightx = 1.0;
 
             this.gridx = x;
             this.gridy = y;
-            this.weighty = weighty;
+            this.gridwidth = width;
+            this.weighty = height;
         }
 
     }

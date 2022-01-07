@@ -1,11 +1,7 @@
-package ui.main.info_panel.complex_elements;
+package ui.main;
 
 import constants.Files;
 import constants.Strings;
-import ui.UI_Container;
-import ui.calculate.start.CalculateStartDialog;
-import ui.channelInfo.DialogChannel;
-import ui.main.MainScreen;
 import ui.removeChannels.DialogRemoveChannels;
 
 import javax.swing.*;
@@ -15,14 +11,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class InfoPanel_buttonsPanel extends JPanel implements UI_Container {
+public class ButtonsPanel extends JPanel {
     private final MainScreen mainScreen;
 
     private final Color buttonsColor = new Color(51,51,51);
 
     private JButton buttonDetails, buttonRemove, buttonAdd, buttonCalculate, buttonCertificateFolder;
 
-    public InfoPanel_buttonsPanel(MainScreen mainScreen){
+    public ButtonsPanel(MainScreen mainScreen){
         super(new GridBagLayout());
         this.mainScreen = mainScreen;
 
@@ -31,7 +27,6 @@ public class InfoPanel_buttonsPanel extends JPanel implements UI_Container {
         this.build();
     }
 
-    @Override
     public void createElements() {
         this.buttonDetails = new JButton(Strings.DETAILS);
         this.buttonDetails.setBackground(buttonsColor);
@@ -69,7 +64,6 @@ public class InfoPanel_buttonsPanel extends JPanel implements UI_Container {
         this.buttonCertificateFolder.setOpaque(true);
     }
 
-    @Override
     public void setReactions() {
         this.buttonDetails.addChangeListener(pushButton);
         this.buttonRemove.addChangeListener(pushButton);
@@ -84,7 +78,6 @@ public class InfoPanel_buttonsPanel extends JPanel implements UI_Container {
         this.buttonCertificateFolder.addActionListener(clickCertificateFolder);
     }
 
-    @Override
     public void build() {
         this.add(this.buttonRemove, new Cell(0, 0, 1));
         this.add(this.buttonAdd, new Cell(1, 0, 1));

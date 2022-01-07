@@ -25,7 +25,7 @@ public class ApplicationLogo extends JWindow {
 
         JLabel developer = new JLabel("VassBassApp");
 
-        JLabel version = new JLabel("v5.0.3");
+        JLabel version = new JLabel("v5.0.4");
         version.setHorizontalAlignment(JLabel.RIGHT);
 
         JPanel panel = new JPanel(new GridBagLayout());

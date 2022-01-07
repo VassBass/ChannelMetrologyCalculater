@@ -117,7 +117,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
             @Override
             public void run() {
                 loadDialog.dispose();
-                mainScreen.update(arrayAfterSearch, true, ChannelConstants.getStringFromConstant(field), value);
+                //mainScreen.update(arrayAfterSearch, true, ChannelConstants.getStringFromConstant(field), value);
             }
         });
     }

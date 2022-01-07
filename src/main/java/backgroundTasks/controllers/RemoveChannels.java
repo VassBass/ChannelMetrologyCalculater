@@ -60,7 +60,7 @@ public class RemoveChannels extends SwingWorker<Void, Void> {
             public void run() {
                 try {
                     loadDialog.dispose();
-                    mainScreen.update(channelsListAfterDone, false, null, null);
+                    //mainScreen.update(channelsListAfterDone, false, null, null);
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }

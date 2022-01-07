@@ -1,4 +1,4 @@
-package ui.main.info_panel.complex_elements;
+package ui.main;
 
 import application.Application;
 
@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class InfoPanel_searchPanel extends JPanel {
+public class SearchPanel extends JPanel {
     private static final String NAME = "Назва каналу";
     private static final String MEASUREMENT_NAME = "Вид вимірювання";
     private static final String MEASUREMENT_VALUE = "Одиниці вимірювання";
@@ -43,7 +43,7 @@ public class InfoPanel_searchPanel extends JPanel {
     private JComboBox<String>valueComboBox;
     private JCheckBox valueSuitability;
 
-    public InfoPanel_searchPanel(){
+    public SearchPanel(){
         super(new GridBagLayout());
 
         this.createElements();
@@ -67,15 +67,22 @@ public class InfoPanel_searchPanel extends JPanel {
                 REFERENCE, SUITABILITY
         });
         ((JLabel)this.field.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+        this.field.setBackground(Color.BLACK);
+        this.field.setForeground(Color.WHITE);
+        this.field.setFocusable(false);
 
         this.valueText = new JTextField(10);
         this.valueText.setHorizontalAlignment(JTextField.CENTER);
 
         this.valueComboBox = new JComboBox<>();
         ((JLabel)this.valueComboBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
+        this.valueComboBox.setFocusable(false);
+        this.valueComboBox.setBackground(Color.WHITE);
+        this.valueComboBox.setForeground(Color.BLACK);
 
         this.valueSuitability = new JCheckBox(SUITABLE);
         this.valueSuitability.setHorizontalAlignment(JCheckBox.CENTER);
+        this.valueSuitability.setFocusPainted(false);
     }
 
     private void setReactions() {

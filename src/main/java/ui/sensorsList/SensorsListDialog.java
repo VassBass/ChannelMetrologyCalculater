@@ -88,7 +88,7 @@ public class SensorsListDialog extends JDialog implements UI_Container {
     }
 
     public void updateMain(){
-        this.mainScreen.update(Application.context.channelsController.getAll(), false, null, null);
+        //this.mainScreen.update(Application.context.channelsController.getAll(), false, null, null);
     }
 
     private final ChangeListener pushButton = new ChangeListener() {
