@@ -13,13 +13,13 @@ public class InstallationsController {
     private ArrayList<String> installations;
 
     public void init(Window window){
-        this.window = window;
         try {
             this.installations = new Repository<String>(null, Model.INSTALLATION).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_INSTALLATIONS.getName() + "\" is empty");
             this.installations = this.resetToDefault();
         }
+        this.window = window;
     }
 
     public ArrayList<String> resetToDefault() {

@@ -1,27 +1,30 @@
 package ui;
 
+import controller.FileBrowser;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class SaveMessage extends JWindow implements UI_Container {
+public class SaveMessage extends JWindow {
     private final Window window;
-    private JLabel message;
+    private JLabel anim;
 
     public SaveMessage(Window window){
-        super(window);
+        super();
         this.window = window;
+        this.setAlwaysOnTop(true);
+
+        this.createElements();
+        this.build();
     }
-    @Override
+
     public void createElements() {
-        this.message = new JLabel("Сохранение...");
+        Icon animation = new ImageIcon(FileBrowser.FILE_IMAGE_ANIM_LOAD.getAbsolutePath());
+        this.anim = new JLabel(animation);
     }
 
-    @Override public void setReactions() {}
-
-    @Override
     public void build() {
-        this.setSize(200,100);
-        this.setLocation(this.window.getLocation().x, this.window.getLocation().y);
-        this.add(this.message);
+        this.setSize(25,25);
+        this.add(this.anim);
     }
 }

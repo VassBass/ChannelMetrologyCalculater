@@ -14,13 +14,13 @@ public class ChannelsController {
     private ArrayList<Channel> channels;
 
     public void init(Window window){
-        this.window = window;
         try {
             this.channels = new Repository<Channel>(null, Model.CHANNEL).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_CHANNELS.getName() + "\" is empty");
             this.channels = new ArrayList<>();
         }
+        this.window = window;
     }
 
     public ArrayList<Channel> getAll() {

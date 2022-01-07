@@ -17,13 +17,13 @@ public class SensorsController {
     private ArrayList<Sensor> sensors;
 
     public void init(Window window){
-        this.window = window;
         try {
             this.sensors = new Repository<Sensor>(null, Model.SENSOR).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_SENSORS.getName() + "\" is empty");
             this.sensors = this.resetToDefault();
         }
+        this.window = window;
     }
 
     public ArrayList<Sensor> resetToDefault() {

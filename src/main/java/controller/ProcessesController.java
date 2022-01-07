@@ -13,13 +13,13 @@ public class ProcessesController {
     private ArrayList<String> processes;
 
     public void init(Window window){
-        this.window = window;
         try {
             this.processes = new Repository<String>(null, Model.PROCESS).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_PROCESSES.getName() + "\" is empty");
             this.processes = this.resetToDefault();
         }
+        this.window = window;
     }
 
     public ArrayList<String> resetToDefault() {

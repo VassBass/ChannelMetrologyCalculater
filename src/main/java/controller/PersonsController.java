@@ -16,13 +16,13 @@ public class PersonsController {
     private ArrayList<Worker> persons;
 
     public void init(Window window){
-        this.window = window;
         try {
             this.persons = new Repository<Worker>(null, Model.PERSON).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_PERSONS.getName() + "\" is empty");
             this.persons = this.resetToDefault();
         }
+        this.window = window;
     }
 
     public ArrayList<Worker> resetToDefault() {

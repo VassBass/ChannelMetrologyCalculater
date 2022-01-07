@@ -17,13 +17,13 @@ public class CalibratorsController {
     private ArrayList<Calibrator> calibrators;
 
     public void init(Window window){
-        this.window = window;
         try {
             this.calibrators = new Repository<Calibrator>(null, Model.CALIBRATOR).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_CALIBRATORS.getName() + "\" is empty");
             this.calibrators = this.resetToDefault();
         }
+        this.window = window;
     }
 
     public ArrayList<Calibrator> resetToDefault() {

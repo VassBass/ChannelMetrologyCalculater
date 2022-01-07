@@ -13,13 +13,13 @@ public class DepartmentsController {
     private ArrayList<String>departments;
 
     public void init(Window window){
-        this.window = window;
         try {
             this.departments = new Repository<String>(null, Model.DEPARTMENT).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_DEPARTMENTS.getName() + "\" is empty");
             this.departments = this.resetToDefault();
         }
+        this.window = window;
     }
 
     public ArrayList<String> resetToDefault() {

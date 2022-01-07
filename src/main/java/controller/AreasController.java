@@ -13,13 +13,13 @@ public class AreasController {
     private ArrayList<String>areas;
 
     public void init(Window window){
-        this.window = window;
         try {
             this.areas = new Repository<String>(null, Model.AREA).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_AREAS.getName() + "\" is empty");
             this.areas = this.resetToDefault();
         }
+        this.window = window;
     }
 
     public ArrayList<String> resetToDefault() {

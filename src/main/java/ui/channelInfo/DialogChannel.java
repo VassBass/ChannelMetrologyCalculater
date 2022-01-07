@@ -1,5 +1,6 @@
 package ui.channelInfo;
 
+import application.Application;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
 import measurements.Measurement;
@@ -273,6 +274,8 @@ public class DialogChannel extends JDialog {
         public void actionPerformed(ActionEvent e) {
             if (!allFieldsAreFilled()) {return;}
 
+            dispose();
+            parent.setChannelsList(Application.context.channelsController.add(getChannel()));
         }
     };
 
