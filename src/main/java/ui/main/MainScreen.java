@@ -58,10 +58,10 @@ public class MainScreen extends JFrame {
         this.setJMenuBar(this.menuBar);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.add(this.infoTable, new Cell(0, 0, 2, 0.1));
-        mainPanel.add(this.searchPanel, new Cell(0,1,1,0.1));
-        mainPanel.add(this.buttonsPanel, new Cell(1,1,1,0.1));
-        mainPanel.add(new JScrollPane(this.mainTable), new Cell(0, 2, 2,0.8));
+        mainPanel.add(this.infoTable, new Cell(0, 0, 2, 0.05));
+        mainPanel.add(this.searchPanel, new Cell(0,1,1,0.025));
+        mainPanel.add(this.buttonsPanel, new Cell(1,1,1,0.025));
+        mainPanel.add(new JScrollPane(this.mainTable), new Cell(0, 2, 2,0.9));
 
         this.setContentPane(mainPanel);
     }
