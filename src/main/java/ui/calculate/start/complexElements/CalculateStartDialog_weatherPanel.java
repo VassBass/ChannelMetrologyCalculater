@@ -4,7 +4,6 @@ import constants.MeasurementConstants;
 import constants.Strings;
 import converters.VariableConverter;
 import ui.ButtonCell;
-import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;

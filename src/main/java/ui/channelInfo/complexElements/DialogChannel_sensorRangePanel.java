@@ -4,7 +4,6 @@ import application.Application;
 import converters.VariableConverter;
 import measurements.Measurement;
 import model.Sensor;
-import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;

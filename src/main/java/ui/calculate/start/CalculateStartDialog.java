@@ -1,6 +1,29 @@
 package ui.calculate.start;
 
-public class CalculateStartDialog /*extends JDialog implements UI_Container*/ {/*
+import application.Application;
+import constants.Strings;
+import constants.Value;
+import converters.ConverterUI;
+import measurements.Measurement;
+import model.Calibrator;
+import model.Channel;
+import support.Values;
+import ui.calculate.measurement.CalculateMeasurementDialog;
+import ui.calculate.start.complexElements.CalculateStartDialog_alarmPanel;
+import ui.calculate.start.complexElements.CalculateStartDialog_datePanel;
+import ui.calculate.start.complexElements.CalculateStartDialog_weatherPanel;
+import ui.mainScreen.MainScreen;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Objects;
+
+public class CalculateStartDialog extends JDialog {
     private final MainScreen mainScreen;
     private final Channel channel;
     private Values values;
@@ -37,8 +60,7 @@ public class CalculateStartDialog /*extends JDialog implements UI_Container*/ {/
         this.build();
     }
 
-    @Override
-    public void createElements() {
+   public void createElements() {
         this.labelDate = new JLabel("Дата : ");
         this.labelNumber = new JLabel("№ ");
         this.calibratorLabel = new JLabel(Strings.CALIBRATOR + ": ");
@@ -71,7 +93,6 @@ public class CalculateStartDialog /*extends JDialog implements UI_Container*/ {/
         this.alarmPanel = new CalculateStartDialog_alarmPanel(this.channel);
     }
 
-    @Override
     public void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -86,7 +107,6 @@ public class CalculateStartDialog /*extends JDialog implements UI_Container*/ {/
         alarmCheck.addItemListener(clickAlarm);
     }
 
-    @Override
     public void build() {
         this.setValues(this.values);
     }
@@ -140,12 +160,8 @@ public class CalculateStartDialog /*extends JDialog implements UI_Container*/ {/
 
         values.putValue(Value.CHANNEL_PROTOCOL_NUMBER, this.numberOfProtocol.getText());
         values.putValue(Value.CHANNEL_DATE, this.datePanel.getDate());
-        for (Calibrator calibrator : Objects.requireNonNull(Lists.calibrators())){
-            if (calibrator.getName().equals(Objects.requireNonNull(this.calibrator.getSelectedItem()).toString())){
-                values.putValue(Value.CALIBRATOR, calibrator);
-                break;
-            }
-        }
+        String calibratorName = Objects.requireNonNull(this.calibrator.getSelectedItem()).toString();
+        values.putValue(Value.CALIBRATOR, Application.context.calibratorsController.get(calibratorName));
         values.putValue(Value.CALCULATION_EXTERNAL_TEMPERATURE, this.weatherPanel.temperature.getText());
         values.putValue(Value.CALCULATION_EXTERNAL_PRESSURE, this.weatherPanel.pressure.getText());
         values.putValue(Value.CALCULATION_EXTERNAL_HUMIDITY, this.weatherPanel.humidity.getText());
@@ -156,14 +172,7 @@ public class CalculateStartDialog /*extends JDialog implements UI_Container*/ {/
     }
 
     private String[]calibratorsArray(Measurement measurement){
-        ArrayList<String> c = new ArrayList<>();
-        ArrayList<Calibrator>calibrators = Lists.calibrators();
-        for (Calibrator calibrator : Objects.requireNonNull(calibrators)) {
-            if (calibrator.getMeasurement().equals(measurement.getName())){
-                c.add(calibrator.getName());
-            }
-        }
-        return c.toArray(new String[0]);
+        return Application.context.calibratorsController.getAllNames(measurement);
     }
 
     private final ChangeListener pushButton = new ChangeListener() {
@@ -275,4 +284,4 @@ public class CalculateStartDialog /*extends JDialog implements UI_Container*/ {/
             }
         }
     }
-*/}
+}

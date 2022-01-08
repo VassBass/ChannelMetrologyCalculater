@@ -1,7 +1,6 @@
 package ui.mainScreen.menu;
 
 import constants.Strings;
-import ui.UI_Container;
 import ui.mainScreen.MainScreen;
 import ui.removeChannels.DialogRemoveChannels;
 import ui.searchChannel.DialogSearch;

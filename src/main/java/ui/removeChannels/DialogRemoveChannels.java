@@ -4,7 +4,6 @@ import application.Application;
 import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
-import ui.UI_Container;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

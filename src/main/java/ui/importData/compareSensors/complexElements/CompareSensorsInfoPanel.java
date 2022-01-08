@@ -3,7 +3,6 @@ package ui.importData.compareSensors.complexElements;
 import constants.Strings;
 import model.Sensor;
 import ui.ButtonCell;
-import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;

@@ -2,6 +2,7 @@ package controller;
 
 import constants.MeasurementConstants;
 import constants.Strings;
+import measurements.Measurement;
 import model.Calibrator;
 import model.Model;
 import repository.Repository;
@@ -149,6 +150,16 @@ public class CalibratorsController {
 
     public ArrayList<Calibrator> getAll() {
         return this.calibrators;
+    }
+
+    public String[] getAllNames(Measurement measurement){
+        ArrayList<String>cal = new ArrayList<>();
+        for (Calibrator c : this.calibrators){
+            if (c.getMeasurement().equals(measurement.getName())){
+                cal.add(c.getName());
+            }
+        }
+        return cal.toArray(new String[0]);
     }
 
     public ArrayList<Calibrator> add(Calibrator calibrator) {

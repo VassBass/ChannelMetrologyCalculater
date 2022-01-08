@@ -3,7 +3,6 @@ package ui.sensorsList;
 import application.Application;
 import constants.Strings;
 import converters.ConverterUI;
-import ui.UI_Container;
 import ui.mainScreen.MainScreen;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 

@@ -1,7 +1,6 @@
 package ui.personsList.personInfo.complexElements;
 
 import constants.Strings;
-import ui.UI_Container;
 import model.Worker;
 
 import javax.swing.*;

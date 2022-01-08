@@ -80,6 +80,28 @@ public class PersonsController {
         return this.persons;
     }
 
+    public String[] getAllNames(){
+        int length = this.persons.size() + 1;
+        String[] persons = new String[length];
+        persons[0] = Strings.EMPTY_ARRAY;
+        for (int x = 0; x< this.persons.size(); x++){
+            int y = x+1;
+            persons[y] = this.persons.get(x).getFullName();
+        }
+        return persons;
+    }
+
+    public String[] getNamesOfHeads(){
+        ArrayList<String>heads = new ArrayList<>();
+        heads.add(Strings.EMPTY_ARRAY);
+        for (Worker worker : this.persons){
+            if (worker.getPosition().equals(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP)){
+                heads.add(worker.getFullName());
+            }
+        }
+        return heads.toArray(new String[0]);
+    }
+
     public ArrayList<Worker> add(Worker worker) {
         this.persons.add(worker);
         this.save();

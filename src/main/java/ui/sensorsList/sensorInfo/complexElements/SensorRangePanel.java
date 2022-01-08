@@ -2,7 +2,6 @@ package ui.sensorsList.sensorInfo.complexElements;
 
 import constants.MeasurementConstants;
 import converters.VariableConverter;
-import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;

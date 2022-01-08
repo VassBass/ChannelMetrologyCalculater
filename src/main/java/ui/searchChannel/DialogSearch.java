@@ -3,7 +3,6 @@ package ui.searchChannel;
 import constants.ChannelConstants;
 import constants.Strings;
 import converters.ConverterUI;
-import ui.UI_Container;
 import ui.mainScreen.MainScreen;
 import ui.searchChannel.complexElements.DialogSearch_searchPanel;
 

@@ -1,9 +1,7 @@
 package ui.calibratorsList;
 
-import backgroundTasks.controllers.RemoveCalibrator;
 import constants.Strings;
 import converters.ConverterUI;
-import ui.UI_Container;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -11,7 +9,6 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Objects;
 
 public class CalibratorRemoveDialog extends JDialog implements UI_Container {
     private final CalibratorsListDialog parent;

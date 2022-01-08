@@ -3,7 +3,6 @@ package ui.personsList.personInfo.removePerson;
 import backgroundTasks.controllers.RemovePerson;
 import constants.Strings;
 import converters.ConverterUI;
-import ui.UI_Container;
 import ui.personsList.PersonsListDialog;
 import model.Worker;
 

@@ -3,7 +3,6 @@ package ui.pathLists;
 import backgroundTasks.controllers.PutPathElementInList;
 import constants.Strings;
 import converters.ConverterUI;
-import ui.UI_Container;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

@@ -2,7 +2,6 @@ package ui.importData;
 
 import constants.Strings;
 import converters.ConverterUI;
-import ui.UI_Container;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

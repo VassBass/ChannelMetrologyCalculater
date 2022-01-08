@@ -2,7 +2,6 @@ package ui.calibratorsList;
 
 import constants.Strings;
 import converters.ConverterUI;
-import ui.UI_Container;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 import ui.mainScreen.MainScreen;
 

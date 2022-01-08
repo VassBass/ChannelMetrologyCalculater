@@ -2,6 +2,7 @@ package ui.mainScreen;
 
 import constants.Files;
 import constants.Strings;
+import ui.calculate.start.CalculateStartDialog;
 import ui.channelInfo.DialogChannel;
 import ui.removeChannels.DialogRemoveChannels;
 
@@ -136,7 +137,7 @@ public class ButtonsPanel extends JPanel {
                 public void run() {
                     int index = mainScreen.mainTable.getSelectedRow();
                     if (index != -1){
-                        //new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
+                        new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
                     }
                 }
             });

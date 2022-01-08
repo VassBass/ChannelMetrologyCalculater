@@ -3,7 +3,6 @@ package ui.personsList.personInfo;
 import backgroundTasks.controllers.PutPersonInList;
 import constants.Strings;
 import converters.ConverterUI;
-import ui.UI_Container;
 import ui.personsList.PersonsListDialog;
 import ui.personsList.personInfo.complexElements.PersonInfoPanel;
 import model.Worker;

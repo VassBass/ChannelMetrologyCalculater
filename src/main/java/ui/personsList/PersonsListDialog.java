@@ -2,7 +2,6 @@ package ui.personsList;
 
 import converters.ConverterUI;
 import constants.Strings;
-import ui.UI_Container;
 import ui.mainScreen.MainScreen;
 import ui.personsList.personInfo.PersonInfoDialog;
 

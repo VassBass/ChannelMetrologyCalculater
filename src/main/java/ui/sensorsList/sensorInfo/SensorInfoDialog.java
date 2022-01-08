@@ -5,13 +5,11 @@ import constants.MeasurementConstants;
 import constants.Strings;
 import converters.ConverterUI;
 import converters.VariableConverter;
-import measurements.Measurement;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import model.Sensor;
 import ui.ButtonCell;
-import ui.UI_Container;
 import ui.sensorsList.SensorsListDialog;
 import ui.sensorsList.sensorInfo.complexElements.SensorRangePanel;
 

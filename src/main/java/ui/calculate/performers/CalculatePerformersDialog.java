@@ -1,7 +1,30 @@
 package ui.calculate.performers;
 
+import application.Application;
+import backgroundTasks.CertificateFormation;
+import constants.Strings;
+import constants.Value;
+import constants.WorkPositions;
+import converters.ConverterUI;
+import measurements.calculation.Calculation;
+import model.Channel;
+import support.Values;
+import ui.calculate.reference.CalculateReferenceDialog;
+import ui.calculate.verification.CalculateVerificationDialog;
+import ui.mainScreen.MainScreen;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.Objects;
+
 @SuppressWarnings("unchecked")
-public class CalculatePerformersDialog /*extends JDialog implements UI_Container*/ {/*
+public class CalculatePerformersDialog extends JDialog {
     private final MainScreen mainScreen;
     private final Channel channel;
     private final Values values;
@@ -36,7 +59,6 @@ public class CalculatePerformersDialog /*extends JDialog implements UI_Container
         this.build();
     }
 
-    @Override
     public void createElements() {
         this.performersLabel = new JLabel(Strings.PERFORMERS + ":");
         this.performersLabel.setForeground(Color.red.darker());
@@ -92,7 +114,6 @@ public class CalculatePerformersDialog /*extends JDialog implements UI_Container
         this.buttonSave.setOpaque(true);
     }
 
-    @Override
     public void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -107,7 +128,6 @@ public class CalculatePerformersDialog /*extends JDialog implements UI_Container
         this.buttonSave.addActionListener(clickSave);
     }
 
-    @Override
     public void build() {
         this.setSize(600,350);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
@@ -116,26 +136,11 @@ public class CalculatePerformersDialog /*extends JDialog implements UI_Container
     }
 
     private String[]personsNames(){
-        int length = Objects.requireNonNull(Lists.persons()).size() + 1;
-        String[] persons = new String[length];
-        persons[0] = Strings.EMPTY_ARRAY;
-        for (int x = 0; x< Objects.requireNonNull(Lists.persons()).size(); x++){
-            int y = x+1;
-            persons[y] = Objects.requireNonNull(Lists.persons()).get(x).getFullName();
-        }
-        return persons;
+        return Application.context.personsController.getAllNames();
     }
 
     private String[]headsOfDepartment(){
-        ArrayList<Worker>persons = Lists.persons();
-        ArrayList<String>heads = new ArrayList<>();
-        heads.add(Strings.EMPTY_ARRAY);
-        for (Worker worker : Objects.requireNonNull(persons)){
-            if (worker.getPosition().equals(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP)){
-                heads.add(worker.getFullName());
-            }
-        }
-        return heads.toArray(new String[0]);
+        return Application.context.personsController.getNamesOfHeads();
     }
 
     private void setValues(Values values){
@@ -225,7 +230,8 @@ public class CalculatePerformersDialog /*extends JDialog implements UI_Container
                 performer1Position.setText(Strings.EMPTY_ARRAY);
             }else {
                 try {
-                    performer1Position.setText(Objects.requireNonNull(Lists.persons()).get(index - 1).getPosition());
+                    String position = Application.context.personsController.get(index - 1).getPosition();
+                    performer1Position.setText(position);
                 }catch (IndexOutOfBoundsException ignored){}
             }
         }
@@ -240,7 +246,8 @@ public class CalculatePerformersDialog /*extends JDialog implements UI_Container
                 performer2Position.setText(Strings.EMPTY_ARRAY);
             }else {
                 try {
-                    performer2Position.setText(Objects.requireNonNull(Lists.persons()).get(index - 1).getPosition());
+                    String position = Application.context.personsController.get(index - 1).getPosition();
+                    performer2Position.setText(position);
                 }catch (IndexOutOfBoundsException ignored){}
             }
         }
@@ -255,7 +262,8 @@ public class CalculatePerformersDialog /*extends JDialog implements UI_Container
                 calculaterPosition.setText(Strings.EMPTY_ARRAY);
             }else {
                 try {
-                    calculaterPosition.setText(Objects.requireNonNull(Lists.persons()).get(index - 1).getPosition());
+                    String position = Application.context.personsController.get(index - 1).getPosition();
+                    calculaterPosition.setText(position);
                 }catch (IndexOutOfBoundsException ignored){}
             }
         }
@@ -347,4 +355,4 @@ public class CalculatePerformersDialog /*extends JDialog implements UI_Container
             }
         }
     }
-*/}
+}

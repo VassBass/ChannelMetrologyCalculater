@@ -9,7 +9,6 @@ import measurements.calculation.Calculation;
 import model.Channel;
 import support.Values;
 import ui.ButtonCell;
-import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;

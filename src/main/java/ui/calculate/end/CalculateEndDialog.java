@@ -7,7 +7,6 @@ import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
 import support.Values;
-import ui.UI_Container;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

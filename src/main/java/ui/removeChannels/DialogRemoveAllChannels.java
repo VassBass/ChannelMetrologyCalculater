@@ -1,11 +1,9 @@
 package ui.removeChannels;
 
 import application.Application;
-import backgroundTasks.controllers.RemoveChannels;
 import constants.Strings;
 import converters.ConverterUI;
 import model.Channel;
-import ui.UI_Container;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

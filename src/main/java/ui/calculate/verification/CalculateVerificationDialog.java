@@ -6,8 +6,8 @@ import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
 import support.Values;
-import ui.UI_Container;
 import ui.calculate.measurement.CalculateMeasurementDialog;
+import ui.calculate.performers.CalculatePerformersDialog;
 import ui.calculate.reference.CalculateReferenceDialog;
 import ui.calculate.verification.complexElements.ConsumptionPanel;
 import ui.calculate.verification.complexElements.PressurePanel;
@@ -21,7 +21,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CalculateVerificationDialog extends JDialog implements UI_Container {
+public class CalculateVerificationDialog extends JDialog {
     private final MainScreen mainScreen;
     private final Channel channel;
     private final Values values;
@@ -43,7 +43,6 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
         this.build();
     }
 
-    @Override
     public void createElements() {
         switch (this.channel.getMeasurement().getNameConstant()){
             case TEMPERATURE:
@@ -70,7 +69,6 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
         this.buttonNext.setOpaque(true);
     }
 
-    @Override
     public void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -81,7 +79,6 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
         this.buttonNext.addActionListener(clickNext);
     }
 
-    @Override
     public void build() {
         this.setSize(850,600);
         this.setResizable(false);
@@ -127,7 +124,7 @@ public class CalculateVerificationDialog extends JDialog implements UI_Container
                         if (calculation.closeToFalse()){
                             values.putValue(Value.CALCULATION_CLOSE_TO_FALSE, resultPanel.getName());
                         }
-                        //new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
+                        new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
                     }else{
                         try {
                             values.putValue(Value.CHANNEL_IS_GOOD, resultPanel.getName());

@@ -7,8 +7,8 @@ import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
 import support.Values;
-import ui.UI_Container;
 import ui.calculate.measurement.complexElements.*;
+import ui.calculate.start.CalculateStartDialog;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
@@ -18,7 +18,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CalculateMeasurementDialog extends JDialog implements UI_Container {
+public class CalculateMeasurementDialog extends JDialog {
     private final MainScreen mainScreen;
     private final Channel channel;
     private final Values values;
@@ -49,7 +49,6 @@ public class CalculateMeasurementDialog extends JDialog implements UI_Container 
         this.build();
     }
 
-    @Override
     public void createElements() {
         this.labelMeasurement = new JLabel(this.measurementString());
 
@@ -81,7 +80,6 @@ public class CalculateMeasurementDialog extends JDialog implements UI_Container 
         this.buttonCalculate.setOpaque(true);
     }
 
-    @Override
     public void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -96,7 +94,6 @@ public class CalculateMeasurementDialog extends JDialog implements UI_Container 
         this.buttonCalculate.addActionListener(this.clickCalculate);
     }
 
-    @Override
     public void build() {
         this.setSize(670,400);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
@@ -200,7 +197,7 @@ public class CalculateMeasurementDialog extends JDialog implements UI_Container 
                     buttonNext.setEnabled(true);
                     if (measurementNumber == 1){
                         dispose();
-                        //new CalculateStartDialog(mainScreen, channel, getValues()).setVisible(true);
+                        new CalculateStartDialog(mainScreen, channel, getValues()).setVisible(true);
                     }else {
                         measurementNumber--;
 

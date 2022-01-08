@@ -1,7 +1,6 @@
 package ui.calibratorsList.calibratorInfo.complexElements;
 
 import constants.CalendarConstants;
-import ui.UI_Container;
 
 import javax.swing.*;
 import java.awt.*;

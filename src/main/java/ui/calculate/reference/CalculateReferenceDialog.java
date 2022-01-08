@@ -7,7 +7,8 @@ import converters.VariableConverter;
 import model.Channel;
 import constants.Strings;
 import support.Values;
-import ui.UI_Container;
+import ui.calculate.performers.CalculatePerformersDialog;
+import ui.calculate.verification.CalculateVerificationDialog;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class CalculateReferenceDialog extends JDialog implements UI_Container {
+public class CalculateReferenceDialog extends JDialog {
     private final MainScreen mainScreen;
     private final Channel channel;
     private final Values values;
@@ -45,7 +46,6 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
     public void createElements() {
         String s = "Згідно розрахунків канал визнано непридатним. Введіть номер довідки:";
         this.message = new JLabel(s);
@@ -69,7 +69,6 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
         this.buttonNext.setEnabled(false);
     }
 
-    @Override
     public void setReactions() {
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -80,7 +79,6 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
         this.buttonNext.addActionListener(this.clickNext);
     }
 
-    @Override
     public void build() {
         this.setSize(600,200);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
@@ -137,7 +135,7 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            //new CalculateVerificationDialog(mainScreen, channel, values, calculation).setVisible(true);
+            new CalculateVerificationDialog(mainScreen, channel, values, calculation).setVisible(true);
         }
     };
 
@@ -146,7 +144,7 @@ public class CalculateReferenceDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             values.putValue(Value.CHANNEL_REFERENCE, number.getText());
             dispose();
-            //new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
+            new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
         }
     };
 
