@@ -32,4 +32,8 @@ public class ConverterUI {
 
         return new Point(x,y);
     }
+
+    public static Point POINT_TOP_LEFT (Component parent){
+        return new Point(parent.getLocation().x, parent.getLocation().y);
+    }
 }

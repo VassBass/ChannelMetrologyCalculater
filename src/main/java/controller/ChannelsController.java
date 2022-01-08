@@ -110,6 +110,24 @@ public class ChannelsController {
         }
     }
 
+    public boolean isExist(Channel channel){
+        for (Channel c : this.channels){
+            if (c.getCode().equals(channel.getCode())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isExist(String channelCode){
+        for (Channel c : this.channels){
+            if (c.getCode().equals(channelCode)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void clear() {
         this.channels.clear();
         this.save();
@@ -127,5 +145,10 @@ public class ChannelsController {
     private void showExistMessage() {
         String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
         JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showExistMessage(Window window) {
+        String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
+        JOptionPane.showMessageDialog(window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

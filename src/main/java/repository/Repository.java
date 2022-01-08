@@ -1,5 +1,6 @@
 package repository;
 
+import application.Application;
 import controller.FileBrowser;
 import model.Model;
 import ui.SaveMessage;
@@ -76,6 +77,7 @@ public class Repository<M> extends SwingWorker<Void, Void> {
                 }
             });
         }
+        Application.setBusy(true);
         this.execute();
     }
 
@@ -83,7 +85,7 @@ public class Repository<M> extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         try {
             FileBrowser.saveToFile(this.file, list);
-            Thread.sleep(5000);
+            Thread.sleep(8000);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -92,6 +94,7 @@ public class Repository<M> extends SwingWorker<Void, Void> {
 
     @Override
     protected void done() {
+        Application.setBusy(false);
         if (this.saveMessage != null) this.saveMessage.dispose();
     }
 }

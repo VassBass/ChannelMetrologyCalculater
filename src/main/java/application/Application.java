@@ -13,6 +13,7 @@ public class Application extends SwingWorker<Void, String> {
 
     public static ApplicationContext context;
     private static ApplicationLogo logo;
+    private static boolean busy = false;
 
     public Application(){
         context = new ApplicationContext();
@@ -40,6 +41,17 @@ public class Application extends SwingWorker<Void, String> {
 
     public void start(){
         this.execute();
+    }
+
+    public static void setBusy(boolean b){busy = b;}
+    public static boolean isBusy(Window window){
+        if (busy){
+            String title = "Зачекайте";
+            String message = "Виконується запис данних, спробуйте після того як пропаде індикатор " +
+                    "\"Запис даних\" в лівому верхньому куту головного вікна";
+            JOptionPane.showMessageDialog(window,message,title,JOptionPane.ERROR_MESSAGE);
+        }
+        return busy;
     }
 
     @Override

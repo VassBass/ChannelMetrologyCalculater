@@ -163,7 +163,11 @@ public class DialogChannel extends JDialog {
 
     public boolean allFieldsAreFilled(){
         if (this.userCode.getText().length()==0) {
-            this.codeLabel.setForeground(Color.red);
+            this.codeLabel.setForeground(Color.RED);
+            return false;
+        }else if (Application.context.channelsController.isExist(this.userCode.getText())){
+            this.codeLabel.setForeground(Color.RED);
+            Application.context.channelsController.showExistMessage(this);
             return false;
         }else {
             this.codeLabel.setForeground(this.defaultTextColor);
@@ -272,7 +276,7 @@ public class DialogChannel extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!allFieldsAreFilled()) {return;}
+            if (!allFieldsAreFilled() || Application.isBusy(current)) return;
 
             dispose();
             parent.setChannelsList(Application.context.channelsController.add(getChannel()));

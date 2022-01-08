@@ -96,13 +96,15 @@ public class MainScreen extends JFrame {
 
         @Override
         public void windowClosing(WindowEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new DialogExit(current).setVisible(true);
-                }
+            if (!Application.isBusy(current)) {
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new DialogExit(current).setVisible(true);
+                    }
 
-            });
+                });
+            }
         }
     };
 
