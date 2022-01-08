@@ -85,7 +85,6 @@ public class Repository<M> extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         try {
             FileBrowser.saveToFile(this.file, list);
-            Thread.sleep(8000);
         }catch (Exception e){
             e.printStackTrace();
         }
