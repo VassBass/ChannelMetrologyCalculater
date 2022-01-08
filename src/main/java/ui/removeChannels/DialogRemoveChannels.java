@@ -1,6 +1,6 @@
 package ui.removeChannels;
 
-import backgroundTasks.controllers.RemoveChannels;
+import application.Application;
 import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
@@ -119,7 +119,7 @@ public class DialogRemoveChannels extends JDialog implements UI_Container {
                 @Override
                 public void run() {
                     current.dispose();
-                    new RemoveChannels(mainScreen, channel).execute();
+                    mainScreen.setChannelsList(Application.context.channelsController.remove(channel));
                 }
             });
         }

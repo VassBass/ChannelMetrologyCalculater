@@ -165,9 +165,15 @@ public class DialogChannel extends JDialog {
         if (this.userCode.getText().length()==0) {
             this.codeLabel.setForeground(Color.RED);
             return false;
-        }else if (Application.context.channelsController.isExist(this.userCode.getText())){
+        }else if (this.oldChannel == null &&
+                Application.context.channelsController.isExist(this.userCode.getText())) {
             this.codeLabel.setForeground(Color.RED);
-            Application.context.channelsController.showExistMessage(this);
+            Application.context.channelsController.showExistMessage(current);
+            return false;
+        }else if (this.oldChannel != null &&
+                Application.context.channelsController.isExist(this.oldChannel.getCode(), this.userCode.getText())){
+            this.codeLabel.setForeground(Color.RED);
+            Application.context.channelsController.showExistMessage(current);
             return false;
         }else {
             this.codeLabel.setForeground(this.defaultTextColor);
@@ -279,7 +285,11 @@ public class DialogChannel extends JDialog {
             if (!allFieldsAreFilled() || Application.isBusy(current)) return;
 
             dispose();
-            parent.setChannelsList(Application.context.channelsController.add(getChannel()));
+            if (oldChannel == null) {
+                parent.setChannelsList(Application.context.channelsController.add(getChannel()));
+            }else {
+                parent.setChannelsList(Application.context.channelsController.set(oldChannel, getChannel()));
+            }
         }
     };
 

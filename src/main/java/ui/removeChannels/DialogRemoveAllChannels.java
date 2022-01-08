@@ -1,8 +1,10 @@
 package ui.removeChannels;
 
+import application.Application;
 import backgroundTasks.controllers.RemoveChannels;
 import constants.Strings;
 import converters.ConverterUI;
+import model.Channel;
 import ui.UI_Container;
 import ui.mainScreen.MainScreen;
 
@@ -12,6 +14,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class DialogRemoveAllChannels extends JDialog implements UI_Container {
     private final MainScreen mainScreen;
@@ -72,7 +75,8 @@ public class DialogRemoveAllChannels extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             current.dispose();
-            new RemoveChannels(mainScreen, mainScreen.channelsList).execute();
+            mainScreen.setChannelsList(new ArrayList<Channel>());
+            Application.context.channelsController.clear();
         }
     };
 

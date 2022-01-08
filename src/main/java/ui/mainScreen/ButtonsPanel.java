@@ -95,7 +95,7 @@ public class ButtonsPanel extends JPanel {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        //new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
+                        new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
                     }
                 });
             }

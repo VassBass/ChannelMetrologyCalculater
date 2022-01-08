@@ -128,6 +128,17 @@ public class ChannelsController {
         return false;
     }
 
+    public boolean isExist(String oldChannelCode, String newChannelCode){
+        int oldIndex = this.getIndex(oldChannelCode);
+        for (int index=0;index<this.channels.size();index++){
+            String channelCode = this.channels.get(index).getCode();
+            if (channelCode.equals(newChannelCode) && index != oldIndex){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void clear() {
         this.channels.clear();
         this.save();
