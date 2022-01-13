@@ -1,16 +1,13 @@
 package backgroundTasks.controllers;
 
 import constants.Strings;
-import model.Channel;
 import model.Sensor;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.sensorsList.SensorsListDialog;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class PutSensorInList extends SwingWorker<Boolean, Void> {
     private final SensorsListDialog mainDialog;

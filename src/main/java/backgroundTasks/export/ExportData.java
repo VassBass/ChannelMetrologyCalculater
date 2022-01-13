@@ -1,7 +1,7 @@
 package backgroundTasks.export;
 
 import constants.Strings;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

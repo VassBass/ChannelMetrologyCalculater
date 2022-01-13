@@ -1,15 +1,19 @@
 package ui.mainScreen;
 
-import constants.Strings;
 import converters.VariableConverter;
 import model.Channel;
-import ui.ButtonCell;
+import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Calendar;
 
 public class InfoTable extends JPanel {
+    public static final String NEXT_DATE = "Дата наступної перевірки";
+    public static final String PATH = "Розташування";
+    public static final String SENSOR = "Первинний вимірювальний пристрій";
+    public static final String DEFAULT_NEXT_DATE = "XX.XX.XXXX";
+    public static final String DASH = " - ";
 
     private JButton nextDateTitle, pathTitle, sensorTitle;
     private JButton nextDate, path, sensor;
@@ -22,13 +26,13 @@ public class InfoTable extends JPanel {
     }
 
     public void createElements() {
-        this.nextDateTitle = new ButtonCell(true, Strings.NEXT_DATE);
-        this.pathTitle = new ButtonCell(true, Strings.PATH);
-        this.sensorTitle = new ButtonCell(true, Strings.SENSOR);
+        this.nextDateTitle = new ButtonCell(true, NEXT_DATE);
+        this.pathTitle = new ButtonCell(true, PATH);
+        this.sensorTitle = new ButtonCell(true, SENSOR);
 
-        this.nextDate = new ButtonCell(false,"XX.XX.XXXX");
-        this.path = new ButtonCell(false," - ");
-        this.sensor = new ButtonCell(false, " - ");
+        this.nextDate = new ButtonCell(false, DEFAULT_NEXT_DATE);
+        this.path = new ButtonCell(false, DASH);
+        this.sensor = new ButtonCell(false, DASH);
     }
 
     public void build() {
@@ -42,10 +46,10 @@ public class InfoTable extends JPanel {
 
     public void updateInfo(Channel channel){
         if (channel == null){
-            this.nextDate.setText("XX.XX.XXXX");
-            this.nextDate.setBackground(Color.white);
-            this.path.setText(" - ");
-            this.sensor.setText(" - ");
+            this.nextDate.setText(DEFAULT_NEXT_DATE);
+            this.nextDate.setBackground(Color.WHITE);
+            this.path.setText(DASH);
+            this.sensor.setText(DASH);
         }else {
             this.nextDate.setText(VariableConverter.dateToString(channel.getNextDate()));
             this.nextDate.setBackground(setBackgroundColorFromDate(channel.getNextDate()));
@@ -62,11 +66,11 @@ public class InfoTable extends JPanel {
             d = -1L;
         }
         if (d <= 7776000000L && d >= 0L){
-            return Color.yellow;
+            return Color.YELLOW;
         }else if (d < 0L){
-            return Color.red;
+            return Color.RED;
         }else {
-            return Color.white;
+            return Color.WHITE;
         }
     }
 

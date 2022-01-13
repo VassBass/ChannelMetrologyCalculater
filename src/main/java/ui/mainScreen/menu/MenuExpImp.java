@@ -2,7 +2,6 @@ package ui.mainScreen.menu;
 
 import backgroundTasks.export.ExportData;
 import constants.Files;
-import constants.Strings;
 import ui.exportData.ConfirmExportDialog;
 import ui.importData.ImportDataDialog;
 import ui.mainScreen.MainScreen;
@@ -12,7 +11,21 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MenuExpImp extends JMenu implements UI_Container {
+public class MenuExpImp extends JMenu {
+    public static final String EXPORT_IMPORT = "Експорт/Імпорт";
+    public static final String EXPORT_ALL_DATA = "Експортувати все";
+    public static final String EXPORT_CHANNELS = "Експортувати канали";
+    public static final String EXPORT_SENSORS = "Експортувати ПВП";
+    public static final String EXPORT_CALIBRATORS = "Експортувати калібратори";
+    public static final String EXPORT_PERSONS = "Експортувати інформацію про робітників";
+    public static final String EXPORT_DEPARTMENTS = "Експортувати цехи";
+    public static final String EXPORT_AREAS = "Експортувати ділянки";
+    public static final String EXPORT_PROCESSES = "Експортувати лінії, секції і т.п.";
+    public static final String EXPORT_INSTALLATIONS = "Експортувати установки";
+    public static final String EXPORT_ALL_PATH = "Експортувати всі елементи розташування каналів";
+    public static final String IMPORT_DATA = "Імпорт даних";
+    public static final String EXPORTED_FILES = "Файли експорту";
+
     private final MainScreen mainScreen;
 
     private JMenuItem buttonExportAllData;
@@ -29,7 +42,7 @@ public class MenuExpImp extends JMenu implements UI_Container {
     private JMenuItem buttonFolder;
 
     public MenuExpImp(MainScreen mainScreen){
-        super(Strings.EXPORT_IMPORT);
+        super(EXPORT_IMPORT);
         this.mainScreen = mainScreen;
 
         this.createElements();
@@ -37,23 +50,21 @@ public class MenuExpImp extends JMenu implements UI_Container {
         this.build();
     }
 
-    @Override
     public void createElements() {
-        this.buttonExportAllData = new JMenuItem(Strings.EXPORT_ALL_DATA);
-        this.buttonExportChannels = new JMenuItem(Strings.EXPORT_CHANNELS);
-        this.buttonExportSensors = new JMenuItem(Strings.EXPORT_SENSORS);
-        this.buttonExportCalibrators = new JMenuItem(Strings.EXPORT_CALIBRATORS);
-        this.buttonExportPersons = new JMenuItem(Strings.EXPORT_PERSONS);
-        this.buttonExportDepartments = new JMenuItem(Strings.EXPORT_DEPARTMENTS);
-        this.buttonExportAreas = new JMenuItem(Strings.EXPORT_AREAS);
-        this.buttonExportProcesses = new JMenuItem(Strings.EXPORT_PROCESSES);
-        this.buttonExportInstallations = new JMenuItem(Strings.EXPORT_INSTALLATIONS);
-        this.buttonExportAllPathElements = new JMenuItem(Strings.EXPORT_ALL_PATH);
-        this.buttonImport = new JMenuItem(Strings.IMPORT_DATA);
-        this.buttonFolder = new JMenuItem(Strings.EXPORTED_FILES);
+        this.buttonExportAllData = new JMenuItem(EXPORT_ALL_DATA);
+        this.buttonExportChannels = new JMenuItem(EXPORT_CHANNELS);
+        this.buttonExportSensors = new JMenuItem(EXPORT_SENSORS);
+        this.buttonExportCalibrators = new JMenuItem(EXPORT_CALIBRATORS);
+        this.buttonExportPersons = new JMenuItem(EXPORT_PERSONS);
+        this.buttonExportDepartments = new JMenuItem(EXPORT_DEPARTMENTS);
+        this.buttonExportAreas = new JMenuItem(EXPORT_AREAS);
+        this.buttonExportProcesses = new JMenuItem(EXPORT_PROCESSES);
+        this.buttonExportInstallations = new JMenuItem(EXPORT_INSTALLATIONS);
+        this.buttonExportAllPathElements = new JMenuItem(EXPORT_ALL_PATH);
+        this.buttonImport = new JMenuItem(IMPORT_DATA);
+        this.buttonFolder = new JMenuItem(EXPORTED_FILES);
     }
 
-    @Override
     public void setReactions() {
         this.buttonExportAllData.addActionListener(clickExportAllData);
         this.buttonExportChannels.addActionListener(clickExportChannels);
@@ -69,7 +80,6 @@ public class MenuExpImp extends JMenu implements UI_Container {
         this.buttonFolder.addActionListener(clickFolder);
     }
 
-    @Override
     public void build() {
         this.add(this.buttonExportAllData);
         this.addSeparator();

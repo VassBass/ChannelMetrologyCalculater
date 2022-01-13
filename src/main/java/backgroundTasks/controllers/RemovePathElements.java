@@ -2,7 +2,7 @@ package backgroundTasks.controllers;
 
 import application.Application;
 import constants.Strings;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.pathLists.PathListsDialog;
 
 import javax.swing.*;

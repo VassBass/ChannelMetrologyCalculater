@@ -3,7 +3,7 @@ package ui.importData.compareCalibrators.complexElements;
 import constants.Strings;
 import converters.VariableConverter;
 import model.Calibrator;
-import ui.ButtonCell;
+import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;

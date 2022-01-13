@@ -2,7 +2,7 @@ package application;
 
 import controller.FileBrowser;
 import support.Settings;
-import ui.ApplicationLogo;
+import ui.model.ApplicationLogo;
 
 import javax.swing.*;
 import java.awt.*;

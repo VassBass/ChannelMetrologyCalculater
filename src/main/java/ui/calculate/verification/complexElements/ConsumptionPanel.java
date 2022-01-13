@@ -8,7 +8,7 @@ import measurements.calculation.Calculation;
 import model.Calibrator;
 import model.Channel;
 import support.Values;
-import ui.ButtonCell;
+import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;

@@ -3,7 +3,7 @@ package ui.importData.compareChannels.complexElements;
 import converters.VariableConverter;
 import model.Channel;
 import constants.Strings;
-import ui.ButtonCell;
+import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;

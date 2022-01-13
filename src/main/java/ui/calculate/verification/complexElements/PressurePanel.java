@@ -9,7 +9,7 @@ import converters.VariableConverter;
 import measurements.calculation.Calculation;
 import model.Channel;
 import support.Values;
-import ui.ButtonCell;
+import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;

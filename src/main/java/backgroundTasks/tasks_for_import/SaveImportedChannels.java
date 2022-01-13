@@ -3,7 +3,7 @@ package backgroundTasks.tasks_for_import;
 import constants.Strings;
 import model.Channel;
 import model.Sensor;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

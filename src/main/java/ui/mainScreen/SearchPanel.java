@@ -1,10 +1,9 @@
 package ui.mainScreen;
 
 import application.Application;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,8 +34,6 @@ public class SearchPanel extends JPanel {
     private static final int LIST = 1;
     private static final int CHECK = 3;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     private JButton buttonSearch;
     private JComboBox<String>field;
     private JTextField valueText;
@@ -52,12 +49,7 @@ public class SearchPanel extends JPanel {
     }
 
     private void createElements() {
-        this.buttonSearch = new JButton(START_SEARCH);
-        this.buttonSearch.setBackground(buttonsColor);
-        this.buttonSearch.setForeground(Color.white);
-        this.buttonSearch.setFocusPainted(false);
-        this.buttonSearch.setContentAreaFilled(false);
-        this.buttonSearch.setOpaque(true);
+        this.buttonSearch = new DefaultButton(START_SEARCH);
 
         this.field = new JComboBox<>(new String[]{
                 NAME, MEASUREMENT_NAME, MEASUREMENT_VALUE,
@@ -86,8 +78,6 @@ public class SearchPanel extends JPanel {
     }
 
     private void setReactions() {
-        this.buttonSearch.addChangeListener(this.pushButton);
-
         this.buttonSearch.addActionListener(this.clickSearch);
 
         this.field.addItemListener(this.changeField);
@@ -143,19 +133,6 @@ public class SearchPanel extends JPanel {
             if (buttonSearch.getText().equals(START_SEARCH)){
                 buttonSearch.setText(FINISH_SEARCH);
             }else buttonSearch.setText(START_SEARCH);
-        }
-    };
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-
         }
     };
 

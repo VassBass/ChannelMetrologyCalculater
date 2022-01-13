@@ -2,7 +2,7 @@ package backgroundTasks.controllers;
 
 import constants.ChannelConstants;
 import model.Channel;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

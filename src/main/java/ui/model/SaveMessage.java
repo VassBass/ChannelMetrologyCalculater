@@ -1,4 +1,4 @@
-package ui;
+package ui.model;
 
 import controller.FileBrowser;
 import converters.ConverterUI;
@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SaveMessage extends JWindow {
+    public static final String SAVE_DATA = "Запис даних";
+
     private final Window window;
     private JLabel anim, message;
 
@@ -23,7 +25,7 @@ public class SaveMessage extends JWindow {
         Icon animation = new ImageIcon(FileBrowser.FILE_IMAGE_ANIM_LOAD.getAbsolutePath());
         this.anim = new JLabel(animation);
 
-        this.message = new JLabel("Запис даних");
+        this.message = new JLabel(SAVE_DATA);
     }
 
     public void build() {

@@ -9,7 +9,7 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import model.Sensor;
-import ui.ButtonCell;
+import ui.model.ButtonCell;
 import ui.sensorsList.SensorsListDialog;
 import ui.sensorsList.sensorInfo.complexElements.SensorRangePanel;
 

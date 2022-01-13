@@ -3,7 +3,7 @@ package ui.calculate.start.complexElements;
 import constants.MeasurementConstants;
 import constants.Strings;
 import converters.VariableConverter;
-import ui.ButtonCell;
+import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;

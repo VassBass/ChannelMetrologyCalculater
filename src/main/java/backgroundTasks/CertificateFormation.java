@@ -7,7 +7,7 @@ import measurements.certificates.*;
 import constants.Value;
 import model.Channel;
 import support.Values;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.calculate.end.CalculateEndDialog;
 import ui.mainScreen.MainScreen;
 

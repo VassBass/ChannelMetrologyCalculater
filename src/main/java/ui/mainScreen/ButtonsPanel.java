@@ -1,19 +1,23 @@
 package ui.mainScreen;
 
 import constants.Files;
-import constants.Strings;
+import ui.model.DefaultButton;
 import ui.calculate.start.CalculateStartDialog;
 import ui.channelInfo.DialogChannel;
 import ui.removeChannels.DialogRemoveChannels;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ButtonsPanel extends JPanel {
+    public static final String DETAILS = "Детальніше";
+    public static final String REMOVE = "Видалити";
+    public static final String ADD = "Додати";
+    public static final String CALCULATE = "Розрахувати";
+    public static final String CERTIFICATES_PROTOCOLS = "Сертифікати/Протоколи";
+
     private final MainScreen mainScreen;
 
     private final Color buttonsColor = new Color(51,51,51);
@@ -30,54 +34,19 @@ public class ButtonsPanel extends JPanel {
     }
 
     public void createElements() {
-        this.buttonDetails = new JButton(Strings.DETAILS);
-        this.buttonDetails.setBackground(buttonsColor);
-        this.buttonDetails.setForeground(Color.white);
-        this.buttonDetails.setFocusPainted(false);
-        this.buttonDetails.setContentAreaFilled(false);
-        this.buttonDetails.setOpaque(true);
-
-        this.buttonRemove = new JButton(Strings.REMOVE);
-        this.buttonRemove.setBackground(buttonsColor);
-        this.buttonRemove.setForeground(Color.white);
-        this.buttonRemove.setFocusPainted(false);
-        this.buttonRemove.setContentAreaFilled(false);
-        this.buttonRemove.setOpaque(true);
-
-        this.buttonAdd = new JButton(Strings.ADD);
-        this.buttonAdd.setBackground(buttonsColor);
-        this.buttonAdd.setForeground(Color.white);
-        this.buttonAdd.setFocusPainted(false);
-        this.buttonAdd.setContentAreaFilled(false);
-        this.buttonAdd.setOpaque(true);
-
-        this.buttonCalculate = new JButton(Strings.CALCULATE);
-        this.buttonCalculate.setBackground(buttonsColor);
-        this.buttonCalculate.setForeground(Color.white);
-        this.buttonCalculate.setFocusPainted(false);
-        this.buttonCalculate.setContentAreaFilled(false);
-        this.buttonCalculate.setOpaque(true);
-
-        this.buttonCertificateFolder = new JButton(Strings.CERTIFICATES_PROTOCOLS);
-        this.buttonCertificateFolder.setBackground(buttonsColor);
-        this.buttonCertificateFolder.setForeground(Color.white);
-        this.buttonCertificateFolder.setFocusPainted(false);
-        this.buttonCertificateFolder.setContentAreaFilled(false);
-        this.buttonCertificateFolder.setOpaque(true);
+        this.buttonDetails = new DefaultButton(DETAILS);
+        this.buttonRemove = new DefaultButton(REMOVE);
+        this.buttonAdd = new DefaultButton(ADD);
+        this.buttonCalculate = new DefaultButton(CALCULATE);
+        this.buttonCertificateFolder = new DefaultButton(CERTIFICATES_PROTOCOLS);
     }
 
     public void setReactions() {
-        this.buttonDetails.addChangeListener(pushButton);
-        this.buttonRemove.addChangeListener(pushButton);
-        this.buttonAdd.addChangeListener(pushButton);
-        this.buttonCalculate.addChangeListener(pushButton);
-        this.buttonCertificateFolder.addChangeListener(pushButton);
-
-        this.buttonDetails.addActionListener(clickDetails);
-        this.buttonRemove.addActionListener(clickRemove);
-        this.buttonAdd.addActionListener(clickAdd);
-        this.buttonCalculate.addActionListener(clickCalculate);
-        this.buttonCertificateFolder.addActionListener(clickCertificateFolder);
+        this.buttonDetails.addActionListener(this.clickDetails);
+        this.buttonRemove.addActionListener(this.clickRemove);
+        this.buttonAdd.addActionListener(this.clickAdd);
+        this.buttonCalculate.addActionListener(this.clickCalculate);
+        this.buttonCertificateFolder.addActionListener(this.clickCertificateFolder);
     }
 
     public void build() {
@@ -159,19 +128,6 @@ public class ButtonsPanel extends JPanel {
         }
     };
 
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-
-            if (button.getModel().isPressed()) {
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-
-        }
-    };
 
     private static class Cell extends GridBagConstraints{
 

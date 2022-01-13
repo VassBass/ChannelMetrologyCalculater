@@ -1,12 +1,11 @@
 package backgroundTasks.controllers;
 
 import model.Calibrator;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.calibratorsList.CalibratorsListDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class RemoveCalibrator extends SwingWorker<Void, Void> {
     private final CalibratorsListDialog parent;

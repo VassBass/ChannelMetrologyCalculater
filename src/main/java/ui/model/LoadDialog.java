@@ -1,7 +1,6 @@
-package ui;
+package ui.model;
 
 import application.Application;
-import constants.Strings;
 import converters.ConverterUI;
 
 import javax.swing.*;
@@ -9,7 +8,9 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class LoadDialog extends JDialog implements UI_Container {
+public class LoadDialog extends JDialog {
+    public static final String LOADING_PLEASE_WAIT = "Завантаження...будь ласка зачекайте...";
+
     private final Container parent;
 
     public JProgressBar progressBar;
@@ -33,23 +34,21 @@ public class LoadDialog extends JDialog implements UI_Container {
         this.build();
         this.setVisible(true);
     }
-    @Override
+
     public void createElements() {
         this.progressBar = new JProgressBar();
         this.progressBar.setIndeterminate(true);
         this.progressBar.setStringPainted(true);
-        this.progressBar.setString(Strings.LOADING_PLEASE_WAIT);
+        this.progressBar.setString(LOADING_PLEASE_WAIT);
     }
 
-    @Override
     public void setReactions() {
         this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        if (parent == null){
-            this.addWindowListener(windowListener);
+        if (this.parent == null){
+            this.addWindowListener(this.windowListener);
         }
     }
 
-    @Override
     public void build() {
         this.setSize(300, 60);
         this.setLocation(ConverterUI.POINT_CENTER(Application.sizeOfScreen, this));

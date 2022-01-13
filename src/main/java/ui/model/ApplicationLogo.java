@@ -1,4 +1,4 @@
-package ui;
+package ui.model;
 
 import application.Application;
 import controller.FileBrowser;
@@ -8,6 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ApplicationLogo extends JWindow {
+    public static final String LOADING = "Завантаження...";
+    public static final String DEVELOPER = "VassBassApp";
+    public static final String VERSION = "v5.0.4";
 
     private final JLabel message;
 
@@ -17,15 +20,15 @@ public class ApplicationLogo extends JWindow {
         Icon appName = new ImageIcon(FileBrowser.FILE_IMAGE_NAME_LOGO.getAbsolutePath());
         JLabel name = new JLabel(appName);
 
-        this.message = new JLabel("Завантаження...");
+        this.message = new JLabel(LOADING);
         this.message.setHorizontalAlignment(JLabel.CENTER);
 
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
 
-        JLabel developer = new JLabel("VassBassApp");
+        JLabel developer = new JLabel(DEVELOPER);
 
-        JLabel version = new JLabel("v5.0.4");
+        JLabel version = new JLabel(VERSION);
         version.setHorizontalAlignment(JLabel.RIGHT);
 
         JPanel panel = new JPanel(new GridBagLayout());

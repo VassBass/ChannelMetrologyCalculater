@@ -2,7 +2,7 @@ package ui.importData.compareSensors.complexElements;
 
 import constants.Strings;
 import model.Sensor;
-import ui.ButtonCell;
+import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;

@@ -2,7 +2,7 @@ package backgroundTasks.tasks_for_import;
 
 import constants.Strings;
 import model.Calibrator;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

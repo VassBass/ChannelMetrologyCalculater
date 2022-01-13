@@ -1,7 +1,6 @@
 package ui.mainScreen.menu;
 
 import constants.MeasurementConstants;
-import constants.Strings;
 import support.Settings;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.mainScreen.MainScreen;
@@ -15,7 +14,17 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MenuLists extends JMenu implements UI_Container {
+public class MenuLists extends JMenu {
+    public static final String LISTS = "Списки";
+    public static final String DEPARTMENTS_LIST = "Список цехів";
+    public static final String AREAS_LIST = "Список ділянок";
+    public static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
+    public static final String INSTALLATIONS_LIST = "Список установок";
+    public static final String WORKERS = "Робітники";
+    public static final String SENSORS_LIST = "Список первинних вимірювальних пристроїв";
+    public static final String CALIBRATORS_LIST = "Список калібраторів";
+    public static final String METHODS = "Методи розрахунку";
+
     private final MainScreen mainScreen;
 
     private JMenuItem buttonPersons;
@@ -25,7 +34,7 @@ public class MenuLists extends JMenu implements UI_Container {
     private JMenuItem buttonCalibrators;
 
     public MenuLists(MainScreen mainScreen){
-        super(Strings.LISTS);
+        super(LISTS);
         this.mainScreen = mainScreen;
 
         this.createElements();
@@ -33,15 +42,14 @@ public class MenuLists extends JMenu implements UI_Container {
         this.build();
     }
 
-    @Override
     public void createElements() {
-        this.buttonDepartments = new JMenuItem(Strings.DEPARTMENTS_LIST);
-        this.buttonAreas = new JMenuItem(Strings.AREAS_LIST);
-        this.buttonProcesses = new JMenuItem(Strings.PROCESSES_LIST);
-        this.buttonInstallations = new JMenuItem(Strings.INSTALLATIONS_LIST);
-        this.buttonPersons = new JMenuItem(Strings.WORKERS);
-        this.buttonSensors = new JMenuItem(Strings.SENSORS_LIST);
-        this.buttonCalibrators = new JMenuItem(Strings.CALIBRATORS_LIST);
+        this.buttonDepartments = new JMenuItem(DEPARTMENTS_LIST);
+        this.buttonAreas = new JMenuItem(AREAS_LIST);
+        this.buttonProcesses = new JMenuItem(PROCESSES_LIST);
+        this.buttonInstallations = new JMenuItem(INSTALLATIONS_LIST);
+        this.buttonPersons = new JMenuItem(WORKERS);
+        this.buttonSensors = new JMenuItem(SENSORS_LIST);
+        this.buttonCalibrators = new JMenuItem(CALIBRATORS_LIST);
 
         this.buttonTemperature = new JMenuItem(MeasurementConstants.TEMPERATURE.getValue());
         this.buttonTemperature.setToolTipText(Settings.getSettingValue(MeasurementConstants.TEMPERATURE.getValue()));
@@ -51,7 +59,6 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonConsumption.setToolTipText(Settings.getSettingValue(MeasurementConstants.CONSUMPTION.getValue()));
     }
 
-    @Override
     public void setReactions() {
         this.buttonDepartments.addActionListener(clickDepartments);
         this.buttonAreas.addActionListener(clickAreas);
@@ -65,7 +72,6 @@ public class MenuLists extends JMenu implements UI_Container {
         this.buttonCalibrators.addActionListener(clickCalibrators);
     }
 
-    @Override
     public void build() {
         this.add(buttonSensors);
         this.addSeparator();
@@ -78,7 +84,7 @@ public class MenuLists extends JMenu implements UI_Container {
         this.addSeparator();
         this.add(this.buttonPersons);
         this.addSeparator();
-        JMenu methods = new JMenu(Strings.METHODS);
+        JMenu methods = new JMenu(METHODS);
         methods.add(this.buttonTemperature);
         methods.add(this.buttonPressure);
         methods.add(this.buttonConsumption);
@@ -103,7 +109,7 @@ public class MenuLists extends JMenu implements UI_Container {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new PathListsDialog(mainScreen, Strings.DEPARTMENTS_LIST).setVisible(true);
+                    new PathListsDialog(mainScreen, DEPARTMENTS_LIST).setVisible(true);
                 }
             });
         }
@@ -115,7 +121,7 @@ public class MenuLists extends JMenu implements UI_Container {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new PathListsDialog(mainScreen, Strings.AREAS_LIST).setVisible(true);
+                    new PathListsDialog(mainScreen, AREAS_LIST).setVisible(true);
                 }
             });
         }
@@ -127,7 +133,7 @@ public class MenuLists extends JMenu implements UI_Container {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new PathListsDialog(mainScreen, Strings.PROCESSES_LIST).setVisible(true);
+                    new PathListsDialog(mainScreen, PROCESSES_LIST).setVisible(true);
                 }
             });
         }
@@ -139,7 +145,7 @@ public class MenuLists extends JMenu implements UI_Container {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new PathListsDialog(mainScreen, Strings.INSTALLATIONS_LIST).setVisible(true);
+                    new PathListsDialog(mainScreen, INSTALLATIONS_LIST).setVisible(true);
                 }
             });
         }

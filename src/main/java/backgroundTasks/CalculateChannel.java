@@ -7,7 +7,7 @@ import model.Calibrator;
 import constants.Value;
 import model.Channel;
 import support.Values;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.mainScreen.MainScreen;
 

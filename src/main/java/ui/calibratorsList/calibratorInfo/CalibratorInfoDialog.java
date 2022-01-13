@@ -9,7 +9,7 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import model.Calibrator;
-import ui.ButtonCell;
+import ui.model.ButtonCell;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
 import ui.calibratorsList.calibratorInfo.complexElements.CertificateDatePanel;

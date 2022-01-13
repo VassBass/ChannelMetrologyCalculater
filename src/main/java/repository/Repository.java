@@ -3,7 +3,7 @@ package repository;
 import application.Application;
 import controller.FileBrowser;
 import model.Model;
-import ui.SaveMessage;
+import ui.model.SaveMessage;
 
 import javax.swing.*;
 import java.awt.*;

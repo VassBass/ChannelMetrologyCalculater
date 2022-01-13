@@ -1,13 +1,11 @@
 package backgroundTasks.controllers;
 
-import support.Comparator;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.personsList.PersonsListDialog;
 import model.Worker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class RemovePerson extends SwingWorker<Void, Void> {
     private final PersonsListDialog parent;

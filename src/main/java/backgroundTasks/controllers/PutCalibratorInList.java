@@ -2,14 +2,12 @@ package backgroundTasks.controllers;
 
 import constants.Strings;
 import model.Calibrator;
-import ui.LoadDialog;
+import ui.model.LoadDialog;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class PutCalibratorInList extends SwingWorker<Boolean, Void> {
     private final CalibratorsListDialog mainDialog;

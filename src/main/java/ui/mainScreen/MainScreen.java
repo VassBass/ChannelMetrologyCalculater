@@ -2,8 +2,7 @@ package ui.mainScreen;
 
 import application.Application;
 import model.Channel;
-import constants.Strings;
-import ui.DialogExit;
+import ui.model.DialogExit;
 import ui.mainScreen.menu.MenuBar;
 
 import javax.swing.*;
@@ -53,7 +52,6 @@ public class MainScreen extends JFrame {
     }
 
     private void build() {
-        this.localizationOfComponents();
         this.setSize(Application.sizeOfScreen);
         this.setJMenuBar(this.menuBar);
 
@@ -107,38 +105,6 @@ public class MainScreen extends JFrame {
             }
         }
     };
-
-    private void localizationOfComponents(){
-        //File chooser
-        UIManager.put("FileChooser.cancelButtonText", Strings.CANCEL);
-        UIManager.put("FileChooser.openButtonText", Strings.IMPORT);
-        UIManager.put("FileChooser.fileNameLabelText", Strings.FILE_NAME);
-        UIManager.put("FileChooser.filesOfTypeLabelText", Strings.TYPES_OF_FILES);
-        UIManager.put("FileChooser.lookInLabelText", Strings.DIRECTORY);
-        UIManager.put("FileChooser.acceptAllFileFilterText", Strings.ALL_FILES);
-        UIManager.put("FileChooser.cancelButtonToolTipText", Strings.CLOSE_WINDOW);
-        UIManager.put("FileChooser.directoryOpenButtonText", Strings.OPEN);
-        UIManager.put("FileChooser.directoryOpenButtonToolTipText", Strings.OPEN_SELECTED_DIRECTORY);
-        UIManager.put("FileChooser.openButtonToolTipText", Strings.OPEN_SELECTED_FILE);
-        UIManager.put("FileChooser.detailsViewActionLabelText", Strings.TABLE);
-        UIManager.put("FileChooser.detailsViewButtonToolTipText", Strings.TABLE);
-        UIManager.put("FileChooser.fileDateHeaderText", Strings.DATE_LAST_CHANGE);
-        UIManager.put("FileChooser.fileNameHeaderText", Strings._NAME);
-        UIManager.put("FileChooser.fileSizeHeaderText", Strings.SIZE);
-        UIManager.put("FileChooser.fileTypeHeaderText", Strings.TYPE);
-        UIManager.put("FileChooser.homeFolderToolTipText", Strings.TO_HOME);
-        UIManager.put("FileChooser.listViewActionLabelText", Strings.LIST);
-        UIManager.put("FileChooser.listViewButtonToolTipText", Strings.LIST);
-        UIManager.put("FileChooser.newFolderActionLabelText", Strings.CREATE_NEW_FOLDER);
-        UIManager.put("FileChooser.newFolderToolTipText", Strings.CREATE_NEW_FOLDER);
-        UIManager.put("FileChooser.refreshActionLabelText", Strings.UPDATE);
-        UIManager.put("FileChooser.upFolderToolTipText", Strings.UP_FOLDER);
-        UIManager.put("FileChooser.viewMenuLabelText", Strings.MODE_OF_VIEW);
-
-        //ToolTip
-        UIManager.put("ToolTip.background", Color.BLACK);
-        UIManager.put("ToolTip.foreground", Color.WHITE);
-    }
 
     private static class Cell extends GridBagConstraints {
 
