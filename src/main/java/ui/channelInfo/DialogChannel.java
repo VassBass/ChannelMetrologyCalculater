@@ -133,13 +133,13 @@ public class DialogChannel extends JDialog {
             this.userName.setText(this.oldChannel.getName());
             this.measurementPanel.update(this.oldChannel.getMeasurement().getName());
             this.userTechnologyNumber.setText(this.oldChannel.getTechnologyNumber());
-            this.datePanel.update(this.oldChannel.getDate());
-            this.frequencyPanel.update(this.oldChannel.getFrequency(), this.oldChannel.getDate());
+            this.datePanel.setDate(this.oldChannel.getDate());
+            this.frequencyPanel.updateFrequency(this.oldChannel.getFrequency(), this.oldChannel.getDate());
             this.pathPanel.update(this.oldChannel.getDepartment(), this.oldChannel.getArea(), this.oldChannel.getProcess(), this.oldChannel.getInstallation());
             this.sensorPanel.update(this.oldChannel.getMeasurement().getNameConstant());
             this.sensorPanel.update(this.oldChannel.getSensor());
-            this.rangePanel.update(this.oldChannel.getMeasurement().getValue());
-            this.rangePanel.update(this.oldChannel.getRangeMin(), this.oldChannel.getRangeMax());
+            this.rangePanel.updateValue(this.oldChannel.getMeasurement().getValue());
+            this.rangePanel.updateRange(this.oldChannel.getRangeMin(), this.oldChannel.getRangeMax());
             double range = this.oldChannel.getRangeMax() - this.oldChannel.getRangeMin();
             this.allowableErrorPanel.updateError(this.oldChannel.getAllowableError(), false, range);
             this.userProtocolNumber.setText(this.oldChannel.getNumberOfProtocol());

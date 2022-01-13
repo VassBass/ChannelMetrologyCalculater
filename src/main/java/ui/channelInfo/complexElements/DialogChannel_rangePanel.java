@@ -10,6 +10,10 @@ import java.awt.event.FocusListener;
 import java.util.Locale;
 
 public class DialogChannel_rangePanel extends JPanel {
+    private static final String DEFAULT_MIN_VALUE = "0.00";
+    private static final String DEFAULT_MAX_VALUE = "100.00";
+    private static final String DASH = " - ";
+
     private final DialogChannel parent;
 
     private JTextField minRange;
@@ -28,32 +32,32 @@ public class DialogChannel_rangePanel extends JPanel {
         this.build();
     }
 
-    public void createElements() {
-        this.minRange = new JTextField("0.00",5);
-        this.dath = new JLabel(" - ");
-        this.maxRange = new JTextField("100.00",5);
+    private void createElements() {
+        this.minRange = new JTextField(DEFAULT_MIN_VALUE,5);
+        this.dath = new JLabel(DASH);
+        this.maxRange = new JTextField(DEFAULT_MAX_VALUE,5);
         this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS.getValue());
     }
 
-    public void setReactions() {
-        this.minRange.addFocusListener(minRangeFocus);
-        this.maxRange.addFocusListener(maxRangeFocus);
+    private void setReactions() {
+        this.minRange.addFocusListener(this.minRangeFocus);
+        this.maxRange.addFocusListener(this.maxRangeFocus);
     }
 
-    public void build() {
+    private void build() {
         this.add(this.minRange);
         this.add(this.dath);
         this.add(this.maxRange);
         this.add(this.value);
     }
 
-    public void update(String value) {
+    public void updateValue(String value) {
         if (value != null){
             this.value.setText(value);
         }
     }
 
-    public void update(double rangeMin, double rangeMax){
+    public void updateRange(double rangeMin, double rangeMax){
         if (rangeMin == OLD) {
             rangeMin = Double.parseDouble(this.minRange.getText());
         }
@@ -70,8 +74,8 @@ public class DialogChannel_rangePanel extends JPanel {
         }
         @Override
         public void focusLost(FocusEvent e) {
-            if (minRange.getText().length()==0) {
-                minRange.setText("0.00");
+            if (minRange.getText().length() == 0) {
+                minRange.setText(DEFAULT_MIN_VALUE);
             }
             String forCheck = minRange.getText();
             minRange.setText(VariableConverter.doubleString(forCheck));
@@ -91,8 +95,8 @@ public class DialogChannel_rangePanel extends JPanel {
         }
         @Override
         public void focusLost(FocusEvent e) {
-            if (maxRange.getText().length()==0) {
-                maxRange.setText("0.00");
+            if (maxRange.getText().length() == 0) {
+                maxRange.setText(DEFAULT_MIN_VALUE);
             }
             String forCheck = maxRange.getText();
             maxRange.setText(VariableConverter.doubleString(forCheck));
@@ -111,7 +115,7 @@ public class DialogChannel_rangePanel extends JPanel {
         return max - min;
     }
 
-    public void setTrueValues(double val1, double val2){
+    private void setTrueValues(double val1, double val2){
         if (val1 >= val2){
             this.minRange.setText(VariableConverter.roundingDouble2(val2, Locale.ENGLISH));
             this.maxRange.setText(VariableConverter.roundingDouble2(val1, Locale.ENGLISH));
@@ -124,7 +128,6 @@ public class DialogChannel_rangePanel extends JPanel {
     public double getRangeMin(){
         return Double.parseDouble(this.minRange.getText());
     }
-
     public double getRangeMax(){
         return Double.parseDouble(this.maxRange.getText());
     }

@@ -11,6 +11,10 @@ import java.awt.event.FocusListener;
 import java.util.Locale;
 
 public class DialogChannel_allowableErrorPanel extends JPanel {
+    private static final String PERCENT = "% ";
+    private static final String AND = " та ";
+    private static final String DEFAULT_VALUE = "0.00";
+
     private final DialogChannel parent;
 
     private JLabel labelPercent;
@@ -29,26 +33,26 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
         this.build();
     }
 
-    public void createElements() {
-        this.labelPercent = new JLabel("% ");
-        this.and = new JLabel(" та ");
+    private void createElements() {
+        this.labelPercent = new JLabel(PERCENT);
+        this.and = new JLabel(AND);
         this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS.getValue());
 
-        this.errorPercent = new JTextField("0.00", 5);
-        this.errorValue = new JTextField("0.00", 5);
+        this.errorPercent = new JTextField(DEFAULT_VALUE, 5);
+        this.errorValue = new JTextField(DEFAULT_VALUE, 5);
     }
 
-    public void setReactions() {
-        this.errorPercent.addFocusListener(focus);
-        this.errorValue.addFocusListener(focus);
+    private void setReactions() {
+        this.errorPercent.addFocusListener(this.focus);
+        this.errorValue.addFocusListener(this.focus);
     }
 
-    public void build() {
-        this.add(errorPercent);
-        this.add(labelPercent);
-        this.add(and);
-        this.add(errorValue);
-        this.add(value);
+    private void build() {
+        this.add(this.errorPercent);
+        this.add(this.labelPercent);
+        this.add(this.and);
+        this.add(this.errorValue);
+        this.add(this.value);
     }
 
     public void updateRange(double range) {
@@ -111,7 +115,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
                 String text = VariableConverter.doubleString(item.getText());
                 item.setText(text);
             }else {
-                item.setText("0.00");
+                item.setText(DEFAULT_VALUE);
             }
             String errorString;
             if (item.equals(errorPercent)) {
@@ -135,7 +139,6 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
     public double getAllowableErrorValue(){
         return Double.parseDouble(this.errorValue.getText());
     }
-
     public double getAllowableErrorPercent(){
         return Double.parseDouble(this.errorPercent.getText());
     }

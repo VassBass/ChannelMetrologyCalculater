@@ -43,7 +43,7 @@ public class DialogChannel_sensorPanel extends JPanel {
     }
 
     private void setReactions() {
-        this.sensorsList.addItemListener(changeSensorName);
+        this.sensorsList.addItemListener(this.changeSensorName);
     }
 
     private void build() {
@@ -64,7 +64,7 @@ public class DialogChannel_sensorPanel extends JPanel {
                     double errorSensorInPercent = sensor.getError(channel);
                     parent.allowableErrorPanel.updateError(errorSensorInPercent, true, channel.getRange());
                     if (sensor.getType().toUpperCase(Locale.ROOT).contains(SensorType.ROSEMOUNT)){
-                        setRosemountValues();
+                        parent.measurementPanel.setRosemountValues();
                     }else {
                         parent.measurementPanel.update(MeasurementConstants.CONSUMPTION.getValue());
                     }
@@ -73,21 +73,17 @@ public class DialogChannel_sensorPanel extends JPanel {
         }
     };
 
-    private void setRosemountValues(){
-        this.parent.measurementPanel.setRosemountValues();
-    }
-
     public void update(MeasurementConstants measurementName) {
         this.removeAll();
 
         this.currentMeasurement = measurementName;
         if (measurementName != null) {
-            String[]sensors = this.sensorsArray(measurementName.getValue());
+            String[]sensors = Application.context.sensorsController.getAllSensorsName(measurementName.getValue());
             DefaultComboBoxModel<String>model = new DefaultComboBoxModel<>(sensors);
             this.sensorsList.setModel(model);
         }
         if (Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString().contains(SensorType.ROSEMOUNT)){
-            this.setRosemountValues();
+            this.parent.measurementPanel.setRosemountValues();
         }
 
         this.add(this.sensorsList);
@@ -100,7 +96,7 @@ public class DialogChannel_sensorPanel extends JPanel {
     public void update(Sensor sensor){
         if (sensor != null){
             if (this.currentMeasurement.getValue().equals(sensor.getMeasurement())) {
-                String[] sensors = this.sensorsArray(sensor.getMeasurement());
+                String[] sensors = Application.context.sensorsController.getAllSensorsName(sensor.getMeasurement());
                 for (int x = 0; x < sensors.length; x++) {
                     if (sensor.getName().equals(sensors[x])) {
                         this.sensorsList.setSelectedIndex(x);
@@ -114,13 +110,8 @@ public class DialogChannel_sensorPanel extends JPanel {
         }
     }
 
-    private String[] sensorsArray(String measurement) {
-        return Application.context.sensorsController.getAllSensorsName(measurement);
-    }
-
     public Sensor getSensor(){
         String selectedSensor = Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString();
-
         return Application.context.sensorsController.get(selectedSensor);
     }
 

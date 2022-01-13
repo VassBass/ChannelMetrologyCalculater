@@ -20,25 +20,25 @@ public class DialogChannel_pathPanel extends JPanel {
         this.build();
     }
 
-    public void createElements() {
+    private void createElements() {
         this.departments = new JComboBox<>(Application.context.departmentsController.getAllInStrings());
         this.departments.setEditable(true);
-        this.departments.setBackground(Color.white);
+        this.departments.setBackground(Color.WHITE);
 
         this.areas = new JComboBox<>(Application.context.areasController.getAllInStrings());
         this.areas.setEditable(true);
-        this.areas.setBackground(Color.white);
+        this.areas.setBackground(Color.WHITE);
 
         this.processes = new JComboBox<>(Application.context.processesController.getAllInStrings());
         this.processes.setEditable(true);
-        this.processes.setBackground(Color.white);
+        this.processes.setBackground(Color.WHITE);
 
         this.installations = new JComboBox<>(Application.context.installationsController.getAllInStrings());
         this.installations.setEditable(true);
-        this.installations.setBackground(Color.white);
+        this.installations.setBackground(Color.WHITE);
     }
 
-    public void build() {
+    private void build() {
         this.add(this.departments);
         this.add(this.areas);
         this.add(this.processes);
@@ -65,15 +65,12 @@ public class DialogChannel_pathPanel extends JPanel {
     public String getDepartment(){
         return Objects.requireNonNull(this.departments.getSelectedItem()).toString();
     }
-
     public String getArea(){
         return Objects.requireNonNull(this.areas.getSelectedItem()).toString();
     }
-
     public String getProcess(){
         return Objects.requireNonNull(this.processes.getSelectedItem()).toString();
     }
-
     public String getInstallation(){
         return Objects.requireNonNull(this.installations.getSelectedItem()).toString();
     }

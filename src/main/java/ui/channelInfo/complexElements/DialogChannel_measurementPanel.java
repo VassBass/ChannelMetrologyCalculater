@@ -14,7 +14,6 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-@SuppressWarnings("unchecked")
 public class DialogChannel_measurementPanel extends JPanel {
 
     private final DialogChannel parent;
@@ -33,24 +32,25 @@ public class DialogChannel_measurementPanel extends JPanel {
         this.build();
     }
 
-    public void createElements(){
-        this.measurementName = new JComboBox<>(this.measurementNames());
+    private void createElements(){
+        this.measurementName = new JComboBox<>(Application.context.measurementsController.getAllNames());
         this.measurementName.setEditable(false);
-        this.measurementName.setBackground(Color.white);
+        this.measurementName.setBackground(Color.WHITE);
 
-        this.measurementValue = new JComboBox<>(this.measurementValues(MeasurementConstants.TEMPERATURE.getValue()));
-        this.measurementValue.setBackground(Color.white);
+        this.measurementValue = new JComboBox<>(Application.context.measurementsController.getValues(
+                MeasurementConstants.TEMPERATURE.getValue()));
+        this.measurementValue.setBackground(Color.WHITE);
         this.measurementValue.setEditable(false);
     }
 
-    public void setReactions(){
-        this.measurementName.addItemListener(changeName);
-        this.measurementValue.addItemListener(changeValue);
+    private void setReactions(){
+        this.measurementName.addItemListener(this.changeName);
+        this.measurementValue.addItemListener(this.changeValue);
 
-        this.measurementValue.addFocusListener(changeFocusFromValue);
+        this.measurementValue.addFocusListener(this.changeFocusFromValue);
     }
 
-    public void build(){
+    private void build(){
         this.add(this.measurementName);
         this.add(this.measurementValue);
     }
@@ -62,7 +62,9 @@ public class DialogChannel_measurementPanel extends JPanel {
     public void update(String measurementName){
         if (measurementName != null) {
             this.measurementName.setSelectedItem(measurementName);
-            this.measurementValue.setModel(new DefaultComboBoxModel<>(measurementValues(measurementName)));
+            this.measurementValue.setModel(
+                    new DefaultComboBoxModel<>(
+                            Application.context.measurementsController.getValues(measurementName)));
         }
     }
 
@@ -83,20 +85,13 @@ public class DialogChannel_measurementPanel extends JPanel {
         return values.toArray(new String[0]);
     }
 
-    private String[] measurementNames(){
-        return Application.context.measurementsController.getAllNames();
-    }
-
-    private String[]measurementValues(String nameOfMeasurement){
-        return Application.context.measurementsController.getValues(nameOfMeasurement);
-    }
-
     public Measurement getMeasurement(){
         return new Measurement(
                 Objects.requireNonNull(this.measurementName.getSelectedItem()).toString(),
                 Objects.requireNonNull(this.measurementValue.getSelectedItem()).toString());
     }
 
+    @SuppressWarnings("unchecked")
     private final ItemListener changeName = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
@@ -107,7 +102,7 @@ public class DialogChannel_measurementPanel extends JPanel {
                 currentPanel.update(measurementName);
                 String measurementVal = Objects.requireNonNull(measurementValue.getSelectedItem()).toString();
                 parent.allowableErrorPanel.updateValue(measurementVal);
-                parent.rangePanel.update(measurementVal);
+                parent.rangePanel.updateValue(measurementVal);
                 parent.sensorPanel.update(MeasurementConstants.getConstantFromString(measurementName));
 
                 Measurement measurement = new Measurement(MeasurementConstants.getConstantFromString(measurementName),
@@ -117,6 +112,7 @@ public class DialogChannel_measurementPanel extends JPanel {
         }
     };
 
+    @SuppressWarnings("unchecked")
     private final ItemListener changeValue = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
@@ -125,14 +121,14 @@ public class DialogChannel_measurementPanel extends JPanel {
                 String measurementVal = Objects.requireNonNull(item.getSelectedItem()).toString();
 
                 parent.allowableErrorPanel.updateValue(measurementVal);
-                parent.rangePanel.update(measurementVal);
+                parent.rangePanel.updateValue(measurementVal);
             }
         }
     };
 
+    @SuppressWarnings("unchecked")
     private final FocusListener changeFocusFromValue = new FocusListener() {
-        @Override
-        public void focusGained(FocusEvent e) {}
+        @Override public void focusGained(FocusEvent e) {}
 
         @Override
         public void focusLost(FocusEvent e) {
@@ -140,7 +136,7 @@ public class DialogChannel_measurementPanel extends JPanel {
             String measurementVal = Objects.requireNonNull(item.getSelectedItem()).toString();
 
             parent.allowableErrorPanel.updateValue(measurementVal);
-            parent.rangePanel.update(measurementVal);
+            parent.rangePanel.updateValue(measurementVal);
         }
     };
 }

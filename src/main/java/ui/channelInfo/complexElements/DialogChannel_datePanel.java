@@ -10,6 +10,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class DialogChannel_datePanel extends JPanel {
+    private static final String DOT = ".";
+
     private final DialogChannel parent;
 
     private JTextField day;
@@ -19,6 +21,7 @@ public class DialogChannel_datePanel extends JPanel {
     private JLabel dot2;
 
     public DialogChannel_datePanel(DialogChannel parent){
+
         super();
         this.parent = parent;
 
@@ -27,42 +30,38 @@ public class DialogChannel_datePanel extends JPanel {
         this.build();
     }
 
-    public void createElements(){
+    private void createElements(){
         this.day = new JTextField(2);
         this.day.setHorizontalAlignment(SwingConstants.CENTER);
-        this.dot1 = new JLabel(".");
+        this.dot1 = new JLabel(DOT);
         this.month = new JTextField(2);
         this.month.setHorizontalAlignment(SwingConstants.CENTER);
-        this.dot2 = new JLabel(".");
+        this.dot2 = new JLabel(DOT);
         this.year = new JTextField(4);
         this.year.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    public void setReactions(){
-        this.day.addFocusListener(dayFocus);
-        this.month.addFocusListener(monthFocus);
-        this.year.addFocusListener(yearFocus);
+    private void setReactions(){
+        this.day.addFocusListener(this.dayFocus);
+        this.month.addFocusListener(this.monthFocus);
+        this.year.addFocusListener(this.yearFocus);
     }
 
-    public void build(){
+    private void build(){
         this.setDate(Calendar.getInstance());
-        this.add(day);
-        this.add(dot1);
-        this.add(month);
-        this.add(dot2);
-        this.add(year);
+        this.add(this.day);
+        this.add(this.dot1);
+        this.add(this.month);
+        this.add(this.dot2);
+        this.add(this.year);
     }
 
-    public void update(Calendar date){
-        if (date != null){
-            setDate(date);
+    public void setDate(Calendar date) {
+        if (date != null) {
+            this.setField(CalendarConstants.DAY, date.get(Calendar.DAY_OF_MONTH));
+            this.setField(CalendarConstants.MONTH, date.get(Calendar.MONTH));
+            this.setField(CalendarConstants.YEAR, date.get(Calendar.YEAR));
         }
-    }
-
-    private void setDate(Calendar date) {
-        this.setField(CalendarConstants.DAY, date.get(Calendar.DAY_OF_MONTH));
-        this.setField(CalendarConstants.MONTH, date.get(Calendar.MONTH));
-        this.setField(CalendarConstants.YEAR, date.get(Calendar.YEAR));
     }
 
     private void setField(CalendarConstants field, int value) {
@@ -88,10 +87,10 @@ public class DialogChannel_datePanel extends JPanel {
     }
 
     public Calendar getDate() {
-        int dayInt = Integer.parseInt(day.getText());
-        int monthInt = Integer.parseInt(month.getText());
+        int dayInt = Integer.parseInt(this.day.getText());
+        int monthInt = Integer.parseInt(this.month.getText());
         monthInt--;
-        int yearInt = Integer.parseInt(year.getText());
+        int yearInt = Integer.parseInt(this.year.getText());
         return new GregorianCalendar(yearInt, monthInt, dayInt);
     }
 
@@ -132,7 +131,7 @@ public class DialogChannel_datePanel extends JPanel {
                 }
             }
 
-            parent.frequencyPanel.update(getDate());
+            parent.frequencyPanel.setNextDate(getDate());
         }
     };
 
@@ -168,7 +167,7 @@ public class DialogChannel_datePanel extends JPanel {
                 }
             }
 
-            parent.frequencyPanel.update(getDate());
+            parent.frequencyPanel.setNextDate(getDate());
         }
     };
 
@@ -206,7 +205,7 @@ public class DialogChannel_datePanel extends JPanel {
                 year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             }
 
-            parent.frequencyPanel.update(getDate());
+            parent.frequencyPanel.setNextDate(getDate());
         }
     };
 }
