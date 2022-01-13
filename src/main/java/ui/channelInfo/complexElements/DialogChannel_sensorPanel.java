@@ -2,7 +2,7 @@ package ui.channelInfo.complexElements;
 
 import application.Application;
 import constants.MeasurementConstants;
-import constants.Strings;
+import constants.SensorType;
 import model.Channel;
 import model.Sensor;
 import ui.channelInfo.DialogChannel;
@@ -15,10 +15,12 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class DialogChannel_sensorPanel extends JPanel {
+    private static final String NO = "NO.";
+
     private final DialogChannel parent;
 
     private JComboBox<String>sensorsList;
-    private JLabel NO;
+    private JLabel number;
     private JTextField serialNumber;
     private MeasurementConstants currentMeasurement;
 
@@ -31,20 +33,20 @@ public class DialogChannel_sensorPanel extends JPanel {
         this.build();
     }
 
-    public void createElements() {
+    private void createElements() {
         this.sensorsList = new JComboBox<>();
         this.sensorsList.setEditable(false);
-        this.sensorsList.setBackground(Color.white);
+        this.sensorsList.setBackground(Color.WHITE);
 
-        this.NO = new JLabel("NO.");
+        this.number = new JLabel(NO);
         this.serialNumber = new JTextField(10);
     }
 
-    public void setReactions() {
+    private void setReactions() {
         this.sensorsList.addItemListener(changeSensorName);
     }
 
-    public void build() {
+    private void build() {
         this.add(this.sensorsList);
     }
 
@@ -61,7 +63,7 @@ public class DialogChannel_sensorPanel extends JPanel {
                     sensor.setValue(channel.getMeasurement().getValue());
                     double errorSensorInPercent = sensor.getError(channel);
                     parent.allowableErrorPanel.updateError(errorSensorInPercent, true, channel.getRange());
-                    if (sensor.getType().toUpperCase(Locale.ROOT).contains(Strings.SENSOR_ROSEMOUNT)){
+                    if (sensor.getType().toUpperCase(Locale.ROOT).contains(SensorType.ROSEMOUNT)){
                         setRosemountValues();
                     }else {
                         parent.measurementPanel.update(MeasurementConstants.CONSUMPTION.getValue());
@@ -84,13 +86,13 @@ public class DialogChannel_sensorPanel extends JPanel {
             DefaultComboBoxModel<String>model = new DefaultComboBoxModel<>(sensors);
             this.sensorsList.setModel(model);
         }
-        if (Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString().contains(Strings.SENSOR_ROSEMOUNT)){
+        if (Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString().contains(SensorType.ROSEMOUNT)){
             this.setRosemountValues();
         }
 
         this.add(this.sensorsList);
         if (measurementName == MeasurementConstants.CONSUMPTION){
-            this.add(this.NO);
+            this.add(this.number);
             this.add(this.serialNumber);
         }
     }

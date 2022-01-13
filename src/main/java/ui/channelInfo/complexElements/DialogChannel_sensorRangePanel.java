@@ -12,7 +12,12 @@ import java.awt.event.FocusListener;
 import java.util.Locale;
 import java.util.Objects;
 
-public class DialogChannel_sensorRangePanel extends JPanel implements UI_Container {
+public class DialogChannel_sensorRangePanel extends JPanel {
+    private static final String MIN = "Від ";
+    private static final String MAX = " до ";
+    private static final String DEFAULT_MIN_VALUE = "0.00";
+    private static final String DEFAULT_MAX_VALUE = "100.00";
+
     private JLabel minLabel;
     private JLabel maxLabel;
 
@@ -32,27 +37,24 @@ public class DialogChannel_sensorRangePanel extends JPanel implements UI_Contain
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.minLabel = new JLabel("Від ");
-        this.maxLabel = new JLabel(" до ");
+    private void createElements() {
+        this.minLabel = new JLabel(MIN);
+        this.maxLabel = new JLabel(MAX);
 
-        this.min = new JTextField("0.00", 5);
-        this.max = new JTextField("100.00", 5);
+        this.min = new JTextField(DEFAULT_MIN_VALUE, 5);
+        this.max = new JTextField(DEFAULT_MAX_VALUE, 5);
 
         this.value = new JComboBox<>(Application.context.measurementsController.getValues(this.measurement));
         this.value.setEditable(false);
-        this.value.setBackground(Color.white);
+        this.value.setBackground(Color.WHITE);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.min.addFocusListener(focus);
         this.max.addFocusListener(focus);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.minLabel);
         this.add(this.min);
         this.add(this.maxLabel);
@@ -80,7 +82,7 @@ public class DialogChannel_sensorRangePanel extends JPanel implements UI_Contain
             JTextField source = (JTextField) e.getSource();
 
             if (source.getText().length() == 0) {
-                source.setText("0.00");
+                source.setText(DEFAULT_MIN_VALUE);
             }
             String forCheck = source.getText();
             source.setText(VariableConverter.doubleString(forCheck));

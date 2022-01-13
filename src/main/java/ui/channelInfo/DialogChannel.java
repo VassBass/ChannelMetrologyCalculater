@@ -6,19 +6,32 @@ import converters.ConverterUI;
 import measurements.Measurement;
 import model.Sensor;
 import model.Channel;
-import constants.Strings;
 import ui.channelInfo.complexElements.*;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class DialogChannel extends JDialog {
-    public static final String INFORMATION_ABOUT_CHANNEL = "Інформація вимірювального каналу";
+    private static final String INFORMATION_ABOUT_CHANNEL = "Інформація вимірювального каналу";
+    private static final String CODE = "*Код: ";
+    private static final String NAME = "*Назва: ";
+    private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання: ";
+    private static final String TECHNOLOGY_NUMBER = "Технологічний номер: ";
+    private static final String THIS_DATE = "Дата останньої перевірки: ";
+    private static final String FREQUENCY_CONTROL = "Міжконтрольний інтервал: ";
+    private static final String PATH = "Розташування: ";
+    private static final String SENSOR = "Первинний вимірювальний пристрій: ";
+    private static final String RANGE_OF_CHANNEL_ = "Діапазон вимірювального каналу: ";
+    private static final String ALLOWABLE_ERROR_OF_CHANNEL = "Допустима похибка вимірювального каналу: ";
+    private static final String PROTOCOL_NUMBER = "Номер протоколу: ";
+    private static final String CANCEL = "Відміна";
+    private static final String SAVE = "Зберегти";
+    private static final String RANGE_OF_CHANNEL = "Діапазон вимірювального каналу";
+    private static final String RANGE_OF_SENSOR = "Діапазон вимірювання ПВП";
 
     private final MainScreen parent;
     private final DialogChannel current;
@@ -53,8 +66,7 @@ public class DialogChannel extends JDialog {
     private JButton positiveButton;
 
     public final Channel oldChannel;
-    private final Color backgroundColor_buttons = Color.white;
-    private Color defaultTextColor;
+    private final Color defaultTextColor;
 
     public DialogChannel(MainScreen parent, Channel oldChannel){
         super(parent, INFORMATION_ABOUT_CHANNEL, true);
@@ -62,71 +74,57 @@ public class DialogChannel extends JDialog {
         this.current = this;
         this.oldChannel = oldChannel;
 
-        this.createElements();
+        this.createLabels();
+        this.createPrimitiveElements();
+        this.createComplexElements();
         this.setReactions();
         this.build();
-    }
-
-    public void createElements(){
-        this.codeLabel = new JLabel("*".concat(Strings.CODE).concat(": "));
-        this.userCode = new JTextField(10);
-
-        this.nameLabel = new JLabel("*".concat(Strings._NAME).concat(": "));
-        this.userName = new JTextField(10);
-
-        this.measurementLabel = new JLabel(Strings.TYPE_OF_MEASUREMENT.concat(": "));
-        this.measurementPanel = new DialogChannel_measurementPanel(this);
-
-        this.technologyNumberLabel = new JLabel(Strings.TECHNOLOGY_NUMBER.concat(": "));
-        this.userTechnologyNumber = new JTextField(10);
-
-        this.dateLabel = new JLabel(Strings.THIS_DATE.concat(": "));
-        this.datePanel = new DialogChannel_datePanel(this);
-
-        this.frequencyLabel = new JLabel(Strings.FREQUENCY_CONTROL.concat(": "));
-        this.frequencyPanel = new DialogChannel_frequencyPanel(this);
-
-        this.pathLabel = new JLabel(Strings.PATH.concat(": "));
-        this.pathPanel = new DialogChannel_pathPanel();
-
-        this.sensorLabel = new JLabel(Strings.SENSOR.concat(": "));
-        this.sensorPanel = new DialogChannel_sensorPanel(this);
-
-        this.rangeLabel = new JLabel(Strings.RANGE_OF_CHANNEL.concat(": "));
-        this.rangePanel = new DialogChannel_rangePanel(this);
-
-        this.allowableErrorLabel = new JLabel(Strings.ALLOWABLE_ERROR_OF_CHANNEL.concat(": "));
-        this.allowableErrorPanel = new DialogChannel_allowableErrorPanel(this);
-
-        this.protocolNumberLabel = new JLabel(Strings.PROTOCOL_NUMBER.concat(": "));
-        this.userProtocolNumber = new JTextField(10);
-
-        this.negativeButton = new JButton(Strings.CANCEL);
-        this.negativeButton.setBackground(backgroundColor_buttons);
-        this.negativeButton.setFocusPainted(false);
-        this.negativeButton.setContentAreaFilled(false);
-        this.negativeButton.setOpaque(true);
-
-        this.positiveButton = new JButton(Strings.SAVE);
-        this.positiveButton.setBackground(backgroundColor_buttons);
-        this.positiveButton.setFocusPainted(false);
-        this.positiveButton.setContentAreaFilled(false);
-        this.positiveButton.setOpaque(true);
 
         this.defaultTextColor = this.codeLabel.getForeground();
     }
 
-    public void setReactions() {
-        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        this.negativeButton.addChangeListener(pushButton);
-        this.positiveButton.addChangeListener(pushButton);
-
-        this.negativeButton.addActionListener(clickNegativeButton);
-        this.positiveButton.addActionListener(clickPositiveButton);
+    private void createLabels(){
+        this.codeLabel = new JLabel(CODE);
+        this.nameLabel = new JLabel(NAME);
+        this.measurementLabel = new JLabel(TYPE_OF_MEASUREMENT);
+        this.technologyNumberLabel = new JLabel(TECHNOLOGY_NUMBER);
+        this.dateLabel = new JLabel(THIS_DATE);
+        this.frequencyLabel = new JLabel(FREQUENCY_CONTROL);
+        this.pathLabel = new JLabel(PATH);
+        this.sensorLabel = new JLabel(SENSOR);
+        this.rangeLabel = new JLabel(RANGE_OF_CHANNEL_);
+        this.allowableErrorLabel = new JLabel(ALLOWABLE_ERROR_OF_CHANNEL);
+        this.protocolNumberLabel = new JLabel(PROTOCOL_NUMBER);
     }
 
-    public void build() {
+    private void createPrimitiveElements(){
+        this.userCode = new JTextField(10);
+        this.userName = new JTextField(10);
+        this.userTechnologyNumber = new JTextField(10);
+        this.userProtocolNumber = new JTextField(10);
+
+        this.negativeButton = new DefaultButton(CANCEL);
+        this.positiveButton = new DefaultButton(SAVE);
+    }
+
+    private void createComplexElements(){
+        this.measurementPanel = new DialogChannel_measurementPanel(this);
+        this.datePanel = new DialogChannel_datePanel(this);
+        this.frequencyPanel = new DialogChannel_frequencyPanel(this);
+        this.pathPanel = new DialogChannel_pathPanel();
+        this.sensorPanel = new DialogChannel_sensorPanel(this);
+        this.rangePanel = new DialogChannel_rangePanel(this);
+        this.allowableErrorPanel = new DialogChannel_allowableErrorPanel(this);
+    }
+
+    private void setReactions() {
+        this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        this.negativeButton.addActionListener(this.clickNegativeButton);
+        this.positiveButton.addActionListener(this.clickPositiveButton);
+    }
+
+    private void build() {
         if (this.oldChannel == null){
             this.setMeasurement(null);
         }else {
@@ -161,7 +159,7 @@ public class DialogChannel extends JDialog {
         }
     }
 
-    public boolean allFieldsAreFilled(){
+    private boolean allFieldsAreFilled(){
         if (this.userCode.getText().length()==0) {
             this.codeLabel.setForeground(Color.RED);
             return false;
@@ -244,19 +242,19 @@ public class DialogChannel extends JDialog {
             case TEMPERATURE:
                 this.setSize(800, 650);
                 this.sensorRangePanel = null;
-                this.rangeLabel.setText(Strings.RANGE_OF_CHANNEL);
+                this.rangeLabel.setText(RANGE_OF_CHANNEL);
                 this.allowableErrorPanel.setEnabled(true);
                 break;
             case PRESSURE:
                 this.setSize(1000, 650);
                 this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
-                this.rangeLabel.setText(Strings.RANGE_OF_CHANNEL);
+                this.rangeLabel.setText(RANGE_OF_CHANNEL);
                 this.allowableErrorPanel.setEnabled(true);
                 break;
             case CONSUMPTION:
                 this.setSize(800,650);
                 this.sensorRangePanel = null;
-                this.rangeLabel.setText(Strings.RANGE_OF_SENSOR);
+                this.rangeLabel.setText(RANGE_OF_SENSOR);
                 Channel channel = new Channel();
                 channel.setMeasurement(measurement);
                 channel.setRangeMin(this.rangePanel.getRangeMin());
@@ -293,21 +291,7 @@ public class DialogChannel extends JDialog {
         }
     };
 
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                setBackground(backgroundColor_buttons.darker());
-            }else {
-                setBackground(backgroundColor_buttons);
-            }
-        }
-    };
-
     private class MainPanel extends JPanel {
-
-        private static final long serialVersionUID = 1L;
 
         protected MainPanel() {
             super(new GridBagLayout());
@@ -356,8 +340,6 @@ public class DialogChannel extends JDialog {
         }
 
         private class Cell extends GridBagConstraints {
-
-            private static final long serialVersionUID = 1L;
 
             protected Cell (int x, int y) {
                 super();

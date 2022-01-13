@@ -5,15 +5,20 @@ import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class DialogRemoveChannels extends JDialog implements UI_Container {
+public class DialogRemoveChannels extends JDialog {
+    private static final String REMOVE_CHANNEL = "Видалити канал";
+    private static final String CHOOSE_CHANNEL_TO_REMOVE = "Виберіть канал для видалення: ";
+    private static final String REMOVE_ALL = "Видалити всі";
+    private static final String REMOVE = "Видалити";
+    private static final String CANCEL = "Відміна";
+
     private final MainScreen mainScreen;
     private final JDialog current;
 
@@ -24,7 +29,7 @@ public class DialogRemoveChannels extends JDialog implements UI_Container {
     private JComboBox<String> channelsList = null;
 
     public DialogRemoveChannels(MainScreen mainScreen){
-        super(mainScreen, Strings.REMOVE_CHANNEL, true);
+        super(mainScreen, REMOVE_CHANNEL, true);
         this.mainScreen = mainScreen;
         this.current = this;
 
@@ -33,11 +38,10 @@ public class DialogRemoveChannels extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         int selectedIndex = this.mainScreen.mainTable.getSelectedRow();
         if (selectedIndex == -1){
-            this.text = new JLabel(Strings.CHOOSE_CHANNEL_TO_REMOVE.concat(": "));
+            this.text = new JLabel(CHOOSE_CHANNEL_TO_REMOVE);
 
             String[]channelsList = new String[this.mainScreen.channelsList.size()];
             for (int x=0;x<channelsList.length;x++) {
@@ -50,40 +54,20 @@ public class DialogRemoveChannels extends JDialog implements UI_Container {
             this.text = new JLabel(Strings.REMOVE_CHANNEL + " \"" + channelName + "\"?");
         }
 
-        this.removeAll = new JButton(Strings.REMOVE_ALL);
-        this.removeAll.setBackground(Color.white);
-        this.removeAll.setFocusPainted(false);
-        this.removeAll.setContentAreaFilled(false);
-        this.removeAll.setOpaque(true);
-
-        this.positiveButton = new JButton(Strings.REMOVE);
-        this.positiveButton.setBackground(Color.white);
-        this.positiveButton.setFocusPainted(false);
-        this.positiveButton.setContentAreaFilled(false);
-        this.positiveButton.setOpaque(true);
-
-        this.negativeButton = new JButton(Strings.CANCEL);
-        this.negativeButton.setBackground(Color.white);
-        this.negativeButton.setFocusPainted(false);
-        this.negativeButton.setContentAreaFilled(false);
-        this.negativeButton.setOpaque(true);
+        this.removeAll = new DefaultButton(REMOVE_ALL);
+        this.positiveButton = new DefaultButton(REMOVE);
+        this.negativeButton = new DefaultButton(CANCEL);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        this.removeAll.addChangeListener(pushButton);
-        this.positiveButton.addChangeListener(pushButton);
-        this.negativeButton.addChangeListener(pushButton);
 
         this.removeAll.addActionListener(clickRemoveAll);
         this.positiveButton.addActionListener(clickPositiveButton);
         this.negativeButton.addActionListener(clickNegativeButton);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(800, 120);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
         this.setResizable(true);
@@ -131,22 +115,7 @@ public class DialogRemoveChannels extends JDialog implements UI_Container {
         }
     };
 
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-
-        }
-    };
-
     private class MainPanel extends JPanel {
-
-        private static final long serialVersionUID = 1L;
 
         protected MainPanel() {
             super(new GridBagLayout());
@@ -166,8 +135,6 @@ public class DialogRemoveChannels extends JDialog implements UI_Container {
         }
 
         private class Cell extends GridBagConstraints {
-
-            private static final long serialVersionUID = 1L;
 
             protected Cell(int x, int y) {
                 super();

@@ -1,7 +1,6 @@
 package ui.mainScreen;
 
 import model.Channel;
-import constants.Strings;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -13,6 +12,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainTable extends JTable {
+    private static final String CODE = "Код";
+    private static final String NAME = "Назва";
+    private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
+    private static final String TECHNOLOGY_NUMBER = "Технологічний номер";
+
     private final JTable current;
 
     private ArrayList<Channel>channelsList;
@@ -92,7 +96,7 @@ public class MainTable extends JTable {
             }
         };
 
-        String[]columnsHeader = new String[] {Strings.CODE, Strings._NAME, Strings.TYPE_OF_MEASUREMENT, Strings.TECHNOLOGY_NUMBER};
+        String[]columnsHeader = new String[] {CODE, NAME, TYPE_OF_MEASUREMENT, TECHNOLOGY_NUMBER};
         model.setColumnIdentifiers(columnsHeader);
 
         for (Channel channel : channelList) {

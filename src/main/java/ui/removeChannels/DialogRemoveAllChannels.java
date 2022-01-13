@@ -1,20 +1,22 @@
 package ui.removeChannels;
 
 import application.Application;
-import constants.Strings;
 import converters.ConverterUI;
 import model.Channel;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class DialogRemoveAllChannels extends JDialog implements UI_Container {
+public class DialogRemoveAllChannels extends JDialog {
+    private static final String REMOVE_ALL = "Видалити всі";
+    private static final String REMOVE_ALL_QUESTION = "Ви впевнені що хочете видалити всі канали? Загальна кількість: ";
+    private static final String CANCEL = "Відміна";
+
     private final MainScreen mainScreen;
     private final JDialog current;
 
@@ -23,7 +25,7 @@ public class DialogRemoveAllChannels extends JDialog implements UI_Container {
     private JButton positiveButton, negativeButton;
 
     public DialogRemoveAllChannels(MainScreen mainScreen){
-        super(mainScreen, Strings.REMOVE_ALL, true);
+        super(mainScreen, REMOVE_ALL, true);
         this.current = this;
         this.mainScreen = mainScreen;
 
@@ -31,38 +33,24 @@ public class DialogRemoveAllChannels extends JDialog implements UI_Container {
         this.setReactions();
         this.build();
     }
-    @Override
-    public void createElements() {
-        String message = Strings.REMOVE_ALL_QUESTION + this.mainScreen.channelsList.size();
+
+    private void createElements() {
+        String message = REMOVE_ALL_QUESTION + this.mainScreen.channelsList.size();
         this.message = new JLabel(message);
 
-        this.positiveButton = new JButton(Strings.REMOVE_ALL);
-        this.positiveButton.setBackground(Color.white);
-        this.positiveButton.setFocusPainted(false);
-        this.positiveButton.setContentAreaFilled(false);
-        this.positiveButton.setOpaque(true);
-
-        this.negativeButton = new JButton(Strings.CANCEL);
-        this.negativeButton.setBackground(Color.white);
-        this.negativeButton.setFocusPainted(false);
-        this.negativeButton.setContentAreaFilled(false);
-        this.negativeButton.setOpaque(true);
+        this.positiveButton = new DefaultButton(REMOVE_ALL);
+        this.negativeButton = new DefaultButton(CANCEL);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        this.positiveButton.addChangeListener(this.pushButton);
-        this.negativeButton.addChangeListener(this.pushButton);
 
         this.positiveButton.addActionListener(this.clickPositiveButton);
         this.negativeButton.addActionListener(this.clickNegativeButton);
 
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(500,150);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
@@ -82,19 +70,6 @@ public class DialogRemoveAllChannels extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             current.dispose();
-        }
-    };
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-
         }
     };
 

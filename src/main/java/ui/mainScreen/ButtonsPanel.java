@@ -12,15 +12,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ButtonsPanel extends JPanel {
-    public static final String DETAILS = "Детальніше";
-    public static final String REMOVE = "Видалити";
-    public static final String ADD = "Додати";
-    public static final String CALCULATE = "Розрахувати";
-    public static final String CERTIFICATES_PROTOCOLS = "Сертифікати/Протоколи";
+    private static final String DETAILS = "Детальніше";
+    private static final String REMOVE = "Видалити";
+    private static final String ADD = "Додати";
+    private static final String CALCULATE = "Розрахувати";
+    private static final String CERTIFICATES_PROTOCOLS = "Сертифікати/Протоколи";
 
     private final MainScreen mainScreen;
-
-    private final Color buttonsColor = new Color(51,51,51);
 
     private JButton buttonDetails, buttonRemove, buttonAdd, buttonCalculate, buttonCertificateFolder;
 
@@ -33,7 +31,7 @@ public class ButtonsPanel extends JPanel {
         this.build();
     }
 
-    public void createElements() {
+    private void createElements() {
         this.buttonDetails = new DefaultButton(DETAILS);
         this.buttonRemove = new DefaultButton(REMOVE);
         this.buttonAdd = new DefaultButton(ADD);
@@ -41,7 +39,7 @@ public class ButtonsPanel extends JPanel {
         this.buttonCertificateFolder = new DefaultButton(CERTIFICATES_PROTOCOLS);
     }
 
-    public void setReactions() {
+    private void setReactions() {
         this.buttonDetails.addActionListener(this.clickDetails);
         this.buttonRemove.addActionListener(this.clickRemove);
         this.buttonAdd.addActionListener(this.clickAdd);
@@ -49,7 +47,7 @@ public class ButtonsPanel extends JPanel {
         this.buttonCertificateFolder.addActionListener(this.clickCertificateFolder);
     }
 
-    public void build() {
+    private void build() {
         this.add(this.buttonRemove, new Cell(0, 0, 1));
         this.add(this.buttonAdd, new Cell(1, 0, 1));
         this.add(this.buttonDetails, new Cell(0, 1, 2));
