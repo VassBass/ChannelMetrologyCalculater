@@ -13,7 +13,6 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import model.Channel;
 import model.Sensor;
 import support.Settings;
-import support.Values;
 
 import java.awt.*;
 import java.io.File;

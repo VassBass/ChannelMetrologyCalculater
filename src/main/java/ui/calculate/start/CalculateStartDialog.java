@@ -1,32 +1,41 @@
 package ui.calculate.start;
 
 import application.Application;
-import constants.Strings;
-import constants.Value;
+import constants.CalibratorType;
+import constants.Key;
+import constants.SensorType;
 import converters.ConverterUI;
-import measurements.Measurement;
 import model.Calibrator;
 import model.Channel;
-import support.Values;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.start.complexElements.CalculateStartDialog_alarmPanel;
 import ui.calculate.start.complexElements.CalculateStartDialog_datePanel;
 import ui.calculate.start.complexElements.CalculateStartDialog_weatherPanel;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class CalculateStartDialog extends JDialog {
+    private static String title(Channel channel){
+        return "Розрахунок каналу \"" + channel.getName() + "\"";
+    }
+    private static final String DATE = "Дата : ";
+    private static final String NUMBER = "№ ";
+    private static final String CALIBRATOR = "Калібратор: ";
+    private static final String DEFAULT_NUMBER_OF_PROTOCOL = "0";
+    private static final String START = "Почати";
+    private static final String CANCEL = "Відміна";
+    private static final String ALARM_CHECK = "Перевірка сигналізації";
+
     private final MainScreen mainScreen;
     private final Channel channel;
-    private Values values;
+    private HashMap<Integer, Object> values;
     private final JDialog current;
 
     private boolean withAlarm;
@@ -48,8 +57,8 @@ public class CalculateStartDialog extends JDialog {
 
     private CalculateStartDialog_alarmPanel alarmPanel;
 
-    public CalculateStartDialog(MainScreen mainScreen, Channel channel, Values values){
-        super(mainScreen, "Розрахунок каналу \"" + channel.getName() + "\"", true);
+    public CalculateStartDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values){
+        super(mainScreen, title(channel), true);
         this.mainScreen = mainScreen;
         this.channel = channel;
         this.values = values;
@@ -60,132 +69,102 @@ public class CalculateStartDialog extends JDialog {
         this.build();
     }
 
-   public void createElements() {
-        this.labelDate = new JLabel("Дата : ");
-        this.labelNumber = new JLabel("№ ");
-        this.calibratorLabel = new JLabel(Strings.CALIBRATOR + ": ");
+   private void createElements() {
+        this.labelDate = new JLabel(DATE);
+        this.labelNumber = new JLabel(NUMBER);
+        this.calibratorLabel = new JLabel(CALIBRATOR);
 
         this.datePanel = new CalculateStartDialog_datePanel();
 
-        this.numberOfProtocol = new JTextField("0", 5);
+        this.numberOfProtocol = new JTextField(DEFAULT_NUMBER_OF_PROTOCOL, 5);
         this.numberOfProtocol.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.calibrator = new JComboBox<>(calibratorsArray(this.channel.getMeasurement()));
-        this.calibrator.setBackground(Color.white);
+        this.calibrator = new JComboBox<>(Application.context.calibratorsController.getAllNames(this.channel.getMeasurement()));
+        this.calibrator.setBackground(Color.WHITE);
         this.calibrator.setEditable(false);
 
         this.weatherPanel = new CalculateStartDialog_weatherPanel();
 
-        this.positiveButton = new JButton(Strings.START);
-        this.positiveButton.setBackground(Color.white);
-        this.positiveButton.setFocusPainted(false);
-        this.positiveButton.setContentAreaFilled(false);
-        this.positiveButton.setOpaque(true);
+        this.positiveButton = new DefaultButton(START);
+        this.negativeButton = new DefaultButton(CANCEL);
 
-        this.negativeButton = new JButton(Strings.CANCEL);
-        this.negativeButton.setBackground(Color.white);
-        this.negativeButton.setFocusPainted(false);
-        this.negativeButton.setContentAreaFilled(false);
-        this.negativeButton.setOpaque(true);
-
-        this.alarmCheck = new JCheckBox(Strings.ALARM_CHECK);
-
+        this.alarmCheck = new JCheckBox(ALARM_CHECK);
         this.alarmPanel = new CalculateStartDialog_alarmPanel(this.channel);
     }
 
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         this.numberOfProtocol.addFocusListener(this.numberFocus);
 
-        this.positiveButton.addChangeListener(this.pushButton);
-        this.negativeButton.addChangeListener(this.pushButton);
-
         this.positiveButton.addActionListener(this.clickPositiveButton);
         this.negativeButton.addActionListener(this.clickNegativeButton);
 
-        alarmCheck.addItemListener(clickAlarm);
+        alarmCheck.addItemListener(this.clickAlarm);
     }
 
-    public void build() {
+    private void build() {
         this.setValues(this.values);
     }
 
     private final FocusListener numberFocus = new FocusListener() {
-        @Override
-        public void focusGained(FocusEvent e) {
+        @Override public void focusGained(FocusEvent e) {
             numberOfProtocol.selectAll();
         }
 
         @Override
         public void focusLost(FocusEvent e) {
             if (numberOfProtocol.getText().length()==0){
-                numberOfProtocol.setText("0");
+                numberOfProtocol.setText(DEFAULT_NUMBER_OF_PROTOCOL);
             }
         }
     };
 
-    private void setValues(Values values){
+    private void setValues(HashMap<Integer, Object> values){
         if (values != null){
-            this.numberOfProtocol.setText(values.getStringValue(Value.CHANNEL_PROTOCOL_NUMBER));
-            this.datePanel.update((Calendar) values.getValue(Value.CHANNEL_DATE));
-            String[] calibrators = this.calibratorsArray(this.channel.getMeasurement());
-            Calibrator calibrator = (Calibrator) values.getValue(Value.CALIBRATOR);
+            this.numberOfProtocol.setText((String) values.get(Key.CHANNEL_PROTOCOL_NUMBER));
+            this.datePanel.update((Calendar) values.get(Key.CHANNEL_DATE));
+            String[] calibrators = Application.context.calibratorsController.getAllNames(this.channel.getMeasurement());
+            Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
             for (int x=0;x<calibrators.length;x++){
                 if (calibrator.getName().equals(calibrators[x])){
                     this.calibrator.setSelectedIndex(x);
                     break;
                 }
             }
-            this.weatherPanel.temperature.setText(values.getStringValue(Value.CALCULATION_EXTERNAL_TEMPERATURE));
-            this.weatherPanel.pressure.setText(values.getStringValue(Value.CALCULATION_EXTERNAL_PRESSURE));
-            this.weatherPanel.humidity.setText(values.getStringValue(Value.CALCULATION_EXTERNAL_HUMIDITY));
-            this.alarmPanel.setValue(values.getStringValue(Value.CALCULATION_ALARM_VALUE));
-            boolean withAlarmPanel = values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
+            this.weatherPanel.temperature.setText((String) values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE));
+            this.weatherPanel.pressure.setText((String) values.get(Key.CALCULATION_EXTERNAL_PRESSURE));
+            this.weatherPanel.humidity.setText((String) values.get(Key.CALCULATION_EXTERNAL_HUMIDITY));
+            this.alarmPanel.setValue((String) values.get(Key.CALCULATION_ALARM_VALUE));
+            boolean withAlarmPanel = (boolean) values.get(Key.CALCULATION_ALARM_PANEL);
             this.setContentPane(new MainPanel(withAlarmPanel));
         }else {
-            this.values = new Values();
-            if (this.channel.getSensor().getType().contains(Strings.SENSOR_ROSEMOUNT)){
-                this.calibrator.setSelectedItem(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4);
+            this.values = new HashMap<>();
+            if (this.channel.getSensor().getType().contains(SensorType.ROSEMOUNT)){
+                this.calibrator.setSelectedItem(CalibratorType.ROSEMOUNT_8714DQ4);
             }
             this.setContentPane(new MainPanel(false));
         }
 
     }
 
-    public Values getValues(Values values){
+    public HashMap<Integer, Object> getValues(HashMap<Integer, Object> values){
         if (values == null){
-            values = new Values();
+            values = new HashMap<>();
         }
 
-        values.putValue(Value.CHANNEL_PROTOCOL_NUMBER, this.numberOfProtocol.getText());
-        values.putValue(Value.CHANNEL_DATE, this.datePanel.getDate());
+        values.put(Key.CHANNEL_PROTOCOL_NUMBER, this.numberOfProtocol.getText());
+        values.put(Key.CHANNEL_DATE, this.datePanel.getDate());
         String calibratorName = Objects.requireNonNull(this.calibrator.getSelectedItem()).toString();
-        values.putValue(Value.CALIBRATOR, Application.context.calibratorsController.get(calibratorName));
-        values.putValue(Value.CALCULATION_EXTERNAL_TEMPERATURE, this.weatherPanel.temperature.getText());
-        values.putValue(Value.CALCULATION_EXTERNAL_PRESSURE, this.weatherPanel.pressure.getText());
-        values.putValue(Value.CALCULATION_EXTERNAL_HUMIDITY, this.weatherPanel.humidity.getText());
-        values.putValue(Value.CALCULATION_ALARM_PANEL, this.withAlarm);
-        values.putValue(Value.CALCULATION_ALARM_VALUE, this.alarmPanel.getValue());
+        values.put(Key.CALIBRATOR, Application.context.calibratorsController.get(calibratorName));
+        values.put(Key.CALCULATION_EXTERNAL_TEMPERATURE, this.weatherPanel.temperature.getText());
+        values.put(Key.CALCULATION_EXTERNAL_PRESSURE, this.weatherPanel.pressure.getText());
+        values.put(Key.CALCULATION_EXTERNAL_HUMIDITY, this.weatherPanel.humidity.getText());
+        values.put(Key.CALCULATION_ALARM_PANEL, this.withAlarm);
+        values.put(Key.CALCULATION_ALARM_VALUE, this.alarmPanel.getValue());
 
         return values;
     }
-
-    private String[]calibratorsArray(Measurement measurement){
-        return Application.context.calibratorsController.getAllNames(measurement);
-    }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-        }
-    };
 
     private final ActionListener clickPositiveButton = new ActionListener(){
         @Override

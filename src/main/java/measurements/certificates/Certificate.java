@@ -2,7 +2,6 @@ package measurements.certificates;
 
 import measurements.calculation.Calculation;
 import model.Channel;
-import support.Values;
 
 import java.io.File;
 

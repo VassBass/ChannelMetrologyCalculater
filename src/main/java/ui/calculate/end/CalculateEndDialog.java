@@ -6,7 +6,6 @@ import measurements.certificates.Certificate;
 import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
-import support.Values;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

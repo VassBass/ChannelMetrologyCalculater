@@ -1,15 +1,15 @@
 package ui.calculate.measurement;
 
 import backgroundTasks.CalculateChannel;
+import constants.Key;
 import model.Calibrator;
-import constants.Value;
 import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
-import support.Values;
 import ui.calculate.measurement.complexElements.*;
 import ui.calculate.start.CalculateStartDialog;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -17,11 +17,20 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 public class CalculateMeasurementDialog extends JDialog {
+    private static String title(Channel channel){
+        return "Розрахунок каналу \"" + channel.getName() + "\"";
+    }
+    public static final String BACK = "Назад";
+    public static final String NEXT = "Далі";
+    public static final String CLEAR = "Очистити";
+    public static final String CALCULATE = "Розрахувати";
+
     private final MainScreen mainScreen;
     private final Channel channel;
-    private final Values values;
+    private final HashMap<Integer, Object> values;
     private final JDialog current;
 
     private int measurementNumber = 1;
@@ -36,8 +45,8 @@ public class CalculateMeasurementDialog extends JDialog {
     private MeasurementPanel[] measurementsPanels;
     private JPanel[] duplicateOfMeasurementsPanels;
 
-    public CalculateMeasurementDialog(MainScreen mainScreen, Channel channel, Values values){
-        super(mainScreen, "Розрахунок каналу \"" + channel.getName() + "\"", true);
+    public CalculateMeasurementDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values){
+        super(mainScreen, title(channel), true);
         this.mainScreen = mainScreen;
         this.channel = channel;
         this.values = values;
@@ -49,44 +58,20 @@ public class CalculateMeasurementDialog extends JDialog {
         this.build();
     }
 
-    public void createElements() {
+    private void createElements() {
         this.labelMeasurement = new JLabel(this.measurementString());
 
         this.measurementsPanels = new MeasurementPanel[5];
         this.duplicateOfMeasurementsPanels = new JPanel[5];
 
-        this.buttonBack = new JButton(Strings.BACK);
-        this.buttonBack.setBackground(Color.white);
-        this.buttonBack.setFocusPainted(false);
-        this.buttonBack.setContentAreaFilled(false);
-        this.buttonBack.setOpaque(true);
-
-        this.buttonNext = new JButton(Strings.NEXT);
-        this.buttonNext.setBackground(Color.white);
-        this.buttonNext.setFocusPainted(false);
-        this.buttonNext.setContentAreaFilled(false);
-        this.buttonNext.setOpaque(true);
-
-        this.buttonClear = new JButton(Strings.CLEAR);
-        this.buttonClear.setBackground(Color.white);
-        this.buttonClear.setFocusPainted(false);
-        this.buttonClear.setContentAreaFilled(false);
-        this.buttonClear.setOpaque(true);
-
-        this.buttonCalculate = new JButton(Strings.CALCULATE);
-        this.buttonCalculate.setBackground(Color.white);
-        this.buttonCalculate.setFocusPainted(false);
-        this.buttonCalculate.setContentAreaFilled(false);
-        this.buttonCalculate.setOpaque(true);
+        this.buttonBack = new DefaultButton(BACK);
+        this.buttonNext = new DefaultButton(NEXT);
+        this.buttonClear = new DefaultButton(CLEAR);
+        this.buttonCalculate = new DefaultButton(CALCULATE);
     }
 
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        this.buttonBack.addChangeListener(this.pushButton);
-        this.buttonNext.addChangeListener(this.pushButton);
-        this.buttonClear.addChangeListener(this.pushButton);
-        this.buttonCalculate.addChangeListener(this.pushButton);
 
         this.buttonBack.addActionListener(this.clickBack);
         this.buttonNext.addActionListener(this.clickNext);
@@ -94,30 +79,30 @@ public class CalculateMeasurementDialog extends JDialog {
         this.buttonCalculate.addActionListener(this.clickCalculate);
     }
 
-    public void build() {
+    private void build() {
         this.setSize(670,400);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
 
-    private Values getValues(){
-        this.values.putValue(Value.MEASUREMENT_1, this.measurementsPanels[0].getValues());
+    private HashMap<Integer, Object> getValues(){
+        this.values.put(Key.MEASUREMENT_1, this.measurementsPanels[0].getValues());
 
         if (this.measurementsPanels[1] != null){
-            this.values.putValue(Value.MEASUREMENT_2, this.measurementsPanels[1].getValues());
+            this.values.put(Key.MEASUREMENT_2, this.measurementsPanels[1].getValues());
         }
 
         if (this.measurementsPanels[2] != null){
-            this.values.putValue(Value.MEASUREMENT_3, this.measurementsPanels[2].getValues());
+            this.values.put(Key.MEASUREMENT_3, this.measurementsPanels[2].getValues());
         }
 
         if (this.measurementsPanels[3] != null){
-            this.values.putValue(Value.MEASUREMENT_4, this.measurementsPanels[3].getValues());
+            this.values.put(Key.MEASUREMENT_4, this.measurementsPanels[3].getValues());
         }
 
         if (this.measurementsPanels[4] != null){
-            this.values.putValue(Value.MEASUREMENT_5, this.measurementsPanels[4].getValues());
+            this.values.put(Key.MEASUREMENT_5, this.measurementsPanels[4].getValues());
         }
         return this.values;
     }
@@ -175,18 +160,6 @@ public class CalculateMeasurementDialog extends JDialog {
     private String measurementString(){
         return "Измерение №" + this.measurementNumber;
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-        }
-    };
 
     private final ActionListener clickBack = new ActionListener(){
         @Override

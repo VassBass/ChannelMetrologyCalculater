@@ -1,7 +1,6 @@
 package ui.calculate.start.complexElements;
 
 import constants.MeasurementConstants;
-import constants.Strings;
 import converters.VariableConverter;
 import ui.model.ButtonCell;
 
@@ -10,7 +9,16 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class CalculateStartDialog_weatherPanel extends JPanel implements UI_Container {
+public class CalculateStartDialog_weatherPanel extends JPanel {
+    private static final String CONDITIONS_FOR_CONTROL = "Умови проведення контролю";
+    private static final String TEMPERATURE_EXTERNAL_ENVIRONMENT = "Температура навколишнього середовища";
+    private static final String RELATIVE_HUMIDITY = "Відносна вологість повітря";
+    private static final String ATMOSPHERE_PRESSURE = "Атмосферний тиск";
+    private static final String PERCENT = "%";
+    private static final String ATMOSPHERE_PRESSURE_VALUE = "мм рт ст";
+    private static final String DEFAULT_TEMPERATURE_VALUE = "21";
+    private static final String DEFAULT_PRESSURE_VALUE = "750";
+    private static final String DEFAULT_HUMIDITY_VALUE = "70";
 
     private ButtonCell label;
     private ButtonCell labelTemperature;
@@ -32,34 +40,31 @@ public class CalculateStartDialog_weatherPanel extends JPanel implements UI_Cont
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.label = new ButtonCell(true, Strings.CONDITIONS_FOR_CONTROL);
-        this.labelTemperature = new ButtonCell(false, Strings.TEMPERATURE_EXTERNAL_ENVIRONMENT);
-        this.labelHumidity = new ButtonCell(false, Strings.RELATIVE_HUMIDITY);
-        this.labelPressure = new ButtonCell(false, Strings.ATMOSPHERE_PRESSURE);
+    private void createElements() {
+        this.label = new ButtonCell(true, CONDITIONS_FOR_CONTROL);
+        this.labelTemperature = new ButtonCell(false, TEMPERATURE_EXTERNAL_ENVIRONMENT);
+        this.labelHumidity = new ButtonCell(false, RELATIVE_HUMIDITY);
+        this.labelPressure = new ButtonCell(false, ATMOSPHERE_PRESSURE);
 
         this.temperatureValue = new ButtonCell(false, MeasurementConstants.DEGREE_CELSIUS.getValue());
-        this.humidityValue = new ButtonCell(false, "%");
-        this.pressureValue = new ButtonCell(false, "мм рт ст");
+        this.humidityValue = new ButtonCell(false, PERCENT);
+        this.pressureValue = new ButtonCell(false, ATMOSPHERE_PRESSURE_VALUE);
 
-        this.temperature = new JTextField("21",5);
+        this.temperature = new JTextField(DEFAULT_TEMPERATURE_VALUE,5);
         this.temperature.setHorizontalAlignment(SwingConstants.CENTER);
-        this.humidity = new JTextField("70",5);
+        this.humidity = new JTextField(DEFAULT_HUMIDITY_VALUE,5);
         this.humidity.setHorizontalAlignment(SwingConstants.CENTER);
-        this.pressure = new JTextField("750",5);
+        this.pressure = new JTextField(DEFAULT_PRESSURE_VALUE,5);
         this.pressure.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    @Override
-    public void setReactions() {
-        this.temperature.addFocusListener(focusTemperature);
-        this.humidity.addFocusListener(focusHumidity);
-        this.pressure.addFocusListener(focusPressure);
+    private void setReactions() {
+        this.temperature.addFocusListener(this.focusTemperature);
+        this.humidity.addFocusListener(this.focusHumidity);
+        this.pressure.addFocusListener(this.focusPressure);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.label, new Cell(0, 0, 3));
 
         this.add(this.labelTemperature, new Cell(0, 1));
@@ -83,11 +88,11 @@ public class CalculateStartDialog_weatherPanel extends JPanel implements UI_Cont
 
         @Override
         public void focusLost(FocusEvent e){
-            if (temperature.getText().length()>0){
+            if (temperature.getText().length() > 0){
                 String check = VariableConverter.intString(temperature.getText());
                 temperature.setText(check);
             }else{
-                temperature.setText("21");
+                temperature.setText(DEFAULT_TEMPERATURE_VALUE);
             }
         }
     };
@@ -100,11 +105,11 @@ public class CalculateStartDialog_weatherPanel extends JPanel implements UI_Cont
 
         @Override
         public void focusLost(FocusEvent e){
-            if (humidity.getText().length()>0){
+            if (humidity.getText().length() > 0){
                 String check = VariableConverter.intString(humidity.getText());
                 humidity.setText(check);
             }else{
-                humidity.setText("70");
+                humidity.setText(DEFAULT_HUMIDITY_VALUE);
             }
         }
     };
@@ -117,11 +122,11 @@ public class CalculateStartDialog_weatherPanel extends JPanel implements UI_Cont
 
         @Override
         public void focusLost(FocusEvent e){
-            if (pressure.getText().length()>0){
+            if (pressure.getText().length() > 0){
                 String check = VariableConverter.intString(pressure.getText());
                 pressure.setText(check);
             }else{
-                pressure.setText("750");
+                pressure.setText(DEFAULT_PRESSURE_VALUE);
             }
         }
     };

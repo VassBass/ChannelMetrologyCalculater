@@ -8,7 +8,8 @@ import java.awt.event.FocusListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class CalculateStartDialog_datePanel extends JPanel implements UI_Container {
+public class CalculateStartDialog_datePanel extends JPanel {
+    private static final String DOT = ".";
 
     private JTextField day;
     private JTextField month;
@@ -24,33 +25,30 @@ public class CalculateStartDialog_datePanel extends JPanel implements UI_Contain
         this.build();
     }
 
-    @Override
-    public void createElements(){
+    private void createElements(){
         this.day = new JTextField(2);
         this.day.setHorizontalAlignment(SwingConstants.CENTER);
-        this.dot1 = new JLabel(".");
+        this.dot1 = new JLabel(DOT);
         this.month = new JTextField(2);
         this.month.setHorizontalAlignment(SwingConstants.CENTER);
-        this.dot2 = new JLabel(".");
+        this.dot2 = new JLabel(DOT);
         this.year = new JTextField(4);
         this.year.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    @Override
-    public void setReactions(){
-        this.day.addFocusListener(dayFocus);
-        this.month.addFocusListener(monthFocus);
-        this.year.addFocusListener(yearFocus);
+    private void setReactions(){
+        this.day.addFocusListener(this.dayFocus);
+        this.month.addFocusListener(this.monthFocus);
+        this.year.addFocusListener(this.yearFocus);
     }
 
-    @Override
-    public void build(){
+    private void build(){
         this.setDate(Calendar.getInstance());
-        this.add(day);
-        this.add(dot1);
-        this.add(month);
-        this.add(dot2);
-        this.add(year);
+        this.add(this.day);
+        this.add(this.dot1);
+        this.add(this.month);
+        this.add(this.dot2);
+        this.add(this.year);
     }
 
     public void update(Calendar date){

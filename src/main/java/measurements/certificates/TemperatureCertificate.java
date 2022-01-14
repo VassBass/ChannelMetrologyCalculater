@@ -4,7 +4,6 @@ import model.Calibrator;
 import constants.Files;
 import constants.MeasurementConstants;
 import constants.Strings;
-import constants.Value;
 import converters.VariableConverter;
 import measurements.calculation.Calculation;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -15,7 +14,6 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import model.Channel;
 import model.Sensor;
 import support.Settings;
-import support.Values;
 
 import java.awt.*;
 import java.io.File;

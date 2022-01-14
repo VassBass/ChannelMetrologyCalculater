@@ -1,11 +1,9 @@
 package ui.calculate.verification;
 
 import measurements.calculation.Calculation;
-import constants.Value;
 import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
-import support.Values;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.performers.CalculatePerformersDialog;
 import ui.calculate.reference.CalculateReferenceDialog;

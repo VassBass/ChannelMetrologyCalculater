@@ -2,14 +2,17 @@ package ui.calculate.start.complexElements;
 
 import converters.VariableConverter;
 import model.Channel;
-import constants.Strings;
 
 import javax.swing.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
 
-public class CalculateStartDialog_alarmPanel extends JPanel implements UI_Container {
+public class CalculateStartDialog_alarmPanel extends JPanel {
+    private static final String ALARM_MESSAGE = "Сигналізація спрацювала при t = ";
+    private static final String DEFAULT_ALARM_VALUE = "0.00";
+    private static final String DASH = "-";
+
     private final Channel channel;
 
     private JLabel message;
@@ -26,20 +29,17 @@ public class CalculateStartDialog_alarmPanel extends JPanel implements UI_Contai
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.message = new JLabel(Strings.ALARM_MESSAGE);
-        this.value = new JTextField("0.00",5);
+    private void createElements() {
+        this.message = new JLabel(ALARM_MESSAGE);
+        this.value = new JTextField(DEFAULT_ALARM_VALUE,5);
         this.measurementValue = new JLabel(this.channel.getMeasurement().getValue());
     }
 
-    @Override
-    public void setReactions() {
-        this.value.addFocusListener(focus);
+    private void setReactions() {
+        this.value.addFocusListener(this.focus);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.value.setHorizontalAlignment(SwingConstants.CENTER);
         this.add(this.message);
         this.add(this.value);
@@ -67,8 +67,8 @@ public class CalculateStartDialog_alarmPanel extends JPanel implements UI_Contai
     };
 
     private void checkString(){
-        if (this.value.getText().length()==0 || this.value.getText().equals("-")){
-            this.value.setText("0.00");
+        if (this.value.getText().length()==0 || this.value.getText().contains(DASH)){
+            this.value.setText(DEFAULT_ALARM_VALUE);
         }else{
             String check = VariableConverter.doubleString(this.value.getText());
             double d = Double.parseDouble(check);

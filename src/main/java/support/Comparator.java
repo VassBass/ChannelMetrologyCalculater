@@ -14,7 +14,8 @@ public class Comparator {
 
     public static boolean sensorsMatch(Sensor sensor1, Sensor sensor2){
         if (sensor1.getMeasurement().equals(sensor2.getMeasurement())){
-            if (sensor1.getMeasurement().equals(MeasurementConstants.TEMPERATURE.getValue())) {
+            if (sensor1.getMeasurement().equals(MeasurementConstants.TEMPERATURE.getValue()) ||
+                sensor1.getMeasurement().equals(MeasurementConstants.CONSUMPTION.getValue())) {
                 return sensor1.getName().equals(sensor2.getName())
                         && sensor1.getType().equals(sensor2.getType())
                         && sensor1.getRangeMin() == sensor2.getRangeMin()

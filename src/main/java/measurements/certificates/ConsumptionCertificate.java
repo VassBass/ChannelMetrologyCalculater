@@ -3,7 +3,6 @@ package measurements.certificates;
 import constants.Files;
 import constants.MeasurementConstants;
 import constants.Strings;
-import constants.Value;
 import converters.VariableConverter;
 import measurements.calculation.Calculation;
 import model.Calibrator;
@@ -15,7 +14,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import support.Settings;
-import support.Values;
 
 import java.awt.*;
 import java.io.File;

@@ -2,12 +2,10 @@ package ui.calculate.verification.complexElements;
 
 import constants.MeasurementConstants;
 import constants.Strings;
-import constants.Value;
 import converters.VariableConverter;
 import measurements.calculation.Calculation;
 import model.Calibrator;
 import model.Channel;
-import support.Values;
 import ui.model.ButtonCell;
 
 import javax.swing.*;

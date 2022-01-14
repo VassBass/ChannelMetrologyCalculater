@@ -3,12 +3,10 @@ package ui.calculate.verification.complexElements;
 import model.Calibrator;
 import constants.MeasurementConstants;
 import constants.Strings;
-import constants.Value;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import measurements.calculation.Calculation;
 import model.Channel;
-import support.Values;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
