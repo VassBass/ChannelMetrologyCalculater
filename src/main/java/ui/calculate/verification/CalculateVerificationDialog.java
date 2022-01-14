@@ -1,9 +1,9 @@
 package ui.calculate.verification;
 
 import calculation.Calculation;
+import constants.Key;
 import converters.ConverterUI;
 import model.Channel;
-import constants.Strings;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.performers.CalculatePerformersDialog;
 import ui.calculate.reference.CalculateReferenceDialog;
@@ -11,16 +11,19 @@ import ui.calculate.verification.complexElements.ConsumptionPanel;
 import ui.calculate.verification.complexElements.PressurePanel;
 import ui.calculate.verification.complexElements.TemperaturePanel;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 public class CalculateVerificationDialog extends JDialog {
+    private static final String TITLE = "Результати розрахунку";
+    private static final String BACK = "Назад";
+    private static final String NEXT = "Далі";
+
     private final MainScreen mainScreen;
     private final Channel channel;
     private final HashMap<Integer, Object> values;
@@ -31,7 +34,7 @@ public class CalculateVerificationDialog extends JDialog {
     private JButton buttonBack, buttonNext;
 
     public CalculateVerificationDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values, Calculation calculation){
-        super(mainScreen, "Результати розрахунку", true);
+        super(mainScreen, TITLE, true);
         this.mainScreen = mainScreen;
         this.channel = channel;
         this.values = values;
@@ -42,7 +45,7 @@ public class CalculateVerificationDialog extends JDialog {
         this.build();
     }
 
-    public void createElements() {
+    private void createElements() {
         switch (this.channel.getMeasurement().getNameConstant()){
             case TEMPERATURE:
                 this.resultPanel = new TemperaturePanel(this.channel, this.values, this.calculation);
@@ -55,48 +58,24 @@ public class CalculateVerificationDialog extends JDialog {
                 break;
         }
 
-        this.buttonBack = new JButton(Strings.BACK);
-        this.buttonBack.setBackground(Color.white);
-        this.buttonBack.setFocusPainted(false);
-        this.buttonBack.setContentAreaFilled(false);
-        this.buttonBack.setOpaque(true);
-
-        this.buttonNext = new JButton(Strings.NEXT);
-        this.buttonNext.setBackground(Color.white);
-        this.buttonNext.setFocusPainted(false);
-        this.buttonNext.setContentAreaFilled(false);
-        this.buttonNext.setOpaque(true);
+        this.buttonBack = new DefaultButton(BACK);
+        this.buttonNext = new DefaultButton(NEXT);
     }
 
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        this.buttonBack.addChangeListener(pushButton);
-        this.buttonNext.addChangeListener(pushButton);
 
         this.buttonBack.addActionListener(clickBack);
         this.buttonNext.addActionListener(clickNext);
     }
 
-    public void build() {
+    private void build() {
         this.setSize(850,600);
         this.setResizable(false);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-        }
-    };
 
     private final ActionListener clickBack = new ActionListener(){
         @Override
@@ -119,14 +98,14 @@ public class CalculateVerificationDialog extends JDialog {
                 public void run() {
                     dispose();
                     if (calculation.goodChannel()) {
-                        values.removeValue(Value.CHANNEL_REFERENCE);
+                        values.remove(Key.CHANNEL_REFERENCE);
                         if (calculation.closeToFalse()){
-                            values.putValue(Value.CALCULATION_CLOSE_TO_FALSE, resultPanel.getName());
+                            values.put(Key.CALCULATION_CLOSE_TO_FALSE, resultPanel.getName());
                         }
                         new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
                     }else{
                         try {
-                            values.putValue(Value.CHANNEL_IS_GOOD, resultPanel.getName());
+                            values.put(Key.CHANNEL_IS_GOOD, resultPanel.getName());
                         }catch (Exception ignored){}
                         new CalculateReferenceDialog(mainScreen, channel, values, calculation).setVisible(true);
                     }

@@ -1,7 +1,8 @@
 package ui.calculate.verification.complexElements;
 
+import constants.CalibratorType;
+import constants.Key;
 import constants.MeasurementConstants;
-import constants.Strings;
 import converters.VariableConverter;
 import calculation.Calculation;
 import model.Calibrator;
@@ -10,14 +11,53 @@ import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
-public class ConsumptionPanel extends JPanel implements UI_Container {
+public class ConsumptionPanel extends JPanel {
+    private static final String NAME = "Назва";
+    private static final String PROTOCOL_NUMBER = "Номер протоколу";
+    private static final String PATH_OF_CHANNEL = "Розташування вимірювання каналу";
+    private static final String TECHNOLOGY_NUMBER = "Технологічний номер";
+    private static final String CODE = "Код";
+    private static final String RANGE_OF_CHANNEL = "Діапазон вимірювального каналу";
+    private static final String SENSOR = "Первинний вимірювальний пристрій";
+    private static final String ALLOWABLE_ERROR_OF_SENSOR = "Допустима похибка перетворювача";
+    private static final String CONDITIONS_FOR_CONTROL = "Умови проведення контролю";
+    private static final String TEMPERATURE_EXTERNAL_ENVIRONMENT = "Температура навколишнього середовища";
+    private static final String RELATIVE_HUMIDITY = "Відносна вологість повітря";
+    private static final String ATMOSPHERE_PRESSURE = "Атмосферний тиск";
+    private static final String TABLE_RESULT_PROTOCOL = "Таблиця отриманих значеннь вимірювального каналу";
+    private static final String CALIBRATOR = "Калібратор";
+    private static final String PARENT_NUMBER = "Заводський № ";
+    private static final String CERTIFICATE_OF_CALIBRATION = "Сертифікат калібрування";
+    private static final String ALLOWABLE_ERROR_OF_CALIBRATOR = "Допустима похибка ЗВТ";
+    private static final String TABLE_RESULT_CERTIFICATE = "Таблиця отриманих метрологічних хар-к";
+    private static final String PLUS_MINUS = "\u00B1";
+    private static final String CHANNEL_IS_GOOD = "Канал придатний";
+    private static final String CHANNEL_IS_BAD = "Канал не придатний";
+    private static final String CHANNEL_IS_BAD_BUT = "Канал непридатний для комерційного обліку, але придатний як індикатор";
+    private static final String ALARM_MESSAGE = "Сигналізація спрацювала при t = ";
+    private static final String ADVICE_FIX = "Порада: налаштувати вимірювальний канал.";
+    private static final String ADVICE_RANGE = "Порада: для кращих показів налаштуйте вимірювальний канал на вказаний діапазон вимірювання";
+    private static final String GAMMA = "\u03B3";
+    private static final String DELTA = "\u0394";
+
+    private static String YEAR_WORD(double d){
+        if (d == 0D){
+            return "років";
+        }else if (d > 0 && d < 1){
+            return "року";
+        }else if (d == 1D){
+            return "рік";
+        }else if (d > 1 && d < 5){
+            return "роки";
+        }else {
+            return "років";
+        }
+    }
+
     private final Channel channel;
-    private final Values values;
+    private final HashMap<Integer, Object> values;
     private final Calculation calculation;
 
     private ButtonCell channelNameLabel;
@@ -68,7 +108,7 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
 
     private JComboBox<String> advice;
 
-    public ConsumptionPanel(Channel channel, Values values, Calculation calculation){
+    public ConsumptionPanel(Channel channel, HashMap<Integer, Object> values, Calculation calculation){
         super(new GridBagLayout());
         this.channel = channel;
         this.values = values;
@@ -76,31 +116,29 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
 
         this.createElements();
         this.setValues();
-        this.setReactions();
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.channelNameLabel = new ButtonCell(true, Strings._NAME);
-        this.protocolNumberLabel = new ButtonCell(true, Strings.PROTOCOL_NUMBER);
+    private void createElements() {
+        this.channelNameLabel = new ButtonCell(true, NAME);
+        this.protocolNumberLabel = new ButtonCell(true, PROTOCOL_NUMBER);
         this.dateLabel = new ButtonCell(true, " від ");
-        this.pathLabel = new ButtonCell(true, Strings.PATH_OF_CHANNEL);
-        this.technologyNumberLabel = new ButtonCell(true, Strings.TECHNOLOGY_NUMBER);
-        this.codeLabel = new ButtonCell(true, Strings.CODE);
-        this.rangeChannelLabel = new ButtonCell(true, Strings.RANGE_OF_CHANNEL);
-        this.sensorLabel = new ButtonCell(true, Strings.SENSOR);
-        this.allowableErrorSensorLabel = new ButtonCell(true, Strings.ALLOWABLE_ERROR_OF_SENSOR);
-        this.controlConditionsLabel = new ButtonCell(true, Strings.CONDITIONS_FOR_CONTROL);
-        this.externalTemperatureLabel = new ButtonCell(true, Strings.TEMPERATURE_EXTERNAL_ENVIRONMENT);
-        this.humidityLabel = new ButtonCell(true, Strings.RELATIVE_HUMIDITY);
-        this.atmospherePressureLabel = new ButtonCell(true, Strings.ATMOSPHERE_PRESSURE);
-        this.resultsTableLabel = new ButtonCell(true, Strings.TABLE_RESULT_PROTOCOL);
-        this.calibratorNameLabel = new ButtonCell(true, Strings.CALIBRATOR);
-        this.calibratorNumberLabel = new ButtonCell(true, Strings.PARENT_NUMBER);
-        this.calibratorCertificateLabel = new ButtonCell(true, Strings.CERTIFICATE_OF_CALIBRATION);
-        this.allowableErrorCalibratorLabel = new ButtonCell(true, Strings.ALLOWABLE_ERROR_OF_CALIBRATOR);
-        this.metrologyTableLabel = new ButtonCell(true, Strings.TABLE_RESULT_CERTIFICATE);
+        this.pathLabel = new ButtonCell(true, PATH_OF_CHANNEL);
+        this.technologyNumberLabel = new ButtonCell(true, TECHNOLOGY_NUMBER);
+        this.codeLabel = new ButtonCell(true, CODE);
+        this.rangeChannelLabel = new ButtonCell(true, RANGE_OF_CHANNEL);
+        this.sensorLabel = new ButtonCell(true, SENSOR);
+        this.allowableErrorSensorLabel = new ButtonCell(true, ALLOWABLE_ERROR_OF_SENSOR);
+        this.controlConditionsLabel = new ButtonCell(true, CONDITIONS_FOR_CONTROL);
+        this.externalTemperatureLabel = new ButtonCell(true, TEMPERATURE_EXTERNAL_ENVIRONMENT);
+        this.humidityLabel = new ButtonCell(true, RELATIVE_HUMIDITY);
+        this.atmospherePressureLabel = new ButtonCell(true, ATMOSPHERE_PRESSURE);
+        this.resultsTableLabel = new ButtonCell(true, TABLE_RESULT_PROTOCOL);
+        this.calibratorNameLabel = new ButtonCell(true, CALIBRATOR);
+        this.calibratorNumberLabel = new ButtonCell(true, PARENT_NUMBER);
+        this.calibratorCertificateLabel = new ButtonCell(true, CERTIFICATE_OF_CALIBRATION);
+        this.allowableErrorCalibratorLabel = new ButtonCell(true, ALLOWABLE_ERROR_OF_CALIBRATOR);
+        this.metrologyTableLabel = new ButtonCell(true, TABLE_RESULT_CERTIFICATE);
 
         this.channelName = new ButtonCell(false);
         this.number = new ButtonCell(false);
@@ -125,8 +163,8 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
         this.metrologyTable = new TableCertificate();
 
         this.channelName.setText(this.channel.getName());
-        this.number.setText(this.values.getStringValue(Value.CHANNEL_PROTOCOL_NUMBER));
-        this.date.setText(VariableConverter.dateToString((Calendar) values.getValue(Value.CHANNEL_DATE)));
+        this.number.setText((String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER));
+        this.date.setText(VariableConverter.dateToString((Calendar) values.get(Key.CHANNEL_DATE)));
 
         String path = this.channel.getArea()
                 + " "
@@ -161,22 +199,22 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
         }else {
             errorSensorValue = VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN);
         }
-        String allowableErrorSensor = Strings.PLUS_MINUS
+        String allowableErrorSensor = PLUS_MINUS
                 + errorSensorPercent
                 + "% або "
-                + Strings.PLUS_MINUS
+                + PLUS_MINUS
                 + errorSensorValue
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
-        this.externalTemperature.setText(this.values.getStringValue(Value.CALCULATION_EXTERNAL_TEMPERATURE)
+        this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
                 + MeasurementConstants.DEGREE_CELSIUS.getValue());
-        this.humidity.setText(this.values.getStringValue(Value.CALCULATION_EXTERNAL_HUMIDITY)
+        this.humidity.setText(this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY)
                 + "%");
-        this.atmospherePressure.setText(this.values.getStringValue(Value.CALCULATION_EXTERNAL_PRESSURE)
+        this.atmospherePressure.setText(this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE)
                 + "мм рт ст");
 
-        Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
+        Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
         this.calibratorName.setText(calibrator.getType());
         this.calibratorNumber.setText(calibrator.getNumber());
 
@@ -197,10 +235,10 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
         }else {
             error = VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN);
         }
-        String allowableErrorCalibrator = Strings.PLUS_MINUS
+        String allowableErrorCalibrator = PLUS_MINUS
                 + VariableConverter.roundingDouble2(ePC, Locale.GERMAN)
                 + "% або "
-                + Strings.PLUS_MINUS
+                + PLUS_MINUS
                 + error
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorCalibrator.setText(allowableErrorCalibrator);
@@ -209,43 +247,39 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
 
         if (this.calculation.goodChannel()){
             this.resultOfCheck.setBackground(Color.GREEN);
-            this.resultOfCheck.setText(Strings.CHANNEL_IS_GOOD);
+            this.resultOfCheck.setText(CHANNEL_IS_GOOD);
         }else{
-            String[]toComboBox = new String[]{Strings.CHANNEL_IS_BAD, Strings.CHANNEL_IS_BAD_BUT};
+            String[]toComboBox = new String[]{CHANNEL_IS_BAD, CHANNEL_IS_BAD_BUT};
             this.advice = new JComboBox<>(toComboBox);
             return;
         }
 
-        this.withAlarm = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
+        this.withAlarm = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
         if (this.calculation.closeToFalse() && this.calculation.goodChannel()){
             ArrayList<String> toComboBox = new ArrayList<>();
             toComboBox.add("");
             if (withAlarm){
-                toComboBox.add(Strings.ALARM_MESSAGE + this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
+                toComboBox.add(ALARM_MESSAGE + this.values.get(Key.CALCULATION_ALARM_VALUE));
             }
-            toComboBox.add(Strings.ADVICE_FIX);
-            toComboBox.add(Strings.ADVICE_RANGE);
+            toComboBox.add(ADVICE_FIX);
+            toComboBox.add(ADVICE_RANGE);
 
             this.advice = new JComboBox<>(toComboBox.toArray(new String[0]));
             this.advice.setSelectedIndex(1);
         }else {
             if (withAlarm) {
-                this.alarmLabel = new ButtonCell(true, Strings.ALARM_MESSAGE);
-                this.alarm = new ButtonCell(false, this.values.getStringValue(Value.CALCULATION_ALARM_VALUE));
+                this.alarmLabel = new ButtonCell(true, ALARM_MESSAGE);
+                this.alarm = new ButtonCell(false, (String) this.values.get(Key.CALCULATION_ALARM_VALUE));
             }
         }
     }
-
-    @Override
-    public void setReactions() {}
 
     @Override
     public String getName() {
         return Objects.requireNonNull(this.advice.getSelectedItem()).toString();
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.channelNameLabel, new Cell(0, 0, 4));
         this.add(this.channelName, new Cell(0, 1, 4));
 
@@ -319,7 +353,7 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
         protected TableProtocol(){
             super(new GridBagLayout());
 
-            if (calculation.getCalibrator().getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+            if (calculation.getCalibrator().getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
                 createRosemountForm();
             }else {
                 createStandardForm();
@@ -502,7 +536,7 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                 u  = VariableConverter.roundingDouble2(calculation.getExtendedIndeterminacy(), Locale.GERMAN);
             }
             cells[6].setText("U = "
-                    + Strings.PLUS_MINUS
+                    + PLUS_MINUS
                     + u
                     + value);
 
@@ -513,9 +547,9 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
             }else {
                 gamma  = VariableConverter.roundingDouble2(errorInRange, Locale.GERMAN);
             }
-            cells[7].setText(Strings.GAMMA
+            cells[7].setText(GAMMA
                     + " вк = "
-                    + Strings.PLUS_MINUS
+                    + PLUS_MINUS
                     + gamma
                     + "%");
 
@@ -526,14 +560,14 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
             }else {
                 delta  = VariableConverter.roundingDouble2(absoluteError, Locale.GERMAN);
             }
-            cells[8].setText(Strings.DELTA
+            cells[8].setText(DELTA
                     + " вк = "
-                    + Strings.PLUS_MINUS
+                    + PLUS_MINUS
                     + delta
                     + value);
 
             Calibrator calibrator = calculation.getCalibrator();
-            if (calibrator.getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+            if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
                 String s0;
                 String s91;
                 String s305;
@@ -542,48 +576,48 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                 double[] systematicErrors = calculation.getSystematicErrors();
 
                 if (systematicErrors[0] < 0.01 && systematicErrors[0] > -0.01){
-                    s0 = Strings.DELTA
+                    s0 = DELTA
                             + "s0 = "
                             + VariableConverter.roundingDouble3(systematicErrors[0], Locale.GERMAN)
                             + value;
                 }else {
-                    s0 = Strings.DELTA
+                    s0 = DELTA
                             + "s0 = "
                             + VariableConverter.roundingDouble2(systematicErrors[0], Locale.GERMAN)
                             + value;
                 }
 
                 if (systematicErrors[1] < 0.01 && systematicErrors[1] > -0.01){
-                    s91 = Strings.DELTA
+                    s91 = DELTA
                             + "s91 = "
                             + VariableConverter.roundingDouble3(systematicErrors[1], Locale.GERMAN)
                             + value;
                 }else {
-                    s91 = Strings.DELTA
+                    s91 = DELTA
                             + "s91 = "
                             + VariableConverter.roundingDouble2(systematicErrors[1], Locale.GERMAN)
                             + value;
                 }
 
                 if (systematicErrors[2] < 0.01 && systematicErrors[2] > -0.01){
-                    s305 = Strings.DELTA
+                    s305 = DELTA
                             + "s305 = "
                             + VariableConverter.roundingDouble3(systematicErrors[2], Locale.GERMAN)
                             + value;
                 }else {
-                    s305 = Strings.DELTA
+                    s305 = DELTA
                             + "s305 = "
                             + VariableConverter.roundingDouble2(systematicErrors[2], Locale.GERMAN)
                             + value;
                 }
 
                 if (systematicErrors[3] < 0.01 && systematicErrors[3] > -0.01){
-                    s914 = Strings.DELTA
+                    s914 = DELTA
                             + "s914 = "
                             + VariableConverter.roundingDouble3(systematicErrors[3], Locale.GERMAN)
                             + value;
                 }else {
-                    s914 = Strings.DELTA
+                    s914 = DELTA
                             + "s914 = "
                             + VariableConverter.roundingDouble2(systematicErrors[3], Locale.GERMAN)
                             + value;
@@ -595,7 +629,7 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                 cells[12].setText(s914);
                 cells[13].setText("Міжконтрольний інтервал");
                 double frequency = channel.getFrequency();
-                cells[14].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + Strings.YEAR_WORD(frequency));
+                cells[14].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + YEAR_WORD(frequency));
 
                 this.add(cells[13], new Cell(2,0,1,1));
                 this.add(cells[14], new Cell(2,1,1,8));
@@ -610,13 +644,13 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
 
                 if (systematicErrors[0] < 0.01 && systematicErrors[0] > -0.01){
                     s0 = "0% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble3(systematicErrors[0], Locale.GERMAN)
                             + value;
                 }else {
                     s0 = "0% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble2(systematicErrors[0], Locale.GERMAN)
                             + value;
@@ -624,13 +658,13 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
 
                 if (systematicErrors[1] < 0.01 && systematicErrors[1] > -0.01){
                     s25 = "25% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble3(systematicErrors[1], Locale.GERMAN)
                             + value;
                 }else {
                     s25 = "25% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble2(systematicErrors[1], Locale.GERMAN)
                             + value;
@@ -638,13 +672,13 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
 
                 if (systematicErrors[2] < 0.01 && systematicErrors[2] > -0.01){
                     s50 = "50% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble3(systematicErrors[2], Locale.GERMAN)
                             + value;
                 }else {
                     s50 = "50% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble2(systematicErrors[2], Locale.GERMAN)
                             + value;
@@ -652,13 +686,13 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
 
                 if (systematicErrors[3] < 0.01 && systematicErrors[3] > -0.01){
                     s75 = "75% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble3(systematicErrors[3], Locale.GERMAN)
                             + value;
                 }else {
                     s75 = "75% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble2(systematicErrors[3], Locale.GERMAN)
                             + value;
@@ -666,13 +700,13 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
 
                 if (systematicErrors[4] < 0.01 && systematicErrors[4] > -0.01){
                     s100 = "100% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble3(systematicErrors[4], Locale.GERMAN)
                             + value;
                 }else {
                     s100 = "100% "
-                            + Strings.DELTA
+                            + DELTA
                             + "s = "
                             + VariableConverter.roundingDouble2(systematicErrors[4], Locale.GERMAN)
                             + value;
@@ -685,7 +719,7 @@ public class ConsumptionPanel extends JPanel implements UI_Container {
                 cells[13].setText(s100);
                 cells[14].setText("Міжконтрольний інтервал");
                 double frequency = channel.getFrequency();
-                cells[15].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + Strings.YEAR_WORD(frequency));
+                cells[15].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + YEAR_WORD(frequency));
 
                 this.add(cells[13], new Cell(1,8,1,1));
                 this.add(cells[14], new Cell(2,0,1,1));

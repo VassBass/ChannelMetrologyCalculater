@@ -1,17 +1,16 @@
 package ui.calculate.reference;
 
 import calculation.Calculation;
+import constants.Key;
 import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Channel;
-import constants.Strings;
 import ui.calculate.performers.CalculatePerformersDialog;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -19,11 +18,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.HashMap;
 
 public class CalculateReferenceDialog extends JDialog {
+    private static final String TITLE = "Канал непридатний";
+    private static final String MESSAGE = "Згідно розрахунків канал визнано непридатним. Введіть номер довідки:";
+    private static final String BACK = "Назад";
+    private static final String NEXT = "Далі";
+
     private final MainScreen mainScreen;
     private final Channel channel;
-    private final Values values;
+    private final HashMap<Integer, Object> values;
     private final Calculation calculation;
 
     private JLabel message;
@@ -32,8 +37,8 @@ public class CalculateReferenceDialog extends JDialog {
 
     private JButton buttonNext, buttonBack;
 
-    public CalculateReferenceDialog(MainScreen mainScreen, Channel channel, Values values, Calculation calculation){
-        super(mainScreen, "Канал непридатний", true);
+    public CalculateReferenceDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values, Calculation calculation){
+        super(mainScreen, TITLE, true);
         this.mainScreen = mainScreen;
         this.channel = channel;
         this.values = values;
@@ -44,40 +49,27 @@ public class CalculateReferenceDialog extends JDialog {
         this.build();
     }
 
-    public void createElements() {
-        String s = "Згідно розрахунків канал визнано непридатним. Введіть номер довідки:";
-        this.message = new JLabel(s);
+    private void createElements() {
+        this.message = new JLabel(MESSAGE);
 
         this.number = new JTextField(5);
-        this.number.addFocusListener(focusNumber);
         this.number.setHorizontalAlignment(SwingConstants.CENTER);
-        this.number.getDocument().addDocumentListener(changeNumber);
 
-        this.buttonBack = new JButton(Strings.BACK);
-        this.buttonBack.setBackground(Color.white);
-        this.buttonBack.setFocusPainted(false);
-        this.buttonBack.setContentAreaFilled(false);
-        this.buttonBack.setOpaque(true);
-
-        this.buttonNext = new JButton(Strings.NEXT);
-        this.buttonNext.setBackground(Color.white);
-        this.buttonNext.setFocusPainted(false);
-        this.buttonNext.setContentAreaFilled(false);
-        this.buttonNext.setOpaque(true);
-        this.buttonNext.setEnabled(false);
+        this.buttonBack = new DefaultButton(BACK);
+        this.buttonNext = new DefaultButton(NEXT);
     }
 
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        this.buttonBack.addChangeListener(this.pushButton);
-        this.buttonNext.addChangeListener(this.pushButton);
+        this.number.addFocusListener(this.focusNumber);
+        this.number.getDocument().addDocumentListener(changeNumber);
 
         this.buttonBack.addActionListener(this.clickBack);
         this.buttonNext.addActionListener(this.clickNext);
     }
 
-    public void build() {
+    private void build() {
         this.setSize(600,200);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
@@ -117,18 +109,6 @@ public class CalculateReferenceDialog extends JDialog {
         }
     };
 
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-        }
-    };
-
     private final ActionListener clickBack = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -140,7 +120,7 @@ public class CalculateReferenceDialog extends JDialog {
     private final ActionListener clickNext = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            values.putValue(Value.CHANNEL_REFERENCE, number.getText());
+            values.put(Key.CHANNEL_REFERENCE, number.getText());
             dispose();
             new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
         }

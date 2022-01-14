@@ -12,17 +12,18 @@ import ui.mainScreen.MainScreen;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class CertificateFormation extends SwingWorker<Void, Void> {
     private final MainScreen mainScreen;
     private final Channel channel;
-    private final Values values;
+    private final HashMap<Integer, Object> values;
     private final Calculation calculation;
 
     private final LoadDialog loadDialog;
     private Certificate certificate;
 
-    public CertificateFormation(MainScreen mainScreen, Channel channel, Values values, Calculation calculation){
+    public CertificateFormation(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values, Calculation calculation){
         super();
         this.mainScreen = mainScreen;
         this.channel = channel;
