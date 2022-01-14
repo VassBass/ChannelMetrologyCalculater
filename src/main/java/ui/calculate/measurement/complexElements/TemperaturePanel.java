@@ -10,7 +10,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
 
-public class TemperaturePanel extends JPanel implements UI_Container, MeasurementPanel {
+public class TemperaturePanel extends MeasurementPanel {
     private final Channel channel;
 
     private double[] values;
@@ -27,12 +27,10 @@ public class TemperaturePanel extends JPanel implements UI_Container, Measuremen
         this.channel = channel;
 
         this.createElements();
-        this.setReactions();
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         String value = this.channel.getMeasurement().getValue();
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
@@ -93,13 +91,7 @@ public class TemperaturePanel extends JPanel implements UI_Container, Measuremen
         this.userMeasurements[7].setText(String.format(Locale.ENGLISH, "%.2f",this.values[4]));
     }
 
-    @Override
-    public void setReactions() {
-
-    }
-
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.columnsHeader[0], new Cell(0,0));
         this.add(this.columnsHeader[1], new Cell(1,0));
         this.add(this.columnsHeader[2], new Cell(2,0));

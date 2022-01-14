@@ -3,7 +3,7 @@ package ui.calculate.verification.complexElements;
 import constants.MeasurementConstants;
 import constants.Strings;
 import converters.VariableConverter;
-import measurements.calculation.Calculation;
+import calculation.Calculation;
 import model.Calibrator;
 import model.Channel;
 import ui.model.ButtonCell;

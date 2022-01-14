@@ -5,7 +5,7 @@ import backgroundTasks.CertificateFormation;
 import constants.Strings;
 import constants.WorkPositions;
 import converters.ConverterUI;
-import measurements.calculation.Calculation;
+import calculation.Calculation;
 import model.Channel;
 import ui.calculate.reference.CalculateReferenceDialog;
 import ui.calculate.verification.CalculateVerificationDialog;

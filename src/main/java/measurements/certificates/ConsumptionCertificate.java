@@ -4,7 +4,7 @@ import constants.Files;
 import constants.MeasurementConstants;
 import constants.Strings;
 import converters.VariableConverter;
-import measurements.calculation.Calculation;
+import calculation.Calculation;
 import model.Calibrator;
 import model.Channel;
 import model.Sensor;

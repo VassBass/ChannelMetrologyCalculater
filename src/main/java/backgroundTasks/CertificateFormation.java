@@ -2,7 +2,7 @@ package backgroundTasks;
 
 import application.Application;
 import constants.Strings;
-import measurements.calculation.Calculation;
+import calculation.Calculation;
 import measurements.certificates.*;
 import model.Channel;
 import ui.model.LoadDialog;

@@ -1,6 +1,14 @@
 package ui.calculate.measurement.complexElements;
 
-public interface MeasurementPanel {
-    double[] getValues();
-    void setValues(double[]values);
+import javax.swing.*;
+import java.awt.*;
+
+public class MeasurementPanel extends JPanel {
+
+    public MeasurementPanel(LayoutManager layout){
+        super(layout);
+    }
+
+    public double[] getValues(){return null;}
+    public void setValues(double[]values){}
 }

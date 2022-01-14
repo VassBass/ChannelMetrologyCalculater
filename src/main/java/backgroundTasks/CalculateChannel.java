@@ -1,8 +1,12 @@
 package backgroundTasks;
 
 
-import constants.Strings;
-import measurements.calculation.Calculation;
+import calculation.CalculationConsumption;
+import calculation.CalculationPressure;
+import calculation.CalculationTemperature;
+import constants.CalibratorType;
+import constants.Key;
+import calculation.Calculation;
 import model.Calibrator;
 import model.Channel;
 import ui.model.LoadDialog;
@@ -11,17 +15,18 @@ import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
 public class CalculateChannel extends SwingWorker<Void, Void> {
     private final MainScreen mainScreen;
     private final Channel channel;
-    private final Values values;
+    private final HashMap<Integer, Object> values;
 
     private Calculation calculation;
 
     private final LoadDialog loadDialog;
 
-    public CalculateChannel(MainScreen mainScreen, Channel channel, Values values){
+    public CalculateChannel(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values){
         super();
         this.mainScreen = mainScreen;
         this.channel = channel;
@@ -41,25 +46,30 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
+        Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
         double[][]measurements = new double[5][8];
         switch (this.channel.getMeasurement().getNameConstant()){
             case TEMPERATURE:
+                this.calculation = new CalculationTemperature(this.channel);
+                measurements = new double[5][8];
+                break;
             case PRESSURE:
+                this.calculation = new CalculationPressure(this.channel);
                 measurements = new double[5][8];
                 break;
             case CONSUMPTION:
-                if (calibrator.getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+                this.calculation = new CalculationConsumption(this.channel);
+                if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
                     measurements = new double[5][8];
                 }else {
                     measurements = new double[5][10];
                 }
         }
-        double[]measurement1 = (double[]) values.getValue(Value.MEASUREMENT_1);
-        double[]measurement2 = (double[]) values.getValue(Value.MEASUREMENT_2);
-        double[]measurement3 = (double[]) values.getValue(Value.MEASUREMENT_3);
-        double[]measurement4 = (double[]) values.getValue(Value.MEASUREMENT_4);
-        double[]measurement5 = (double[]) values.getValue(Value.MEASUREMENT_5);
+        double[]measurement1 = (double[]) values.get(Key.MEASUREMENT_1);
+        double[]measurement2 = (double[]) values.get(Key.MEASUREMENT_2);
+        double[]measurement3 = (double[]) values.get(Key.MEASUREMENT_3);
+        double[]measurement4 = (double[]) values.get(Key.MEASUREMENT_4);
+        double[]measurement5 = (double[]) values.get(Key.MEASUREMENT_5);
 
         if (measurement2 == null){
             measurement2 = measurement1;
@@ -79,7 +89,6 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
         measurements[3] = measurement4;
         measurements[4] = measurement5;
 
-        this.calculation = new Calculation(this.channel);
         this.calculation.setIn(measurements);
         this.calculation.setCalibrator(calibrator);
         return null;

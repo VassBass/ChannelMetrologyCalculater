@@ -1,6 +1,6 @@
 package ui.calculate.verification;
 
-import measurements.calculation.Calculation;
+import calculation.Calculation;
 import converters.ConverterUI;
 import model.Channel;
 import constants.Strings;
@@ -18,18 +18,19 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 public class CalculateVerificationDialog extends JDialog {
     private final MainScreen mainScreen;
     private final Channel channel;
-    private final Values values;
+    private final HashMap<Integer, Object> values;
     private final Calculation calculation;
 
     private JPanel resultPanel;
 
     private JButton buttonBack, buttonNext;
 
-    public CalculateVerificationDialog(MainScreen mainScreen, Channel channel, Values values, Calculation calculation){
+    public CalculateVerificationDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values, Calculation calculation){
         super(mainScreen, "Результати розрахунку", true);
         this.mainScreen = mainScreen;
         this.channel = channel;

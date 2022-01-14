@@ -4,7 +4,7 @@ import model.Calibrator;
 import constants.*;
 import converters.ValueConverter;
 import converters.VariableConverter;
-import measurements.calculation.Calculation;
+import calculation.Calculation;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;

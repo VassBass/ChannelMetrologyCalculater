@@ -1,6 +1,6 @@
 package ui.calculate.reference;
 
-import measurements.calculation.Calculation;
+import calculation.Calculation;
 import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Channel;

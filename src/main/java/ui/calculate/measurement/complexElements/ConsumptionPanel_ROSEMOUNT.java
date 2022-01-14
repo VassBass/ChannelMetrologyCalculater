@@ -11,7 +11,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
 
-public class ConsumptionPanel_ROSEMOUNT extends JPanel implements UI_Container, MeasurementPanel {
+public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
     private final Channel channel;
 
     private JButton[] columnsHeader;
@@ -25,12 +25,10 @@ public class ConsumptionPanel_ROSEMOUNT extends JPanel implements UI_Container, 
         this.channel = channel;
 
         this.createElements();
-        this.setReactions();
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         String value = this.channel.getMeasurement().getValue();
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
@@ -82,11 +80,7 @@ public class ConsumptionPanel_ROSEMOUNT extends JPanel implements UI_Container, 
         this.userMeasurements[7].setText(VariableConverter.roundingDouble3(value914, Locale.ENGLISH));
     }
 
-    @Override
-    public void setReactions() {}
-
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.columnsHeader[0], new ConsumptionPanel.Cell(0,0));
         this.add(this.columnsHeader[1], new ConsumptionPanel.Cell(1,0));
         this.add(this.columnsHeader[2], new ConsumptionPanel.Cell(2,0));

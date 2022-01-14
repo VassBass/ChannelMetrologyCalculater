@@ -1,19 +1,17 @@
 package ui.calculate.measurement;
 
 import backgroundTasks.CalculateChannel;
+import constants.CalibratorType;
 import constants.Key;
 import model.Calibrator;
 import converters.ConverterUI;
 import model.Channel;
-import constants.Strings;
 import ui.calculate.measurement.complexElements.*;
 import ui.calculate.start.CalculateStartDialog;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,17 +21,25 @@ public class CalculateMeasurementDialog extends JDialog {
     private static String title(Channel channel){
         return "Розрахунок каналу \"" + channel.getName() + "\"";
     }
-    public static final String BACK = "Назад";
-    public static final String NEXT = "Далі";
-    public static final String CLEAR = "Очистити";
-    public static final String CALCULATE = "Розрахувати";
+    private String measurementString(){
+        int mNum = this.measurementNumber + 1;
+        return "Измерение №" + mNum;
+    }
+    private String removeMessage(int removedMeasurementNumber){
+        return "Розрахунок №" + removedMeasurementNumber + " був видалений.";
+    }
+    private static final String BACK = "Назад";
+    private static final String NEXT = "Далі";
+    private static final String CLEAR = "Очистити";
+    private static final String CALCULATE = "Розрахувати";
+    private static final String CANCEL = "Відміна";
 
     private final MainScreen mainScreen;
     private final Channel channel;
     private final HashMap<Integer, Object> values;
     private final JDialog current;
 
-    private int measurementNumber = 1;
+    private int measurementNumber = 0;
 
     private JLabel labelMeasurement;
 
@@ -43,7 +49,6 @@ public class CalculateMeasurementDialog extends JDialog {
     private JButton buttonClear;
 
     private MeasurementPanel[] measurementsPanels;
-    private JPanel[] duplicateOfMeasurementsPanels;
 
     public CalculateMeasurementDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values){
         super(mainScreen, title(channel), true);
@@ -62,7 +67,6 @@ public class CalculateMeasurementDialog extends JDialog {
         this.labelMeasurement = new JLabel(this.measurementString());
 
         this.measurementsPanels = new MeasurementPanel[5];
-        this.duplicateOfMeasurementsPanels = new JPanel[5];
 
         this.buttonBack = new DefaultButton(BACK);
         this.buttonNext = new DefaultButton(NEXT);
@@ -108,9 +112,8 @@ public class CalculateMeasurementDialog extends JDialog {
     }
 
     private void setValues(){
-        for (int x=1;x<6;x++){
-            String key = "measurement" + x;
-            double[]measurement = (double[]) values.getValue(key);
+        for (int x=0;x<5;x++){
+            double[]measurement = (double[]) this.values.get(x);
             if (measurement != null || x == 1) {
                 this.createMeasurementPanel(x - 1, measurement);
             }
@@ -122,23 +125,19 @@ public class CalculateMeasurementDialog extends JDialog {
             case TEMPERATURE:
                 TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
                 this.measurementsPanels[index] = temperaturePanel;
-                this.duplicateOfMeasurementsPanels[index] = temperaturePanel;
                 break;
             case PRESSURE:
-                PressurePanel pressurePanel = new PressurePanel(this.channel,(Calibrator) this.values.getValue(Value.CALIBRATOR));
+                PressurePanel pressurePanel = new PressurePanel(this.channel,(Calibrator) this.values.get(Key.CALIBRATOR));
                 this.measurementsPanels[index] = pressurePanel;
-                this.duplicateOfMeasurementsPanels[index] = pressurePanel;
                 break;
             case CONSUMPTION:
-                Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
-                if (calibrator.getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+                Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
+                if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
                     ConsumptionPanel_ROSEMOUNT consumptionPanel = new ConsumptionPanel_ROSEMOUNT(this.channel);
                     this.measurementsPanels[index] = consumptionPanel;
-                    this.duplicateOfMeasurementsPanels[index] = consumptionPanel;
                 }else {
                     ConsumptionPanel consumptionPanel = new ConsumptionPanel(this.channel);
                     this.measurementsPanels[index] = consumptionPanel;
-                    this.duplicateOfMeasurementsPanels[index] = consumptionPanel;
                 }
         }
         if (values != null){
@@ -157,10 +156,6 @@ public class CalculateMeasurementDialog extends JDialog {
         this.setVisible(true);
     }
 
-    private String measurementString(){
-        return "Измерение №" + this.measurementNumber;
-    }
-
     private final ActionListener clickBack = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e){
@@ -168,12 +163,11 @@ public class CalculateMeasurementDialog extends JDialog {
                 @Override
                 public void run(){
                     buttonNext.setEnabled(true);
-                    if (measurementNumber == 1){
+                    if (measurementNumber == 0){
                         dispose();
                         new CalculateStartDialog(mainScreen, channel, getValues()).setVisible(true);
                     }else {
                         measurementNumber--;
-
                         update();
                     }
                 }
@@ -188,11 +182,10 @@ public class CalculateMeasurementDialog extends JDialog {
                 @Override
                 public void run(){
                     measurementNumber++;
-                    int index = measurementNumber - 1;
-                    if (measurementsPanels[index] == null){
-                        createMeasurementPanel(index, null);
+                    if (measurementsPanels[measurementNumber] == null){
+                        createMeasurementPanel(measurementNumber, null);
                     }
-                    buttonNext.setEnabled(measurementNumber != 5);
+                    buttonNext.setEnabled(measurementNumber != 4);
                     update();
                 }
             });
@@ -207,21 +200,15 @@ public class CalculateMeasurementDialog extends JDialog {
                 @Override
                 public void run(){
                     buttonNext.setEnabled(true);
-                    int index = measurementNumber;
-
-                    if (index == 1){
+                    String message = removeMessage(measurementNumber);
+                    if (measurementNumber == 0){
                         createMeasurementPanel(0, null);
-                        values.putValue(Value.MEASUREMENT_1, null);
+                        values.put(Key.MEASUREMENT_1, null);
                     }else {
-                        measurementNumber--;
                         measurementsPanels[measurementNumber] = null;
-                        duplicateOfMeasurementsPanels[measurementNumber] = null;
-                        String m = "measurement" + index;
-                        values.putValue(m, null);
+                        values.put(--measurementNumber, null);
                     }
-
-                    String mes = "Розрахунок №" + index + " був видалений.";
-                    JOptionPane.showMessageDialog(current, mes, Strings.CANCEL, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(current, message, CANCEL, JOptionPane.INFORMATION_MESSAGE);
                     update();
                 }
             });
@@ -242,7 +229,7 @@ public class CalculateMeasurementDialog extends JDialog {
             super(new GridBagLayout());
 
             this.add(labelMeasurement, new Cell(0,0,new Insets(10,10,10,10)));
-            this.add(duplicateOfMeasurementsPanels[measurementNumber-1], new Cell(0,1));
+            this.add(measurementsPanels[measurementNumber], new Cell(0,1));
             JPanel buttonsPanel = new JPanel();
             buttonsPanel.add(buttonClear);
             buttonsPanel.add(buttonBack);

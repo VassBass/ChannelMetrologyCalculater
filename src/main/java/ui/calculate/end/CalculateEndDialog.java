@@ -1,7 +1,7 @@
 package ui.calculate.end;
 
 import backgroundTasks.CertificateFormation;
-import measurements.calculation.Calculation;
+import calculation.Calculation;
 import measurements.certificates.Certificate;
 import converters.ConverterUI;
 import model.Channel;
