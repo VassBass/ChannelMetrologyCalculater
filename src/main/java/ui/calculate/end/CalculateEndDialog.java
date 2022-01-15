@@ -1,32 +1,42 @@
 package ui.calculate.end;
 
+import application.Application;
 import backgroundTasks.CertificateFormation;
 import calculation.Calculation;
-import measurements.certificates.Certificate;
+import certificates.Certificate;
 import converters.ConverterUI;
 import model.Channel;
-import constants.Strings;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.HashMap;
 
-public class CalculateEndDialog extends JDialog implements UI_Container {
+public class CalculateEndDialog extends JDialog {
+    public static final String SUCCESS_SAVE_CERTIFICATE = "Сертифікат та протокол успішно сформовані";
+    public static final String PRINT = "Друкувати";
+    public static final String OPEN = "Відкрити";
+    public static final String OPEN_IN_EXPLORER = "Відкрити папку";
+    public static final String ERROR_SAVE_CERTIFICATE = "Сертифікат не вдалося сформувати";
+    public static final String TRY_AGAIN = "Повторити";
+    public static final String FINISH = "Завершити";
+    public static final String SUCCESS = "Успіх";
+    public static final String ERROR = "Помилка";
+
     private final MainScreen mainScreen;
     private final Channel channel;
-    private final Values values;
+    private final HashMap<Integer, Object> values;
     private final Calculation calculation;
     private final Certificate certificate;
 
     private JLabel message;
     private JButton buttonPrint, buttonOpen, buttonOpenInExplorer, buttonFinish, buttonTryAgain;
 
-    public CalculateEndDialog(MainScreen mainScreen, Channel channel, Values values, Calculation calculation, Certificate certificate){
+    public CalculateEndDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values, Calculation calculation, Certificate certificate){
         super(mainScreen, title(certificate.getCertificateFile()), true);
         this.mainScreen = mainScreen;
         this.channel = channel;
@@ -39,68 +49,33 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         if (this.certificate.getCertificateFile().exists()){
-            this.message = new JLabel(Strings.SUCCESS_SAVE_CERTIFICATE);
-
-            this.buttonPrint = new JButton(Strings.PRINT);
-            this.buttonPrint.setBackground(Color.white);
-            this.buttonPrint.setFocusPainted(false);
-            this.buttonPrint.setContentAreaFilled(false);
-            this.buttonPrint.setOpaque(true);
-
-            this.buttonOpen = new JButton(Strings.OPEN);
-            this.buttonOpen.setBackground(Color.white);
-            this.buttonOpen.setFocusPainted(false);
-            this.buttonOpen.setContentAreaFilled(false);
-            this.buttonOpen.setOpaque(true);
-
-            this.buttonOpenInExplorer = new JButton(Strings.OPEN_IN_EXPLORER);
-            this.buttonOpenInExplorer.setBackground(Color.white);
-            this.buttonOpenInExplorer.setFocusPainted(false);
-            this.buttonOpenInExplorer.setContentAreaFilled(false);
-            this.buttonOpenInExplorer.setOpaque(true);
+            this.message = new JLabel(SUCCESS_SAVE_CERTIFICATE);
+            this.buttonPrint = new DefaultButton(PRINT);
+            this.buttonOpen = new DefaultButton(OPEN);
+            this.buttonOpenInExplorer = new DefaultButton(OPEN_IN_EXPLORER);
         }else {
-            this.message = new JLabel(Strings.ERROR_SAVE_CERTIFICATE);
-
-            this.buttonTryAgain = new JButton(Strings.TRY_AGAIN);
-            this.buttonTryAgain.setBackground(Color.white);
-            this.buttonTryAgain.setFocusPainted(false);
-            this.buttonTryAgain.setContentAreaFilled(false);
-            this.buttonTryAgain.setOpaque(true);
+            this.message = new JLabel(ERROR_SAVE_CERTIFICATE);
+            this.buttonTryAgain = new DefaultButton(TRY_AGAIN);
         }
-
-        this.buttonFinish = new JButton(Strings.FINISH);
-        this.buttonFinish.setBackground(Color.white);
-        this.buttonFinish.setFocusPainted(false);
-        this.buttonFinish.setContentAreaFilled(false);
-        this.buttonFinish.setOpaque(true);
+        this.buttonFinish = new DefaultButton(FINISH);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         if (this.certificate.getCertificateFile().exists()) {
-            this.buttonPrint.addChangeListener(this.pushButton);
-            this.buttonOpen.addChangeListener(this.pushButton);
-            this.buttonOpenInExplorer.addChangeListener(this.pushButton);
-
             this.buttonPrint.addActionListener(this.clickPrint);
             this.buttonOpen.addActionListener(this.clickOpen);
             this.buttonOpenInExplorer.addActionListener(this.clickOpenInExplorer);
         }else {
-            this.buttonTryAgain.addChangeListener(this.pushButton);
             this.buttonTryAgain.addActionListener(this.clickTryAgain);
         }
-
-        this.buttonFinish.addChangeListener(this.pushButton);
         this.buttonFinish.addActionListener(this.clickFinish);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(400,180);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
@@ -109,30 +84,18 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
 
     private static String title(File file){
         if (file.exists()){
-            return Strings.SUCCESS;
+            return SUCCESS;
         }else {
-            return Strings.ERROR;
+            return ERROR;
         }
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-        }
-    };
 
     private final ActionListener clickPrint = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             certificate.print();
             dispose();
-            //mainScreen.update(Lists.channels(),false, null,null);
+            mainScreen.setChannelsList(Application.context.channelsController.getAll());
         }
     };
 
@@ -141,7 +104,7 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             certificate.show();
             dispose();
-            //mainScreen.update(Lists.channels(),false, null,null);
+            mainScreen.setChannelsList(Application.context.channelsController.getAll());
         }
     };
 
@@ -150,7 +113,7 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             certificate.openInExplorer();
             dispose();
-            //mainScreen.update(Lists.channels(), false, null, null);
+            mainScreen.setChannelsList(Application.context.channelsController.getAll());
         }
     };
 
@@ -158,7 +121,7 @@ public class CalculateEndDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            //mainScreen.update(Lists.channels(), false, null, null);
+            mainScreen.setChannelsList(Application.context.channelsController.getAll());
         }
     };
 

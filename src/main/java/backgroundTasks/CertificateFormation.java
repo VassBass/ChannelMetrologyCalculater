@@ -1,9 +1,10 @@
 package backgroundTasks;
 
 import application.Application;
-import constants.Strings;
+import constants.CalibratorType;
 import calculation.Calculation;
-import measurements.certificates.*;
+import certificates.*;
+import constants.Key;
 import model.Channel;
 import ui.model.LoadDialog;
 import ui.calculate.end.CalculateEndDialog;
@@ -52,7 +53,7 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
                 this.certificate = new PressureCertificate();
                 break;
             case CONSUMPTION:
-                if (this.calculation.getCalibrator().getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+                if (this.calculation.getCalibrator().getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
                     this.certificate = new ConsumptionCertificate_ROSEMOUNT();
                 }else {
                     this.certificate = new ConsumptionCertificate();
@@ -82,14 +83,14 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
     private void setChannel(){
         Channel newChannel = new Channel().copyFrom(this.channel);
 
-        newChannel.setDate((Calendar) this.values.getValue(Value.CHANNEL_DATE));
-        newChannel.setNumberOfProtocol(this.values.getStringValue(Value.CHANNEL_PROTOCOL_NUMBER));
+        newChannel.setDate((Calendar) this.values.get(Key.CHANNEL_DATE));
+        newChannel.setNumberOfProtocol((String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER));
         newChannel.setSuitability(this.calculation.goodChannel());
 
         if (newChannel.isSuitability()){
             newChannel.setReference("");
         }else{
-            newChannel.setReference(this.values.getStringValue(Value.CHANNEL_REFERENCE));
+            newChannel.setReference((String) this.values.get(Key.CHANNEL_REFERENCE));
         }
         Application.context.channelsController.set(this.channel, newChannel);
     }

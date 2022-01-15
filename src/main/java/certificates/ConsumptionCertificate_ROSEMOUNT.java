@@ -1,8 +1,8 @@
-package measurements.certificates;
+package certificates;
 
-import constants.Files;
+import constants.Key;
 import constants.MeasurementConstants;
-import constants.Strings;
+import controller.FileBrowser;
 import converters.VariableConverter;
 import calculation.Calculation;
 import model.Calibrator;
@@ -19,14 +19,28 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
+    private static String YEAR_WORD(double d){
+        if (d == 0D){
+            return "років";
+        }else if (d > 0 && d < 1){
+            return "року";
+        }else if (d == 1D){
+            return "рік";
+        }else if (d > 1 && d < 5){
+            return "роки";
+        }else {
+            return "років";
+        }
+    }
+    private static final String EXTRAORDINARY = "Позачерговий";
+    private static final String CHANNEL_IS_BAD = "Канал не придатний";
+    private static final String ALARM_MESSAGE = "Сигналізація спрацювала при t = ";
+
     private Calculation result;
-    private Values values;
+    private HashMap<Integer, Object> values;
     private Channel channel;
 
     private String numberOfCertificate;
@@ -46,23 +60,23 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
     }
 
     @Override
-    public void init(Calculation result, Values values, Channel channel) {
+    public void init(Calculation result, HashMap<Integer, Object> values, Channel channel) {
         this.result = result;
         this.values = values;
         this.channel = channel;
 
         if (this.result.goodChannel()){
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_CONSUMPTION_ROSEMOUNT_GOOD));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(FileBrowser.FILE_CONSUMPTION_ROSEMOUNT_GOOD));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();
             }
         }else{
-            this.numberOfReference = values.getStringValue(Value.CHANNEL_REFERENCE);
-            this.badMessage = values.getStringValue(Value.CHANNEL_IS_GOOD);
+            this.numberOfReference = (String) values.get(Key.CHANNEL_REFERENCE);
+            this.badMessage = (String) values.get(Key.CHANNEL_IS_GOOD);
             try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(Files.FILE_FORM_CONSUMPTION_ROSEMOUNT_BAD));
+                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(FileBrowser.FILE_CONSUMPTION_ROSEMOUNT_BAD));
                 this.book = new HSSFWorkbook(fs);
             }catch (Exception ex){
                 ex.printStackTrace();
@@ -80,24 +94,24 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
 
     @Override
     public void putCertificateData() {
-        this.numberOfCertificate = this.values.getStringValue(Value.CHANNEL_PROTOCOL_NUMBER);
+        this.numberOfCertificate = (String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER);
         cell(11,9).setCellValue(this.numberOfCertificate);
 
-        this.checkDate = (Calendar) this.values.getValue(Value.CHANNEL_DATE);
+        this.checkDate = (Calendar) this.values.get(Key.CHANNEL_DATE);
         String date = VariableConverter.dateToString(this.checkDate);
         cell(11,12).setCellValue(date);
 
-        String externalTemperature = values.getStringValue(Value.CALCULATION_EXTERNAL_TEMPERATURE);
+        String externalTemperature = (String) this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE);
         cell(19,12).setCellValue(externalTemperature);
 
-        String humidity = this.values.getStringValue(Value.CALCULATION_EXTERNAL_HUMIDITY);
+        String humidity = (String) this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY);
         cell(20,12).setCellValue(humidity);
 
-        String atmospherePressure = this.values.getStringValue(Value.CALCULATION_EXTERNAL_PRESSURE);
+        String atmospherePressure = (String) this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE);
         cell(21,12).setCellValue(atmospherePressure);
 
-        this.alarmCheck = this.values.getBooleanValue(Value.CALCULATION_ALARM_PANEL);
-        this.alarmValue = this.values.getStringValue(Value.CALCULATION_ALARM_VALUE);
+        this.alarmCheck = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
+        this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
         String methodName = Settings.getSettingValue(MeasurementConstants.CONSUMPTION.getValue());
         cell(31,37).setCellValue(methodName);
@@ -137,7 +151,7 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
 
         String frequency = VariableConverter.roundingDouble(this.channel.getFrequency(), Locale.GERMAN);
         cell(26, 41).setCellValue(frequency);
-        cell(26, 42).setCellValue(Strings.YEAR_WORD(this.channel.getFrequency()));
+        cell(26, 42).setCellValue(YEAR_WORD(this.channel.getFrequency()));
 
         String nextDate;
         if (this.result.goodChannel()) {
@@ -146,7 +160,7 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
             nextDateCal.setTimeInMillis(this.checkDate.getTimeInMillis() + l);
             nextDate = VariableConverter.dateToString(nextDateCal);
         } else {
-            nextDate = Strings.EXTRAORDINARY;
+            nextDate = EXTRAORDINARY;
         }
         cell(36, 36).setCellValue(nextDate);
 
@@ -167,7 +181,7 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
 
     @Override
     public void putCalibratorData() {
-        Calibrator calibrator = (Calibrator) this.values.getValue(Value.CALIBRATOR);
+        Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
 
         String type = calibrator.getType();
         cell(16,39).setCellValue(type);
@@ -270,7 +284,7 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
         cell(30,34).setCellValue(s914);
 
         if (!this.result.goodChannel()){
-            if (this.badMessage.equals(Strings.CHANNEL_IS_BAD)){
+            if (this.badMessage.equals(CHANNEL_IS_BAD)){
                 cell(34,26).setCellValue("не придатним до експлуатації".toUpperCase(Locale.ROOT));
             }else {
                 cell(34, 26).setCellValue("не придатним до експлуатації".toUpperCase(Locale.ROOT) + " для комерційного обліку");
@@ -283,29 +297,29 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
 
         String alarm;
         if (this.result.closeToFalse() && this.result.goodChannel()) {
-            alarm = this.values.getStringValue(Value.CALCULATION_CLOSE_TO_FALSE);
+            alarm = (String) this.values.get(Key.CALCULATION_CLOSE_TO_FALSE);
             cell(37, 23).setCellValue(alarm);
         } else if (this.alarmCheck) {
-            alarm = Strings.ALARM_MESSAGE + VariableConverter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
+            alarm = ALARM_MESSAGE + VariableConverter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
             cell(37, 23).setCellValue(alarm);
         }
     }
 
     @Override
     public void putPersons() {
-        String headOfArea = this.values.getStringValue(Value.HEAD_OF_AREA_NAME);
+        String headOfArea = (String) this.values.get(Key.HEAD_OF_AREA_NAME);
         if (headOfArea == null) {
             headOfArea = "________________";
         }
         cell(34,16).setCellValue(headOfArea);
 
-        String headOfMetrologyArea = this.values.getStringValue(Value.HEAD_OF_METROLOGY_NAME);
+        String headOfMetrologyArea = (String) this.values.get(Key.HEAD_OF_METROLOGY_NAME);
         if (headOfMetrologyArea == null){
             headOfMetrologyArea = "________________";
         }
         cell(36,16).setCellValue(headOfMetrologyArea);
 
-        String performer1Name = this.values.getStringValue(Value.PERFORMER1_NAME);
+        String performer1Name = (String) this.values.get(Key.PERFORMER1_NAME);
         if (performer1Name!=null) {
             cell(38, 16).setCellValue(performer1Name);
             cell(38,11).setCellValue("________________");
@@ -314,14 +328,14 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
             cell(38,11).setCellValue("");
         }
 
-        String performer1Position = this.values.getStringValue(Value.PERFORMER1_POSITION);
+        String performer1Position = (String) this.values.get(Key.PERFORMER1_POSITION);
         if (performer1Position!=null) {
             cell(38, 0).setCellValue(performer1Position);
         }else {
             cell(38,0).setCellValue("");
         }
 
-        String performer2Name = this.values.getStringValue(Value.PERFORMER2_NAME);
+        String performer2Name = (String) this.values.get(Key.PERFORMER2_NAME);
         if (performer2Name!=null) {
             cell(40, 16).setCellValue(performer2Name);
             cell(40,11).setCellValue("________________");
@@ -330,27 +344,27 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
             cell(40,11).setCellValue("");
         }
 
-        String performer2Position = this.values.getStringValue(Value.PERFORMER2_POSITION);
+        String performer2Position = (String) this.values.get(Key.PERFORMER2_POSITION);
         if (performer2Position!=null) {
             cell(40, 0).setCellValue(performer2Position);
         }else {
             cell(40,0).setCellValue("");
         }
 
-        String calculaterName = this.values.getStringValue(Value.CALCULATER_NAME);
+        String calculaterName = (String) this.values.get(Key.CALCULATER_NAME);
         if (calculaterName == null){
             calculaterName = "________________";
         }
         cell(42,39).setCellValue(calculaterName);
 
-        String calculaterPosition = this.values.getStringValue(Value.CALCULATER_POSITION);
+        String calculaterPosition = (String) this.values.get(Key.CALCULATER_POSITION);
         if (calculaterPosition == null){
             calculaterPosition = "________________";
         }
         cell(42,23).setCellValue(calculaterPosition);
 
         if (!this.result.goodChannel()){
-            String headOfASUTPDepartment = this.values.getStringValue(Value.HEAD_OF_DEPARTMENT);
+            String headOfASUTPDepartment = (String) this.values.get(Key.HEAD_OF_DEPARTMENT);
             if (headOfASUTPDepartment == null){
                 headOfASUTPDepartment = "________________";
             }
@@ -368,7 +382,7 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
                 + " ("
                 + VariableConverter.dateToString(this.checkDate)
                 + ").xls";
-        this.certificateFile = Files.certificateFile(fileName);
+        this.certificateFile = FileBrowser.certificateFile(fileName);
         try {
             FileOutputStream out = new FileOutputStream(Objects.requireNonNull(this.certificateFile));
             this.book.write(out);
@@ -410,7 +424,7 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
         if (Desktop.isDesktopSupported()){
             desktop = Desktop.getDesktop();
             try {
-                desktop.open(Files.CERTIFICATES_DIR);
+                desktop.open(FileBrowser.DIR_CERTIFICATES);
             }catch (Exception ex){
                 ex.printStackTrace();
             }
@@ -424,11 +438,11 @@ public class ConsumptionCertificate_ROSEMOUNT implements Certificate {
 
     private double[][]measurementValues(){
         double[][]measurements = new double[5][8];
-        double[]measurement1 = (double[]) this.values.getValue(Value.MEASUREMENT_1);
-        double[]measurement2 = (double[]) this.values.getValue(Value.MEASUREMENT_2);
-        double[]measurement3 = (double[]) this.values.getValue(Value.MEASUREMENT_3);
-        double[]measurement4 = (double[]) this.values.getValue(Value.MEASUREMENT_4);
-        double[]measurement5 = (double[]) this.values.getValue(Value.MEASUREMENT_5);
+        double[]measurement1 = (double[]) this.values.get(Key.MEASUREMENT_1);
+        double[]measurement2 = (double[]) this.values.get(Key.MEASUREMENT_2);
+        double[]measurement3 = (double[]) this.values.get(Key.MEASUREMENT_3);
+        double[]measurement4 = (double[]) this.values.get(Key.MEASUREMENT_4);
+        double[]measurement5 = (double[]) this.values.get(Key.MEASUREMENT_5);
 
         if (measurement2 == null){
             measurement2 = measurement1;

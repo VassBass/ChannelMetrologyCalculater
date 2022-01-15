@@ -41,7 +41,7 @@ public class FileBrowser {
 
     private static final File DIR_MAIN = new File(DIR_NAME_MAIN);
     private static final File DIR_LISTS = new File(DIR_MAIN, DIR_NAME_LISTS);
-    private static final File DIR_CERTIFICATES = new File(DIR_MAIN, DIR_NAME_CERTIFICATES);
+    public static final File DIR_CERTIFICATES = new File(DIR_MAIN, DIR_NAME_CERTIFICATES);
     private static final File DIR_EXPORT = new File(DIR_MAIN, DIR_NAME_EXPORT);
     private static final File DIR_FORMS = new File(DIR_MAIN, DIR_NAME_FORMS);
     private static final File DIR_IMAGES = new File(DIR_MAIN, DIR_NAME_IMAGES);
@@ -58,16 +58,31 @@ public class FileBrowser {
     public static final File FILE_PERSONS = new File(DIR_LISTS, FILE_NAME_PERSONS);
     private static final File FILE_TEMPERATURE_BAD_v3_4 = new File(DIR_FORMS, FILE_NAME_TEMPERATURE_BAD_v3_4);
     private static final File FILE_TEMPERATURE_GOOD_v3_4 = new File(DIR_FORMS, FILE_NAME_TEMPERATURE_GOOD_v3_4);
-    private static final File FILE_PRESSURE_BAD = new File(DIR_FORMS, FILE_NAME_PRESSURE_BAD);
-    private static final File FILE_PRESSURE_GOOD = new File(DIR_FORMS, FILE_NAME_PRESSURE_GOOD);
-    private static final File FILE_TEMPERATURE_BAD = new File(DIR_FORMS, FILE_NAME_TEMPERATURE_BAD);
-    private static final File FILE_TEMPERATURE_GOOD = new File(DIR_FORMS, FILE_NAME_TEMPERATURE_GOOD);
-    private static final File FILE_CONSUMPTION_BAD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_BAD);
-    private static final File FILE_CONSUMPTION_GOOD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_GOOD);
-    private static final File FILE_CONSUMPTION_ROSEMOUNT_BAD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD);
-    private static final File FILE_CONSUMPTION_ROSEMOUNT_GOOD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD);
+    public static final File FILE_PRESSURE_BAD = new File(DIR_FORMS, FILE_NAME_PRESSURE_BAD);
+    public static final File FILE_PRESSURE_GOOD = new File(DIR_FORMS, FILE_NAME_PRESSURE_GOOD);
+    public static final File FILE_TEMPERATURE_BAD = new File(DIR_FORMS, FILE_NAME_TEMPERATURE_BAD);
+    public static final File FILE_TEMPERATURE_GOOD = new File(DIR_FORMS, FILE_NAME_TEMPERATURE_GOOD);
+    public static final File FILE_CONSUMPTION_BAD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_BAD);
+    public static final File FILE_CONSUMPTION_GOOD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_GOOD);
+    public static final File FILE_CONSUMPTION_ROSEMOUNT_BAD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD);
+    public static final File FILE_CONSUMPTION_ROSEMOUNT_GOOD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD);
     public static final File FILE_IMAGE_ANIM_LOAD = new File(DIR_IMAGES, FILE_NAME_IMAGE_ANIM_LOAD);
     public static final File FILE_IMAGE_NAME_LOGO = new File(DIR_IMAGES, FILE_NAME_IMAGE_NAME_LOGO);
+
+    public static File certificateFile(String fileName){
+        File file = new File(DIR_CERTIFICATES, fileName);
+        if (!file.exists()){
+            try {
+                if (!file.createNewFile()){
+                    System.out.println("certificateFile was not created");
+                }
+            }catch (Exception ex){
+                ex.printStackTrace();
+                return null;
+            }
+        }
+        return file;
+    }
 
     public static void init() throws IOException {
         createDirsIfNotExists();

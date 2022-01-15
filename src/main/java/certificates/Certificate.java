@@ -1,13 +1,14 @@
-package measurements.certificates;
+package certificates;
 
 import calculation.Calculation;
 import model.Channel;
 
 import java.io.File;
+import java.util.HashMap;
 
 public interface Certificate {
 
-    void init(Calculation result, Values values, Channel channel);
+    void init(Calculation result, HashMap<Integer, Object> values, Channel channel);
     void formation();
     void putCertificateData();
     void putChannelData();
