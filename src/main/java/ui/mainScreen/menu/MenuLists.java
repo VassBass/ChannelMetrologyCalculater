@@ -15,15 +15,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuLists extends JMenu {
-    public static final String LISTS = "Списки";
-    public static final String DEPARTMENTS_LIST = "Список цехів";
-    public static final String AREAS_LIST = "Список ділянок";
-    public static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
-    public static final String INSTALLATIONS_LIST = "Список установок";
-    public static final String WORKERS = "Робітники";
-    public static final String SENSORS_LIST = "Список первинних вимірювальних пристроїв";
-    public static final String CALIBRATORS_LIST = "Список калібраторів";
-    public static final String METHODS = "Методи розрахунку";
+    private static final String LISTS = "Списки";
+    private static final String DEPARTMENTS_LIST = "Список цехів";
+    private static final String AREAS_LIST = "Список ділянок";
+    private static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
+    private static final String INSTALLATIONS_LIST = "Список установок";
+    private static final String WORKERS = "Робітники";
+    private static final String SENSORS_LIST = "Список первинних вимірювальних пристроїв";
+    private static final String CALIBRATORS_LIST = "Список калібраторів";
+    private static final String METHODS = "Методи розрахунку";
 
     private final MainScreen mainScreen;
 
@@ -42,7 +42,7 @@ public class MenuLists extends JMenu {
         this.build();
     }
 
-    public void createElements() {
+    private void createElements() {
         this.buttonDepartments = new JMenuItem(DEPARTMENTS_LIST);
         this.buttonAreas = new JMenuItem(AREAS_LIST);
         this.buttonProcesses = new JMenuItem(PROCESSES_LIST);
@@ -59,28 +59,28 @@ public class MenuLists extends JMenu {
         this.buttonConsumption.setToolTipText(Settings.getSettingValue(MeasurementConstants.CONSUMPTION.getValue()));
     }
 
-    public void setReactions() {
-        this.buttonDepartments.addActionListener(clickDepartments);
-        this.buttonAreas.addActionListener(clickAreas);
-        this.buttonProcesses.addActionListener(clickProcesses);
-        this.buttonInstallations.addActionListener(clickInstallations);
-        this.buttonPersons.addActionListener(clickButtonPersons);
-        this.buttonSensors.addActionListener(clickSensors);
-        this.buttonTemperature.addActionListener(clickTemperature);
-        this.buttonPressure.addActionListener(clickPressure);
-        this.buttonConsumption.addActionListener(clickConsumption);
-        this.buttonCalibrators.addActionListener(clickCalibrators);
+    private void setReactions() {
+        this.buttonDepartments.addActionListener(this.clickDepartments);
+        this.buttonAreas.addActionListener(this.clickAreas);
+        this.buttonProcesses.addActionListener(this.clickProcesses);
+        this.buttonInstallations.addActionListener(this.clickInstallations);
+        this.buttonPersons.addActionListener(this.clickButtonPersons);
+        this.buttonSensors.addActionListener(this.clickSensors);
+        this.buttonTemperature.addActionListener(this.clickTemperature);
+        this.buttonPressure.addActionListener(this.clickPressure);
+        this.buttonConsumption.addActionListener(this.clickConsumption);
+        this.buttonCalibrators.addActionListener(this.clickCalibrators);
     }
 
-    public void build() {
-        this.add(buttonSensors);
+    private void build() {
+        this.add(this.buttonSensors);
         this.addSeparator();
-        this.add(buttonCalibrators);
+        this.add(this.buttonCalibrators);
         this.addSeparator();
-        this.add(buttonDepartments);
-        this.add(buttonAreas);
-        this.add(buttonProcesses);
-        this.add(buttonInstallations);
+        this.add(this.buttonDepartments);
+        this.add(this.buttonAreas);
+        this.add(this.buttonProcesses);
+        this.add(this.buttonInstallations);
         this.addSeparator();
         this.add(this.buttonPersons);
         this.addSeparator();

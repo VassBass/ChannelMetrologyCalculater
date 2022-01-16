@@ -1,12 +1,15 @@
 package ui.personsList.personInfo.complexElements;
 
-import constants.Strings;
 import model.Worker;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PersonInfoPanel extends JPanel implements UI_Container {
+public class PersonInfoPanel extends JPanel {
+    private static final String NAME = "Ім'я";
+    private static final String SURNAME = "Прізвище";
+    private static final String PATRONYMIC = "Побатькові";
+    private static final String POSITION = "Посада";
 
     private JLabel nameLabel;
     private JLabel surnameLabel;
@@ -23,16 +26,14 @@ public class PersonInfoPanel extends JPanel implements UI_Container {
 
         this.createElements();
         this.setInfo(worker);
-        this.setReactions();
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.nameLabel = new JLabel(Strings.NAME);
-        this.surnameLabel = new JLabel(Strings.SURNAME);
-        this.patronymicLabel = new JLabel(Strings.PATRONYMIC);
-        this.positionLabel = new JLabel(Strings.POSITION);
+    private void createElements() {
+        this.nameLabel = new JLabel(NAME);
+        this.surnameLabel = new JLabel(SURNAME);
+        this.patronymicLabel = new JLabel(PATRONYMIC);
+        this.positionLabel = new JLabel(POSITION);
 
         this.name = new JTextField(10);
         this.surname = new JTextField(10);
@@ -40,13 +41,7 @@ public class PersonInfoPanel extends JPanel implements UI_Container {
         this.position = new JTextField(10);
     }
 
-    @Override
-    public void setReactions() {
-
-    }
-
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.nameLabel, new Cell(0, 0, true));
         this.add(this.name, new Cell(1, 0, false));
 
@@ -80,16 +75,16 @@ public class PersonInfoPanel extends JPanel implements UI_Container {
 
     public boolean allTextsFull(){
         if (this.name.getText().length() == 0){
-            this.nameLabel.setForeground(Color.red);
+            this.nameLabel.setForeground(Color.RED);
             return false;
         }else if (this.surname.getText().length() == 0){
-            this.surnameLabel.setForeground(Color.red);
+            this.surnameLabel.setForeground(Color.RED);
             return false;
         }else if (this.patronymic.getText().length() == 0){
-            this.patronymicLabel.setForeground(Color.red);
+            this.patronymicLabel.setForeground(Color.RED);
             return false;
         }else if (this.position.getText().length() == 0){
-            this.positionLabel.setForeground(Color.red);
+            this.positionLabel.setForeground(Color.RED);
             return false;
         }else {
             return true;

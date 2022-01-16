@@ -1,15 +1,17 @@
 package ui.personsList;
 
-import constants.Strings;
+import application.Application;
 import model.Worker;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import java.util.Objects;
+import java.util.ArrayList;
 
 public class PersonsListTable extends JTable {
+    private static final String FIO = "ПІБ";
+    private static final String POSITION = "Посада";
 
     public PersonsListTable(final PersonsListDialog parent){
         super(tableModel());
@@ -32,12 +34,13 @@ public class PersonsListTable extends JTable {
             }
         };
 
-        String[]columnsHeader = new String[]{Strings.FIO, Strings.POSITION};
+        String[]columnsHeader = new String[]{FIO, POSITION};
         model.setColumnIdentifiers(columnsHeader);
 
-        /*String[][] list = new String[Objects.requireNonNull(Lists.persons()).size()][2];
+        ArrayList<Worker>workers = Application.context.personsController.getAll();
+        String[][] list = new String[workers.size()][2];
         for (int x = 0; x < list.length; x++){
-            Worker worker = Objects.requireNonNull(Lists.persons()).get(x);
+            Worker worker = workers.get(x);
             String fullName = worker.getSurname()
                     + " "
                     + worker.getName()
@@ -47,8 +50,7 @@ public class PersonsListTable extends JTable {
             list[x][1] = worker.getPosition();
 
             model.addRow(list[x]);
-        }*/
-
+        }
         return model;
     }
 }

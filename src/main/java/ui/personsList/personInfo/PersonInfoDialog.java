@@ -1,20 +1,26 @@
 package ui.personsList.personInfo;
 
-import backgroundTasks.controllers.PutPersonInList;
-import constants.Strings;
+import application.Application;
 import converters.ConverterUI;
+import support.Comparator;
+import ui.model.DefaultButton;
 import ui.personsList.PersonsListDialog;
 import ui.personsList.personInfo.complexElements.PersonInfoPanel;
 import model.Worker;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PersonInfoDialog extends JDialog implements UI_Container {
+public class PersonInfoDialog extends JDialog {
+    private static final String ADD = "Додати";
+    private static final String CHANGE = "Змінити";
+    private static final String CANCEL = "Відміна";
+    private static final String SAVE = "Зберегти";
+    private static final String ERROR_MESSAGE = "Всі поля повинні бути заповнені";
+    public static final String ERROR = "Помилка";
+
     private final PersonsListDialog parent;
     private final Worker worker;
     private final JDialog current;
@@ -22,8 +28,6 @@ public class PersonInfoDialog extends JDialog implements UI_Container {
     private PersonInfoPanel infoPanel;
 
     private JButton positiveButton, negativeButton;
-
-    private final Color buttonsColor = new Color(51,51,51);
 
     public PersonInfoDialog(PersonsListDialog parent, Worker worker){
         super(parent, title(worker), true);
@@ -36,38 +40,21 @@ public class PersonInfoDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         this.infoPanel = new PersonInfoPanel(this.worker);
 
-        this.negativeButton = new JButton(Strings.CANCEL);
-        this.negativeButton.setBackground(this.buttonsColor);
-        this.negativeButton.setForeground(Color.white);
-        this.negativeButton.setFocusPainted(false);
-        this.negativeButton.setContentAreaFilled(false);
-        this.negativeButton.setOpaque(true);
-
-        this.positiveButton = new JButton(Strings.SAVE);
-        this.positiveButton.setBackground(this.buttonsColor);
-        this.positiveButton.setForeground(Color.white);
-        this.positiveButton.setFocusPainted(false);
-        this.positiveButton.setContentAreaFilled(false);
-        this.positiveButton.setOpaque(true);
+        this.negativeButton = new DefaultButton(CANCEL);
+        this.positiveButton = new DefaultButton(SAVE);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        this.positiveButton.addChangeListener(this.pushButton);
-        this.negativeButton.addChangeListener(this.pushButton);
 
         this.negativeButton.addActionListener(this.clickNegativeButton);
         this.positiveButton.addActionListener(this.clickPositiveButton);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(500,300);
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
@@ -76,28 +63,11 @@ public class PersonInfoDialog extends JDialog implements UI_Container {
 
     private static String title(Worker worker){
         if (worker == null){
-            return Strings.ADD;
+            return ADD;
         }else {
-            return Strings.CHANGE
-                    + "\""
-                    + worker.getFullName()
-                    + " - "
-                    + worker.getPosition()
-                    + "\"";
+            return CHANGE + "\"" + worker.getFullName() + " - " + worker.getPosition() + "\"";
         }
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickNegativeButton = new ActionListener() {
         @Override
@@ -111,9 +81,17 @@ public class PersonInfoDialog extends JDialog implements UI_Container {
         public void actionPerformed(ActionEvent e) {
             if (infoPanel.allTextsFull()){
                 dispose();
-                new PutPersonInList(parent, infoPanel.getWorker(), worker).execute();
+                Worker newPerson = infoPanel.getWorker();
+                if (worker == null){
+                    Application.context.personsController.add(newPerson);
+                }else {
+                    if (!Comparator.personsMatch(newPerson, worker)){
+                        Application.context.personsController.set(worker, newPerson);
+                    }
+                }
+                parent.update();
             }else {
-                JOptionPane.showMessageDialog(current, "Всі поля повинні бути заповнені", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(current, ERROR_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);
             }
         }
     };

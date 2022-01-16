@@ -1,26 +1,31 @@
 package ui.mainScreen.menu;
 
-import constants.Strings;
+import ui.calculate.start.CalculateStartDialog;
+import ui.channelInfo.DialogChannel;
 import ui.mainScreen.MainScreen;
 import ui.removeChannels.DialogRemoveChannels;
-import ui.searchChannel.DialogSearch;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MenuChannel extends JMenu implements UI_Container {
+public class MenuChannel extends JMenu {
+    private static final String CHANNEL = "Канал";
+    private static final String ADD = "Додати";
+    private static final String CALCULATE = "Розрахувати";
+    private static final String DETAILS = "Детальніше";
+    private static final String REMOVE = "Видалити";
+
     private final MainScreen mainScreen;
 
     private JMenuItem buttonCalculate = null;
     private JMenuItem buttonAdd = null;
     private JMenuItem buttonDetails = null;
     private JMenuItem buttonRemove = null;
-    private JMenuItem buttonSearch = null;
 
     public MenuChannel(MainScreen mainScreen){
-        super(Strings.CHANNEL);
+        super(CHANNEL);
         this.mainScreen = mainScreen;
 
         this.createElements();
@@ -28,33 +33,26 @@ public class MenuChannel extends JMenu implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.buttonAdd = new JMenuItem(Strings.ADD);
-        this.buttonCalculate = new JMenuItem(Strings.CALCULATE);
-        this.buttonDetails = new JMenuItem(Strings.DETAILS);
-        this.buttonRemove = new JMenuItem(Strings.REMOVE);
-        this.buttonSearch = new JMenuItem(Strings.SEARCH);
+    private void createElements() {
+        this.buttonAdd = new JMenuItem(ADD);
+        this.buttonCalculate = new JMenuItem(CALCULATE);
+        this.buttonDetails = new JMenuItem(DETAILS);
+        this.buttonRemove = new JMenuItem(REMOVE);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.buttonDetails.addActionListener(this.clickDetails);
         this.buttonAdd.addActionListener(this.clickAdd);
         this.buttonRemove.addActionListener(this.clickRemove);
         this.buttonCalculate.addActionListener(this.clickCalculate);
-        this.buttonSearch.addActionListener(this.clickSearch);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.buttonAdd);
         this.add(this.buttonRemove);
         this.addSeparator();
         this.add(this.buttonDetails);
         this.add(this.buttonCalculate);
-        this.addSeparator();
-        this.add(this.buttonSearch);
     }
 
     private final ActionListener clickDetails = new ActionListener() {
@@ -65,7 +63,7 @@ public class MenuChannel extends JMenu implements UI_Container {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        //new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
+                        new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
                     }
                 });
             }
@@ -78,7 +76,7 @@ public class MenuChannel extends JMenu implements UI_Container {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    //new DialogChannel(mainScreen, null).setVisible(true);
+                    new DialogChannel(mainScreen, null).setVisible(true);
                 }
             });
         }
@@ -92,7 +90,7 @@ public class MenuChannel extends JMenu implements UI_Container {
                 public void run() {
                     int index = mainScreen.mainTable.getSelectedRow();
                     if (index != -1){
-                        //new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
+                        new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
                     }
                 }
             });
@@ -109,17 +107,6 @@ public class MenuChannel extends JMenu implements UI_Container {
                         new DialogRemoveChannels(mainScreen).setVisible(true);
                     }
                 });
-            }
-        }
-    };
-
-    private final ActionListener clickSearch = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (buttonSearch.getText().equals(Strings.SEARCH)){
-                new DialogSearch(mainScreen).setVisible(true);
-            }else {
-                //mainScreen.update(Lists.channels(), false, null, null);
             }
         }
     };

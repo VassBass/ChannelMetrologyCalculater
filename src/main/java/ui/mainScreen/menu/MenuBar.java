@@ -4,7 +4,7 @@ import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 
-public class MenuBar extends JMenuBar implements UI_Container {
+public class MenuBar extends JMenuBar {
     private final MainScreen mainScreen;
 
     private JMenu menuChannel;
@@ -16,21 +16,16 @@ public class MenuBar extends JMenuBar implements UI_Container {
         this.mainScreen = mainScreen;
 
         this.createElements();
-        this.setReactions();
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         this.menuChannel = new MenuChannel(this.mainScreen);
         this.menuLists = new MenuLists(this.mainScreen);
         this.menuExportImport = new MenuExpImp(this.mainScreen);
     }
 
-    @Override public void setReactions() {}
-
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.menuChannel);
         this.add(this.menuLists);
         this.add(this.menuExportImport);

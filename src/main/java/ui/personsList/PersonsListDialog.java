@@ -1,9 +1,12 @@
 package ui.personsList;
 
+import application.Application;
 import converters.ConverterUI;
 import constants.Strings;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 import ui.personsList.personInfo.PersonInfoDialog;
+import ui.personsList.personInfo.removePerson.RemovePersonDialog;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -12,7 +15,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PersonsListDialog extends JDialog implements UI_Container {
+public class PersonsListDialog extends JDialog {
+    private static final String WORKERS = "Робітники";
+    private static final String ADD = "Додати";
+    private static final String CHANGE = "Змінити";
+    private static final String REMOVE = "Видалити";
+
     private final MainScreen mainScreen;
     private final PersonsListDialog current;
 
@@ -20,10 +28,8 @@ public class PersonsListDialog extends JDialog implements UI_Container {
 
     private JButton buttonAdd, buttonRemove, buttonChange;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     public PersonsListDialog(MainScreen mainScreen){
-        super(mainScreen, Strings.WORKERS, true);
+        super(mainScreen, WORKERS, true);
         this.mainScreen = mainScreen;
         this.current = this;
 
@@ -32,47 +38,23 @@ public class PersonsListDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         this.mainTable = new PersonsListTable(this);
 
-        this.buttonAdd = new JButton(Strings.ADD);
-        this.buttonAdd.setBackground(buttonsColor);
-        this.buttonAdd.setForeground(Color.white);
-        this.buttonAdd.setFocusPainted(false);
-        this.buttonAdd.setContentAreaFilled(false);
-        this.buttonAdd.setOpaque(true);
-
-        this.buttonChange = new JButton(Strings.CHANGE);
-        this.buttonChange.setBackground(buttonsColor);
-        this.buttonChange.setForeground(Color.white);
-        this.buttonChange.setFocusPainted(false);
-        this.buttonChange.setContentAreaFilled(false);
-        this.buttonChange.setOpaque(true);
-
-        this.buttonRemove = new JButton(Strings.REMOVE);
-        this.buttonRemove.setBackground(buttonsColor);
-        this.buttonRemove.setForeground(Color.white);
-        this.buttonRemove.setFocusPainted(false);
-        this.buttonRemove.setContentAreaFilled(false);
-        this.buttonRemove.setOpaque(true);
+        this.buttonAdd = new DefaultButton(ADD);
+        this.buttonChange = new DefaultButton(CHANGE);
+        this.buttonRemove = new DefaultButton(REMOVE);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        this.buttonAdd.addChangeListener(this.pushButton);
-        this.buttonChange.addChangeListener(this.pushButton);
-        this.buttonRemove.addChangeListener(this.pushButton);
 
         this.buttonAdd.addActionListener(this.clickAdd);
         this.buttonChange.addActionListener(this.clickChange);
         this.buttonRemove.addActionListener(this.clickRemove);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(800,600);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
         this.setEnabledButtons(false);
@@ -83,7 +65,7 @@ public class PersonsListDialog extends JDialog implements UI_Container {
     public void update(){
         this.mainTable = new PersonsListTable(this);
         this.setContentPane(new MainPanel());
-        setEnabledButtons(false);
+        this.setEnabledButtons(false);
         this.setVisible(false);
         this.setVisible(true);
     }
@@ -92,18 +74,6 @@ public class PersonsListDialog extends JDialog implements UI_Container {
         this.buttonChange.setEnabled(enabled);
         this.buttonRemove.setEnabled(enabled);
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickAdd = new ActionListener() {
         @Override
@@ -124,7 +94,7 @@ public class PersonsListDialog extends JDialog implements UI_Container {
                 @Override
                 public void run() {
                     int index = mainTable.getSelectedRow();
-                    //new PersonInfoDialog(current, Objects.requireNonNull(Lists.persons()).get(index)).setVisible(true);
+                    new PersonInfoDialog(current, Application.context.personsController.get(index)).setVisible(true);
                 }
             });
         }
@@ -137,7 +107,7 @@ public class PersonsListDialog extends JDialog implements UI_Container {
                 @Override
                 public void run() {
                     int index = mainTable.getSelectedRow();
-                    //new RemovePersonDialog(current, Objects.requireNonNull(Lists.persons()).get(index)).setVisible(true);
+                    new RemovePersonDialog(current, Application.context.personsController.get(index)).setVisible(true);
                 }
             });
         }
@@ -168,5 +138,4 @@ public class PersonsListDialog extends JDialog implements UI_Container {
             }
         }
     }
-
 }

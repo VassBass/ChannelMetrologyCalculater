@@ -1,19 +1,20 @@
 package ui.personsList.personInfo.removePerson;
 
-import backgroundTasks.controllers.RemovePerson;
-import constants.Strings;
+import application.Application;
 import converters.ConverterUI;
+import ui.model.DefaultButton;
 import ui.personsList.PersonsListDialog;
 import model.Worker;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class RemovePersonDialog extends JDialog implements UI_Container {
+public class RemovePersonDialog extends JDialog {
+    public static final String REMOVE = "Видалити";
+    public static final String CANCEL = "Відміна";
+
     private final PersonsListDialog parent;
     private final Worker worker;
 
@@ -21,10 +22,8 @@ public class RemovePersonDialog extends JDialog implements UI_Container {
 
     private JButton positiveButton, negativeButton;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     public RemovePersonDialog(PersonsListDialog parent, Worker worker){
-        super(parent, Strings.REMOVE, true);
+        super(parent, REMOVE, true);
         this.parent = parent;
         this.worker = worker;
 
@@ -33,9 +32,8 @@ public class RemovePersonDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        String s = Strings.REMOVE
+    private void createElements() {
+        String s = REMOVE
                 + " зі списку працівника:\n"
                 + worker.getSurname()
                 + " "
@@ -48,51 +46,23 @@ public class RemovePersonDialog extends JDialog implements UI_Container {
 
         this.message = new JLabel(s);
 
-        this.positiveButton = new JButton(Strings.REMOVE);
-        this.positiveButton.setBackground(this.buttonsColor);
-        this.positiveButton.setForeground(Color.white);
-        this.positiveButton.setFocusPainted(false);
-        this.positiveButton.setContentAreaFilled(false);
-        this.positiveButton.setOpaque(true);
-
-        this.negativeButton = new JButton(Strings.CANCEL);
-        this.negativeButton.setBackground(this.buttonsColor);
-        this.negativeButton.setForeground(Color.white);
-        this.negativeButton.setFocusPainted(false);
-        this.negativeButton.setContentAreaFilled(false);
-        this.negativeButton.setOpaque(true);
+        this.positiveButton = new DefaultButton(REMOVE);
+        this.negativeButton = new DefaultButton(CANCEL);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-        this.positiveButton.addChangeListener(this.pushButton);
-        this.negativeButton.addChangeListener(this.pushButton);
 
         this.negativeButton.addActionListener(this.clickNegativeButton);
         this.positiveButton.addActionListener(this.clickPositiveButton);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(700,150);
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickNegativeButton = new ActionListener() {
         @Override
@@ -105,7 +75,8 @@ public class RemovePersonDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            new RemovePerson(parent, worker).execute();
+            Application.context.personsController.remove(worker);
+            parent.update();
         }
     };
 
