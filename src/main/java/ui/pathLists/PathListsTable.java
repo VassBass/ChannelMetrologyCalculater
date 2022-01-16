@@ -1,12 +1,15 @@
 package ui.pathLists;
 
 import application.Application;
-import constants.Strings;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class PathListsTable extends JTable {
+    public static final String DEPARTMENTS_LIST = "Список цехів";
+    public static final String AREAS_LIST = "Список ділянок";
+    public static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
+    public static final String INSTALLATIONS_LIST = "Список установок";
 
     public PathListsTable(String list){
         super(tableModel(list));
@@ -26,28 +29,26 @@ public class PathListsTable extends JTable {
 
         String[] elements;
         switch (list){
-            case Strings.AREAS_LIST:
+            case AREAS_LIST:
                 elements = Application.context.areasController.getAllInStrings();
                 break;
-            case Strings.PROCESSES_LIST:
+            case PROCESSES_LIST:
                 elements = Application.context.processesController.getAllInStrings();
                 break;
-            case Strings.INSTALLATIONS_LIST:
+            case INSTALLATIONS_LIST:
                 elements = Application.context.installationsController.getAllInStrings();
                 break;
             default:
                 elements = Application.context.departmentsController.getAllInStrings();
                 break;
         }
-
         for (String element : elements){
             model.addRow(new String[]{element});
         }
-
         return model;
     }
 
-    public void update(String list){
+    public void setList(String list){
         this.setModel(tableModel(list));
     }
 }

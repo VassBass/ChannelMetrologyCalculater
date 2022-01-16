@@ -1,27 +1,32 @@
 package ui.pathLists;
 
-import backgroundTasks.controllers.RemovePathElements;
-import constants.Strings;
+import application.Application;
 import converters.ConverterUI;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ConfirmDialog extends JDialog implements UI_Container {
+public class ConfirmDialog extends JDialog {
+    private static final String REMOVE = "Видалити";
+    private static final String CLEAR = "Очистити";
+    private static final String CANCEL = "Відміна";
+    private String message(String elementType){
+        return  "Ви впевнені що хочете очистити "
+                + elementType
+                + "?";
+    }
+
     private final PathListsDialog dialog;
     private final String elementType;
 
     private JLabel message;
     private JButton positiveButton, negativeButton;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     public ConfirmDialog(PathListsDialog dialog, String elementType){
-        super(dialog, Strings.REMOVE, true);
+        super(dialog, REMOVE, true);
         this.dialog = dialog;
         this.elementType = elementType;
 
@@ -30,48 +35,17 @@ public class ConfirmDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        String m = "Ви впевнені що хочете очистити "
-                + elementType
-                + "?";
-        this.message = new JLabel(m);
+    private void createElements() {
+        this.message = new JLabel(this.message(this.elementType));
 
-        this.positiveButton = new JButton(Strings.CLEAR);
-        this.positiveButton.setBackground(buttonsColor);
-        this.positiveButton.setForeground(Color.white);
-        this.positiveButton.setFocusPainted(false);
-        this.positiveButton.setContentAreaFilled(false);
-        this.positiveButton.setOpaque(true);
-
-        this.negativeButton = new JButton(Strings.CANCEL);
-        this.negativeButton.setBackground(buttonsColor);
-        this.negativeButton.setForeground(Color.white);
-        this.negativeButton.setFocusPainted(false);
-        this.negativeButton.setContentAreaFilled(false);
-        this.negativeButton.setOpaque(true);
+        this.positiveButton = new DefaultButton(CLEAR);
+        this.negativeButton = new DefaultButton(CANCEL);
     }
 
-    @Override
-    public void setReactions() {
-        this.positiveButton.addChangeListener(pushButton);
-        this.negativeButton.addChangeListener(pushButton);
-
-        this.negativeButton.addActionListener(clickCancel);
-        this.positiveButton.addActionListener(clickRemove);
+    private void setReactions() {
+        this.negativeButton.addActionListener(this.clickCancel);
+        this.positiveButton.addActionListener(this.clickRemove);
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override
@@ -84,14 +58,27 @@ public class ConfirmDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            new RemovePathElements(dialog, elementType, null).execute();
+            switch (elementType){
+                case PathListsTable.DEPARTMENTS_LIST:
+                    Application.context.departmentsController.clear();
+                    break;
+                case PathListsTable.AREAS_LIST:
+                    Application.context.areasController.clear();
+                    break;
+                case PathListsTable.PROCESSES_LIST:
+                    Application.context.processesController.clear();
+                    break;
+                case PathListsTable.INSTALLATIONS_LIST:
+                    Application.context.installationsController.clear();
+                    break;
+            }
+            dialog.update(elementType);
         }
     };
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(450,100);
-        this.setLocation(ConverterUI.POINT_CENTER(dialog,this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.dialog,this));
 
         this.setContentPane(new MainPanel());
     }

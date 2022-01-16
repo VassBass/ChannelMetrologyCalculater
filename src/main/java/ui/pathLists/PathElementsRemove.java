@@ -1,20 +1,23 @@
 package ui.pathLists;
 
-import backgroundTasks.controllers.RemovePathElements;
-import constants.Strings;
+import application.Application;
 import converters.ConverterUI;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
 
-public class PathElementsRemove extends JDialog implements UI_Container {
+public class PathElementsRemove extends JDialog {
+    private static final String REMOVE = "Видалити";
+    private static final String CANCEL = "Відміна";
+    private static final String REMOVE_ALL = "Видалити всі";
+
     private final PathListsDialog parent;
-    private final String elementType, elementName;
+    private final String elementType;
+    private String elementName;
 
     private String[]elements;
 
@@ -22,10 +25,8 @@ public class PathElementsRemove extends JDialog implements UI_Container {
     private JLabel removingElement;
     private JButton buttonCancel, buttonRemoveAll, buttonRemove;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     public PathElementsRemove(PathListsDialog parent, String elementType, String elementName){
-        super(parent, Strings.REMOVE + " \"" + elementType + "\"", true);
+        super(parent, REMOVE + " \"" + elementType + "\"", true);
         this.parent = parent;
         this.elementType = elementType;
         this.elementName = elementName;
@@ -35,84 +36,48 @@ public class PathElementsRemove extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        switch (elementType){
-            case Strings.DEPARTMENTS_LIST:
-                //elements = Objects.requireNonNull(Lists.departments()).toArray(new String[0]);
+    private void createElements() {
+        switch (this.elementType){
+            case PathListsTable.DEPARTMENTS_LIST:
+                this.elements = Application.context.departmentsController.getAllInStrings();
                 break;
-            case Strings.AREAS_LIST:
-                //elements = Objects.requireNonNull(Lists.areas()).toArray(new String[0]);
+            case PathListsTable.AREAS_LIST:
+                this.elements = Application.context.areasController.getAllInStrings();
                 break;
-            case Strings.PROCESSES_LIST:
-                //elements = Objects.requireNonNull(Lists.processes()).toArray(new String[0]);
+            case PathListsTable.PROCESSES_LIST:
+                this.elements = Application.context.processesController.getAllInStrings();
                 break;
-            case Strings.INSTALLATIONS_LIST:
-                //elements = Objects.requireNonNull(Lists.installations()).toArray(new String[0]);
+            case PathListsTable.INSTALLATIONS_LIST:
+                this.elements = Application.context.installationsController.getAllInStrings();
                 break;
         }
-        if (elementName == null){
-            this.elementList = new JComboBox<>(Objects.requireNonNull(elements));
+        if (this.elementName == null){
+            this.elementList = new JComboBox<>(this.elements);
         }else {
-            this.removingElement = new JLabel(Strings.REMOVE
+            this.removingElement = new JLabel(REMOVE
                     + " \""
-                    + elementName
+                    + this.elementName
                     + "\""
                     + "?");
         }
 
-        this.buttonCancel = new JButton(Strings.CANCEL);
-        this.buttonCancel.setBackground(buttonsColor);
-        this.buttonCancel.setForeground(Color.white);
-        this.buttonCancel.setFocusPainted(false);
-        this.buttonCancel.setContentAreaFilled(false);
-        this.buttonCancel.setOpaque(true);
-
-        this.buttonRemoveAll = new JButton(Strings.REMOVE_ALL);
-        this.buttonRemoveAll.setBackground(buttonsColor);
-        this.buttonRemoveAll.setForeground(Color.white);
-        this.buttonRemoveAll.setFocusPainted(false);
-        this.buttonRemoveAll.setContentAreaFilled(false);
-        this.buttonRemoveAll.setOpaque(true);
-
-        this.buttonRemove = new JButton(Strings.REMOVE);
-        this.buttonRemove.setBackground(buttonsColor);
-        this.buttonRemove.setForeground(Color.white);
-        this.buttonRemove.setFocusPainted(false);
-        this.buttonRemove.setContentAreaFilled(false);
-        this.buttonRemove.setOpaque(true);
+        this.buttonCancel = new DefaultButton(CANCEL);
+        this.buttonRemoveAll = new DefaultButton(REMOVE_ALL);
+        this.buttonRemove = new DefaultButton(REMOVE);
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonCancel.addChangeListener(pushButton);
-        this.buttonRemoveAll.addChangeListener(pushButton);
-        this.buttonRemove.addChangeListener(pushButton);
-
-        this.buttonCancel.addActionListener(clickCancel);
-        this.buttonRemoveAll.addActionListener(clickRemoveAll);
-        this.buttonRemove.addActionListener(clickRemove);
+    private void setReactions() {
+        this.buttonCancel.addActionListener(this.clickCancel);
+        this.buttonRemoveAll.addActionListener(this.clickRemoveAll);
+        this.buttonRemove.addActionListener(this.clickRemove);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(400,100);
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override
@@ -140,11 +105,24 @@ public class PathElementsRemove extends JDialog implements UI_Container {
             dispose();
             if (elementName == null){
                 try {
-                    new RemovePathElements(parent, elementType, Objects.requireNonNull(elementList.getSelectedItem()).toString()).execute();
+                    elementName = Objects.requireNonNull(elementList.getSelectedItem()).toString();
                 }catch (NullPointerException ignored){}
-            }else {
-                new RemovePathElements(parent, elementType, elementName).execute();
             }
+            switch (elementType){
+                case PathListsTable.DEPARTMENTS_LIST:
+                    Application.context.departmentsController.remove(elementName);
+                    break;
+                case PathListsTable.AREAS_LIST:
+                    Application.context.areasController.remove(elementName);
+                    break;
+                case PathListsTable.PROCESSES_LIST:
+                    Application.context.processesController.remove(elementName);
+                    break;
+                case PathListsTable.INSTALLATIONS_LIST:
+                    Application.context.installationsController.remove(elementName);
+                    break;
+            }
+            parent.update(elementType);
         }
     };
 

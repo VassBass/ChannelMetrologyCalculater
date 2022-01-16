@@ -1,20 +1,19 @@
 package ui.pathLists;
 
-import backgroundTasks.controllers.PutPathElementInList;
-import constants.Strings;
+import application.Application;
 import converters.ConverterUI;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PathElementName extends JDialog implements UI_Container {
-    private final PathListsDialog parent;
+public class PathElementName extends JDialog {
+    private static final String CANCEL = "Відміна";
+    private static final String SAVE = "Зберегти";
 
-    private final Color buttonsColor = new Color(51,51,51);
+    private final PathListsDialog parent;
 
     private JButton buttonSave, buttonCancel;
     private JTextField elementName;
@@ -33,56 +32,27 @@ public class PathElementName extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         this.elementName = new JTextField(10);
         this.elementName.setHorizontalAlignment(SwingConstants.CENTER);
         if (this.oldNameOfElement != null){
             this.elementName.setText(this.oldNameOfElement);
         }
-        this.buttonCancel = new JButton(Strings.CANCEL);
-        this.buttonCancel.setBackground(buttonsColor);
-        this.buttonCancel.setForeground(Color.white);
-        this.buttonCancel.setFocusPainted(false);
-        this.buttonCancel.setContentAreaFilled(false);
-        this.buttonCancel.setOpaque(true);
-
-        this.buttonSave = new JButton(Strings.SAVE);
-        this.buttonSave.setBackground(buttonsColor);
-        this.buttonSave.setForeground(Color.white);
-        this.buttonSave.setFocusPainted(false);
-        this.buttonSave.setContentAreaFilled(false);
-        this.buttonSave.setOpaque(true);
+        this.buttonCancel = new DefaultButton(CANCEL);
+        this.buttonSave = new DefaultButton(SAVE);
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonCancel.addChangeListener(pushButton);
-        this.buttonSave.addChangeListener(pushButton);
-
-        this.buttonCancel.addActionListener(clickCancel);
-        this.buttonSave.addActionListener(clickSave);
+    private void setReactions() {
+        this.buttonCancel.addActionListener(this.clickCancel);
+        this.buttonSave.addActionListener(this.clickSave);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(230,100);
-        this.setLocation(ConverterUI.POINT_CENTER(parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override
@@ -95,7 +65,23 @@ public class PathElementName extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            new PutPathElementInList(parent, elementType, oldNameOfElement, elementName.getText()).execute();
+            if (elementName.getText().length() > 0) {
+                switch (elementType) {
+                    case PathListsTable.DEPARTMENTS_LIST:
+                        Application.context.departmentsController.set(oldNameOfElement, elementName.getText());
+                        break;
+                    case PathListsTable.AREAS_LIST:
+                        Application.context.areasController.set(oldNameOfElement, elementName.getText());
+                        break;
+                    case PathListsTable.PROCESSES_LIST:
+                        Application.context.processesController.set(oldNameOfElement, elementName.getText());
+                        break;
+                    case PathListsTable.INSTALLATIONS_LIST:
+                        Application.context.installationsController.set(oldNameOfElement, elementName.getText());
+                        break;
+                }
+                parent.update(elementType);
+            }
         }
     };
 

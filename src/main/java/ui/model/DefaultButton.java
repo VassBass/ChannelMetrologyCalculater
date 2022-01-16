@@ -7,11 +7,11 @@ import java.awt.*;
 
 public class DefaultButton extends JButton {
 
-    private final Color buttonColor = new Color(51,51,51);
+    public static final Color BACKGROUND_COLOR = new Color(51,51,51);
 
     public DefaultButton(String text){
         super(text);
-        this.setBackground(this.buttonColor);
+        this.setBackground(BACKGROUND_COLOR);
         this.setForeground(Color.WHITE);
         this.setFocusPainted(false);
         this.setContentAreaFilled(false);
@@ -23,9 +23,9 @@ public class DefaultButton extends JButton {
                 JButton button = (JButton) e.getSource();
 
                 if (button.getModel().isPressed()) {
-                    button.setBackground(buttonColor.darker());
+                    button.setBackground(BACKGROUND_COLOR.darker());
                 } else {
-                    button.setBackground(buttonColor);
+                    button.setBackground(BACKGROUND_COLOR);
                 }
 
             }

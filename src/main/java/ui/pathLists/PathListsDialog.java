@@ -1,18 +1,25 @@
 package ui.pathLists;
 
 import application.Application;
-import constants.Strings;
 import converters.ConverterUI;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PathListsDialog extends JDialog implements UI_Container {
+public class PathListsDialog extends JDialog {
+    private static final String REMOVE = "Видалити";
+    private static final String CHANGE = "Змінити";
+    private static final String ADD = "Додати";
+    private static final String CANCEL = "Відміна";
+    private static final String DEPARTMENT = "Цех";
+    private static final String AREA = "Ділянка";
+    private static final String PROCESS = "Лінія, секція і т.п.";
+    private static final String INSTALLATION = "Установка";
+
     private final MainScreen mainScreen;
     private final PathListsDialog current;
 
@@ -22,8 +29,6 @@ public class PathListsDialog extends JDialog implements UI_Container {
     private JButton buttonCancel, buttonRemove, buttonAdd, buttonChange;
 
     private PathListsTable mainTable;
-
-    private final Color buttonsColor = new Color(51,51,51);
 
     public PathListsDialog(MainScreen mainScreen, String title){
         super(mainScreen, title, true);
@@ -36,55 +41,16 @@ public class PathListsDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.buttonDepartments = new JButton(Strings.DEPARTMENTS_LIST);
-        this.buttonDepartments.setFocusPainted(false);
-        this.buttonDepartments.setContentAreaFilled(false);
-        this.buttonDepartments.setOpaque(true);
+    private void createElements() {
+        this.buttonDepartments = new DefaultButton(PathListsTable.DEPARTMENTS_LIST);
+        this.buttonAreas = new DefaultButton(PathListsTable.AREAS_LIST);
+        this.buttonProcesses = new DefaultButton(PathListsTable.PROCESSES_LIST);
+        this.buttonInstallations = new DefaultButton(PathListsTable.INSTALLATIONS_LIST);
 
-        this.buttonAreas = new JButton(Strings.AREAS_LIST);
-        this.buttonAreas.setFocusPainted(false);
-        this.buttonAreas.setContentAreaFilled(false);
-        this.buttonAreas.setOpaque(true);
-
-        this.buttonProcesses = new JButton(Strings.PROCESSES_LIST);
-        this.buttonProcesses.setFocusPainted(false);
-        this.buttonProcesses.setContentAreaFilled(false);
-        this.buttonProcesses.setOpaque(true);
-
-        this.buttonInstallations = new JButton(Strings.INSTALLATIONS_LIST);
-        this.buttonInstallations.setFocusPainted(false);
-        this.buttonInstallations.setContentAreaFilled(false);
-        this.buttonInstallations.setOpaque(true);
-
-        this.buttonRemove = new JButton(Strings.REMOVE);
-        this.buttonRemove.setBackground(buttonsColor);
-        this.buttonRemove.setForeground(Color.white);
-        this.buttonRemove.setFocusPainted(false);
-        this.buttonRemove.setContentAreaFilled(false);
-        this.buttonRemove.setOpaque(true);
-
-        this.buttonChange = new JButton(Strings.CHANGE);
-        this.buttonChange.setBackground(buttonsColor);
-        this.buttonChange.setForeground(Color.white);
-        this.buttonChange.setFocusPainted(false);
-        this.buttonChange.setContentAreaFilled(false);
-        this.buttonChange.setOpaque(true);
-
-        this.buttonAdd = new JButton(Strings.ADD);
-        this.buttonAdd.setBackground(buttonsColor);
-        this.buttonAdd.setForeground(Color.white);
-        this.buttonAdd.setFocusPainted(false);
-        this.buttonAdd.setContentAreaFilled(false);
-        this.buttonAdd.setOpaque(true);
-
-        this.buttonCancel = new JButton(Strings.CANCEL);
-        this.buttonCancel.setBackground(buttonsColor);
-        this.buttonCancel.setForeground(Color.white);
-        this.buttonCancel.setFocusPainted(false);
-        this.buttonCancel.setContentAreaFilled(false);
-        this.buttonCancel.setOpaque(true);
+        this.buttonRemove = new DefaultButton(REMOVE);
+        this.buttonChange = new DefaultButton(CHANGE);
+        this.buttonAdd = new DefaultButton(ADD);
+        this.buttonCancel = new DefaultButton(CANCEL);
 
         this.mainTable = new PathListsTable(title);
         this.setButtonsColor();
@@ -92,68 +58,61 @@ public class PathListsDialog extends JDialog implements UI_Container {
 
     private void setButtonsColor(){
         switch (this.title){
-            case Strings.DEPARTMENTS_LIST:
-                this.buttonDepartments.setBackground(Color.white);
-                this.buttonDepartments.setForeground(Color.black);
-                this.buttonAreas.setBackground(buttonsColor);
-                this.buttonAreas.setForeground(Color.white);
-                this.buttonProcesses.setBackground(buttonsColor);
-                this.buttonProcesses.setForeground(Color.white);
-                this.buttonInstallations.setBackground(buttonsColor);
-                this.buttonInstallations.setForeground(Color.white);
+            case PathListsTable.DEPARTMENTS_LIST:
+                this.buttonDepartments.setBackground(Color.WHITE);
+                this.buttonDepartments.setForeground(Color.BLACK);
+                this.buttonAreas.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonAreas.setForeground(Color.WHITE);
+                this.buttonProcesses.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonProcesses.setForeground(Color.WHITE);
+                this.buttonInstallations.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonInstallations.setForeground(Color.WHITE);
                 break;
-            case Strings.AREAS_LIST:
-                this.buttonDepartments.setBackground(buttonsColor);
-                this.buttonDepartments.setForeground(Color.white);
-                this.buttonAreas.setBackground(Color.white);
-                this.buttonAreas.setForeground(Color.black);
-                this.buttonProcesses.setBackground(buttonsColor);
-                this.buttonProcesses.setForeground(Color.white);
-                this.buttonInstallations.setBackground(buttonsColor);
-                this.buttonInstallations.setForeground(Color.white);
+            case PathListsTable.AREAS_LIST:
+                this.buttonDepartments.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonDepartments.setForeground(Color.WHITE);
+                this.buttonAreas.setBackground(Color.WHITE);
+                this.buttonAreas.setForeground(Color.BLACK);
+                this.buttonProcesses.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonProcesses.setForeground(Color.WHITE);
+                this.buttonInstallations.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonInstallations.setForeground(Color.WHITE);
                 break;
-            case Strings.PROCESSES_LIST:
-                this.buttonDepartments.setBackground(buttonsColor);
-                this.buttonDepartments.setForeground(Color.white);
-                this.buttonAreas.setBackground(buttonsColor);
-                this.buttonAreas.setForeground(Color.white);
-                this.buttonProcesses.setBackground(Color.white);
-                this.buttonProcesses.setForeground(Color.black);
-                this.buttonInstallations.setBackground(buttonsColor);
-                this.buttonInstallations.setForeground(Color.white);
+            case PathListsTable.PROCESSES_LIST:
+                this.buttonDepartments.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonDepartments.setForeground(Color.WHITE);
+                this.buttonAreas.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonAreas.setForeground(Color.WHITE);
+                this.buttonProcesses.setBackground(Color.WHITE);
+                this.buttonProcesses.setForeground(Color.BLACK);
+                this.buttonInstallations.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonInstallations.setForeground(Color.WHITE);
                 break;
-            case Strings.INSTALLATIONS_LIST:
-                this.buttonDepartments.setBackground(buttonsColor);
-                this.buttonDepartments.setForeground(Color.white);
-                this.buttonAreas.setBackground(buttonsColor);
-                this.buttonAreas.setForeground(Color.white);
-                this.buttonProcesses.setBackground(buttonsColor);
-                this.buttonProcesses.setForeground(Color.white);
-                this.buttonInstallations.setBackground(Color.white);
-                this.buttonInstallations.setForeground(Color.black);
+            case PathListsTable.INSTALLATIONS_LIST:
+                this.buttonDepartments.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonDepartments.setForeground(Color.WHITE);
+                this.buttonAreas.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonAreas.setForeground(Color.WHITE);
+                this.buttonProcesses.setBackground(DefaultButton.BACKGROUND_COLOR);
+                this.buttonProcesses.setForeground(Color.WHITE);
+                this.buttonInstallations.setBackground(Color.WHITE);
+                this.buttonInstallations.setForeground(Color.BLACK);
                 break;
         }
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonCancel.addChangeListener(pushButton);
-        this.buttonRemove.addChangeListener(pushButton);
-        this.buttonChange.addChangeListener(pushButton);
-        this.buttonAdd.addChangeListener(pushButton);
-
-        this.buttonDepartments.addActionListener(clickDepartments);
-        this.buttonAreas.addActionListener(clickAreas);
-        this.buttonProcesses.addActionListener(clickProcesses);
-        this.buttonInstallations.addActionListener(clickInstallations);
-        this.buttonCancel.addActionListener(clickCancel);
-        this.buttonAdd.addActionListener(clickAdd);
-        this.buttonChange.addActionListener(clickChange);
-        this.buttonRemove.addActionListener(clickRemove);
+    private void setReactions() {
+        this.buttonDepartments.addActionListener(this.clickDepartments);
+        this.buttonAreas.addActionListener(this.clickAreas);
+        this.buttonProcesses.addActionListener(this.clickProcesses);
+        this.buttonInstallations.addActionListener(this.clickInstallations);
+        this.buttonCancel.addActionListener(this.clickCancel);
+        this.buttonAdd.addActionListener(this.clickAdd);
+        this.buttonChange.addActionListener(this.clickChange);
+        this.buttonRemove.addActionListener(this.clickRemove);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(800,500);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
@@ -162,71 +121,56 @@ public class PathListsDialog extends JDialog implements UI_Container {
 
     public void update(String elementsType){
         switch (elementsType){
-            case Strings.AREA:
-            case Strings.AREAS_LIST:
-                this.title = Strings.AREAS_LIST;
+            case PathListsTable.AREAS_LIST:
+                this.title = PathListsTable.AREAS_LIST;
                 break;
-            case Strings.PROCESS:
-            case Strings.PROCESSES_LIST:
-                this.title = Strings.PROCESSES_LIST;
+            case PathListsTable.PROCESSES_LIST:
+                this.title = PathListsTable.PROCESSES_LIST;
                 break;
-            case Strings.INSTALLATION:
-            case Strings.INSTALLATIONS_LIST:
-                this.title = Strings.INSTALLATIONS_LIST;
+            case PathListsTable.INSTALLATIONS_LIST:
+                this.title = PathListsTable.INSTALLATIONS_LIST;
                 break;
             default:
-                this.title = Strings.DEPARTMENTS_LIST;
+                this.title = PathListsTable.DEPARTMENTS_LIST;
                 break;
         }
         this.setButtonsColor();
-        this.mainTable.update(this.title);
+        this.mainTable.setList(this.title);
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickDepartments = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            title = Strings.DEPARTMENTS_LIST;
+            title = PathListsTable.DEPARTMENTS_LIST;
             setButtonsColor();
-            mainTable.update(title);
+            mainTable.setList(title);
         }
     };
 
     private final ActionListener clickAreas = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            title = Strings.AREAS_LIST;
+            title = PathListsTable.AREAS_LIST;
             setButtonsColor();
-            mainTable.update(title);
+            mainTable.setList(title);
         }
     };
 
     private final ActionListener clickProcesses = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            title = Strings.PROCESSES_LIST;
+            title = PathListsTable.PROCESSES_LIST;
             setButtonsColor();
-            mainTable.update(title);
+            mainTable.setList(title);
         }
     };
 
     private final ActionListener clickInstallations = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            title = Strings.INSTALLATIONS_LIST;
+            title = PathListsTable.INSTALLATIONS_LIST;
             setButtonsColor();
-            mainTable.update(title);
+            mainTable.setList(title);
         }
     };
 
@@ -238,17 +182,17 @@ public class PathListsDialog extends JDialog implements UI_Container {
                 public void run() {
                     String elementType = null;
                     switch (title){
-                        case Strings.DEPARTMENTS_LIST:
-                            elementType = Strings.DEPARTMENT;
+                        case PathListsTable.DEPARTMENTS_LIST:
+                            elementType = DEPARTMENT;
                             break;
-                        case Strings.AREAS_LIST:
-                            elementType = Strings.AREA;
+                        case PathListsTable.AREAS_LIST:
+                            elementType = AREA;
                             break;
-                        case Strings.PROCESSES_LIST:
-                            elementType = Strings.PROCESS;
+                        case PathListsTable.PROCESSES_LIST:
+                            elementType = PROCESS;
                             break;
-                        case Strings.INSTALLATIONS_LIST:
-                            elementType = Strings.INSTALLATION;
+                        case PathListsTable.INSTALLATIONS_LIST:
+                            elementType = INSTALLATION;
                             break;
                     }
                     new PathElementName(current, elementType, null).setVisible(true);
@@ -267,20 +211,20 @@ public class PathListsDialog extends JDialog implements UI_Container {
                         String elementType = null;
                         String elementName = null;
                         switch (title) {
-                            case Strings.DEPARTMENTS_LIST:
-                                elementType = Strings.DEPARTMENT;
+                            case PathListsTable.DEPARTMENTS_LIST:
+                                elementType = DEPARTMENT;
                                 elementName = Application.context.departmentsController.get(mainTable.getSelectedRow());
                                 break;
-                            case Strings.AREAS_LIST:
-                                elementType = Strings.AREA;
+                            case PathListsTable.AREAS_LIST:
+                                elementType = AREA;
                                 elementName = Application.context.areasController.get(mainTable.getSelectedRow());
                                 break;
-                            case Strings.PROCESSES_LIST:
-                                elementType = Strings.PROCESS;
+                            case PathListsTable.PROCESSES_LIST:
+                                elementType = PROCESS;
                                 elementName = Application.context.processesController.get(mainTable.getSelectedRow());
                                 break;
-                            case Strings.INSTALLATIONS_LIST:
-                                elementType = Strings.INSTALLATION;
+                            case PathListsTable.INSTALLATIONS_LIST:
+                                elementType = INSTALLATION;
                                 elementName = Application.context.installationsController.get(mainTable.getSelectedRow());
                                 break;
                         }
@@ -300,16 +244,16 @@ public class PathListsDialog extends JDialog implements UI_Container {
                     String elementName = null;
                     if (mainTable.getSelectedRow() != -1){
                         switch (title) {
-                            case Strings.DEPARTMENTS_LIST:
+                            case PathListsTable.DEPARTMENTS_LIST:
                                 elementName = Application.context.departmentsController.get(mainTable.getSelectedRow());
                                 break;
-                            case Strings.AREAS_LIST:
+                            case PathListsTable.AREAS_LIST:
                                 elementName = Application.context.areasController.get(mainTable.getSelectedRow());
                                 break;
-                            case Strings.PROCESSES_LIST:
+                            case PathListsTable.PROCESSES_LIST:
                                 elementName = Application.context.processesController.get(mainTable.getSelectedRow());
                                 break;
-                            case Strings.INSTALLATIONS_LIST:
+                            case PathListsTable.INSTALLATIONS_LIST:
                                 elementName = Application.context.installationsController.get(mainTable.getSelectedRow());
                                 break;
                         }
