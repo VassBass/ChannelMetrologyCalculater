@@ -20,7 +20,7 @@ public class MainScreen extends JFrame {
     private MenuBar menuBar;
     private InfoTable infoTable;
     private ButtonsPanel buttonsPanel;
-    private SearchPanel searchPanel;
+    public SearchPanel searchPanel;
 
     public ArrayList<Channel>channelsList;
 

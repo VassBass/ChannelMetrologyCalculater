@@ -1,14 +1,15 @@
 package ui.mainScreen;
 
 import application.Application;
+import backgroundTasks.SearchChannels;
+import constants.Sort;
+import converters.VariableConverter;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
+import java.util.Objects;
 
 public class SearchPanel extends JPanel {
     private static final String NAME = "Назва каналу";
@@ -34,7 +35,7 @@ public class SearchPanel extends JPanel {
     private static final int LIST = 1;
     private static final int CHECK = 3;
 
-    private JButton buttonSearch;
+    public JButton buttonSearch;
     private JComboBox<String>field;
     private JTextField valueText;
     private JComboBox<String>valueComboBox;
@@ -81,6 +82,7 @@ public class SearchPanel extends JPanel {
         this.buttonSearch.addActionListener(this.clickSearch);
 
         this.field.addItemListener(this.changeField);
+        this.valueText.addFocusListener(this.textFocus);
     }
 
     private void build(int element) {
@@ -132,7 +134,40 @@ public class SearchPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if (buttonSearch.getText().equals(START_SEARCH)){
                 buttonSearch.setText(FINISH_SEARCH);
-            }else buttonSearch.setText(START_SEARCH);
+                int index = field.getSelectedIndex();
+                switch (index){
+                    default:
+                        new SearchChannels().startSearch(index, valueText.getText());
+                        break;
+                    case 1:
+                    case 2:
+                    case 11:
+                        new SearchChannels().startSearch(index, Objects.requireNonNull(valueComboBox.getSelectedItem()).toString());
+                        break;
+                    case 14:
+                        new SearchChannels().startSearch(index, valueSuitability.isSelected());
+                        break;
+                }
+            }else{
+                Application.context.channelSorter.setOff();
+                Application.context.mainScreen.setChannelsList(Application.context.channelsController.getAll());
+                buttonSearch.setText(START_SEARCH);
+            }
+        }
+    };
+
+    private final FocusListener textFocus = new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            valueText.selectAll();
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            if (field.getSelectedIndex() == Sort.FREQUENCY){
+                String str = valueText.getText();
+                valueText.setText(VariableConverter.doubleString(str));
+            }
         }
     };
 

@@ -95,7 +95,7 @@ public class CalculateEndDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             certificate.print();
             dispose();
-            mainScreen.setChannelsList(Application.context.channelsController.getAll());
+            setChannelList();
         }
     };
 
@@ -104,7 +104,7 @@ public class CalculateEndDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             certificate.show();
             dispose();
-            mainScreen.setChannelsList(Application.context.channelsController.getAll());
+            setChannelList();
         }
     };
 
@@ -113,7 +113,7 @@ public class CalculateEndDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             certificate.openInExplorer();
             dispose();
-            mainScreen.setChannelsList(Application.context.channelsController.getAll());
+            setChannelList();
         }
     };
 
@@ -121,7 +121,7 @@ public class CalculateEndDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            mainScreen.setChannelsList(Application.context.channelsController.getAll());
+            setChannelList();
         }
     };
 
@@ -131,6 +131,14 @@ public class CalculateEndDialog extends JDialog {
             new CertificateFormation(mainScreen, channel, values, calculation).execute();
         }
     };
+
+    private void setChannelList(){
+        if (Application.context.channelSorter.isOn()){
+            mainScreen.setChannelsList(Application.context.channelSorter.getCurrent());
+        }else {
+            mainScreen.setChannelsList(Application.context.channelsController.getAll());
+        }
+    }
 
     private class MainPanel extends JPanel{
 

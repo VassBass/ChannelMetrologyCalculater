@@ -40,6 +40,7 @@ public class ApplicationContext {
     public final ProcessesController processesController;
     public final InstallationsController installationsController;
     public final MeasurementsController measurementsController;
+    public final ChannelSorter channelSorter;
 
     public ApplicationContext(){
         this.mainScreen = new MainScreen();
@@ -55,6 +56,7 @@ public class ApplicationContext {
         this.processesController = new ProcessesController();
         this.installationsController = new InstallationsController();
         this.measurementsController = new MeasurementsController();
+        this.channelSorter = new ChannelSorter();
     }
 
     private void localizationOfComponents(){

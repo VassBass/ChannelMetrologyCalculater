@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class DialogRemoveChannels extends JDialog {
     private static final String REMOVE_CHANNEL = "Видалити канал";
@@ -102,7 +103,12 @@ public class DialogRemoveChannels extends JDialog {
                 @Override
                 public void run() {
                     current.dispose();
-                    mainScreen.setChannelsList(Application.context.channelsController.remove(channel));
+                    ArrayList<Channel>channels = Application.context.channelsController.remove(channel);
+                    if (Application.context.channelSorter.isOn()){
+                        mainScreen.setChannelsList(Application.context.channelSorter.getCurrent());
+                    }else {
+                        mainScreen.setChannelsList(channels);
+                    }
                 }
             });
         }

@@ -114,12 +114,12 @@ public class CalculatePerformersDialog extends JDialog {
     private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        this.performer1Name.addItemListener(selectPerformer1);
-        this.performer2Name.addItemListener(selectPerformer2);
-        this.calculaterName.addItemListener(selectCalculater);
+        this.performer1Name.addItemListener(this.selectPerformer1);
+        this.performer2Name.addItemListener(this.selectPerformer2);
+        this.calculaterName.addItemListener(this.selectCalculater);
 
-        this.buttonBack.addActionListener(clickBack);
-        this.buttonSave.addActionListener(clickSave);
+        this.buttonBack.addActionListener(this.clickBack);
+        this.buttonSave.addActionListener(this.clickSave);
     }
 
     private void build() {

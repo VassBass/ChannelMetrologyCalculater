@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class DialogChannel extends JDialog {
     private static final String INFORMATION_ABOUT_CHANNEL = "Інформація вимірювального каналу";
@@ -283,10 +284,16 @@ public class DialogChannel extends JDialog {
             if (!allFieldsAreFilled() || Application.isBusy(current)) return;
 
             dispose();
+            ArrayList<Channel>channels;
             if (oldChannel == null) {
-                parent.setChannelsList(Application.context.channelsController.add(getChannel()));
+                channels = Application.context.channelsController.add(getChannel());
             }else {
-                parent.setChannelsList(Application.context.channelsController.set(oldChannel, getChannel()));
+                channels = Application.context.channelsController.set(oldChannel, getChannel());
+            }
+            if (Application.context.channelSorter.isOn()){
+                parent.setChannelsList(Application.context.channelSorter.getCurrent());
+            }else {
+                parent.setChannelsList(channels);
             }
         }
     };

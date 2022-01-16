@@ -63,6 +63,10 @@ public class DialogRemoveAllChannels extends JDialog {
             current.dispose();
             mainScreen.setChannelsList(new ArrayList<Channel>());
             Application.context.channelsController.clear();
+            if (Application.context.channelSorter.isOn()) {
+                Application.context.channelSorter.setOff();
+                mainScreen.searchPanel.buttonSearch.doClick();
+            }
         }
     };
 
