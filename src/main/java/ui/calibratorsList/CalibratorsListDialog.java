@@ -1,28 +1,35 @@
 package ui.calibratorsList;
 
-import constants.Strings;
+import application.Application;
+import constants.CalibratorType;
 import converters.ConverterUI;
+import model.Calibrator;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class CalibratorsListDialog extends JDialog implements UI_Container {
+public class CalibratorsListDialog extends JDialog {
+    public static final String CALIBRATORS_LIST = "Список калібраторів";
+    public static final String ADD = "Додати";
+    public static final String REMOVE = "Видалити";
+    public static final String DETAILS = "Детальніше";
+    public static final String CANCEL = "Відміна";
+    public static final String NOT_REMOVED_CALIBRATOR_MESSAGE = "Даний калібратор не може бути видалений зі списку";
+    public static final String ERROR = "Помилка";
+
     private final MainScreen mainScreen;
     private final CalibratorsListDialog current;
 
     public CalibratorsListTable mainTable;
     private JButton buttonAdd, buttonRemove, buttonDetails, buttonCancel;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     public CalibratorsListDialog(MainScreen mainScreen){
-        super(mainScreen, Strings.CALIBRATORS_LIST, true);
+        super(mainScreen, CALIBRATORS_LIST, true);
         this.mainScreen = mainScreen;
         this.current = this;
 
@@ -31,71 +38,28 @@ public class CalibratorsListDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         this.mainTable = new CalibratorsListTable();
 
-        this.buttonAdd = new JButton(Strings.ADD);
-        this.buttonAdd.setBackground(buttonsColor);
-        this.buttonAdd.setForeground(Color.white);
-        this.buttonAdd.setFocusPainted(false);
-        this.buttonAdd.setContentAreaFilled(false);
-        this.buttonAdd.setOpaque(true);
-
-        this.buttonRemove = new JButton(Strings.REMOVE);
-        this.buttonRemove.setBackground(buttonsColor);
-        this.buttonRemove.setForeground(Color.white);
-        this.buttonRemove.setFocusPainted(false);
-        this.buttonRemove.setContentAreaFilled(false);
-        this.buttonRemove.setOpaque(true);
-
-        this.buttonDetails = new JButton(Strings.DETAILS);
-        this.buttonDetails.setBackground(buttonsColor);
-        this.buttonDetails.setForeground(Color.white);
-        this.buttonDetails.setFocusPainted(false);
-        this.buttonDetails.setContentAreaFilled(false);
-        this.buttonDetails.setOpaque(true);
-
-        this.buttonCancel = new JButton(Strings.CANCEL);
-        this.buttonCancel.setBackground(buttonsColor);
-        this.buttonCancel.setForeground(Color.white);
-        this.buttonCancel.setFocusPainted(false);
-        this.buttonCancel.setContentAreaFilled(false);
-        this.buttonCancel.setOpaque(true);
+        this.buttonAdd = new DefaultButton(ADD);
+        this.buttonRemove = new DefaultButton(REMOVE);
+        this.buttonDetails = new DefaultButton(DETAILS);
+        this.buttonCancel = new DefaultButton(CANCEL);
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonCancel.addChangeListener(pushButton);
-        this.buttonRemove.addChangeListener(pushButton);
-        this.buttonDetails.addChangeListener(pushButton);
-        this.buttonAdd.addChangeListener(pushButton);
-
-        this.buttonCancel.addActionListener(clickCancel);
-        this.buttonRemove.addActionListener(clickRemove);
-        this.buttonDetails.addActionListener(clickDetails);
-        this.buttonAdd.addActionListener(clickAdd);
+    private void setReactions() {
+        this.buttonCancel.addActionListener(this.clickCancel);
+        this.buttonRemove.addActionListener(this.clickRemove);
+        this.buttonDetails.addActionListener(this.clickDetails);
+        this.buttonAdd.addActionListener(this.clickAdd);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(800,500);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override
@@ -113,10 +77,11 @@ public class CalibratorsListDialog extends JDialog implements UI_Container {
                     public void run() {
                         int index = mainTable.getSelectedRow();
                         if (index != -1) {
-                            /*if (Objects.requireNonNull(Lists.calibrators()).get(index).getName().equals(Strings.CALIBRATOR_FLUKE718_30G)
-                            || Objects.requireNonNull(Lists.calibrators()).get(index).getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)) {
-                                JOptionPane.showMessageDialog(current, Strings.NOT_REMOVED_CALIBRATOR_MESSAGE, Strings.ERROR, JOptionPane.WARNING_MESSAGE);
-                            }*/
+                            Calibrator calibrator = Application.context.calibratorsController.get(index);
+                            if (calibrator.getName().equals(CalibratorType.FLUKE718_30G)
+                            || calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)) {
+                                JOptionPane.showMessageDialog(current, NOT_REMOVED_CALIBRATOR_MESSAGE, ERROR, JOptionPane.WARNING_MESSAGE);
+                            }
                         } else {
                             new CalibratorRemoveDialog(current).setVisible(true);
                         }
@@ -129,11 +94,13 @@ public class CalibratorsListDialog extends JDialog implements UI_Container {
     private final ActionListener clickDetails = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (mainTable.getSelectedRow() != -1){
+            final int index = mainTable.getSelectedRow();
+            if (index != -1){
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        //new CalibratorInfoDialog(current, Objects.requireNonNull(Lists.calibrators()).get(mainTable.getSelectedRow())).setVisible(true);
+                        Calibrator calibrator = Application.context.calibratorsController.get(index);
+                        new CalibratorInfoDialog(current, calibrator).setVisible(true);
                     }
                 });
             }

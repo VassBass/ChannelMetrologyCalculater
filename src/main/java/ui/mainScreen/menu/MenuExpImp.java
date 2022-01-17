@@ -1,7 +1,7 @@
 package ui.mainScreen.menu;
 
-import backgroundTasks.export.ExportData;
-import constants.Files;
+import backgroundTasks.data_export.ExportData;
+import controller.FileBrowser;
 import ui.exportData.ConfirmExportDialog;
 import ui.importData.ImportDataDialog;
 import ui.mainScreen.MainScreen;
@@ -12,19 +12,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuExpImp extends JMenu {
-    public static final String EXPORT_IMPORT = "Експорт/Імпорт";
-    public static final String EXPORT_ALL_DATA = "Експортувати все";
-    public static final String EXPORT_CHANNELS = "Експортувати канали";
-    public static final String EXPORT_SENSORS = "Експортувати ПВП";
-    public static final String EXPORT_CALIBRATORS = "Експортувати калібратори";
-    public static final String EXPORT_PERSONS = "Експортувати інформацію про робітників";
-    public static final String EXPORT_DEPARTMENTS = "Експортувати цехи";
-    public static final String EXPORT_AREAS = "Експортувати ділянки";
-    public static final String EXPORT_PROCESSES = "Експортувати лінії, секції і т.п.";
-    public static final String EXPORT_INSTALLATIONS = "Експортувати установки";
-    public static final String EXPORT_ALL_PATH = "Експортувати всі елементи розташування каналів";
-    public static final String IMPORT_DATA = "Імпорт даних";
-    public static final String EXPORTED_FILES = "Файли експорту";
+    private static final String EXPORT_IMPORT = "Експорт/Імпорт";
+    private static final String EXPORT_ALL_DATA = "Експортувати все";
+    private static final String EXPORT_CHANNELS = "Експортувати канали";
+    private static final String EXPORT_SENSORS = "Експортувати ПВП";
+    private static final String EXPORT_CALIBRATORS = "Експортувати калібратори";
+    private static final String EXPORT_PERSONS = "Експортувати інформацію про робітників";
+    private static final String EXPORT_DEPARTMENTS = "Експортувати цехи";
+    private static final String EXPORT_AREAS = "Експортувати ділянки";
+    private static final String EXPORT_PROCESSES = "Експортувати лінії, секції і т.п.";
+    private static final String EXPORT_INSTALLATIONS = "Експортувати установки";
+    private static final String EXPORT_ALL_PATH = "Експортувати всі елементи розташування каналів";
+    private static final String IMPORT_DATA = "Імпорт даних";
+    private static final String EXPORTED_FILES = "Файли експорту";
 
     private final MainScreen mainScreen;
 
@@ -50,7 +50,7 @@ public class MenuExpImp extends JMenu {
         this.build();
     }
 
-    public void createElements() {
+    private void createElements() {
         this.buttonExportAllData = new JMenuItem(EXPORT_ALL_DATA);
         this.buttonExportChannels = new JMenuItem(EXPORT_CHANNELS);
         this.buttonExportSensors = new JMenuItem(EXPORT_SENSORS);
@@ -65,22 +65,22 @@ public class MenuExpImp extends JMenu {
         this.buttonFolder = new JMenuItem(EXPORTED_FILES);
     }
 
-    public void setReactions() {
-        this.buttonExportAllData.addActionListener(clickExportAllData);
-        this.buttonExportChannels.addActionListener(clickExportChannels);
-        this.buttonExportSensors.addActionListener(clickExportSensors);
-        this.buttonExportCalibrators.addActionListener(clickExportCalibrators);
-        this.buttonExportPersons.addActionListener(clickExportPersons);
-        this.buttonExportDepartments.addActionListener(clickExportDepartments);
-        this.buttonExportAreas.addActionListener(clickExportAreas);
-        this.buttonExportProcesses.addActionListener(clickExportProcesses);
-        this.buttonExportInstallations.addActionListener(clickExportInstallations);
-        this.buttonExportAllPathElements.addActionListener(clickExportAllPathElements);
-        this.buttonImport.addActionListener(clickImport);
-        this.buttonFolder.addActionListener(clickFolder);
+    private void setReactions() {
+        this.buttonExportAllData.addActionListener(this.clickExportAllData);
+        this.buttonExportChannels.addActionListener(this.clickExportChannels);
+        this.buttonExportSensors.addActionListener(this.clickExportSensors);
+        this.buttonExportCalibrators.addActionListener(this.clickExportCalibrators);
+        this.buttonExportPersons.addActionListener(this.clickExportPersons);
+        this.buttonExportDepartments.addActionListener(this.clickExportDepartments);
+        this.buttonExportAreas.addActionListener(this.clickExportAreas);
+        this.buttonExportProcesses.addActionListener(this.clickExportProcesses);
+        this.buttonExportInstallations.addActionListener(this.clickExportInstallations);
+        this.buttonExportAllPathElements.addActionListener(this.clickExportAllPathElements);
+        this.buttonImport.addActionListener(this.clickImport);
+        this.buttonFolder.addActionListener(this.clickFolder);
     }
 
-    public void build() {
+    private void build() {
         this.add(this.buttonExportAllData);
         this.addSeparator();
         this.add(this.buttonExportChannels);
@@ -241,7 +241,7 @@ public class MenuExpImp extends JMenu {
             if (Desktop.isDesktopSupported()){
                 desktop = Desktop.getDesktop();
                 try {
-                    desktop.open(Files.EXPORT_DIR);
+                    desktop.open(FileBrowser.DIR_EXPORT);
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }

@@ -1,4 +1,4 @@
-package backgroundTasks.export;
+package backgroundTasks.data_export;
 
 import constants.Files;
 import constants.Strings;
@@ -10,25 +10,25 @@ import java.awt.*;
 import java.io.File;
 import java.util.Calendar;
 
-public class ExportProcesses extends SwingWorker<Boolean, Void> {
+public class ExportInstallations extends SwingWorker<Boolean, Void> {
     private final MainScreen mainScreen;
     private final LoadDialog loadDialog;
 
     private String fileName(Calendar date){
-        return "export_processes ["
+        return "export_installations ["
                 + date.get(Calendar.DAY_OF_MONTH)
                 + "."
                 + (date.get(Calendar.MONTH) + 1)
                 + "."
                 + date.get(Calendar.YEAR)
-                + "].prc";
+                + "].ins";
     }
 
     private File exportFile(){
         return new File(Files.EXPORT_DIR, this.fileName(Calendar.getInstance()));
     }
 
-    public ExportProcesses(MainScreen mainScreen){
+    public ExportInstallations(MainScreen mainScreen){
         super();
         this.mainScreen = mainScreen;
         this.loadDialog = new LoadDialog(mainScreen);
@@ -42,7 +42,7 @@ public class ExportProcesses extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        /*ArrayList<String> processes = Lists.processes();
+        /*ArrayList<String> installations = Lists.installations();
         File file = this.exportFile();
         if (!file.exists()){
             if (!file.createNewFile()){
@@ -50,7 +50,7 @@ public class ExportProcesses extends SwingWorker<Boolean, Void> {
             }
         }
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.exportFile()));
-        oos.writeObject(processes);
+        oos.writeObject(installations);
         oos.close();*/
         return true;
     }

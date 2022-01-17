@@ -6,6 +6,7 @@ import repository.Repository;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.ArrayList;
 
 public class AreasController {
@@ -104,6 +105,10 @@ public class AreasController {
     public void clear() {
         this.areas.clear();
         this.save();
+    }
+
+    public void export(File file){
+        new Repository<String>(this.window, Model.AREA).exportList(file, this.areas);
     }
 
     private void save() {

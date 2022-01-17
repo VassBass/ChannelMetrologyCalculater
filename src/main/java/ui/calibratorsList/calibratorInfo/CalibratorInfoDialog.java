@@ -1,8 +1,8 @@
 package ui.calibratorsList.calibratorInfo;
 
-import backgroundTasks.controllers.PutCalibratorInList;
+import application.Application;
+import constants.CalibratorType;
 import constants.MeasurementConstants;
-import constants.Strings;
 import converters.ConverterUI;
 import converters.VariableConverter;
 import org.mariuszgromada.math.mxparser.Argument;
@@ -13,10 +13,9 @@ import ui.model.ButtonCell;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
 import ui.calibratorsList.calibratorInfo.complexElements.CertificateDatePanel;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -24,12 +23,26 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.Objects;
 
-public class CalibratorInfoDialog extends JDialog implements UI_Container {
+public class CalibratorInfoDialog extends JDialog {
+    private static final String CALIBRATOR = "Калібратор";
+    private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
+    private static final String TYPE = "Тип";
+    private static final String NAME = "Назва";
+    private static final String PARENT_NUMBER = "Заводський № ";
+    private static final String RANGE_OF_CALIBRATOR = "Діапазон калібратора";
+    private static final String ERROR_FORMULA = "Формула для розрахунку похибки";
+    private static final String CERTIFICATE_OF_CALIBRATION = "Сертифікат калібрування";
+    private static final String PERFORMERS = "Виконавці";
+    private static final String FROM = "від";
+    private static final String TYPE_HINT = "Тип калібратора(Застосовується у протоколі)";
+    private static final String NAME_HINT = "Назва калібратора для застосування в данній програмі(Не фігурує в документах)";
+    private static final String INSERT = "Вставка";
+    private static final String CANCEL = "Відміна";
+    private static final String SAVE = "Зберегти";
+
     private final CalibratorsListDialog parent;
-    private final CalibratorInfoDialog current;
     private final Calibrator oldCalibrator;
 
     private ButtonCell labelCalibrator;
@@ -63,12 +76,9 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
 
     private JButton buttonCancel, buttonSave;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     public CalibratorInfoDialog(CalibratorsListDialog parent, Calibrator oldCalibrator){
-        super(parent, Strings.CALIBRATOR, true);
+        super(parent, CALIBRATOR, true);
         this.parent = parent;
-        this.current = this;
         this.oldCalibrator = oldCalibrator;
 
         this.createElements();
@@ -77,44 +87,28 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.labelCalibrator = new ButtonCell(true, Strings.CALIBRATOR);
-        this.labelMeasurement = new ButtonCell(true, Strings.TYPE_OF_MEASUREMENT);
-        this.labelType = new ButtonCell(true, Strings.TYPE);
-        this.labelName = new ButtonCell(true, Strings._NAME);
-        this.labelNumber = new ButtonCell(true, Strings.PARENT_NUMBER);
-        this.labelRange = new ButtonCell(true, Strings.RANGE_OF_CALIBRATOR);
-        this.labelErrorFormula = new ButtonCell(true, Strings.ERROR_FORMULA);
+    private void createElements() {
+        this.labelCalibrator = new ButtonCell(true, CALIBRATOR);
+        this.labelMeasurement = new ButtonCell(true, TYPE_OF_MEASUREMENT);
+        this.labelType = new ButtonCell(true, TYPE);
+        this.labelName = new ButtonCell(true, NAME);
+        this.labelNumber = new ButtonCell(true, PARENT_NUMBER);
+        this.labelRange = new ButtonCell(true, RANGE_OF_CALIBRATOR);
+        this.labelErrorFormula = new ButtonCell(true, ERROR_FORMULA);
 
-        this.labelCertificate = new ButtonCell(true, Strings.CERTIFICATE_OF_CALIBRATION);
-        this.labelCertificateName = new ButtonCell(true, Strings._NAME);
-        this.labelCertificateCompany = new ButtonCell(true, Strings.PERFORMERS);
-        this.labelCertificateDate = new ButtonCell(true, Strings.FROM);
+        this.labelCertificate = new ButtonCell(true, CERTIFICATE_OF_CALIBRATION);
+        this.labelCertificateName = new ButtonCell(true, NAME);
+        this.labelCertificateCompany = new ButtonCell(true, PERFORMERS);
+        this.labelCertificateDate = new ButtonCell(true, FROM);
 
-        ArrayList<String> measurementsNames = new ArrayList<>();
-        /*ArrayList<Measurement>measurements = Lists.measurements();
-        for (Measurement measurement : Objects.requireNonNull(measurements)) {
-            boolean exist = false;
-            for (String measurementsName : measurementsNames) {
-                if (measurementsName.equals(measurement.getName())) {
-                    exist = true;
-                }
-            }
-            if (!exist) {
-                measurementsNames.add(measurement.getName());
-            }
-        }*/
-        this.measurementsList = new JComboBox<>(measurementsNames.toArray(new String[0]));
+        this.measurementsList = new JComboBox<>(Application.context.measurementsController.getAllNames());
 
-        String typeHint = "Тип калібратора(Застосовується у протоколі)";
         this.typeText = new JTextField(10);
-        this.typeText.setToolTipText(typeHint);
+        this.typeText.setToolTipText(TYPE_HINT);
 
-        String nameHint = "Назва калібратора для застосування в данній програмі(Не фігурує в документах)";
         this.nameText = new JTextField(10);
-        this.nameText.setToolTipText(nameHint);
-        this.namePopupMenu = new JPopupMenu("Вставка");
+        this.nameText.setToolTipText(NAME_HINT);
+        this.namePopupMenu = new JPopupMenu(INSERT);
         this.nameText.setComponentPopupMenu(this.namePopupMenu);
 
         this.numberText = new JTextField(10);
@@ -202,31 +196,20 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
         this.helpFormula12.setBorderPainted(false);
         this.helpFormula12.setToolTipText(toolTipText);
 
-        this.buttonCancel = new JButton(Strings.CANCEL);
-        this.buttonCancel.setBackground(buttonsColor);
-        this.buttonCancel.setForeground(Color.white);
-        this.buttonCancel.setFocusPainted(false);
-        this.buttonCancel.setContentAreaFilled(false);
-        this.buttonCancel.setOpaque(true);
-
-        this.buttonSave = new JButton(Strings.SAVE);
-        this.buttonSave.setBackground(buttonsColor);
-        this.buttonSave.setForeground(Color.white);
-        this.buttonSave.setFocusPainted(false);
-        this.buttonSave.setContentAreaFilled(false);
-        this.buttonSave.setOpaque(true);
+        this.buttonCancel = new DefaultButton(CANCEL);
+        this.buttonSave = new DefaultButton(SAVE);
     }
 
     private void setInfo(){
+        String measurement = Objects.requireNonNull(this.measurementsList.getSelectedItem()).toString();
         if (this.oldCalibrator != null){
             this.measurementsList.setSelectedItem(this.oldCalibrator.getMeasurement());
-            this.rangePanel.setValues(Objects.requireNonNull(this.measurementsList.getSelectedItem()).toString(),
-                    this.oldCalibrator.getValue());
+            this.rangePanel.setValues(measurement, this.oldCalibrator.getValue());
             this.typeText.setText(this.oldCalibrator.getType());
             this.nameText.setText(this.oldCalibrator.getName());
             this.rangePanel.setRange(this.oldCalibrator.getRangeMax(), this.oldCalibrator.getRangeMin());
-            if (this.oldCalibrator.getName().equals(Strings.CALIBRATOR_FLUKE718_30G)
-            || this.oldCalibrator.getName().equals(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4)){
+            if (this.oldCalibrator.getName().equals(CalibratorType.FLUKE718_30G)
+            || this.oldCalibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
                 this.typeText.setEnabled(false);
                 this.nameText.setEnabled(false);
                 this.measurementsList.setEnabled(false);
@@ -240,42 +223,25 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
 
             this.measurementsList.setEnabled(false);
         }else {
-            this.rangePanel.setValues(Objects.requireNonNull(this.measurementsList.getSelectedItem()).toString(),null);
+            this.rangePanel.setValues(measurement,null);
         }
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonCancel.addChangeListener(pushButton);
-        this.buttonSave.addChangeListener(pushButton);
+    private void setReactions() {
+        this.buttonCancel.addActionListener(this.clickCancel);
+        this.buttonSave.addActionListener(this.clickSave);
 
-        this.buttonCancel.addActionListener(clickCancel);
-        this.buttonSave.addActionListener(clickSave);
+        this.measurementsList.addItemListener(this.changeMeasurement);
 
-        this.measurementsList.addItemListener(changeMeasurement);
-
-        this.typeText.getDocument().addDocumentListener(typeChange);
+        this.typeText.getDocument().addDocumentListener(this.typeChange);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(1050,550);
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override
@@ -288,12 +254,13 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (checkCalibrator()) {
+                String measurement = Objects.requireNonNull(measurementsList.getSelectedItem()).toString();
                 Calibrator calibrator = new Calibrator();
                 calibrator.setType(typeText.getText());
                 calibrator.setName(nameText.getText());
                 calibrator.setNumber(numberText.getText());
-                calibrator.setMeasurement(Objects.requireNonNull(measurementsList.getSelectedItem()).toString());
-                if (measurementsList.getSelectedItem().toString().equals(MeasurementConstants.PRESSURE.getValue())) {
+                calibrator.setMeasurement(measurement);
+                if (measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
                     calibrator.setRangeMin(rangePanel.getRangeMin());
                     calibrator.setRangeMax(rangePanel.getRangeMax());
                 }
@@ -302,7 +269,14 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
                 calibrator.setCertificateName(certificateNameText.getText());
                 calibrator.setCertificateDate(certificateDatePanel.getDate());
                 calibrator.setCertificateCompany(certificateCompanyText.getText());
-                new PutCalibratorInList(parent, current, calibrator, oldCalibrator).execute();
+
+                if (oldCalibrator == null){
+                    Application.context.calibratorsController.add(calibrator);
+                }else {
+                    Application.context.calibratorsController.set(oldCalibrator, calibrator);
+                }
+                dispose();
+                parent.mainTable.update();
             }
         }
     };
@@ -311,7 +285,8 @@ public class CalibratorInfoDialog extends JDialog implements UI_Container {
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED){
-                rangePanel.setValues(Objects.requireNonNull(measurementsList.getSelectedItem()).toString(), null);
+                String measurement = Objects.requireNonNull(measurementsList.getSelectedItem()).toString();
+                rangePanel.setValues(measurement, null);
             }
         }
     };

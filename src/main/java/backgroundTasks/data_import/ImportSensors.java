@@ -1,26 +1,14 @@
-package backgroundTasks.tasks_for_import;
+package backgroundTasks.data_import;
 
-import constants.Strings;
-import model.Calibrator;
-import ui.model.LoadDialog;
-import ui.mainScreen.MainScreen;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
-
-public class ImportCalibrators extends SwingWorker<Integer, Void> {
+public class ImportSensors /*extends SwingWorker<Integer, Void>*/ {/*
     private final MainScreen mainScreen;
     private final File exportDataFile;
     private final LoadDialog loadDialog;
 
-    private ArrayList<Calibrator> importedCalibrators, newCalibratorsList;
-    private ArrayList<Integer[]>calibratorsIndexes;
+    private ArrayList<Sensor>importedSensors, newSensorsList;
+    private ArrayList<Integer[]>sensorsIndexes;
 
-    public ImportCalibrators(MainScreen mainScreen, File exportDataFile){
+    public ImportSensors(MainScreen mainScreen, File exportDataFile){
         super();
         this.mainScreen = mainScreen;
         this.exportDataFile = exportDataFile;
@@ -34,20 +22,19 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
     }
 
     // return 0: Импорт прошел успешно
-    // return 1: В файле отсутствуют калибраторы
+    // return 1: В файле отсутствуют ПИП
     // return -1: Во время импорта произошла ошибка
     @Override
     protected Integer doInBackground() throws Exception {
         try {
-            this.importedCalibrators = this.calibratorsExtraction();
+            this.importedSensors = this.sensorsExtraction();
         }catch (Exception e){
-            e.printStackTrace();
             return -1;
         }
-        if (this.importedCalibrators == null){
+        if (this.importedSensors == null){
             return 1;
         }else {
-            this.copyCalibrators();
+            this.copySensors();
             return 0;
         }
     }
@@ -58,13 +45,13 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
         try {
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні калібраторів", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні ПВП", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            //new CompareCalibratorsDialog(mainScreen, ExportData.CALIBRATORS, newCalibratorsList, importedCalibrators, calibratorsIndexes);
+                            new CompareSensorsDialog(mainScreen, ExportData.SENSORS, newSensorsList, importedSensors, sensorsIndexes);
                         }
                     });
                     break;
@@ -78,29 +65,29 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
     }
 
     @SuppressWarnings("unchecked")
-    private ArrayList<Calibrator>calibratorsExtraction() throws Exception {
+    private ArrayList<Sensor>sensorsExtraction() throws Exception {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.exportDataFile));
-        ArrayList<Calibrator>calibrators = (ArrayList<Calibrator>) ois.readObject();
-        if (calibrators.isEmpty()){
+        ArrayList<Sensor>sensors = (ArrayList<Sensor>) ois.readObject();
+        if (sensors.size() == 0){
             return null;
         }else {
-            return calibrators;
+            return sensors;
         }
     }
 
-    private void copyCalibrators(){
-        /*ArrayList<Calibrator>oldCalibratorsList = Lists.calibrators();
+    private void copySensors(){
+        ArrayList<Sensor>oldSensorsList = Lists.sensors();
         ArrayList<Integer[]>indexes = new ArrayList<>();
-        ArrayList<Calibrator>newList = new ArrayList<>();
+        ArrayList<Sensor>newList = new ArrayList<>();
 
-        for (int o = 0; o< Objects.requireNonNull(oldCalibratorsList).size(); o++){
+        for (int o = 0; o< Objects.requireNonNull(oldSensorsList).size(); o++){
             boolean exist = false;
-            Calibrator old = oldCalibratorsList.get(o);
-            for (int i=0;i<this.importedCalibrators.size();i++){
-                Calibrator imp = this.importedCalibrators.get(i);
+            Sensor old = oldSensorsList.get(o);
+            for (int i=0;i<this.importedSensors.size();i++){
+                Sensor imp = this.importedSensors.get(i);
                 if (old.getName().equals(imp.getName())){
                     exist = true;
-                    if (Comparator.calibratorsMatch(old, imp)){
+                    if (Comparator.sensorsMatch(old, imp)){
                         newList.add(old);
                     }else {
                         indexes.add(new Integer[]{o,i});
@@ -112,9 +99,9 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
                 newList.add(old);
             }
         }
-        for (Calibrator imp : this.importedCalibrators) {
+        for (Sensor imp : this.importedSensors) {
             boolean exist = false;
-            for (Calibrator old : oldCalibratorsList) {
+            for (Sensor old : oldSensorsList) {
                 if (imp.getName().equals(old.getName())) {
                     exist = true;
                     break;
@@ -126,14 +113,14 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
         }
 
         if (newList.isEmpty()){
-            this.newCalibratorsList = null;
+            this.newSensorsList = null;
         }else {
-            this.newCalibratorsList = newList;
+            this.newSensorsList = newList;
         }
         if (indexes.isEmpty()){
-            this.calibratorsIndexes = null;
+            this.sensorsIndexes = null;
         }else {
-            this.calibratorsIndexes = indexes;
-        }*/
+            this.sensorsIndexes = indexes;
+        }
     }
-}
+*/}

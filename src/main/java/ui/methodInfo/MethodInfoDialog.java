@@ -1,29 +1,30 @@
 package ui.methodInfo;
 
 import constants.MeasurementConstants;
-import constants.Strings;
 import converters.ConverterUI;
 import support.Settings;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MethodInfoDialog extends JDialog implements UI_Container {
+public class MethodInfoDialog extends JDialog {
+    private static final String METHODS = "Методи розрахунку";
+    private static final String OLD_NAME = "Стара назва : ";
+    private static final String CANCEL = "Відміна";
+    private static final String SAVE = "Зберегти";
+
     private final MainScreen mainScreen;
     private final MeasurementConstants measurement;
 
     private JTextField userName;
     private JButton buttonCancel, buttonSave;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     public MethodInfoDialog(MainScreen mainScreen, MeasurementConstants measurement){
-        super(mainScreen, Strings.METHODS, true);
+        super(mainScreen, METHODS, true);
         this.mainScreen = mainScreen;
         this.measurement = measurement;
 
@@ -32,57 +33,28 @@ public class MethodInfoDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         this.userName = new JTextField(10);
         this.userName.setHorizontalAlignment(SwingConstants.CENTER);
         String name = Settings.getSettingValue(this.measurement.getValue());
-        this.userName.setToolTipText(Strings.OLD_NAME + " : " + name);
+        this.userName.setToolTipText(OLD_NAME + name);
         this.userName.setText(name);
 
-        this.buttonCancel = new JButton(Strings.CANCEL);
-        this.buttonCancel.setBackground(buttonsColor);
-        this.buttonCancel.setForeground(Color.white);
-        this.buttonCancel.setFocusPainted(false);
-        this.buttonCancel.setContentAreaFilled(false);
-        this.buttonCancel.setOpaque(true);
-
-        this.buttonSave = new JButton(Strings.SAVE);
-        this.buttonSave.setBackground(buttonsColor);
-        this.buttonSave.setForeground(Color.white);
-        this.buttonSave.setFocusPainted(false);
-        this.buttonSave.setContentAreaFilled(false);
-        this.buttonSave.setOpaque(true);
+        this.buttonCancel = new DefaultButton(CANCEL);
+        this.buttonSave = new DefaultButton(SAVE);
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonCancel.addChangeListener(pushButton);
-        this.buttonSave.addChangeListener(pushButton);
-
-        this.buttonCancel.addActionListener(clickCancel);
-        this.buttonSave.addActionListener(clickSave);
+    private void setReactions() {
+        this.buttonCancel.addActionListener(this.clickCancel);
+        this.buttonSave.addActionListener(this.clickSave);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(500,100);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override

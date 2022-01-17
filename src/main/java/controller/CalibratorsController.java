@@ -198,6 +198,14 @@ public class CalibratorsController {
         return this.calibrators;
     }
 
+    public ArrayList<Calibrator> remove(int index){
+        if (index >= 0 && index<this.calibrators.size()){
+            this.calibrators.remove(index);
+            this.save();
+        }
+        return this.calibrators;
+    }
+
     public ArrayList<Calibrator> set(Calibrator oldCalibrator, Calibrator newCalibrator) {
         if (oldCalibrator != null){
             if (newCalibrator == null){

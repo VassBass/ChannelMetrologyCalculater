@@ -1,7 +1,9 @@
 package ui.calibratorsList.calibratorInfo.complexElements;
 
+import application.Application;
 import constants.MeasurementConstants;
 import converters.VariableConverter;
+import measurements.Measurement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +12,10 @@ import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CalibratorRangePanel extends JPanel implements UI_Container {
+public class CalibratorRangePanel extends JPanel {
+    private static final String DEFAULT_VALUE = "0.00";
+    private static final String DASH = " - ";
+
     private JTextField rangeMin, rangeMax;
     private JComboBox<String>value;
     private JLabel t;
@@ -27,15 +32,14 @@ public class CalibratorRangePanel extends JPanel implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.rangeMin = new JTextField("0.0",4);
+    private void createElements() {
+        this.rangeMin = new JTextField(DEFAULT_VALUE,4);
         this.rangeMin.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.rangeMax = new JTextField("0.0",4);
+        this.rangeMax = new JTextField(DEFAULT_VALUE,4);
         this.rangeMax.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.t = new JLabel(" - ");
+        this.t = new JLabel(DASH);
         this.t.setHorizontalAlignment(SwingConstants.CENTER);
 
         this.valuesModel = new ValueModel();
@@ -54,14 +58,14 @@ public class CalibratorRangePanel extends JPanel implements UI_Container {
         public void setList(String measurement){
             this.list.clear();
             if (measurement != null && measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
-                /*ArrayList<Measurement> measurements = Lists.measurements();
+                ArrayList<Measurement> measurements = Application.context.measurementsController.getAll();
                 for (Measurement m : Objects.requireNonNull(measurements)) {
                     if (m.getName().equals(measurement)) {
                         this.list.add(m.getValue());
                     }
-                }*/
+                }
             }else {
-                this.list.add(" - ");
+                this.list.add(DASH);
             }
         }
 
@@ -98,14 +102,12 @@ public class CalibratorRangePanel extends JPanel implements UI_Container {
         }
     }
 
-    @Override
-    public void setReactions() {
-        this.rangeMin.addFocusListener(rangeFocus);
-        this.rangeMax.addFocusListener(rangeFocus);
+    private void setReactions() {
+        this.rangeMin.addFocusListener(this.rangeFocus);
+        this.rangeMax.addFocusListener(this.rangeFocus);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.rangeMin, new Cell(0));
         this.add(this.t, new Cell(1));
         this.add(this.rangeMax, new Cell(2));
@@ -142,9 +144,9 @@ public class CalibratorRangePanel extends JPanel implements UI_Container {
     private void setDisabledAndEmpty(boolean disabledAndEmpty){
         if (disabledAndEmpty){
             this.setEnabled(false);
-            this.value.setModel(new DefaultComboBoxModel<>(new String[]{" - "}));
-            this.rangeMin.setText("0.0");
-            this.rangeMax.setText("0.0");
+            this.value.setModel(new DefaultComboBoxModel<>(new String[]{DASH}));
+            this.rangeMin.setText(DEFAULT_VALUE);
+            this.rangeMax.setText(DEFAULT_VALUE);
         }else {
             this.setEnabled(true);
         }
@@ -187,10 +189,10 @@ public class CalibratorRangePanel extends JPanel implements UI_Container {
         @Override
         public void focusLost(FocusEvent e) {
             if (rangeMin.getText().length() == 0){
-                rangeMin.setText("0.0");
+                rangeMin.setText(DEFAULT_VALUE);
             }
             if (rangeMax.getText().length() == 0){
-                rangeMax.setText("0.0");
+                rangeMax.setText(DEFAULT_VALUE);
             }
             double r1 = Double.parseDouble(VariableConverter.doubleString(rangeMin.getText()));
             double r2 = Double.parseDouble(VariableConverter.doubleString(rangeMax.getText()));

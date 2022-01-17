@@ -9,7 +9,8 @@ import java.awt.event.FocusListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class CertificateDatePanel extends JPanel implements UI_Container {
+public class CertificateDatePanel extends JPanel {
+    private static final String DOTH = ".";
 
     private JTextField day;
     private JTextField month;
@@ -25,33 +26,30 @@ public class CertificateDatePanel extends JPanel implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements(){
+    private void createElements(){
         this.day = new JTextField(2);
         this.day.setHorizontalAlignment(SwingConstants.CENTER);
-        this.dot1 = new JLabel(".");
+        this.dot1 = new JLabel(DOTH);
         this.month = new JTextField(2);
         this.month.setHorizontalAlignment(SwingConstants.CENTER);
-        this.dot2 = new JLabel(".");
+        this.dot2 = new JLabel(DOTH);
         this.year = new JTextField(4);
         this.year.setHorizontalAlignment(SwingConstants.CENTER);
     }
 
-    @Override
-    public void setReactions(){
-        this.day.addFocusListener(dayFocus);
-        this.month.addFocusListener(monthFocus);
-        this.year.addFocusListener(yearFocus);
+    private void setReactions(){
+        this.day.addFocusListener(this.dayFocus);
+        this.month.addFocusListener(this.monthFocus);
+        this.year.addFocusListener(this.yearFocus);
     }
 
-    @Override
-    public void build(){
+    private void build(){
         this.setDate(Calendar.getInstance());
-        this.add(day);
-        this.add(dot1);
-        this.add(month);
-        this.add(dot2);
-        this.add(year);
+        this.add(this.day);
+        this.add(this.dot1);
+        this.add(this.month);
+        this.add(this.dot2);
+        this.add(this.year);
         this.setBackground(Color.WHITE);
     }
 
@@ -79,15 +77,15 @@ public class CertificateDatePanel extends JPanel implements UI_Container {
                 }
                 break;
             case YEAR:
-                year.setText(String.valueOf(value));
+                this.year.setText(String.valueOf(value));
         }
     }
 
     public Calendar getDate() {
-        int dayInt = Integer.parseInt(day.getText());
-        int monthInt = Integer.parseInt(month.getText());
+        int dayInt = Integer.parseInt(this.day.getText());
+        int monthInt = Integer.parseInt(this.month.getText());
         monthInt--;
-        int yearInt = Integer.parseInt(year.getText());
+        int yearInt = Integer.parseInt(this.year.getText());
         return new GregorianCalendar(yearInt, monthInt, dayInt);
     }
 

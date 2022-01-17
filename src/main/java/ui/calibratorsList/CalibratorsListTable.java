@@ -1,6 +1,6 @@
 package ui.calibratorsList;
 
-import constants.Strings;
+import application.Application;
 import model.Calibrator;
 
 import javax.swing.*;
@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class CalibratorsListTable extends JTable {
+    private static final String NAME = "Назва";
+    private static final String TYPE = "Тип";
+    private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
 
     public CalibratorsListTable(){
         super(tableModel());
@@ -24,10 +27,10 @@ public class CalibratorsListTable extends JTable {
             }
         };
 
-        String[]columnsHeader = new String[] {Strings._NAME, Strings.TYPE, Strings.TYPE_OF_MEASUREMENT};
+        String[]columnsHeader = new String[] {NAME, TYPE, TYPE_OF_MEASUREMENT};
         model.setColumnIdentifiers(columnsHeader);
 
-        /*ArrayList<Calibrator> calibrators = Lists.calibrators();
+        ArrayList<Calibrator> calibrators = Application.context.calibratorsController.getAll();
         for (Calibrator calibrator : Objects.requireNonNull(calibrators)) {
             String[] data = new String[3];
             data[0] = calibrator.getName();
@@ -35,8 +38,7 @@ public class CalibratorsListTable extends JTable {
             data[2] = calibrator.getMeasurement();
 
             model.addRow(data);
-        }*/
-
+        }
         return model;
     }
 

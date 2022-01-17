@@ -1,6 +1,7 @@
-package backgroundTasks.tasks_for_import;
+package backgroundTasks.data_import;
 
 import constants.Strings;
+import model.Worker;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
@@ -11,12 +12,12 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-public class ImportInstallations extends SwingWorker<Integer, Void> {
+public class ImportPersons extends SwingWorker<Integer, Void> {
     private final MainScreen mainScreen;
     private final File exportDataFile;
     private final LoadDialog loadDialog;
 
-    public ImportInstallations(MainScreen mainScreen, File exportDataFile){
+    public ImportPersons(MainScreen mainScreen, File exportDataFile){
         super();
         this.mainScreen = mainScreen;
         this.exportDataFile = exportDataFile;
@@ -30,21 +31,19 @@ public class ImportInstallations extends SwingWorker<Integer, Void> {
     }
 
     // return 0: Импорт прошел успешно
-    // return 1: В файле отсутствуют новые данные
+    // return 1: В файле отсутствует информация о работниках
     // return -1: Во время импорта произошла ошибка
     @Override
     protected Integer doInBackground() throws Exception {
-        ArrayList<String> list;
         try {
-            list = newInstallationsList();
+            if (this.copyPersons()){
+                return 0;
+            }else {
+                return 1;
+            }
         }catch (Exception e){
+            e.printStackTrace();
             return -1;
-        }
-        if (list == null){
-            return 1;
-        }else {
-            //Lists.saveInstallationsListToFile(list);
-            return 0;
         }
     }
 
@@ -54,7 +53,7 @@ public class ImportInstallations extends SwingWorker<Integer, Void> {
         try {
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні нові данні", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні працівників", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
                     JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
@@ -69,35 +68,28 @@ public class ImportInstallations extends SwingWorker<Integer, Void> {
     }
 
     @SuppressWarnings("unchecked")
-    private ArrayList<String> newInstallationsList() throws Exception {
+    private boolean copyPersons() throws Exception {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.exportDataFile));
-        ArrayList<String>importedInstallations = (ArrayList<String>) ois.readObject();
-        ois.close();
-        if (importedInstallations.isEmpty()){
-            return null;
-        }
+        ArrayList<Worker> importedPersons = (ArrayList<Worker>) ois.readObject();
+        if (!importedPersons.isEmpty()) {
+            /*ArrayList<Worker> oldPersonsList = Lists.persons();
 
-        /*ArrayList<String>oldList = Lists.installations();
-        ArrayList<String>toAdd = new ArrayList<>();
-        for (String imp : importedInstallations){
-            boolean exist = false;
-            for (String old : Objects.requireNonNull(oldList)){
-                if (old.equals(imp)){
-                    exist = true;
-                    break;
+            for (Worker imp : importedPersons) {
+                boolean exist = false;
+                for (Worker old : Objects.requireNonNull(oldPersonsList)) {
+                    if (Comparator.personsMatch(imp, old)) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if (!exist) {
+                    oldPersonsList.add(imp);
                 }
             }
-            if (!exist){
-                toAdd.add(imp);
-            }
-        }
-        if (toAdd.isEmpty()){
-            return null;
+            Lists.savePersonsListToFile(oldPersonsList);*/
+            return true;
         }else {
-            ArrayList<String>newList = new ArrayList<>(oldList.size() + toAdd.size());
-            newList.addAll(oldList);
-            newList.addAll(toAdd);
-            return newList;
-        }*/return null;
+            return false;
+        }
     }
 }

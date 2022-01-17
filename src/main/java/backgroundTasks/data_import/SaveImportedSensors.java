@@ -1,4 +1,4 @@
-package backgroundTasks.tasks_for_import;
+package backgroundTasks.data_import;
 
 import constants.Strings;
 import model.Sensor;

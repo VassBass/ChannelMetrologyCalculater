@@ -1,6 +1,6 @@
 package ui.importData;
 
-import backgroundTasks.tasks_for_import.*;
+import backgroundTasks.data_import.*;
 import constants.Files;
 import constants.Strings;
 import ui.mainScreen.MainScreen;

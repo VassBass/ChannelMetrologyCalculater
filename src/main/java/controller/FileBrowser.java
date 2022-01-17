@@ -1,5 +1,7 @@
 package controller;
 
+import constants.Strings;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,7 +44,7 @@ public class FileBrowser {
     private static final File DIR_MAIN = new File(DIR_NAME_MAIN);
     private static final File DIR_LISTS = new File(DIR_MAIN, DIR_NAME_LISTS);
     public static final File DIR_CERTIFICATES = new File(DIR_MAIN, DIR_NAME_CERTIFICATES);
-    private static final File DIR_EXPORT = new File(DIR_MAIN, DIR_NAME_EXPORT);
+    public static final File DIR_EXPORT = new File(DIR_MAIN, DIR_NAME_EXPORT);
     private static final File DIR_FORMS = new File(DIR_MAIN, DIR_NAME_FORMS);
     private static final File DIR_IMAGES = new File(DIR_MAIN, DIR_NAME_IMAGES);
 
@@ -75,6 +77,21 @@ public class FileBrowser {
             try {
                 if (!file.createNewFile()){
                     System.out.println("certificateFile was not created");
+                }
+            }catch (Exception ex){
+                ex.printStackTrace();
+                return null;
+            }
+        }
+        return file;
+    }
+
+    public static File exportFile(String fileName){
+        File file = new File(DIR_EXPORT, fileName);
+        if (!file.exists()){
+            try {
+                if (!file.createNewFile()){
+                    System.out.println("exportFile was not created");
                 }
             }catch (Exception ex){
                 ex.printStackTrace();
