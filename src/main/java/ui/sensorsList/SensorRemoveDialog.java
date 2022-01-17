@@ -1,18 +1,22 @@
 package ui.sensorsList;
 
 import application.Application;
-import backgroundTasks.controllers.RemoveSensor;
-import constants.Strings;
+import backgroundTasks.RemoveSensor;
 import converters.ConverterUI;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SensorRemoveDialog extends JDialog implements UI_Container {
+public class SensorRemoveDialog extends JDialog {
+    private static final String REMOVE = "Видалити";
+    private static final String MESSAGE1 = "Ви впевнені що хочете відалити даний ПВП? ";
+    private static final String MESSAGE2 = "Після його видалення, разом з ним будуть видалені всі канали, які використовують данний ПВП.";
+    private static final String ADVISE = "ПОРАДА: Перед виконанням данної дії виконайте екпорт каналів, для збереження резервної копії каналів.";
+    private static final String CANCEL = "Відміна";
+
     private final SensorsListDialog parent;
 
     private JLabel message1, message2, message3;
@@ -29,82 +33,40 @@ public class SensorRemoveDialog extends JDialog implements UI_Container {
 
     private static String title(int indexOfSensor){
         try {
-            return Strings.REMOVE
+            return REMOVE
                     + " \""
                     + Application.context.sensorsController.get(indexOfSensor).getName()
                     + "\"?";
         }catch (Exception ex){
-            return Strings.REMOVE;
+            return REMOVE;
         }
     }
 
-    @Override
-    public void createElements() {
-        String m1 = "Ви впевнені що хочете відалити даний ПВП? ";
-        this.message1 = new JLabel(m1);
+    private void createElements() {
+        this.message1 = new JLabel(MESSAGE1);
         this.message1.setHorizontalAlignment(SwingConstants.CENTER);
 
-        String m2 = "Після його видалення, разом з ним будуть видалені всі канали, які використовують данний ПВП.";
-        this.message2 = new JLabel(m2);
+        this.message2 = new JLabel(MESSAGE2);
         this.message2.setHorizontalAlignment(SwingConstants.CENTER);
 
-        String m3 = "ПОРАДА: Перед виконанням данної дії виконайте екпорт каналів, для збереження резервної копії каналів.";
-        this.message3 = new JLabel(m3);
+        this.message3 = new JLabel(ADVISE);
         this.message3.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.buttonCancel = new JButton(Strings.CANCEL);
-        this.buttonCancel.setBackground(new Color(51,51,51));
-        this.buttonCancel.setForeground(Color.white);
-        this.buttonCancel.setFocusPainted(false);
-        this.buttonCancel.setContentAreaFilled(false);
-        this.buttonCancel.setOpaque(true);
-
-        this.buttonRemove = new JButton(Strings.REMOVE);
-        this.buttonRemove.setBackground(Color.RED.darker());
-        this.buttonRemove.setForeground(Color.white);
-        this.buttonRemove.setFocusPainted(false);
-        this.buttonRemove.setContentAreaFilled(false);
-        this.buttonRemove.setOpaque(true);
+        this.buttonCancel = new DefaultButton(CANCEL);
+        this.buttonRemove = new DefaultButton(REMOVE);
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonCancel.addChangeListener(pushCancel);
-        this.buttonRemove.addChangeListener(pushRemove);
-
-        this.buttonCancel.addActionListener(clickCancel);
-        this.buttonRemove.addActionListener(clickRemove);
+    private void setReactions() {
+        this.buttonCancel.addActionListener(this.clickCancel);
+        this.buttonRemove.addActionListener(this.clickRemove);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(800,100);
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushCancel = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            if (buttonCancel.getModel().isPressed()){
-                buttonCancel.setBackground(new Color(51,51,51).darker());
-            }else {
-                buttonCancel.setBackground(new Color(51,51,51));
-            }
-        }
-    };
-
-    private final ChangeListener pushRemove = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            if (buttonRemove.getModel().isPressed()){
-                buttonRemove.setBackground(Color.red.darker().darker());
-            }else {
-                buttonRemove.setBackground(Color.red.darker());
-            }
-        }
-    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override
@@ -117,7 +79,7 @@ public class SensorRemoveDialog extends JDialog implements UI_Container {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            new RemoveSensor(parent).execute();
+            new RemoveSensor(parent).start();
         }
     };
 

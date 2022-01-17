@@ -1,29 +1,33 @@
 package ui.sensorsList;
 
 import application.Application;
-import constants.Strings;
 import converters.ConverterUI;
+import model.Channel;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-public class SensorsListDialog extends JDialog implements UI_Container {
+public class SensorsListDialog extends JDialog {
+    private static final String SENSORS_LIST = "Список первинних вимірювальних пристроїв";
+    private static final String ADD = "Додати";
+    private static final String REMOVE = "Видалити";
+    private static final String DETAILS = "Детальніше";
+    private static final String CANCEL = "Відміна";
+
     private final MainScreen mainScreen;
     private final SensorsListDialog current;
 
     public SensorsListTable mainTable;
     private JButton buttonAdd, buttonRemove, buttonDetails, buttonCancel;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     public SensorsListDialog(MainScreen mainScreen){
-        super(mainScreen, Strings.SENSORS_LIST, true);
+        super(mainScreen, SENSORS_LIST, true);
         this.mainScreen = mainScreen;
         this.current = this;
 
@@ -32,75 +36,32 @@ public class SensorsListDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         this.mainTable = new SensorsListTable();
 
-        this.buttonAdd = new JButton(Strings.ADD);
-        this.buttonAdd.setBackground(buttonsColor);
-        this.buttonAdd.setForeground(Color.white);
-        this.buttonAdd.setFocusPainted(false);
-        this.buttonAdd.setContentAreaFilled(false);
-        this.buttonAdd.setOpaque(true);
-
-        this.buttonRemove = new JButton(Strings.REMOVE);
-        this.buttonRemove.setBackground(buttonsColor);
-        this.buttonRemove.setForeground(Color.white);
-        this.buttonRemove.setFocusPainted(false);
-        this.buttonRemove.setContentAreaFilled(false);
-        this.buttonRemove.setOpaque(true);
-
-        this.buttonDetails = new JButton(Strings.DETAILS);
-        this.buttonDetails.setBackground(buttonsColor);
-        this.buttonDetails.setForeground(Color.white);
-        this.buttonDetails.setFocusPainted(false);
-        this.buttonDetails.setContentAreaFilled(false);
-        this.buttonDetails.setOpaque(true);
-
-        this.buttonCancel = new JButton(Strings.CANCEL);
-        this.buttonCancel.setBackground(buttonsColor);
-        this.buttonCancel.setForeground(Color.white);
-        this.buttonCancel.setFocusPainted(false);
-        this.buttonCancel.setContentAreaFilled(false);
-        this.buttonCancel.setOpaque(true);
+        this.buttonAdd = new DefaultButton(ADD);
+        this.buttonRemove = new DefaultButton(REMOVE);
+        this.buttonDetails = new DefaultButton(DETAILS);
+        this.buttonCancel = new DefaultButton(CANCEL);
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonCancel.addChangeListener(pushButton);
-        this.buttonRemove.addChangeListener(pushButton);
-        this.buttonDetails.addChangeListener(pushButton);
-        this.buttonAdd.addChangeListener(pushButton);
-
-        this.buttonCancel.addActionListener(clickCancel);
-        this.buttonRemove.addActionListener(clickRemove);
-        this.buttonDetails.addActionListener(clickDetails);
-        this.buttonAdd.addActionListener(clickAdd);
+    private void setReactions() {
+        this.buttonCancel.addActionListener(this.clickCancel);
+        this.buttonRemove.addActionListener(this.clickRemove);
+        this.buttonDetails.addActionListener(this.clickDetails);
+        this.buttonAdd.addActionListener(this.clickAdd);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(800,500);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
 
-    public void updateMain(){
-        //this.mainScreen.update(Application.context.channelsController.getAll(), false, null, null);
+    public void updateMain(ArrayList<Channel>channels){
+        this.mainScreen.setChannelsList(channels);
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override

@@ -3,11 +3,13 @@ package controller;
 import constants.Strings;
 import model.Channel;
 import model.Model;
+import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ChannelsController {
     private Window window;
@@ -59,6 +61,31 @@ public class ChannelsController {
             this.save();
         }else {
             this.showNotFoundMessage();
+        }
+        return this.channels;
+    }
+
+    public ArrayList<Channel> removeBySensor(Sensor sensor){
+        ArrayList<Integer>indexes = new ArrayList<>();
+        String sensorName = sensor.getName();
+        for (int c=0;c<this.channels.size();c++){
+            String channelSensor = this.channels.get(c).getSensor().getName();
+            if (channelSensor.equals(sensorName)){
+                indexes.add(c);
+            }
+        }
+        Collections.reverse(indexes);
+        for (int index : indexes){
+            this.channels.remove(index);
+        }
+        return this.channels;
+    }
+
+    public ArrayList<Channel> changeSensor(Sensor oldSensor, Sensor newSensor){
+        for (Channel channel : this.channels){
+            if (channel.getSensor().getName().equals(oldSensor.getName())){
+                channel.setSensor(newSensor);
+            }
         }
         return this.channels;
     }

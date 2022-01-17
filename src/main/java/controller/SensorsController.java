@@ -269,6 +269,17 @@ public class SensorsController {
         this.save();
     }
 
+    public boolean isLastInMeasurement(Sensor sensor){
+        String measurement = sensor.getMeasurement();
+        int numberOfSensors = 0;
+        for (Sensor s : this.sensors){
+            if (s.getMeasurement().equals(measurement)){
+                numberOfSensors++;
+            }
+        }
+        return numberOfSensors > 1;
+    }
+
     private void save() {
         new Repository<Sensor>(this.window, Model.SENSOR).writeList(this.sensors);
     }

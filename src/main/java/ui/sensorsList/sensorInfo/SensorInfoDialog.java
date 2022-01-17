@@ -1,8 +1,9 @@
 package ui.sensorsList.sensorInfo;
 
-import backgroundTasks.controllers.PutSensorInList;
+import application.Application;
+import backgroundTasks.PutSensorInList;
 import constants.MeasurementConstants;
-import constants.Strings;
+import constants.SensorType;
 import converters.ConverterUI;
 import converters.VariableConverter;
 import org.mariuszgromada.math.mxparser.Argument;
@@ -10,20 +11,30 @@ import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import model.Sensor;
 import ui.model.ButtonCell;
+import ui.model.DefaultButton;
 import ui.sensorsList.SensorsListDialog;
 import ui.sensorsList.sensorInfo.complexElements.SensorRangePanel;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.Objects;
 
-public class SensorInfoDialog extends JDialog implements UI_Container {
+public class SensorInfoDialog extends JDialog {
+    private static final String SENSOR = "Первинний вимірювальний пристрій";
+    private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
+    private static final String TYPE = "Тип";
+    private static final String NAME = "Назва";
+    private static final String RANGE_OF_SENSOR = "Діапазон вимірювання ПВП";
+    private static final String ERROR_FORMULA = "Формула для розрахунку похибки";
+    private static final String TYPE_HINT = "Тип ПВП(Застосовується у протоколі)";
+    private static final String NAME_HINT = "Назва ПВП для застосування в данній програмі(Не фігурує в документах)";
+    private static final String INSERT = "Вставка";
+    private static final String CANCEL = "Відміна";
+    private static final String SAVE = "Зберегти";
+
     private final SensorsListDialog parent;
     private final SensorInfoDialog current;
     private final Sensor oldSensor;
@@ -47,10 +58,8 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
 
     private JButton buttonCancel, buttonSave;
 
-    private final Color buttonsColor = new Color(51,51,51);
-
     public SensorInfoDialog(SensorsListDialog parent, Sensor oldSensor){
-        super(parent, Strings.SENSOR, true);
+        super(parent, SENSOR, true);
         this.parent = parent;
         this.current = this;
         this.oldSensor = oldSensor;
@@ -61,40 +70,24 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.labelMeasurement = new ButtonCell(true, Strings.TYPE_OF_MEASUREMENT);
-        this.labelType = new ButtonCell(true, Strings.TYPE);
-        this.labelName = new ButtonCell(true, Strings._NAME);
-        this.labelRange = new ButtonCell(true, Strings.RANGE_OF_SENSOR);
-        this.labelErrorFormula = new ButtonCell(true, Strings.ERROR_FORMULA);
+    private void createElements() {
+        this.labelMeasurement = new ButtonCell(true, TYPE_OF_MEASUREMENT);
+        this.labelType = new ButtonCell(true, TYPE);
+        this.labelName = new ButtonCell(true, NAME);
+        this.labelRange = new ButtonCell(true, RANGE_OF_SENSOR);
+        this.labelErrorFormula = new ButtonCell(true, ERROR_FORMULA);
 
-        ArrayList<String>measurementsNames = new ArrayList<>();
-        /*ArrayList<Measurement>measurements = Lists.measurements();
-        for (Measurement measurement : Objects.requireNonNull(measurements)) {
-            boolean exist = false;
-            for (String measurementsName : measurementsNames) {
-                if (measurementsName.equals(measurement.getName())) {
-                    exist = true;
-                }
-            }
-            if (!exist) {
-                measurementsNames.add(measurement.getName());
-            }
-        }*/
-        this.measurementsList = new JComboBox<>(measurementsNames.toArray(new String[0]));
+        this.measurementsList = new JComboBox<>(Application.context.measurementsController.getAllNames());
 
-        String typeHint = "Тип ПВП(Застосовується у протоколі)";
-        String[]consumptionTypes = new String[]{Strings.SENSOR_YOKOGAWA, Strings.SENSOR_ROSEMOUNT};
+        String[]consumptionTypes = new String[]{SensorType.YOKOGAWA, SensorType.ROSEMOUNT};
         this.typeText = new JTextField(10);
         this.typesList = new JComboBox<>(consumptionTypes);
-        this.typeText.setToolTipText(typeHint);
-        this.typesList.setToolTipText(typeHint);
+        this.typeText.setToolTipText(TYPE_HINT);
+        this.typesList.setToolTipText(TYPE_HINT);
 
-        String nameHint = "Назва ПВП для застосування в данній програмі(Не фігурує в документах)";
         this.nameText = new JTextField(10);
-        this.nameText.setToolTipText(nameHint);
-        this.namePopupMenu = new JPopupMenu("Вставка");
+        this.nameText.setToolTipText(NAME_HINT);
+        this.namePopupMenu = new JPopupMenu(INSERT);
         this.nameText.setComponentPopupMenu(this.namePopupMenu);
 
         this.rangePanel = new SensorRangePanel();
@@ -178,19 +171,8 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
         this.helpFormula12.setBorderPainted(false);
         this.helpFormula12.setToolTipText(toolTipText);
 
-        this.buttonCancel = new JButton(Strings.CANCEL);
-        this.buttonCancel.setBackground(buttonsColor);
-        this.buttonCancel.setForeground(Color.white);
-        this.buttonCancel.setFocusPainted(false);
-        this.buttonCancel.setContentAreaFilled(false);
-        this.buttonCancel.setOpaque(true);
-
-        this.buttonSave = new JButton(Strings.SAVE);
-        this.buttonSave.setBackground(buttonsColor);
-        this.buttonSave.setForeground(Color.white);
-        this.buttonSave.setFocusPainted(false);
-        this.buttonSave.setContentAreaFilled(false);
-        this.buttonSave.setOpaque(true);
+        this.buttonCancel = new DefaultButton(CANCEL);
+        this.buttonSave = new DefaultButton(SAVE);
     }
 
     private void setInfo(){
@@ -215,21 +197,16 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
         }
     }
 
-    @Override
-    public void setReactions() {
-        this.buttonCancel.addChangeListener(pushButton);
-        this.buttonSave.addChangeListener(pushButton);
+    private void setReactions() {
+        this.buttonCancel.addActionListener(this.clickCancel);
+        this.buttonSave.addActionListener(this.clickSave);
 
-        this.buttonCancel.addActionListener(clickCancel);
-        this.buttonSave.addActionListener(clickSave);
+        this.measurementsList.addItemListener(this.changeMeasurement);
 
-        this.measurementsList.addItemListener(changeMeasurement);
-
-        this.typeText.getDocument().addDocumentListener(typeChange);
+        this.typeText.getDocument().addDocumentListener(this.typeChange);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(850,550);
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
@@ -240,18 +217,6 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
         this.setVisible(false);
         this.setVisible(true);
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()){
-                button.setBackground(buttonsColor.darker());
-            }else {
-                button.setBackground(buttonsColor);
-            }
-        }
-    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override
@@ -282,7 +247,12 @@ public class SensorInfoDialog extends JDialog implements UI_Container {
                     sensor.setValue("");
                 }
                 sensor.setErrorFormula(errorFormulaText.getText());
-                new PutSensorInList(parent, current, sensor, oldSensor).execute();
+                PutSensorInList putSensorInList = new PutSensorInList(parent, current, sensor);
+                if (oldSensor == null){
+                    putSensorInList.start();
+                }else {
+                    putSensorInList.start(oldSensor);
+                }
             }
         }
     };
