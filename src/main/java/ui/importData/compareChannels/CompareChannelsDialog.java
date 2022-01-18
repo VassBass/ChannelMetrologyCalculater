@@ -1,6 +1,27 @@
 package ui.importData.compareChannels;
 
-public class CompareChannelsDialog /*extends JDialog implements UI_Container*/ {/*
+import application.Application;
+import backgroundTasks.data_import.SaveImportedChannels;
+import converters.ConverterUI;
+import model.*;
+import ui.importData.BreakImportDialog;
+import ui.importData.compareCalibrators.CompareCalibratorsDialog;
+import ui.importData.compareChannels.complexElements.CompareChannels_infoPanel;
+import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+
+public class CompareChannelsDialog extends JDialog {
+    private static final String IMPORT = "Імпорт";
+    private static final String CHANGE = "Змінити";
+    private static final String SKIP = "Пропустити";
+    private static final String CHANGE_ALL = "Замінити все";
+    private static final String SKIP_ALL = "Пропустити все";
+
     private final MainScreen mainScreen;
     private final JDialog current;
 
@@ -9,28 +30,28 @@ public class CompareChannelsDialog /*extends JDialog implements UI_Container*/ {
     private ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
 
     private ArrayList<Worker>persons;
-    private ArrayList<String>departments, areas, processes, installations;
+    private ArrayList<String> departments, areas, processes, installations;
 
     private final ArrayList<Integer[]>channelIndexes;
     private ArrayList<Integer[]>calibratorsIndexes;
 
     private int marker = 0;
-    private final int exportData;
+    private final Model exportData;
 
     private CompareChannels_infoPanel infoPanel;
 
     private JButton buttonChange, buttonSkip, buttonChangeAll, buttonSkipAll;
 
-    public CompareChannelsDialog(MainScreen mainScreen, int exportData, ArrayList<Sensor>sensors,
+    public CompareChannelsDialog(MainScreen mainScreen, Model exportData, ArrayList<Sensor>sensors,
                                  ArrayList<Channel>newChannelsList, ArrayList<Channel>importedChannels, ArrayList<Integer[]>channelIndexes){
-        super(mainScreen, Strings.IMPORT, true);
+        super(mainScreen, IMPORT, true);
         this.mainScreen = mainScreen;
         this.exportData = exportData;
         this.sensors = sensors;
         this.current = this;
 
         this.newChannelsList = newChannelsList;
-        this.oldChannelsList = Lists.channels();
+        this.oldChannelsList = Application.context.channelsController.getAll();
         this.importedChannelsList = importedChannels;
         this.channelIndexes = channelIndexes;
 
@@ -44,19 +65,19 @@ public class CompareChannelsDialog /*extends JDialog implements UI_Container*/ {
         }
     }
 
-    public CompareChannelsDialog(final MainScreen mainScreen, final int exportData, final ArrayList<Sensor>sensors,
+    public CompareChannelsDialog(final MainScreen mainScreen, final Model exportData, final ArrayList<Sensor>sensors,
                                  final ArrayList<Channel>newChannelsList, ArrayList<Channel>importedChannelsList, ArrayList<Integer[]>channelIndexes,
                                  final ArrayList<Calibrator>newCalibratorsList, final ArrayList<Calibrator>importedCalibratorsList, final ArrayList<Integer[]>calibratorsIndexes,
                                  final ArrayList<Worker>persons,
                                  final ArrayList<String>departments, final ArrayList<String>areas, final ArrayList<String>processes, final ArrayList<String>installations) {
-        super(mainScreen, Strings.IMPORT, true);
+        super(mainScreen, IMPORT, true);
         this.mainScreen = mainScreen;
         this.exportData = exportData;
         this.sensors = sensors;
         this.current = this;
 
         this.newChannelsList = newChannelsList;
-        this.oldChannelsList = Lists.channels();
+        this.oldChannelsList = Application.context.channelsController.getAll();
         this.importedChannelsList = importedChannelsList;
         this.channelIndexes = channelIndexes;
 
@@ -91,7 +112,7 @@ public class CompareChannelsDialog /*extends JDialog implements UI_Container*/ {
         marker++;
         if (marker >= channelIndexes.size()) {
             this.dispose();
-            if (this.exportData == ExportData.CHANNELS){
+            if (this.exportData == Model.CHANNEL){
                 new SaveImportedChannels(this.mainScreen, this.newChannelsList, this.sensors).execute();
             }else {
                 EventQueue.invokeLater(new Runnable() {
@@ -114,47 +135,21 @@ public class CompareChannelsDialog /*extends JDialog implements UI_Container*/ {
         }
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         Integer[] index = channelIndexes.get(marker);
         int indexOld = index[0];
         int indexImport = index[1];
         this.infoPanel = new CompareChannels_infoPanel(this.oldChannelsList.get(indexOld), this.importedChannelsList.get(indexImport));
 
-        this.buttonChange = new JButton(Strings.CHANGE);
-        this.buttonChange.setBackground(Color.white);
-        this.buttonChange.setFocusPainted(false);
-        this.buttonChange.setContentAreaFilled(false);
-        this.buttonChange.setOpaque(true);
-
-        this.buttonSkip = new JButton(Strings.SKIP);
-        this.buttonSkip.setBackground(Color.white);
-        this.buttonSkip.setFocusPainted(false);
-        this.buttonSkip.setContentAreaFilled(false);
-        this.buttonSkip.setOpaque(true);
-
-        this.buttonChangeAll = new JButton(Strings.CHANGE_ALL);
-        this.buttonChangeAll.setBackground(Color.white);
-        this.buttonChangeAll.setFocusPainted(false);
-        this.buttonChangeAll.setContentAreaFilled(false);
-        this.buttonChangeAll.setOpaque(true);
-
-        this.buttonSkipAll = new JButton(Strings.SKIP_ALL);
-        this.buttonSkipAll.setBackground(Color.white);
-        this.buttonSkipAll.setFocusPainted(false);
-        this.buttonSkipAll.setContentAreaFilled(false);
-        this.buttonSkipAll.setOpaque(true);
+        this.buttonChange = new DefaultButton(CHANGE);
+        this.buttonSkip = new DefaultButton(SKIP);
+        this.buttonChangeAll = new DefaultButton(CHANGE_ALL);
+        this.buttonSkipAll = new DefaultButton(SKIP_ALL);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(this.windowListener);
-
-        this.buttonSkipAll.addChangeListener(this.pushButton);
-        this.buttonSkip.addChangeListener(this.pushButton);
-        this.buttonChange.addChangeListener(this.pushButton);
-        this.buttonChangeAll.addChangeListener(this.pushButton);
 
         this.buttonChangeAll.addActionListener(this.clickChangeAll);
         this.buttonSkip.addActionListener(this.clickSkip);
@@ -162,25 +157,12 @@ public class CompareChannelsDialog /*extends JDialog implements UI_Container*/ {
         this.buttonSkipAll.addActionListener(this.clickSkipAll);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(800,700);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-        }
-    };
 
     private final WindowListener windowListener = new WindowAdapter() {
         @Override
@@ -194,7 +176,7 @@ public class CompareChannelsDialog /*extends JDialog implements UI_Container*/ {
         @Override
         public void actionPerformed(ActionEvent e) {
             Integer[]i = channelIndexes.get(marker);
-            newChannelsList.add(i[0], Objects.requireNonNull(oldChannelsList).get(i[0]));
+            newChannelsList.add(i[0], oldChannelsList.get(i[0]));
             next();
         }
     };
@@ -213,7 +195,7 @@ public class CompareChannelsDialog /*extends JDialog implements UI_Container*/ {
         public void actionPerformed(ActionEvent e) {
             for (;marker<channelIndexes.size();marker++){
                 Integer[]i = channelIndexes.get(marker);
-                newChannelsList.add(i[0], Objects.requireNonNull(oldChannelsList).get(i[0]));
+                newChannelsList.add(i[0], oldChannelsList.get(i[0]));
             }
             next();
         }
@@ -260,4 +242,4 @@ public class CompareChannelsDialog /*extends JDialog implements UI_Container*/ {
             }
         }
     }
-*/}
+}

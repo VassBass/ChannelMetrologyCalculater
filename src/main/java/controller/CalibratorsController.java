@@ -1,11 +1,10 @@
 package controller;
 
+import constants.CalibratorType;
 import constants.MeasurementConstants;
-import constants.Strings;
 import measurements.Measurement;
 import model.Calibrator;
 import model.Model;
-import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
@@ -16,6 +15,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class CalibratorsController {
+    private static final String ERROR = "Помилка";
+
     private Window window;
     private ArrayList<Calibrator> calibrators;
 
@@ -146,8 +147,8 @@ public class CalibratorsController {
         this.calibrators.add(YAKOGAWA_AM012);
 
         Calibrator ROSEMOUNT_8714DQ4 = new Calibrator();
-        ROSEMOUNT_8714DQ4.setType(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4);
-        ROSEMOUNT_8714DQ4.setName(Strings.CALIBRATOR_ROSEMOUNT_8714DQ4);
+        ROSEMOUNT_8714DQ4.setType(CalibratorType.ROSEMOUNT_8714DQ4);
+        ROSEMOUNT_8714DQ4.setName(CalibratorType.ROSEMOUNT_8714DQ4);
         ROSEMOUNT_8714DQ4.setNumber("14972506");
         ROSEMOUNT_8714DQ4.setMeasurement(MeasurementConstants.CONSUMPTION.getValue());
         ROSEMOUNT_8714DQ4.setCertificateName("відповідно до стандарту ISO 10474.3.1B");
@@ -236,17 +237,6 @@ public class CalibratorsController {
         return this.calibrators;
     }
 
-    public int getIndex(String calibratorName) {
-        for (int index=0;index<this.calibrators.size();index++) {
-            Calibrator calibrator = this.calibrators.get(index);
-            if (calibrator.getName().equals(calibratorName)) {
-                return index;
-            }
-        }
-        this.showNotFoundMessage();
-        return -1;
-    }
-
     public Calibrator get(String calibratorName) {
         for (Calibrator calibrator : this.calibrators) {
             if (calibrator.getName().equals(calibratorName)) {
@@ -292,11 +282,11 @@ public class CalibratorsController {
 
     private void showNotFoundMessage() {
         String message = "Калібратор з данною назвою не знайдено в списку калібраторів.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
     private void showExistMessage() {
         String message = "Калібратор з данною назвою вже існує в списку калібраторів. Змініть будь ласка назву.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

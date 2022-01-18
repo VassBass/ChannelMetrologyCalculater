@@ -1,7 +1,5 @@
 package controller;
 
-import constants.Strings;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +8,6 @@ import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class FileBrowser {
-
     private static final String DIR_NAME_MAIN = "Support";
     private static final String DIR_NAME_LISTS = "Lists";
     private static final String DIR_NAME_CERTIFICATES = "Certificates";

@@ -1,8 +1,6 @@
 package controller;
 
-import constants.Strings;
 import model.Model;
-import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
@@ -12,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ProcessesController {
+    private static final String ERROR = "Помилка";
+
     private Window window;
     private ArrayList<String> processes;
 
@@ -93,10 +93,6 @@ public class ProcessesController {
         return this.processes;
     }
 
-    public int getIndex(String object) {
-        return this.processes.indexOf(object);
-    }
-
     public String get(int index) {
         if (index >= 0) {
             return this.processes.get(index);
@@ -132,6 +128,6 @@ public class ProcessesController {
 
     private void showNotFoundMessage() {
         String message = "Процес з такою назвою не знайдено в списку процесів.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

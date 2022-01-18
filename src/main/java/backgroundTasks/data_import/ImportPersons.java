@@ -1,7 +1,8 @@
 package backgroundTasks.data_import;
 
-import constants.Strings;
+import application.Application;
 import model.Worker;
+import support.Comparator;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
@@ -13,6 +14,10 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 public class ImportPersons extends SwingWorker<Integer, Void> {
+    private static final String ERROR = "Помилка";
+    private static final String IMPORT = "Імпорт";
+    private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
+
     private final MainScreen mainScreen;
     private final File exportDataFile;
     private final LoadDialog loadDialog;
@@ -53,13 +58,13 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
         try {
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні працівників", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні працівників", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
-                    JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
                     break;
                 case -1:
-                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }catch (Exception e){
@@ -72,11 +77,11 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.exportDataFile));
         ArrayList<Worker> importedPersons = (ArrayList<Worker>) ois.readObject();
         if (!importedPersons.isEmpty()) {
-            /*ArrayList<Worker> oldPersonsList = Lists.persons();
+            ArrayList<Worker> oldPersonsList = Application.context.personsController.getAll();
 
             for (Worker imp : importedPersons) {
                 boolean exist = false;
-                for (Worker old : Objects.requireNonNull(oldPersonsList)) {
+                for (Worker old : oldPersonsList) {
                     if (Comparator.personsMatch(imp, old)) {
                         exist = true;
                         break;
@@ -86,7 +91,7 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
                     oldPersonsList.add(imp);
                 }
             }
-            Lists.savePersonsListToFile(oldPersonsList);*/
+            Application.context.personsController.rewriteAll(oldPersonsList);
             return true;
         }else {
             return false;

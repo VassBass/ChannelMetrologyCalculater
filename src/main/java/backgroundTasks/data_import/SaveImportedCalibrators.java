@@ -1,6 +1,6 @@
 package backgroundTasks.data_import;
 
-import constants.Strings;
+import application.Application;
 import model.Calibrator;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
@@ -10,6 +10,9 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
+    private static final String IMPORT = "Імпорт";
+    private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
+
     private final MainScreen mainScreen;
     private final ArrayList<Calibrator> calibrators;
     private final LoadDialog loadDialog;
@@ -29,14 +32,14 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        //Lists.saveCalibratorsListToFile(this.calibrators);
+        Application.context.calibratorsController.rewriteAll(this.calibrators);
         return null;
     }
 
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        //this.mainScreen.update(Lists.channels(), false, null, null);
-        JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
+        this.mainScreen.setChannelsList(Application.context.channelsController.getAll());
+        JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

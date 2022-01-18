@@ -1,8 +1,6 @@
 package controller;
 
-import constants.Strings;
 import model.Model;
-import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
@@ -12,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class AreasController {
+    private static final String ERROR = "Помилка";
+
     private Window window;
     private ArrayList<String>areas;
 
@@ -141,6 +141,6 @@ public class AreasController {
 
     private void showNotFoundMessage() {
         String message = "Ділянка з такою назвою не знайдена в списку ділянок.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

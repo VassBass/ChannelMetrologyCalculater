@@ -1,7 +1,6 @@
 package backgroundTasks.data_import;
 
 import application.Application;
-import constants.Strings;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
@@ -14,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ImportAreas extends SwingWorker<Integer, Void> {
+    private static final String ERROR = "Помилка";
+    private static final String IMPORT = "Імпорт";
+    private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
+
     private final MainScreen mainScreen;
     private final File exportDataFile;
     private final LoadDialog loadDialog;
@@ -56,13 +59,13 @@ public class ImportAreas extends SwingWorker<Integer, Void> {
         try {
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні нові данні", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні нові данні", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
-                    JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
                     break;
                 case -1:
-                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }catch (Exception e){

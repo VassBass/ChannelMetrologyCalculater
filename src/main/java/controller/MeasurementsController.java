@@ -7,7 +7,6 @@ import measurements.Pressure;
 import measurements.Temperature;
 import model.Model;
 import repository.Repository;
-import support.Comparator;
 
 import java.util.ArrayList;
 
@@ -102,16 +101,6 @@ public class MeasurementsController {
 
     public ArrayList<Measurement> getAll() {
         return this.measurements;
-    }
-
-    public int getIndex(Measurement measurement) {
-        for (int index=0;index<this.measurements.size();index++) {
-            Measurement m = this.measurements.get(index);
-            if (Comparator.measurementsMatch(measurement, m)) {
-                return index;
-            }
-        }
-        return -1;
     }
 
     public Measurement get(MeasurementConstants measurementValue){

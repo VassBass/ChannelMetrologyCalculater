@@ -1,6 +1,5 @@
 package ui.importData.compareCalibrators.complexElements;
 
-import constants.Strings;
 import converters.VariableConverter;
 import model.Calibrator;
 import ui.model.ButtonCell;
@@ -8,7 +7,20 @@ import ui.model.ButtonCell;
 import javax.swing.*;
 import java.awt.*;
 
-public class CompareCalibratorsInfoPanel extends JPanel implements UI_Container {
+public class CompareCalibratorsInfoPanel extends JPanel {
+    private static final String FIELD = "Поле";
+    private static final String CALIBRATOR_IN_LIST = "Калібратор зі списку";
+    private static final String IMPORTED_CALIBRATOR = "Імпортуємий калібратор";
+    private static final String TYPE = "Тип";
+    private static final String NAME = "Назва";
+    private static final String PARENT_NUMBER = "Заводський № ";
+    private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
+    private static final String RANGE_OF_CALIBRATOR = "Діапазон калібратора";
+    private static final String ERROR_FORMULA = "Формула для розрахунку похибки";
+    private static final String CERTIFICATE_NAME = "Назва сертифікату";
+    private static final String CERTIFICATE_DATE = "Дата повірки";
+    private static final String CERTIFICATE_COMPANY = "Компанія яка проводила повірку";
+
     /*
      * [0] = Название поля для сравнения;
      * [1] = Калибратор из списка;
@@ -49,119 +61,114 @@ public class CompareCalibratorsInfoPanel extends JPanel implements UI_Container 
         this.imported = imported;
 
         this.createElements();
-        this.setReactions();
         this.build();
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         labels = new ButtonCell[12];
         oldInfo = new ButtonCell[9];
         newInfo = new ButtonCell[9];
 
-        labels[0] = new ButtonCell(Color.white, Color.black, Strings.FIELD);
-        labels[1] = new ButtonCell(Color.white, Color.black, Strings.CALIBRATOR_IN_LIST);
-        labels[2] = new ButtonCell(Color.white, Color.black, Strings.IMPORTED_CALIBRATOR);
+        labels[0] = new ButtonCell(Color.WHITE, Color.BLACK, FIELD);
+        labels[1] = new ButtonCell(Color.WHITE, Color.BLACK, CALIBRATOR_IN_LIST);
+        labels[2] = new ButtonCell(Color.WHITE, Color.BLACK, IMPORTED_CALIBRATOR);
 
         if (old.getType().equals(imported.getType())){
-            labels[3] = new ButtonCell(Color.green.darker(), Color.white, Strings.TYPE);
-            oldInfo[0] = new ButtonCell(Color.green.darker(), Color.white, old.getType());
-            newInfo[0] = new ButtonCell(Color.green.darker(), Color.white, imported.getType());
+            labels[3] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, TYPE);
+            oldInfo[0] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, old.getType());
+            newInfo[0] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, imported.getType());
         }else {
-            labels[3] = new ButtonCell(Color.red.darker(), Color.white, Strings.TYPE);
-            oldInfo[0] = new ButtonCell(Color.red.darker(), Color.white, old.getType());
-            newInfo[0] = new ButtonCell(Color.red.darker(), Color.white, imported.getType());
+            labels[3] = new ButtonCell(Color.RED.darker(), Color.WHITE, TYPE);
+            oldInfo[0] = new ButtonCell(Color.RED.darker(), Color.WHITE, old.getType());
+            newInfo[0] = new ButtonCell(Color.RED.darker(), Color.WHITE, imported.getType());
         }
 
         if (old.getName().equals(imported.getName())){
-            labels[4] = new ButtonCell(Color.green.darker(), Color.white, Strings._NAME);
-            oldInfo[1] = new ButtonCell(Color.green.darker(), Color.white, old.getName());
-            newInfo[1] = new ButtonCell(Color.green.darker(), Color.white, imported.getName());
+            labels[4] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, NAME);
+            oldInfo[1] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, old.getName());
+            newInfo[1] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, imported.getName());
         }else {
-            labels[4] = new ButtonCell(Color.red.darker(), Color.white, Strings._NAME);
-            oldInfo[1] = new ButtonCell(Color.red.darker(), Color.white, old.getName());
-            newInfo[1] = new ButtonCell(Color.red.darker(), Color.white, imported.getName());
+            labels[4] = new ButtonCell(Color.RED.darker(), Color.WHITE, NAME);
+            oldInfo[1] = new ButtonCell(Color.RED.darker(), Color.WHITE, old.getName());
+            newInfo[1] = new ButtonCell(Color.RED.darker(), Color.WHITE, imported.getName());
         }
 
         if (old.getNumber().equals(imported.getNumber())){
-            labels[5] = new ButtonCell(Color.green.darker(), Color.white, Strings.PARENT_NUMBER);
-            oldInfo[2] = new ButtonCell(Color.green.darker(), Color.white, old.getNumber());
-            newInfo[2] = new ButtonCell(Color.green.darker(), Color.white, imported.getNumber());
+            labels[5] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, PARENT_NUMBER);
+            oldInfo[2] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, old.getNumber());
+            newInfo[2] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, imported.getNumber());
         }else {
-            labels[5] = new ButtonCell(Color.red.darker(), Color.white, Strings.PARENT_NUMBER);
-            oldInfo[2] = new ButtonCell(Color.red.darker(), Color.white, old.getNumber());
-            newInfo[2] = new ButtonCell(Color.red.darker(), Color.white, imported.getNumber());
+            labels[5] = new ButtonCell(Color.RED.darker(), Color.WHITE, PARENT_NUMBER);
+            oldInfo[2] = new ButtonCell(Color.RED.darker(), Color.WHITE, old.getNumber());
+            newInfo[2] = new ButtonCell(Color.RED.darker(), Color.WHITE, imported.getNumber());
         }
 
         if (old.getMeasurement().equals(imported.getMeasurement())){
-            labels[6] = new ButtonCell(Color.green.darker(), Color.white, Strings.TYPE_OF_MEASUREMENT);
-            oldInfo[3] = new ButtonCell(Color.green.darker(), Color.white, old.getMeasurement());
-            newInfo[3] = new ButtonCell(Color.green.darker(), Color.white, imported.getMeasurement());
+            labels[6] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, TYPE_OF_MEASUREMENT);
+            oldInfo[3] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, old.getMeasurement());
+            newInfo[3] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, imported.getMeasurement());
         }else {
-            labels[6] = new ButtonCell(Color.red.darker(), Color.white, Strings.TYPE_OF_MEASUREMENT);
-            oldInfo[3] = new ButtonCell(Color.red.darker(), Color.white, old.getMeasurement());
-            newInfo[3] = new ButtonCell(Color.red.darker(), Color.white, imported.getMeasurement());
+            labels[6] = new ButtonCell(Color.RED.darker(), Color.WHITE, TYPE_OF_MEASUREMENT);
+            oldInfo[3] = new ButtonCell(Color.RED.darker(), Color.WHITE, old.getMeasurement());
+            newInfo[3] = new ButtonCell(Color.RED.darker(), Color.WHITE, imported.getMeasurement());
         }
 
         if (old.getRangeMin() == imported.getRangeMin() && old.getRangeMax() == imported.getRangeMax()){
-            labels[7] = new ButtonCell(Color.green.darker(), Color.white, Strings.RANGE_OF_CALIBRATOR);
+            labels[7] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, RANGE_OF_CALIBRATOR);
             String o = old.getRangeMin() + " - " + old.getRangeMax();
-            oldInfo[4] = new ButtonCell(Color.green.darker(), Color.white, o);
+            oldInfo[4] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, o);
             String i = imported.getRangeMin() + " - " + imported.getRangeMax();
-            newInfo[4] = new ButtonCell(Color.green.darker(), Color.white, i);
+            newInfo[4] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, i);
         }else {
-            labels[7] = new ButtonCell(Color.red.darker(), Color.white, Strings.RANGE_OF_CALIBRATOR);
+            labels[7] = new ButtonCell(Color.RED.darker(), Color.WHITE, RANGE_OF_CALIBRATOR);
             String o = old.getRangeMin() + " - " + old.getRangeMax();
-            oldInfo[4] = new ButtonCell(Color.red.darker(), Color.white, o);
+            oldInfo[4] = new ButtonCell(Color.RED.darker(), Color.WHITE, o);
             String i = imported.getRangeMin() + " - " + imported.getRangeMax();
-            newInfo[4] = new ButtonCell(Color.red.darker(), Color.white, i);
+            newInfo[4] = new ButtonCell(Color.RED.darker(), Color.WHITE, i);
         }
 
         if (old.getErrorFormula().equals(imported.getErrorFormula())){
-            labels[8] = new ButtonCell(Color.green.darker(), Color.white, Strings.ERROR_FORMULA);
-            oldInfo[5] = new ButtonCell(Color.green.darker(), Color.white, old.getErrorFormula());
-            newInfo[5] = new ButtonCell(Color.green.darker(), Color.white, imported.getErrorFormula());
+            labels[8] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, ERROR_FORMULA);
+            oldInfo[5] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, old.getErrorFormula());
+            newInfo[5] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, imported.getErrorFormula());
         }else {
-            labels[8] = new ButtonCell(Color.red.darker(), Color.white, Strings.ERROR_FORMULA);
-            oldInfo[5] = new ButtonCell(Color.red.darker(), Color.white, old.getErrorFormula());
-            newInfo[5] = new ButtonCell(Color.red.darker(), Color.white, imported.getErrorFormula());
+            labels[8] = new ButtonCell(Color.RED.darker(), Color.WHITE, ERROR_FORMULA);
+            oldInfo[5] = new ButtonCell(Color.RED.darker(), Color.WHITE, old.getErrorFormula());
+            newInfo[5] = new ButtonCell(Color.RED.darker(), Color.WHITE, imported.getErrorFormula());
         }
 
         if (old.getCertificateName().equals(imported.getCertificateName())){
-            labels[9] = new ButtonCell(Color.green.darker(), Color.white, Strings.CERTIFICATE_NAME);
-            oldInfo[6] = new ButtonCell(Color.green.darker(), Color.white, old.getCertificateName());
-            newInfo[6] = new ButtonCell(Color.green.darker(), Color.white, imported.getCertificateName());
+            labels[9] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, CERTIFICATE_NAME);
+            oldInfo[6] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, old.getCertificateName());
+            newInfo[6] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, imported.getCertificateName());
         }else {
-            labels[9] = new ButtonCell(Color.red.darker(), Color.white, Strings.CERTIFICATE_NAME);
-            oldInfo[6] = new ButtonCell(Color.red.darker(), Color.white, old.getCertificateName());
-            newInfo[6] = new ButtonCell(Color.red.darker(), Color.white, imported.getCertificateName());
+            labels[9] = new ButtonCell(Color.RED.darker(), Color.WHITE, CERTIFICATE_NAME);
+            oldInfo[6] = new ButtonCell(Color.RED.darker(), Color.WHITE, old.getCertificateName());
+            newInfo[6] = new ButtonCell(Color.RED.darker(), Color.WHITE, imported.getCertificateName());
         }
 
         if (VariableConverter.dateToString(old.getCertificateDate()).equals(VariableConverter.dateToString(imported.getCertificateDate()))){
-            labels[10] = new ButtonCell(Color.green.darker(), Color.white, Strings.CERTIFICATE_DATE);
-            oldInfo[7] = new ButtonCell(Color.green.darker(), Color.white, VariableConverter.dateToString(old.getCertificateDate()));
-            newInfo[7] = new ButtonCell(Color.green.darker(), Color.white, VariableConverter.dateToString(imported.getCertificateDate()));
+            labels[10] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, CERTIFICATE_DATE);
+            oldInfo[7] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, VariableConverter.dateToString(old.getCertificateDate()));
+            newInfo[7] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, VariableConverter.dateToString(imported.getCertificateDate()));
         }else {
-            labels[10] = new ButtonCell(Color.red.darker(), Color.white, Strings.CERTIFICATE_DATE);
-            oldInfo[7] = new ButtonCell(Color.red.darker(), Color.white, VariableConverter.dateToString(old.getCertificateDate()));
-            newInfo[7] = new ButtonCell(Color.red.darker(), Color.white, VariableConverter.dateToString(imported.getCertificateDate()));
+            labels[10] = new ButtonCell(Color.RED.darker(), Color.WHITE, CERTIFICATE_DATE);
+            oldInfo[7] = new ButtonCell(Color.RED.darker(), Color.WHITE, VariableConverter.dateToString(old.getCertificateDate()));
+            newInfo[7] = new ButtonCell(Color.RED.darker(), Color.WHITE, VariableConverter.dateToString(imported.getCertificateDate()));
         }
 
         if (old.getCertificateCompany().equals(imported.getCertificateCompany())){
-            labels[11] = new ButtonCell(Color.green.darker(), Color.white, Strings.CERTIFICATE_COMPANY);
-            oldInfo[8] = new ButtonCell(Color.green.darker(), Color.white, old.getCertificateCompany());
-            newInfo[8] = new ButtonCell(Color.green.darker(), Color.white, imported.getCertificateCompany());
+            labels[11] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, CERTIFICATE_COMPANY);
+            oldInfo[8] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, old.getCertificateCompany());
+            newInfo[8] = new ButtonCell(Color.GREEN.darker(), Color.WHITE, imported.getCertificateCompany());
         }else {
-            labels[11] = new ButtonCell(Color.red.darker(), Color.white, Strings.CERTIFICATE_COMPANY);
-            oldInfo[8] = new ButtonCell(Color.red.darker(), Color.white, old.getCertificateCompany());
-            newInfo[8] = new ButtonCell(Color.red.darker(), Color.white, imported.getCertificateCompany());
+            labels[11] = new ButtonCell(Color.RED.darker(), Color.WHITE, CERTIFICATE_COMPANY);
+            oldInfo[8] = new ButtonCell(Color.RED.darker(), Color.WHITE, old.getCertificateCompany());
+            newInfo[8] = new ButtonCell(Color.RED.darker(), Color.WHITE, imported.getCertificateCompany());
         }
     }
 
-    @Override public void setReactions() {}
-
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.labels[0], new Cell(0, 0));
         this.add(this.labels[1], new Cell(1, 0));
         this.add(this.labels[2], new Cell(2, 0));

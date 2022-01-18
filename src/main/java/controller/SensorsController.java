@@ -1,7 +1,6 @@
 package controller;
 
 import constants.MeasurementConstants;
-import constants.Strings;
 import model.Model;
 import model.Sensor;
 import repository.Repository;
@@ -13,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class SensorsController {
+    private static final String ERROR = "Помилка";
+
     private Window window;
     private ArrayList<Sensor> sensors;
 
@@ -312,11 +313,11 @@ public class SensorsController {
 
     private void showNotFoundMessage() {
         String message = "ПВП з данною назвою не знайдено в списку ПВП.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
     private void showExistMessage() {
         String message = "ПВП з данною назвою вже існує в списку ПВП. Змініть будь ласка назву.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

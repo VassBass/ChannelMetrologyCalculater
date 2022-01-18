@@ -3,7 +3,6 @@ package ui.importData.compareSensors;
 import application.Application;
 import backgroundTasks.data_import.SaveImportData;
 import backgroundTasks.data_import.SaveImportedSensors;
-import constants.Strings;
 import converters.ConverterUI;
 import model.*;
 import ui.importData.BreakImportDialog;

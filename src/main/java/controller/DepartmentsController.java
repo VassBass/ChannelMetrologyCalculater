@@ -1,8 +1,6 @@
 package controller;
 
-import constants.Strings;
 import model.Model;
-import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
@@ -12,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class DepartmentsController {
+    private static final String ERROR = "Помилка";
+
     private Window window;
     private ArrayList<String>departments;
 
@@ -89,10 +89,6 @@ public class DepartmentsController {
         return this.departments;
     }
 
-    public int getIndex(String object) {
-        return this.departments.indexOf(object);
-    }
-
     public String get(int index) {
         if (index >= 0) {
             return this.departments.get(index);
@@ -128,6 +124,6 @@ public class DepartmentsController {
 
     private void showNotFoundMessage() {
         String message = "Цех з такою назвою не знайдено в списку цехів.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

@@ -1,6 +1,6 @@
 package backgroundTasks.data_import;
 
-import constants.Strings;
+import application.Application;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class ImportPathElements extends SwingWorker<Integer, Void> {
+    private static final String ERROR = "Помилка";
+    private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
+    private static final String IMPORT = "Імпорт";
+
     private final MainScreen mainScreen;
     private final File exportDataFile;
     private final LoadDialog loadDialog;
@@ -48,13 +52,13 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
         try {
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні нові данні", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні нові данні", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
-                    JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
                     break;
                 case -1:
-                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }catch (Exception e){
@@ -77,16 +81,16 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
             ArrayList<String> toAdd = new ArrayList<>();
             switch (x){
                 case 0:
-                    //oldList = Lists.departments();
+                    oldList = Application.context.departmentsController.getAll();
                     break;
                 case 1:
-                    //oldList  = Lists.areas();
+                    oldList  = Application.context.areasController.getAll();
                     break;
                 case 2:
-                    //oldList = Lists.processes();
+                    oldList = Application.context.processesController.getAll();
                     break;
                 case 3:
-                    //oldList = Lists.installations();
+                    oldList = Application.context.installationsController.getAll();
                     break;
             }
 
@@ -108,16 +112,16 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
                 newList.addAll(toAdd);
                 switch (x){
                     case 0:
-                        //Lists.saveDepartmentsListToFile(newList);
+                        Application.context.departmentsController.rewriteAll(newList);
                         break;
                     case 1:
-                        //Lists.saveAreasListToFile(newList);
+                        Application.context.areasController.rewriteAll(newList);
                         break;
                     case 2:
-                        //Lists.saveProcessesListToFile(newList);
+                        Application.context.processesController.rewriteAll(newList);
                         break;
                     case 3:
-                        //Lists.saveInstallationsListToFile(newList);
+                        Application.context.installationsController.rewriteAll(newList);
                         break;
                 }
             }

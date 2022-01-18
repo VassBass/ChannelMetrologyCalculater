@@ -1,11 +1,10 @@
 package converters;
 
-import constants.Strings;
-
 import java.util.Calendar;
 import java.util.Locale;
 
 public class VariableConverter {
+    private static final String EXTRAORDINARY = "Позачерговий";
 
     public static String commasToDots(String string){
         char[] chars = string.toCharArray();
@@ -19,7 +18,7 @@ public class VariableConverter {
 
     public static String dateToString(Calendar date) {
         if (date == null){
-            return Strings.EXTRAORDINARY;
+            return EXTRAORDINARY;
         }else {
             StringBuilder builder = new StringBuilder();
             String day;

@@ -1,9 +1,7 @@
 package controller;
 
-import constants.Strings;
 import constants.WorkPositions;
 import model.Model;
-import model.Sensor;
 import model.Worker;
 import repository.Repository;
 import support.Comparator;
@@ -15,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class PersonsController {
+    private static final String EMPTY_ARRAY = "<Порожньо>";
+    private static final String ERROR = "Помилка";
+
     private Window window;
     private ArrayList<Worker> persons;
 
@@ -96,7 +97,7 @@ public class PersonsController {
     public String[] getAllNames(){
         int length = this.persons.size() + 1;
         String[] persons = new String[length];
-        persons[0] = Strings.EMPTY_ARRAY;
+        persons[0] = EMPTY_ARRAY;
         for (int x = 0; x< this.persons.size(); x++){
             int y = x+1;
             persons[y] = this.persons.get(x).getFullName();
@@ -106,7 +107,7 @@ public class PersonsController {
 
     public String[] getNamesOfHeads(){
         ArrayList<String>heads = new ArrayList<>();
-        heads.add(Strings.EMPTY_ARRAY);
+        heads.add(EMPTY_ARRAY);
         for (Worker worker : this.persons){
             if (worker.getPosition().equals(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP)){
                 heads.add(worker.getFullName());
@@ -171,17 +172,6 @@ public class PersonsController {
         return this.persons;
     }
 
-    public int getIndex(Worker person) {
-        for (int index=0;index<this.persons.size();index++) {
-            Worker p = this.persons.get(index);
-            if (Comparator.personsMatch(p, person)) {
-                return index;
-            }
-        }
-        this.showNotFoundMessage();
-        return -1;
-    }
-
     public Worker get(int index) {
         if (index >= 0) {
             return this.persons.get(index);
@@ -217,11 +207,11 @@ public class PersonsController {
 
     private void showNotFoundMessage() {
         String message = "Працівник не знайден в списку працівників.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
     private void showExistMessage() {
         String message = "Працівник з такими даними вже існує в списку працівниців.-";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

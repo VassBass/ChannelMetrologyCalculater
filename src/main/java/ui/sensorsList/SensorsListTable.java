@@ -1,7 +1,6 @@
 package ui.sensorsList;
 
 import application.Application;
-import constants.Strings;
 import model.Sensor;
 
 import javax.swing.*;
@@ -10,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class SensorsListTable extends JTable {
+    private static final String NAME = "Назва";
+    private static final String TYPE = "Тип";
+    private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
 
     public SensorsListTable(){
         super(tableModel());
@@ -25,7 +27,7 @@ public class SensorsListTable extends JTable {
             }
         };
 
-        String[]columnsHeader = new String[] {Strings._NAME, Strings.TYPE, Strings.TYPE_OF_MEASUREMENT};
+        String[]columnsHeader = new String[] {NAME, TYPE, TYPE_OF_MEASUREMENT};
         model.setColumnIdentifiers(columnsHeader);
 
         ArrayList<Sensor>sensors = Application.context.sensorsController.getAll();

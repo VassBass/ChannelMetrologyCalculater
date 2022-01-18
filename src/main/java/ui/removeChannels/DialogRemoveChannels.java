@@ -52,7 +52,7 @@ public class DialogRemoveChannels extends JDialog {
             this.channelsList.setBackground(Color.white);
         }else {
             String channelName = this.mainScreen.channelsList.get(selectedIndex).getName();
-            this.text = new JLabel(Strings.REMOVE_CHANNEL + " \"" + channelName + "\"?");
+            this.text = new JLabel(REMOVE_CHANNEL + " \"" + channelName + "\"?");
         }
 
         this.removeAll = new DefaultButton(REMOVE_ALL);

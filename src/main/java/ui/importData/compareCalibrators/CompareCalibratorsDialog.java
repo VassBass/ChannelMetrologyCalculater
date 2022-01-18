@@ -1,6 +1,27 @@
 package ui.importData.compareCalibrators;
 
-public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*/ {/*
+import application.Application;
+import backgroundTasks.data_import.SaveImportData;
+import backgroundTasks.data_import.SaveImportedCalibrators;
+import converters.ConverterUI;
+import model.*;
+import ui.importData.BreakImportDialog;
+import ui.importData.compareCalibrators.complexElements.CompareCalibratorsInfoPanel;
+import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+
+public class CompareCalibratorsDialog extends JDialog {
+    private static final String IMPORT = "Імпорт";
+    private static final String CHANGE = "Змінити";
+    private static final String SKIP = "Пропустити";
+    private static final String CHANGE_ALL = "Замінити все";
+    private static final String SKIP_ALL = "Пропустити все";
+
     private final MainScreen mainScreen;
     private final JDialog current;
 
@@ -12,21 +33,21 @@ public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*
     private final ArrayList<Integer[]>calibratorsIndexes;
 
     private int marker = 0;
-    private final int exportData;
+    private final Model exportData;
 
     private CompareCalibratorsInfoPanel infoPanel;
 
     private JButton buttonChange, buttonSkip, buttonChangeAll, buttonSkipAll;
 
-    public CompareCalibratorsDialog(MainScreen mainScreen, int exportData,
+    public CompareCalibratorsDialog(MainScreen mainScreen, Model exportData,
                                     ArrayList<Calibrator>newCalibratorsList, ArrayList<Calibrator>importedCalibratorsList, ArrayList<Integer[]>calibratorsIndexes){
-        super(mainScreen, Strings.IMPORT, true);
+        super(mainScreen, IMPORT, true);
         this.mainScreen = mainScreen;
         this.current = this;
         this.exportData = exportData;
 
         this.newCalibratorsList = newCalibratorsList;
-        this.oldCalibratorsList = Lists.calibrators();
+        this.oldCalibratorsList = Application.context.calibratorsController.getAll();
         this.importedCalibratorsList = importedCalibratorsList;
         this.calibratorsIndexes = calibratorsIndexes;
 
@@ -40,12 +61,12 @@ public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*
         }
     }
 
-    public CompareCalibratorsDialog(MainScreen mainScreen, int exportData,
+    public CompareCalibratorsDialog(MainScreen mainScreen, Model exportData,
                                     ArrayList<Sensor>sensors, ArrayList<Channel>channels,
                                     ArrayList<Calibrator>newCalibratorsList, ArrayList<Calibrator>importedCalibratorsList, ArrayList<Integer[]>calibratorsIndexes,
                                     ArrayList<Worker>persons,
                                     ArrayList<String>departments, ArrayList<String>areas, ArrayList<String>processes, ArrayList<String>installations){
-        super(mainScreen, Strings.IMPORT, true);
+        super(mainScreen, IMPORT, true);
         this.mainScreen = mainScreen;
         this.exportData = exportData;
         this.current = this;
@@ -54,7 +75,7 @@ public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*
         this.persons = persons;
 
         this.newCalibratorsList = newCalibratorsList;
-        this.oldCalibratorsList = Lists.calibrators();
+        this.oldCalibratorsList = Application.context.calibratorsController.getAll();
         this.importedCalibratorsList = importedCalibratorsList;
         this.calibratorsIndexes = calibratorsIndexes;
 
@@ -78,7 +99,7 @@ public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*
         marker++;
         if (marker >= calibratorsIndexes.size()) {
             this.dispose();
-            if (this.exportData == ExportData.CALIBRATORS){
+            if (this.exportData == Model.CALIBRATOR){
                 new SaveImportedCalibrators(this.mainScreen, this.newCalibratorsList).execute();
             }else {
                 new SaveImportData(this.mainScreen, this.sensors, this.channels, this.persons, this.newCalibratorsList,
@@ -95,47 +116,21 @@ public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*
         }
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         Integer[] index = calibratorsIndexes.get(marker);
         int indexOld = index[0];
         int indexImport = index[1];
         this.infoPanel = new CompareCalibratorsInfoPanel(this.oldCalibratorsList.get(indexOld), this.importedCalibratorsList.get(indexImport));
 
-        this.buttonChange = new JButton(Strings.CHANGE);
-        this.buttonChange.setBackground(Color.white);
-        this.buttonChange.setFocusPainted(false);
-        this.buttonChange.setContentAreaFilled(false);
-        this.buttonChange.setOpaque(true);
-
-        this.buttonSkip = new JButton(Strings.SKIP);
-        this.buttonSkip.setBackground(Color.white);
-        this.buttonSkip.setFocusPainted(false);
-        this.buttonSkip.setContentAreaFilled(false);
-        this.buttonSkip.setOpaque(true);
-
-        this.buttonChangeAll = new JButton(Strings.CHANGE_ALL);
-        this.buttonChangeAll.setBackground(Color.white);
-        this.buttonChangeAll.setFocusPainted(false);
-        this.buttonChangeAll.setContentAreaFilled(false);
-        this.buttonChangeAll.setOpaque(true);
-
-        this.buttonSkipAll = new JButton(Strings.SKIP_ALL);
-        this.buttonSkipAll.setBackground(Color.white);
-        this.buttonSkipAll.setFocusPainted(false);
-        this.buttonSkipAll.setContentAreaFilled(false);
-        this.buttonSkipAll.setOpaque(true);
+        this.buttonChange = new DefaultButton(CHANGE);
+        this.buttonSkip = new DefaultButton(SKIP);
+        this.buttonChangeAll = new DefaultButton(CHANGE_ALL);
+        this.buttonSkipAll = new DefaultButton(SKIP_ALL);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(this.windowListener);
-
-        this.buttonSkipAll.addChangeListener(this.pushButton);
-        this.buttonSkip.addChangeListener(this.pushButton);
-        this.buttonChange.addChangeListener(this.pushButton);
-        this.buttonChangeAll.addChangeListener(this.pushButton);
 
         this.buttonChangeAll.addActionListener(this.clickChangeAll);
         this.buttonSkip.addActionListener(this.clickSkip);
@@ -143,25 +138,12 @@ public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*
         this.buttonSkipAll.addActionListener(this.clickSkipAll);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(800,350);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-        }
-    };
 
     private final WindowListener windowListener = new WindowAdapter() {
         @Override
@@ -175,7 +157,7 @@ public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*
         @Override
         public void actionPerformed(ActionEvent e) {
             Integer[]i = calibratorsIndexes.get(marker);
-            newCalibratorsList.add(i[0], Objects.requireNonNull(oldCalibratorsList).get(i[0]));
+            newCalibratorsList.add(i[0], oldCalibratorsList.get(i[0]));
             next();
         }
     };
@@ -194,7 +176,7 @@ public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*
         public void actionPerformed(ActionEvent e) {
             for (;marker<calibratorsIndexes.size();marker++){
                 Integer[]i = calibratorsIndexes.get(marker);
-                newCalibratorsList.add(i[0], Objects.requireNonNull(oldCalibratorsList).get(i[0]));
+                newCalibratorsList.add(i[0], oldCalibratorsList.get(i[0]));
             }
             next();
         }
@@ -240,5 +222,5 @@ public class CompareCalibratorsDialog /*extends JDialog implements UI_Container*
                 this.gridy = y;
             }
         }
-    }*/
+    }
 }

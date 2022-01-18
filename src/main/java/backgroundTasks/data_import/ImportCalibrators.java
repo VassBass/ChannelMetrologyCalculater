@@ -1,7 +1,10 @@
 package backgroundTasks.data_import;
 
-import constants.Strings;
+import application.Application;
 import model.Calibrator;
+import model.Model;
+import support.Comparator;
+import ui.importData.compareCalibrators.CompareCalibratorsDialog;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
@@ -13,6 +16,8 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 public class ImportCalibrators extends SwingWorker<Integer, Void> {
+    private static final String ERROR = "Помилка";
+
     private final MainScreen mainScreen;
     private final File exportDataFile;
     private final LoadDialog loadDialog;
@@ -58,18 +63,18 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
         try {
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні калібраторів", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні калібраторів", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            //new CompareCalibratorsDialog(mainScreen, ExportData.CALIBRATORS, newCalibratorsList, importedCalibrators, calibratorsIndexes);
+                            new CompareCalibratorsDialog(mainScreen, Model.CALIBRATOR, newCalibratorsList, importedCalibrators, calibratorsIndexes);
                         }
                     });
                     break;
                 case -1:
-                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }catch (Exception e){
@@ -89,11 +94,11 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
     }
 
     private void copyCalibrators(){
-        /*ArrayList<Calibrator>oldCalibratorsList = Lists.calibrators();
+        ArrayList<Calibrator>oldCalibratorsList = Application.context.calibratorsController.getAll();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Calibrator>newList = new ArrayList<>();
 
-        for (int o = 0; o< Objects.requireNonNull(oldCalibratorsList).size(); o++){
+        for (int o = 0; o< oldCalibratorsList.size(); o++){
             boolean exist = false;
             Calibrator old = oldCalibratorsList.get(o);
             for (int i=0;i<this.importedCalibrators.size();i++){
@@ -134,6 +139,6 @@ public class ImportCalibrators extends SwingWorker<Integer, Void> {
             this.calibratorsIndexes = null;
         }else {
             this.calibratorsIndexes = indexes;
-        }*/
+        }
     }
 }

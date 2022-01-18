@@ -1,11 +1,28 @@
 package backgroundTasks.data_import;
 
-public class ImportData /*extends SwingWorker<Integer, Void> */{/*
+import application.Application;
+import model.Calibrator;
+import model.Channel;
+import model.Sensor;
+import model.Worker;
+import support.Comparator;
+import ui.importData.compareSensors.CompareSensorsDialog;
+import ui.mainScreen.MainScreen;
+import ui.model.LoadDialog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+
+public class ImportData extends SwingWorker<Integer, Void> {
     private final MainScreen mainScreen;
     private final File importDataFile;
     private final LoadDialog loadDialog;
 
-    private ArrayList<Channel>importedChannels, newChannelsList;
+    private ArrayList<Channel> importedChannels, newChannelsList;
     private ArrayList<Integer[]>channelsIndexes;
 
     private ArrayList<Sensor>importedSensors, newSensorsList;
@@ -63,7 +80,7 @@ public class ImportData /*extends SwingWorker<Integer, Void> */{/*
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new CompareSensorsDialog(mainScreen, ExportData.ALL_DATA,
+                new CompareSensorsDialog(mainScreen, null,
                         newSensorsList, importedSensors, sensorsIndexes,
                         newChannelsList, importedChannels, channelsIndexes,
                         newCalibratorsList, importedCalibrators, calibratorsIndexes,
@@ -94,11 +111,11 @@ public class ImportData /*extends SwingWorker<Integer, Void> */{/*
     }
 
     private void copySensors(){
-        ArrayList<Sensor>oldSensorsList = Lists.sensors();
+        ArrayList<Sensor>oldSensorsList = Application.context.sensorsController.getAll();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Sensor>newList = new ArrayList<>();
 
-        for (int o = 0; o< Objects.requireNonNull(oldSensorsList).size(); o++){
+        for (int o = 0; o< oldSensorsList.size(); o++){
             boolean exist = false;
             Sensor old = oldSensorsList.get(o);
             for (int i=0;i<this.importedSensors.size();i++){
@@ -143,11 +160,11 @@ public class ImportData /*extends SwingWorker<Integer, Void> */{/*
     }
 
     private void copyChannels(){
-        ArrayList<Channel>oldChannelsList = Lists.channels();
+        ArrayList<Channel>oldChannelsList = Application.context.channelsController.getAll();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Channel>newList = new ArrayList<>();
 
-        for (int o = 0; o< Objects.requireNonNull(oldChannelsList).size(); o++){
+        for (int o = 0; o< oldChannelsList.size(); o++){
             boolean exist = false;
             Channel old = oldChannelsList.get(o);
             for (int i=0;i<this.importedChannels.size();i++){
@@ -192,11 +209,11 @@ public class ImportData /*extends SwingWorker<Integer, Void> */{/*
     }
 
     private void copyCalibrators(){
-        ArrayList<Calibrator>oldCalibratorsList = Lists.calibrators();
+        ArrayList<Calibrator>oldCalibratorsList = Application.context.calibratorsController.getAll();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Calibrator>newList = new ArrayList<>();
 
-        for (int o = 0; o< Objects.requireNonNull(oldCalibratorsList).size(); o++){
+        for (int o = 0; o< oldCalibratorsList.size(); o++){
             boolean exist = false;
             Calibrator old = oldCalibratorsList.get(o);
             for (int i=0;i<this.importedCalibrators.size();i++){
@@ -239,4 +256,4 @@ public class ImportData /*extends SwingWorker<Integer, Void> */{/*
             this.calibratorsIndexes = indexes;
         }
     }
-*/}
+}

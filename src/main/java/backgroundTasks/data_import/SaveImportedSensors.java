@@ -1,7 +1,9 @@
 package backgroundTasks.data_import;
 
-import constants.Strings;
+import application.Application;
+import model.Channel;
 import model.Sensor;
+import support.Comparator;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
@@ -10,6 +12,9 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class SaveImportedSensors extends SwingWorker<Void, Void> {
+    private static final String IMPORT = "Імпорт";
+    private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
+
     private final MainScreen mainScreen;
     private final ArrayList<Sensor>sensors;
     private final LoadDialog loadDialog;
@@ -29,9 +34,9 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        /*ArrayList<Channel>channels = Lists.channels();
+        ArrayList<Channel>channels = Application.context.channelsController.getAll();
         for (Sensor sensor : this.sensors){
-            for (int c = 0; c< Objects.requireNonNull(channels).size(); c++){
+            for (int c = 0; c< channels.size(); c++){
                 Channel channel = channels.get(c);
                 if (channel.getSensor().getName().equals(sensor.getName())){
                     if (!Comparator.sensorsMatch(channel.getSensor(), sensor)){
@@ -41,15 +46,15 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
                 }
             }
         }
-        Lists.saveChannelsListToFile(channels);
-        Lists.saveSensorsListToFile(this.sensors);*/
+        Application.context.sensorsController.rewriteAll(this.sensors);
+        Application.context.channelsController.rewriteAll(channels);
         return null;
     }
 
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        //this.mainScreen.update(Lists.channels(), false, null, null);
-        JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
+        this.mainScreen.setChannelsList(Application.context.channelsController.getAll());
+        JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

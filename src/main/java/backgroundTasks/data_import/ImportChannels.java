@@ -1,13 +1,31 @@
 package backgroundTasks.data_import;
 
-public class ImportChannels/* extends SwingWorker<Integer, Void> */{/*
+import application.Application;
+import model.Channel;
+import model.Model;
+import model.Sensor;
+import support.Comparator;
+import ui.importData.compareChannels.CompareChannelsDialog;
+import ui.mainScreen.MainScreen;
+import ui.model.LoadDialog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+
+public class ImportChannels extends SwingWorker<Integer, Void> {
+    private static final String ERROR = "Помилка";
+
     private final MainScreen mainScreen;
     private final File exportDataFile;
     private final LoadDialog loadDialog;
 
     private ArrayList<Channel>importedChannels, newChannelsList;
     private ArrayList<Sensor> importedSensors;
-    private ArrayList<Integer[]>channelsIndexes;
+    private ArrayList<Integer[]> channelsIndexes;
 
     public ImportChannels(MainScreen mainScreen, File exportDataFile){
         super();
@@ -46,19 +64,19 @@ public class ImportChannels/* extends SwingWorker<Integer, Void> */{/*
         try {
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні каналів", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні каналів", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            new CompareChannelsDialog(mainScreen, ExportData.CHANNELS, importedSensors,
+                            new CompareChannelsDialog(mainScreen, Model.CHANNEL, importedSensors,
                                     newChannelsList,importedChannels, channelsIndexes);
                         }
                     });
                     break;
                 case -1:
-                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }catch (Exception e){
@@ -79,11 +97,11 @@ public class ImportChannels/* extends SwingWorker<Integer, Void> */{/*
     }
 
     private void copyChannels(){
-        ArrayList<Channel>oldChannelsList = Lists.channels();
+        ArrayList<Channel>oldChannelsList = Application.context.channelsController.getAll();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Channel>newList = new ArrayList<>();
 
-        for (int o = 0; o< Objects.requireNonNull(oldChannelsList).size(); o++){
+        for (int o = 0; o< oldChannelsList.size(); o++){
             boolean exist = false;
             Channel old = oldChannelsList.get(o);
             for (int i=0;i<this.importedChannels.size();i++){
@@ -126,4 +144,4 @@ public class ImportChannels/* extends SwingWorker<Integer, Void> */{/*
             this.channelsIndexes = indexes;
         }
     }
-*/}
+}

@@ -1,8 +1,6 @@
 package controller;
 
-import constants.Strings;
 import model.Model;
-import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
@@ -12,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class InstallationsController {
+    private static final String ERROR = "Помилка";
+
     private Window window;
     private ArrayList<String> installations;
 
@@ -127,10 +127,6 @@ public class InstallationsController {
         return this.installations;
     }
 
-    public int getIndex(String object) {
-        return this.installations.indexOf(object);
-    }
-
     public String get(int index) {
         if (index >= 0) {
             return this.installations.get(index);
@@ -166,6 +162,6 @@ public class InstallationsController {
 
     private void showNotFoundMessage() {
         String message = "Установка з такою назвою не знайдена в списку установок.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

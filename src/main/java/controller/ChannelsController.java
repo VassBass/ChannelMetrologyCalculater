@@ -1,7 +1,6 @@
 package controller;
 
 import application.Application;
-import constants.Strings;
 import model.Channel;
 import model.Model;
 import model.Sensor;
@@ -15,6 +14,8 @@ import java.util.Calendar;
 import java.util.Collections;
 
 public class ChannelsController {
+    private static final String ERROR = "Помилка";
+
     private Window window;
     private ArrayList<Channel> channels;
 
@@ -78,7 +79,7 @@ public class ChannelsController {
         return this.channels;
     }
 
-    public ArrayList<Channel> removeBySensor(Sensor sensor){
+    public void removeBySensor(Sensor sensor){
         ArrayList<Integer>indexes = new ArrayList<>();
         String sensorName = sensor.getName();
         for (int c=0;c<this.channels.size();c++){
@@ -91,16 +92,14 @@ public class ChannelsController {
         for (int index : indexes){
             this.channels.remove(index);
         }
-        return this.channels;
     }
 
-    public ArrayList<Channel> changeSensor(Sensor oldSensor, Sensor newSensor){
+    public void changeSensor(Sensor oldSensor, Sensor newSensor){
         for (Channel channel : this.channels){
             if (channel.getSensor().getName().equals(oldSensor.getName())){
                 channel.setSensor(newSensor);
             }
         }
-        return this.channels;
     }
 
     public ArrayList<Channel> set(Channel oldChannel, Channel newChannel) {
@@ -148,15 +147,6 @@ public class ChannelsController {
         }else {
             return null;
         }
-    }
-
-    public boolean isExist(Channel channel){
-        for (Channel c : this.channels){
-            if (c.getCode().equals(channel.getCode())){
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean isExist(String channelCode){
@@ -208,16 +198,16 @@ public class ChannelsController {
 
     private void showNotFoundMessage() {
         String message = "Канал з данним кодом не знайдено в списку каналів.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
     private void showExistMessage() {
         String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
-        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
     public void showExistMessage(Window window) {
         String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
-        JOptionPane.showMessageDialog(window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }
