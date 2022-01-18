@@ -9,9 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class BreakImportDialog extends JDialog {
-    public static final String BREAK_IMPORT = "Припинити імпорт?";
-    public static final String YES = "Так";
-    public static final String NO = "Ні";
+    private static final String BREAK_IMPORT = "Припинити імпорт?";
+    private static final String YES = "Так";
+    private static final String NO = "Ні";
 
     private final MainScreen mainScreen;
     private final JDialog parent;

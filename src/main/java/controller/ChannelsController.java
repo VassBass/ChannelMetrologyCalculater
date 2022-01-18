@@ -201,6 +201,11 @@ public class ChannelsController {
         }
     }
 
+    public void rewriteAll(ArrayList<Channel>channels){
+        this.channels = channels;
+        this.save();
+    }
+
     private void showNotFoundMessage() {
         String message = "Канал з данним кодом не знайдено в списку каналів.";
         JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);

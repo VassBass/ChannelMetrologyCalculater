@@ -1,8 +1,7 @@
 package ui.importData;
 
 import backgroundTasks.data_import.*;
-import constants.Files;
-import constants.Strings;
+import controller.FileBrowser;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
@@ -10,7 +9,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.Objects;
 
 public class ImportDataDialog extends JFileChooser {
-    public static final String IMPORT_DATA = "Імпорт даних";
+    private static final String IMPORT_DATA = "Імпорт даних";
+    private static final String ERROR = "Помилка";
+    private static final String WRONG_FILE_EXTENSION = "Формат обраного файлу не підтримується";
 
     public ImportDataDialog(final MainScreen mainScreen){
         super();
@@ -26,7 +27,7 @@ public class ImportDataDialog extends JFileChooser {
 
         int result = this.showOpenDialog(mainScreen);
         if (result == JFileChooser.APPROVE_OPTION){
-            switch (Objects.requireNonNull(Files.getFileExtension(this.getSelectedFile()))){
+            switch (Objects.requireNonNull(FileBrowser.getFileExtension(this.getSelectedFile()))){
                 case "sen":
                     new ImportSensors(mainScreen, this.getSelectedFile()).execute();
                     break;
@@ -57,7 +58,7 @@ public class ImportDataDialog extends JFileChooser {
                 case "exp":
                     new ImportData(mainScreen, this.getSelectedFile()).execute();
                 default:
-                    JOptionPane.showMessageDialog(mainScreen, Strings.WRONG_FILE_EXTENSION, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, WRONG_FILE_EXTENSION, ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }

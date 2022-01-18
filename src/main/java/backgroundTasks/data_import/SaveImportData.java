@@ -1,6 +1,21 @@
 package backgroundTasks.data_import;
 
-public class SaveImportData /*extends SwingWorker<Void, Void>*/ {/*
+import application.Application;
+import model.Calibrator;
+import model.Channel;
+import model.Sensor;
+import model.Worker;
+import ui.mainScreen.MainScreen;
+import ui.model.LoadDialog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+
+public class SaveImportData extends SwingWorker<Void, Void> {
+    private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
+    private static final String IMPORT = "Імпорт";
+
     private final MainScreen mainScreen;
     private final LoadDialog loadDialog;
     private ArrayList<Channel> channels;
@@ -53,28 +68,28 @@ public class SaveImportData /*extends SwingWorker<Void, Void>*/ {/*
     @Override
     protected Void doInBackground() throws Exception {
         if (this.sensors != null && !this.sensors.isEmpty()) {
-            Lists.saveSensorsListToFile(this.sensors);
+            Application.context.sensorsController.rewriteAll(this.sensors);
         }
         if (this.channels != null && !this.channels.isEmpty()) {
-            Lists.saveChannelsListToFile(this.channels);
+            Application.context.channelsController.rewriteAll(this.channels);
         }
         if (this.persons != null && !this.persons.isEmpty()) {
-            Lists.savePersonsListToFile(this.persons);
+            Application.context.personsController.rewriteAll(this.persons);
         }
         if (this.calibrators != null && !this.calibrators.isEmpty()) {
-            Lists.saveCalibratorsListToFile(this.calibrators);
+            Application.context.calibratorsController.rewriteAll(this.calibrators);
         }
         if (this.departments != null && !this.departments.isEmpty()) {
-            Lists.saveDepartmentsListToFile(this.departments);
+            Application.context.departmentsController.rewriteAll(this.departments);
         }
         if (this.areas != null && !this.areas.isEmpty()) {
-            Lists.saveAreasListToFile(this.areas);
+            Application.context.areasController.rewriteAll(this.areas);
         }
         if (this.processes != null && !this.processes.isEmpty()) {
-            Lists.saveProcessesListToFile(this.processes);
+            Application.context.processesController.rewriteAll(this.processes);
         }
         if (this.installations != null && !this.installations.isEmpty()) {
-            Lists.saveInstallationsListToFile(this.installations);
+            Application.context.installationsController.rewriteAll(this.installations);
         }
         return null;
     }
@@ -82,7 +97,7 @@ public class SaveImportData /*extends SwingWorker<Void, Void>*/ {/*
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        this.mainScreen.update(Lists.channels(), false, null, null);
-        JOptionPane.showMessageDialog(this.mainScreen, Strings.IMPORT_SUCCESS, Strings.IMPORT, JOptionPane.INFORMATION_MESSAGE);
+        this.mainScreen.setChannelsList(Application.context.channelsController.getAll());
+        JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
-*/}
+}

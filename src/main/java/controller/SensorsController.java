@@ -290,6 +290,11 @@ public class SensorsController {
         return numberOfSensors > 1;
     }
 
+    public void rewriteAll(ArrayList<Sensor>sensors){
+        this.sensors = sensors;
+        this.save();
+    }
+
     private void save() {
         new Repository<Sensor>(this.window, Model.SENSOR).writeList(this.sensors);
     }

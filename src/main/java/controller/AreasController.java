@@ -2,6 +2,7 @@ package controller;
 
 import constants.Strings;
 import model.Model;
+import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
@@ -132,6 +133,12 @@ public class AreasController {
             return false;
         }
     }
+
+    public void rewriteAll(ArrayList<String>areas){
+        this.areas = areas;
+        this.save();
+    }
+
     private void showNotFoundMessage() {
         String message = "Ділянка з такою назвою не знайдена в списку ділянок.";
         JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);

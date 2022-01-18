@@ -2,6 +2,7 @@ package controller;
 
 import constants.Strings;
 import model.Model;
+import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
@@ -156,6 +157,11 @@ public class InstallationsController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public void rewriteAll(ArrayList<String>installations){
+        this.installations = installations;
+        this.save();
     }
 
     private void showNotFoundMessage() {

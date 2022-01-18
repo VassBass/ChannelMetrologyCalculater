@@ -5,6 +5,7 @@ import constants.Strings;
 import measurements.Measurement;
 import model.Calibrator;
 import model.Model;
+import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
@@ -282,6 +283,11 @@ public class CalibratorsController {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public void rewriteAll(ArrayList<Calibrator>calibrators){
+        this.calibrators = calibrators;
+        this.save();
     }
 
     private void showNotFoundMessage() {

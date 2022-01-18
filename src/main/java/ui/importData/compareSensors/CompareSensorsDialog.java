@@ -1,10 +1,33 @@
 package ui.importData.compareSensors;
 
-public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/*
+import application.Application;
+import backgroundTasks.data_import.SaveImportData;
+import backgroundTasks.data_import.SaveImportedSensors;
+import constants.Strings;
+import converters.ConverterUI;
+import model.*;
+import ui.importData.BreakImportDialog;
+import ui.importData.compareChannels.CompareChannelsDialog;
+import ui.importData.compareSensors.complexElements.CompareSensorsInfoPanel;
+import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+
+public class CompareSensorsDialog extends JDialog {
+    private static final String IMPORT = "Імпорт";
+    private static final String CHANGE = "Замінити";
+    private static final String SKIP = "Пропустити";
+    private static final String CHANGE_ALL = "Замінити все";
+    private static final String SKIP_ALL = "Пропустити все";
+
     private final MainScreen mainScreen;
     private final JDialog current;
 
-    private final ArrayList<Sensor>newSensorsList, oldSensorsList, importedSensorsList;
+    private final ArrayList<Sensor> newSensorsList, oldSensorsList, importedSensorsList;
     private ArrayList<Channel>newChannelsList, importedChannelsList;
     private ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
 
@@ -15,21 +38,21 @@ public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/
     private ArrayList<Integer[]> channelIndexes, calibratorsIndexes;
 
     private int marker = 0;
-    private final int exportData;
+    private final Model exportData;
 
     private CompareSensorsInfoPanel infoPanel;
 
     private JButton buttonChange, buttonSkip, buttonChangeAll, buttonSkipAll;
 
-    public CompareSensorsDialog(final MainScreen mainScreen, int exportData,
+    public CompareSensorsDialog(final MainScreen mainScreen, Model exportData,
                                 final ArrayList<Sensor> newSensorsList, ArrayList<Sensor> importedSensorsList, ArrayList<Integer[]> sensorsIndexes){
-        super(mainScreen, Strings.IMPORT, true);
+        super(mainScreen, IMPORT, true);
         this.mainScreen = mainScreen;
         this.exportData = exportData;
         this.current = this;
 
         this.newSensorsList = newSensorsList;
-        this.oldSensorsList = Lists.sensors();
+        this.oldSensorsList = Application.context.sensorsController.getAll();
         this.importedSensorsList = importedSensorsList;
         this.sensorsIndexes = sensorsIndexes;
 
@@ -43,19 +66,19 @@ public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/
         }
     }
 
-    public CompareSensorsDialog(final MainScreen mainScreen, final int exportData,
+    public CompareSensorsDialog(final MainScreen mainScreen, final Model exportData,
                                 final ArrayList<Sensor>newSensorsList, ArrayList<Sensor>importedSensorsList, ArrayList<Integer[]>sensorsIndexes,
                                 final ArrayList<Channel>newChannelsList, final ArrayList<Channel>importedChannelsList, ArrayList<Integer[]>channelsIndexes,
                                 ArrayList<Calibrator>newCalibratorList, final ArrayList<Calibrator>importedCalibratorsList, final ArrayList<Integer[]>calibratorsIndexes,
                                 final ArrayList<Worker>persons,
                                 final ArrayList<String>departments, final ArrayList<String>areas, final ArrayList<String>processes, final ArrayList<String>installations){
-        super(mainScreen, Strings.IMPORT, true);
+        super(mainScreen, IMPORT, true);
         this.mainScreen = mainScreen;
         this.exportData = exportData;
         this.current = this;
 
         this.newSensorsList = newSensorsList;
-        this.oldSensorsList = Lists.sensors();
+        this.oldSensorsList = Application.context.sensorsController.getAll();
         this.importedSensorsList = importedSensorsList;
         this.sensorsIndexes = sensorsIndexes;
 
@@ -91,7 +114,7 @@ public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/
         marker++;
         if (marker >= sensorsIndexes.size()) {
             this.dispose();
-            if (this.exportData == ExportData.SENSORS){
+            if (this.exportData == Model.SENSOR){
                 new SaveImportedSensors(this.mainScreen, this.newSensorsList).execute();
             }else {
                 EventQueue.invokeLater(new Runnable() {
@@ -115,47 +138,21 @@ public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/
         }
     }
 
-    @Override
-    public void createElements() {
+    private void createElements() {
         Integer[] index = this.sensorsIndexes.get(marker);
         int indexOld = index[0];
         int indexImport = index[1];
         this.infoPanel = new CompareSensorsInfoPanel(this.oldSensorsList.get(indexOld), this.importedSensorsList.get(indexImport));
 
-        this.buttonChange = new JButton(Strings._CHANGE);
-        this.buttonChange.setBackground(Color.white);
-        this.buttonChange.setFocusPainted(false);
-        this.buttonChange.setContentAreaFilled(false);
-        this.buttonChange.setOpaque(true);
-
-        this.buttonSkip = new JButton(Strings.SKIP);
-        this.buttonSkip.setBackground(Color.white);
-        this.buttonSkip.setFocusPainted(false);
-        this.buttonSkip.setContentAreaFilled(false);
-        this.buttonSkip.setOpaque(true);
-
-        this.buttonChangeAll = new JButton(Strings.CHANGE_ALL);
-        this.buttonChangeAll.setBackground(Color.white);
-        this.buttonChangeAll.setFocusPainted(false);
-        this.buttonChangeAll.setContentAreaFilled(false);
-        this.buttonChangeAll.setOpaque(true);
-
-        this.buttonSkipAll = new JButton(Strings.SKIP_ALL);
-        this.buttonSkipAll.setBackground(Color.white);
-        this.buttonSkipAll.setFocusPainted(false);
-        this.buttonSkipAll.setContentAreaFilled(false);
-        this.buttonSkipAll.setOpaque(true);
+        this.buttonChange = new DefaultButton(CHANGE);
+        this.buttonSkip = new DefaultButton(SKIP);
+        this.buttonChangeAll = new DefaultButton(CHANGE_ALL);
+        this.buttonSkipAll = new DefaultButton(SKIP_ALL);
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(this.windowListener);
-
-        this.buttonSkipAll.addChangeListener(this.pushButton);
-        this.buttonSkip.addChangeListener(this.pushButton);
-        this.buttonChange.addChangeListener(this.pushButton);
-        this.buttonChangeAll.addChangeListener(this.pushButton);
 
         this.buttonChangeAll.addActionListener(this.clickChangeAll);
         this.buttonSkip.addActionListener(this.clickSkip);
@@ -163,25 +160,12 @@ public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/
         this.buttonSkipAll.addActionListener(this.clickSkipAll);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(800,700);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
-
-    private final ChangeListener pushButton = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                button.setBackground(Color.white.darker());
-            }else {
-                button.setBackground(Color.white);
-            }
-        }
-    };
 
     private final WindowListener windowListener = new WindowAdapter() {
         @Override
@@ -195,7 +179,7 @@ public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/
         @Override
         public void actionPerformed(ActionEvent e) {
             Integer[]i = sensorsIndexes.get(marker);
-            newSensorsList.add(i[0], Objects.requireNonNull(oldSensorsList).get(i[0]));
+            newSensorsList.add(i[0], oldSensorsList.get(i[0]));
             next();
         }
     };
@@ -214,7 +198,7 @@ public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/
         public void actionPerformed(ActionEvent e) {
             for (;marker<sensorsIndexes.size();marker++){
                 Integer[]i = sensorsIndexes.get(marker);
-                newSensorsList.add(i[0], Objects.requireNonNull(oldSensorsList).get(i[0]));
+                newSensorsList.add(i[0], oldSensorsList.get(i[0]));
             }
             next();
         }
@@ -261,4 +245,4 @@ public class CompareSensorsDialog /*extends JDialog implements UI_Container*/ {/
             }
         }
     }
-*/}
+}

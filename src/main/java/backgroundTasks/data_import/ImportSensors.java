@@ -1,12 +1,29 @@
 package backgroundTasks.data_import;
 
-public class ImportSensors /*extends SwingWorker<Integer, Void>*/ {/*
+import application.Application;
+import model.Model;
+import model.Sensor;
+import support.Comparator;
+import ui.importData.compareSensors.CompareSensorsDialog;
+import ui.mainScreen.MainScreen;
+import ui.model.LoadDialog;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+
+public class ImportSensors extends SwingWorker<Integer, Void> {
+    private static final String ERROR = "Помилка";
+
     private final MainScreen mainScreen;
     private final File exportDataFile;
     private final LoadDialog loadDialog;
 
     private ArrayList<Sensor>importedSensors, newSensorsList;
-    private ArrayList<Integer[]>sensorsIndexes;
+    private ArrayList<Integer[]> sensorsIndexes;
 
     public ImportSensors(MainScreen mainScreen, File exportDataFile){
         super();
@@ -45,18 +62,18 @@ public class ImportSensors /*extends SwingWorker<Integer, Void>*/ {/*
         try {
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні ПВП", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні ПВП", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            new CompareSensorsDialog(mainScreen, ExportData.SENSORS, newSensorsList, importedSensors, sensorsIndexes);
+                            new CompareSensorsDialog(mainScreen, Model.SENSOR, newSensorsList, importedSensors, sensorsIndexes);
                         }
                     });
                     break;
                 case -1:
-                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }catch (Exception e){
@@ -76,11 +93,11 @@ public class ImportSensors /*extends SwingWorker<Integer, Void>*/ {/*
     }
 
     private void copySensors(){
-        ArrayList<Sensor>oldSensorsList = Lists.sensors();
+        ArrayList<Sensor>oldSensorsList = Application.context.sensorsController.getAll();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Sensor>newList = new ArrayList<>();
 
-        for (int o = 0; o< Objects.requireNonNull(oldSensorsList).size(); o++){
+        for (int o = 0; o< oldSensorsList.size(); o++){
             boolean exist = false;
             Sensor old = oldSensorsList.get(o);
             for (int i=0;i<this.importedSensors.size();i++){
@@ -123,4 +140,4 @@ public class ImportSensors /*extends SwingWorker<Integer, Void>*/ {/*
             this.sensorsIndexes = indexes;
         }
     }
-*/}
+}

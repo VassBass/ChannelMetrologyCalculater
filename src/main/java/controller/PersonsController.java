@@ -3,6 +3,7 @@ package controller;
 import constants.Strings;
 import constants.WorkPositions;
 import model.Model;
+import model.Sensor;
 import model.Worker;
 import repository.Repository;
 import support.Comparator;
@@ -115,8 +116,19 @@ public class PersonsController {
     }
 
     public ArrayList<Worker> add(Worker worker) {
-        this.persons.add(worker);
-        this.save();
+        boolean exist = false;
+        for (Worker person : this.persons){
+            if (Comparator.personsMatch(person, worker)){
+                exist = true;
+                break;
+            }
+        }
+        if (exist){
+            this.showExistMessage();
+        }else {
+            this.persons.add(worker);
+            this.save();
+        }
         return this.persons;
     }
 
@@ -198,8 +210,18 @@ public class PersonsController {
         }
     }
 
+    public void rewriteAll(ArrayList<Worker>workers){
+        this.persons = workers;
+        this.save();
+    }
+
     private void showNotFoundMessage() {
         String message = "Працівник не знайден в списку працівників.";
+        JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showExistMessage() {
+        String message = "Працівник з такими даними вже існує в списку працівниців.-";
         JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }
