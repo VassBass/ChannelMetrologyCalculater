@@ -1,31 +1,20 @@
 package backgroundTasks.data_export;
 
 import application.Application;
-import constants.Files;
-import constants.Strings;
-import controller.FileBrowser;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
 
 public class ExportAreas extends SwingWorker<Boolean, Void> {
+    private static final String EXPORT_SUCCESS = "Дані вдало експортовані";
+    private static final String EXPORT = "Експорт";
+    private static final String ERROR = "Помилка";
+    private static final String ERROR_MESSAGE = "Файл експорту не вдалось створити";
+
     private final MainScreen mainScreen;
     private final LoadDialog loadDialog;
-
-    private String fileName(Calendar date){
-        return "export_areas ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].are";
-    }
 
     public ExportAreas(MainScreen mainScreen){
         super();
@@ -41,8 +30,7 @@ public class ExportAreas extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        Application.e
-        return true;
+        return Application.context.areasController.exportData();
     }
 
     @Override
@@ -50,9 +38,9 @@ public class ExportAreas extends SwingWorker<Boolean, Void> {
         loadDialog.dispose();
         try {
             if (this.get()){
-                JOptionPane.showMessageDialog(this.mainScreen, Strings.EXPORT_SUCCESS, Strings.EXPORT, JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this.mainScreen, EXPORT_SUCCESS, EXPORT, JOptionPane.INFORMATION_MESSAGE);
             }else {
-                JOptionPane.showMessageDialog(mainScreen, Strings.ERROR, "Файл експорту не вдалось створити", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainScreen, ERROR, ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();

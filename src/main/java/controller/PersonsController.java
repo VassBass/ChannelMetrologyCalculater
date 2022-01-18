@@ -9,11 +9,23 @@ import support.Comparator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class PersonsController {
     private Window window;
     private ArrayList<Worker> persons;
+
+    private String exportFileName(Calendar date){
+        return "export_persons ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].per";
+    }
 
     public void init(Window window){
         try {
@@ -173,6 +185,17 @@ public class PersonsController {
 
     private void save() {
         new Repository<Worker>(this.window, Model.PERSON).writeList(this.persons);
+    }
+
+    public boolean exportData(){
+        try {
+            String fileName = this.exportFileName(Calendar.getInstance());
+            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.persons);
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void showNotFoundMessage() {

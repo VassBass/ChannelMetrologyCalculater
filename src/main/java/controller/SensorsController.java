@@ -1,20 +1,30 @@
 package controller;
 
-import application.Application;
 import constants.MeasurementConstants;
 import constants.Strings;
-import measurements.Measurement;
 import model.Model;
 import model.Sensor;
 import repository.Repository;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class SensorsController {
     private Window window;
     private ArrayList<Sensor> sensors;
+
+    private String exportFileName(Calendar date){
+        return "export_sensors ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].sen";
+    }
 
     public void init(Window window){
         try {
@@ -282,6 +292,17 @@ public class SensorsController {
 
     private void save() {
         new Repository<Sensor>(this.window, Model.SENSOR).writeList(this.sensors);
+    }
+
+    public boolean exportData(){
+        try {
+            String fileName = this.exportFileName(Calendar.getInstance());
+            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.sensors);
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void showNotFoundMessage() {

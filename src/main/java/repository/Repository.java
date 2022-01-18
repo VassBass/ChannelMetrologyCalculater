@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class Repository<M> extends SwingWorker<Void, Void> {
     private final Window window;
-    private File file;
+    private final File file;
     private ArrayList<M>list;
     private SaveMessage saveMessage;
 
@@ -67,22 +67,6 @@ public class Repository<M> extends SwingWorker<Void, Void> {
     }
 
     public void writeList(ArrayList<M>list){
-        this.list = list;
-        if (this.window != null) {
-            this.saveMessage = new SaveMessage(this.window);
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    saveMessage.setVisible(true);
-                }
-            });
-        }
-        Application.setBusy(true);
-        this.execute();
-    }
-
-    public void exportList(File file, ArrayList<M>list){
-        this.file = file;
         this.list = list;
         if (this.window != null) {
             this.saveMessage = new SaveMessage(this.window);

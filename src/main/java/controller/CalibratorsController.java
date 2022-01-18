@@ -9,6 +9,7 @@ import repository.Repository;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -16,6 +17,16 @@ import java.util.GregorianCalendar;
 public class CalibratorsController {
     private Window window;
     private ArrayList<Calibrator> calibrators;
+
+    private String exportFileName(Calendar date){
+        return "export_calibrators ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].cal";
+    }
 
     public void init(Window window){
         try {
@@ -260,6 +271,17 @@ public class CalibratorsController {
 
     private void save() {
         new Repository<Calibrator>(this.window, Model.CALIBRATOR).writeList(this.calibrators);
+    }
+
+    public boolean exportData(){
+        try {
+            String fileName = this.exportFileName(Calendar.getInstance());
+            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.calibrators);
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void showNotFoundMessage() {

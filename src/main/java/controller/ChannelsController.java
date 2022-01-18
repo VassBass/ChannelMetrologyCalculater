@@ -1,5 +1,6 @@
 package controller;
 
+import application.Application;
 import constants.Strings;
 import model.Channel;
 import model.Model;
@@ -8,12 +9,24 @@ import repository.Repository;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 
 public class ChannelsController {
     private Window window;
     private ArrayList<Channel> channels;
+
+    private String exportFileName(Calendar date){
+        return "export_channels ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].chn";
+    }
 
     public void init(Window window){
         try {
@@ -173,6 +186,19 @@ public class ChannelsController {
 
     private void save() {
         new Repository<Channel>(this.window, Model.CHANNEL).writeList(this.channels);
+    }
+
+    public boolean exportData() {
+        String fileName = this.exportFileName(Calendar.getInstance());
+        ArrayList<Sensor>sensors = Application.context.sensorsController.getAll();
+        ArrayList<?>[]list = new ArrayList<?>[]{this.channels, sensors};
+        try {
+            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), list);
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void showNotFoundMessage() {

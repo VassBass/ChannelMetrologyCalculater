@@ -6,11 +6,23 @@ import repository.Repository;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class DepartmentsController {
     private Window window;
     private ArrayList<String>departments;
+
+    private String exportFileName(Calendar date){
+        return "export_departments ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].dep";
+    }
 
     public void init(Window window){
         try {
@@ -95,6 +107,17 @@ public class DepartmentsController {
 
     private void save() {
         new Repository<String>(this.window, Model.DEPARTMENT).writeList(this.departments);
+    }
+
+    public boolean exportData(){
+        try {
+            String fileName = this.exportFileName(Calendar.getInstance());
+            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.departments);
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void showNotFoundMessage() {

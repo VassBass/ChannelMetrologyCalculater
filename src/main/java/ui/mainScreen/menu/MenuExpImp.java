@@ -1,7 +1,7 @@
 package ui.mainScreen.menu;
 
-import backgroundTasks.data_export.ExportData;
 import controller.FileBrowser;
+import model.Model;
 import ui.exportData.ConfirmExportDialog;
 import ui.importData.ImportDataDialog;
 import ui.mainScreen.MainScreen;
@@ -108,7 +108,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.ALL_DATA).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, null).setVisible(true);
                 }
             });
         }
@@ -120,7 +120,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.CHANNELS).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.CHANNEL).setVisible(true);
                 }
             });
         }
@@ -132,7 +132,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.SENSORS).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.SENSOR).setVisible(true);
                 }
             });
         }
@@ -144,7 +144,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.CALIBRATORS).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.CALIBRATOR).setVisible(true);
                 }
             });
         }
@@ -156,7 +156,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.PERSONS).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.PERSON).setVisible(true);
                 }
             });
         }
@@ -168,7 +168,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.DEPARTMENTS).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.DEPARTMENT).setVisible(true);
                 }
             });
         }
@@ -180,7 +180,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.AREAS).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.AREA).setVisible(true);
                 }
             });
         }
@@ -192,7 +192,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.PROCESSES).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.PROCESS).setVisible(true);
                 }
             });
         }
@@ -204,7 +204,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.INSTALLATIONS).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.INSTALLATION).setVisible(true);
                 }
             });
         }
@@ -216,7 +216,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, ExportData.ALL_PATH_ELEMENTS).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.PATH_ELEMENT).setVisible(true);
                 }
             });
         }

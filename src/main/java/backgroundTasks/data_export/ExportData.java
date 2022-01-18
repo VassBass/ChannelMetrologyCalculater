@@ -1,14 +1,23 @@
 package backgroundTasks.data_export;
 
-import constants.Strings;
+import application.Application;
+import controller.FileBrowser;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
-public class ExportData extends SwingWorker<Void, Void>{
+public class ExportData extends SwingWorker<Boolean, Void>{
+    private static final String EXPORT_SUCCESS = "Дані вдало експортовані";
+    private static final String EXPORT = "Експорт";
+    private static final String ERROR = "Помилка";
+    private static final String ERROR_MESSAGE = "Файл експорту не вдалось створити";
+
     private final MainScreen mainScreen;
     private final LoadDialog loadDialog;
 
@@ -21,16 +30,10 @@ public class ExportData extends SwingWorker<Void, Void>{
                 + date.get(Calendar.YEAR)
                 + "].exp";
     }
-    public static final int ALL_DATA = 0;
-    public static final int CHANNELS = 1;
-    public static final int SENSORS = 2;
-    public static final int CALIBRATORS = 3;
-    public static final int DEPARTMENTS = 4;
-    public static final int AREAS = 5;
-    public static final int PROCESSES = 6;
-    public static final int INSTALLATIONS = 7;
-    public static final int ALL_PATH_ELEMENTS = 8;
-    public static final int PERSONS = 9;
+
+    private File exportFile(){
+        return new File(FileBrowser.DIR_EXPORT, this.fileName(Calendar.getInstance()));
+    }
 
     public ExportData(MainScreen mainScreen){
         super();
@@ -45,20 +48,37 @@ public class ExportData extends SwingWorker<Void, Void>{
     }
 
     @Override
-    protected Void doInBackground() throws Exception {
-        /*ArrayList<?>[]data = new ArrayList<?>[]{
-                Lists.sensors(), Lists.channels(), Lists.calibrators(), Lists.persons(),
-                Lists.departments(), Lists.areas(), Lists.processes(), Lists.installations()
+    protected Boolean doInBackground() throws Exception {
+        ArrayList<?>[]list = new ArrayList<?>[]{
+                Application.context.channelsController.getAll(),
+                Application.context.sensorsController.getAll(),
+                Application.context.calibratorsController.getAll(),
+                Application.context.personsController.getAll(),
+                Application.context.departmentsController.getAll(),
+                Application.context.areasController.getAll(),
+                Application.context.processesController.getAll(),
+                Application.context.installationsController.getAll()
         };
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.fileName(Calendar.getInstance())));
-        oos.writeObject(data);
-        oos.close();*/
-        return null;
+        try {
+            FileBrowser.saveToFile(this.exportFile(), list);
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
     protected void done() {
-        this.loadDialog.dispose();
-        JOptionPane.showMessageDialog(this.mainScreen, Strings.EXPORT_SUCCESS, Strings.EXPORT, JOptionPane.INFORMATION_MESSAGE);
+        loadDialog.dispose();
+        try {
+            if (this.get()){
+                JOptionPane.showMessageDialog(this.mainScreen, EXPORT_SUCCESS, EXPORT, JOptionPane.INFORMATION_MESSAGE);
+            }else {
+                JOptionPane.showMessageDialog(mainScreen, ERROR, ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

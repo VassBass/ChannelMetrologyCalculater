@@ -1,20 +1,23 @@
 package backgroundTasks.data_export;
 
 import application.Application;
-import constants.Files;
-import constants.Strings;
+import controller.FileBrowser;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ExportPathElements extends SwingWorker<Boolean, Void> {
+    private static final String EXPORT_SUCCESS = "Дані вдало експортовані";
+    private static final String EXPORT = "Експорт";
+    private static final String ERROR = "Помилка";
+    private static final String ERROR_MESSAGE = "Файл експорту не вдалось створити";
+
     private final MainScreen mainScreen;
     private final LoadDialog loadDialog;
 
@@ -29,7 +32,7 @@ public class ExportPathElements extends SwingWorker<Boolean, Void> {
     }
 
     private File exportFile(){
-        return new File(Files.EXPORT_DIR, this.fileName(Calendar.getInstance()));
+        return new File(FileBrowser.DIR_EXPORT, this.fileName(Calendar.getInstance()));
     }
 
     public ExportPathElements(MainScreen mainScreen){
@@ -52,16 +55,13 @@ public class ExportPathElements extends SwingWorker<Boolean, Void> {
                 Application.context.processesController.getAll(),
                 Application.context.installationsController.getAll()
         };
-        File file = this.exportFile();
-        if (!file.exists()){
-            if (!file.createNewFile()){
-                return false;
-            }
+        try {
+            FileBrowser.saveToFile(this.exportFile(), elements);
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
         }
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(this.exportFile()));
-        oos.writeObject(elements);
-        oos.close();
-        return true;
     }
 
     @Override
@@ -69,9 +69,9 @@ public class ExportPathElements extends SwingWorker<Boolean, Void> {
         loadDialog.dispose();
         try {
             if (this.get()){
-                JOptionPane.showMessageDialog(this.mainScreen, Strings.EXPORT_SUCCESS, Strings.EXPORT, JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this.mainScreen, EXPORT_SUCCESS, EXPORT, JOptionPane.INFORMATION_MESSAGE);
             }else {
-                JOptionPane.showMessageDialog(mainScreen, Strings.ERROR, "Файл експорту не вдалось створити", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainScreen, ERROR, ERROR_MESSAGE, JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -6,12 +6,23 @@ import repository.Repository;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AreasController {
     private Window window;
     private ArrayList<String>areas;
+
+    private String exportFileName(Calendar date){
+        return "export_areas ["
+                + date.get(Calendar.DAY_OF_MONTH)
+                + "."
+                + (date.get(Calendar.MONTH) + 1)
+                + "."
+                + date.get(Calendar.YEAR)
+                + "].are";
+    }
 
     public void init(Window window){
         try {
@@ -107,14 +118,20 @@ public class AreasController {
         this.save();
     }
 
-    public void export(File file){
-        new Repository<String>(this.window, Model.AREA).exportList(file, this.areas);
-    }
-
     private void save() {
         new Repository<String>(this.window, Model.AREA).writeList(this.areas);
     }
 
+    public boolean exportData(){
+        try {
+            String fileName = this.exportFileName(Calendar.getInstance());
+            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.areas);
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return false;
+        }
+    }
     private void showNotFoundMessage() {
         String message = "Ділянка з такою назвою не знайдена в списку ділянок.";
         JOptionPane.showMessageDialog(this.window, message, Strings.ERROR, JOptionPane.ERROR_MESSAGE);
