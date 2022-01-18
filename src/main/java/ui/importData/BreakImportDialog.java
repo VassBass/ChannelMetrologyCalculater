@@ -1,17 +1,18 @@
 package ui.importData;
 
-import constants.Strings;
 import converters.ConverterUI;
 import ui.mainScreen.MainScreen;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class BreakImportDialog extends JDialog implements UI_Container {
+public class BreakImportDialog extends JDialog {
+    public static final String BREAK_IMPORT = "Припинити імпорт?";
+    public static final String YES = "Так";
+    public static final String NO = "Ні";
+
     private final MainScreen mainScreen;
     private final JDialog parent;
 
@@ -20,7 +21,7 @@ public class BreakImportDialog extends JDialog implements UI_Container {
     private JButton positiveButton, negativeButton;
 
     public BreakImportDialog(MainScreen mainScreen, JDialog parent){
-        super(mainScreen, Strings.BREAK_IMPORT, true);
+        super(mainScreen, BREAK_IMPORT, true);
         this.mainScreen = mainScreen;
         this.parent = parent;
 
@@ -28,36 +29,22 @@ public class BreakImportDialog extends JDialog implements UI_Container {
         this.setReactions();
         this.build();
     }
-    @Override
-    public void createElements() {
-        this.positiveButton = new JButton(Strings.YES);
-        this.positiveButton.setBackground(Color.white);
-        this.positiveButton.setFocusPainted(false);
-        this.positiveButton.setContentAreaFilled(false);
-        this.positiveButton.setOpaque(true);
 
-        this.negativeButton = new JButton(Strings.NO);
-        this.negativeButton.setBackground(Color.white);
-        this.negativeButton.setFocusPainted(false);
-        this.negativeButton.setContentAreaFilled(false);
-        this.negativeButton.setOpaque(true);
+    private void createElements() {
+        this.positiveButton = new DefaultButton(YES);
+        this.negativeButton = new DefaultButton(NO);
 
         this.content = new JPanel();
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         this.positiveButton.addActionListener(this.clickPositiveButton);
-        this.negativeButton.addActionListener(clickNegativeButton);
-
-        this.positiveButton.addChangeListener(this.push);
-        this.negativeButton.addChangeListener(this.push);
+        this.negativeButton.addActionListener(this.clickNegativeButton);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.setSize(250, 60);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
@@ -66,18 +53,6 @@ public class BreakImportDialog extends JDialog implements UI_Container {
 
         this.setContentPane(this.content);
     }
-
-    private final ChangeListener push = new ChangeListener() {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            JButton button = (JButton) e.getSource();
-            if (button.getModel().isPressed()) {
-                setBackground(Color.white.darker());
-            }else {
-                setBackground(Color.white);
-            }
-        }
-    };
 
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
