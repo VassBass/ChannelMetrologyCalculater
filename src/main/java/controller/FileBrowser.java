@@ -45,7 +45,7 @@ public class FileBrowser {
     private static final File DIR_FORMS = new File(DIR_MAIN, DIR_NAME_FORMS);
     private static final File DIR_IMAGES = new File(DIR_MAIN, DIR_NAME_IMAGES);
 
-    private static final File FILE_SETTINGS = new File(DIR_MAIN, FILE_NAME_SETTINGS);
+    public static final File FILE_SETTINGS = new File(DIR_MAIN, FILE_NAME_SETTINGS);
     public static final File FILE_SENSORS = new File(DIR_LISTS, FILE_NAME_SENSORS);
     public static final File FILE_CHANNELS = new File(DIR_LISTS, FILE_NAME_CHANNELS);
     public static final File FILE_DEPARTMENTS = new File(DIR_LISTS, FILE_NAME_DEPARTMENTS);

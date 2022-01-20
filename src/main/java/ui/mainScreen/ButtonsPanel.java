@@ -1,6 +1,6 @@
 package ui.mainScreen;
 
-import constants.Files;
+import controller.FileBrowser;
 import ui.model.DefaultButton;
 import ui.calculate.start.CalculateStartDialog;
 import ui.channelInfo.DialogChannel;
@@ -118,7 +118,7 @@ public class ButtonsPanel extends JPanel {
             if (Desktop.isDesktopSupported()){
                 desktop = Desktop.getDesktop();
                 try {
-                    desktop.open(Files.CERTIFICATES_DIR);
+                    desktop.open(FileBrowser.DIR_CERTIFICATES);
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }

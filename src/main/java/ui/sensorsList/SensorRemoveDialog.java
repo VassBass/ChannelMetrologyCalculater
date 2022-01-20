@@ -18,12 +18,14 @@ public class SensorRemoveDialog extends JDialog {
     private static final String CANCEL = "Відміна";
 
     private final SensorsListDialog parent;
+    private final JDialog current;
 
     private JLabel message1, message2, message3;
     private JButton buttonCancel, buttonRemove;
 
     public SensorRemoveDialog(SensorsListDialog parent){
         super(parent, title(parent.mainTable.getSelectedRow()), true);
+        this.current = this;
         this.parent = parent;
 
         this.createElements();
@@ -78,6 +80,7 @@ public class SensorRemoveDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             dispose();
             new RemoveSensor(parent).start();
         }

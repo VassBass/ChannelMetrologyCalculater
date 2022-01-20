@@ -3,7 +3,6 @@ package ui.removeChannels;
 import application.Application;
 import converters.ConverterUI;
 import model.Channel;
-import constants.Strings;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
@@ -92,6 +91,7 @@ public class DialogRemoveChannels extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             int selectedIndex = mainScreen.mainTable.getSelectedRow();
             final Channel channel;
             if (selectedIndex == -1){

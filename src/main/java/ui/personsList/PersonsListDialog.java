@@ -2,15 +2,12 @@ package ui.personsList;
 
 import application.Application;
 import converters.ConverterUI;
-import constants.Strings;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 import ui.personsList.personInfo.PersonInfoDialog;
 import ui.personsList.personInfo.removePerson.RemovePersonDialog;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

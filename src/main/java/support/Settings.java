@@ -1,13 +1,14 @@
 package support;
 
-import constants.Files;
 import constants.MeasurementConstants;
+import controller.FileBrowser;
 
 import java.io.*;
+import java.util.HashMap;
 
 public class Settings {
 
-    private static Values settings = null;
+    private static HashMap<String, String> settings = null;
 
     private static void setDefaultSettings(){
 
@@ -20,34 +21,36 @@ public class Settings {
         setSettingValue(MeasurementConstants.CONSUMPTION.getValue(), nameConsumptionMethod);
     }
 
+    @SuppressWarnings("unchecked")
     public static void checkSettings(){
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(Files.FILE_SETTINGS))){
-            settings = (Values) in.readObject();
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FileBrowser.FILE_SETTINGS))){
+            settings = (HashMap<String, String>) in.readObject();
         }catch (Exception ex){
-            try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Files.FILE_SETTINGS))){
-                out.writeObject(new Values());
+            try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FileBrowser.FILE_SETTINGS))){
+                out.writeObject(new HashMap<String, String>());
                 setDefaultSettings();
             }catch (Exception ignored){}
         }
     }
 
     public static String getSettingValue(String key){
-        return getSettings().getStringValue(key);
+        return getSettings().get(key);
     }
 
     public static void setSettingValue(String key, String value){
-        getSettings().putValue(key, value);
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(Files.FILE_SETTINGS))){
+        getSettings().put(key, value);
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FileBrowser.FILE_SETTINGS))){
             out.writeObject(settings);
         }catch (Exception ex){
             ex.printStackTrace();
         }
     }
 
-    private static Values getSettings(){
+    @SuppressWarnings("unchecked")
+    private static HashMap<String, String> getSettings(){
         if (settings == null){
-            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(Files.FILE_SETTINGS))){
-                settings = (Values) in.readObject();
+            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FileBrowser.FILE_SETTINGS))){
+                settings = (HashMap<String, String>) in.readObject();
             }catch (Exception ex){
                 ex.printStackTrace();
             }

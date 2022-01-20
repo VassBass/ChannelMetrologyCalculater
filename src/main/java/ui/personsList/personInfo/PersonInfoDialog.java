@@ -80,6 +80,7 @@ public class PersonInfoDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (infoPanel.allTextsFull()){
+                if (Application.isBusy(current)) return;
                 dispose();
                 Worker newPerson = infoPanel.getWorker();
                 if (worker == null){

@@ -228,6 +228,7 @@ public class SensorInfoDialog extends JDialog {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             if (checkSensor()) {
                 Sensor sensor = new Sensor();
                 if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION.getValue())){

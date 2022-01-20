@@ -60,6 +60,7 @@ public class DialogRemoveAllChannels extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             current.dispose();
             mainScreen.setChannelsList(new ArrayList<Channel>());
             Application.context.channelsController.clear();

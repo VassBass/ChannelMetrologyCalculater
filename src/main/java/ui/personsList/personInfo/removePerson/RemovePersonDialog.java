@@ -16,6 +16,7 @@ public class RemovePersonDialog extends JDialog {
     public static final String CANCEL = "Відміна";
 
     private final PersonsListDialog parent;
+    private final JDialog current;
     private final Worker worker;
 
     private JLabel message;
@@ -24,6 +25,7 @@ public class RemovePersonDialog extends JDialog {
 
     public RemovePersonDialog(PersonsListDialog parent, Worker worker){
         super(parent, REMOVE, true);
+        this.current = this;
         this.parent = parent;
         this.worker = worker;
 
@@ -74,6 +76,7 @@ public class RemovePersonDialog extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             dispose();
             Application.context.personsController.remove(worker);
             parent.update();

@@ -32,6 +32,7 @@ public class CalculatePerformersDialog extends JDialog {
     private static final String SAVE = "Зберегти";
 
     private final MainScreen mainScreen;
+    private final JDialog current;
     private final Channel channel;
     private final HashMap<Integer, Object> values;
     private final Calculation calculation;
@@ -54,6 +55,7 @@ public class CalculatePerformersDialog extends JDialog {
 
     public CalculatePerformersDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values, Calculation calculation){
         super(mainScreen, WORKERS, true);
+        this.current = this;
         this.mainScreen = mainScreen;
         this.channel = channel;
         this.values = values;
@@ -284,6 +286,7 @@ public class CalculatePerformersDialog extends JDialog {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             dispose();
             new CertificateFormation(mainScreen, channel, getValues(), calculation).execute();
         }

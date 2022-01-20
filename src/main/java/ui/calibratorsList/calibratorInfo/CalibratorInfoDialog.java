@@ -43,6 +43,7 @@ public class CalibratorInfoDialog extends JDialog {
     private static final String SAVE = "Зберегти";
 
     private final CalibratorsListDialog parent;
+    private final JDialog current;
     private final Calibrator oldCalibrator;
 
     private ButtonCell labelCalibrator;
@@ -78,6 +79,7 @@ public class CalibratorInfoDialog extends JDialog {
 
     public CalibratorInfoDialog(CalibratorsListDialog parent, Calibrator oldCalibrator){
         super(parent, CALIBRATOR, true);
+        this.current = this;
         this.parent = parent;
         this.oldCalibrator = oldCalibrator;
 
@@ -270,6 +272,7 @@ public class CalibratorInfoDialog extends JDialog {
                 calibrator.setCertificateDate(certificateDatePanel.getDate());
                 calibrator.setCertificateCompany(certificateCompanyText.getText());
 
+                if (Application.isBusy(current)) return;
                 if (oldCalibrator == null){
                     Application.context.calibratorsController.add(calibrator);
                 }else {

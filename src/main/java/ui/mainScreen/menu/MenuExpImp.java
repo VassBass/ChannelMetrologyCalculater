@@ -1,5 +1,6 @@
 package ui.mainScreen.menu;
 
+import application.Application;
 import controller.FileBrowser;
 import model.Model;
 import ui.exportData.ConfirmExportDialog;
@@ -228,6 +229,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
+                    if (Application.isBusy(mainScreen)) return;
                     new ImportDataDialog(mainScreen).setVisible(true);
                 }
             });

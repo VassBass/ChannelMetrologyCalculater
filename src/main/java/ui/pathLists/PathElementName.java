@@ -14,6 +14,7 @@ public class PathElementName extends JDialog {
     private static final String SAVE = "Зберегти";
 
     private final PathListsDialog parent;
+    private final JDialog current;
 
     private JButton buttonSave, buttonCancel;
     private JTextField elementName;
@@ -23,6 +24,7 @@ public class PathElementName extends JDialog {
 
     public PathElementName(PathListsDialog parent, String elementType, String elementName){
         super(parent, elementType, true);
+        this.current = this;
         this.parent = parent;
         this.elementType = elementType;
         this.oldNameOfElement = elementName;
@@ -64,6 +66,7 @@ public class PathElementName extends JDialog {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             dispose();
             if (elementName.getText().length() > 0) {
                 switch (elementType) {

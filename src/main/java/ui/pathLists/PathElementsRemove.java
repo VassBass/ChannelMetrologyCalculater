@@ -16,6 +16,7 @@ public class PathElementsRemove extends JDialog {
     private static final String REMOVE_ALL = "Видалити всі";
 
     private final PathListsDialog parent;
+    private final JDialog current;
     private final String elementType;
     private String elementName;
 
@@ -27,6 +28,7 @@ public class PathElementsRemove extends JDialog {
 
     public PathElementsRemove(PathListsDialog parent, String elementType, String elementName){
         super(parent, REMOVE + " \"" + elementType + "\"", true);
+        this.current = this;
         this.parent = parent;
         this.elementType = elementType;
         this.elementName = elementName;
@@ -102,6 +104,7 @@ public class PathElementsRemove extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             dispose();
             if (elementName == null){
                 try {

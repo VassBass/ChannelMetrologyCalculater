@@ -15,12 +15,14 @@ public class CalibratorRemoveDialog extends JDialog {
     public static final String CANCEL = "Відміна";
 
     private final CalibratorsListDialog parent;
+    private final JDialog current;
 
     private JLabel message;
     private JButton buttonCancel, buttonRemove;
 
     public CalibratorRemoveDialog(CalibratorsListDialog parent){
         super(parent, title(parent.mainTable.getSelectedRow()), true);
+        this.current = this;
         this.parent = parent;
 
         this.createElements();
@@ -69,6 +71,7 @@ public class CalibratorRemoveDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             dispose();
             int index = parent.mainTable.getSelectedRow();
             Application.context.calibratorsController.remove(index);

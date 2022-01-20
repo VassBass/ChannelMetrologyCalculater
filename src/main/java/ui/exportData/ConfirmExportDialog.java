@@ -1,5 +1,6 @@
 package ui.exportData;
 
+import application.Application;
 import backgroundTasks.data_export.*;
 import converters.ConverterUI;
 import model.Model;
@@ -16,6 +17,7 @@ public class ConfirmExportDialog extends JDialog {
     private static final String CANCEL = "Відміна";
 
     private final MainScreen mainScreen;
+    private final JDialog current;
     private final Model exportData;
 
     private JLabel message;
@@ -23,6 +25,7 @@ public class ConfirmExportDialog extends JDialog {
 
     public ConfirmExportDialog(MainScreen mainScreen, Model exportData){
         super(mainScreen, EXPORT, true);
+        this.current = this;
         this.mainScreen = mainScreen;
         this.exportData = exportData;
 
@@ -91,6 +94,7 @@ public class ConfirmExportDialog extends JDialog {
     private final ActionListener clickExport = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(current)) return;
             dispose();
             switch (exportData){
                 default://All data

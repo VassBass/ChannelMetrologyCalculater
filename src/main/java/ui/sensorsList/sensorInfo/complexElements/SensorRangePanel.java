@@ -8,7 +8,9 @@ import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
-public class SensorRangePanel extends JPanel implements UI_Container {
+public class SensorRangePanel extends JPanel {
+    private static final String DEFAULT_VALUE = "0.00";
+    private static final String DASH = " - ";
 
     private JTextField rangeMin, rangeMax;
     private JLabel t, value;
@@ -22,28 +24,25 @@ public class SensorRangePanel extends JPanel implements UI_Container {
         this.build();
     }
 
-    @Override
-    public void createElements() {
-        this.rangeMin = new JTextField("0.0",4);
+    private void createElements() {
+        this.rangeMin = new JTextField(DEFAULT_VALUE,4);
         this.rangeMin.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.rangeMax = new JTextField("0.0",4);
+        this.rangeMax = new JTextField(DEFAULT_VALUE,4);
         this.rangeMax.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.t = new JLabel(" - ");
+        this.t = new JLabel(DASH);
         this.t.setHorizontalAlignment(SwingConstants.CENTER);
 
         this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS.getValue());
     }
 
-    @Override
-    public void setReactions() {
+    private void setReactions() {
         this.rangeMin.addFocusListener(rangeFocus);
         this.rangeMax.addFocusListener(rangeFocus);
     }
 
-    @Override
-    public void build() {
+    private void build() {
         this.add(this.rangeMin, new Cell(0));
         this.add(this.t, new Cell(1));
         this.add(this.rangeMax, new Cell(2));
@@ -71,9 +70,9 @@ public class SensorRangePanel extends JPanel implements UI_Container {
         }else {
             this.rMin = this.rangeMin.getText();
             this.rMax = this.rangeMax.getText();
-            this.value.setText(" - ");
-            this.rangeMin.setText(" - ");
-            this.rangeMax.setText(" - ");
+            this.value.setText(DASH);
+            this.rangeMin.setText(DASH);
+            this.rangeMax.setText(DASH);
         }
         this.rangeMin.setEnabled(enabled);
         this.rangeMax.setEnabled(enabled);
@@ -89,7 +88,7 @@ public class SensorRangePanel extends JPanel implements UI_Container {
 
     public double getRangeMin(){
         try {
-            return Double.parseDouble(VariableConverter.doubleString(rangeMin.getText()));
+            return Double.parseDouble(VariableConverter.doubleString(this.rangeMin.getText()));
         }catch (Exception e){
             return 0D;
         }
@@ -97,7 +96,7 @@ public class SensorRangePanel extends JPanel implements UI_Container {
 
     public double getRangeMax(){
         try {
-            return Double.parseDouble(VariableConverter.doubleString(rangeMax.getText()));
+            return Double.parseDouble(VariableConverter.doubleString(this.rangeMax.getText()));
         }catch (Exception e){
             return 0D;
         }
@@ -113,10 +112,10 @@ public class SensorRangePanel extends JPanel implements UI_Container {
         @Override
         public void focusLost(FocusEvent e) {
             if (rangeMin.getText().length() == 0){
-                rangeMin.setText("0.0");
+                rangeMin.setText(DEFAULT_VALUE);
             }
             if (rangeMax.getText().length() == 0){
-                rangeMax.setText("0.0");
+                rangeMax.setText(DEFAULT_VALUE);
             }
             double r1 = 0D;
             double r2 = 0D;
