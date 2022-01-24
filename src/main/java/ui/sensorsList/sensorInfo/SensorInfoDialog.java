@@ -360,8 +360,10 @@ public class SensorInfoDialog extends JDialog {
             this.add(helpFormula11, new Cell(0,15,3));
             this.add(helpFormula12, new Cell(0,16,3));
 
-            this.add(buttonCancel, new Cell(1,17,1));
-            this.add(buttonSave, new Cell(2,17,1));
+            JPanel buttonsPanel = new JPanel();
+            buttonsPanel.add(buttonCancel);
+            buttonsPanel.add(buttonSave);
+            this.add(buttonsPanel, new Cell(0,17,3));
         }
 
         private class Cell extends GridBagConstraints {
