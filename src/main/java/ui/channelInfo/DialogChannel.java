@@ -343,7 +343,7 @@ public class DialogChannel extends JDialog {
             JPanel buttonsPanel = new JPanel();
             buttonsPanel.add(positiveButton);
             buttonsPanel.add(negativeButton);
-            this.add(buttonsPanel, new Cell(0,11, new Insets(40,0,20,0), 1));
+            this.add(buttonsPanel, new Cell(0,11, new Insets(40,0,20,0), 2));
         }
 
         private class Cell extends GridBagConstraints {
