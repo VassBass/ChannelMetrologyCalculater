@@ -14,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 public class DialogChannel extends JDialog {
@@ -33,6 +35,7 @@ public class DialogChannel extends JDialog {
     private static final String SAVE = "Зберегти";
     private static final String RANGE_OF_CHANNEL = "Діапазон вимірювального каналу";
     private static final String RANGE_OF_SENSOR = "Діапазон вимірювання ПВП";
+    private static final String SET_RANGE_LIKE_CHANNEL = "Однакові діапазони";
 
     private final MainScreen parent;
     private final DialogChannel current;
@@ -63,6 +66,7 @@ public class DialogChannel extends JDialog {
     public DialogChannel_allowableErrorPanel allowableErrorPanel;
     public DialogChannel_sensorRangePanel sensorRangePanel;
 
+    public JCheckBox rangeLikeChannel;
     private JButton negativeButton;
     private JButton positiveButton;
 
@@ -104,6 +108,7 @@ public class DialogChannel extends JDialog {
         this.userTechnologyNumber = new JTextField(10);
         this.userProtocolNumber = new JTextField(10);
 
+        this.rangeLikeChannel = new JCheckBox(SET_RANGE_LIKE_CHANNEL);
         this.negativeButton = new DefaultButton(CANCEL);
         this.positiveButton = new DefaultButton(SAVE);
     }
@@ -121,6 +126,7 @@ public class DialogChannel extends JDialog {
     private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
+        this.rangeLikeChannel.addItemListener(this.clickRangeLikeChannel);
         this.negativeButton.addActionListener(this.clickNegativeButton);
         this.positiveButton.addActionListener(this.clickPositiveButton);
     }
@@ -271,6 +277,22 @@ public class DialogChannel extends JDialog {
         this.setContentPane(new MainPanel());
     }
 
+    private final ItemListener clickRangeLikeChannel = new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (sensorRangePanel != null) {
+                if (rangeLikeChannel.isSelected()) {
+                    sensorRangePanel.setRange(String.valueOf(rangePanel.getRangeMin()),
+                            String.valueOf(rangePanel.getRangeMax()),
+                            measurementPanel.getMeasurement().getValue());
+                    sensorRangePanel.setEnabled(false);
+                } else {
+                    sensorRangePanel.setEnabled(true);
+                }
+            }
+        }
+    };
+
     private final ActionListener clickNegativeButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -332,6 +354,9 @@ public class DialogChannel extends JDialog {
 
             if (sensorRangePanel != null){
                 this.add(sensorRangePanel, new Cell(2,8));
+                this.add(rangeLikeChannel, new Cell(2,9));
+            }else {
+                rangeLikeChannel.setSelected(false);
             }
 
             this.add(rangeLabel, new Cell(0,9));
@@ -343,7 +368,11 @@ public class DialogChannel extends JDialog {
             JPanel buttonsPanel = new JPanel();
             buttonsPanel.add(positiveButton);
             buttonsPanel.add(negativeButton);
-            this.add(buttonsPanel, new Cell(0,11, new Insets(40,0,20,0), 2));
+            int width = 2;
+            if (sensorRangePanel != null){
+                width = 3;
+            }
+            this.add(buttonsPanel, new Cell(0, 11, new Insets(40, 0, 20, 0), width));
         }
 
         private class Cell extends GridBagConstraints {

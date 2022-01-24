@@ -70,6 +70,28 @@ public class DialogChannel_sensorRangePanel extends JPanel {
         }
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.min.setEnabled(enabled);
+        this.max.setEnabled(enabled);
+        this.value.setEnabled(enabled);
+    }
+
+    public void setRange(String min, String max, String value){
+        this.min.setText(min);
+        this.max.setText(max);
+        this.value.setSelectedItem(value);
+    }
+
+    public void setRange(String min, String max){
+        if (min != null) this.min.setText(min);
+        if (max != null) this.max.setText(max);
+    }
+
+    public void setValue(String value){
+        this.value.setSelectedItem(value);
+    }
+
     private final FocusListener focus = new FocusListener() {
         @Override
         public void focusGained(FocusEvent e) {

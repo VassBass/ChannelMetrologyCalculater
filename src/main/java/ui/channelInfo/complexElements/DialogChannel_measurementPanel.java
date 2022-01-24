@@ -122,6 +122,9 @@ public class DialogChannel_measurementPanel extends JPanel {
 
                 parent.allowableErrorPanel.updateValue(measurementVal);
                 parent.rangePanel.updateValue(measurementVal);
+                if (parent.rangeLikeChannel.isSelected()){
+                    parent.sensorRangePanel.setValue(measurementVal);
+                }
             }
         }
     };

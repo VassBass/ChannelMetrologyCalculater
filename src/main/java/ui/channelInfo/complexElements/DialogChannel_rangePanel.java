@@ -85,6 +85,9 @@ public class DialogChannel_rangePanel extends JPanel {
             double range = max - min;
 
             parent.allowableErrorPanel.updateRange(range);
+            if (parent.rangeLikeChannel.isSelected()){
+                parent.sensorRangePanel.setRange(minRange.getText(), maxRange.getText());
+            }
         }
     };
 
@@ -106,6 +109,9 @@ public class DialogChannel_rangePanel extends JPanel {
             double range = max - min;
 
             parent.allowableErrorPanel.updateRange(range);
+            if (parent.rangeLikeChannel.isSelected()){
+                parent.sensorRangePanel.setRange(minRange.getText(), maxRange.getText());
+            }
         }
     };
 
