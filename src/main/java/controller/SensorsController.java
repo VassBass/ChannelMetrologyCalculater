@@ -1,5 +1,6 @@
 package controller;
 
+import application.Application;
 import constants.MeasurementConstants;
 import model.Model;
 import model.Sensor;
@@ -204,7 +205,9 @@ public class SensorsController {
             this.showExistMessage();
         }else {
             this.sensors.add(sensor);
+            this.window = null;
             this.save();
+            this.window = Application.context.mainScreen;
         }
         return this.sensors;
     }
@@ -241,7 +244,9 @@ public class SensorsController {
                     }
                 }
             }
+            this.window = null;
             this.save();
+            this.window = Application.context.mainScreen;
         }
         return this.sensors;
     }
@@ -288,7 +293,7 @@ public class SensorsController {
                 numberOfSensors++;
             }
         }
-        return numberOfSensors > 1;
+        return numberOfSensors <= 1;
     }
 
     public void rewriteAll(ArrayList<Sensor>sensors){

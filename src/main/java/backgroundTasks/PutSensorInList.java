@@ -9,9 +9,8 @@ import ui.sensorsList.sensorInfo.SensorInfoDialog;
 import javax.swing.*;
 import java.awt.*;
 
-public class PutSensorInList extends SwingWorker<Boolean, Void> {
+public class PutSensorInList extends SwingWorker<Void, Void> {
     private static final String SUCCESS = "Успіх";
-    private static final String ERROR = "Помилка";
 
     private final SensorsListDialog mainDialog;
     private final SensorInfoDialog dialog;
@@ -35,6 +34,7 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
                 loadDialog.setVisible(true);
             }
         });
+        this.execute();
     }
 
     public void start(Sensor oldSensor){
@@ -45,44 +45,31 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
                 loadDialog.setVisible(true);
             }
         });
+        this.execute();
     }
 
-    /*return:   true - ПИП успешно изменен/добавлен
-                false - ПИП с таким названием(newSensor.name) уже существует в списке
-     */
     @Override
-    protected Boolean doInBackground() throws Exception {
-        if (this.oldSensor == null){
+    protected Void doInBackground() throws Exception {
+        if (this.oldSensor == null) {
             Application.context.sensorsController.add(this.newSensor);
-        }else {
+        } else {
             Application.context.sensorsController.set(this.oldSensor, this.newSensor);
             Application.context.channelsController.changeSensor(this.oldSensor, this.newSensor);
         }
-        return true;
+        return null;
     }
 
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        try {
-            if (this.get()){
-                this.dialog.dispose();
-                String m;
-                if (this.oldSensor == null){
-                    m = "ПВП успішно додано до списку!";
-                }else {
-                    m = "ПВП успішно змінено!";
-                }
-                JOptionPane.showMessageDialog(this.mainDialog, m, SUCCESS, JOptionPane.INFORMATION_MESSAGE);
-                mainDialog.mainTable.update();
-            }else {
-                String m = "ПВП з такою назвою вже існує в списку!";
-                JOptionPane.showMessageDialog(this.mainDialog, m, ERROR, JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            String er = "Відбулася помилка! Спробуйте будь-ласка ще раз.";
-            JOptionPane.showMessageDialog(dialog, er, ERROR, JOptionPane.ERROR_MESSAGE);
+        this.dialog.dispose();
+        String m;
+        if (this.oldSensor == null){
+            m = "ПВП успішно додано до списку!";
+        }else {
+            m = "ПВП успішно змінено!";
         }
+        mainDialog.mainTable.update();
+        JOptionPane.showMessageDialog(this.mainDialog, m, SUCCESS, JOptionPane.INFORMATION_MESSAGE);
     }
 }
