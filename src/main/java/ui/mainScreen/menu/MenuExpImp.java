@@ -109,7 +109,7 @@ public class MenuExpImp extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmExportDialog(mainScreen, null).setVisible(true);
+                    new ConfirmExportDialog(mainScreen, Model.ALL).setVisible(true);
                 }
             });
         }

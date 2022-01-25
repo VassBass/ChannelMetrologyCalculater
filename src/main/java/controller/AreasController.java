@@ -102,10 +102,6 @@ public class AreasController {
         return this.areas;
     }
 
-    public int getIndex(String object) {
-        return this.areas.indexOf(object);
-    }
-
     public String get(int index) {
         if (index >= 0) {
             return this.areas.get(index);

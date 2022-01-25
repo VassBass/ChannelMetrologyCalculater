@@ -39,6 +39,59 @@ public class VariableConverter {
         }
     }
 
+    public static String stringToDateString(String string){
+        if (string == null) return null;
+        String input = commasToDots(string);
+        char[]in = input.toCharArray();
+        char[]output = new char[10];
+
+        char[]day = new char[]{in[0], in[1]};
+        char[]month = new char[]{in[2], in[3], in[4]};
+
+        char DOT = '.';
+        char ZERO = '0';
+
+        if (day[1] == DOT){
+            output[0] = ZERO;
+            output[1] = day[0];
+        }else {
+            output[0] = day[0];
+            output[1] = day[1];
+        }
+        output[2] = DOT;
+
+        int marker = 0;
+        if (month[marker] == DOT){
+            marker = 1;
+        }
+        if (month[marker + 1] == DOT){
+            output[3] = ZERO;
+            output[4] = month[marker];
+        }else {
+            output[3] = month[marker];
+            output[4] = month[marker+1];
+        }
+        output[5] = DOT;
+
+        output[6] = '2';
+        output[7] = ZERO;
+        output[8] = ZERO;
+        output[9] = ZERO;
+        marker = 0;
+        for (int i=0;i<in.length;i++){
+            if (in[i] == DOT){
+                marker = i+1;
+            }
+        }
+        int rightMarker = 1;
+        while ((in.length - rightMarker) >= marker){
+            output[output.length - rightMarker] = in[in.length - rightMarker];
+            rightMarker++;
+        }
+
+        return String.valueOf(output);
+    }
+
     public static String doubleString(String string) {
         StringBuilder checkedString = new StringBuilder();
         boolean dot = false;

@@ -73,7 +73,7 @@ public class ChannelSorter {
                 sortedList.add(channel);
             }else if (chNameWithOutLowerCase.equals(nameWithOutCase)){
                 equalsChannelsWithOutCase.add(channel);
-            }else if (channel.getName().contains(name)){
+            }else if (chNameWithOutLowerCase.contains(nameWithOutCase)){
                 containsChannels.add(channel);
             }
         }
@@ -124,7 +124,7 @@ public class ChannelSorter {
                 sortedList.add(channel);
             }else if (depWithOutLowerCase.equals(departmentWithOutCase)){
                 equalsChannelsWithOutCase.add(channel);
-            }else if (channel.getDepartment().contains(department)){
+            }else if (depWithOutLowerCase.contains(departmentWithOutCase)){
                 containsChannels.add(channel);
             }
         }
@@ -147,7 +147,7 @@ public class ChannelSorter {
                 sortedList.add(channel);
             }else if (areWithOutLowerCase.equals(areaWithOutCase)){
                 equalsChannelsWithOutCase.add(channel);
-            }else if (channel.getArea().contains(area)){
+            }else if (areWithOutLowerCase.contains(areaWithOutCase)){
                 containsChannels.add(channel);
             }
         }
@@ -170,7 +170,7 @@ public class ChannelSorter {
                 sortedList.add(channel);
             }else if (proWithOutLowerCase.equals(processWithOutCase)){
                 equalsChannelsWithOutCase.add(channel);
-            }else if (channel.getProcess().contains(process)){
+            }else if (proWithOutLowerCase.contains(processWithOutCase)){
                 containsChannels.add(channel);
             }
         }
@@ -193,7 +193,7 @@ public class ChannelSorter {
                 sortedList.add(channel);
             }else if (insWithOutLowerCase.equals(installationWithOutCase)){
                 equalsChannelsWithOutCase.add(channel);
-            }else if (channel.getInstallation().contains(installation)){
+            }else if (insWithOutLowerCase.contains(installationWithOutCase)){
                 containsChannels.add(channel);
             }
         }
@@ -244,7 +244,7 @@ public class ChannelSorter {
                 sortedList.add(channel);
             }else if (numWithOutLowerCase.equals(numberWithOutCase)){
                 equalsChannelsWithOutCase.add(channel);
-            }else if (channel.getTechnologyNumber().contains(technologyNumber)){
+            }else if (numWithOutLowerCase.contains(numberWithOutCase)){
                 containsChannels.add(channel);
             }
         }
@@ -267,7 +267,7 @@ public class ChannelSorter {
                 sortedList.add(channel);
             }else if (nWithOutLowerCase.equals(nameWithOutCase)){
                 equalsChannelsWithOutCase.add(channel);
-            }else if (channel.getSensor().getName().contains(sensorName)){
+            }else if (nWithOutLowerCase.contains(nameWithOutCase)){
                 containsChannels.add(channel);
             }
         }

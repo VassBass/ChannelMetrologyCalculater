@@ -251,17 +251,6 @@ public class SensorsController {
         return this.sensors;
     }
 
-    public int getIndex(String sensorName) {
-        for (int index=0;index<this.sensors.size();index++) {
-            Sensor sensor = this.sensors.get(index);
-            if (sensor.getName().equals(sensorName)) {
-                return index;
-            }
-        }
-        this.showNotFoundMessage();
-        return -1;
-    }
-
     public Sensor get(String sensorName) {
         for (Sensor sensor : this.sensors) {
             if (sensor.getName().equals(sensorName)) {

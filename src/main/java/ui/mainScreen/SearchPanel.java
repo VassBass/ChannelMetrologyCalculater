@@ -4,6 +4,7 @@ import application.Application;
 import backgroundTasks.SearchChannels;
 import constants.Sort;
 import converters.VariableConverter;
+import org.apache.commons.validator.DateValidator;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -30,6 +31,9 @@ public class SearchPanel extends JPanel {
     private static final String SUITABLE = "Придатний";
     private static final String START_SEARCH = "Шукати";
     private static final String FINISH_SEARCH = "Відмінити";
+    private static final String DEFAULT_DATE = "01.01.2020";
+    private static final String DATE_TOOLTIP_TEXT = "Введіть дату у форматі \"день.місяць.рік\"";
+    private static final String DEFAULT_TOOLTIP_TEXT = "Введіть слово(а) для пошуку";
 
     private static final int TEXT = 0;
     private static final int LIST = 1;
@@ -164,9 +168,17 @@ public class SearchPanel extends JPanel {
 
         @Override
         public void focusLost(FocusEvent e) {
+            String str = valueText.getText();
             if (field.getSelectedIndex() == Sort.FREQUENCY){
-                String str = valueText.getText();
                 valueText.setText(VariableConverter.doubleString(str));
+            }else if (field.getSelectedIndex() == Sort.DATE){
+                String str1 = VariableConverter.commasToDots(str);
+                DateValidator dateValidator = DateValidator.getInstance();
+                if (dateValidator.isValid(str1,"dd.MM.yyyy", false)){
+                    valueText.setText(VariableConverter.stringToDateString(str));
+                }else {
+                    valueText.setText(DEFAULT_DATE);
+                }
             }
         }
     };
@@ -181,13 +193,18 @@ public class SearchPanel extends JPanel {
                         switch (field.getSelectedIndex()){
                             default:
                                 build(TEXT);
+                                valueText.setToolTipText(DEFAULT_TOOLTIP_TEXT);
                                 break;
-                            case 1:
-                            case 2:
-                            case 11:
+                            case Sort.MEASUREMENT_NAME:
+                            case Sort.MEASUREMENT_VALUE:
+                            case Sort.SENSOR_TYPE:
                                 build(LIST);
                                 break;
-                            case 14:
+                            case Sort.DATE:
+                                build(TEXT);
+                                valueText.setToolTipText(DATE_TOOLTIP_TEXT);
+                                break;
+                            case Sort.SUITABILITY:
                                 build(CHECK);
                                 break;
                         }
