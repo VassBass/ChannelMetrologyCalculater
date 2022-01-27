@@ -21,9 +21,9 @@ public class ImportAreas extends SwingWorker<Integer, Void> {
     private final File exportDataFile;
     private final LoadDialog loadDialog;
 
-    public ImportAreas(MainScreen mainScreen, File exportDataFile){
+    public ImportAreas(File exportDataFile){
         super();
-        this.mainScreen = mainScreen;
+        this.mainScreen = Application.context.mainScreen;
         this.exportDataFile = exportDataFile;
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
@@ -99,10 +99,8 @@ public class ImportAreas extends SwingWorker<Integer, Void> {
         if (toAdd.isEmpty()){
             return null;
         }else {
-            ArrayList<String>newList = new ArrayList<>(oldList.size() + toAdd.size());
-            newList.addAll(oldList);
-            newList.addAll(toAdd);
-            return newList;
+            oldList.addAll(toAdd);
+            return oldList;
         }
     }
 }

@@ -3,6 +3,7 @@ package ui.sensorsList;
 import application.Application;
 import converters.ConverterUI;
 import model.Channel;
+import model.Sensor;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
@@ -21,15 +22,13 @@ public class SensorsListDialog extends JDialog {
     private static final String CANCEL = "Відміна";
 
     private final MainScreen mainScreen;
-    private final SensorsListDialog current;
 
-    public SensorsListTable mainTable;
+    private SensorsListTable mainTable;
     private JButton buttonAdd, buttonRemove, buttonDetails, buttonCancel;
 
     public SensorsListDialog(MainScreen mainScreen){
         super(mainScreen, SENSORS_LIST, true);
         this.mainScreen = mainScreen;
-        this.current = this;
 
         this.createElements();
         this.setReactions();
@@ -63,6 +62,25 @@ public class SensorsListDialog extends JDialog {
         this.mainScreen.setChannelsList(channels);
     }
 
+    public void update(){
+        this.mainTable.update();
+        this.refresh();
+    }
+
+    private void refresh(){
+        this.setVisible(false);
+        this.setVisible(true);
+    }
+
+    public Sensor getSensor(){
+        int index = this.mainTable.getSelectedRow();
+        if (index < 0){
+            return null;
+        }else {
+            return Application.context.sensorsController.get(index);
+        }
+    }
+
     private final ActionListener clickCancel = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -77,7 +95,7 @@ public class SensorsListDialog extends JDialog {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new SensorRemoveDialog(current).setVisible(true);
+                        new SensorRemoveDialog(SensorsListDialog.this).setVisible(true);
                     }
                 });
             }
@@ -91,7 +109,7 @@ public class SensorsListDialog extends JDialog {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new SensorInfoDialog(current, Application.context.sensorsController.get(mainTable.getSelectedRow())).setVisible(true);
+                        new SensorInfoDialog(SensorsListDialog.this, Application.context.sensorsController.get(mainTable.getSelectedRow())).setVisible(true);
                     }
                 });
             }
@@ -104,7 +122,7 @@ public class SensorsListDialog extends JDialog {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new SensorInfoDialog(current, null).setVisible(true);
+                    new SensorInfoDialog(SensorsListDialog.this, null).setVisible(true);
                 }
             });
         }

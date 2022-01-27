@@ -132,7 +132,7 @@ public class AreasController {
 
     public void rewriteAll(ArrayList<String>areas){
         this.areas = areas;
-        this.save();
+        new Repository<String>(null, Model.AREA).writeListInCurrentThread(areas);
     }
 
     private void showNotFoundMessage() {

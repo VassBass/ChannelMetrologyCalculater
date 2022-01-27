@@ -14,13 +14,14 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
     private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
 
     private final MainScreen mainScreen;
-    private final ArrayList<Calibrator> calibrators;
+    private final ArrayList<Calibrator>newCalibrators, calibratorsForChange;
     private final LoadDialog loadDialog;
 
-    public SaveImportedCalibrators(MainScreen mainScreen, ArrayList<Calibrator>calibrators){
+    public SaveImportedCalibrators(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator> calibratorsForChange){
         super();
-        this.mainScreen = mainScreen;
-        this.calibrators = calibrators;
+        this.mainScreen = Application.context.mainScreen;
+        this.newCalibrators = newCalibrators;
+        this.calibratorsForChange = calibratorsForChange;
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -32,7 +33,7 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Application.context.calibratorsController.rewriteAll(this.calibrators);
+        Application.context.calibratorsController.importData(this.newCalibrators, this.calibratorsForChange);
         return null;
     }
 

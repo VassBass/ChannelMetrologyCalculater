@@ -100,6 +100,18 @@ public class ChannelsController {
                 channel.setSensor(newSensor);
             }
         }
+        new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(this.channels);
+    }
+
+    public void changeSensors(ArrayList<Sensor>sensors){
+        for (Sensor sensor : sensors){
+            for (Channel channel : this.channels){
+                if (channel.getSensor().getName().equals(sensor.getName())){
+                    channel.setSensor(sensor);
+                }
+            }
+        }
+        new Repository<Channel>(null, Model.CHANNEL).writeListInCurrentThread(this.channels);
     }
 
     public ArrayList<Channel> set(Channel oldChannel, Channel newChannel) {
@@ -191,9 +203,22 @@ public class ChannelsController {
         }
     }
 
+    public void importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
+        for (Channel channel : channelsForChange){
+            for (int index=0;index<this.channels.size();index++){
+                if (channel.getCode().equals(this.channels.get(index).getCode())){
+                    this.channels.set(index, channel);
+                    break;
+                }
+            }
+        }
+        this.channels.addAll(newChannels);
+        new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(this.channels);
+    }
+
     public void rewriteAll(ArrayList<Channel>channels){
         this.channels = channels;
-        this.save();
+        new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(channels);
     }
 
     private void showNotFoundMessage() {

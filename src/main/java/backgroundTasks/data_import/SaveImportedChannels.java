@@ -11,19 +11,22 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class SaveImportedChannels extends SwingWorker<Void, Void> {
-    private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
     private static final String IMPORT = "Імпорт";
+    private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
 
     private final MainScreen mainScreen;
-    private final ArrayList<Channel>channels;
-    private final ArrayList<Sensor> sensors;
+    private final ArrayList<Channel>newChannels, channelsForChange;
+    private final ArrayList<Sensor>newSensors, sensorsForChange;
     private final LoadDialog loadDialog;
 
-    public SaveImportedChannels(MainScreen mainScreen, ArrayList<Channel>channels, ArrayList<Sensor>sensors){
+    public SaveImportedChannels(ArrayList<Channel>newChannels, ArrayList<Channel> channelsForChange,
+                                ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange){
         super();
-        this.mainScreen = mainScreen;
-        this.channels = channels;
-        this.sensors = sensors;
+        this.mainScreen = Application.context.mainScreen;
+        this.newChannels = newChannels;
+        this.channelsForChange = channelsForChange;
+        this.newSensors = newSensors;
+        this.sensorsForChange = sensorsForChange;
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -35,55 +38,16 @@ public class SaveImportedChannels extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        ArrayList<Sensor>newSensorsList = new ArrayList<>();
-        for (Channel channel : this.channels){
-            Sensor sensor = channel.getSensor();
-            boolean exist = false;
-            for (Sensor newSensor : newSensorsList){
-                if (newSensor.getName().equals(sensor.getName())){
-                    exist = true;
-                    break;
-                }
-            }
-            if (!exist){
-                newSensorsList.add(sensor);
-            }
-        }
-
-        ArrayList<Sensor>importedSensors = new ArrayList<>();
-        for (Sensor sensor : newSensorsList){
-            for (Sensor imp : this.sensors){
-                if (sensor.getName().equals(imp.getName())){
-                    importedSensors.add(imp);
-                }
-            }
-        }
-
-        ArrayList<Sensor>oldSensorsList = Application.context.sensorsController.getAll();
-        for (Sensor imp : importedSensors){
-            boolean exist = false;
-            for (int o = 0; o< oldSensorsList.size(); o++){
-                Sensor old = oldSensorsList.get(o);
-                if (imp.getName().equals(old.getName())){
-                    oldSensorsList.add(imp);
-                    exist = true;
-                    break;
-                }
-            }
-            if (!exist){
-                oldSensorsList.add(imp);
-            }
-        }
-
-        Application.context.sensorsController.rewriteAll(oldSensorsList);
-        Application.context.channelsController.rewriteAll(this.channels);
+        Application.context.sensorsController.importData(this.newSensors, this.sensorsForChange);
+        Application.context.channelsController.changeSensors(this.sensorsForChange);
+        Application.context.channelsController.importData(this.newChannels, this.channelsForChange);
         return null;
     }
 
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        this.mainScreen.setChannelsList(this.channels);
+        this.mainScreen.setChannelsList(Application.context.channelsController.getAll());
         JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

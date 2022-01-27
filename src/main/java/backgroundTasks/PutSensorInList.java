@@ -69,7 +69,7 @@ public class PutSensorInList extends SwingWorker<Void, Void> {
         }else {
             m = "ПВП успішно змінено!";
         }
-        mainDialog.mainTable.update();
-        JOptionPane.showMessageDialog(this.mainDialog, m, SUCCESS, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(Application.context.mainScreen, m, SUCCESS, JOptionPane.INFORMATION_MESSAGE);
+        mainDialog.update();
     }
 }

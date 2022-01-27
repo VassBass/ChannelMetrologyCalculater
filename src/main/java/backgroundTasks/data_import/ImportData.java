@@ -1,10 +1,7 @@
 package backgroundTasks.data_import;
 
 import application.Application;
-import model.Calibrator;
-import model.Channel;
-import model.Sensor;
-import model.Worker;
+import model.*;
 import support.Comparator;
 import ui.importData.compareSensors.CompareSensorsDialog;
 import ui.mainScreen.MainScreen;
@@ -80,11 +77,11 @@ public class ImportData extends SwingWorker<Integer, Void> {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new CompareSensorsDialog(mainScreen, null,
+                /*new CompareSensorsDialog(mainScreen, Model.ALL,
                         newSensorsList, importedSensors, sensorsIndexes,
                         newChannelsList, importedChannels, channelsIndexes,
                         newCalibratorsList, importedCalibrators, calibratorsIndexes,
-                        importedPersons, importedDepartments, importedAreas, importedProcesses, importedInstallations);
+                        importedPersons, importedDepartments, importedAreas, importedProcesses, importedInstallations);*/
             }
         });
     }

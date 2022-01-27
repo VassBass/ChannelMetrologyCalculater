@@ -205,9 +205,7 @@ public class SensorsController {
             this.showExistMessage();
         }else {
             this.sensors.add(sensor);
-            this.window = null;
-            this.save();
-            this.window = Application.context.mainScreen;
+            new Repository<Sensor>(null,Model.SENSOR).writeListInCurrentThread(this.sensors);
         }
         return this.sensors;
     }
@@ -244,11 +242,22 @@ public class SensorsController {
                     }
                 }
             }
-            this.window = null;
-            this.save();
-            this.window = Application.context.mainScreen;
+            new Repository<Sensor>(null,Model.SENSOR).writeListInCurrentThread(this.sensors);
         }
         return this.sensors;
+    }
+
+    public void importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange){
+        for (Sensor sensor : sensorsForChange){
+            for (int index=0;index<this.sensors.size();index++){
+                if (sensor.getName().equals(this.sensors.get(index).getName())){
+                    this.sensors.set(index, sensor);
+                    break;
+                }
+            }
+        }
+        this.sensors.addAll(newSensors);
+        new Repository<Sensor>(null,Model.SENSOR).writeListInCurrentThread(this.sensors);
     }
 
     public Sensor get(String sensorName) {
@@ -287,7 +296,7 @@ public class SensorsController {
 
     public void rewriteAll(ArrayList<Sensor>sensors){
         this.sensors = sensors;
-        this.save();
+        new Repository<Sensor>(null, Model.SENSOR).writeListInCurrentThread(sensors);
     }
 
     private void save() {

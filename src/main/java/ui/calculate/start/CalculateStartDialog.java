@@ -36,7 +36,6 @@ public class CalculateStartDialog extends JDialog {
     private final MainScreen mainScreen;
     private final Channel channel;
     private HashMap<Integer, Object> values;
-    private final JDialog current;
 
     private boolean withAlarm;
 
@@ -62,7 +61,6 @@ public class CalculateStartDialog extends JDialog {
         this.mainScreen = mainScreen;
         this.channel = channel;
         this.values = values;
-        this.current = this;
 
         this.createElements();
         this.setReactions();
@@ -236,11 +234,11 @@ public class CalculateStartDialog extends JDialog {
 
             if (withAlarmPanel){
                 this.add(alarmPanel, new Cell(0,4,3));
-                current.setSize(820,350);
+                CalculateStartDialog.this.setSize(820,350);
             }else {
-                current.setSize(820,300);
+                CalculateStartDialog.this.setSize(820,300);
             }
-            current.setLocation(ConverterUI.POINT_CENTER(mainScreen, current));
+            CalculateStartDialog.this.setLocation(ConverterUI.POINT_CENTER(mainScreen, CalculateStartDialog.this));
         }
 
         private class Cell extends GridBagConstraints {

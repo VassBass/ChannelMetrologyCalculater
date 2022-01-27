@@ -18,7 +18,6 @@ public class DialogRemoveAllChannels extends JDialog {
     private static final String CANCEL = "Відміна";
 
     private final MainScreen mainScreen;
-    private final JDialog current;
 
     private JLabel message;
 
@@ -26,7 +25,6 @@ public class DialogRemoveAllChannels extends JDialog {
 
     public DialogRemoveAllChannels(MainScreen mainScreen){
         super(mainScreen, REMOVE_ALL, true);
-        this.current = this;
         this.mainScreen = mainScreen;
 
         this.createElements();
@@ -60,8 +58,8 @@ public class DialogRemoveAllChannels extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(current)) return;
-            current.dispose();
+            if (Application.isBusy(DialogRemoveAllChannels.this)) return;
+            DialogRemoveAllChannels.this.dispose();
             mainScreen.setChannelsList(new ArrayList<Channel>());
             Application.context.channelsController.clear();
             if (Application.context.channelSorter.isOn()) {
@@ -74,7 +72,7 @@ public class DialogRemoveAllChannels extends JDialog {
     private final ActionListener clickNegativeButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            current.dispose();
+            DialogRemoveAllChannels.this.dispose();
         }
     };
 

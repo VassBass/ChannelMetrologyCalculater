@@ -275,9 +275,22 @@ public class CalibratorsController {
         }
     }
 
+    public void importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange){
+        for (Calibrator calibrator : calibratorsForChange){
+            for (int index=0;index<this.calibrators.size();index++){
+                if (calibrator.getName().equals(this.calibrators.get(index).getName())){
+                    this.calibrators.set(index, calibrator);
+                    break;
+                }
+            }
+        }
+        this.calibrators.addAll(newCalibrators);
+        new Repository<Calibrator>(null,Model.CALIBRATOR).writeListInCurrentThread(this.calibrators);
+    }
+
     public void rewriteAll(ArrayList<Calibrator>calibrators){
         this.calibrators = calibrators;
-        this.save();
+        new Repository<Calibrator>(null, Model.CALIBRATOR).writeListInCurrentThread(calibrators);
     }
 
     private void showNotFoundMessage() {

@@ -81,6 +81,14 @@ public class Repository<M> extends SwingWorker<Void, Void> {
         this.execute();
     }
 
+    public void writeListInCurrentThread(ArrayList<M>list){
+        try {
+            FileBrowser.saveToFile(this.file, list);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected Void doInBackground() throws Exception {
         try {

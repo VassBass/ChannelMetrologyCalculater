@@ -23,7 +23,6 @@ public class CalibratorsListDialog extends JDialog {
     public static final String ERROR = "Помилка";
 
     private final MainScreen mainScreen;
-    private final CalibratorsListDialog current;
 
     public CalibratorsListTable mainTable;
     private JButton buttonAdd, buttonRemove, buttonDetails, buttonCancel;
@@ -31,7 +30,6 @@ public class CalibratorsListDialog extends JDialog {
     public CalibratorsListDialog(MainScreen mainScreen){
         super(mainScreen, CALIBRATORS_LIST, true);
         this.mainScreen = mainScreen;
-        this.current = this;
 
         this.createElements();
         this.setReactions();
@@ -80,10 +78,10 @@ public class CalibratorsListDialog extends JDialog {
                             Calibrator calibrator = Application.context.calibratorsController.get(index);
                             if (calibrator.getName().equals(CalibratorType.FLUKE718_30G)
                             || calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)) {
-                                JOptionPane.showMessageDialog(current, NOT_REMOVED_CALIBRATOR_MESSAGE, ERROR, JOptionPane.WARNING_MESSAGE);
+                                JOptionPane.showMessageDialog(CalibratorsListDialog.this, NOT_REMOVED_CALIBRATOR_MESSAGE, ERROR, JOptionPane.WARNING_MESSAGE);
                             }
                         } else {
-                            new CalibratorRemoveDialog(current).setVisible(true);
+                            new CalibratorRemoveDialog(CalibratorsListDialog.this).setVisible(true);
                         }
                     }
                 });
@@ -100,7 +98,7 @@ public class CalibratorsListDialog extends JDialog {
                     @Override
                     public void run() {
                         Calibrator calibrator = Application.context.calibratorsController.get(index);
-                        new CalibratorInfoDialog(current, calibrator).setVisible(true);
+                        new CalibratorInfoDialog(CalibratorsListDialog.this, calibrator).setVisible(true);
                     }
                 });
             }
@@ -113,7 +111,7 @@ public class CalibratorsListDialog extends JDialog {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new CalibratorInfoDialog(current, null).setVisible(true);
+                    new CalibratorInfoDialog(CalibratorsListDialog.this, null).setVisible(true);
                 }
             });
         }

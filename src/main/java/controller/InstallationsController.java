@@ -157,7 +157,7 @@ public class InstallationsController {
 
     public void rewriteAll(ArrayList<String>installations){
         this.installations = installations;
-        this.save();
+        new Repository<String>(null, Model.INSTALLATION).writeListInCurrentThread(installations);
     }
 
     private void showNotFoundMessage() {

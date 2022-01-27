@@ -5,10 +5,14 @@ import backgroundTasks.data_import.SaveImportedChannels;
 import converters.ConverterUI;
 import model.*;
 import ui.importData.BreakImportDialog;
-import ui.importData.compareCalibrators.CompareCalibratorsDialog;
-import ui.importData.compareChannels.complexElements.CompareChannels_infoPanel;
+import ui.importData.compareChannels.complexElements.ChangedChannelsTable;
+import ui.importData.compareChannels.complexElements.ChannelInfoWindow;
+import ui.importData.compareChannels.complexElements.NewChannelsTable;
 import ui.mainScreen.MainScreen;
+import ui.model.ButtonCell;
 import ui.model.DefaultButton;
+import ui.model.LoadDialog;
+import ui.model.Table;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,199 +20,202 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class CompareChannelsDialog extends JDialog {
-    private static final String IMPORT = "Імпорт";
-    private static final String CHANGE = "Змінити";
-    private static final String SKIP = "Пропустити";
-    private static final String CHANGE_ALL = "Замінити все";
-    private static final String SKIP_ALL = "Пропустити все";
+    private static final String IMPORT = "Імпорт каналів";
+    private static final String IMPORTED_SENSOR = "Імпортуємий канал";
+    private static final String OLD_SENSOR = "Канал з поточного списку";
+    private static final String NEW_SENSORS = "Нові канали";
+    private static final String SENSORS_FOR_CHANGE = "Канали на заміну";
+    private static final String REMOVE = "Видалити";
+    private static final String CONFIRM = "Підтвердити";
+
+    public final boolean NEW_SENSORS_TABLE = true;
+    public final boolean CHANGED_SENSORS_TABLE = false;
+
+    private final ArrayList<Channel>newChannels, channelsForChange, changedChannels;
+    private final ArrayList<Sensor>newSensors, sensorsToChange;
 
     private final MainScreen mainScreen;
-    private final JDialog current;
+    private JWindow newChannelInfo, oldChannelInfo;
 
-    private final ArrayList<Sensor>sensors;
-    private final ArrayList<Channel>newChannelsList, oldChannelsList, importedChannelsList;
-    private ArrayList<Calibrator>newCalibratorsList, importedCalibratorsList;
+    private ButtonCell titleNewChannels, titleChannelsForChange;
+    private Table<Channel> newChannelsTable, changedChannelsTable;
+    private JButton removeFromNew, removeFromChanges, btnConfirmNew, btnConfirmChanges;
 
-    private ArrayList<Worker>persons;
-    private ArrayList<String> departments, areas, processes, installations;
+    public CompareChannelsDialog(ArrayList<Channel>newChannelsList,ArrayList<Channel>channelsForChange, ArrayList<Channel>changedChannelsList,
+                                ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsToChange){
+        super(Application.context.mainScreen, IMPORT, true);
+        this.mainScreen = Application.context.mainScreen;
+        this.newChannels = newChannelsList;
+        this.channelsForChange = channelsForChange;
+        this.changedChannels = changedChannelsList;
+        this.newSensors = newSensors;
+        this.sensorsToChange = sensorsToChange;
 
-    private final ArrayList<Integer[]>channelIndexes;
-    private ArrayList<Integer[]>calibratorsIndexes;
+        this.createElements();
+        this.setReactions();
+        this.build();
+    }
 
-    private int marker = 0;
-    private final Model exportData;
+    private void createElements(){
+        this.titleNewChannels = new ButtonCell(true, NEW_SENSORS);
+        this.titleChannelsForChange = new ButtonCell(true, SENSORS_FOR_CHANGE);
+        this.newChannelsTable = new NewChannelsTable(CompareChannelsDialog.this, this.newChannels);
+        this.changedChannelsTable = new ChangedChannelsTable(CompareChannelsDialog.this,this.channelsForChange, this.changedChannels);
+        this.removeFromNew = new DefaultButton(REMOVE);
+        this.removeFromNew.setEnabled(false);
+        this.removeFromChanges = new DefaultButton(REMOVE);
+        this.removeFromChanges.setEnabled(false);
+        this.btnConfirmNew = new DefaultButton(CONFIRM);
+        this.btnConfirmChanges = new DefaultButton(CONFIRM);
 
-    private CompareChannels_infoPanel infoPanel;
-
-    private JButton buttonChange, buttonSkip, buttonChangeAll, buttonSkipAll;
-
-    public CompareChannelsDialog(MainScreen mainScreen, Model exportData, ArrayList<Sensor>sensors,
-                                 ArrayList<Channel>newChannelsList, ArrayList<Channel>importedChannels, ArrayList<Integer[]>channelIndexes){
-        super(mainScreen, IMPORT, true);
-        this.mainScreen = mainScreen;
-        this.exportData = exportData;
-        this.sensors = sensors;
-        this.current = this;
-
-        this.newChannelsList = newChannelsList;
-        this.oldChannelsList = Application.context.channelsController.getAll();
-        this.importedChannelsList = importedChannels;
-        this.channelIndexes = channelIndexes;
-
-        if (importedChannels == null || channelIndexes == null){
-            new SaveImportedChannels(mainScreen, newChannelsList, sensors).execute();
-        }else {
-            this.createElements();
-            this.setReactions();
-            this.build();
-            this.setVisible(true);
+        if (this.newChannels.isEmpty()){
+            this.newChannelsTable.setEnabled(false);
+            this.removeFromNew.setEnabled(false);
+            this.btnConfirmNew.setEnabled(false);
+        }
+        if (this.channelsForChange.isEmpty()){
+            this.changedChannelsTable.setEnabled(false);
+            this.removeFromChanges.setEnabled(false);
+            this.btnConfirmChanges.setEnabled(false);
         }
     }
 
-    public CompareChannelsDialog(final MainScreen mainScreen, final Model exportData, final ArrayList<Sensor>sensors,
-                                 final ArrayList<Channel>newChannelsList, ArrayList<Channel>importedChannelsList, ArrayList<Integer[]>channelIndexes,
-                                 final ArrayList<Calibrator>newCalibratorsList, final ArrayList<Calibrator>importedCalibratorsList, final ArrayList<Integer[]>calibratorsIndexes,
-                                 final ArrayList<Worker>persons,
-                                 final ArrayList<String>departments, final ArrayList<String>areas, final ArrayList<String>processes, final ArrayList<String>installations) {
-        super(mainScreen, IMPORT, true);
-        this.mainScreen = mainScreen;
-        this.exportData = exportData;
-        this.sensors = sensors;
-        this.current = this;
-
-        this.newChannelsList = newChannelsList;
-        this.oldChannelsList = Application.context.channelsController.getAll();
-        this.importedChannelsList = importedChannelsList;
-        this.channelIndexes = channelIndexes;
-
-        this.newCalibratorsList = newCalibratorsList;
-        this.importedCalibratorsList = importedCalibratorsList;
-        this.calibratorsIndexes = calibratorsIndexes;
-
-        this.persons = persons;
-        this.departments = departments;
-        this.areas = areas;
-        this.processes = processes;
-        this.installations = installations;
-
-        if (importedChannelsList == null || channelIndexes == null) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new CompareCalibratorsDialog(mainScreen, exportData, sensors, newChannelsList,
-                            newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
-                            persons, departments, areas, processes, installations);
-                }
-            });
-        } else {
-            this.createElements();
-            this.setReactions();
-            this.build();
-            this.setVisible(true);
-        }
-    }
-
-    private void next(){
-        marker++;
-        if (marker >= channelIndexes.size()) {
-            this.dispose();
-            if (this.exportData == Model.CHANNEL){
-                new SaveImportedChannels(this.mainScreen, this.newChannelsList, this.sensors).execute();
-            }else {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        new CompareCalibratorsDialog(mainScreen, exportData, sensors, newChannelsList,
-                                newCalibratorsList, importedCalibratorsList, calibratorsIndexes,
-                                persons, departments, areas, processes, installations);
-                    }
-                });
-            }
-        }else {
-            Integer[] index = channelIndexes.get(marker);
-            int indexOld = index[0];
-            int indexImport = index[1];
-            this.infoPanel = new CompareChannels_infoPanel(this.oldChannelsList.get(indexOld), this.importedChannelsList.get(indexImport));
-            this.setContentPane(new MainPanel());
-            this.setVisible(false);
-            this.setVisible(true);
-        }
-    }
-
-    private void createElements() {
-        Integer[] index = channelIndexes.get(marker);
-        int indexOld = index[0];
-        int indexImport = index[1];
-        this.infoPanel = new CompareChannels_infoPanel(this.oldChannelsList.get(indexOld), this.importedChannelsList.get(indexImport));
-
-        this.buttonChange = new DefaultButton(CHANGE);
-        this.buttonSkip = new DefaultButton(SKIP);
-        this.buttonChangeAll = new DefaultButton(CHANGE_ALL);
-        this.buttonSkipAll = new DefaultButton(SKIP_ALL);
-    }
-
-    private void setReactions() {
-        this.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    private void setReactions(){
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.addWindowListener(this.windowListener);
+        this.addComponentListener(this.moveWindow);
 
-        this.buttonChangeAll.addActionListener(this.clickChangeAll);
-        this.buttonSkip.addActionListener(this.clickSkip);
-        this.buttonChange.addActionListener(this.clickChange);
-        this.buttonSkipAll.addActionListener(this.clickSkipAll);
+        this.removeFromNew.addActionListener(this.clickRemoveFromNew);
+        this.removeFromChanges.addActionListener(this.clickRemoveFromChanged);
+        this.btnConfirmNew.addActionListener(this.clickConfirmNew);
+        this.btnConfirmChanges.addActionListener(this.clickConfirmChanges);
     }
 
-    private void build() {
-        this.setSize(800,700);
+    private void build(){
+        this.setSize(400,400);
+        this.setResizable(false);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
-
         this.setContentPane(new MainPanel());
+    }
+
+    public void showNewChannelInfo(Channel channel){
+        if (this.newChannelInfo != null) this.newChannelInfo.dispose();
+
+        this.newChannelInfo = new ChannelInfoWindow(IMPORTED_SENSOR,CompareChannelsDialog.this,channel);
+        this.newChannelInfo.setLocation(ConverterUI.LEFT_FROM_PARENT(CompareChannelsDialog.this, this.newChannelInfo));
+        this.newChannelInfo.setVisible(true);
+    }
+
+    private void hideNewChannelInfo(){
+        if (this.newChannelInfo != null) this.newChannelInfo.dispose();
+    }
+
+    public void showOldChannelInfo(Channel channel){
+        if (this.oldChannelInfo != null) this.oldChannelInfo.dispose();
+
+        this.oldChannelInfo = new ChannelInfoWindow(OLD_SENSOR,CompareChannelsDialog.this,channel);
+        this.oldChannelInfo.setLocation(ConverterUI.RIGHT_FROM_PARENT(CompareChannelsDialog.this, this.oldChannelInfo));
+        this.oldChannelInfo.setVisible(true);
+    }
+
+    public void hideOldChannelInfo(){
+        if (this.oldChannelInfo != null) this.oldChannelInfo.dispose();
+    }
+
+    public void cancelSelection(boolean table){
+        if (table == NEW_SENSORS_TABLE){
+            this.newChannelsTable.clearSelection();
+            this.removeFromNew.setEnabled(false);
+            if (this.changedChannelsTable.getSelectedRow() >= 0) this.removeFromChanges.setEnabled(true);
+        }else {
+            this.changedChannelsTable.clearSelection();
+            this.removeFromChanges.setEnabled(false);
+            if (this.newChannelsTable.getSelectedRow() >= 0) this.removeFromNew.setEnabled(true);
+        }
     }
 
     private final WindowListener windowListener = new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
             setVisible(false);
-            new BreakImportDialog(mainScreen, current).setVisible(true);
+            new BreakImportDialog(mainScreen, CompareChannelsDialog.this).setVisible(true);
         }
     };
 
-    private final ActionListener clickSkip = new ActionListener() {
+    private final ComponentListener moveWindow = new ComponentAdapter() {
         @Override
-        public void actionPerformed(ActionEvent e) {
-            Integer[]i = channelIndexes.get(marker);
-            newChannelsList.add(i[0], oldChannelsList.get(i[0]));
-            next();
-        }
-    };
-
-    private final ActionListener clickChange = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Integer[]i = channelIndexes.get(marker);
-            newChannelsList.add(i[0], importedChannelsList.get(i[1]));
-            next();
-        }
-    };
-
-    private final ActionListener clickSkipAll = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            for (;marker<channelIndexes.size();marker++){
-                Integer[]i = channelIndexes.get(marker);
-                newChannelsList.add(i[0], oldChannelsList.get(i[0]));
+        public void componentMoved(ComponentEvent e) {
+            if (newChannelInfo != null && newChannelInfo.isVisible()){
+                newChannelInfo.setLocation(ConverterUI.LEFT_FROM_PARENT(CompareChannelsDialog.this, newChannelInfo));
             }
-            next();
+            if (oldChannelInfo != null && oldChannelInfo.isVisible()){
+                oldChannelInfo.setLocation(ConverterUI.RIGHT_FROM_PARENT(CompareChannelsDialog.this, oldChannelInfo));
+            }
         }
     };
 
-    private final ActionListener clickChangeAll = new ActionListener() {
+    private final ActionListener clickRemoveFromNew = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            for (;marker<channelIndexes.size();marker++){
-                Integer[]i = channelIndexes.get(marker);
-                newChannelsList.add(i[0], importedChannelsList.get(i[1]));
+            int index = newChannelsTable.getSelectedRow();
+            Sensor sensor = newChannels.get(index).getSensor();
+            newChannels.remove(index);
+            hideNewChannelInfo();
+            cancelSelection(NEW_SENSORS_TABLE);
+            newChannelsTable.setList(newChannels);
+            new RemoveSensor(sensor).execute();
+        }
+    };
+
+    private final ActionListener clickRemoveFromChanged = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int index = changedChannelsTable.getSelectedRow();
+            Sensor sensor = channelsForChange.get(index).getSensor();
+            channelsForChange.remove(index);
+            changedChannels.remove(index);
+            hideNewChannelInfo();
+            hideOldChannelInfo();
+            cancelSelection(CHANGED_SENSORS_TABLE);
+            changedChannelsTable.setList(channelsForChange);
+            new RemoveSensor(sensor).execute();
+        }
+    };
+
+    private final ActionListener clickConfirmNew = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (btnConfirmChanges.isEnabled()){
+                if (newChannelsTable.getSelectedRow() >= 0) {
+                    hideNewChannelInfo();
+                    cancelSelection(NEW_SENSORS_TABLE);
+                }
+                removeFromNew.setEnabled(false);
+                btnConfirmNew.setEnabled(false);
+                newChannelsTable.setEnabled(false);
+            }else {
+                dispose();
+                new SaveImportedChannels(newChannels, channelsForChange, newSensors, sensorsToChange).execute();
             }
-            next();
+        }
+    };
+
+    private final ActionListener clickConfirmChanges = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (btnConfirmNew.isEnabled()){
+                if (changedChannelsTable.getSelectedRow() >= 0) {
+                    hideNewChannelInfo();
+                    hideOldChannelInfo();
+                    cancelSelection(CHANGED_SENSORS_TABLE);
+                }
+                removeFromChanges.setEnabled(false);
+                btnConfirmChanges.setEnabled(false);
+                changedChannelsTable.setEnabled(false);
+            }else {
+                dispose();
+                new SaveImportedChannels(newChannels, channelsForChange, newSensors,sensorsToChange).execute();
+            }
         }
     };
 
@@ -217,29 +224,80 @@ public class CompareChannelsDialog extends JDialog {
         protected MainPanel(){
             super(new GridBagLayout());
 
-            JScrollPane scroll = new JScrollPane(infoPanel);
-            scroll.setPreferredSize(new Dimension(800,650));
-            this.add(scroll, new Cell(0, 0.95));
-
-            JPanel buttonsPanel = new JPanel();
-            buttonsPanel.add(buttonSkip);
-            buttonsPanel.add(buttonSkipAll);
-            buttonsPanel.add(buttonChangeAll);
-            buttonsPanel.add(buttonChange);
-            this.add(buttonsPanel, new Cell(1, 0.05));
+            this.add(titleNewChannels, new Cell(0,0,2,false));
+            this.add(new JScrollPane(newChannelsTable), new Cell(0,1,2,true));
+            this.add(removeFromNew, new Cell(0,5,1,false));
+            this.add(btnConfirmNew, new Cell(1,5,1,false));
+            this.add(titleChannelsForChange, new Cell(0,6,2,false));
+            this.add(new JScrollPane(changedChannelsTable), new Cell(0,7,2,true));
+            this.add(removeFromChanges, new Cell(0,11,1,false));
+            this.add(btnConfirmChanges, new Cell(1,11,1,false));
         }
 
         private class Cell extends GridBagConstraints{
-            protected Cell(int y, double weighty){
+            protected Cell(int x, int y, int width, boolean table){
                 super();
-
                 this.fill = BOTH;
                 this.weightx = 1.0;
-                this.weighty = weighty;
 
-                this.gridx = 0;
+                this.gridx = x;
                 this.gridy = y;
+                this.gridwidth = width;
+                if (table){
+                    this.weighty = 0.4;
+                }else {
+                    this.weighty = 0.05;
+                }
             }
+        }
+    }
+
+    private class RemoveSensor extends SwingWorker<Void, Void>{
+        private final Sensor sensor;
+        private final LoadDialog loadDialog;
+
+        protected RemoveSensor(Sensor sensor){
+            this.sensor = sensor;
+            this.loadDialog = new LoadDialog(CompareChannelsDialog.this);
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    loadDialog.setVisible(true);
+                }
+            });
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            ArrayList<Channel>channels = new ArrayList<>(newChannels);
+            channels.addAll(channelsForChange);
+            for (Channel channel : channels){
+                if (channel.getSensor().getName().equals(sensor.getName())){
+                    return null;
+                }
+            }
+
+            ArrayList<Sensor>sensors = new ArrayList<>(newSensors);
+            sensors.addAll(sensorsToChange);
+            for (int x=0;x<sensors.size();x++){
+                if (sensors.get(x).getName().equals(this.sensor.getName())){
+                    if (x >= newSensors.size()){
+                        int s = sensors.size();
+                        int n = newSensors.size();
+                        int index = (s-n-1) - (s - x);
+                        sensorsToChange.remove(index);
+                    }else {
+                        newSensors.remove(x);
+                    }
+                    break;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            this.loadDialog.dispose();
         }
     }
 }

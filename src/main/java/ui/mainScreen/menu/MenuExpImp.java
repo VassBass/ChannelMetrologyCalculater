@@ -4,7 +4,7 @@ import application.Application;
 import controller.FileBrowser;
 import model.Model;
 import ui.exportData.ConfirmExportDialog;
-import ui.importData.ImportDataDialog;
+import ui.importData.ImportFileChooser;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
@@ -29,7 +29,6 @@ public class MenuExpImp extends JMenu {
 
     private final MainScreen mainScreen;
 
-    private JMenuItem buttonExportAllData;
     private JMenuItem buttonExportChannels;
     private JMenuItem buttonExportSensors;
     private JMenuItem buttonExportCalibrators;
@@ -42,9 +41,9 @@ public class MenuExpImp extends JMenu {
     private JMenuItem buttonImport;
     private JMenuItem buttonFolder;
 
-    public MenuExpImp(MainScreen mainScreen){
+    public MenuExpImp(){
         super(EXPORT_IMPORT);
-        this.mainScreen = mainScreen;
+        this.mainScreen = Application.context.mainScreen;
 
         this.createElements();
         this.setReactions();
@@ -52,7 +51,6 @@ public class MenuExpImp extends JMenu {
     }
 
     private void createElements() {
-        this.buttonExportAllData = new JMenuItem(EXPORT_ALL_DATA);
         this.buttonExportChannels = new JMenuItem(EXPORT_CHANNELS);
         this.buttonExportSensors = new JMenuItem(EXPORT_SENSORS);
         this.buttonExportCalibrators = new JMenuItem(EXPORT_CALIBRATORS);
@@ -67,7 +65,6 @@ public class MenuExpImp extends JMenu {
     }
 
     private void setReactions() {
-        this.buttonExportAllData.addActionListener(this.clickExportAllData);
         this.buttonExportChannels.addActionListener(this.clickExportChannels);
         this.buttonExportSensors.addActionListener(this.clickExportSensors);
         this.buttonExportCalibrators.addActionListener(this.clickExportCalibrators);
@@ -82,8 +79,6 @@ public class MenuExpImp extends JMenu {
     }
 
     private void build() {
-        this.add(this.buttonExportAllData);
-        this.addSeparator();
         this.add(this.buttonExportChannels);
         this.addSeparator();
         this.add(this.buttonExportSensors);
@@ -102,18 +97,6 @@ public class MenuExpImp extends JMenu {
         this.addSeparator();
         this.add(this.buttonFolder);
     }
-
-    private final ActionListener clickExportAllData = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.ALL).setVisible(true);
-                }
-            });
-        }
-    };
 
     private final ActionListener clickExportChannels = new ActionListener() {
         @Override
@@ -230,7 +213,7 @@ public class MenuExpImp extends JMenu {
                 @Override
                 public void run() {
                     if (Application.isBusy(mainScreen)) return;
-                    new ImportDataDialog(mainScreen).setVisible(true);
+                    new ImportFileChooser().setVisible(true);
                 }
             });
         }

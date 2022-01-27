@@ -12,7 +12,6 @@ public class DialogExit extends JDialog {
     public static final String NO = "Ні";
 
     private final JFrame parent;
-    private final JDialog current;
 
     private JPanel content;
 
@@ -21,7 +20,6 @@ public class DialogExit extends JDialog {
     public DialogExit(JFrame parent){
         super(parent, CLOSE_PROGRAM_QUESTION, true);
         this.parent = parent;
-        this.current = this;
 
         this.createElements();
         this.setReactions();
@@ -62,7 +60,7 @@ public class DialogExit extends JDialog {
     private final ActionListener clickNegativeButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            current.dispose();
+            DialogExit.this.dispose();
         }
     };
 }

@@ -12,7 +12,6 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 public class MainScreen extends JFrame {
-    private final JFrame current;
 
     private static final String windowHeader = "Вимірювальні канали";
 
@@ -27,7 +26,6 @@ public class MainScreen extends JFrame {
 
     public MainScreen(){
         super(windowHeader);
-        this.current = this;
     }
 
     public void init(ArrayList<Channel>channelsList){
@@ -94,11 +92,11 @@ public class MainScreen extends JFrame {
 
         @Override
         public void windowClosing(WindowEvent e) {
-            if (!Application.isBusy(current)) {
+            if (!Application.isBusy(MainScreen.this)) {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new DialogExit(current).setVisible(true);
+                        new DialogExit(MainScreen.this).setVisible(true);
                     }
 
                 });

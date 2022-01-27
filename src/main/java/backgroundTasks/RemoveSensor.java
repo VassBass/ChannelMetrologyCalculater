@@ -38,8 +38,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        int index = this.dialog.mainTable.getSelectedRow();
-        Sensor sensor = Application.context.sensorsController.get(index);
+        Sensor sensor = this.dialog.getSensor();
         if (Application.context.sensorsController.isLastInMeasurement(sensor)) {
             LAST_SENSOR_MESSAGE = this.lastSensorMessageGenerator(sensor.getMeasurement());
             return false;
@@ -55,7 +54,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
         this.loadDialog.dispose();
         try {
             if (this.get()){
-                this.dialog.mainTable.update();
+                this.dialog.update();
                 if (Application.context.channelSorter.isOn()){
                     this.dialog.updateMain(Application.context.channelSorter.getCurrent());
                 }else {

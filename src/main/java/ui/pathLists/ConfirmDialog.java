@@ -20,7 +20,6 @@ public class ConfirmDialog extends JDialog {
     }
 
     private final PathListsDialog dialog;
-    private final JDialog current;
     private final String elementType;
 
     private JLabel message;
@@ -29,7 +28,6 @@ public class ConfirmDialog extends JDialog {
     public ConfirmDialog(PathListsDialog dialog, String elementType){
         super(dialog, REMOVE, true);
         this.dialog = dialog;
-        this.current = this;
         this.elementType = elementType;
 
         this.createElements();
@@ -59,7 +57,7 @@ public class ConfirmDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(current)) return;
+            if (Application.isBusy(ConfirmDialog.this)) return;
             dispose();
             switch (elementType){
                 case PathListsTable.DEPARTMENTS_LIST:

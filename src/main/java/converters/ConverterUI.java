@@ -4,7 +4,6 @@ import java.awt.*;
 
 public class ConverterUI {
     public static Point POINT_CENTER (Component parent, Component child) {
-
         int x0 = parent.getLocation().x;
         int pw = parent.getWidth();
         int cw = child.getWidth();
@@ -20,7 +19,6 @@ public class ConverterUI {
     }
 
     public static Point POINT_CENTER (Dimension parent, Component child) {
-
         int pw = parent.width;
         int cw = child.getWidth();
 
@@ -29,6 +27,26 @@ public class ConverterUI {
 
         int x = (pw/2) - (cw/2);
         int y = (ph/2) - (ch/2);
+
+        return new Point(x,y);
+    }
+
+    public static Point LEFT_FROM_PARENT(Component parent, Component child){
+        int parentX = parent.getLocation().x;
+        int childWidth = child.getWidth();
+
+        int x = parentX - childWidth;
+        int y = parent.getLocation().y;
+
+        return new Point(x,y);
+    }
+
+    public static Point RIGHT_FROM_PARENT(Component parent, Component child){
+        int parentX = parent.getLocation().x;
+        int parentWidth = parent.getWidth();
+
+        int x = parentX + parentWidth;
+        int y = parent.getLocation().y;
 
         return new Point(x,y);
     }

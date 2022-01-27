@@ -23,7 +23,6 @@ public class PersonInfoDialog extends JDialog {
 
     private final PersonsListDialog parent;
     private final Worker worker;
-    private final JDialog current;
 
     private PersonInfoPanel infoPanel;
 
@@ -33,7 +32,6 @@ public class PersonInfoDialog extends JDialog {
         super(parent, title(worker), true);
         this.parent = parent;
         this.worker = worker;
-        this.current = this;
 
         this.createElements();
         this.setReactions();
@@ -80,7 +78,7 @@ public class PersonInfoDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (infoPanel.allTextsFull()){
-                if (Application.isBusy(current)) return;
+                if (Application.isBusy(PersonInfoDialog.this)) return;
                 dispose();
                 Worker newPerson = infoPanel.getWorker();
                 if (worker == null){
@@ -92,7 +90,7 @@ public class PersonInfoDialog extends JDialog {
                 }
                 parent.update();
             }else {
-                JOptionPane.showMessageDialog(current, ERROR_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(PersonInfoDialog.this, ERROR_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);
             }
         }
     };

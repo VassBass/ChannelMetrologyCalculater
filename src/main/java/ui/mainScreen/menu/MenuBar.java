@@ -22,7 +22,7 @@ public class MenuBar extends JMenuBar {
     private void createElements() {
         this.menuChannel = new MenuChannel(this.mainScreen);
         this.menuLists = new MenuLists(this.mainScreen);
-        this.menuExportImport = new MenuExpImp(this.mainScreen);
+        this.menuExportImport = new MenuExpImp();
     }
 
     private void build() {

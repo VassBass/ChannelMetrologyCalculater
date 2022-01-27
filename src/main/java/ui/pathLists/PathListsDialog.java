@@ -21,7 +21,6 @@ public class PathListsDialog extends JDialog {
     private static final String INSTALLATION = "Установка";
 
     private final MainScreen mainScreen;
-    private final PathListsDialog current;
 
     private String title;
 
@@ -32,7 +31,6 @@ public class PathListsDialog extends JDialog {
 
     public PathListsDialog(MainScreen mainScreen, String title){
         super(mainScreen, title, true);
-        this.current = this;
         this.mainScreen = mainScreen;
         this.title = title;
 
@@ -195,7 +193,7 @@ public class PathListsDialog extends JDialog {
                             elementType = INSTALLATION;
                             break;
                     }
-                    new PathElementName(current, elementType, null).setVisible(true);
+                    new PathElementName(PathListsDialog.this, elementType, null).setVisible(true);
                 }
             });
         }
@@ -228,7 +226,7 @@ public class PathListsDialog extends JDialog {
                                 elementName = Application.context.installationsController.get(mainTable.getSelectedRow());
                                 break;
                         }
-                        new PathElementName(current, elementType, elementName).setVisible(true);
+                        new PathElementName(PathListsDialog.this, elementType, elementName).setVisible(true);
                     }
                 });
             }
@@ -258,7 +256,7 @@ public class PathListsDialog extends JDialog {
                                 break;
                         }
                     }
-                    new PathElementsRemove(current, title, elementName).setVisible(true);
+                    new PathElementsRemove(PathListsDialog.this, title, elementName).setVisible(true);
                 }
             });
         }

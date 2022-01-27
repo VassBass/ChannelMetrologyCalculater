@@ -119,7 +119,7 @@ public class DepartmentsController {
 
     public void rewriteAll(ArrayList<String>departments){
         this.departments = departments;
-        this.save();
+        new Repository<String>(null, Model.DEPARTMENT).writeListInCurrentThread(departments);
     }
 
     private void showNotFoundMessage() {

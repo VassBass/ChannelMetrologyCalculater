@@ -98,6 +98,7 @@ public class SaveImportData extends SwingWorker<Void, Void> {
     protected void done() {
         this.loadDialog.dispose();
         Application.context.channelSorter.setOff();
+        System.out.println(Application.context);
         this.mainScreen.setChannelsList(Application.context.channelsController.getAll());
         JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }

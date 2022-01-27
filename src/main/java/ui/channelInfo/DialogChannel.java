@@ -38,7 +38,6 @@ public class DialogChannel extends JDialog {
     private static final String SET_RANGE_LIKE_CHANNEL = "Однакові діапазони";
 
     private final MainScreen parent;
-    private final DialogChannel current;
 
     private JLabel codeLabel;
     private JLabel nameLabel;
@@ -76,7 +75,6 @@ public class DialogChannel extends JDialog {
     public DialogChannel(MainScreen parent, Channel oldChannel){
         super(parent, INFORMATION_ABOUT_CHANNEL, true);
         this.parent = parent;
-        this.current = this;
         this.oldChannel = oldChannel;
 
         this.createLabels();
@@ -173,12 +171,12 @@ public class DialogChannel extends JDialog {
         }else if (this.oldChannel == null &&
                 Application.context.channelsController.isExist(this.userCode.getText())) {
             this.codeLabel.setForeground(Color.RED);
-            Application.context.channelsController.showExistMessage(current);
+            Application.context.channelsController.showExistMessage(DialogChannel.this);
             return false;
         }else if (this.oldChannel != null &&
                 Application.context.channelsController.isExist(this.oldChannel.getCode(), this.userCode.getText())){
             this.codeLabel.setForeground(Color.RED);
-            Application.context.channelsController.showExistMessage(current);
+            Application.context.channelsController.showExistMessage(DialogChannel.this);
             return false;
         }else {
             this.codeLabel.setForeground(this.defaultTextColor);
@@ -296,14 +294,14 @@ public class DialogChannel extends JDialog {
     private final ActionListener clickNegativeButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            current.dispose();
+            DialogChannel.this.dispose();
         }
     };
 
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!allFieldsAreFilled() || Application.isBusy(current)) return;
+            if (!allFieldsAreFilled() || Application.isBusy(DialogChannel.this)) return;
 
             dispose();
             ArrayList<Channel>channels;

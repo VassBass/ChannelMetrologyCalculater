@@ -1,12 +1,11 @@
 package backgroundTasks.data_import;
 
 import application.Application;
-import model.Model;
 import model.Sensor;
 import support.Comparator;
 import ui.importData.compareSensors.CompareSensorsDialog;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.ImportLoadWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,28 +13,34 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.List;
 
-public class ImportSensors extends SwingWorker<Integer, Void> {
+public class ImportSensors extends SwingWorker<Integer, Integer> {
     private static final String ERROR = "Помилка";
+    private static final String IMPORT = "Імпорт";
 
     private final MainScreen mainScreen;
     private final File exportDataFile;
-    private final LoadDialog loadDialog;
+    private final ImportLoadWindow loadWindow;
 
-    private ArrayList<Sensor>importedSensors, newSensorsList;
-    private ArrayList<Integer[]> sensorsIndexes;
+    private ArrayList<Sensor>importedSensors, newSensors, sensorsForChange, changedSensors = new ArrayList<>();
 
-    public ImportSensors(MainScreen mainScreen, File exportDataFile){
+    public ImportSensors(File exportDataFile){
         super();
-        this.mainScreen = mainScreen;
+        this.mainScreen = Application.context.mainScreen;
         this.exportDataFile = exportDataFile;
-        this.loadDialog = new LoadDialog(mainScreen);
+        this.loadWindow = new ImportLoadWindow();
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                loadDialog.setVisible(true);
+                loadWindow.setVisible(true);
             }
         });
+    }
+
+    @Override
+    protected void process(List<Integer> chunks) {
+        this.loadWindow.setValue(chunks.get(chunks.size() - 1));
     }
 
     // return 0: Импорт прошел успешно
@@ -46,34 +51,43 @@ public class ImportSensors extends SwingWorker<Integer, Void> {
         try {
             this.importedSensors = this.sensorsExtraction();
         }catch (Exception e){
+            e.printStackTrace();
             return -1;
         }
         if (this.importedSensors == null){
             return 1;
         }else {
-            this.copySensors();
+            fueling();
             return 0;
         }
     }
 
     @Override
     protected void done() {
-        loadDialog.dispose();
+        this.loadWindow.dispose();
         try {
+            String message;
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні ПВП", ERROR, JOptionPane.ERROR_MESSAGE);
+                    message = "У обраному файлі відсутні данні ПВП";
+                    JOptionPane.showMessageDialog(mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
-                    EventQueue.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            new CompareSensorsDialog(mainScreen, Model.SENSOR, newSensorsList, importedSensors, sensorsIndexes);
-                        }
-                    });
+                    if (newSensors.isEmpty() && sensorsForChange.isEmpty()) {
+                        message = "Нових або змінених ПВП в файлі імпорту не знайдено";
+                        JOptionPane.showMessageDialog(mainScreen,message,IMPORT, JOptionPane.INFORMATION_MESSAGE);
+                    }else {
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                new CompareSensorsDialog(newSensors, sensorsForChange, changedSensors).setVisible(true);
+                            }
+                        });
+                    }
                     break;
                 case -1:
-                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
+                    message = "Помилка при виконанні імпорту";
+                    JOptionPane.showMessageDialog(mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }catch (Exception e){
@@ -85,59 +99,43 @@ public class ImportSensors extends SwingWorker<Integer, Void> {
     private ArrayList<Sensor>sensorsExtraction() throws Exception {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.exportDataFile));
         ArrayList<Sensor>sensors = (ArrayList<Sensor>) ois.readObject();
-        if (sensors.size() == 0){
+        if (sensors.isEmpty()){
             return null;
         }else {
             return sensors;
         }
     }
 
-    private void copySensors(){
-        ArrayList<Sensor>oldSensorsList = Application.context.sensorsController.getAll();
-        ArrayList<Integer[]>indexes = new ArrayList<>();
-        ArrayList<Sensor>newList = new ArrayList<>();
+    private void fueling(){
+        int progress = 0;
 
-        for (int o = 0; o< oldSensorsList.size(); o++){
-            boolean exist = false;
-            Sensor old = oldSensorsList.get(o);
-            for (int i=0;i<this.importedSensors.size();i++){
-                Sensor imp = this.importedSensors.get(i);
-                if (old.getName().equals(imp.getName())){
-                    exist = true;
-                    if (Comparator.sensorsMatch(old, imp)){
-                        newList.add(old);
-                    }else {
-                        indexes.add(new Integer[]{o,i});
+        ArrayList<Sensor>oldList = Application.context.sensorsController.getAll();
+        if (oldList == null || oldList.isEmpty()) {
+            this.newSensors = this.importedSensors;
+        }else {
+            ArrayList<Sensor>newList = new ArrayList<>();
+            ArrayList<Sensor>changedList = new ArrayList<>();
+            ArrayList<Sensor>sensorsForChange = new ArrayList<>();
+            for (Sensor newSensor : this.importedSensors){
+                boolean exist = false;
+                for (Sensor oldSensor : oldList){
+                    if (oldSensor.getName().equals(newSensor.getName())){
+                        exist = true;
+                        if (!Comparator.sensorsMatch(oldSensor, newSensor)) {
+                            sensorsForChange.add(newSensor);
+                            changedList.add(oldSensor);
+                        }
+                        break;
                     }
-                    break;
                 }
-            }
-            if (!exist){
-                newList.add(old);
-            }
-        }
-        for (Sensor imp : this.importedSensors) {
-            boolean exist = false;
-            for (Sensor old : oldSensorsList) {
-                if (imp.getName().equals(old.getName())) {
-                    exist = true;
-                    break;
+                if (!exist){
+                    newList.add(newSensor);
                 }
+                this.publish(++progress);
             }
-            if (!exist) {
-                newList.add(imp);
-            }
-        }
-
-        if (newList.isEmpty()){
-            this.newSensorsList = null;
-        }else {
-            this.newSensorsList = newList;
-        }
-        if (indexes.isEmpty()){
-            this.sensorsIndexes = null;
-        }else {
-            this.sensorsIndexes = indexes;
+            this.newSensors = newList;
+            this.sensorsForChange = sensorsForChange;
+            this.changedSensors = changedList;
         }
     }
 }

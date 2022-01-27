@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ImportPathElements extends SwingWorker<Integer, Void> {
     private static final String ERROR = "Помилка";
@@ -21,9 +20,9 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
     private final File exportDataFile;
     private final LoadDialog loadDialog;
 
-    public ImportPathElements(MainScreen mainScreen, File exportDataFile){
+    public ImportPathElements(File exportDataFile){
         super();
-        this.mainScreen = mainScreen;
+        this.mainScreen = Application.context.mainScreen;
         this.exportDataFile = exportDataFile;
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
@@ -93,10 +92,11 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
                     oldList = Application.context.installationsController.getAll();
                     break;
             }
+            if (oldList == null) return -1;
 
             for (String imp : importedList) {
                 boolean exist = false;
-                for (String old : Objects.requireNonNull(oldList)) {
+                for (String old : oldList) {
                     if (old.equals(imp)) {
                         exist = true;
                         break;
@@ -107,21 +107,19 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
                 }
             }
             if (!toAdd.isEmpty()) {
-                ArrayList<String> newList = new ArrayList<>(oldList.size() + toAdd.size());
-                newList.addAll(oldList);
-                newList.addAll(toAdd);
+                oldList.addAll(toAdd);
                 switch (x){
                     case 0:
-                        Application.context.departmentsController.rewriteAll(newList);
+                        Application.context.departmentsController.rewriteAll(oldList);
                         break;
                     case 1:
-                        Application.context.areasController.rewriteAll(newList);
+                        Application.context.areasController.rewriteAll(oldList);
                         break;
                     case 2:
-                        Application.context.processesController.rewriteAll(newList);
+                        Application.context.processesController.rewriteAll(oldList);
                         break;
                     case 3:
-                        Application.context.installationsController.rewriteAll(newList);
+                        Application.context.installationsController.rewriteAll(oldList);
                         break;
                 }
             }

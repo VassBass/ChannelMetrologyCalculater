@@ -1,6 +1,7 @@
 package ui.mainScreen;
 
 import model.Channel;
+import ui.model.Table;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -11,27 +12,24 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MainTable extends JTable {
+public class MainTable extends Table<Channel> {
     private static final String CODE = "Код";
     private static final String NAME = "Назва";
     private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
     private static final String TECHNOLOGY_NUMBER = "Технологічний номер";
 
-    private final JTable current;
-
     private ArrayList<Channel>channelsList;
 
     public MainTable(final MainScreen parent){
         super(tableModel(parent.channelsList));
-        this.current = this;
         this.channelsList = parent.channelsList;
 
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         ListSelectionListener select = new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if (current.getSelectedRow() != -1) {
-                    parent.updateChannelInfo(channelsList.get(current.getSelectedRow()));
+                if (MainTable.this.getSelectedRow() != -1) {
+                    parent.updateChannelInfo(channelsList.get(MainTable.this.getSelectedRow()));
                 }
             }
         };
@@ -42,6 +40,7 @@ public class MainTable extends JTable {
         }
     }
 
+    @Override
     public void setList(ArrayList<Channel>channelsList){
         this.channelsList = channelsList;
         this.setModel(tableModel(channelsList));

@@ -1,9 +1,7 @@
 package backgroundTasks.data_import;
 
 import application.Application;
-import model.Channel;
 import model.Sensor;
-import support.Comparator;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
@@ -16,13 +14,14 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
     private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
 
     private final MainScreen mainScreen;
-    private final ArrayList<Sensor>sensors;
+    private final ArrayList<Sensor>newSensors, sensorsForChange;
     private final LoadDialog loadDialog;
 
-    public SaveImportedSensors(MainScreen mainScreen, ArrayList<Sensor>sensors){
+    public SaveImportedSensors(ArrayList<Sensor>newSensors, ArrayList<Sensor> sensorsForChange){
         super();
-        this.mainScreen = mainScreen;
-        this.sensors = sensors;
+        this.mainScreen = Application.context.mainScreen;
+        this.newSensors = newSensors;
+        this.sensorsForChange = sensorsForChange;
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -34,20 +33,8 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
-        for (Sensor sensor : this.sensors){
-            for (int c = 0; c< channels.size(); c++){
-                Channel channel = channels.get(c);
-                if (channel.getSensor().getName().equals(sensor.getName())){
-                    if (!Comparator.sensorsMatch(channel.getSensor(), sensor)){
-                        channel.setSensor(sensor);
-                        channels.set(c, channel);
-                    }
-                }
-            }
-        }
-        Application.context.sensorsController.rewriteAll(this.sensors);
-        Application.context.channelsController.rewriteAll(channels);
+        Application.context.sensorsController.importData(this.newSensors, this.sensorsForChange);
+        Application.context.channelsController.changeSensors(this.sensorsForChange);
         return null;
     }
 

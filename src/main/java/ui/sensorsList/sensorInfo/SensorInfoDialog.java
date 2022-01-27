@@ -36,7 +36,6 @@ public class SensorInfoDialog extends JDialog {
     private static final String SAVE = "Зберегти";
 
     private final SensorsListDialog parent;
-    private final SensorInfoDialog current;
     private final Sensor oldSensor;
 
     private ButtonCell labelMeasurement;
@@ -61,7 +60,6 @@ public class SensorInfoDialog extends JDialog {
     public SensorInfoDialog(SensorsListDialog parent, Sensor oldSensor){
         super(parent, SENSOR, true);
         this.parent = parent;
-        this.current = this;
         this.oldSensor = oldSensor;
 
         this.createElements();
@@ -228,7 +226,7 @@ public class SensorInfoDialog extends JDialog {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(current)) return;
+            if (Application.isBusy(SensorInfoDialog.this)) return;
             if (checkSensor()) {
                 Sensor sensor = new Sensor();
                 if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION.getValue())){
@@ -248,7 +246,7 @@ public class SensorInfoDialog extends JDialog {
                     sensor.setValue("");
                 }
                 sensor.setErrorFormula(errorFormulaText.getText());
-                PutSensorInList putSensorInList = new PutSensorInList(parent, current, sensor);
+                PutSensorInList putSensorInList = new PutSensorInList(parent, SensorInfoDialog.this, sensor);
                 if (oldSensor == null){
                     putSensorInList.start();
                 }else {

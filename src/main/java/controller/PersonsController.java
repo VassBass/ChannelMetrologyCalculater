@@ -202,7 +202,7 @@ public class PersonsController {
 
     public void rewriteAll(ArrayList<Worker>workers){
         this.persons = workers;
-        this.save();
+        new Repository<Worker>(null,Model.PERSON).writeListInCurrentThread(workers);
     }
 
     private void showNotFoundMessage() {

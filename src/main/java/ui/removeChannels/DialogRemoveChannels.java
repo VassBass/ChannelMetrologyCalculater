@@ -20,7 +20,6 @@ public class DialogRemoveChannels extends JDialog {
     private static final String CANCEL = "Відміна";
 
     private final MainScreen mainScreen;
-    private final JDialog current;
 
     private JLabel text;
 
@@ -31,7 +30,6 @@ public class DialogRemoveChannels extends JDialog {
     public DialogRemoveChannels(MainScreen mainScreen){
         super(mainScreen, REMOVE_CHANNEL, true);
         this.mainScreen = mainScreen;
-        this.current = this;
 
         this.createElements();
         this.setReactions();
@@ -81,7 +79,7 @@ public class DialogRemoveChannels extends JDialog {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    current.dispose();
+                    DialogRemoveChannels.this.dispose();
                     new DialogRemoveAllChannels(mainScreen).setVisible(true);
                 }
             });
@@ -91,7 +89,7 @@ public class DialogRemoveChannels extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(current)) return;
+            if (Application.isBusy(DialogRemoveChannels.this)) return;
             int selectedIndex = mainScreen.mainTable.getSelectedRow();
             final Channel channel;
             if (selectedIndex == -1){
@@ -102,7 +100,7 @@ public class DialogRemoveChannels extends JDialog {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    current.dispose();
+                    DialogRemoveChannels.this.dispose();
                     ArrayList<Channel>channels = Application.context.channelsController.remove(channel);
                     if (Application.context.channelSorter.isOn()){
                         mainScreen.setChannelsList(Application.context.channelSorter.getCurrent());
@@ -117,7 +115,7 @@ public class DialogRemoveChannels extends JDialog {
     private final ActionListener clickNegativeButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            current.dispose();
+            DialogRemoveChannels.this.dispose();
         }
     };
 

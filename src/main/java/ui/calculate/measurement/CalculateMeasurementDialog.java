@@ -37,7 +37,6 @@ public class CalculateMeasurementDialog extends JDialog {
     private final MainScreen mainScreen;
     private final Channel channel;
     private final HashMap<Integer, Object> values;
-    private final JDialog current;
 
     private int measurementNumber = 0;
 
@@ -55,7 +54,6 @@ public class CalculateMeasurementDialog extends JDialog {
         this.mainScreen = mainScreen;
         this.channel = channel;
         this.values = values;
-        this.current = this;
 
         this.createElements();
         this.setValues();
@@ -208,7 +206,7 @@ public class CalculateMeasurementDialog extends JDialog {
                         measurementsPanels[measurementNumber] = null;
                         values.put(--measurementNumber, null);
                     }
-                    JOptionPane.showMessageDialog(current, message, CANCEL, JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(CalculateMeasurementDialog.this, message, CANCEL, JOptionPane.INFORMATION_MESSAGE);
                     update();
                 }
             });

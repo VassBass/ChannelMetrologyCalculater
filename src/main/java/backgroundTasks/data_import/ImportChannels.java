@@ -2,12 +2,11 @@ package backgroundTasks.data_import;
 
 import application.Application;
 import model.Channel;
-import model.Model;
 import model.Sensor;
 import support.Comparator;
 import ui.importData.compareChannels.CompareChannelsDialog;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.ImportLoadWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,68 +14,94 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.List;
 
-public class ImportChannels extends SwingWorker<Integer, Void> {
+public class ImportChannels extends SwingWorker<Integer, Integer> {
     private static final String ERROR = "Помилка";
+    private static final String IMPORT = "Імпорт";
 
     private final MainScreen mainScreen;
     private final File exportDataFile;
-    private final LoadDialog loadDialog;
+    private final ImportLoadWindow loadWindow;
 
-    private ArrayList<Channel>importedChannels, newChannelsList;
-    private ArrayList<Sensor> importedSensors;
-    private ArrayList<Integer[]> channelsIndexes;
+    private ArrayList<Sensor>importedSensors, newSensors, sensorsForChange;
+    private ArrayList<Channel>importedChannels, newChannels, channelsForChange, changedChannels;
 
-    public ImportChannels(MainScreen mainScreen, File exportDataFile){
+    public ImportChannels(File exportDataFile){
         super();
-        this.mainScreen = mainScreen;
+        this.mainScreen = Application.context.mainScreen;
         this.exportDataFile = exportDataFile;
-        this.loadDialog = new LoadDialog(mainScreen);
+        this.loadWindow = new ImportLoadWindow();
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                loadDialog.setVisible(true);
+                loadWindow.setVisible(true);
             }
         });
     }
 
+    private void setProgress(double progress){
+        int p = (int)progress;
+        if (p != 0) {
+            double r = progress - p;
+            if (r == 0D) {
+                double pr1 = this.importedChannels.size() / 100D;
+                double pr = p / pr1;
+                this.publish((int)pr);
+            }
+        }
+    }
+
+    @Override
+    protected void process(List<Integer> chunks) {
+        this.loadWindow.setValue(chunks.get(chunks.size() - 1));
+    }
+
     // return 0: Импорт прошел успешно
-    // return 1: В файле отсутствуют каналы
+    // return 1: В файле отсутствуют калибраторы
     // return -1: Во время импорта произошла ошибка
     @Override
     protected Integer doInBackground() throws Exception {
         try {
             this.dataExtraction();
         }catch (Exception e){
+            e.printStackTrace();
             return -1;
         }
         if (this.importedChannels == null){
             return 1;
         }else {
-            this.copyChannels();
+            fueling();
             return 0;
         }
     }
 
     @Override
     protected void done() {
-        loadDialog.dispose();
+        this.loadWindow.dispose();
         try {
+            String message;
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні каналів", ERROR, JOptionPane.ERROR_MESSAGE);
+                    message = "У обраному файлі відсутні данні калібраторів";
+                    JOptionPane.showMessageDialog(mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
-                    EventQueue.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            new CompareChannelsDialog(mainScreen, Model.CHANNEL, importedSensors,
-                                    newChannelsList,importedChannels, channelsIndexes);
-                        }
-                    });
+                    if (newChannels.isEmpty() && channelsForChange.isEmpty()) {
+                        message = "Нових або змінених калібраторів в файлі імпорту не знайдено";
+                        JOptionPane.showMessageDialog(mainScreen,message,IMPORT, JOptionPane.INFORMATION_MESSAGE);
+                    }else {
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                new CompareChannelsDialog(newChannels, channelsForChange, changedChannels, newSensors, sensorsForChange).setVisible(true);
+                            }
+                        });
+                    }
                     break;
                 case -1:
-                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
+                    message = "Помилка при виконанні імпорту";
+                    JOptionPane.showMessageDialog(mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }catch (Exception e){
@@ -89,59 +114,73 @@ public class ImportChannels extends SwingWorker<Integer, Void> {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.exportDataFile));
         ArrayList<?>[]data = (ArrayList<?>[]) ois.readObject();
         ArrayList<Channel>channels = (ArrayList<Channel>) data[0];
-        ArrayList<Sensor>sensors = (ArrayList<Sensor>) data[1];
         if (channels.isEmpty()){
-            this.importedChannels = channels;
-            this.importedSensors = sensors;
+            this.importedChannels = null;
+        }else {
+            this.importedChannels =  channels;
+            this.importedSensors = (ArrayList<Sensor>) data[1];
         }
     }
 
-    private void copyChannels(){
-        ArrayList<Channel>oldChannelsList = Application.context.channelsController.getAll();
-        ArrayList<Integer[]>indexes = new ArrayList<>();
-        ArrayList<Channel>newList = new ArrayList<>();
+    private void fueling() {
+        double progress = 0D;
 
-        for (int o = 0; o< oldChannelsList.size(); o++){
-            boolean exist = false;
-            Channel old = oldChannelsList.get(o);
-            for (int i=0;i<this.importedChannels.size();i++){
-                Channel imp = this.importedChannels.get(i);
-                if (old.getCode().equals(imp.getCode())){
-                    exist = true;
-                    if (Comparator.channelsMatch(old, imp)){
-                        newList.add(old);
-                    }else {
-                        indexes.add(new Integer[]{o,i});
+        ArrayList<Sensor> oldSensors = Application.context.sensorsController.getAll();
+        if (oldSensors.isEmpty()) {
+            this.newSensors = this.importedSensors;
+        } else {
+            ArrayList<Sensor> newSensorsList = new ArrayList<>();
+            ArrayList<Sensor> sensorsForChange = new ArrayList<>();
+            for (Sensor newSensor : this.importedSensors) {
+                boolean exist = false;
+                for (Sensor oldSensor : oldSensors) {
+                    if (oldSensor.getName().equals(newSensor.getName())) {
+                        exist = true;
+                        if (!Comparator.sensorsMatch(newSensor, oldSensor)) {
+                            sensorsForChange.add(newSensor);
+                        }
+                        break;
                     }
-                    break;
                 }
-            }
-            if (!exist){
-                newList.add(old);
-            }
-        }
-        for (Channel imp : this.importedChannels) {
-            boolean exist = false;
-            for (Channel old : oldChannelsList) {
-                if (imp.getCode().equals(old.getCode())) {
-                    exist = true;
-                    break;
+                if (!exist) {
+                    newSensorsList.add(newSensor);
                 }
+                progress = progress + 0.5;
+                this.setProgress(progress);
             }
-            if (!exist) {
-                newList.add(imp);
-            }
+            this.newSensors = newSensorsList;
+            this.sensorsForChange = sensorsForChange;
         }
 
-        if (newList.isEmpty()){
-            this.newChannelsList = null;
-        }else {
-            this.newChannelsList = newList;
-        }
-        if (indexes.isEmpty()){
-            this.channelsIndexes = null;
-        }else {
-            this.channelsIndexes = indexes;
+        ArrayList<Channel> oldList = Application.context.channelsController.getAll();
+        if (oldList == null || oldList.isEmpty()) {
+            this.newChannels = this.importedChannels;
+            this.channelsForChange = new ArrayList<>();
+        } else {
+            ArrayList<Channel> newList = new ArrayList<>();
+            ArrayList<Channel> changedList = new ArrayList<>();
+            ArrayList<Channel> channelsForChange = new ArrayList<>();
+            for (Channel newChannel : this.importedChannels) {
+                boolean exist = false;
+                for (Channel oldChannel : oldList) {
+                    if (oldChannel.getCode().equals(newChannel.getCode())) {
+                        exist = true;
+                        if (!Comparator.channelsMatch(newChannel, oldChannel)) {
+                            changedList.add(oldChannel);
+                            channelsForChange.add(newChannel);
+                        }
+                        break;
+                    }
+                }
+                if (!exist) {
+                    newList.add(newChannel);
+                }
+                progress = progress + 0.5;
+                this.setProgress(progress);
+            }
+            this.newChannels = newList;
+            this.channelsForChange = channelsForChange;
+            this.changedChannels = changedList;
         }
     }
 }

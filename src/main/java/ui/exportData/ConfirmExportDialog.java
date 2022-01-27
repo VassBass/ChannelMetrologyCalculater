@@ -17,7 +17,6 @@ public class ConfirmExportDialog extends JDialog {
     private static final String CANCEL = "Відміна";
 
     private final MainScreen mainScreen;
-    private final JDialog current;
     private final Model exportData;
 
     private JLabel message;
@@ -25,7 +24,6 @@ public class ConfirmExportDialog extends JDialog {
 
     public ConfirmExportDialog(MainScreen mainScreen, Model exportData){
         super(mainScreen, EXPORT, true);
-        this.current = this;
         this.mainScreen = mainScreen;
         this.exportData = exportData;
 
@@ -36,9 +34,6 @@ public class ConfirmExportDialog extends JDialog {
 
     private void createElements() {
         switch (this.exportData){
-            default://AllData
-                this.message = new JLabel("Експортувати всі данні?");
-                break;
             case CHANNEL://Channels
                 this.message = new JLabel("Експортувати всі вимірювальні канали?");
                 break;
@@ -94,12 +89,9 @@ public class ConfirmExportDialog extends JDialog {
     private final ActionListener clickExport = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(current)) return;
+            if (Application.isBusy(ConfirmExportDialog.this)) return;
             dispose();
             switch (exportData){
-                default://All data
-                    new ExportData(mainScreen).execute();
-                    break;
                 case CHANNEL://Channels
                     new ExportChannels(mainScreen).execute();
                     break;

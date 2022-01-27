@@ -22,9 +22,9 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
     private final File exportDataFile;
     private final LoadDialog loadDialog;
 
-    public ImportPersons(MainScreen mainScreen, File exportDataFile){
+    public ImportPersons(File exportDataFile){
         super();
-        this.mainScreen = mainScreen;
+        this.mainScreen = Application.context.mainScreen;
         this.exportDataFile = exportDataFile;
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
@@ -58,13 +58,13 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
         try {
             switch (this.get()) {
                 case 1:
-                    JOptionPane.showMessageDialog(mainScreen, "У обраному файлі відсутні данні працівників", ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this.mainScreen, "У обраному файлі відсутні данні працівників", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
                 case 0:
                     JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
                     break;
                 case -1:
-                    JOptionPane.showMessageDialog(mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this.mainScreen, "Помилка при виконанні імпорту", ERROR, JOptionPane.ERROR_MESSAGE);
                     break;
             }
         }catch (Exception e){

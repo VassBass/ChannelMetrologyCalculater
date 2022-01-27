@@ -8,9 +8,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ApplicationLogo extends JWindow {
-    public static final String LOADING = "Завантаження...";
-    public static final String DEVELOPER = "VassBassApp";
-    public static final String VERSION = "v5.0.4";
+    private static final String LOADING = "Завантаження...";
+    private static final String DEVELOPER = "VassBassApp";
+    private static final String VERSION = "v5.1.6";
 
     private final JLabel message;
 

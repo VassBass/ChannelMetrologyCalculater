@@ -19,7 +19,6 @@ public class MethodInfoDialog extends JDialog {
     private static final String SAVE = "Зберегти";
 
     private final MainScreen mainScreen;
-    private final JDialog current;
     private final MeasurementConstants measurement;
 
     private JTextField userName;
@@ -27,7 +26,6 @@ public class MethodInfoDialog extends JDialog {
 
     public MethodInfoDialog(MainScreen mainScreen, MeasurementConstants measurement){
         super(mainScreen, METHODS, true);
-        this.current = this;
         this.mainScreen = mainScreen;
         this.measurement = measurement;
 
@@ -69,7 +67,7 @@ public class MethodInfoDialog extends JDialog {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(current)) return;
+            if (Application.isBusy(MethodInfoDialog.this)) return;
             Settings.setSettingValue(measurement.getValue(), userName.getText());
             dispose();
             mainScreen.refreshMenu();

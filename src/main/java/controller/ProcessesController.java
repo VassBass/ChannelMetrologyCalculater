@@ -123,7 +123,7 @@ public class ProcessesController {
 
     public void rewriteAll(ArrayList<String>processes){
         this.processes = processes;
-        this.save();
+        new Repository<String>(null, Model.PROCESS).writeListInCurrentThread(processes);
     }
 
     private void showNotFoundMessage() {

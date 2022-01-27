@@ -3,6 +3,7 @@ package ui.sensorsList;
 import application.Application;
 import backgroundTasks.RemoveSensor;
 import converters.ConverterUI;
+import model.Sensor;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -18,14 +19,12 @@ public class SensorRemoveDialog extends JDialog {
     private static final String CANCEL = "Відміна";
 
     private final SensorsListDialog parent;
-    private final JDialog current;
 
     private JLabel message1, message2, message3;
     private JButton buttonCancel, buttonRemove;
 
     public SensorRemoveDialog(SensorsListDialog parent){
-        super(parent, title(parent.mainTable.getSelectedRow()), true);
-        this.current = this;
+        super(parent, title(parent.getSensor()), true);
         this.parent = parent;
 
         this.createElements();
@@ -33,14 +32,11 @@ public class SensorRemoveDialog extends JDialog {
         this.build();
     }
 
-    private static String title(int indexOfSensor){
-        try {
-            return REMOVE
-                    + " \""
-                    + Application.context.sensorsController.get(indexOfSensor).getName()
-                    + "\"?";
-        }catch (Exception ex){
+    private static String title(Sensor sensor){
+        if (sensor == null) {
             return REMOVE;
+        }else {
+            return REMOVE + " \"" + sensor.getName() + "\"?";
         }
     }
 
@@ -80,7 +76,7 @@ public class SensorRemoveDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(current)) return;
+            if (Application.isBusy(SensorRemoveDialog.this)) return;
             dispose();
             new RemoveSensor(parent).start();
         }
