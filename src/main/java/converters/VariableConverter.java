@@ -92,6 +92,15 @@ public class VariableConverter {
         return String.valueOf(output);
     }
 
+    public static Double parseToDouble(String str){
+        try {
+            String s = commasToDots(str);
+            return Double.parseDouble(s);
+        }catch (Exception e){
+            return null;
+        }
+    }
+
     public static String doubleString(String string) {
         StringBuilder checkedString = new StringBuilder();
         boolean dot = false;

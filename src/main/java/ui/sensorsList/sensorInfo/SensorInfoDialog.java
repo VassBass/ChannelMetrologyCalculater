@@ -35,6 +35,16 @@ public class SensorInfoDialog extends JDialog {
     private static final String CANCEL = "Відміна";
     private static final String SAVE = "Зберегти";
 
+    private String from_R(double percent){
+        return percent + "% від діапазону вимірювального каналу";
+    }
+    private String from_r(double percent){
+        return percent + "% від діапазону вимірювання ПВП";
+    }
+    private String from_convR(double percent){
+        return percent + "% від діапазону вимірювання ПВП, переконвертованого під вимірювальну величину вимірювального каналу";
+    }
+
     private final SensorsListDialog parent;
     private final Sensor oldSensor;
 
@@ -53,7 +63,7 @@ public class SensorInfoDialog extends JDialog {
     private SensorRangePanel rangePanel;
     private JTextField errorFormulaText;
 
-    private JPopupMenu namePopupMenu;
+    private JPopupMenu namePopupMenu, errorPopupMenu;
 
     private JButton buttonCancel, buttonSave;
 
@@ -89,7 +99,10 @@ public class SensorInfoDialog extends JDialog {
         this.nameText.setComponentPopupMenu(this.namePopupMenu);
 
         this.rangePanel = new SensorRangePanel();
+
         this.errorFormulaText = new JTextField(10);
+        this.errorPopupMenu = new JPopupMenu(INSERT);
+        this.errorFormulaText.setComponentPopupMenu(this.errorPopupMenu);
 
         String toolTipText = "Приклад існує лише для ознайомлення з формою запису і не є реальною формулою.";
 
@@ -187,6 +200,7 @@ public class SensorInfoDialog extends JDialog {
             this.nameText.setText(this.oldSensor.getName());
             this.rangePanel.setRange(this.oldSensor.getRangeMax(), this.oldSensor.getRangeMin());
             this.errorFormulaText.setText(this.oldSensor.getErrorFormula());
+            this.showErrorHintsIfNeed();
 
             if (!this.oldSensor.getMeasurement().equals(MeasurementConstants.TEMPERATURE.getValue())){
                 this.rangePanel.setEnabled(false);
@@ -202,6 +216,7 @@ public class SensorInfoDialog extends JDialog {
         this.measurementsList.addItemListener(this.changeMeasurement);
 
         this.typeText.getDocument().addDocumentListener(this.typeChange);
+        this.errorFormulaText.getDocument().addDocumentListener(this.errorUpdate);
     }
 
     private void build() {
@@ -214,6 +229,24 @@ public class SensorInfoDialog extends JDialog {
     private void refresh(){
         this.setVisible(false);
         this.setVisible(true);
+    }
+
+    private void showErrorHintsIfNeed(){
+        errorPopupMenu.removeAll();
+        Double d = VariableConverter.parseToDouble(errorFormulaText.getText());
+        if (d != null){
+            JMenuItem from_R_item = new JMenuItem(from_R(d));
+            JMenuItem from_r_item = new JMenuItem(from_r(d));
+            JMenuItem from_convR_item = new JMenuItem(from_convR(d));
+
+            from_R_item.addActionListener(clickFrom_R);
+            from_r_item.addActionListener(clickFrom_r);
+            from_convR_item.addActionListener(clickFrom_convR);
+
+            errorPopupMenu.add(from_R_item);
+            errorPopupMenu.add(from_r_item);
+            errorPopupMenu.add(from_convR_item);
+        }
     }
 
     private final ActionListener clickCancel = new ActionListener() {
@@ -272,7 +305,7 @@ public class SensorInfoDialog extends JDialog {
         public void insertUpdate(DocumentEvent e) {
             namePopupMenu.removeAll();
             JMenuItem type = new JMenuItem(typeText.getText());
-            type.addActionListener(clickPaste);
+            type.addActionListener(clickPasteName);
             namePopupMenu.add(type);
         }
 
@@ -280,7 +313,7 @@ public class SensorInfoDialog extends JDialog {
         public void removeUpdate(DocumentEvent e) {
             namePopupMenu.removeAll();
             JMenuItem type = new JMenuItem(typeText.getText());
-            type.addActionListener(clickPaste);
+            type.addActionListener(clickPasteName);
             namePopupMenu.add(type);
         }
 
@@ -288,11 +321,50 @@ public class SensorInfoDialog extends JDialog {
         public void changedUpdate(DocumentEvent e) {}
     };
 
-    private final ActionListener clickPaste = new ActionListener() {
+    private final ActionListener clickPasteName = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             nameText.setText(typeText.getText());
             nameText.requestFocus();
+        }
+    };
+
+    private final DocumentListener errorUpdate = new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            showErrorHintsIfNeed();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            showErrorHintsIfNeed();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {}
+    };
+
+    private final ActionListener clickFrom_R = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Double d = VariableConverter.parseToDouble(errorFormulaText.getText());
+            if (d != null) errorFormulaText.setText("(R/100) * " + d);
+        }
+    };
+
+    private final ActionListener clickFrom_r = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Double d = VariableConverter.parseToDouble(errorFormulaText.getText());
+            if (d != null) errorFormulaText.setText("(r/100) * " + d);
+        }
+    };
+
+    private final ActionListener clickFrom_convR = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Double d = VariableConverter.parseToDouble(errorFormulaText.getText());
+            if (d != null) errorFormulaText.setText("(convR/100) * " + d);
         }
     };
 

@@ -11,6 +11,8 @@ import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -140,6 +142,8 @@ public class DialogChannel extends JDialog {
         this.rangeLikeChannel.addItemListener(this.clickRangeLikeChannel);
         this.negativeButton.addActionListener(this.clickNegativeButton);
         this.positiveButton.addActionListener(this.clickPositiveButton);
+
+        this.userName.getDocument().addDocumentListener(this.nameUpdate);
     }
 
     private void build() {
@@ -149,6 +153,7 @@ public class DialogChannel extends JDialog {
             this.setMeasurement(this.oldChannel.getMeasurement());
             this.userCode.setText(this.oldChannel.getCode());
             this.userName.setText(this.oldChannel.getName());
+            this.userName.setToolTipText(this.oldChannel.getName());
             this.measurementPanel.update(this.oldChannel.getMeasurement().getName());
             this.userTechnologyNumber.setText(this.oldChannel.getTechnologyNumber());
             this.datePanel.setDate(this.oldChannel.getDate());
@@ -338,6 +343,20 @@ public class DialogChannel extends JDialog {
             JMenuItem item = (JMenuItem) e.getSource();
             userName.setText(item.getText());
         }
+    };
+
+    private final DocumentListener nameUpdate = new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            userName.setToolTipText(userName.getText());
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            userName.setToolTipText(userName.getText());
+        }
+
+        @Override public void changedUpdate(DocumentEvent e) {}
     };
 
     private class MainPanel extends JPanel {

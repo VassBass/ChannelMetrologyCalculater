@@ -42,6 +42,16 @@ public class CalibratorInfoDialog extends JDialog {
     private static final String CANCEL = "Відміна";
     private static final String SAVE = "Зберегти";
 
+    private String from_R(double percent){
+        return percent + "% від діапазону вимірювального каналу";
+    }
+    private String from_r(double percent){
+        return percent + "% від діапазону вимірювання калібратора";
+    }
+    private String from_convR(double percent){
+        return percent + "% від діапазону вимірювання калібратора, переконвертованого під вимірювальну величину вимірювального каналу";
+    }
+
     private final CalibratorsListDialog parent;
     private final Calibrator oldCalibrator;
 
@@ -72,7 +82,7 @@ public class CalibratorInfoDialog extends JDialog {
     private CertificateDatePanel certificateDatePanel;
     private JTextField certificateCompanyText;
 
-    private JPopupMenu namePopupMenu;
+    private JPopupMenu namePopupMenu, errorPopupMenu;
 
     private JButton buttonCancel, buttonSave;
 
@@ -113,7 +123,11 @@ public class CalibratorInfoDialog extends JDialog {
 
         this.numberText = new JTextField(10);
         this.rangePanel = new CalibratorRangePanel();
+
         this.errorFormulaText = new JTextField(10);
+        this.errorPopupMenu = new JPopupMenu(INSERT);
+        this.errorFormulaText.setComponentPopupMenu(this.errorPopupMenu);
+
         this.certificateNameText = new JTextField(10);
         this.certificateDatePanel = new CertificateDatePanel();
         this.certificateCompanyText = new JTextField(10);
@@ -217,6 +231,7 @@ public class CalibratorInfoDialog extends JDialog {
             }
             this.numberText.setText(this.oldCalibrator.getNumber());
             this.errorFormulaText.setText(this.oldCalibrator.getErrorFormula());
+            this.showErrorHintsIfNeed();
             this.certificateNameText.setText(this.oldCalibrator.getCertificateName());
             this.certificateDatePanel.setDate(this.oldCalibrator.getCertificateDate());
             this.certificateCompanyText.setText(this.oldCalibrator.getCertificateCompany());
@@ -234,6 +249,7 @@ public class CalibratorInfoDialog extends JDialog {
         this.measurementsList.addItemListener(this.changeMeasurement);
 
         this.typeText.getDocument().addDocumentListener(this.typeChange);
+        this.errorFormulaText.getDocument().addDocumentListener(this.errorUpdate);
     }
 
     private void build() {
@@ -241,6 +257,24 @@ public class CalibratorInfoDialog extends JDialog {
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
+    }
+
+    private void showErrorHintsIfNeed(){
+        errorPopupMenu.removeAll();
+        Double d = VariableConverter.parseToDouble(errorFormulaText.getText());
+        if (d != null) {
+            JMenuItem from_R_item = new JMenuItem(from_R(d));
+            JMenuItem from_r_item = new JMenuItem(from_r(d));
+            JMenuItem from_convR_item = new JMenuItem(from_convR(d));
+
+            from_R_item.addActionListener(clickFrom_R);
+            from_r_item.addActionListener(clickFrom_r);
+            from_convR_item.addActionListener(clickFrom_convR);
+
+            errorPopupMenu.add(from_R_item);
+            errorPopupMenu.add(from_r_item);
+            errorPopupMenu.add(from_convR_item);
+        }
     }
 
     private final ActionListener clickCancel = new ActionListener() {
@@ -297,7 +331,7 @@ public class CalibratorInfoDialog extends JDialog {
         public void insertUpdate(DocumentEvent e) {
             namePopupMenu.removeAll();
             JMenuItem type = new JMenuItem(typeText.getText());
-            type.addActionListener(clickPaste);
+            type.addActionListener(clickPasteName);
             namePopupMenu.add(type);
         }
 
@@ -305,7 +339,7 @@ public class CalibratorInfoDialog extends JDialog {
         public void removeUpdate(DocumentEvent e) {
             namePopupMenu.removeAll();
             JMenuItem type = new JMenuItem(typeText.getText());
-            type.addActionListener(clickPaste);
+            type.addActionListener(clickPasteName);
             namePopupMenu.add(type);
         }
 
@@ -313,11 +347,50 @@ public class CalibratorInfoDialog extends JDialog {
         public void changedUpdate(DocumentEvent e) {}
     };
 
-    private final ActionListener clickPaste = new ActionListener() {
+    private final ActionListener clickPasteName = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             nameText.setText(typeText.getText());
             nameText.requestFocus();
+        }
+    };
+
+    private final DocumentListener errorUpdate = new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            showErrorHintsIfNeed();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            showErrorHintsIfNeed();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {}
+    };
+
+    private final ActionListener clickFrom_R = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Double d = VariableConverter.parseToDouble(errorFormulaText.getText());
+            if (d != null) errorFormulaText.setText("(R/100) * " + d);
+        }
+    };
+
+    private final ActionListener clickFrom_r = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Double d = VariableConverter.parseToDouble(errorFormulaText.getText());
+            if (d != null) errorFormulaText.setText("(r/100) * " + d);
+        }
+    };
+
+    private final ActionListener clickFrom_convR = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Double d = VariableConverter.parseToDouble(errorFormulaText.getText());
+            if (d != null) errorFormulaText.setText("(convR/100) * " + d);
         }
     };
 
