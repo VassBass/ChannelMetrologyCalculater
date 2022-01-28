@@ -9,11 +9,14 @@ import java.awt.*;
 import java.util.List;
 
 public class Application extends SwingWorker<Void, String> {
+    public static final String appVersion = "v5.1";
     public static final Dimension sizeOfScreen = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
 
     public static ApplicationContext context;
     private static ApplicationLogo logo;
     private static boolean busy = false;
+
+    private static final String[] bufferNamesOfChannels = new String[10];
 
     public Application(){
         context = new ApplicationContext();
@@ -39,10 +42,6 @@ public class Application extends SwingWorker<Void, String> {
         }
     }
 
-    public void start(){
-        this.execute();
-    }
-
     public static void setBusy(boolean b){busy = b;}
     public static boolean isBusy(Window window){
         if (busy){
@@ -54,6 +53,42 @@ public class Application extends SwingWorker<Void, String> {
         return busy;
     }
 
+    public static String[] getHints(){
+        return bufferNamesOfChannels;
+    }
+
+    public static void putHint(String hint){
+        if (hint == null) return;
+        if (bufferNamesOfChannels[0] == null){
+            bufferNamesOfChannels[0] = hint;
+            return;
+        }
+        int index = -1;
+        for (int i=0;i<bufferNamesOfChannels.length;i++){
+            String buffer = bufferNamesOfChannels[i];
+            if (buffer == null) break;
+            if (buffer.equals(hint)){
+                index = i;
+                break;
+            }
+        }
+        if (index > 0){
+            String b = bufferNamesOfChannels[index - 1];
+            bufferNamesOfChannels[index - 1] = bufferNamesOfChannels[index];
+            bufferNamesOfChannels[index] = b;
+        }else if (index < 0){
+            for (index = 0;index<bufferNamesOfChannels.length;index++){
+                if (bufferNamesOfChannels[index] == null || index == (bufferNamesOfChannels.length - 1)){
+                    bufferNamesOfChannels[index] = hint;
+                    break;
+                }
+            }
+        }
+    }
+
+    public void start(){
+        this.execute();
+    }
     @Override
     protected Void doInBackground() throws Exception {
         publish("Завантаження списку цехів");

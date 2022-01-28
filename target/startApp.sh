@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar ChannelMetrologyCalculater-1.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar ChannelMetrologyCalculater-5.1-jar-with-dependencies.jar

@@ -36,6 +36,7 @@ public class DialogChannel extends JDialog {
     private static final String RANGE_OF_CHANNEL = "Діапазон вимірювального каналу";
     private static final String RANGE_OF_SENSOR = "Діапазон вимірювання ПВП";
     private static final String SET_RANGE_LIKE_CHANNEL = "Однакові діапазони";
+    private static final String INSERT = "Вставка";
 
     private final MainScreen parent;
 
@@ -102,7 +103,19 @@ public class DialogChannel extends JDialog {
 
     private void createPrimitiveElements(){
         this.userCode = new JTextField(10);
+
         this.userName = new JTextField(10);
+        JPopupMenu namePopupMenu = new JPopupMenu(INSERT);
+        this.userName.setComponentPopupMenu(namePopupMenu);
+        String[] hints = Application.getHints();
+        for (String hint : hints) {
+            if (hint == null) break;
+
+            JMenuItem type = new JMenuItem(hint);
+            type.addActionListener(this.clickPaste);
+            namePopupMenu.add(type);
+        }
+
         this.userTechnologyNumber = new JTextField(10);
         this.userProtocolNumber = new JTextField(10);
 
@@ -303,6 +316,7 @@ public class DialogChannel extends JDialog {
         public void actionPerformed(ActionEvent e) {
             if (!allFieldsAreFilled() || Application.isBusy(DialogChannel.this)) return;
 
+            Application.putHint(userName.getText());
             dispose();
             ArrayList<Channel>channels;
             if (oldChannel == null) {
@@ -315,6 +329,14 @@ public class DialogChannel extends JDialog {
             }else {
                 parent.setChannelsList(channels);
             }
+        }
+    };
+
+    private final ActionListener clickPaste = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JMenuItem item = (JMenuItem) e.getSource();
+            userName.setText(item.getText());
         }
     };
 
