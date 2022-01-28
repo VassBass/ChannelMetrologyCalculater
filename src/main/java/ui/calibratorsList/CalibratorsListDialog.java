@@ -69,23 +69,21 @@ public class CalibratorsListDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (mainTable.getSelectedRow() != -1) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        int index = mainTable.getSelectedRow();
-                        if (index != -1) {
-                            Calibrator calibrator = Application.context.calibratorsController.get(index);
-                            if (calibrator.getName().equals(CalibratorType.FLUKE718_30G)
-                            || calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)) {
-                                JOptionPane.showMessageDialog(CalibratorsListDialog.this, NOT_REMOVED_CALIBRATOR_MESSAGE, ERROR, JOptionPane.WARNING_MESSAGE);
-                            }
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    int index = mainTable.getSelectedRow();
+                    if (index != -1) {
+                        Calibrator calibrator = Application.context.calibratorsController.get(index);
+                        if (calibrator.getName().equals(CalibratorType.FLUKE718_30G)
+                                || calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)) {
+                            JOptionPane.showMessageDialog(CalibratorsListDialog.this, NOT_REMOVED_CALIBRATOR_MESSAGE, ERROR, JOptionPane.WARNING_MESSAGE);
                         } else {
                             new CalibratorRemoveDialog(CalibratorsListDialog.this).setVisible(true);
                         }
                     }
-                });
-            }
+                }
+            });
         }
     };
 

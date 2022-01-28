@@ -7,13 +7,16 @@ import ui.mainScreen.menu.MenuBar;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 
 public class MainScreen extends JFrame {
 
-    private static final String windowHeader = "Вимірювальні канали";
+    private static String windowHeader(int listSize){
+        return "Вимірювальні канали [кількість : "+ listSize + "]";
+    }
 
     public MainTable mainTable;
     private MenuBar menuBar;
@@ -25,11 +28,12 @@ public class MainScreen extends JFrame {
 
 
     public MainScreen(){
-        super(windowHeader);
+        super();
     }
 
     public void init(ArrayList<Channel>channelsList){
         this.channelsList = channelsList;
+        this.setTitle(windowHeader(channelsList.size()));
 
         this.createElements();
         this.setReactions();
@@ -46,7 +50,7 @@ public class MainScreen extends JFrame {
 
     private void setReactions() {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.addWindowListener(windowListener);
+        this.addWindowListener(this.windowListener);
     }
 
     private void build() {
@@ -68,7 +72,8 @@ public class MainScreen extends JFrame {
 
     public void setChannelsList(ArrayList<Channel>list){
         this.channelsList = list;
-        this.mainTable.setList(channelsList);
+        this.mainTable.setList(list);
+        this.setTitle(windowHeader(list.size()));
         this.infoTable.updateInfo(null);
     }
 
@@ -82,14 +87,7 @@ public class MainScreen extends JFrame {
         this.setVisible(true);
     }
 
-    private final WindowListener windowListener = new WindowListener() {
-        @Override public void windowOpened(WindowEvent e) {}
-        @Override public void windowClosed(WindowEvent e) {}
-        @Override public void windowIconified(WindowEvent e) {}
-        @Override public void windowDeiconified(WindowEvent e) {}
-        @Override public void windowActivated(WindowEvent e) {}
-        @Override public void windowDeactivated(WindowEvent e) {}
-
+    private final WindowListener windowListener = new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
             if (!Application.isBusy(MainScreen.this)) {
