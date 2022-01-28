@@ -103,7 +103,7 @@ public class ButtonsPanel extends JPanel {
                 @Override
                 public void run() {
                     int index = mainScreen.mainTable.getSelectedRow();
-                    if (index != -1){
+                    if (index >= 0 && index < mainScreen.channelsList.size() ){
                         new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
                     }
                 }

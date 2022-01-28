@@ -119,6 +119,7 @@ public class CalculateMeasurementDialog extends JDialog {
     }
 
     private void createMeasurementPanel(int index, double[] values){
+        if (index < 0) index = 0;
         switch (this.channel.getMeasurement().getNameConstant()){
             case TEMPERATURE:
                 TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
@@ -198,7 +199,7 @@ public class CalculateMeasurementDialog extends JDialog {
                 @Override
                 public void run(){
                     buttonNext.setEnabled(true);
-                    String message = removeMessage(measurementNumber);
+                    String message = removeMessage(measurementNumber + 1);
                     if (measurementNumber == 0){
                         createMeasurementPanel(0, null);
                         values.put(Key.MEASUREMENT_1, null);
