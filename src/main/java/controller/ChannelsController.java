@@ -97,6 +97,11 @@ public class ChannelsController {
     public void changeSensor(Sensor oldSensor, Sensor newSensor){
         for (Channel channel : this.channels){
             if (channel.getSensor().getName().equals(oldSensor.getName())){
+                double minRange = channel.getSensor().getRangeMin();
+                double maxRange = channel.getSensor().getRangeMax();
+                String value = channel.getSensor().getValue();
+                newSensor.setRange(minRange, maxRange);
+                newSensor.setValue(value);
                 channel.setSensor(newSensor);
             }
         }

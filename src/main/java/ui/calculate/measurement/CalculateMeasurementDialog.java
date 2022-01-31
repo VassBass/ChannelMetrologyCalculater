@@ -93,33 +93,45 @@ public class CalculateMeasurementDialog extends JDialog {
 
         if (this.measurementsPanels[1] != null){
             this.values.put(Key.MEASUREMENT_2, this.measurementsPanels[1].getValues());
+        }else {
+            this.values.put(Key.MEASUREMENT_2, this.measurementsPanels[0].getValues());
         }
 
         if (this.measurementsPanels[2] != null){
             this.values.put(Key.MEASUREMENT_3, this.measurementsPanels[2].getValues());
+        }else {
+            this.values.put(Key.MEASUREMENT_3, this.measurementsPanels[0].getValues());
         }
 
         if (this.measurementsPanels[3] != null){
             this.values.put(Key.MEASUREMENT_4, this.measurementsPanels[3].getValues());
+        }else if (this.measurementsPanels[1] != null){
+            this.values.put(Key.MEASUREMENT_4, this.measurementsPanels[1].getValues());
+        }else {
+            this.values.put(Key.MEASUREMENT_4, this.measurementsPanels[0].getValues());
         }
 
         if (this.measurementsPanels[4] != null){
             this.values.put(Key.MEASUREMENT_5, this.measurementsPanels[4].getValues());
+        }else if (this.measurementsPanels[2] != null){
+            this.values.put(Key.MEASUREMENT_5, this.measurementsPanels[2].getValues());
+        }else {
+            this.values.put(Key.MEASUREMENT_5, this.measurementsPanels[0].getValues());
         }
+
         return this.values;
     }
 
     private void setValues(){
         for (int x=0;x<5;x++){
             double[]measurement = (double[]) this.values.get(x);
-            if (measurement != null || x == 1) {
-                this.createMeasurementPanel(x - 1, measurement);
+            if (x == 0 || measurement != null){
+                this.createMeasurementPanel(x, measurement);
             }
         }
     }
 
     private void createMeasurementPanel(int index, double[] values){
-        if (index < 0) index = 0;
         switch (this.channel.getMeasurement().getNameConstant()){
             case TEMPERATURE:
                 TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
@@ -200,12 +212,12 @@ public class CalculateMeasurementDialog extends JDialog {
                 public void run(){
                     buttonNext.setEnabled(true);
                     String message = removeMessage(measurementNumber + 1);
+                    values.put(measurementNumber, null);
                     if (measurementNumber == 0){
                         createMeasurementPanel(0, null);
-                        values.put(Key.MEASUREMENT_1, null);
                     }else {
                         measurementsPanels[measurementNumber] = null;
-                        values.put(--measurementNumber, null);
+                        measurementNumber--;
                     }
                     JOptionPane.showMessageDialog(CalculateMeasurementDialog.this, message, CANCEL, JOptionPane.INFORMATION_MESSAGE);
                     update();

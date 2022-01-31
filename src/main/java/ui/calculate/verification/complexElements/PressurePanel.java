@@ -206,11 +206,7 @@ public class PressurePanel extends JPanel {
         double errorSensor = this.channel.getSensor().getError(this.channel);
         double ePS = errorSensor / (this.channel.getRange() / 100);
         String errorSensorPercent;
-        if (ePS < 0.01){
-            errorSensorPercent = VariableConverter.roundingDouble3(ePS, Locale.GERMAN);
-        }else {
-            errorSensorPercent = VariableConverter.roundingDouble2(ePS, Locale.GERMAN);
-        }
+        errorSensorPercent = VariableConverter.roundingDouble3(ePS, Locale.GERMAN);
 
         String errorSensorValue;
         if (errorSensor < 0.01){

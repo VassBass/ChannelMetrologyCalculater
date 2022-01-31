@@ -99,7 +99,7 @@ public class CalculationTemperature extends Calculation {
 
             double s5 = 0D;
             for (double[] doubles : errorsAbsolute) {
-                s5 = s5 + (doubles[0] + doubles[1]);
+                s5 += (doubles[0] + doubles[1]);
             }
             double S5 = s5 / (errorsAbsolute.length * 2);
             if (S5 < 0.0005 && S5 > -0.0005){
@@ -110,7 +110,7 @@ public class CalculationTemperature extends Calculation {
 
             double s50 = 0D;
             for (double[] doubles : errorsAbsolute) {
-                s50 = s50 + (doubles[2] + doubles[3]);
+                s50 += (doubles[2] + doubles[3]);
             }
             double S50 = s50 / (errorsAbsolute.length * 2);
             if (S50 < 0.0005 && S50 > -0.0005){
@@ -121,7 +121,7 @@ public class CalculationTemperature extends Calculation {
 
             double s95 = 0D;
             for (double[] doubles : errorsAbsolute) {
-                s95 = s95 + (doubles[4] + doubles[5]);
+                s95 += (doubles[4] + doubles[5]);
             }
             double S95 = s95 / (errorsAbsolute.length * 2);
             if (S95 < 0.0005 && S95 > -0.0005){

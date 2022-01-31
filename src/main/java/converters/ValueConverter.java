@@ -14,10 +14,6 @@ public class ValueConverter {
 
     public Double get(double from){
 
-        if (this.outValue == this.inValue){
-            return from;
-        }
-
         switch (this.outValue){
 
             case MM_ACVA:
@@ -35,7 +31,7 @@ public class ValueConverter {
                     case ML_BAR:
                         return from * 10.19744288922;
                     default:
-                        return null;
+                        return from;
                 }
 
             case KPA:
@@ -53,7 +49,7 @@ public class ValueConverter {
                     case ML_BAR:
                         return from * 0.1;
                     default:
-                        return null;
+                        return from;
                 }
 
             case PA:
@@ -71,7 +67,7 @@ public class ValueConverter {
                     case ML_BAR:
                         return from * 100;
                     default:
-                        return null;
+                        return from;
                 }
 
             case KG_SM2:
@@ -89,7 +85,7 @@ public class ValueConverter {
                     case ML_BAR:
                         return from * 0.001019716212978;
                     default:
-                        return null;
+                        return from;
                 }
 
             case BAR:
@@ -107,7 +103,7 @@ public class ValueConverter {
                     case ML_BAR:
                         return from * 0.001;
                     default:
-                        return null;
+                        return from;
                 }
 
             case KG_MM2:
@@ -125,7 +121,7 @@ public class ValueConverter {
                     case ML_BAR:
                         return from * 0.00001019716212978;
                     default:
-                        return null;
+                        return from;
                 }
 
             case ML_BAR:
@@ -143,11 +139,11 @@ public class ValueConverter {
                     case PA:
                         return from * 0.01;
                     default:
-                        return null;
+                        return from;
                 }
 
             default:
-                return null;
+                return from;
         }
     }
 }

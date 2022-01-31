@@ -211,7 +211,7 @@ public class PressureCertificate implements Certificate {
 
         double errorSensor = sensor.getError(this.channel);
         double eP = errorSensor / (this.channel.getRange() / 100);
-        String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
+        String errorPercent = VariableConverter.roundingDouble3(eP, Locale.GERMAN);
         cell(20,12).setCellValue(errorPercent);
 
         String error = VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN);
