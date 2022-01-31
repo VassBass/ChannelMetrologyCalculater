@@ -4,8 +4,8 @@ import application.Application;
 import model.Calibrator;
 import support.Comparator;
 import ui.importData.compareCalibrators.CompareCalibratorsDialog;
-import ui.model.ImportLoadWindow;
 import ui.mainScreen.MainScreen;
+import ui.model.LoadWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +21,7 @@ public class ImportCalibrators extends SwingWorker<Integer, Integer> {
 
     private final MainScreen mainScreen;
     private final File exportDataFile;
-    private final ImportLoadWindow loadWindow;
+    private final LoadWindow loadWindow;
 
     private ArrayList<Calibrator>importedCalibrators, newCalibrators, calibratorsForChange, changedCalibrators;
 
@@ -29,7 +29,7 @@ public class ImportCalibrators extends SwingWorker<Integer, Integer> {
         super();
         this.mainScreen = Application.context.mainScreen;
         this.exportDataFile = exportDataFile;
-        this.loadWindow = new ImportLoadWindow();
+        this.loadWindow = new LoadWindow();
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

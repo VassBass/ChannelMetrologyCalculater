@@ -5,7 +5,7 @@ import model.Sensor;
 import support.Comparator;
 import ui.importData.compareSensors.CompareSensorsDialog;
 import ui.mainScreen.MainScreen;
-import ui.model.ImportLoadWindow;
+import ui.model.LoadWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +21,7 @@ public class ImportSensors extends SwingWorker<Integer, Integer> {
 
     private final MainScreen mainScreen;
     private final File exportDataFile;
-    private final ImportLoadWindow loadWindow;
+    private final LoadWindow loadWindow;
 
     private ArrayList<Sensor>importedSensors, newSensors, sensorsForChange, changedSensors = new ArrayList<>();
 
@@ -29,7 +29,7 @@ public class ImportSensors extends SwingWorker<Integer, Integer> {
         super();
         this.mainScreen = Application.context.mainScreen;
         this.exportDataFile = exportDataFile;
-        this.loadWindow = new ImportLoadWindow();
+        this.loadWindow = new LoadWindow();
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

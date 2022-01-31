@@ -1,6 +1,7 @@
 package ui.channelInfo;
 
 import application.Application;
+import backgroundTasks.CheckChannel;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
 import measurements.Measurement;
@@ -39,6 +40,7 @@ public class DialogChannel extends JDialog {
     private static final String RANGE_OF_SENSOR = "Діапазон вимірювання ПВП";
     private static final String SET_RANGE_LIKE_CHANNEL = "Однакові діапазони";
     private static final String INSERT = "Вставка";
+    private static final String CHECK = "Перевірити";
 
     private final MainScreen parent;
 
@@ -105,6 +107,11 @@ public class DialogChannel extends JDialog {
 
     private void createPrimitiveElements(){
         this.userCode = new JTextField(10);
+        JPopupMenu codePopupMenu = new JPopupMenu(CHECK);
+        JMenuItem check = new JMenuItem(CHECK);
+        check.addActionListener(this.clickCheck);
+        codePopupMenu.add(check);
+        this.userCode.setComponentPopupMenu(codePopupMenu);
 
         this.userName = new JTextField(10);
         JPopupMenu namePopupMenu = new JPopupMenu(INSERT);
@@ -342,6 +349,13 @@ public class DialogChannel extends JDialog {
         public void actionPerformed(ActionEvent e) {
             JMenuItem item = (JMenuItem) e.getSource();
             userName.setText(item.getText());
+        }
+    };
+
+    private final ActionListener clickCheck = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new CheckChannel(DialogChannel.this, userCode.getText()).start();
         }
     };
 
