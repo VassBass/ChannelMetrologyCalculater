@@ -232,7 +232,15 @@ public class PressureCertificate implements Certificate {
         cell(18,30).setCellValue(certificate);
 
         double errorCalibrator = calibrator.getError(this.channel);
-        double eP = errorCalibrator / (this.channel.getRange() / 100);
+        double eP;
+        if (calibrator.getValue().equals(this.channel.getMeasurement().getValue())) {
+            eP = errorCalibrator / (this.channel.getRange() / 100);
+        }else {
+            MeasurementConstants calibratorValue = MeasurementConstants.getConstantFromString(calibrator.getValue());
+            double calibratorRange = calibrator.getRange();
+            double convertedCalibratorRange = new ValueConverter(calibratorValue, this.channel.getMeasurement().getValueConstant()).get(calibratorRange);
+            eP = errorCalibrator / (convertedCalibratorRange/100);
+        }
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(19,31).setCellValue(errorPercent);
 

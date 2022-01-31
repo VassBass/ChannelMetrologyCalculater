@@ -217,13 +217,14 @@ public class CalibratorInfoDialog extends JDialog {
     private void setInfo(){
         String measurement = Objects.requireNonNull(this.measurementsList.getSelectedItem()).toString();
         if (this.oldCalibrator != null){
+            measurement = this.oldCalibrator.getMeasurement();
             this.measurementsList.setSelectedItem(this.oldCalibrator.getMeasurement());
             this.rangePanel.setValues(measurement, this.oldCalibrator.getValue());
             this.typeText.setText(this.oldCalibrator.getType());
             this.nameText.setText(this.oldCalibrator.getName());
             this.rangePanel.setRange(this.oldCalibrator.getRangeMax(), this.oldCalibrator.getRangeMin());
-            if (this.oldCalibrator.getName().equals(CalibratorType.FLUKE718_30G)
-            || this.oldCalibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (this.oldCalibrator.getType().equals(CalibratorType.FLUKE718_30G)
+            || this.oldCalibrator.getType().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
                 this.typeText.setEnabled(false);
                 this.nameText.setEnabled(false);
                 this.measurementsList.setEnabled(false);

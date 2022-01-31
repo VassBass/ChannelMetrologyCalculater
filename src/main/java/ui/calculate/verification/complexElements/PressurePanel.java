@@ -249,15 +249,24 @@ public class PressurePanel extends JPanel {
         this.calibratorCertificate.setText(certificateCalibrator);
 
         double errorCalibrator = calibrator.getError(this.channel);
-        double ePC = errorCalibrator / (this.channel.getRange() / 100);
+        double ePC;
+        if (calibrator.getValue().equals(this.channel.getMeasurement().getValue())) {
+            ePC = errorCalibrator / (this.channel.getRange() / 100);
+        }else {
+            MeasurementConstants calibratorValue = MeasurementConstants.getConstantFromString(calibrator.getValue());
+            double calibratorRange = calibrator.getRange();
+            double convertedCalibratorRange = new ValueConverter(calibratorValue, this.channel.getMeasurement().getValueConstant()).get(calibratorRange);
+            ePC = errorCalibrator / (convertedCalibratorRange/100);
+        }
         String error;
         if (errorCalibrator < 0.01){
             error = VariableConverter.roundingDouble3(errorCalibrator, Locale.GERMAN);
         }else {
             error = VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN);
         }
+        String errorP = VariableConverter.roundingDouble2(ePC, Locale.GERMAN);
         String allowableErrorCalibrator = PLUS_MINUS
-                + VariableConverter.roundingDouble(ePC, Locale.GERMAN)
+                + errorP
                 + "% або "
                 + PLUS_MINUS
                 + error

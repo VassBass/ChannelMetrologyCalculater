@@ -154,13 +154,13 @@ public class CalibratorRangePanel extends JPanel {
 
     public void setValues(String measurement, String selected){
         this.measurement = measurement;
-        valuesModel.setList(measurement);
+        this.valuesModel.setList(measurement);
         if (measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
             setDisabledAndEmpty(false);
             if (selected == null) {
-                valuesModel.setSelectedIndex(0);
+                this.valuesModel.setSelectedIndex(0);
             } else {
-                valuesModel.setSelectedItem(selected);
+                this.valuesModel.setSelectedItem(selected);
             }
         } else {
             this.setDisabledAndEmpty(true);
