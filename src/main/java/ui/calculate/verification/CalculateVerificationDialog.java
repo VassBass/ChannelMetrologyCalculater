@@ -121,6 +121,7 @@ public class CalculateVerificationDialog extends JDialog {
 
             JScrollPane scroll = new JScrollPane(resultPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             scroll.setPreferredSize(new Dimension(800,500));
+            scroll.getVerticalScrollBar().setUnitIncrement(16);
 
             this.add(scroll, new Cell(0,0));
             JPanel buttonsPanel = new JPanel();
