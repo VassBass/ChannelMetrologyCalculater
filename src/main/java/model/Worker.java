@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 public class Worker implements Serializable {
 
@@ -15,15 +16,7 @@ public class Worker implements Serializable {
     public String getPosition(){return this.position;}
 
     public String getFullName(){
-        StringBuilder builder = new StringBuilder();
-        char[]nameChars = name.toCharArray();
-        builder.append(String.valueOf(nameChars[0]).toUpperCase());
-        builder.append(".");
-        char[]patronymicChars = patronymic.toCharArray();
-        builder.append(String.valueOf(patronymicChars[0]).toUpperCase());
-        builder.append(".");
-        builder.append(surname);
-        return builder.toString();
+        return this.name + " " + this.surname.toUpperCase(Locale.ROOT);
     }
 
     public void setSurname(String surname){this.surname = surname;}

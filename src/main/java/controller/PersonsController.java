@@ -62,7 +62,7 @@ public class PersonsController {
         lenTV.setName("Тетяна");
         lenTV.setSurname("Лень");
         lenTV.setPatronymic("Володимирівна");
-        lenTV.setPosition(WorkPositions.JUNIOR_ENGINEER);
+        lenTV.setPosition(WorkPositions.ENGINEER_ASKV);
         this.persons.add(lenTV);
 
         Worker pohiliiOO = new Worker();

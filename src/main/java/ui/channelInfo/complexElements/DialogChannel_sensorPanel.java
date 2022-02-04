@@ -8,6 +8,8 @@ import model.Sensor;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -44,6 +46,8 @@ public class DialogChannel_sensorPanel extends JPanel {
 
     private void setReactions() {
         this.sensorsList.addItemListener(this.changeSensorName);
+
+        this.serialNumber.getDocument().addDocumentListener(this.serialNumberUpdate);
     }
 
     private void build() {
@@ -71,6 +75,22 @@ public class DialogChannel_sensorPanel extends JPanel {
                 }
             }
         }
+    };
+
+    private final DocumentListener serialNumberUpdate = new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            serialNumber.setToolTipText(serialNumber.getText());
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            if (serialNumber.getText().length() > 0) {
+                serialNumber.setToolTipText(serialNumber.getText());
+            }
+        }
+
+        @Override public void changedUpdate(DocumentEvent e) {}
     };
 
     public void update(MeasurementConstants measurementName) {

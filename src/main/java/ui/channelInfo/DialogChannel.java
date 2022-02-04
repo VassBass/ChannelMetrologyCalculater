@@ -367,7 +367,9 @@ public class DialogChannel extends JDialog {
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-            userName.setToolTipText(userName.getText());
+            if (userName.getText().length() > 0) {
+                userName.setToolTipText(userName.getText());
+            }
         }
 
         @Override public void changedUpdate(DocumentEvent e) {}
