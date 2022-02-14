@@ -1,4 +1,4 @@
-package support;
+package settings;
 
 import constants.MeasurementConstants;
 import controller.FileBrowser;
@@ -7,8 +7,9 @@ import java.io.*;
 import java.util.HashMap;
 
 public class Settings {
-
     private static HashMap<String, String> settings = null;
+
+    public static final String VERSION = "version";
 
     private static void setDefaultSettings(){
 

@@ -13,7 +13,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import model.Channel;
 import model.Sensor;
-import support.Settings;
+import settings.Settings;
 
 import java.awt.*;
 import java.io.File;

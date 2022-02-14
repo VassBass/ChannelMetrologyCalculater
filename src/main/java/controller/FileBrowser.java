@@ -16,6 +16,7 @@ public class FileBrowser {
     private static final String DIR_NAME_IMAGES = "images";
 
     private static final String FILE_NAME_SETTINGS = "settings.dat";
+    private static final String FILE_NAME_SENSORS_VALUES = "sensors_values.dat";
     private static final String FILE_NAME_SENSORS = "Sensors.dat";
     private static final String FILE_NAME_CHANNELS = "Channels.dat";
     private static final String FILE_NAME_DEPARTMENTS = "Departments.dat";
@@ -46,6 +47,7 @@ public class FileBrowser {
     private static final File DIR_IMAGES = new File(DIR_MAIN, DIR_NAME_IMAGES);
 
     public static final File FILE_SETTINGS = new File(DIR_MAIN, FILE_NAME_SETTINGS);
+    public static final File FILE_SENSORS_VALUES = new File(DIR_LISTS, FILE_NAME_SENSORS_VALUES);
     public static final File FILE_SENSORS = new File(DIR_LISTS, FILE_NAME_SENSORS);
     public static final File FILE_CHANNELS = new File(DIR_LISTS, FILE_NAME_CHANNELS);
     public static final File FILE_DEPARTMENTS = new File(DIR_LISTS, FILE_NAME_DEPARTMENTS);
@@ -108,6 +110,9 @@ public class FileBrowser {
     private static void createFilesIfNotExists() throws IOException {
         if (!FILE_SETTINGS.exists() && !FILE_SETTINGS.createNewFile()) {
             System.out.println("settings file was not created");
+        }
+        if (!FILE_SENSORS_VALUES.exists() && !FILE_SENSORS_VALUES.createNewFile()) {
+            System.out.println("sensors_values file was not created");
         }
         if (!FILE_SENSORS.exists() && !FILE_SENSORS.createNewFile()) {
             System.out.println("sensors list was not created");

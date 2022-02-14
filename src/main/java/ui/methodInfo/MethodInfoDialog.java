@@ -3,7 +3,7 @@ package ui.methodInfo;
 import application.Application;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
-import support.Settings;
+import settings.Settings;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 

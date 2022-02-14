@@ -1,6 +1,8 @@
 package application;
 
 import controller.*;
+import service.SensorsValuesService;
+import service.impl.SensorsValuesServiceImpl;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
@@ -41,6 +43,7 @@ public class ApplicationContext {
     public final InstallationsController installationsController;
     public final MeasurementsController measurementsController;
     public final ChannelSorter channelSorter;
+    public final SensorsValuesService sensorsValuesService;
 
     public ApplicationContext(){
         this.mainScreen = new MainScreen();
@@ -57,6 +60,7 @@ public class ApplicationContext {
         this.installationsController = new InstallationsController();
         this.measurementsController = new MeasurementsController();
         this.channelSorter = new ChannelSorter();
+        this.sensorsValuesService = new SensorsValuesServiceImpl();
     }
 
     private void localizationOfComponents(){

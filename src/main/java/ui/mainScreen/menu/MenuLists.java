@@ -1,7 +1,7 @@
 package ui.mainScreen.menu;
 
 import constants.MeasurementConstants;
-import support.Settings;
+import settings.Settings;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.mainScreen.MainScreen;
 import ui.methodInfo.MethodInfoDialog;

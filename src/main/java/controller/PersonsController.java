@@ -52,7 +52,7 @@ public class PersonsController {
         this.persons.add(chekunovTM);
 
         Worker fesenkoEV = new Worker();
-        fesenkoEV.setName("Євген");
+        fesenkoEV.setName("Євгеній");
         fesenkoEV.setSurname("Фесенко");
         fesenkoEV.setPatronymic("Вітальйович");
         fesenkoEV.setPosition(WorkPositions.HEAD_OF_AREA + " МЗтаП");

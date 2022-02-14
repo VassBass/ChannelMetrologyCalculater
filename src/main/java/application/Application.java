@@ -1,7 +1,7 @@
 package application;
 
 import controller.FileBrowser;
-import support.Settings;
+import settings.Settings;
 import ui.model.ApplicationLogo;
 
 import javax.swing.*;
@@ -56,7 +56,6 @@ public class Application extends SwingWorker<Void, String> {
     public static String[] getHints(){
         return bufferNamesOfChannels;
     }
-
     public static void putHint(String hint){
         if (hint == null) return;
         if (bufferNamesOfChannels[0] == null){
@@ -107,6 +106,8 @@ public class Application extends SwingWorker<Void, String> {
         context.calibratorsController.init(context.mainScreen);
         publish("Завантаження списку ПВП");
         context.sensorsController.init(context.mainScreen);
+        publish("Завантаження вимірювальних величин ПВП");
+        context.sensorsValuesService.init();
         publish("Завантаження списку каналів");
         context.channelsController.init(context.mainScreen);
         publish("Завантаження налаштуваннь користувача");

@@ -2,7 +2,7 @@ package calculation;
 
 import model.Calibrator;
 import model.Channel;
-import support.Settings;
+import settings.Settings;
 
 public class Calculation {
     protected final Channel channel;
