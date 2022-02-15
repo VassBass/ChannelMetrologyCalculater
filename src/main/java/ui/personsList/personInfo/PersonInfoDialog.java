@@ -82,10 +82,10 @@ public class PersonInfoDialog extends JDialog {
                 dispose();
                 Worker newPerson = infoPanel.getWorker();
                 if (worker == null){
-                    Application.context.personsController.add(newPerson);
+                    Application.context.personService.add(newPerson);
                 }else {
                     if (!Comparator.personsMatch(newPerson, worker)){
-                        Application.context.personsController.set(worker, newPerson);
+                        Application.context.personService.set(worker, newPerson);
                     }
                 }
                 parent.update();

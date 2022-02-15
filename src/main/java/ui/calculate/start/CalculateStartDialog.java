@@ -77,7 +77,7 @@ public class CalculateStartDialog extends JDialog {
         this.numberOfProtocol = new JTextField(DEFAULT_NUMBER_OF_PROTOCOL, 5);
         this.numberOfProtocol.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.calibrator = new JComboBox<>(Application.context.calibratorsController.getAllNames(this.channel.getMeasurement()));
+        this.calibrator = new JComboBox<>(Application.context.calibratorService.getAllNames(this.channel.getMeasurement()));
         this.calibrator.setBackground(Color.WHITE);
         this.calibrator.setEditable(false);
 
@@ -122,7 +122,7 @@ public class CalculateStartDialog extends JDialog {
         if (values != null){
             this.numberOfProtocol.setText((String) values.get(Key.CHANNEL_PROTOCOL_NUMBER));
             this.datePanel.update((Calendar) values.get(Key.CHANNEL_DATE));
-            String[] calibrators = Application.context.calibratorsController.getAllNames(this.channel.getMeasurement());
+            String[] calibrators = Application.context.calibratorService.getAllNames(this.channel.getMeasurement());
             Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
             for (int x=0;x<calibrators.length;x++){
                 if (calibrator.getName().equals(calibrators[x])){
@@ -154,7 +154,7 @@ public class CalculateStartDialog extends JDialog {
         values.put(Key.CHANNEL_PROTOCOL_NUMBER, this.numberOfProtocol.getText());
         values.put(Key.CHANNEL_DATE, this.datePanel.getDate());
         String calibratorName = Objects.requireNonNull(this.calibrator.getSelectedItem()).toString();
-        values.put(Key.CALIBRATOR, Application.context.calibratorsController.get(calibratorName));
+        values.put(Key.CALIBRATOR, Application.context.channelService.get(calibratorName));
         values.put(Key.CALCULATION_EXTERNAL_TEMPERATURE, this.weatherPanel.temperature.getText());
         values.put(Key.CALCULATION_EXTERNAL_PRESSURE, this.weatherPanel.pressure.getText());
         values.put(Key.CALCULATION_EXTERNAL_HUMIDITY, this.weatherPanel.humidity.getText());

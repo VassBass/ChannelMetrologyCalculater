@@ -1,6 +1,6 @@
 package certificates;
 
-import controller.FileBrowser;
+import service.FileBrowser;
 import model.Calibrator;
 import constants.*;
 import converters.ValueConverter;

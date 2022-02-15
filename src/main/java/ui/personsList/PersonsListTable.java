@@ -37,7 +37,7 @@ public class PersonsListTable extends JTable {
         String[]columnsHeader = new String[]{FIO, POSITION};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Worker>workers = Application.context.personsController.getAll();
+        ArrayList<Worker>workers = Application.context.personService.getAll();
         String[][] list = new String[workers.size()][2];
         for (int x = 0; x < list.length; x++){
             Worker worker = workers.get(x);

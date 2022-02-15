@@ -1,7 +1,10 @@
-package controller;
+package service.impl;
 
+import service.FileBrowser;
+import def.DefaultAreas;
 import model.Model;
 import repository.Repository;
+import service.AreaService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,11 +12,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class AreasController {
+public class AreaServiceImpl implements AreaService {
     private static final String ERROR = "Помилка";
 
     private Window window;
-    private ArrayList<String>areas;
+    private ArrayList<String> areas;
 
     private String exportFileName(Calendar date){
         return "export_areas ["
@@ -25,52 +28,29 @@ public class AreasController {
                 + "].are";
     }
 
+    @Override
     public void init(Window window){
         try {
             this.areas = new Repository<String>(null, Model.AREA).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_AREAS.getName() + "\" is empty");
-            this.areas = this.resetToDefault();
+            this.areas = DefaultAreas.get();
+            this.save();
         }
         this.window = window;
     }
 
-    public ArrayList<String> resetToDefault() {
-        if (this.areas == null){
-            this.areas = new ArrayList<>();
-        }else this.areas.clear();
-
-        String OPU1 = "ОВДЗ-1";
-        String OPU2 = "ОВДЗ-2";
-        String OPU3 = "ОВДЗ-3";
-        String OPU4 = "ОВДЗ-4";
-        String CPO1 = "ЦВО-1";
-        String CPO2 = "ЦВО-2";
-
-        this.areas.add(OPU1);
-        this.areas.add(OPU2);
-        this.areas.add(OPU3);
-        this.areas.add(OPU4);
-        this.areas.add(CPO1);
-        this.areas.add(CPO2);
-
-        this.save();
-        return this.areas;
-    }
-
-    public void rewrite(ArrayList<String>newAreasList){
-        this.areas = newAreasList;
-        this.save();
-    }
-
+    @Override
     public ArrayList<String> getAll() {
         return this.areas;
     }
 
+    @Override
     public String[] getAllInStrings(){
         return this.areas.toArray(new String[0]);
     }
 
+    @Override
     public ArrayList<String> add(String object) {
         if (!this.areas.contains(object)){
             this.areas.add(object);
@@ -79,6 +59,7 @@ public class AreasController {
         return this.areas;
     }
 
+    @Override
     public ArrayList<String> remove(String object) {
         if (this.areas.contains(object)){
             this.areas.remove(object);
@@ -89,6 +70,7 @@ public class AreasController {
         return this.areas;
     }
 
+    @Override
     public ArrayList<String> set(String oldObject, String newObject) {
         if (oldObject != null){
             if (newObject == null){
@@ -102,6 +84,7 @@ public class AreasController {
         return this.areas;
     }
 
+    @Override
     public String get(int index) {
         if (index >= 0) {
             return this.areas.get(index);
@@ -110,15 +93,18 @@ public class AreasController {
         }
     }
 
+    @Override
     public void clear() {
         this.areas.clear();
         this.save();
     }
 
-    private void save() {
+    @Override
+    public void save() {
         new Repository<String>(this.window, Model.AREA).writeList(this.areas);
     }
 
+    @Override
     public boolean exportData(){
         try {
             String fileName = this.exportFileName(Calendar.getInstance());
@@ -130,7 +116,8 @@ public class AreasController {
         }
     }
 
-    public void rewriteAll(ArrayList<String>areas){
+    @Override
+    public void rewriteInCurrentThread(ArrayList<String>areas){
         this.areas = areas;
         new Repository<String>(null, Model.AREA).writeListInCurrentThread(areas);
     }

@@ -30,7 +30,7 @@ public class ExportPersons extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        return Application.context.personsController.exportData();
+        return Application.context.personService.exportData();
     }
 
     @Override

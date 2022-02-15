@@ -30,16 +30,16 @@ public class PathListsTable extends JTable {
         String[] elements;
         switch (list){
             case AREAS_LIST:
-                elements = Application.context.areasController.getAllInStrings();
+                elements = Application.context.areaService.getAllInStrings();
                 break;
             case PROCESSES_LIST:
-                elements = Application.context.processesController.getAllInStrings();
+                elements = Application.context.processService.getAllInStrings();
                 break;
             case INSTALLATIONS_LIST:
-                elements = Application.context.installationsController.getAllInStrings();
+                elements = Application.context.installationService.getAllInStrings();
                 break;
             default:
-                elements = Application.context.departmentsController.getAllInStrings();
+                elements = Application.context.departmentService.getAllInStrings();
                 break;
         }
         for (String element : elements){

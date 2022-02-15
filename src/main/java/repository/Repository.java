@@ -1,7 +1,7 @@
 package repository;
 
 import application.Application;
-import controller.FileBrowser;
+import service.FileBrowser;
 import model.Model;
 import ui.model.SaveMessage;
 

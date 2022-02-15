@@ -80,16 +80,16 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
             ArrayList<String> toAdd = new ArrayList<>();
             switch (x){
                 case 0:
-                    oldList = Application.context.departmentsController.getAll();
+                    oldList = Application.context.departmentService.getAll();
                     break;
                 case 1:
-                    oldList  = Application.context.areasController.getAll();
+                    oldList  = Application.context.areaService.getAll();
                     break;
                 case 2:
-                    oldList = Application.context.processesController.getAll();
+                    oldList = Application.context.processService.getAll();
                     break;
                 case 3:
-                    oldList = Application.context.installationsController.getAll();
+                    oldList = Application.context.installationService.getAll();
                     break;
             }
             if (oldList == null) return -1;
@@ -110,16 +110,16 @@ public class ImportPathElements extends SwingWorker<Integer, Void> {
                 oldList.addAll(toAdd);
                 switch (x){
                     case 0:
-                        Application.context.departmentsController.rewriteAll(oldList);
+                        Application.context.departmentService.rewriteInCurrentThread(oldList);
                         break;
                     case 1:
-                        Application.context.areasController.rewriteAll(oldList);
+                        Application.context.areaService.rewriteInCurrentThread(oldList);
                         break;
                     case 2:
-                        Application.context.processesController.rewriteAll(oldList);
+                        Application.context.processService.rewriteInCurrentThread(oldList);
                         break;
                     case 3:
-                        Application.context.installationsController.rewriteAll(oldList);
+                        Application.context.installationService.rewriteInCurrentThread(oldList);
                         break;
                 }
             }

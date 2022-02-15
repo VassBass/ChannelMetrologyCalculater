@@ -30,18 +30,42 @@ public class CalculationConsumption extends Calculation {
     }
 
     @Override
+    public double[] getControlPointsValues() {
+        if (this.controlPointsValues == null){
+            if (this.calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+                this.controlPointsValues = new double[4];
+                String value = this.channel.getMeasurement().getValue();
+
+                this.controlPointsValues[0] = 0D;
+                this.controlPointsValues[1] = 0.91;
+                this.controlPointsValues[2] = 3.05;
+                this.controlPointsValues[3] = 9.14;
+                if (value.equals(MeasurementConstants.CM_S.getValue())){
+                    this.controlPointsValues[1] *= 100;
+                    this.controlPointsValues[2] *= 100;
+                    this.controlPointsValues[3] *= 100;
+                }
+            }else {
+                this.controlPointsValues = new double[5];
+
+                this.controlPointsValues[0] = this.channel.getRangeMin();
+                this.controlPointsValues[1] = ((this.channel.getRange() / 100) * 25) + this.channel.getRangeMin();
+                this.controlPointsValues[2] = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
+                this.controlPointsValues[3] = ((this.channel.getRange() / 100) * 75) + this.channel.getRangeMin();
+                this.controlPointsValues[4] = this.channel.getRangeMax();
+            }
+        }
+        return this.controlPointsValues;
+    }
+
+    @Override
     public double[][] getErrorsAbsolute() {
         if (this.calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
-            String value = this.channel.getMeasurement().getValue();
-            double value0 = 0D;
-            double value91 = 0.91;
-            double value305 = 3.05;
-            double value914 = 9.14;
-            if (value.equals(MeasurementConstants.CM_S.getValue())){
-                value91 = value91 * 100;
-                value305 = value305 * 100;
-                value914 = value914 * 100;
-            }
+            double value0 = this.controlPointsValues[0];
+            double value91 = this.controlPointsValues[1];
+            double value305 = this.controlPointsValues[2];
+            double value914 = this.controlPointsValues[3];
+
             this.errorsAbsolute = new double[in.length][8];
             for (int n = 0; n < in.length; n++) {
                 this.errorsAbsolute[n][0] = in[n][0] - value0;
@@ -54,11 +78,12 @@ public class CalculationConsumption extends Calculation {
                 this.errorsAbsolute[n][7] = in[n][7] - value914;
             }
         }else {
-            double value0 = this.channel.getRangeMin();
-            double value25 = ((this.channel.getRange() / 100) * 25) + this.channel.getRangeMin();
-            double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-            double value75 = ((this.channel.getRange() / 100) * 75) + this.channel.getRangeMin();
-            double value100 = this.channel.getRangeMax();
+            double value0 = this.controlPointsValues[0];
+            double value25 = this.controlPointsValues[1];
+            double value50 = this.controlPointsValues[2];
+            double value75 = this.controlPointsValues[3];
+            double value100 = this.controlPointsValues[4];
+
             this.errorsAbsolute = new double[in.length][10];
             for (int n = 0; n < in.length; n++) {
                 this.errorsAbsolute[n][0] = in[n][0] - value0;

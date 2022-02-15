@@ -39,16 +39,16 @@ public class PathElementsRemove extends JDialog {
     private void createElements() {
         switch (this.elementType){
             case PathListsTable.DEPARTMENTS_LIST:
-                this.elements = Application.context.departmentsController.getAllInStrings();
+                this.elements = Application.context.departmentService.getAllInStrings();
                 break;
             case PathListsTable.AREAS_LIST:
-                this.elements = Application.context.areasController.getAllInStrings();
+                this.elements = Application.context.areaService.getAllInStrings();
                 break;
             case PathListsTable.PROCESSES_LIST:
-                this.elements = Application.context.processesController.getAllInStrings();
+                this.elements = Application.context.processService.getAllInStrings();
                 break;
             case PathListsTable.INSTALLATIONS_LIST:
-                this.elements = Application.context.installationsController.getAllInStrings();
+                this.elements = Application.context.installationService.getAllInStrings();
                 break;
         }
         if (this.elementName == null){
@@ -111,16 +111,16 @@ public class PathElementsRemove extends JDialog {
             }
             switch (elementType){
                 case PathListsTable.DEPARTMENTS_LIST:
-                    Application.context.departmentsController.remove(elementName);
+                    Application.context.departmentService.remove(elementName);
                     break;
                 case PathListsTable.AREAS_LIST:
-                    Application.context.areasController.remove(elementName);
+                    Application.context.areaService.remove(elementName);
                     break;
                 case PathListsTable.PROCESSES_LIST:
-                    Application.context.processesController.remove(elementName);
+                    Application.context.processService.remove(elementName);
                     break;
                 case PathListsTable.INSTALLATIONS_LIST:
-                    Application.context.installationsController.remove(elementName);
+                    Application.context.installationService.remove(elementName);
                     break;
             }
             parent.update(elementType);

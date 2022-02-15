@@ -21,19 +21,19 @@ public class DialogChannel_pathPanel extends JPanel {
     }
 
     private void createElements() {
-        this.departments = new JComboBox<>(Application.context.departmentsController.getAllInStrings());
+        this.departments = new JComboBox<>(Application.context.departmentService.getAllInStrings());
         this.departments.setEditable(true);
         this.departments.setBackground(Color.WHITE);
 
-        this.areas = new JComboBox<>(Application.context.areasController.getAllInStrings());
+        this.areas = new JComboBox<>(Application.context.areaService.getAllInStrings());
         this.areas.setEditable(true);
         this.areas.setBackground(Color.WHITE);
 
-        this.processes = new JComboBox<>(Application.context.processesController.getAllInStrings());
+        this.processes = new JComboBox<>(Application.context.processService.getAllInStrings());
         this.processes.setEditable(true);
         this.processes.setBackground(Color.WHITE);
 
-        this.installations = new JComboBox<>(Application.context.installationsController.getAllInStrings());
+        this.installations = new JComboBox<>(Application.context.installationService.getAllInStrings());
         this.installations.setEditable(true);
         this.installations.setBackground(Color.WHITE);
     }

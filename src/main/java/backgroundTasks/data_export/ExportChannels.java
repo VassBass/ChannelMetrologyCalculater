@@ -30,7 +30,7 @@ public class ExportChannels extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        return Application.context.channelsController.exportData();
+        return Application.context.channelService.exportData();
     }
 
     @Override

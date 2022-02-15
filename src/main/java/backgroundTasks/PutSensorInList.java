@@ -51,10 +51,10 @@ public class PutSensorInList extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         if (this.oldSensor == null) {
-            Application.context.sensorsController.add(this.newSensor);
+            Application.context.sensorService.add(this.newSensor);
         } else {
-            Application.context.sensorsController.set(this.oldSensor, this.newSensor);
-            Application.context.channelsController.changeSensor(this.oldSensor, this.newSensor);
+            Application.context.sensorService.set(this.oldSensor, this.newSensor);
+            Application.context.channelService.changeSensor(this.oldSensor, this.newSensor);
         }
         return null;
     }

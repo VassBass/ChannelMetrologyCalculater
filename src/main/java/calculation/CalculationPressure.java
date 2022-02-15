@@ -33,11 +33,25 @@ public class CalculationPressure extends Calculation {
     }
 
     @Override
+    public double[] getControlPointsValues() {
+        if (this.controlPointsValues == null){
+            this.controlPointsValues = new double[5];
+            this.controlPointsValues[0] = this.channel.getRangeMin();
+            this.controlPointsValues[1] = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
+            this.controlPointsValues[2] = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
+            this.controlPointsValues[3] = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+            this.controlPointsValues[4] = this.channel.getRangeMax();
+        }
+        return this.controlPointsValues;
+    }
+
+    @Override
     public double[][] getErrorsAbsolute() {
         if (this.errorsAbsolute == null) {
-            double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
-            double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-            double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+            double[] values = this.getControlPointsValues();
+            double value5 = values[1];
+            double value50 = values[2];
+            double value95 = values[3];
             if (maxCalibratorPower != 999999999D && value5 < maxCalibratorPower){
                 value5 = maxCalibratorPower;
             }

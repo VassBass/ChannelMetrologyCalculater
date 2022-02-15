@@ -47,7 +47,7 @@ public class ImportInstallations extends SwingWorker<Integer, Void> {
         if (list == null){
             return 1;
         }else {
-            Application.context.installationsController.rewriteAll(list);
+            Application.context.installationService.rewriteInCurrentThread(list);
             return 0;
         }
     }
@@ -81,7 +81,7 @@ public class ImportInstallations extends SwingWorker<Integer, Void> {
             return null;
         }
 
-        ArrayList<String>oldList = Application.context.installationsController.getAll();
+        ArrayList<String>oldList = Application.context.installationService.getAll();
         ArrayList<String>toAdd = new ArrayList<>();
         for (String imp : importedInstallations){
             boolean exist = false;

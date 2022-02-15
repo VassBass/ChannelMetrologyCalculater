@@ -85,7 +85,7 @@ public class SensorInfoDialog extends JDialog {
         this.labelRange = new ButtonCell(true, RANGE_OF_SENSOR);
         this.labelErrorFormula = new ButtonCell(true, ERROR_FORMULA);
 
-        this.measurementsList = new JComboBox<>(Application.context.measurementsController.getAllNames());
+        this.measurementsList = new JComboBox<>(Application.context.measurementService.getAllNames());
 
         String[]consumptionTypes = new String[]{SensorType.YOKOGAWA, SensorType.ROSEMOUNT};
         this.typeText = new JTextField(10);

@@ -109,7 +109,7 @@ public class ImportCalibrators extends SwingWorker<Integer, Integer> {
     private void fueling(){
         int progress = 0;
 
-        ArrayList<Calibrator>oldList = Application.context.calibratorsController.getAll();
+        ArrayList<Calibrator>oldList = Application.context.calibratorService.getAll();
         if (oldList == null || oldList.isEmpty()) {
             this.newCalibrators = this.importedCalibrators;
         }else {

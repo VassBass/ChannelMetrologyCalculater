@@ -1,10 +1,12 @@
-package controller;
+package service.impl;
 
 import application.Application;
+import service.FileBrowser;
 import model.Channel;
 import model.Model;
 import model.Sensor;
 import repository.Repository;
+import service.ChannelService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
-public class ChannelsController {
+public class ChannelServiceImpl implements ChannelService {
     private static final String ERROR = "Помилка";
 
     private Window window;
@@ -29,6 +31,7 @@ public class ChannelsController {
                 + "].chn";
     }
 
+    @Override
     public void init(Window window){
         try {
             this.channels = new Repository<Channel>(null, Model.CHANNEL).readList();
@@ -39,10 +42,12 @@ public class ChannelsController {
         this.window = window;
     }
 
+    @Override
     public ArrayList<Channel> getAll() {
         return this.channels;
     }
 
+    @Override
     public ArrayList<Channel> add(Channel channel) {
         boolean exist = false;
         for (Channel cha : this.channels){
@@ -60,6 +65,7 @@ public class ChannelsController {
         return this.channels;
     }
 
+    @Override
     public ArrayList<Channel> remove(Channel channel) {
         boolean removed = false;
 
@@ -79,6 +85,7 @@ public class ChannelsController {
         return this.channels;
     }
 
+    @Override
     public void removeBySensor(Sensor sensor){
         ArrayList<Integer>indexes = new ArrayList<>();
         String sensorName = sensor.getName();
@@ -94,6 +101,7 @@ public class ChannelsController {
         }
     }
 
+    @Override
     public void changeSensor(Sensor oldSensor, Sensor newSensor){
         for (Channel channel : this.channels){
             if (channel.getSensor().getName().equals(oldSensor.getName())){
@@ -108,6 +116,7 @@ public class ChannelsController {
         new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(this.channels);
     }
 
+    @Override
     public void changeSensors(ArrayList<Sensor>sensors){
         for (Sensor sensor : sensors){
             for (Channel channel : this.channels){
@@ -119,6 +128,7 @@ public class ChannelsController {
         new Repository<Channel>(null, Model.CHANNEL).writeListInCurrentThread(this.channels);
     }
 
+    @Override
     public ArrayList<Channel> set(Channel oldChannel, Channel newChannel) {
         if (oldChannel != null){
             if (newChannel == null){
@@ -137,10 +147,11 @@ public class ChannelsController {
         return this.channels;
     }
 
-    public int getIndex(String channelCode) {
+    @Override
+    public int getIndex(String code) {
         for (int index=0;index<this.channels.size();index++) {
             Channel channel = this.channels.get(index);
-            if (channel.getCode().equals(channelCode)) {
+            if (channel.getCode().equals(code)) {
                 return index;
             }
         }
@@ -148,9 +159,10 @@ public class ChannelsController {
         return -1;
     }
 
-    public Channel get(String channelCode) {
+    @Override
+    public Channel get(String code) {
         for (Channel channel : this.channels) {
-            if (channel.getCode().equals(channelCode)) {
+            if (channel.getCode().equals(code)) {
                 return channel;
             }
         }
@@ -158,6 +170,7 @@ public class ChannelsController {
         return null;
     }
 
+    @Override
     public Channel get(int index) {
         if (index >= 0) {
             return this.channels.get(index);
@@ -166,15 +179,17 @@ public class ChannelsController {
         }
     }
 
-    public boolean isExist(String channelCode){
+    @Override
+    public boolean isExist(String code){
         for (Channel c : this.channels){
-            if (c.getCode().equals(channelCode)){
+            if (c.getCode().equals(code)){
                 return true;
             }
         }
         return false;
     }
 
+    @Override
     public boolean isExist(String oldChannelCode, String newChannelCode){
         int oldIndex = this.getIndex(oldChannelCode);
         for (int index=0;index<this.channels.size();index++){
@@ -186,18 +201,21 @@ public class ChannelsController {
         return false;
     }
 
+    @Override
     public void clear() {
         this.channels.clear();
         this.save();
     }
 
-    private void save() {
+    @Override
+    public void save() {
         new Repository<Channel>(this.window, Model.CHANNEL).writeList(this.channels);
     }
 
+    @Override
     public boolean exportData() {
         String fileName = this.exportFileName(Calendar.getInstance());
-        ArrayList<Sensor>sensors = Application.context.sensorsController.getAll();
+        ArrayList<Sensor>sensors = Application.context.sensorService.getAll();
         ArrayList<?>[]list = new ArrayList<?>[]{this.channels, sensors};
         try {
             FileBrowser.saveToFile(FileBrowser.exportFile(fileName), list);
@@ -208,6 +226,7 @@ public class ChannelsController {
         }
     }
 
+    @Override
     public void importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
         for (Channel channel : channelsForChange){
             for (int index=0;index<this.channels.size();index++){
@@ -221,7 +240,8 @@ public class ChannelsController {
         new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(this.channels);
     }
 
-    public void rewriteAll(ArrayList<Channel>channels){
+    @Override
+    public void rewriteInCurrentThread(ArrayList<Channel>channels){
         this.channels = channels;
         new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(channels);
     }
@@ -236,6 +256,7 @@ public class ChannelsController {
         JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
+    @Override
     public void showExistMessage(Window window) {
         String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
         JOptionPane.showMessageDialog(window, message, ERROR, JOptionPane.ERROR_MESSAGE);

@@ -98,7 +98,7 @@ public class DialogChannel_sensorPanel extends JPanel {
 
         this.currentMeasurement = measurementName;
         if (measurementName != null) {
-            String[]sensors = Application.context.sensorsController.getAllSensorsName(measurementName.getValue());
+            String[]sensors = Application.context.sensorService.getAllSensorsName(measurementName.getValue());
             DefaultComboBoxModel<String>model = new DefaultComboBoxModel<>(sensors);
             this.sensorsList.setModel(model);
         }
@@ -116,7 +116,7 @@ public class DialogChannel_sensorPanel extends JPanel {
     public void update(Sensor sensor){
         if (sensor != null){
             if (this.currentMeasurement.getValue().equals(sensor.getMeasurement())) {
-                String[] sensors = Application.context.sensorsController.getAllSensorsName(sensor.getMeasurement());
+                String[] sensors = Application.context.sensorService.getAllSensorsName(sensor.getMeasurement());
                 for (int x = 0; x < sensors.length; x++) {
                     if (sensor.getName().equals(sensors[x])) {
                         this.sensorsList.setSelectedIndex(x);
@@ -132,7 +132,7 @@ public class DialogChannel_sensorPanel extends JPanel {
 
     public Sensor getSensor(){
         String selectedSensor = Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString();
-        return Application.context.sensorsController.get(selectedSensor);
+        return Application.context.sensorService.get(selectedSensor);
     }
 
     public String getSerialNumber(){

@@ -30,7 +30,7 @@ public class CalibratorsListTable extends JTable {
         String[]columnsHeader = new String[] {NAME, TYPE, TYPE_OF_MEASUREMENT};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Calibrator> calibrators = Application.context.calibratorsController.getAll();
+        ArrayList<Calibrator> calibrators = Application.context.calibratorService.getAll();
         for (Calibrator calibrator : Objects.requireNonNull(calibrators)) {
             String[] data = new String[3];
             data[0] = calibrator.getName();

@@ -58,7 +58,7 @@ public class CalibratorRangePanel extends JPanel {
         public void setList(String measurement){
             this.list.clear();
             if (measurement != null && measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
-                ArrayList<Measurement> measurements = Application.context.measurementsController.getAll();
+                ArrayList<Measurement> measurements = Application.context.measurementService.getAll();
                 for (Measurement m : Objects.requireNonNull(measurements)) {
                     if (m.getName().equals(measurement)) {
                         this.list.add(m.getValue());

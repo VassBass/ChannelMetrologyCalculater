@@ -95,7 +95,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
                 this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForSensorType(this.valueString));
                 break;
              default:
-                 this.mainScreen.setChannelsList(Application.context.channelsController.getAll());
+                 this.mainScreen.setChannelsList(Application.context.channelService.getAll());
                  break;
         }
         return null;

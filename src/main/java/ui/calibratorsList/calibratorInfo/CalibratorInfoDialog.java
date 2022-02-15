@@ -111,7 +111,7 @@ public class CalibratorInfoDialog extends JDialog {
         this.labelCertificateCompany = new ButtonCell(true, PERFORMERS);
         this.labelCertificateDate = new ButtonCell(true, FROM);
 
-        this.measurementsList = new JComboBox<>(Application.context.measurementsController.getAllNames());
+        this.measurementsList = new JComboBox<>(Application.context.measurementService.getAllNames());
 
         this.typeText = new JTextField(10);
         this.typeText.setToolTipText(TYPE_HINT);
@@ -307,9 +307,9 @@ public class CalibratorInfoDialog extends JDialog {
 
                 if (Application.isBusy(CalibratorInfoDialog.this)) return;
                 if (oldCalibrator == null){
-                    Application.context.calibratorsController.add(calibrator);
+                    Application.context.calibratorService.add(calibrator);
                 }else {
-                    Application.context.calibratorsController.set(oldCalibrator, calibrator);
+                    Application.context.calibratorService.set(oldCalibrator, calibrator);
                 }
                 dispose();
                 parent.mainTable.update();

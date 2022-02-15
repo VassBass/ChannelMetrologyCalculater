@@ -10,17 +10,10 @@ public class Calculation {
     protected Calibrator calibrator;
     protected double maxCalibratorPower = -999999999D;
 
+    protected double[]controlPointsValues;
+
     /*
      * double[Quantity of measurements] [control points]
-     * control points: for temperature, pressure
-     * [0] = 0%
-     * [1] = 5% Up
-     * [2] = 5% Down
-     * [3] = 50% Up
-     * [4] = 50% Down
-     * [5] = 95% Up
-     * [6] = 95% Down
-     * [7] = 100%
      */
     protected double[][] in;
 
@@ -149,5 +142,13 @@ public class Calculation {
 
     public double getExtendedIndeterminacy(){
         return -999999999D;
+    }
+
+    public double[] getControlPointsValues(){
+        return this.controlPointsValues;
+    }
+
+    public void setControlPointsValues(double[]values){
+        this.controlPointsValues = values;
     }
 }

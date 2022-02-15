@@ -47,7 +47,7 @@ public class ImportProcesses extends SwingWorker<Integer, Void> {
         if (list == null){
             return 1;
         }else {
-            Application.context.processesController.rewriteAll(list);
+            Application.context.processService.rewriteInCurrentThread(list);
             return 0;
         }
     }
@@ -81,7 +81,7 @@ public class ImportProcesses extends SwingWorker<Integer, Void> {
             return null;
         }
 
-        ArrayList<String>oldList = Application.context.processesController.getAll();
+        ArrayList<String>oldList = Application.context.processService.getAll();
         ArrayList<String>toAdd = new ArrayList<>();
         for (String imp : importedProcesses){
             boolean exist = false;

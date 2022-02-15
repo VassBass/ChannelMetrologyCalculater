@@ -48,7 +48,7 @@ public class ImportAreas extends SwingWorker<Integer, Void> {
         if (list == null){
             return 1;
         }else {
-            Application.context.areasController.rewrite(list);
+            Application.context.areaService.rewriteInCurrentThread(list);
             return 0;
         }
     }
@@ -82,7 +82,7 @@ public class ImportAreas extends SwingWorker<Integer, Void> {
             return null;
         }
 
-        ArrayList<String>oldList = Application.context.areasController.getAll();
+        ArrayList<String>oldList = Application.context.areaService.getAll();
         ArrayList<String>toAdd = new ArrayList<>();
         for (String imp : importedAreas){
             boolean exist = false;

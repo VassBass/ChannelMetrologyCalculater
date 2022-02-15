@@ -1,8 +1,7 @@
 package application;
 
-import controller.*;
-import service.SensorsValuesService;
-import service.impl.SensorsValuesServiceImpl;
+import service.*;
+import service.impl.*;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
@@ -31,36 +30,21 @@ public class ApplicationContext {
     public static final String UP_FOLDER = "На один рівень вверх";
     public static final String MODE_OF_VIEW = "Відображення";
 
-    public final MainScreen mainScreen;
+    public final MainScreen mainScreen = new MainScreen();
 
-    public final ChannelsController channelsController;
-    public final SensorsController sensorsController;
-    public final CalibratorsController calibratorsController;
-    public final PersonsController personsController;
-    public final DepartmentsController departmentsController;
-    public final AreasController areasController;
-    public final ProcessesController processesController;
-    public final InstallationsController installationsController;
-    public final MeasurementsController measurementsController;
-    public final ChannelSorter channelSorter;
-    public final SensorsValuesService sensorsValuesService;
+    public final ChannelService channelService = new ChannelServiceImpl();
+    public final SensorService sensorService = new SensorServiceImpl();
+    public final CalibratorService calibratorService = new CalibratorServiceImpl();
+    public final PersonService personService = new PersonServiceImpl();
+    public final DepartmentService departmentService = new DepartmentServiceImpl();
+    public final AreaService areaService = new AreaServiceImpl();
+    public final ProcessService processService = new ProcessServiceImpl();
+    public final InstallationService installationService = new InstallationServiceImpl();
+    public final MeasurementService measurementService = new MeasurementServiceImpl();
+    public final ChannelSorter channelSorter = new ChannelSorter();
 
     public ApplicationContext(){
-        this.mainScreen = new MainScreen();
-
         this.localizationOfComponents();
-
-        this.channelsController = new ChannelsController();
-        this.sensorsController = new SensorsController();
-        this.calibratorsController = new CalibratorsController();
-        this.personsController = new PersonsController();
-        this.departmentsController = new DepartmentsController();
-        this.areasController = new AreasController();
-        this.processesController = new ProcessesController();
-        this.installationsController = new InstallationsController();
-        this.measurementsController = new MeasurementsController();
-        this.channelSorter = new ChannelSorter();
-        this.sensorsValuesService = new SensorsValuesServiceImpl();
     }
 
     private void localizationOfComponents(){

@@ -211,19 +211,19 @@ public class PathListsDialog extends JDialog {
                         switch (title) {
                             case PathListsTable.DEPARTMENTS_LIST:
                                 elementType = DEPARTMENT;
-                                elementName = Application.context.departmentsController.get(mainTable.getSelectedRow());
+                                elementName = Application.context.departmentService.get(mainTable.getSelectedRow());
                                 break;
                             case PathListsTable.AREAS_LIST:
                                 elementType = AREA;
-                                elementName = Application.context.areasController.get(mainTable.getSelectedRow());
+                                elementName = Application.context.areaService.get(mainTable.getSelectedRow());
                                 break;
                             case PathListsTable.PROCESSES_LIST:
                                 elementType = PROCESS;
-                                elementName = Application.context.processesController.get(mainTable.getSelectedRow());
+                                elementName = Application.context.processService.get(mainTable.getSelectedRow());
                                 break;
                             case PathListsTable.INSTALLATIONS_LIST:
                                 elementType = INSTALLATION;
-                                elementName = Application.context.installationsController.get(mainTable.getSelectedRow());
+                                elementName = Application.context.installationService.get(mainTable.getSelectedRow());
                                 break;
                         }
                         new PathElementName(PathListsDialog.this, elementType, elementName).setVisible(true);
@@ -243,16 +243,16 @@ public class PathListsDialog extends JDialog {
                     if (mainTable.getSelectedRow() != -1){
                         switch (title) {
                             case PathListsTable.DEPARTMENTS_LIST:
-                                elementName = Application.context.departmentsController.get(mainTable.getSelectedRow());
+                                elementName = Application.context.departmentService.get(mainTable.getSelectedRow());
                                 break;
                             case PathListsTable.AREAS_LIST:
-                                elementName = Application.context.areasController.get(mainTable.getSelectedRow());
+                                elementName = Application.context.areaService.get(mainTable.getSelectedRow());
                                 break;
                             case PathListsTable.PROCESSES_LIST:
-                                elementName = Application.context.processesController.get(mainTable.getSelectedRow());
+                                elementName = Application.context.processService.get(mainTable.getSelectedRow());
                                 break;
                             case PathListsTable.INSTALLATIONS_LIST:
-                                elementName = Application.context.installationsController.get(mainTable.getSelectedRow());
+                                elementName = Application.context.installationService.get(mainTable.getSelectedRow());
                                 break;
                         }
                     }

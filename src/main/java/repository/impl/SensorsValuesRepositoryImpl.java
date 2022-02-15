@@ -1,6 +1,6 @@
 package repository.impl;
 
-import controller.FileBrowser;
+import service.FileBrowser;
 import model.Sensor;
 import model.SensorValues;
 import repository.SensorsValuesRepository;

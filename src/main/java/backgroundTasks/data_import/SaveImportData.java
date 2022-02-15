@@ -68,28 +68,28 @@ public class SaveImportData extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         if (this.sensors != null && !this.sensors.isEmpty()) {
-            Application.context.sensorsController.rewriteAll(this.sensors);
+            Application.context.sensorService.rewriteInCurrentThread(this.sensors);
         }
         if (this.channels != null && !this.channels.isEmpty()) {
-            Application.context.channelsController.rewriteAll(this.channels);
+            Application.context.channelService.rewriteInCurrentThread(this.channels);
         }
         if (this.persons != null && !this.persons.isEmpty()) {
-            Application.context.personsController.rewriteAll(this.persons);
+            Application.context.personService.rewriteInCurrentThread(this.persons);
         }
         if (this.calibrators != null && !this.calibrators.isEmpty()) {
-            Application.context.calibratorsController.rewriteAll(this.calibrators);
+            Application.context.calibratorService.rewriteInCurrentThread(this.calibrators);
         }
         if (this.departments != null && !this.departments.isEmpty()) {
-            Application.context.departmentsController.rewriteAll(this.departments);
+            Application.context.departmentService.rewriteInCurrentThread(this.departments);
         }
         if (this.areas != null && !this.areas.isEmpty()) {
-            Application.context.areasController.rewriteAll(this.areas);
+            Application.context.areaService.rewriteInCurrentThread(this.areas);
         }
         if (this.processes != null && !this.processes.isEmpty()) {
-            Application.context.processesController.rewriteAll(this.processes);
+            Application.context.processService.rewriteInCurrentThread(this.processes);
         }
         if (this.installations != null && !this.installations.isEmpty()) {
-            Application.context.installationsController.rewriteAll(this.installations);
+            Application.context.installationService.rewriteInCurrentThread(this.installations);
         }
         return null;
     }
@@ -99,7 +99,7 @@ public class SaveImportData extends SwingWorker<Void, Void> {
         this.loadDialog.dispose();
         Application.context.channelSorter.setOff();
         System.out.println(Application.context);
-        this.mainScreen.setChannelsList(Application.context.channelsController.getAll());
+        this.mainScreen.setChannelsList(Application.context.channelService.getAll());
         JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

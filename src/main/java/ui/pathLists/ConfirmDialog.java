@@ -61,16 +61,16 @@ public class ConfirmDialog extends JDialog {
             dispose();
             switch (elementType){
                 case PathListsTable.DEPARTMENTS_LIST:
-                    Application.context.departmentsController.clear();
+                    Application.context.departmentService.clear();
                     break;
                 case PathListsTable.AREAS_LIST:
-                    Application.context.areasController.clear();
+                    Application.context.areaService.clear();
                     break;
                 case PathListsTable.PROCESSES_LIST:
-                    Application.context.processesController.clear();
+                    Application.context.processService.clear();
                     break;
                 case PathListsTable.INSTALLATIONS_LIST:
-                    Application.context.installationsController.clear();
+                    Application.context.installationService.clear();
                     break;
             }
             dialog.update(elementType);

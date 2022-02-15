@@ -77,7 +77,7 @@ public class SensorsListDialog extends JDialog {
         if (index < 0){
             return null;
         }else {
-            return Application.context.sensorsController.get(index);
+            return Application.context.sensorService.get(index);
         }
     }
 
@@ -109,7 +109,7 @@ public class SensorsListDialog extends JDialog {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new SensorInfoDialog(SensorsListDialog.this, Application.context.sensorsController.get(mainTable.getSelectedRow())).setVisible(true);
+                        new SensorInfoDialog(SensorsListDialog.this, Application.context.sensorService.get(mainTable.getSelectedRow())).setVisible(true);
                     }
                 });
             }

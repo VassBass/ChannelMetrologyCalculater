@@ -1,6 +1,6 @@
 package application;
 
-import controller.FileBrowser;
+import service.FileBrowser;
 import settings.Settings;
 import ui.model.ApplicationLogo;
 
@@ -91,29 +91,27 @@ public class Application extends SwingWorker<Void, String> {
     @Override
     protected Void doInBackground() throws Exception {
         publish("Завантаження списку цехів");
-        context.departmentsController.init(context.mainScreen);
+        context.departmentService.init(context.mainScreen);
         publish("Завантаження списку ділянок");
-        context.areasController.init(context.mainScreen);
+        context.areaService.init(context.mainScreen);
         publish("Завантаження списку процесів");
-        context.processesController.init(context.mainScreen);
+        context.processService.init(context.mainScreen);
         publish("Завантаження списку установок");
-        context.installationsController.init(context.mainScreen);
+        context.installationService.init(context.mainScreen);
         publish("Завантаження списку працівників");
-        context.personsController.init(context.mainScreen);
+        context.personService.init(context.mainScreen);
         publish("Завантаження списку вимірюваннь");
-        context.measurementsController.init();
+        context.measurementService.init();
         publish("Завантаження списку калібраторів");
-        context.calibratorsController.init(context.mainScreen);
+        context.calibratorService.init(context.mainScreen);
         publish("Завантаження списку ПВП");
-        context.sensorsController.init(context.mainScreen);
-        publish("Завантаження вимірювальних величин ПВП");
-        context.sensorsValuesService.init();
+        context.sensorService.init(context.mainScreen);
         publish("Завантаження списку каналів");
-        context.channelsController.init(context.mainScreen);
+        context.channelService.init(context.mainScreen);
         publish("Завантаження налаштуваннь користувача");
         Settings.checkSettings();
         publish("Завантаження головного вікна");
-        context.mainScreen.init(context.channelsController.getAll());
+        context.mainScreen.init(context.channelService.getAll());
         return null;
     }
 

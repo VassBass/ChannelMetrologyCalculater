@@ -130,11 +130,11 @@ public class CalculatePerformersDialog extends JDialog {
     }
 
     private String[]personsNames(){
-        return Application.context.personsController.getAllNames();
+        return Application.context.personService.getAllNames();
     }
 
     private String[]headsOfDepartment(){
-        return Application.context.personsController.getNamesOfHeads();
+        return Application.context.personService.getNamesOfHeads();
     }
 
     private void setValues(HashMap<Integer, Object> values){
@@ -224,7 +224,7 @@ public class CalculatePerformersDialog extends JDialog {
                 performer1Position.setText(EMPTY_ARRAY);
             }else {
                 try {
-                    String position = Application.context.personsController.get(index - 1).getPosition();
+                    String position = Application.context.personService.get(index - 1).getPosition();
                     performer1Position.setText(position);
                 }catch (IndexOutOfBoundsException ignored){}
             }
@@ -240,7 +240,7 @@ public class CalculatePerformersDialog extends JDialog {
                 performer2Position.setText(EMPTY_ARRAY);
             }else {
                 try {
-                    String position = Application.context.personsController.get(index - 1).getPosition();
+                    String position = Application.context.personService.get(index - 1).getPosition();
                     performer2Position.setText(position);
                 }catch (IndexOutOfBoundsException ignored){}
             }
@@ -256,7 +256,7 @@ public class CalculatePerformersDialog extends JDialog {
                 calculaterPosition.setText(EMPTY_ARRAY);
             }else {
                 try {
-                    String position = Application.context.personsController.get(index - 1).getPosition();
+                    String position = Application.context.personService.get(index - 1).getPosition();
                     calculaterPosition.setText(position);
                 }catch (IndexOutOfBoundsException ignored){}
             }

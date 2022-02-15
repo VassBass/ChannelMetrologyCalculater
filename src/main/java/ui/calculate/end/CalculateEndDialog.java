@@ -136,7 +136,7 @@ public class CalculateEndDialog extends JDialog {
         if (Application.context.channelSorter.isOn()){
             mainScreen.setChannelsList(Application.context.channelSorter.getCurrent());
         }else {
-            mainScreen.setChannelsList(Application.context.channelsController.getAll());
+            mainScreen.setChannelsList(Application.context.channelService.getAll());
         }
     }
 

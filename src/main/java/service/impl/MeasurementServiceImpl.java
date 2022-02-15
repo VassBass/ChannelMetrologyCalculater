@@ -1,48 +1,30 @@
-package controller;
+package service.impl;
 
 import constants.MeasurementConstants;
-import measurements.Consumption;
+import def.DefaultMeasurements;
 import measurements.Measurement;
-import measurements.Pressure;
-import measurements.Temperature;
 import model.Model;
 import repository.Repository;
+import service.FileBrowser;
+import service.MeasurementService;
 
 import java.util.ArrayList;
 
-public class MeasurementsController {
+public class MeasurementServiceImpl implements MeasurementService {
     private ArrayList<Measurement> measurements;
 
+    @Override
     public void init(){
         try {
             this.measurements = new Repository<Measurement>(null, Model.MEASUREMENT).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_MEASUREMENTS.getName() + "\" is empty");
-            this.measurements = this.loadDefault();
+            this.measurements = DefaultMeasurements.get();
+            this.save();
         }
     }
 
-    private ArrayList<Measurement> loadDefault(){
-        if (this.measurements == null){
-            this.measurements = new ArrayList<>();
-        }else this.measurements.clear();
-
-        this.measurements.add(new Temperature(MeasurementConstants.DEGREE_CELSIUS));
-
-        this.measurements.add(new Pressure(MeasurementConstants.KPA));
-        this.measurements.add(new Pressure(MeasurementConstants.PA));
-        this.measurements.add(new Pressure(MeasurementConstants.MM_ACVA));
-        this.measurements.add(new Pressure(MeasurementConstants.KG_SM2));
-        this.measurements.add(new Pressure(MeasurementConstants.KG_MM2));
-        this.measurements.add(new Pressure(MeasurementConstants.BAR));
-        this.measurements.add(new Pressure(MeasurementConstants.ML_BAR));
-
-        this.measurements.add(new Consumption(MeasurementConstants.M3_HOUR));
-
-        this.save();
-        return this.measurements;
-    }
-
+    @Override
     public String[]getAllNames(){
         ArrayList<String>names = new ArrayList<>();
         for (Measurement measurement : this.measurements){
@@ -61,6 +43,7 @@ public class MeasurementsController {
         return names.toArray(new String[0]);
     }
 
+    @Override
     public String[]getAllValues(){
         String[]values = new String[this.measurements.size()];
         for (int m=0;m<this.measurements.size();m++){
@@ -69,6 +52,7 @@ public class MeasurementsController {
         return values;
     }
 
+    @Override
     public String[]getValues(Measurement measurement){
         ArrayList<String> values  = new ArrayList<>();
         for (Measurement m : this.measurements) {
@@ -79,48 +63,54 @@ public class MeasurementsController {
         return values.toArray(new String[0]);
     }
 
-    public String[]getValues(MeasurementConstants measurementName){
+    @Override
+    public String[]getValues(MeasurementConstants name){
         ArrayList<String> values  = new ArrayList<>();
         for (Measurement measurement : this.measurements) {
-            if (measurement.getNameConstant() == measurementName) {
+            if (measurement.getNameConstant() == name) {
                 values.add(measurement.getValue());
             }
         }
         return values.toArray(new String[0]);
     }
 
-    public String[]getValues(String measurementName){
+    @Override
+    public String[]getValues(String name){
         ArrayList<String> values  = new ArrayList<>();
         for (Measurement measurement : this.measurements) {
-            if (measurement.getName().equals(measurementName)) {
+            if (measurement.getName().equals(name)) {
                 values.add(measurement.getValue());
             }
         }
         return values.toArray(new String[0]);
     }
 
+    @Override
     public ArrayList<Measurement> getAll() {
         return this.measurements;
     }
 
-    public Measurement get(MeasurementConstants measurementValue){
+    @Override
+    public Measurement get(MeasurementConstants value){
         for (Measurement measurement : this.measurements){
-            if (measurement.getValueConstant() == measurementValue){
+            if (measurement.getValueConstant() == value){
                 return measurement;
             }
         }
         return null;
     }
 
-    public Measurement get(String measurementValue){
+    @Override
+    public Measurement get(String value){
         for (Measurement measurement : this.measurements){
-            if (measurement.getValue().equals(measurementValue)){
+            if (measurement.getValue().equals(value)){
                 return measurement;
             }
         }
         return null;
     }
 
+    @Override
     public Measurement get(int index) {
         if (index >= 0) {
             return this.measurements.get(index);
@@ -129,27 +119,30 @@ public class MeasurementsController {
         }
     }
 
-    public ArrayList<Measurement>getMeasurements(MeasurementConstants measurementName){
+    @Override
+    public ArrayList<Measurement>getMeasurements(MeasurementConstants name){
         ArrayList<Measurement>measurements = new ArrayList<>();
         for (Measurement measurement : this.measurements){
-            if (measurement.getNameConstant() == measurementName){
+            if (measurement.getNameConstant() == name){
                 measurements.add(measurement);
             }
         }
         return measurements;
     }
 
-    public ArrayList<Measurement>getMeasurements(String measurementName){
+    @Override
+    public ArrayList<Measurement>getMeasurements(String name){
         ArrayList<Measurement>measurements = new ArrayList<>();
         for (Measurement measurement : this.measurements){
-            if (measurement.getName().equals(measurementName)){
+            if (measurement.getName().equals(name)){
                 measurements.add(measurement);
             }
         }
         return measurements;
     }
 
-    private void save() {
+    @Override
+    public void save() {
         new Repository<Measurement>(null, Model.MEASUREMENT).writeList(this.measurements);
     }
 }

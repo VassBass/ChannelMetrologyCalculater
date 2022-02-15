@@ -47,7 +47,7 @@ public class ImportDepartments extends SwingWorker<Integer, Void> {
         if (list == null){
             return 1;
         }else {
-            Application.context.departmentsController.rewriteAll(list);
+            Application.context.departmentService.rewriteInCurrentThread(list);
             return 0;
         }
     }
@@ -81,7 +81,7 @@ public class ImportDepartments extends SwingWorker<Integer, Void> {
             return null;
         }
 
-        ArrayList<String>oldList = Application.context.departmentsController.getAll();
+        ArrayList<String>oldList = Application.context.departmentService.getAll();
         ArrayList<String>toAdd = new ArrayList<>();
         for (String imp : importedDepartments){
             boolean exist = false;

@@ -30,7 +30,7 @@ public class ExportCalibrators extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        return Application.context.calibratorsController.exportData();
+        return Application.context.calibratorService.exportData();
     }
 
     @Override

@@ -44,7 +44,7 @@ public class DialogChannel_sensorRangePanel extends JPanel {
         this.min = new JTextField(DEFAULT_MIN_VALUE, 5);
         this.max = new JTextField(DEFAULT_MAX_VALUE, 5);
 
-        this.value = new JComboBox<>(Application.context.measurementsController.getValues(this.measurement));
+        this.value = new JComboBox<>(Application.context.measurementService.getValues(this.measurement));
         this.value.setEditable(false);
         this.value.setBackground(Color.WHITE);
     }

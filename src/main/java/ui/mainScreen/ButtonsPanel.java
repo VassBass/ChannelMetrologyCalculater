@@ -1,6 +1,6 @@
 package ui.mainScreen;
 
-import controller.FileBrowser;
+import service.FileBrowser;
 import ui.model.DefaultButton;
 import ui.calculate.start.CalculateStartDialog;
 import ui.channelInfo.DialogChannel;

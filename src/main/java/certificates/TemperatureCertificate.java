@@ -1,7 +1,7 @@
 package certificates;
 
 import constants.Key;
-import controller.FileBrowser;
+import service.FileBrowser;
 import model.Calibrator;
 import constants.MeasurementConstants;
 import converters.VariableConverter;

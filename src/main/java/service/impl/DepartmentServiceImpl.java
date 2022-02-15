@@ -1,7 +1,10 @@
-package controller;
+package service.impl;
 
+import service.FileBrowser;
+import def.DefaultDepartments;
 import model.Model;
 import repository.Repository;
+import service.DepartmentService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,11 +12,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class DepartmentsController {
+public class DepartmentServiceImpl implements DepartmentService {
     private static final String ERROR = "Помилка";
 
     private Window window;
-    private ArrayList<String>departments;
+    private ArrayList<String> departments;
 
     private String exportFileName(Calendar date){
         return "export_departments ["
@@ -25,39 +28,29 @@ public class DepartmentsController {
                 + "].dep";
     }
 
+    @Override
     public void init(Window window){
         try {
             this.departments = new Repository<String>(null, Model.DEPARTMENT).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_DEPARTMENTS.getName() + "\" is empty");
-            this.departments = this.resetToDefault();
+            this.departments = DefaultDepartments.get();
+            this.save();
         }
         this.window = window;
     }
 
-    public ArrayList<String> resetToDefault() {
-        if (this.departments == null){
-            this.departments = new ArrayList<>();
-        }else this.departments.clear();
-
-        String CPO = "ЦВО";
-        String DOF = "ДЗФ";
-
-        this.departments.add(CPO);
-        this.departments.add(DOF);
-
-        this.save();
-        return this.departments;
-    }
-
+    @Override
     public ArrayList<String> getAll() {
         return this.departments;
     }
 
+    @Override
     public String[] getAllInStrings(){
         return this.departments.toArray(new String[0]);
     }
 
+    @Override
     public ArrayList<String> add(String object) {
         if (!this.departments.contains(object)){
             this.departments.add(object);
@@ -66,6 +59,7 @@ public class DepartmentsController {
         return this.departments;
     }
 
+    @Override
     public ArrayList<String> remove(String object) {
         if (this.departments.contains(object)){
             this.departments.remove(object);
@@ -76,6 +70,7 @@ public class DepartmentsController {
         return this.departments;
     }
 
+    @Override
     public ArrayList<String> set(String oldObject, String newObject) {
         if (oldObject != null){
             if (newObject == null){
@@ -89,6 +84,7 @@ public class DepartmentsController {
         return this.departments;
     }
 
+    @Override
     public String get(int index) {
         if (index >= 0) {
             return this.departments.get(index);
@@ -97,15 +93,18 @@ public class DepartmentsController {
         }
     }
 
+    @Override
     public void clear() {
         this.departments.clear();
         this.save();
     }
 
-    private void save() {
+    @Override
+    public void save() {
         new Repository<String>(this.window, Model.DEPARTMENT).writeList(this.departments);
     }
 
+    @Override
     public boolean exportData(){
         try {
             String fileName = this.exportFileName(Calendar.getInstance());
@@ -117,7 +116,8 @@ public class DepartmentsController {
         }
     }
 
-    public void rewriteAll(ArrayList<String>departments){
+    @Override
+    public void rewriteInCurrentThread(ArrayList<String>departments){
         this.departments = departments;
         new Repository<String>(null, Model.DEPARTMENT).writeListInCurrentThread(departments);
     }

@@ -33,15 +33,15 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Application.context.sensorsController.importData(this.newSensors, this.sensorsForChange);
-        Application.context.channelsController.changeSensors(this.sensorsForChange);
+        Application.context.sensorService.importData(this.newSensors, this.sensorsForChange);
+        Application.context.channelService.changeSensors(this.sensorsForChange);
         return null;
     }
 
     @Override
     protected void done() {
         this.loadDialog.dispose();
-        this.mainScreen.setChannelsList(Application.context.channelsController.getAll());
+        this.mainScreen.setChannelsList(Application.context.channelService.getAll());
         JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
     }
 }

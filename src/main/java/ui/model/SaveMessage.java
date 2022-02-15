@@ -1,6 +1,6 @@
 package ui.model;
 
-import controller.FileBrowser;
+import service.FileBrowser;
 import converters.ConverterUI;
 
 import javax.swing.*;

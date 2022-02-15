@@ -1,7 +1,7 @@
 package ui.mainScreen.menu;
 
 import application.Application;
-import controller.FileBrowser;
+import service.FileBrowser;
 import model.Model;
 import ui.exportData.ConfirmExportDialog;
 import ui.importData.ImportFileChooser;

@@ -1,9 +1,12 @@
-package controller;
+package service.impl;
 
 import constants.WorkPositions;
+import def.DefaultPersons;
 import model.Model;
 import model.Worker;
 import repository.Repository;
+import service.FileBrowser;
+import service.PersonService;
 import support.Comparator;
 
 import javax.swing.*;
@@ -12,7 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class PersonsController {
+public class PersonServiceImpl implements PersonService {
     private static final String EMPTY_ARRAY = "<Порожньо>";
     private static final String ERROR = "Помилка";
 
@@ -29,71 +32,24 @@ public class PersonsController {
                 + "].per";
     }
 
+    @Override
     public void init(Window window){
         try {
             this.persons = new Repository<Worker>(null, Model.PERSON).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_PERSONS.getName() + "\" is empty");
-            this.persons = this.resetToDefault();
+            this.persons = DefaultPersons.get();
+            this.save();
         }
         this.window = window;
     }
 
-    public ArrayList<Worker> resetToDefault() {
-        if (this.persons == null){
-            this.persons = new ArrayList<>();
-        }else this.persons.clear();
-
-        Worker chekunovTM = new Worker();
-        chekunovTM.setName("Тимофій");
-        chekunovTM.setSurname("Чекунов");
-        chekunovTM.setPatronymic("Миколайович");
-        chekunovTM.setPosition(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP);
-        this.persons.add(chekunovTM);
-
-        Worker fesenkoEV = new Worker();
-        fesenkoEV.setName("Євгеній");
-        fesenkoEV.setSurname("Фесенко");
-        fesenkoEV.setPatronymic("Вітальйович");
-        fesenkoEV.setPosition(WorkPositions.HEAD_OF_AREA + " МЗтаП");
-        this.persons.add(fesenkoEV);
-
-        Worker lenTV = new Worker();
-        lenTV.setName("Тетяна");
-        lenTV.setSurname("Лень");
-        lenTV.setPatronymic("Володимирівна");
-        lenTV.setPosition(WorkPositions.ENGINEER_ASKV);
-        this.persons.add(lenTV);
-
-        Worker pohiliiOO = new Worker();
-        pohiliiOO.setName("Олександр");
-        pohiliiOO.setSurname("Похилий");
-        pohiliiOO.setPatronymic("Олександрович");
-        pohiliiOO.setPosition(WorkPositions.HEAD_OF_AREA + " АСУТП");
-        this.persons.add(pohiliiOO);
-
-        Worker sergienkoOV = new Worker();
-        sergienkoOV.setName("Олександр");
-        sergienkoOV.setSurname("Сергієнко");
-        sergienkoOV.setPatronymic("Вікторович");
-        sergienkoOV.setPosition(WorkPositions.HEAD_OF_AREA + " АСУТП");
-        this.persons.add(sergienkoOV);
-
-        Worker vasilevIS = new Worker();
-        vasilevIS.setName("Ігор");
-        vasilevIS.setSurname("Васильєв");
-        vasilevIS.setPatronymic("Сергійович");
-        vasilevIS.setPosition(WorkPositions.ELECTRONIC_ENGINEER);
-        this.persons.add(vasilevIS);
-
-        this.save();
-        return this.persons;
-    }
-
+    @Override
     public ArrayList<Worker> getAll() {
         return this.persons;
     }
 
+    @Override
     public String[] getAllNames(){
         int length = this.persons.size() + 1;
         String[] persons = new String[length];
@@ -105,6 +61,7 @@ public class PersonsController {
         return persons;
     }
 
+    @Override
     public String[] getNamesOfHeads(){
         ArrayList<String>heads = new ArrayList<>();
         heads.add(EMPTY_ARRAY);
@@ -116,6 +73,7 @@ public class PersonsController {
         return heads.toArray(new String[0]);
     }
 
+    @Override
     public ArrayList<Worker> add(Worker worker) {
         boolean exist = false;
         for (Worker person : this.persons){
@@ -133,6 +91,7 @@ public class PersonsController {
         return this.persons;
     }
 
+    @Override
     public ArrayList<Worker> remove(Worker person) {
         boolean removed = false;
 
@@ -152,6 +111,7 @@ public class PersonsController {
         return this.persons;
     }
 
+    @Override
     public ArrayList<Worker> set(Worker oldPerson, Worker newPerson) {
         if (oldPerson != null){
             if (newPerson == null){
@@ -172,6 +132,7 @@ public class PersonsController {
         return this.persons;
     }
 
+    @Override
     public Worker get(int index) {
         if (index >= 0) {
             return this.persons.get(index);
@@ -180,15 +141,18 @@ public class PersonsController {
         }
     }
 
+    @Override
     public void clear() {
         this.persons.clear();
         this.save();
     }
 
-    private void save() {
+    @Override
+    public void save() {
         new Repository<Worker>(this.window, Model.PERSON).writeList(this.persons);
     }
 
+    @Override
     public boolean exportData(){
         try {
             String fileName = this.exportFileName(Calendar.getInstance());
@@ -200,7 +164,8 @@ public class PersonsController {
         }
     }
 
-    public void rewriteAll(ArrayList<Worker>workers){
+    @Override
+    public void rewriteInCurrentThread(ArrayList<Worker>workers){
         this.persons = workers;
         new Repository<Worker>(null,Model.PERSON).writeListInCurrentThread(workers);
     }

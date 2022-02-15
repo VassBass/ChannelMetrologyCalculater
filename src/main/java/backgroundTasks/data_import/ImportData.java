@@ -108,7 +108,7 @@ public class ImportData extends SwingWorker<Integer, Void> {
     }
 
     private void copySensors(){
-        ArrayList<Sensor>oldSensorsList = Application.context.sensorsController.getAll();
+        ArrayList<Sensor>oldSensorsList = Application.context.sensorService.getAll();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Sensor>newList = new ArrayList<>();
 
@@ -157,7 +157,7 @@ public class ImportData extends SwingWorker<Integer, Void> {
     }
 
     private void copyChannels(){
-        ArrayList<Channel>oldChannelsList = Application.context.channelsController.getAll();
+        ArrayList<Channel>oldChannelsList = Application.context.channelService.getAll();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Channel>newList = new ArrayList<>();
 
@@ -206,7 +206,7 @@ public class ImportData extends SwingWorker<Integer, Void> {
     }
 
     private void copyCalibrators(){
-        ArrayList<Calibrator>oldCalibratorsList = Application.context.calibratorsController.getAll();
+        ArrayList<Calibrator>oldCalibratorsList = Application.context.calibratorService.getAll();
         ArrayList<Integer[]>indexes = new ArrayList<>();
         ArrayList<Calibrator>newList = new ArrayList<>();
 

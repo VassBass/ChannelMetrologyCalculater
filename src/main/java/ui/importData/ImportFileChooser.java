@@ -2,7 +2,7 @@ package ui.importData;
 
 import application.Application;
 import backgroundTasks.data_import.*;
-import controller.FileBrowser;
+import service.FileBrowser;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;

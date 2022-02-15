@@ -1,4 +1,4 @@
-package controller;
+package service;
 
 import application.Application;
 import constants.Sort;
@@ -55,14 +55,14 @@ public class ChannelSorter {
             case Sort.SUITABILITY:
                 return getAllForSuitability(this.sortBoolean);
             default:
-                return Application.context.channelsController.getAll();
+                return Application.context.channelService.getAll();
         }
     }
 
     public ArrayList<Channel> getAllForName(String name){
         this.sortString = name;
         this.currentSort = Sort.NAME;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         String nameWithOutCase = name.toLowerCase(Locale.ROOT);
         ArrayList<Channel>sortedList = new ArrayList<>();
         ArrayList<Channel>equalsChannelsWithOutCase = new ArrayList<>();
@@ -85,7 +85,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForMeasurementName(String measurementName){
         this.sortString = measurementName;
         this.currentSort  = Sort.MEASUREMENT_NAME;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
             String channelMeasurementName = channel.getMeasurement().getName();
@@ -99,7 +99,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForMeasurementValue(String measurementValue){
         this.sortString = measurementValue;
         this.currentSort = Sort.MEASUREMENT_VALUE;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
             String channelMeasurementValue = channel.getMeasurement().getValue();
@@ -113,7 +113,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForDepartment(String department){
         this.sortString = department;
         this.currentSort = Sort.DEPARTMENT;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         String departmentWithOutCase = department.toLowerCase(Locale.ROOT);
         ArrayList<Channel>sortedList = new ArrayList<>();
         ArrayList<Channel>equalsChannelsWithOutCase = new ArrayList<>();
@@ -136,7 +136,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForArea(String area){
         this.sortString = area;
         this.currentSort = Sort.AREA;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         String areaWithOutCase = area.toLowerCase(Locale.ROOT);
         ArrayList<Channel>sortedList = new ArrayList<>();
         ArrayList<Channel>equalsChannelsWithOutCase = new ArrayList<>();
@@ -159,7 +159,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForProcess(String process){
         this.sortString = process;
         this.currentSort = Sort.PROCESS;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         String processWithOutCase = process.toLowerCase(Locale.ROOT);
         ArrayList<Channel>sortedList = new ArrayList<>();
         ArrayList<Channel>equalsChannelsWithOutCase = new ArrayList<>();
@@ -182,7 +182,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForInstallation(String installation){
         this.sortString = installation;
         this.currentSort = Sort.INSTALLATION;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         String installationWithOutCase = installation.toLowerCase(Locale.ROOT);
         ArrayList<Channel>sortedList = new ArrayList<>();
         ArrayList<Channel>equalsChannelsWithOutCase = new ArrayList<>();
@@ -205,7 +205,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForDate(String date){
         this.sortString = date;
         this.currentSort = Sort.DATE;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
             String channelDateString = VariableConverter.dateToString(channel.getDate());
@@ -219,7 +219,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForFrequency(double frequency){
         this.sortString = String.valueOf(frequency);
         this.currentSort = Sort.FREQUENCY;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
             double channelFrequency = channel.getFrequency();
@@ -233,7 +233,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForTechnologyNumber(String technologyNumber){
         this.sortString = technologyNumber;
         this.currentSort = Sort.TECHNOLOGY_NUMBER;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         String numberWithOutCase = technologyNumber.toLowerCase(Locale.ROOT);
         ArrayList<Channel>sortedList = new ArrayList<>();
         ArrayList<Channel>equalsChannelsWithOutCase = new ArrayList<>();
@@ -256,7 +256,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForSensorName(String sensorName){
         this.sortString = sensorName;
         this.currentSort = Sort.SENSOR_NAME;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         String nameWithOutCase = sensorName.toLowerCase(Locale.ROOT);
         ArrayList<Channel>sortedList = new ArrayList<>();
         ArrayList<Channel>equalsChannelsWithOutCase = new ArrayList<>();
@@ -280,7 +280,7 @@ public class ChannelSorter {
         this.sortString = sensorType;
         this.currentSort = Sort.SENSOR_TYPE;
         String type = sensorType.toLowerCase(Locale.ROOT);
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
             String sType = channel.getSensor().getType().toLowerCase(Locale.ROOT);
@@ -294,7 +294,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForProtocolNumber(String protocolNumber){
         this.sortString = protocolNumber;
         this.currentSort = Sort.PROTOCOL_NUMBER;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         ArrayList<Channel>containsChannels = new ArrayList<>();
         for (Channel channel : channels){
@@ -312,7 +312,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForReference(String reference){
         this.sortString = reference;
         this.currentSort = Sort.REFERENCE;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         ArrayList<Channel>containsChannels = new ArrayList<>();
         for (Channel channel : channels){
@@ -330,7 +330,7 @@ public class ChannelSorter {
     public ArrayList<Channel> getAllForSuitability(boolean suitability){
         this.sortBoolean = suitability;
         this.currentSort = Sort.SUITABILITY;
-        ArrayList<Channel>channels = Application.context.channelsController.getAll();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
             if (channel.isSuitability() == suitability){

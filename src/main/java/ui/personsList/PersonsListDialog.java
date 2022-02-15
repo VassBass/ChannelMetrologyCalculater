@@ -89,7 +89,7 @@ public class PersonsListDialog extends JDialog {
                 @Override
                 public void run() {
                     int index = mainTable.getSelectedRow();
-                    new PersonInfoDialog(PersonsListDialog.this, Application.context.personsController.get(index)).setVisible(true);
+                    new PersonInfoDialog(PersonsListDialog.this, Application.context.personService.get(index)).setVisible(true);
                 }
             });
         }
@@ -102,7 +102,7 @@ public class PersonsListDialog extends JDialog {
                 @Override
                 public void run() {
                     int index = mainTable.getSelectedRow();
-                    new RemovePersonDialog(PersonsListDialog.this, Application.context.personsController.get(index)).setVisible(true);
+                    new RemovePersonDialog(PersonsListDialog.this, Application.context.personService.get(index)).setVisible(true);
                 }
             });
         }

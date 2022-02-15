@@ -109,7 +109,7 @@ public class ImportSensors extends SwingWorker<Integer, Integer> {
     private void fueling(){
         int progress = 0;
 
-        ArrayList<Sensor>oldList = Application.context.sensorsController.getAll();
+        ArrayList<Sensor>oldList = Application.context.sensorService.getAll();
         if (oldList == null || oldList.isEmpty()) {
             this.newSensors = this.importedSensors;
         }else {

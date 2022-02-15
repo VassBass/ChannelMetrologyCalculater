@@ -122,15 +122,15 @@ public class SearchPanel extends JPanel {
     }
 
     private ComboBoxModel<String>model_measurementsNames(){
-        return new DefaultComboBoxModel<>(Application.context.measurementsController.getAllNames());
+        return new DefaultComboBoxModel<>(Application.context.measurementService.getAllNames());
     }
 
     private ComboBoxModel<String>model_measurementsValues(){
-        return new DefaultComboBoxModel<>(Application.context.measurementsController.getAllValues());
+        return new DefaultComboBoxModel<>(Application.context.measurementService.getAllValues());
     }
 
     private ComboBoxModel<String>model_sensorsTypes(){
-        return new DefaultComboBoxModel<>(Application.context.sensorsController.getAllTypes());
+        return new DefaultComboBoxModel<>(Application.context.sensorService.getAllTypes());
     }
 
     private final ActionListener clickSearch = new ActionListener() {
@@ -154,7 +154,7 @@ public class SearchPanel extends JPanel {
                 }
             }else{
                 Application.context.channelSorter.setOff();
-                Application.context.mainScreen.setChannelsList(Application.context.channelsController.getAll());
+                Application.context.mainScreen.setChannelsList(Application.context.channelService.getAll());
                 buttonSearch.setText(START_SEARCH);
             }
         }

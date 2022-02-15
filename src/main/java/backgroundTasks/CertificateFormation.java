@@ -92,6 +92,6 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
         }else{
             newChannel.setReference((String) this.values.get(Key.CHANNEL_REFERENCE));
         }
-        Application.context.channelsController.set(this.channel, newChannel);
+        Application.context.channelService.set(this.channel, newChannel);
     }
 }

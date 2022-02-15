@@ -30,7 +30,7 @@ public class ExportInstallations extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        return Application.context.installationsController.exportData();
+        return Application.context.installationService.exportData();
     }
 
     @Override

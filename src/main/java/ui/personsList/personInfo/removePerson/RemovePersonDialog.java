@@ -76,7 +76,7 @@ public class RemovePersonDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             if (Application.isBusy(RemovePersonDialog.this)) return;
             dispose();
-            Application.context.personsController.remove(worker);
+            Application.context.personService.remove(worker);
             parent.update();
         }
     };

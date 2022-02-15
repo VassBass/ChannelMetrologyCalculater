@@ -5,19 +5,14 @@ import converters.ConverterUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 public class LoadDialog extends JWindow {
     public static final String LOADING_PLEASE_WAIT = "Завантаження...будь ласка зачекайте...";
-
-    private final Container parent;
 
     public JProgressBar progressBar;
 
     public LoadDialog(){
         super();
-        this.parent = null;
 
         this.createElements();
         this.build();
@@ -25,7 +20,6 @@ public class LoadDialog extends JWindow {
 
     public LoadDialog(Container parent){
         super();
-        this.parent = parent;
         this.setLocation(ConverterUI.POINT_CENTER(parent, this));
 
         this.createElements();

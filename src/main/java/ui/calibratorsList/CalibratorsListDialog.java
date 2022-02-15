@@ -74,7 +74,7 @@ public class CalibratorsListDialog extends JDialog {
                 public void run() {
                     int index = mainTable.getSelectedRow();
                     if (index != -1) {
-                        Calibrator calibrator = Application.context.calibratorsController.get(index);
+                        Calibrator calibrator = Application.context.calibratorService.get(index);
                         if (calibrator.getName().equals(CalibratorType.FLUKE718_30G)
                                 || calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)) {
                             JOptionPane.showMessageDialog(CalibratorsListDialog.this, NOT_REMOVED_CALIBRATOR_MESSAGE, ERROR, JOptionPane.WARNING_MESSAGE);
@@ -95,7 +95,7 @@ public class CalibratorsListDialog extends JDialog {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        Calibrator calibrator = Application.context.calibratorsController.get(index);
+                        Calibrator calibrator = Application.context.calibratorService.get(index);
                         new CalibratorInfoDialog(CalibratorsListDialog.this, calibrator).setVisible(true);
                     }
                 });

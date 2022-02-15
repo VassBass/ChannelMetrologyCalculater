@@ -33,11 +33,11 @@ public class DialogChannel_measurementPanel extends JPanel {
     }
 
     private void createElements(){
-        this.measurementName = new JComboBox<>(Application.context.measurementsController.getAllNames());
+        this.measurementName = new JComboBox<>(Application.context.measurementService.getAllNames());
         this.measurementName.setEditable(false);
         this.measurementName.setBackground(Color.WHITE);
 
-        this.measurementValue = new JComboBox<>(Application.context.measurementsController.getValues(
+        this.measurementValue = new JComboBox<>(Application.context.measurementService.getValues(
                 MeasurementConstants.TEMPERATURE.getValue()));
         this.measurementValue.setBackground(Color.WHITE);
         this.measurementValue.setEditable(false);
@@ -64,7 +64,7 @@ public class DialogChannel_measurementPanel extends JPanel {
             this.measurementName.setSelectedItem(measurementName);
             this.measurementValue.setModel(
                     new DefaultComboBoxModel<>(
-                            Application.context.measurementsController.getValues(measurementName)));
+                            Application.context.measurementService.getValues(measurementName)));
         }
     }
 
@@ -74,7 +74,7 @@ public class DialogChannel_measurementPanel extends JPanel {
 
     private String[] rosemountValues(){
         ArrayList<String> values  = new ArrayList<>();
-        ArrayList<Measurement>measurements = Application.context.measurementsController.getAll();
+        ArrayList<Measurement>measurements = Application.context.measurementService.getAll();
         for (Measurement measurement : measurements) {
             if (measurement.getNameConstant() == MeasurementConstants.CONSUMPTION) {
                 values.add(measurement.getValue());

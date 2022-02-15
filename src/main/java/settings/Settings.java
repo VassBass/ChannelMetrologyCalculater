@@ -1,7 +1,7 @@
 package settings;
 
 import constants.MeasurementConstants;
-import controller.FileBrowser;
+import service.FileBrowser;
 
 import java.io.*;
 import java.util.HashMap;

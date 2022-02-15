@@ -194,14 +194,14 @@ public class DialogChannel extends JDialog {
             this.codeLabel.setForeground(Color.RED);
             return false;
         }else if (this.oldChannel == null &&
-                Application.context.channelsController.isExist(this.userCode.getText())) {
+                Application.context.channelService.isExist(this.userCode.getText())) {
             this.codeLabel.setForeground(Color.RED);
-            Application.context.channelsController.showExistMessage(DialogChannel.this);
+            Application.context.channelService.showExistMessage(DialogChannel.this);
             return false;
         }else if (this.oldChannel != null &&
-                Application.context.channelsController.isExist(this.oldChannel.getCode(), this.userCode.getText())){
+                Application.context.channelService.isExist(this.oldChannel.getCode(), this.userCode.getText())){
             this.codeLabel.setForeground(Color.RED);
-            Application.context.channelsController.showExistMessage(DialogChannel.this);
+            Application.context.channelService.showExistMessage(DialogChannel.this);
             return false;
         }else {
             this.codeLabel.setForeground(this.defaultTextColor);
@@ -332,9 +332,9 @@ public class DialogChannel extends JDialog {
             dispose();
             ArrayList<Channel>channels;
             if (oldChannel == null) {
-                channels = Application.context.channelsController.add(getChannel());
+                channels = Application.context.channelService.add(getChannel());
             }else {
-                channels = Application.context.channelsController.set(oldChannel, getChannel());
+                channels = Application.context.channelService.set(oldChannel, getChannel());
             }
             if (Application.context.channelSorter.isOn()){
                 parent.setChannelsList(Application.context.channelSorter.getCurrent());

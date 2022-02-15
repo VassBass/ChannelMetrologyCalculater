@@ -77,7 +77,7 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.exportDataFile));
         ArrayList<Worker> importedPersons = (ArrayList<Worker>) ois.readObject();
         if (!importedPersons.isEmpty()) {
-            ArrayList<Worker> oldPersonsList = Application.context.personsController.getAll();
+            ArrayList<Worker> oldPersonsList = Application.context.personService.getAll();
 
             for (Worker imp : importedPersons) {
                 boolean exist = false;
@@ -91,7 +91,7 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
                     oldPersonsList.add(imp);
                 }
             }
-            Application.context.personsController.rewriteAll(oldPersonsList);
+            Application.context.personService.rewriteInCurrentThread(oldPersonsList);
             return true;
         }else {
             return false;

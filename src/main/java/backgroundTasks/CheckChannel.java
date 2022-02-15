@@ -33,7 +33,7 @@ public class CheckChannel extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        return Application.context.channelsController.isExist(this.code);
+        return Application.context.channelService.isExist(this.code);
     }
 
     @Override

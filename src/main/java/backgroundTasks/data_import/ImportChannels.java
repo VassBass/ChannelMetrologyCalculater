@@ -125,7 +125,7 @@ public class ImportChannels extends SwingWorker<Integer, Integer> {
     private void fueling() {
         double progress = 0D;
 
-        ArrayList<Sensor> oldSensors = Application.context.sensorsController.getAll();
+        ArrayList<Sensor> oldSensors = Application.context.sensorService.getAll();
         if (oldSensors.isEmpty()) {
             this.newSensors = this.importedSensors;
         } else {
@@ -152,7 +152,7 @@ public class ImportChannels extends SwingWorker<Integer, Integer> {
             this.sensorsForChange = sensorsForChange;
         }
 
-        ArrayList<Channel> oldList = Application.context.channelsController.getAll();
+        ArrayList<Channel> oldList = Application.context.channelService.getAll();
         if (oldList == null || oldList.isEmpty()) {
             this.newChannels = this.importedChannels;
             this.channelsForChange = new ArrayList<>();

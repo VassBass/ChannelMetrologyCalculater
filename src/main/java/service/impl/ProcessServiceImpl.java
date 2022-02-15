@@ -1,7 +1,10 @@
-package controller;
+package service.impl;
 
+import def.DefaultProcesses;
 import model.Model;
 import repository.Repository;
+import service.FileBrowser;
+import service.ProcessService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class ProcessesController {
+public class ProcessServiceImpl implements ProcessService {
     private static final String ERROR = "Помилка";
 
     private Window window;
@@ -25,43 +28,29 @@ public class ProcessesController {
                 + "].prc";
     }
 
+    @Override
     public void init(Window window){
         try {
             this.processes = new Repository<String>(null, Model.PROCESS).readList();
         }catch (Exception e){
             System.out.println("File \"" + FileBrowser.FILE_PROCESSES.getName() + "\" is empty");
-            this.processes = this.resetToDefault();
+            this.processes = DefaultProcesses.get();
+            this.save();
         }
         this.window = window;
     }
 
-    public ArrayList<String> resetToDefault() {
-        if (this.processes == null){
-            this.processes = new ArrayList<>();
-        }else this.processes.clear();
-
-        String barmak = "Бармак";
-        String section = "Секція";
-        String tract = "Тракт";
-        String line = "Технологічна лінія";
-
-        this.processes.add(barmak);
-        this.processes.add(section);
-        this.processes.add(tract);
-        this.processes.add(line);
-
-        this.save();
-        return this.processes;
-    }
-
+    @Override
     public ArrayList<String> getAll() {
         return this.processes;
     }
 
+    @Override
     public String[] getAllInStrings(){
         return this.processes.toArray(new String[0]);
     }
 
+    @Override
     public ArrayList<String> add(String object) {
         if (!this.processes.contains(object)){
             this.processes.add(object);
@@ -70,6 +59,7 @@ public class ProcessesController {
         return this.processes;
     }
 
+    @Override
     public ArrayList<String> remove(String object) {
         if (this.processes.contains(object)){
             this.processes.remove(object);
@@ -80,6 +70,7 @@ public class ProcessesController {
         return this.processes;
     }
 
+    @Override
     public ArrayList<String> set(String oldObject, String newObject) {
         if (oldObject != null){
             if (newObject == null){
@@ -93,6 +84,7 @@ public class ProcessesController {
         return this.processes;
     }
 
+    @Override
     public String get(int index) {
         if (index >= 0) {
             return this.processes.get(index);
@@ -101,15 +93,18 @@ public class ProcessesController {
         }
     }
 
+    @Override
     public void clear() {
         this.processes.clear();
         this.save();
     }
 
-    private void save() {
+    @Override
+    public void save() {
         new Repository<String>(this.window, Model.PROCESS).writeList(this.processes);
     }
 
+    @Override
     public boolean exportData(){
         try {
             String fileName = this.exportFileName(Calendar.getInstance());
@@ -121,7 +116,8 @@ public class ProcessesController {
         }
     }
 
-    public void rewriteAll(ArrayList<String>processes){
+    @Override
+    public void rewriteInCurrentThread(ArrayList<String>processes){
         this.processes = processes;
         new Repository<String>(null, Model.PROCESS).writeListInCurrentThread(processes);
     }

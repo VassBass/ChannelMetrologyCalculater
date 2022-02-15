@@ -101,7 +101,7 @@ public class DialogRemoveChannels extends JDialog {
                 @Override
                 public void run() {
                     DialogRemoveChannels.this.dispose();
-                    ArrayList<Channel>channels = Application.context.channelsController.remove(channel);
+                    ArrayList<Channel>channels = Application.context.channelService.remove(channel);
                     if (Application.context.channelSorter.isOn()){
                         mainScreen.setChannelsList(Application.context.channelSorter.getCurrent());
                     }else {
