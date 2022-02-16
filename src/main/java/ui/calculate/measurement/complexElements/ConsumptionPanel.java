@@ -1,5 +1,6 @@
 package ui.calculate.measurement.complexElements;
 
+import application.Application;
 import converters.VariableConverter;
 import model.Channel;
 import ui.model.ButtonCell;
@@ -12,6 +13,8 @@ import java.util.Locale;
 
 public class ConsumptionPanel extends MeasurementPanel {
     private final Channel channel;
+
+    private double[]values;
 
     private JButton[] columnsHeader;
     private JButton[] labelPercent;
@@ -51,18 +54,24 @@ public class ConsumptionPanel extends MeasurementPanel {
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double value0 = this.channel.getRangeMin();
-        double value25 = ((this.channel.getRange() / 100) * 25) + this.channel.getRangeMin();
-        double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-        double value75 = ((this.channel.getRange() / 100) * 75) + this.channel.getRangeMin();
-        double value100 = this.channel.getRangeMax();
+        this.values = Application.context.controlPointsValuesService.getValues(
+                this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
+
+        if (this.values == null){
+            double value0 = this.channel.getRangeMin();
+            double value25 = ((this.channel.getRange() / 100) * 25) + this.channel.getRangeMin();
+            double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
+            double value75 = ((this.channel.getRange() / 100) * 75) + this.channel.getRangeMin();
+            double value100 = this.channel.getRangeMax();
+            this.values = new double[]{value0, value25, value50, value75, value100};
+        }
         this.labelValue = new JButton[5];
 
-        this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble2(value0, Locale.ENGLISH) + value);
-        this.labelValue[1] = new ButtonCell(false,VariableConverter.roundingDouble2(value25, Locale.ENGLISH) + value);
-        this.labelValue[2] = new ButtonCell(false, VariableConverter.roundingDouble2(value50, Locale.ENGLISH) + value);
-        this.labelValue[3] = new ButtonCell(false, VariableConverter.roundingDouble2(value75, Locale.ENGLISH) + value);
-        this.labelValue[4] = new ButtonCell(false, VariableConverter.roundingDouble2(value100, Locale.ENGLISH) + value);
+        this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble2(this.values[0], Locale.ENGLISH) + value);
+        this.labelValue[1] = new ButtonCell(false,VariableConverter.roundingDouble2(this.values[1], Locale.ENGLISH) + value);
+        this.labelValue[2] = new ButtonCell(false, VariableConverter.roundingDouble2(this.values[2], Locale.ENGLISH) + value);
+        this.labelValue[3] = new ButtonCell(false, VariableConverter.roundingDouble2(this.values[3], Locale.ENGLISH) + value);
+        this.labelValue[4] = new ButtonCell(false, VariableConverter.roundingDouble2(this.values[4], Locale.ENGLISH) + value);
 
         this.motions = new JButton[10];
         this.motions[0] = new ButtonCell(false, motionUp);
@@ -82,16 +91,16 @@ public class ConsumptionPanel extends MeasurementPanel {
             this.userMeasurements[x].setHorizontalAlignment(SwingConstants.CENTER);
             this.userMeasurements[x].addFocusListener(focusMeasurement);
         }
-        this.userMeasurements[0].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
-        this.userMeasurements[1].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
-        this.userMeasurements[2].setText(VariableConverter.roundingDouble3(value25, Locale.ENGLISH));
-        this.userMeasurements[3].setText(VariableConverter.roundingDouble3(value25, Locale.ENGLISH));
-        this.userMeasurements[4].setText(VariableConverter.roundingDouble3(value50, Locale.ENGLISH));
-        this.userMeasurements[5].setText(VariableConverter.roundingDouble3(value50, Locale.ENGLISH));
-        this.userMeasurements[6].setText(VariableConverter.roundingDouble3(value75, Locale.ENGLISH));
-        this.userMeasurements[7].setText(VariableConverter.roundingDouble3(value75, Locale.ENGLISH));
-        this.userMeasurements[8].setText(VariableConverter.roundingDouble3(value100, Locale.ENGLISH));
-        this.userMeasurements[9].setText(VariableConverter.roundingDouble3(value100, Locale.ENGLISH));
+        this.userMeasurements[0].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
+        this.userMeasurements[1].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
+        this.userMeasurements[2].setText(VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH));
+        this.userMeasurements[3].setText(VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH));
+        this.userMeasurements[4].setText(VariableConverter.roundingDouble3(this.values[2], Locale.ENGLISH));
+        this.userMeasurements[5].setText(VariableConverter.roundingDouble3(this.values[2], Locale.ENGLISH));
+        this.userMeasurements[6].setText(VariableConverter.roundingDouble3(this.values[3], Locale.ENGLISH));
+        this.userMeasurements[7].setText(VariableConverter.roundingDouble3(this.values[3], Locale.ENGLISH));
+        this.userMeasurements[8].setText(VariableConverter.roundingDouble3(this.values[4], Locale.ENGLISH));
+        this.userMeasurements[9].setText(VariableConverter.roundingDouble3(this.values[4], Locale.ENGLISH));
     }
 
     private void build() {
@@ -133,6 +142,11 @@ public class ConsumptionPanel extends MeasurementPanel {
         this.add(this.userMeasurements[7], new Cell(3,8));
         this.add(this.userMeasurements[8], new Cell(3,9));
         this.add(this.userMeasurements[9], new Cell(3,10));
+    }
+
+    @Override
+    public double[] getControlPointsValues() {
+        return this.values;
     }
 
     @Override

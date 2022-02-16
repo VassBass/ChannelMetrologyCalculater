@@ -1,10 +1,11 @@
 package ui.calculate.measurement.complexElements;
 
+import application.Application;
 import constants.CalibratorType;
-import model.Calibrator;
 import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
+import model.Calibrator;
 import model.Channel;
 import ui.model.ButtonCell;
 
@@ -17,6 +18,8 @@ import java.util.Locale;
 public class PressurePanel extends MeasurementPanel {
     private final Channel channel;
     private final Calibrator calibrator;
+
+    private double[]values;
 
     private JButton[] columnsHeader;
     private JButton[] labelPercent;
@@ -59,27 +62,34 @@ public class PressurePanel extends MeasurementPanel {
 
         double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
 
-        double value0 = this.channel.getRangeMin();
-        double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
-        double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-        double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
-        double value100 = this.channel.getRangeMax();
+        this.values = Application.context.controlPointsValuesService.getValues(
+                this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
+        if (this.values == null){
+            double value0 = this.channel.getRangeMin();
+            double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
+            double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
+            double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+            double value100 = this.channel.getRangeMax();
+            this.values = new double[]{value0, value5, value50, value95, value100};
+        }
+
+
         this.labelValue = new JButton[5];
-        if (this.calibrator.getType().equals(CalibratorType.FLUKE718_30G) && value0 < maxCalibratorPower) {
-            if (value5 <= maxCalibratorPower) {
+        if (this.calibrator.getType().equals(CalibratorType.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
+            if (this.values[1] <= maxCalibratorPower) {
                 this.labelValue[0] = new ButtonCell(false, " - ");
                 this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
             }else {
                 this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
-                this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(value5, Locale.ENGLISH) + value);
+                this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH) + value);
             }
         }else {
-            this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble3(value0, Locale.ENGLISH) + value);
-            this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(value5, Locale.ENGLISH) + value);
+            this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH) + value);
+            this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH) + value);
         }
-        this.labelValue[2] = new ButtonCell(false, VariableConverter.roundingDouble3(value50, Locale.ENGLISH) + value);
-        this.labelValue[3] = new ButtonCell(false, VariableConverter.roundingDouble3(value95, Locale.ENGLISH) + value);
-        this.labelValue[4] = new ButtonCell(false, VariableConverter.roundingDouble3(value100, Locale.ENGLISH) + value);
+        this.labelValue[2] = new ButtonCell(false, VariableConverter.roundingDouble3(this.values[2], Locale.ENGLISH) + value);
+        this.labelValue[3] = new ButtonCell(false, VariableConverter.roundingDouble3(this.values[3], Locale.ENGLISH) + value);
+        this.labelValue[4] = new ButtonCell(false, VariableConverter.roundingDouble3(this.values[4], Locale.ENGLISH) + value);
 
         this.motions = new JButton[6];
         this.motions[0] = new ButtonCell(false, motionUp);
@@ -95,27 +105,27 @@ public class PressurePanel extends MeasurementPanel {
             this.userMeasurements[x].setHorizontalAlignment(SwingConstants.CENTER);
             this.userMeasurements[x].addFocusListener(focusMeasurement);
         }
-        if (this.calibrator.getType().equals(CalibratorType.FLUKE718_30G) && value0 < maxCalibratorPower) {
-            if (value5 <= maxCalibratorPower) {
-                this.userMeasurements[0].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
+        if (this.calibrator.getType().equals(CalibratorType.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
+            if (this.values[1] <= maxCalibratorPower) {
+                this.userMeasurements[0].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
                 this.userMeasurements[0].setEnabled(false);
                 this.userMeasurements[1].setText(VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
                 this.userMeasurements[2].setText(VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
             }else {
                 this.userMeasurements[0].setText(VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH));
-                this.userMeasurements[1].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
-                this.userMeasurements[2].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
+                this.userMeasurements[1].setText(VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH));
+                this.userMeasurements[2].setText(VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH));
             }
         }else {
-            this.userMeasurements[0].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
-            this.userMeasurements[1].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
-            this.userMeasurements[2].setText(VariableConverter.roundingDouble3(value5, Locale.ENGLISH));
+            this.userMeasurements[0].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
+            this.userMeasurements[1].setText(VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH));
+            this.userMeasurements[2].setText(VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH));
         }
-        this.userMeasurements[3].setText(VariableConverter.roundingDouble3(value50, Locale.ENGLISH));
-        this.userMeasurements[4].setText(VariableConverter.roundingDouble3(value50, Locale.ENGLISH));
-        this.userMeasurements[5].setText(VariableConverter.roundingDouble3(value95, Locale.ENGLISH));
-        this.userMeasurements[6].setText(VariableConverter.roundingDouble3(value95, Locale.ENGLISH));
-        this.userMeasurements[7].setText(VariableConverter.roundingDouble3(value100, Locale.ENGLISH));
+        this.userMeasurements[3].setText(VariableConverter.roundingDouble3(this.values[2], Locale.ENGLISH));
+        this.userMeasurements[4].setText(VariableConverter.roundingDouble3(this.values[2], Locale.ENGLISH));
+        this.userMeasurements[5].setText(VariableConverter.roundingDouble3(this.values[3], Locale.ENGLISH));
+        this.userMeasurements[6].setText(VariableConverter.roundingDouble3(this.values[3], Locale.ENGLISH));
+        this.userMeasurements[7].setText(VariableConverter.roundingDouble3(this.values[4], Locale.ENGLISH));
     }
 
     private void build() {
@@ -153,6 +163,11 @@ public class PressurePanel extends MeasurementPanel {
         this.add(this.userMeasurements[5], new Cell(3,6));
         this.add(this.userMeasurements[6], new Cell(3,7));
         this.add(this.userMeasurements[7], new Cell(3,8));
+    }
+
+    @Override
+    public double[] getControlPointsValues() {
+        return this.values;
     }
 
     @Override

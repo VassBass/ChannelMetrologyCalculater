@@ -1,5 +1,6 @@
 package ui.calculate.measurement.complexElements;
 
+import application.Application;
 import constants.MeasurementConstants;
 import converters.VariableConverter;
 import model.Channel;
@@ -13,6 +14,8 @@ import java.util.Locale;
 
 public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
     private final Channel channel;
+
+    private double[] values;
 
     private JButton[] columnsHeader;
     private JButton[] labelValue;
@@ -41,18 +44,26 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
         this.columnsHeader[1] = new ButtonCell(true, columnMotion);
         this.columnsHeader[2] = new ButtonCell(true, columnMeasurement);
 
-        double value0 = 0D;
-        double value91 = 0.91;
-        double value305 = 3.05;
-        double value914 = 9.14;
-        if (value.equals(MeasurementConstants.CM_S.getValue())) value91 = value91 * 100;
-        if (value.equals(MeasurementConstants.CM_S.getValue())) value305 = value305 * 100;
-        if (value.equals(MeasurementConstants.CM_S.getValue())) value914 = value914 * 100;
+        this.values = Application.context.controlPointsValuesService.getValues(
+                this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
+
+        if (this.values == null){
+            double value0 = 0D;
+            double value91 = 0.91;
+            double value305 = 3.05;
+            double value914 = 9.14;
+            if (value.equals(MeasurementConstants.CM_S.getValue())) value91 *= 100;
+            if (value.equals(MeasurementConstants.CM_S.getValue())) value305 *= 100;
+            if (value.equals(MeasurementConstants.CM_S.getValue())) value914 *= 100;
+
+            this.values = new double[]{value0, value91, value305, value914};
+        }
+
         this.labelValue = new JButton[4];
-        this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble2(value0, Locale.ENGLISH) + value);
-        this.labelValue[1] = new ButtonCell(false,VariableConverter.roundingDouble2(value91, Locale.ENGLISH) + value);
-        this.labelValue[2] = new ButtonCell(false, VariableConverter.roundingDouble2(value305, Locale.ENGLISH) + value);
-        this.labelValue[3] = new ButtonCell(false, VariableConverter.roundingDouble2(value914, Locale.ENGLISH) + value);
+        this.labelValue[0] = new ButtonCell(false, VariableConverter.roundingDouble2(this.values[0], Locale.ENGLISH) + value);
+        this.labelValue[1] = new ButtonCell(false,VariableConverter.roundingDouble2(this.values[1], Locale.ENGLISH) + value);
+        this.labelValue[2] = new ButtonCell(false, VariableConverter.roundingDouble2(this.values[2], Locale.ENGLISH) + value);
+        this.labelValue[3] = new ButtonCell(false, VariableConverter.roundingDouble2(this.values[3], Locale.ENGLISH) + value);
 
         this.motions = new JButton[8];
         this.motions[0] = new ButtonCell(false, motionUp);
@@ -70,14 +81,14 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
             this.userMeasurements[x].setHorizontalAlignment(SwingConstants.CENTER);
             this.userMeasurements[x].addFocusListener(focusMeasurement);
         }
-        this.userMeasurements[0].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
-        this.userMeasurements[1].setText(VariableConverter.roundingDouble3(value0, Locale.ENGLISH));
-        this.userMeasurements[2].setText(VariableConverter.roundingDouble3(value91, Locale.ENGLISH));
-        this.userMeasurements[3].setText(VariableConverter.roundingDouble3(value91, Locale.ENGLISH));
-        this.userMeasurements[4].setText(VariableConverter.roundingDouble3(value305, Locale.ENGLISH));
-        this.userMeasurements[5].setText(VariableConverter.roundingDouble3(value305, Locale.ENGLISH));
-        this.userMeasurements[6].setText(VariableConverter.roundingDouble3(value914, Locale.ENGLISH));
-        this.userMeasurements[7].setText(VariableConverter.roundingDouble3(value914, Locale.ENGLISH));
+        this.userMeasurements[0].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
+        this.userMeasurements[1].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
+        this.userMeasurements[2].setText(VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH));
+        this.userMeasurements[3].setText(VariableConverter.roundingDouble3(this.values[1], Locale.ENGLISH));
+        this.userMeasurements[4].setText(VariableConverter.roundingDouble3(this.values[2], Locale.ENGLISH));
+        this.userMeasurements[5].setText(VariableConverter.roundingDouble3(this.values[2], Locale.ENGLISH));
+        this.userMeasurements[6].setText(VariableConverter.roundingDouble3(this.values[3], Locale.ENGLISH));
+        this.userMeasurements[7].setText(VariableConverter.roundingDouble3(this.values[3], Locale.ENGLISH));
     }
 
     private void build() {
@@ -107,6 +118,11 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
         this.add(this.userMeasurements[5], new ConsumptionPanel.Cell(2,6));
         this.add(this.userMeasurements[6], new ConsumptionPanel.Cell(2,7));
         this.add(this.userMeasurements[7], new ConsumptionPanel.Cell(2,8));
+    }
+
+    @Override
+    public double[] getControlPointsValues() {
+        return this.values;
     }
 
     @Override

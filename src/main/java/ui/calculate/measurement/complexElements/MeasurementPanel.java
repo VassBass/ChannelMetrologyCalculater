@@ -11,4 +11,5 @@ public class MeasurementPanel extends JPanel {
 
     public double[] getValues(){return null;}
     public void setValues(double[]values){}
+    public double[]getControlPointsValues(){return null;}
 }

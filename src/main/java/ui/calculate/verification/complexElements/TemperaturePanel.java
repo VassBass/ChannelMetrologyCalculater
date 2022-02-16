@@ -389,15 +389,15 @@ public class TemperaturePanel extends JPanel {
                     cells[x] = new ButtonCell(false, "Xет,".concat(channel.getMeasurement().getValue()));
                     this.add(cells[x], new Cell(3, 0, 1, 2));
                 }else if (x == 9) {
-                    double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
+                    double value5 = calculation.getControlPointsValues()[1];
                     cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value5, Locale.GERMAN));
                     this.add(cells[x], new Cell(3,2,1,2));
                 }else if (x == 10) {
-                    double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
+                    double value50 = calculation.getControlPointsValues()[2];
                     cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value50, Locale.GERMAN));
                     this.add(cells[x], new Cell(3,4,1,2));
                 }else if (x == 11) {
-                    double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+                    double value95 = calculation.getControlPointsValues()[3];
                     cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value95, Locale.GERMAN));
                     this.add(cells[x], new Cell(3,6,1,2));
                 }else if (x == 12){

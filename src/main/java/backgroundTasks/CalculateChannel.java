@@ -47,6 +47,8 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
+        double[]controlPointsValues = (double[]) this.values.get(Key.CONTROL_POINTS);
+
         double[][]measurements = new double[5][8];
         switch (this.channel.getMeasurement().getNameConstant()){
             case TEMPERATURE:
@@ -65,11 +67,11 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
                     measurements = new double[5][10];
                 }
         }
-        double[]measurement1 = (double[]) values.get(Key.MEASUREMENT_1);
-        double[]measurement2 = (double[]) values.get(Key.MEASUREMENT_2);
-        double[]measurement3 = (double[]) values.get(Key.MEASUREMENT_3);
-        double[]measurement4 = (double[]) values.get(Key.MEASUREMENT_4);
-        double[]measurement5 = (double[]) values.get(Key.MEASUREMENT_5);
+        double[]measurement1 = (double[]) this.values.get(Key.MEASUREMENT_1);
+        double[]measurement2 = (double[]) this.values.get(Key.MEASUREMENT_2);
+        double[]measurement3 = (double[]) this.values.get(Key.MEASUREMENT_3);
+        double[]measurement4 = (double[]) this.values.get(Key.MEASUREMENT_4);
+        double[]measurement5 = (double[]) this.values.get(Key.MEASUREMENT_5);
 
         if (measurement2 == null){
             measurement2 = measurement1;
@@ -89,6 +91,7 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
         measurements[3] = measurement4;
         measurements[4] = measurement5;
 
+        this.calculation.setControlPointsValues(controlPointsValues);
         this.calculation.setIn(measurements);
         this.calculation.setCalibrator(calibrator);
         return null;

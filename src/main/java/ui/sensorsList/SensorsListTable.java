@@ -30,7 +30,7 @@ public class SensorsListTable extends JTable {
         String[]columnsHeader = new String[] {NAME, TYPE, TYPE_OF_MEASUREMENT};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Sensor>sensors = Application.context.sensorsController.getAll();
+        ArrayList<Sensor>sensors = Application.context.sensorService.getAll();
         for (Sensor sensor : Objects.requireNonNull(sensors)) {
             String[] data = new String[3];
             data[0] = sensor.getName();

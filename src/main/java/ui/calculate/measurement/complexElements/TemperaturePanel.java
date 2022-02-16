@@ -1,5 +1,6 @@
 package ui.calculate.measurement.complexElements;
 
+import application.Application;
 import converters.VariableConverter;
 import model.Channel;
 import ui.model.ButtonCell;
@@ -53,12 +54,16 @@ public class TemperaturePanel extends MeasurementPanel {
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double value0 = channel.getRangeMin();
-        double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
-        double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
-        double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
-        double value100 = channel.getRangeMax();
-        this.values = new double[]{value0, value5, value50, value95, value100};
+        this.values = Application.context.controlPointsValuesService.getValues(
+                this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
+        if (this.values == null){
+            double value0 = channel.getRangeMin();
+            double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
+            double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
+            double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+            double value100 = channel.getRangeMax();
+            this.values = new double[]{value0, value5, value50, value95, value100};
+        }
 
         this.labelValue = new JButton[5];
         this.labelValue[0] = new ButtonCell(false, String.format(Locale.ENGLISH, "%.2f", this.values[0]) + value);
@@ -126,6 +131,11 @@ public class TemperaturePanel extends MeasurementPanel {
         this.add(this.userMeasurements[5], new Cell(3,6));
         this.add(this.userMeasurements[6], new Cell(3,7));
         this.add(this.userMeasurements[7], new Cell(3,8));
+    }
+
+    @Override
+    public double[] getControlPointsValues() {
+        return this.values;
     }
 
     @Override

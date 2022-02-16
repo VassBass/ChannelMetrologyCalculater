@@ -42,6 +42,7 @@ public class ApplicationContext {
     public final InstallationService installationService = new InstallationServiceImpl();
     public final MeasurementService measurementService = new MeasurementServiceImpl();
     public final ChannelSorter channelSorter = new ChannelSorter();
+    public final ControlPointsValuesService controlPointsValuesService = new ControlPointsValuesServiceImpl();
 
     public ApplicationContext(){
         this.localizationOfComponents();

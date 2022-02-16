@@ -18,6 +18,7 @@ public class LoadWindow extends JWindow {
 
     public LoadWindow(JDialog parent){
         super(parent);
+        this.parent = parent;
 
         this.createElements();
         this.build();

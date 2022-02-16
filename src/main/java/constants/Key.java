@@ -80,4 +80,6 @@ public class Key {
     public static final int INSTALLATION = 68;
 
     public static final int DATA_TYPE = 69;
+
+    public static final int CONTROL_POINTS = 70;
 }

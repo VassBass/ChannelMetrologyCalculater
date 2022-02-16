@@ -125,7 +125,7 @@ public class CalculateStartDialog extends JDialog {
             String[] calibrators = Application.context.calibratorService.getAllNames(this.channel.getMeasurement());
             Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
             for (int x=0;x<calibrators.length;x++){
-                if (calibrator.getName().equals(calibrators[x])){
+                if (calibrator != null && calibrator.getName().equals(calibrators[x])){
                     this.calibrator.setSelectedIndex(x);
                     break;
                 }
@@ -150,11 +150,10 @@ public class CalculateStartDialog extends JDialog {
         if (values == null){
             values = new HashMap<>();
         }
-
         values.put(Key.CHANNEL_PROTOCOL_NUMBER, this.numberOfProtocol.getText());
         values.put(Key.CHANNEL_DATE, this.datePanel.getDate());
         String calibratorName = Objects.requireNonNull(this.calibrator.getSelectedItem()).toString();
-        values.put(Key.CALIBRATOR, Application.context.channelService.get(calibratorName));
+        values.put(Key.CALIBRATOR, Application.context.calibratorService.get(calibratorName));
         values.put(Key.CALCULATION_EXTERNAL_TEMPERATURE, this.weatherPanel.temperature.getText());
         values.put(Key.CALCULATION_EXTERNAL_PRESSURE, this.weatherPanel.pressure.getText());
         values.put(Key.CALCULATION_EXTERNAL_HUMIDITY, this.weatherPanel.humidity.getText());

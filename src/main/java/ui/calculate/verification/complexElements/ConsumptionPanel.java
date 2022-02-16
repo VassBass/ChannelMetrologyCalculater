@@ -386,11 +386,12 @@ public class ConsumptionPanel extends JPanel {
                     new ButtonCell(false, "100")
             };
 
-            double value0 = ((channel.getRangeMin()));
-            double value25 = ((channel.getRange() / 100) * 25) + channel.getRangeMin();
-            double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
-            double value75 = ((channel.getRange() / 100) * 75) + channel.getRangeMin();
-            double value100 = channel.getRangeMax();
+            double[]cpv = calculation.getControlPointsValues();
+            double value0 = cpv[0];
+            double value25 = cpv[1];
+            double value50 = cpv[2];
+            double value75 = cpv[3];
+            double value100 = cpv[4];
             ButtonCell[] valuesXet = new ButtonCell[]{
                     new ButtonCell(false, VariableConverter.roundingDouble2(value0, Locale.GERMAN)),
                     new ButtonCell(false, VariableConverter.roundingDouble2(value25, Locale.GERMAN)),

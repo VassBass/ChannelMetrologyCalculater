@@ -106,6 +106,7 @@ public class Application extends SwingWorker<Void, String> {
         context.calibratorService.init(context.mainScreen);
         publish("Завантаження списку ПВП");
         context.sensorService.init(context.mainScreen);
+        context.controlPointsValuesService.init();
         publish("Завантаження списку каналів");
         context.channelService.init(context.mainScreen);
         publish("Завантаження налаштуваннь користувача");

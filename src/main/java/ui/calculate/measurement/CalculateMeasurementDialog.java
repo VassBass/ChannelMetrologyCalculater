@@ -119,6 +119,8 @@ public class CalculateMeasurementDialog extends JDialog {
             this.values.put(Key.MEASUREMENT_5, this.measurementsPanels[0].getValues());
         }
 
+        this.values.put(Key.CONTROL_POINTS, this.measurementsPanels[0].getControlPointsValues());
+
         return this.values;
     }
 

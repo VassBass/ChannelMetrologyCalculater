@@ -126,10 +126,10 @@ public class TemperatureCertificate implements Certificate {
     public void putChannelData() {
         String name = this.channel.getName();
         cell(10,0).setCellValue(name);
-        cell(10,10).setCellValue(name);
-        cell(36,10).setCellValue(name);
+        cell(10,9).setCellValue(name);
+        cell(36,9).setCellValue(name);
         if (!this.result.goodChannel()) {
-            cell(13, 19).setCellValue(name);
+            cell(13, 18).setCellValue(name);
         }
 
         String code = this.channel.getCode();
@@ -247,10 +247,10 @@ public class TemperatureCertificate implements Certificate {
 
     @Override
     public void putResult() {
-
-        double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
-        double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-        double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+        double[]cpv = this.result.getControlPointsValues();
+        double value5 = cpv[1];
+        double value50 = cpv[2];
+        double value95 = cpv[3];
 
         cell(33, 2).setCellValue(VariableConverter.roundingDouble2(value5, Locale.GERMAN));
         cell(35, 2).setCellValue(VariableConverter.roundingDouble2(value50, Locale.GERMAN));
@@ -314,7 +314,7 @@ public class TemperatureCertificate implements Certificate {
             alarm = ALARM_MESSAGE + VariableConverter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
             cell(39, 10).setCellValue(alarm);
         }else if (this.result.goodChannel()){
-            cell(39,10).setCellValue(" ");
+            cell(39,9).setCellValue(" ");
         }
     }
 
@@ -386,9 +386,9 @@ public class TemperatureCertificate implements Certificate {
         if (calculaterPosition == null){
             calculaterPosition = "________________";
         }
-        cell(47,10).setCellValue(calculaterPosition);
+        cell(47,9).setCellValue(calculaterPosition);
         if (!this.result.goodChannel()){
-            cell(35,19).setCellValue(calculaterPosition);
+            cell(35,18).setCellValue(calculaterPosition);
         }
 
         if (!this.result.goodChannel()){

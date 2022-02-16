@@ -414,7 +414,7 @@ public class PressurePanel extends JPanel {
                     this.add(cells[x], new Cell(3, 0, 1, 2));
                 }else if (x == 9) {
                     Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
-                    double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
+                    double value5 = calculation.getControlPointsValues()[1];
                     if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)) {
                         double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
                         if (value5 < maxCalibratorPower){
@@ -427,11 +427,11 @@ public class PressurePanel extends JPanel {
                     }
                     this.add(cells[x], new Cell(3,2,1,2));
                 }else if (x == 10) {
-                    double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
+                    double value50 = calculation.getControlPointsValues()[2];
                     cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value50, Locale.GERMAN));
                     this.add(cells[x], new Cell(3,4,1,2));
                 }else if (x == 11) {
-                    double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+                    double value95 = calculation.getControlPointsValues()[3];
                     cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(value95, Locale.GERMAN));
                     this.add(cells[x], new Cell(3,6,1,2));
                 }else if (x == 12){
