@@ -9,8 +9,6 @@ import java.util.HashMap;
 public class Settings {
     private static HashMap<String, String> settings = null;
 
-    public static final String VERSION = "version";
-
     private static void setDefaultSettings(){
 
         String nameTemperatureMethod = "МКМХ №5300.01:18";

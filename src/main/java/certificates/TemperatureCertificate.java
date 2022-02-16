@@ -309,10 +309,10 @@ public class TemperatureCertificate implements Certificate {
         String alarm;
         if (this.result.closeToFalse() && this.result.goodChannel()) {
             alarm = (String) this.values.get(Key.CALCULATION_CLOSE_TO_FALSE);
-            cell(39, 10).setCellValue(alarm);
+            cell(39, 9).setCellValue(alarm);
         } else if (this.alarmCheck) {
             alarm = ALARM_MESSAGE + VariableConverter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
-            cell(39, 10).setCellValue(alarm);
+            cell(39, 9).setCellValue(alarm);
         }else if (this.result.goodChannel()){
             cell(39,9).setCellValue(" ");
         }

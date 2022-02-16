@@ -92,100 +92,98 @@ public class PressureCertificate implements Certificate {
     @Override
     public void putCertificateData() {
         this.numberOfCertificate = (String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER);
-        cell(11,10).setCellValue(this.numberOfCertificate);
-        cell(11,31).setCellValue(this.numberOfCertificate);
+        cell(12,2).setCellValue(this.numberOfCertificate);
+        cell(12,11).setCellValue(this.numberOfCertificate);
+        if (!this.result.goodChannel()){
+            cell(18,20).setCellValue(this.numberOfCertificate);
+        }
 
         this.checkDate = (Calendar) this.values.get(Key.CHANNEL_DATE);
         String date = VariableConverter.dateToString(this.checkDate);
-        cell(11,12).setCellValue(date);
-        cell(11,34).setCellValue(date);
+        cell(12,5).setCellValue(date);
+        cell(12,14).setCellValue(date);
         if (!this.result.goodChannel()){
-            cell(9,55).setCellValue(date);
-            cell(16,46).setCellValue(date);
+            cell(10,24).setCellValue(date);
         }
 
         String externalTemperature = (String) values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE);
-        cell(23,11).setCellValue(externalTemperature);
+        cell(25,4).setCellValue(externalTemperature);
 
         String humidity = (String) this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY);
-        cell(24,11).setCellValue(humidity);
+        cell(26,4).setCellValue(humidity);
 
         String atmospherePressure = (String) this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE);
-        cell(25,11).setCellValue(atmospherePressure);
+        cell(27,4).setCellValue(atmospherePressure);
 
         this.alarmCheck = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
         String methodName = Settings.getSettingValue(MeasurementConstants.PRESSURE.getValue());
-        cell(30,36).setCellValue(methodName);
+        cell(34,15).setCellValue(methodName);
     }
 
     @Override
     public void putChannelData() {
         String name = this.channel.getName();
-        cell(9,0).setCellValue(name);
-        cell(9,22).setCellValue(name);
-        cell(32,22).setCellValue(name);
+        cell(10,0).setCellValue(name);
+        cell(10,9).setCellValue(name);
+        cell(36,9).setCellValue(name);
         if (!this.result.goodChannel()){
-            cell(13,46).setCellValue(name);
-        }
-
-        String area = this.channel.getArea();
-        cell(13,11).setCellValue(area);
-        cell(36,8).setCellValue(area);
-        cell(13,33).setCellValue(area);
-        cell(38,30).setCellValue(area);
-        if (!this.result.goodChannel()){
-            cell(11,60).setCellValue(area);
-            cell(13,11).setCellValue(area);
-        }
-
-        String process = this.channel.getProcess();
-        cell(13,14).setCellValue(process);
-        cell(13,37).setCellValue(process);
-        if (!this.result.goodChannel()){
-            cell(12,60).setCellValue(process);
-        }
-
-        String technologyNumber = this.channel.getTechnologyNumber();
-        cell(14,7).setCellValue(technologyNumber);
-        cell(14,29).setCellValue(technologyNumber);
-        if (!this.result.goodChannel()){
-            String name_ = name + "  " + technologyNumber;
-            cell(13,46).setCellValue(name_);
+            cell(13,18).setCellValue(name);
         }
 
         String code = this.channel.getCode();
-        cell(15,3).setCellValue(code);
-        cell(15,25).setCellValue(code);
+        cell(14,4).setCellValue(code);
+
+        String technologyNumber = this.channel.getTechnologyNumber();
+        cell(15,4).setCellValue(technologyNumber);
+        cell(14,13).setCellValue(technologyNumber);
+
+        String area = this.channel.getArea();
+        cell(16,4).setCellValue(area);
+        cell(41,3).setCellValue(area);
+        cell(15,13).setCellValue(area);
+        cell(43,12).setCellValue(area);
+        if (!this.result.goodChannel()){
+            cell(14,22).setCellValue(area);
+            cell(29,21).setCellValue(area);
+        }
+
+        String process = this.channel.getProcess();
+        cell(16,6).setCellValue(process);
+        cell(15,15).setCellValue(process);
+        if (!this.result.goodChannel()){
+            cell(14,24).setCellValue(process);
+        }
 
         String rangeMin = VariableConverter.roundingDouble(this.channel.getRangeMin(), Locale.GERMAN);
-        cell(16,10).setCellValue(rangeMin);
+        cell(17,5).setCellValue(rangeMin);
 
         String rangeMax = VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN);
-        cell(16,12).setCellValue(rangeMax);
+        cell(17,7).setCellValue(rangeMax);
 
         this.measurementValue = this.channel.getMeasurement().getValue();
-        cell(16,14).setCellValue(this.measurementValue);
-        cell(17,18).setCellValue(this.measurementValue);
-        cell(20,18).setCellValue(this.measurementValue);
-        cell(19,39).setCellValue(this.measurementValue);
-        cell(23,36).setCellValue(this.measurementValue);
-        cell(26,36).setCellValue(this.measurementValue);
-        cell(27,36).setCellValue(this.measurementValue);
-        cell(28,36).setCellValue(this.measurementValue);
-        cell(29,36).setCellValue(this.measurementValue);
+        cell(17,8).setCellValue(this.measurementValue);
+        cell(18,8).setCellValue(this.measurementValue);
+        cell(21,8).setCellValue(this.measurementValue);
+        cell(22,8).setCellValue(this.measurementValue);
+        cell(32,2).setCellValue(this.measurementValue);
+        cell(20,16).setCellValue(this.measurementValue);
+        cell(26,15).setCellValue(this.measurementValue);
+        cell(29,15).setCellValue(this.measurementValue);
+        cell(30,15).setCellValue(this.measurementValue);
+        cell(31,15).setCellValue(this.measurementValue);
+        cell(32,15).setCellValue(this.measurementValue);
 
         String errorPercent = VariableConverter.roundingDouble2(this.channel.getAllowableErrorPercent(), Locale.GERMAN);
-        cell(17,12).setCellValue(errorPercent);
-        cell(34,34).setCellValue(errorPercent);
+        cell(18,5).setCellValue(errorPercent);
+        cell(38,15).setCellValue(errorPercent);
 
         String error = VariableConverter.roundingDouble2(this.channel.getAllowableError(), Locale.GERMAN);
-        cell(17,16).setCellValue(error);
+        cell(18,7).setCellValue(error);
 
         String frequency = VariableConverter.roundingDouble(this.channel.getFrequency(), Locale.GERMAN);
-        cell(26,40).setCellValue(frequency);
-        cell(26,41).setCellValue(YEAR_WORD(this.channel.getFrequency()));
+        cell(26,16).setCellValue(frequency + " " +  YEAR_WORD(this.channel.getFrequency()));
 
         String nextDate;
         if (this.result.goodChannel()){
@@ -196,7 +194,7 @@ public class PressureCertificate implements Certificate {
         }else {
             nextDate = EXTRAORDINARY;
         }
-        cell(35,36).setCellValue(nextDate);
+        cell(40,14).setCellValue(nextDate);
 
         putSensorData();
         putResult();
@@ -207,15 +205,24 @@ public class PressureCertificate implements Certificate {
         Sensor sensor = this.channel.getSensor();
 
         String type = sensor.getType();
-        cell(19,11).setCellValue(type);
+        cell(20,4).setCellValue(type);
 
         double errorSensor = sensor.getError(this.channel);
         double eP = errorSensor / (this.channel.getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble3(eP, Locale.GERMAN);
-        cell(20,12).setCellValue(errorPercent);
+        cell(21,5).setCellValue(errorPercent);
 
         String error = VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN);
-        cell(20,16).setCellValue(error);
+        cell(21,7).setCellValue(error);
+
+        double min = new ValueConverter(MeasurementConstants.getConstantFromString(sensor.getValue()),
+                this.channel.getMeasurement().getValueConstant()).get(sensor.getRangeMin());
+        double max = new ValueConverter(MeasurementConstants.getConstantFromString(sensor.getValue()),
+                this.channel.getMeasurement().getValueConstant()).get(sensor.getRangeMax());
+        String rangeMin = VariableConverter.roundingDouble2(min, Locale.GERMAN);
+        String rangeMax = VariableConverter.roundingDouble2(max, Locale.GERMAN);
+        cell(22,5).setCellValue(rangeMin);
+        cell(22,7).setCellValue(rangeMax);
     }
 
     @Override
@@ -223,13 +230,13 @@ public class PressureCertificate implements Certificate {
         Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
 
         String type = calibrator.getType();
-        cell(16,39).setCellValue(type);
+        cell(17,15).setCellValue(type);
 
         String number = calibrator.getNumber();
-        cell(17,27).setCellValue(number);
+        cell(18,12).setCellValue(number);
 
         String certificate = calibrator.getCertificateToString();
-        cell(18,30).setCellValue(certificate);
+        cell(19,12).setCellValue(certificate);
 
         double errorCalibrator = calibrator.getError(this.channel);
         double eP;
@@ -242,7 +249,7 @@ public class PressureCertificate implements Certificate {
             eP = errorCalibrator / (convertedCalibratorRange/100);
         }
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
-        cell(19,31).setCellValue(errorPercent);
+        cell(20,13).setCellValue(errorPercent);
 
         String error;
         if (errorCalibrator < 0.01){
@@ -250,14 +257,15 @@ public class PressureCertificate implements Certificate {
         }else {
             error = VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN);
         }
-        cell(19,37).setCellValue(error);
+        cell(20,15).setCellValue(error);
     }
 
     @Override
     public void putResult() {
-        double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
-        double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
-        double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+        double[]cpv = this.result.getControlPointsValues();
+        double value5 = cpv[1];
+        double value50 = cpv[2];
+        double value95 = cpv[3];
         Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
 
         if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)){
@@ -267,26 +275,18 @@ public class PressureCertificate implements Certificate {
             }
         }
 
-        cell(29, 5).setCellValue(VariableConverter.roundingDouble2(value5, Locale.GERMAN));
-        cell(31, 5).setCellValue(VariableConverter.roundingDouble2(value50, Locale.GERMAN));
-        cell(33, 5).setCellValue(VariableConverter.roundingDouble2(value95, Locale.GERMAN));
+        cell(33, 2).setCellValue(VariableConverter.roundingDouble2(value5, Locale.GERMAN));
+        cell(35, 2).setCellValue(VariableConverter.roundingDouble2(value50, Locale.GERMAN));
+        cell(37, 2).setCellValue(VariableConverter.roundingDouble2(value95, Locale.GERMAN));
 
         double[][]measurementValues = this.measurementValues();
-        int y = 8;
+        int column = 3;
         for (double[] value : measurementValues) {
+            int row = 32;
             for (int z = 0; z < 6; z++) {
-                int n = 29 + z;
-                cell(n, y).setCellValue(VariableConverter.roundingDouble3(value[z + 1], Locale.GERMAN));
+                cell(++row, column).setCellValue(VariableConverter.roundingDouble2(value[z + 1], Locale.GERMAN));
             }
-            if (y == 8) {
-                y = 11;
-            } else if (y == 11) {
-                y = 13;
-            } else if (y == 13) {
-                y = 15;
-            } else if (y == 15) {
-                y = 18;
-            }
+            column++;
         }
 
         String u;
@@ -295,7 +295,7 @@ public class PressureCertificate implements Certificate {
         }else {
             u = VariableConverter.roundingDouble2(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
         }
-        cell(23,34).setCellValue(u);
+        cell(26,14).setCellValue(u);
 
         String errorReduced;
         if (this.result.getErrorInRangeWidthSensorError() < 0.01 && this.result.getErrorInRangeWidthSensorError() > -0.01) {
@@ -310,9 +310,9 @@ public class PressureCertificate implements Certificate {
         }else {
             absoluteError = VariableConverter.roundingDouble2(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
         }
-        cell(25,34).setCellValue(errorReduced);
-        cell(34,38).setCellValue(errorReduced);
-        cell(26,34).setCellValue(absoluteError);
+        cell(28,14).setCellValue(errorReduced);
+        cell(38,13).setCellValue(errorReduced);
+        cell(29,14).setCellValue(absoluteError);
 
         String s5;
         String s50;
@@ -333,25 +333,19 @@ public class PressureCertificate implements Certificate {
         }else {
             s95 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[2], Locale.GERMAN);
         }
-        cell(27,33).setCellValue(s5);
-        cell(28,33).setCellValue(s50);
-        cell(29,33).setCellValue(s95);
-
-        if (!this.result.goodChannel()){
-            cell(33,25).setCellValue("не придатним до експлуатації");
-            cell(34,32).setCellValue("більше");
-        }else {
-            cell(33,25).setCellValue("придатним до експлуатації");
-            cell(34,32).setCellValue("менше");
-        }
+        cell(30,13).setCellValue(s5);
+        cell(31,13).setCellValue(s50);
+        cell(32,13).setCellValue(s95);
 
         String alarm;
         if (this.result.closeToFalse() && this.result.goodChannel()) {
             alarm = (String) this.values.get(Key.CALCULATION_CLOSE_TO_FALSE);
-            cell(36, 22).setCellValue(alarm);
+            cell(39, 9).setCellValue(alarm);
         } else if (this.alarmCheck) {
             alarm = ALARM_MESSAGE + VariableConverter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
-            cell(36, 22).setCellValue(alarm);
+            cell(39, 9).setCellValue(alarm);
+        }else {
+            cell(39,9).setCellValue(" ");
         }
     }
 
@@ -361,71 +355,71 @@ public class PressureCertificate implements Certificate {
         if (headOfArea == null) {
             headOfArea = "________________";
         }
-        cell(36,16).setCellValue(headOfArea);
-        cell(38,38).setCellValue(headOfArea);
+        cell(41,6).setCellValue(headOfArea);
+        cell(43,15).setCellValue(headOfArea);
         if (!this.result.goodChannel()){
-            cell(28,59).setCellValue(headOfArea);
+            cell(29,24).setCellValue(headOfArea);
         }
 
         String headOfMetrologyArea = (String) this.values.get(Key.HEAD_OF_METROLOGY_NAME);
         if (headOfMetrologyArea == null){
             headOfMetrologyArea = "________________";
         }
-        cell(38,16).setCellValue(headOfMetrologyArea);
-        cell(40,38).setCellValue(headOfMetrologyArea);
+        cell(43,6).setCellValue(headOfMetrologyArea);
+        cell(45,15).setCellValue(headOfMetrologyArea);
         if (!this.result.goodChannel()){
-            cell(30,59).setCellValue(headOfMetrologyArea);
-            cell(40,59).setCellValue(headOfMetrologyArea);
+            cell(32,24).setCellValue(headOfMetrologyArea);
+            cell(47,24).setCellValue(headOfMetrologyArea);
         }
 
         String performer1Name = (String) this.values.get(Key.PERFORMER1_NAME);
         if (performer1Name!=null) {
-            cell(40, 16).setCellValue(performer1Name);
-            cell(40,11).setCellValue("________________");
+            cell(45, 6).setCellValue(performer1Name);
+            cell(45,4).setCellValue("________________");
         }else {
-            cell(40,16).setCellValue("");
-            cell(40,11).setCellValue("");
+            cell(45,6).setCellValue("");
+            cell(45,4).setCellValue("");
         }
 
         String performer1Position = (String) this.values.get(Key.PERFORMER1_POSITION);
         if (performer1Position!=null) {
-            cell(40, 0).setCellValue(performer1Position);
+            cell(45, 0).setCellValue(performer1Position);
         }else {
-            cell(40,0).setCellValue("");
+            cell(45,0).setCellValue("");
         }
 
         String performer2Name = (String) this.values.get(Key.PERFORMER2_NAME);
         if (performer2Name!=null) {
-            cell(42, 16).setCellValue(performer2Name);
-            cell(42,11).setCellValue("________________");
+            cell(47, 6).setCellValue(performer2Name);
+            cell(47,4).setCellValue("________________");
         }else{
-            cell(42,16).setCellValue("");
-            cell(42,11).setCellValue("");
+            cell(47,6).setCellValue("");
+            cell(47,4).setCellValue("");
         }
 
         String performer2Position = (String) this.values.get(Key.PERFORMER2_POSITION);
         if (performer2Position!=null) {
-            cell(42, 0).setCellValue(performer2Position);
+            cell(47, 0).setCellValue(performer2Position);
         }else {
-            cell(42,0).setCellValue("");
+            cell(47,0).setCellValue("");
         }
 
         String calculaterName = (String) this.values.get(Key.CALCULATER_NAME);
         if (calculaterName == null){
             calculaterName = "________________";
         }
-        cell(42,38).setCellValue(calculaterName);
+        cell(47,15).setCellValue(calculaterName);
         if (!this.result.goodChannel()){
-            cell(32,59).setCellValue(calculaterName);
+            cell(35,24).setCellValue(calculaterName);
         }
 
         String calculaterPosition = (String) this.values.get(Key.CALCULATER_POSITION);
         if (calculaterPosition == null){
             calculaterPosition = "________________";
         }
-        cell(42,22).setCellValue(calculaterPosition);
+        cell(47,9).setCellValue(calculaterPosition);
         if (!this.result.goodChannel()){
-            cell(32,45).setCellValue(calculaterPosition);
+            cell(35,18).setCellValue(calculaterPosition);
         }
 
         if (!this.result.goodChannel()){
@@ -433,9 +427,9 @@ public class PressureCertificate implements Certificate {
             if (headOfASUTPDepartment == null){
                 headOfASUTPDepartment = "________________";
             }
-            cell(26,59).setCellValue(headOfASUTPDepartment);
+            cell(26,24).setCellValue(headOfASUTPDepartment);
 
-            cell(9,52).setCellValue(this.numberOfReference);
+            cell(10,21).setCellValue(this.numberOfReference);
 
         }
     }

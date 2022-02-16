@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.List;
 
 public class Application extends SwingWorker<Void, String> {
-    public static final String appVersion = "v5.1";
+    public static final String appVersion = "v5.2";
     public static final Dimension sizeOfScreen = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
 
     public static ApplicationContext context;
