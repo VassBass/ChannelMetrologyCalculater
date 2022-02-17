@@ -37,6 +37,14 @@ public class ControlPointsValuesRepository extends SwingWorker<Void, Void> {
         this.execute();
     }
 
+    public void writeListInCurrentThread(ArrayList<ControlPointsValues>list){
+        try {
+            FileBrowser.saveToFile(FileBrowser.FILE_CONTROL_POINTS_VALUES, list);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected Void doInBackground() throws Exception {
         FileBrowser.saveToFile(FileBrowser.FILE_CONTROL_POINTS_VALUES, this.list);

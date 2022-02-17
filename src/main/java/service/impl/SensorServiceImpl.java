@@ -1,5 +1,7 @@
 package service.impl;
 
+import application.Application;
+import constants.SensorType;
 import def.DefaultSensors;
 import model.Model;
 import model.Sensor;
@@ -61,8 +63,38 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
+    public String[] getAllTypesWithoutROSEMOUNT() {
+        ArrayList<String>types = new ArrayList<>();
+        for (Sensor sensor : this.sensors){
+            String type = sensor.getType();
+            if (!type.contains(SensorType.ROSEMOUNT)) {
+                boolean exist = false;
+                for (String t : types) {
+                    if (t.equals(type)) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if (!exist) {
+                    types.add(type);
+                }
+            }
+        }
+        return types.toArray(new String[0]);    }
+
+    @Override
     public ArrayList<Sensor> getAll() {
         return this.sensors;
+    }
+
+    @Override
+    public String getMeasurement(String sensorType) {
+        for (Sensor sensor : this.sensors){
+            if (sensor.getType().equals(sensorType)){
+                return sensor.getMeasurement();
+            }
+        }
+        return null;
     }
 
     @Override
@@ -100,6 +132,12 @@ public class SensorServiceImpl implements SensorService {
 
         for (Sensor sen : this.sensors){
             if (sen.getName().equals(sensor.getName())){
+                int numByType = -1;
+                for (Sensor s : this.sensors){
+                    if (s.getType().equals(sen.getType())) ++numByType;
+                }
+                if (numByType <= 0) Application.context.controlPointsValuesService.removeAllInCurrentThread(sen.getType());
+
                 this.sensors.remove(sen);
                 removed = true;
                 break;

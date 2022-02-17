@@ -3,6 +3,7 @@ package ui.mainScreen.menu;
 import constants.MeasurementConstants;
 import settings.Settings;
 import ui.calibratorsList.CalibratorsListDialog;
+import ui.controlPointsValues.ControlPointsListDialog;
 import ui.mainScreen.MainScreen;
 import ui.methodInfo.MethodInfoDialog;
 import ui.pathLists.PathListsDialog;
@@ -24,12 +25,13 @@ public class MenuLists extends JMenu {
     private static final String SENSORS_LIST = "Список первинних вимірювальних пристроїв";
     private static final String CALIBRATORS_LIST = "Список калібраторів";
     private static final String METHODS = "Методи розрахунку";
+    private static final String CONTROL_POINTS = "Контрольні точки";
 
     private final MainScreen mainScreen;
 
     private JMenuItem buttonPersons;
     private JMenuItem buttonDepartments, buttonAreas, buttonProcesses, buttonInstallations;
-    private JMenuItem buttonSensors;
+    private JMenuItem buttonSensors, buttonControlPoints;
     private JMenuItem buttonTemperature, buttonPressure, buttonConsumption;
     private JMenuItem buttonCalibrators;
 
@@ -49,6 +51,7 @@ public class MenuLists extends JMenu {
         this.buttonInstallations = new JMenuItem(INSTALLATIONS_LIST);
         this.buttonPersons = new JMenuItem(WORKERS);
         this.buttonSensors = new JMenuItem(SENSORS_LIST);
+        this.buttonControlPoints = new JMenuItem(CONTROL_POINTS);
         this.buttonCalibrators = new JMenuItem(CALIBRATORS_LIST);
 
         this.buttonTemperature = new JMenuItem(MeasurementConstants.TEMPERATURE.getValue());
@@ -66,6 +69,7 @@ public class MenuLists extends JMenu {
         this.buttonInstallations.addActionListener(this.clickInstallations);
         this.buttonPersons.addActionListener(this.clickButtonPersons);
         this.buttonSensors.addActionListener(this.clickSensors);
+        this.buttonControlPoints.addActionListener(this.clickControlPoints);
         this.buttonTemperature.addActionListener(this.clickTemperature);
         this.buttonPressure.addActionListener(this.clickPressure);
         this.buttonConsumption.addActionListener(this.clickConsumption);
@@ -74,6 +78,7 @@ public class MenuLists extends JMenu {
 
     private void build() {
         this.add(this.buttonSensors);
+        this.add(this.buttonControlPoints);
         this.addSeparator();
         this.add(this.buttonCalibrators);
         this.addSeparator();
@@ -158,6 +163,18 @@ public class MenuLists extends JMenu {
                 @Override
                 public void run() {
                     new SensorsListDialog(mainScreen).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickControlPoints = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new ControlPointsListDialog(mainScreen).setVisible(true);
                 }
             });
         }

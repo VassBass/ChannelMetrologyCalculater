@@ -8,7 +8,9 @@ import java.util.ArrayList;
 public interface SensorService {
     void init(Window window);
     String[]getAllTypes();
+    String[]getAllTypesWithoutROSEMOUNT();
     ArrayList<Sensor> getAll();
+    String getMeasurement(String sensorType);
     String[] getAllSensorsName(String measurementName);
     ArrayList<Sensor> add(Sensor sensor);
     ArrayList<Sensor> remove(Sensor sensor);

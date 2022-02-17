@@ -7,6 +7,7 @@ import service.ControlPointsValuesService;
 import service.FileBrowser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ControlPointsValuesServiceImpl implements ControlPointsValuesService {
     private ArrayList<ControlPointsValues> mainList;
@@ -71,6 +72,22 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
         }
 
         this.save();
+    }
+
+    @Override
+    public void removeAllInCurrentThread(String sensorType) {
+        ArrayList<Integer>indexes = new ArrayList<>();
+        for (int i=0;i<this.mainList.size();i++){
+            ControlPointsValues cpv = this.mainList.get(i);
+            if (cpv.getSensorType().equals(sensorType)){
+                indexes.add(i);
+            }
+        }
+        Collections.reverse(indexes);
+        for (int i : indexes){
+            this.mainList.remove(i);
+        }
+        new ControlPointsValuesRepository().writeListInCurrentThread(this.mainList);
     }
 
     @Override

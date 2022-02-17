@@ -10,5 +10,6 @@ public interface ControlPointsValuesService {
     double[] getValues(String sensorType, double rangeMin, double rangeMax);
     void put(ControlPointsValues controlPointsValues);
     void remove(ControlPointsValues controlPointsValues);
+    void removeAllInCurrentThread(String sensorType);
     void save();
 }
