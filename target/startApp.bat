@@ -1,2 +1,2 @@
 @ECHO OFF
-start javaw -jar ChannelMetrologyCalculater-5.1-jar-with-dependencies.jar
+start javaw -jar ChannelMetrologyCalculater-5.2-jar-with-dependencies.jar
