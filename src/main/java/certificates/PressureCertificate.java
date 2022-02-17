@@ -375,7 +375,6 @@ public class PressureCertificate implements Certificate {
         String performer1Name = (String) this.values.get(Key.PERFORMER1_NAME);
         if (performer1Name!=null) {
             cell(45, 6).setCellValue(performer1Name);
-            cell(45,4).setCellValue("________________");
         }else {
             cell(45,6).setCellValue("");
             cell(45,4).setCellValue("");
@@ -391,7 +390,6 @@ public class PressureCertificate implements Certificate {
         String performer2Name = (String) this.values.get(Key.PERFORMER2_NAME);
         if (performer2Name!=null) {
             cell(47, 6).setCellValue(performer2Name);
-            cell(47,4).setCellValue("________________");
         }else{
             cell(47,6).setCellValue("");
             cell(47,4).setCellValue("");
