@@ -45,6 +45,21 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
+    public ControlPointsValues getControlPointsValues(String sensorType, int index) {
+        int i = 0;
+        for (ControlPointsValues cpv : this.mainList){
+            if (cpv.getSensorType().equals(sensorType)){
+                if (i == index){
+                    return cpv;
+                }else {
+                    i++;
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
     public void put(ControlPointsValues controlPointsValues) {
         int index = -1;
         for (int i=0;i<this.mainList.size();i++){
@@ -88,6 +103,22 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
             this.mainList.remove(i);
         }
         new ControlPointsValuesRepository().writeListInCurrentThread(this.mainList);
+    }
+
+    @Override
+    public void clear(String sensorType) {
+        ArrayList<Integer>indexes = new ArrayList<>();
+        for (int i=0;i<this.mainList.size();i++){
+            ControlPointsValues cpv = this.mainList.get(i);
+            if (cpv.getSensorType().equals(sensorType)){
+                indexes.add(i);
+            }
+        }
+        Collections.reverse(indexes);
+        for (int i : indexes){
+            this.mainList.remove(i);
+        }
+        this.save();
     }
 
     @Override

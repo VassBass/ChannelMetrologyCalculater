@@ -23,8 +23,13 @@ public class TopPanel extends JPanel {
     private final JTextField rangeMax = new JTextField(DEFAULT_RANGE_MAX, 5);
     private final JButton btnClear = new DefaultButton(CLEAR);
 
+    private double rangeMinBuffer, rangeMaxBuffer;
+
+    private final ControlPointsPanel controlPointsPanel;
+
     public TopPanel(final ControlPointsPanel controlPointsPanel){
         super(new GridBagLayout());
+        this.controlPointsPanel = controlPointsPanel;
 
         this.btnClear.addActionListener(new ActionListener() {
             @Override
@@ -47,10 +52,15 @@ public class TopPanel extends JPanel {
     public double getRangeMin(){return Double.parseDouble(this.rangeMin.getText());}
     public double getRangeMax(){return Double.parseDouble(this.rangeMax.getText());}
 
+    public void setRangeMin(double rangeMin){this.rangeMin.setText(String.valueOf(rangeMin));}
+    public void setRangeMax(double rangeMax){this.rangeMax.setText(String.valueOf(rangeMax));}
+
     public final FocusListener rangeFocus = new FocusListener() {
         @Override
         public void focusGained(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
+            rangeMinBuffer = Double.parseDouble(rangeMin.getText());
+            rangeMaxBuffer = Double.parseDouble(rangeMax.getText());
             source.selectAll();
         }
 
@@ -60,6 +70,11 @@ public class TopPanel extends JPanel {
             String text = source.getText();
             source.setText(VariableConverter.doubleString(text));
             setTrueRange();
+            double rMin = Double.parseDouble(rangeMin.getText());
+            double rMax = Double.parseDouble(rangeMax.getText());
+            if (rangeMinBuffer != rMin || rangeMaxBuffer != rMax){
+                controlPointsPanel.changeRange(rMin, rMax);
+            }
         }
     };
 

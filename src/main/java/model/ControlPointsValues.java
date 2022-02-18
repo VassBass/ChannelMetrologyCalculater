@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 public class ControlPointsValues implements Serializable {
     private final String sensorType;
-    private final double rangeMin, rangeMax;
-    private final double[] values;
+    private double rangeMin, rangeMax;
+    private double[] values;
 
     public ControlPointsValues(String sensorType, double rangeMin, double rangeMax, double[]values){
         this.sensorType = sensorType;
@@ -19,6 +19,10 @@ public class ControlPointsValues implements Serializable {
     public double getRangeMax(){return this.rangeMax;}
     public double[]getValues(){return this.values;}
 
+    public void setValues(double[]values){this.values = values;}
+    public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
+    public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
+
     public boolean isMatch(String sensorType, double rangeMin, double rangeMax){
         return this.sensorType.equals(sensorType) &&
                 this.rangeMin == rangeMin && this.rangeMax == rangeMax;
@@ -28,5 +32,10 @@ public class ControlPointsValues implements Serializable {
         return this.sensorType.equals(controlPointsValues.getSensorType()) &&
                 this.rangeMin == controlPointsValues.getRangeMin() &&
                 this.rangeMax == controlPointsValues.getRangeMax();
+    }
+
+    @Override
+    public String toString() {
+        return this.sensorType + "[" + this.rangeMin + "..." + this.rangeMax + "]";
     }
 }

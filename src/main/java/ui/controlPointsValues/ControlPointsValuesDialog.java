@@ -4,7 +4,6 @@ import application.Application;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
 import model.ControlPointsValues;
-import model.Sensor;
 import ui.controlPointsValues.complexElements.*;
 import ui.model.DefaultButton;
 
@@ -12,7 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ControlPointsValuesAddDialog extends JDialog {
+public class ControlPointsValuesDialog extends JDialog {
     private static final String CANCEL = "Відмінити";
     private static final String SAVE = "Зберегти";
 
@@ -23,7 +22,7 @@ public class ControlPointsValuesAddDialog extends JDialog {
     private ControlPointsPanel controlPointsPanel;
     private JButton btnCancel, btnSave;
 
-    ControlPointsValuesAddDialog(ControlPointsListDialog parent, ControlPointsValues values){
+    ControlPointsValuesDialog(ControlPointsListDialog parent, ControlPointsValues values){
         super(parent, values.getSensorType(), true);
 
         this.parent = parent;
@@ -37,27 +36,36 @@ public class ControlPointsValuesAddDialog extends JDialog {
     private void createElements(){
         String measurement = Application.context.sensorService.getMeasurement(this.values.getSensorType());
         if (measurement.equals(MeasurementConstants.TEMPERATURE.getValue())){
-            this.controlPointsPanel = new TemperaturePanel();
+            this.controlPointsPanel = new TemperaturePanel(this.values.getRangeMin(), this.values.getRangeMax());
         }else if (measurement.equals(MeasurementConstants.PRESSURE.getValue())){
-            this.controlPointsPanel = new PressurePanel();
+            this.controlPointsPanel = new PressurePanel(this.values.getRangeMin(), this.values.getRangeMax());
         }else if (measurement.equals(MeasurementConstants.CONSUMPTION.getValue())){
-            this.controlPointsPanel = new ConsumptionPanel();
+            this.controlPointsPanel = new ConsumptionPanel(this.values.getRangeMin(), this.values.getRangeMax());
         }
 
         this.topPanel = new TopPanel(this.controlPointsPanel);
         this.btnCancel = new DefaultButton(CANCEL);
         this.btnSave = new DefaultButton(SAVE);
+
+        if (this.values.getValues() != null) this.setValues();
+    }
+
+    private void setValues(){
+        this.topPanel.setRangeMin(this.values.getRangeMin());
+        this.topPanel.setRangeMax(this.values.getRangeMax());
+        this.controlPointsPanel.setValues(this.values.getValues());
     }
 
     private void setReactions(){
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.addWindowListener(closeDialog);
+        this.addWindowListener(this.closeDialog);
 
-        this.btnCancel.addActionListener(clickCancel);
+        this.btnCancel.addActionListener(this.clickCancel);
+        this.btnSave.addActionListener(this.clickSave);
     }
 
     private void build(){
-        this.setSize(600,300);
+        this.setSize(600,150);
         this.setLocation(ConverterUI.POINT_CENTER(Application.context.mainScreen, this));
 
         this.setContentPane(new MainPanel());
@@ -66,6 +74,19 @@ public class ControlPointsValuesAddDialog extends JDialog {
     private final ActionListener clickCancel = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            dispose();
+            parent.setVisible(true);
+        }
+    };
+
+    private final ActionListener clickSave = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            values.setValues(controlPointsPanel.getValues());
+            values.setRangeMin(topPanel.getRangeMin());
+            values.setRangeMax(topPanel.getRangeMax());
+            Application.context.controlPointsValuesService.put(values);
+            parent.setList(values.getSensorType());
             dispose();
             parent.setVisible(true);
         }
