@@ -10,6 +10,7 @@ import support.Comparator;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class Calibrator implements Serializable {
 
@@ -102,6 +103,20 @@ public class Calibrator implements Serializable {
                     this.company.equals(c.company) &&
                     Comparator.datesMatch(this.date, c.date);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.type, this.name, this.measurement);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        if (obj == this) return true;
+
+        Calibrator in = (Calibrator) obj;
+        return in.getName().equals(this.name);
     }
 }
 

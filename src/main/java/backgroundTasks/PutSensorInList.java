@@ -53,7 +53,7 @@ public class PutSensorInList extends SwingWorker<Void, Void> {
         if (this.oldSensor == null) {
             Application.context.sensorService.add(this.newSensor);
         } else {
-            Application.context.sensorService.set(this.oldSensor, this.newSensor);
+            Application.context.sensorService.setInCurrentThread(this.oldSensor, this.newSensor);
             Application.context.channelService.changeSensor(this.oldSensor, this.newSensor);
         }
         return null;

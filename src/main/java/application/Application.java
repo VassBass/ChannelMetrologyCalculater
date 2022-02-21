@@ -90,6 +90,8 @@ public class Application extends SwingWorker<Void, String> {
     }
     @Override
     protected Void doInBackground() throws Exception {
+        publish("Завантаження налаштуваннь користувача");
+        Settings.checkSettings();
         publish("Завантаження списку цехів");
         context.departmentService.init(context.mainScreen);
         publish("Завантаження списку ділянок");
@@ -109,8 +111,6 @@ public class Application extends SwingWorker<Void, String> {
         context.controlPointsValuesService.init();
         publish("Завантаження списку каналів");
         context.channelService.init(context.mainScreen);
-        publish("Завантаження налаштуваннь користувача");
-        Settings.checkSettings();
         publish("Завантаження головного вікна");
         context.mainScreen.init(context.channelService.getAll());
         return null;

@@ -49,38 +49,24 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public ArrayList<Channel> add(Channel channel) {
-        boolean exist = false;
-        for (Channel cha : this.channels){
-            if (cha.getCode().equals(channel.getCode())){
-                exist = true;
-                break;
-            }
-        }
-        if (exist){
-            this.showExistMessage();
-        }else {
+        int index = this.channels.indexOf(channel);
+        if (index < 0){
             this.channels.add(channel);
             this.save();
+        }else {
+            this.showExistMessage();
         }
         return this.channels;
     }
 
     @Override
     public ArrayList<Channel> remove(Channel channel) {
-        boolean removed = false;
-
-        for (Channel cha : this.channels){
-            if (cha.getCode().equals(channel.getCode())){
-                this.channels.remove(cha);
-                removed = true;
-                break;
-            }
-        }
-
-        if (removed){
-            this.save();
-        }else {
+        int index = this.channels.indexOf(channel);
+        if (index < 0){
             this.showNotFoundMessage();
+        }else {
+            this.channels.remove(index);
+            this.save();
         }
         return this.channels;
     }
@@ -117,7 +103,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public void changeSensors(ArrayList<Sensor>sensors){
+    public void changeSensorsInCurrentThread(ArrayList<Sensor>sensors){
         for (Sensor sensor : sensors){
             for (Channel channel : this.channels){
                 if (channel.getSensor().getName().equals(sensor.getName())){
@@ -131,52 +117,17 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public ArrayList<Channel> set(Channel oldChannel, Channel newChannel) {
         if (oldChannel != null){
-            if (newChannel == null){
-                this.remove(oldChannel);
-            }else {
-                for (int c=0;c<this.channels.size();c++){
-                    String channelCode = this.channels.get(c).getCode();
-                    if (channelCode.equals(oldChannel.getCode())){
-                        this.channels.set(c, newChannel);
-                        break;
-                    }
+            int index = this.channels.indexOf(oldChannel);
+            if (index >= 0) {
+                if (newChannel == null) {
+                    this.channels.remove(index);
+                } else {
+                    this.channels.set(index, newChannel);
                 }
+                this.save();
             }
-            this.save();
         }
         return this.channels;
-    }
-
-    @Override
-    public int getIndex(String code) {
-        for (int index=0;index<this.channels.size();index++) {
-            Channel channel = this.channels.get(index);
-            if (channel.getCode().equals(code)) {
-                return index;
-            }
-        }
-        this.showNotFoundMessage();
-        return -1;
-    }
-
-    @Override
-    public Channel get(String code) {
-        for (Channel channel : this.channels) {
-            if (channel.getCode().equals(code)) {
-                return channel;
-            }
-        }
-        this.showNotFoundMessage();
-        return null;
-    }
-
-    @Override
-    public Channel get(int index) {
-        if (index >= 0) {
-            return this.channels.get(index);
-        }else {
-            return null;
-        }
     }
 
     @Override
@@ -191,7 +142,10 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public boolean isExist(String oldChannelCode, String newChannelCode){
-        int oldIndex = this.getIndex(oldChannelCode);
+        Channel oldChannel = new Channel();
+        oldChannel.setCode(oldChannelCode);
+
+        int oldIndex = this.channels.indexOf(oldChannel);
         for (int index=0;index<this.channels.size();index++){
             String channelCode = this.channels.get(index).getCode();
             if (channelCode.equals(newChannelCode) && index != oldIndex){
@@ -229,12 +183,8 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public void importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
         for (Channel channel : channelsForChange){
-            for (int index=0;index<this.channels.size();index++){
-                if (channel.getCode().equals(this.channels.get(index).getCode())){
-                    this.channels.set(index, channel);
-                    break;
-                }
-            }
+            int index = this.channels.indexOf(channel);
+            if (index >= 0) this.channels.set(index, channel);
         }
         this.channels.addAll(newChannels);
         new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(this.channels);

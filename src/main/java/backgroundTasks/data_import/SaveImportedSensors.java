@@ -34,7 +34,7 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         Application.context.sensorService.importData(this.newSensors, this.sensorsForChange);
-        Application.context.channelService.changeSensors(this.sensorsForChange);
+        Application.context.channelService.changeSensorsInCurrentThread(this.sensorsForChange);
         return null;
     }
 

@@ -13,11 +13,8 @@ public interface ChannelService {
     ArrayList<Channel> remove(Channel channel);
     void removeBySensor(Sensor sensor);
     void changeSensor(Sensor oldSensor, Sensor newSensor);
-    void changeSensors(ArrayList<Sensor>sensors);
+    void changeSensorsInCurrentThread(ArrayList<Sensor>sensors);
     ArrayList<Channel> set(Channel oldChannel, Channel newChannel);
-    int getIndex(String code);
-    Channel get(String code);
-    Channel get(int index);
     boolean isExist(String code);
     boolean isExist(String oldChannelCode, String newChannelCode);
     void clear();

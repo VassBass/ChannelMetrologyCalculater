@@ -9,6 +9,7 @@ import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Sensor implements Serializable {
 
@@ -70,5 +71,19 @@ public class Sensor implements Serializable {
         Argument convR = new Argument("convR = " + cR);
         Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
         return expression.calculate();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.type, this.name, this.measurement);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        if (obj == this) return true;
+
+        Sensor in = (Sensor) obj;
+        return in.getName().equals(this.name);
     }
 }

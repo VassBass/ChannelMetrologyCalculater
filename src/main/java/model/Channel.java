@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Objects;
 
 import measurements.Measurement;
 
@@ -110,6 +111,20 @@ public class Channel implements Serializable {
     public void setRange(double min, double max){
         this.rangeMin = min;
         this.rangeMax = max;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.code, this.name, this.numberT);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        if (obj == this) return true;
+
+        Channel in = (Channel) obj;
+        return in.getCode().equals(this.code);
     }
 
     public Channel copyFrom(Channel channel){

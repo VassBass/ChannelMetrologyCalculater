@@ -110,14 +110,8 @@ public class SensorServiceImpl implements SensorService {
 
     @Override
     public ArrayList<Sensor> add(Sensor sensor) {
-        boolean exist = false;
-        for (Sensor sen : this.sensors){
-            if (sen.getName().equals(sensor.getName())){
-                exist = true;
-                break;
-            }
-        }
-        if (exist){
+        int index = this.sensors.indexOf(sensor);
+        if (index == -1){
             this.showExistMessage();
         }else {
             this.sensors.add(sensor);
@@ -127,59 +121,41 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public ArrayList<Sensor> remove(Sensor sensor) {
-        boolean removed = false;
-
-        for (Sensor sen : this.sensors){
-            if (sen.getName().equals(sensor.getName())){
-                int numByType = -1;
-                for (Sensor s : this.sensors){
-                    if (s.getType().equals(sen.getType())) ++numByType;
-                }
-                if (numByType <= 0) Application.context.controlPointsValuesService.removeAllInCurrentThread(sen.getType());
-
-                this.sensors.remove(sen);
-                removed = true;
-                break;
+    public void removeInCurrentThread(Sensor sensor) {
+        int index = this.sensors.indexOf(sensor);
+        if (index >= 0){
+            Sensor sen = this.sensors.get(index);
+            int numByType = -1;
+            for (Sensor s : this.sensors){
+                if (s.getType().equals(sen.getType())) ++numByType;
             }
-        }
+            if (numByType <= 0) Application.context.controlPointsValuesService.removeAllInCurrentThread(sen.getType());
 
-        if (removed){
-            this.save();
-        }else {
-            this.showNotFoundMessage();
+            this.sensors.remove(index);
+            new Repository<Sensor>(this.window, Model.SENSOR).writeListInCurrentThread(this.sensors);
         }
-        return this.sensors;
     }
 
     @Override
-    public ArrayList<Sensor> set(Sensor oldSensor, Sensor newSensor) {
-        if (oldSensor != null){
-            if (newSensor == null){
-                this.remove(oldSensor);
-            }else {
-                for (int s=0;s<this.sensors.size();s++){
-                    String sensorName = this.sensors.get(s).getName();
-                    if (sensorName.equals(oldSensor.getName())){
-                        this.sensors.set(s, newSensor);
-                        break;
-                    }
+    public void setInCurrentThread(Sensor oldSensor, Sensor newSensor) {
+        if (oldSensor != null) {
+            int index = this.sensors.indexOf(oldSensor);
+            if (index >= 0) {
+                if (newSensor == null) {
+                    this.sensors.remove(index);
+                } else {
+                    this.sensors.set(index, newSensor);
                 }
+                new Repository<Sensor>(null, Model.SENSOR).writeListInCurrentThread(this.sensors);
             }
-            new Repository<Sensor>(null,Model.SENSOR).writeListInCurrentThread(this.sensors);
         }
-        return this.sensors;
     }
 
     @Override
     public void importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange){
         for (Sensor sensor : sensorsForChange){
-            for (int index=0;index<this.sensors.size();index++){
-                if (sensor.getName().equals(this.sensors.get(index).getName())){
-                    this.sensors.set(index, sensor);
-                    break;
-                }
-            }
+            int index = this.sensors.indexOf(sensor);
+            if (index >= 0) this.sensors.set(index, sensor);
         }
         this.sensors.addAll(newSensors);
         new Repository<Sensor>(null,Model.SENSOR).writeListInCurrentThread(this.sensors);

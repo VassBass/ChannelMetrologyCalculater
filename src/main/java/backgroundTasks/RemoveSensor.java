@@ -43,7 +43,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
             LAST_SENSOR_MESSAGE = this.lastSensorMessageGenerator(sensor.getMeasurement());
             return false;
         }else {
-            Application.context.sensorService.remove(sensor);
+            Application.context.sensorService.removeInCurrentThread(sensor);
             Application.context.channelService.removeBySensor(sensor);
             return true;
         }

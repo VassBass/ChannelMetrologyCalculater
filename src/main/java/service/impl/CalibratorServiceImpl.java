@@ -60,14 +60,8 @@ public class CalibratorServiceImpl implements CalibratorService {
 
     @Override
     public ArrayList<Calibrator> add(Calibrator calibrator) {
-        boolean exist = false;
-        for (Calibrator cal : this.calibrators){
-            if (cal.getName().equals(calibrator.getName())){
-                exist = true;
-                break;
-            }
-        }
-        if (exist){
+        int index = this.calibrators.indexOf(calibrator);
+        if (index == -1){
             this.showExistMessage();
         }else {
             this.calibrators.add(calibrator);
@@ -78,17 +72,9 @@ public class CalibratorServiceImpl implements CalibratorService {
 
     @Override
     public ArrayList<Calibrator> remove(Calibrator calibrator) {
-        boolean removed = false;
-
-        for (Calibrator cal : this.calibrators){
-            if (cal.getName().equals(calibrator.getName())){
-                this.calibrators.remove(cal);
-                removed = true;
-                break;
-            }
-        }
-
-        if (removed){
+        int index = this.calibrators.indexOf(calibrator);
+        if (index >= 0){
+            this.calibrators.remove(index);
             this.save();
         }else {
             this.showNotFoundMessage();
@@ -108,18 +94,15 @@ public class CalibratorServiceImpl implements CalibratorService {
     @Override
     public ArrayList<Calibrator> set(Calibrator oldCalibrator, Calibrator newCalibrator) {
         if (oldCalibrator != null){
-            if (newCalibrator == null){
-                this.remove(oldCalibrator);
-            }else {
-                for (int c=0;c<this.calibrators.size();c++){
-                    String calibratorName = this.calibrators.get(c).getName();
-                    if (calibratorName.equals(oldCalibrator.getName())){
-                        this.calibrators.set(c, newCalibrator);
-                        break;
-                    }
+            int index = this.calibrators.indexOf(oldCalibrator);
+            if (index >= 0) {
+                if (newCalibrator == null) {
+                    this.calibrators.remove(index);
+                } else {
+                    this.calibrators.set(index, newCalibrator);
                 }
+                this.save();
             }
-            this.save();
         }
         return this.calibrators;
     }
@@ -137,7 +120,7 @@ public class CalibratorServiceImpl implements CalibratorService {
 
     @Override
     public Calibrator get(int index) {
-        if (index >= 0) {
+        if (index >= 0 && index < this.calibrators.size()) {
             return this.calibrators.get(index);
         }else {
             return null;
@@ -170,12 +153,8 @@ public class CalibratorServiceImpl implements CalibratorService {
     @Override
     public void importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange){
         for (Calibrator calibrator : calibratorsForChange){
-            for (int index=0;index<this.calibrators.size();index++){
-                if (calibrator.getName().equals(this.calibrators.get(index).getName())){
-                    this.calibrators.set(index, calibrator);
-                    break;
-                }
-            }
+            int index = this.calibrators.indexOf(calibrator);
+            if (index >= 0) this.calibrators.set(index, calibrator);
         }
         this.calibrators.addAll(newCalibrators);
         new Repository<Calibrator>(null,Model.CALIBRATOR).writeListInCurrentThread(this.calibrators);

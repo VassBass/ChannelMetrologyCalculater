@@ -13,8 +13,8 @@ public interface SensorService {
     String getMeasurement(String sensorType);
     String[] getAllSensorsName(String measurementName);
     ArrayList<Sensor> add(Sensor sensor);
-    ArrayList<Sensor> remove(Sensor sensor);
-    ArrayList<Sensor> set(Sensor oldSensor, Sensor newSensor);
+    void removeInCurrentThread(Sensor sensor);
+    void setInCurrentThread(Sensor oldSensor, Sensor newSensor);
     void importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange);
     Sensor get(String sensorName);
     Sensor get(int index);
