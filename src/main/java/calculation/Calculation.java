@@ -4,7 +4,7 @@ import model.Calibrator;
 import model.Channel;
 import settings.Settings;
 
-public class Calculation {
+public abstract class Calculation {
     protected final Channel channel;
 
     protected Calibrator calibrator;
@@ -74,14 +74,6 @@ public class Calculation {
      */
     protected double u = -999999999D;
 
-    public boolean closeToFalse(){
-        return false;
-    }
-
-    public boolean goodChannel(){
-        return false;
-    }
-
     public Calculation(Channel channel){
         this.channel = channel;
     }
@@ -104,46 +96,6 @@ public class Calculation {
         return Settings.getSettingValue(this.channel.getMeasurement().getName());
     }
 
-    public double[][] getErrorsAbsolute() {
-        return null;
-    }
-
-    public double getMaxAbsoluteError(){
-        return -999999999D;
-    }
-
-    public double getAbsoluteErrorWithSensorError(){
-        return -999999999D;
-    }
-
-    public double getErrorInRange(){
-        return -999999999D;
-    }
-
-    public double getErrorInRangeWidthSensorError(){
-        return -999999999D;
-    }
-
-    public double[] getSystematicErrors(){
-        return null;
-    }
-
-    public double getStandardIndeterminacyA(){
-        return -999999999D;
-    }
-
-    public double getStandardIndeterminacyB(){
-        return -999999999D;
-    }
-
-    public double getStandardIndeterminacyTotal(){
-        return -999999999D;
-    }
-
-    public double getExtendedIndeterminacy(){
-        return -999999999D;
-    }
-
     public double[] getControlPointsValues(){
         return this.controlPointsValues;
     }
@@ -151,4 +103,17 @@ public class Calculation {
     public void setControlPointsValues(double[]values){
         this.controlPointsValues = values;
     }
+
+    public abstract boolean closeToFalse();
+    public abstract boolean goodChannel();
+    public abstract double[][] getErrorsAbsolute();
+    public abstract double getMaxAbsoluteError();
+    public abstract double getAbsoluteErrorWithSensorError();
+    public abstract double getErrorInRange();
+    public abstract double getErrorInRangeWidthSensorError();
+    public abstract double[] getSystematicErrors();
+    public abstract double getStandardIndeterminacyA();
+    public abstract double getStandardIndeterminacyB();
+    public abstract double getStandardIndeterminacyTotal();
+    public abstract double getExtendedIndeterminacy();
 }

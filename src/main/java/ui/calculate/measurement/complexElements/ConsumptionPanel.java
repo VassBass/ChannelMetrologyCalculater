@@ -12,26 +12,13 @@ import java.awt.event.FocusListener;
 import java.util.Locale;
 
 public class ConsumptionPanel extends MeasurementPanel {
-    private final Channel channel;
-
-    private double[]values;
-
-    private JButton[] columnsHeader;
-    private JButton[] labelPercent;
-    private JButton[] labelValue;
-    private JButton[] motions;
-
-    private JTextField[] userMeasurements;
 
     public ConsumptionPanel(Channel channel){
-        super(new GridBagLayout());
-        this.channel = channel;
-
-        this.createElements();
-        this.build();
+        super(new GridBagLayout(), channel);
     }
 
-    private void createElements() {
+    @Override
+    protected void createElements() {
         String value = this.channel.getMeasurement().getValue();
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
@@ -103,7 +90,8 @@ public class ConsumptionPanel extends MeasurementPanel {
         this.userMeasurements[9].setText(VariableConverter.roundingDouble3(this.values[4], Locale.ENGLISH));
     }
 
-    private void build() {
+    @Override
+    protected void build() {
         this.add(this.columnsHeader[0], new Cell(0,0));
         this.add(this.columnsHeader[1], new Cell(1,0));
         this.add(this.columnsHeader[2], new Cell(2,0));
@@ -145,24 +133,12 @@ public class ConsumptionPanel extends MeasurementPanel {
     }
 
     @Override
-    public double[] getControlPointsValues() {
-        return this.values;
-    }
-
-    @Override
     public double[] getValues() {
         double[]val = new double[10];
         for (int x=0;x<val.length;x++){
             val[x] = Double.parseDouble(this.userMeasurements[x].getText());
         }
         return val;
-    }
-
-    @Override
-    public void setValues(double[]values) {
-        for (int x=0;x<this.userMeasurements.length;x++){
-            this.userMeasurements[x].setText(String.valueOf(values[x]));
-        }
     }
 
     private final FocusListener focusMeasurement = new FocusListener(){
@@ -214,25 +190,4 @@ public class ConsumptionPanel extends MeasurementPanel {
             }
         }
     };
-
-    protected static class Cell extends GridBagConstraints {
-
-        protected Cell(int x, int y){
-            super();
-            this.fill = BOTH;
-
-            this.gridx = x;
-            this.gridy = y;
-        }
-
-        protected Cell(int x, int y, int height){
-            super();
-            this.fill = BOTH;
-
-
-            this.gridheight = height;
-            this.gridx = x;
-            this.gridy = y;
-        }
-    }
 }

@@ -3,8 +3,8 @@ package ui.importData.compareChannels;
 import application.Application;
 import backgroundTasks.data_import.SaveImportedChannels;
 import converters.ConverterUI;
-import model.*;
-import ui.importData.BreakImportDialog;
+import model.Channel;
+import model.Sensor;
 import ui.importData.compareChannels.complexElements.ChangedChannelsTable;
 import ui.importData.compareChannels.complexElements.ChannelInfoWindow;
 import ui.importData.compareChannels.complexElements.NewChannelsTable;
@@ -138,7 +138,13 @@ public class CompareChannelsDialog extends JDialog {
         @Override
         public void windowClosing(WindowEvent e) {
             setVisible(false);
-            new BreakImportDialog(mainScreen, CompareChannelsDialog.this).setVisible(true);
+            int result = JOptionPane.showConfirmDialog(CompareChannelsDialog.this,
+                    "Припинити імпорт?", IMPORT, JOptionPane.OK_CANCEL_OPTION);
+            if (result == 0){
+                dispose();
+            }else {
+                setVisible(true);
+            }
         }
     };
 

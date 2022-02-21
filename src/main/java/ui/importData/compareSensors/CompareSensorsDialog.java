@@ -3,8 +3,7 @@ package ui.importData.compareSensors;
 import application.Application;
 import backgroundTasks.data_import.SaveImportedSensors;
 import converters.ConverterUI;
-import model.*;
-import ui.importData.BreakImportDialog;
+import model.Sensor;
 import ui.importData.compareSensors.complexElements.ChangedSensorsTable;
 import ui.importData.compareSensors.complexElements.NewSensorsTable;
 import ui.importData.compareSensors.complexElements.SensorInfoWindow;
@@ -133,7 +132,13 @@ public class CompareSensorsDialog extends JDialog {
         @Override
         public void windowClosing(WindowEvent e) {
             setVisible(false);
-            new BreakImportDialog(mainScreen, CompareSensorsDialog.this).setVisible(true);
+            int result = JOptionPane.showConfirmDialog(CompareSensorsDialog.this,
+                    "Припинити імпорт?", IMPORT, JOptionPane.OK_CANCEL_OPTION);
+            if (result == 0){
+                dispose();
+            }else {
+                setVisible(true);
+            }
         }
     };
 

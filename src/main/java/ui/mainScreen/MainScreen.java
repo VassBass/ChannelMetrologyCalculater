@@ -2,7 +2,6 @@ package ui.mainScreen;
 
 import application.Application;
 import model.Channel;
-import ui.model.DialogExit;
 import ui.mainScreen.menu.MenuBar;
 
 import javax.swing.*;
@@ -94,9 +93,12 @@ public class MainScreen extends JFrame {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new DialogExit(MainScreen.this).setVisible(true);
+                        int result = JOptionPane.showConfirmDialog(MainScreen.this,
+                                "Закрити програму?", "Вихід", JOptionPane.OK_CANCEL_OPTION);
+                        if (result == 0){
+                            System.exit(0);
+                        }
                     }
-
                 });
             }
         }

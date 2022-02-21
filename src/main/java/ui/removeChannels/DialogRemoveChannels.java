@@ -79,8 +79,23 @@ public class DialogRemoveChannels extends JDialog {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    DialogRemoveChannels.this.dispose();
-                    new DialogRemoveAllChannels(mainScreen).setVisible(true);
+                    setVisible(false);
+                    String message = "Ви впевнені що хочете видалити всі канали? Загальна кількість: "
+                            + mainScreen.channelsList.size();
+                    int result = JOptionPane.showConfirmDialog(DialogRemoveChannels.this,
+                            message, REMOVE_ALL, JOptionPane.OK_CANCEL_OPTION);
+                    if (result == 0){
+                        if (Application.isBusy(DialogRemoveChannels.this)) return;
+                        dispose();
+                        mainScreen.setChannelsList(new ArrayList<Channel>());
+                        Application.context.channelService.clear();
+                        if (Application.context.channelSorter.isOn()) {
+                            Application.context.channelSorter.setOff();
+                            mainScreen.searchPanel.buttonSearch.doClick();
+                        }
+                    }else {
+                        setVisible(true);
+                    }
                 }
             });
         }

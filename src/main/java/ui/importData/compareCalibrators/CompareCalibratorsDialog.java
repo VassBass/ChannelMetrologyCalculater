@@ -3,8 +3,7 @@ package ui.importData.compareCalibrators;
 import application.Application;
 import backgroundTasks.data_import.SaveImportedCalibrators;
 import converters.ConverterUI;
-import model.*;
-import ui.importData.BreakImportDialog;
+import model.Calibrator;
 import ui.importData.compareCalibrators.complexElements.CalibratorInfoWindow;
 import ui.importData.compareCalibrators.complexElements.ChangedCalibratorsTable;
 import ui.importData.compareCalibrators.complexElements.NewCalibratorsTable;
@@ -19,11 +18,11 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class CompareCalibratorsDialog extends JDialog {
-    private static final String IMPORT = "Імпорт ПВП";
-    private static final String IMPORTED_SENSOR = "Імпортуємий ПВП";
-    private static final String OLD_SENSOR = "ПВП з поточного списку";
-    private static final String NEW_SENSORS = "Нові ПВП";
-    private static final String SENSORS_FOR_CHANGE = "ПВП на заміну";
+    private static final String IMPORT = "Імпорт калібраторів";
+    private static final String IMPORTED_SENSOR = "Імпортуємий калібратор";
+    private static final String OLD_SENSOR = "Калібратор з поточного списку";
+    private static final String NEW_SENSORS = "Нові калібратори";
+    private static final String SENSORS_FOR_CHANGE = "Калібратор на заміну";
     private static final String REMOVE = "Видалити";
     private static final String CONFIRM = "Підтвердити";
 
@@ -133,7 +132,13 @@ public class CompareCalibratorsDialog extends JDialog {
         @Override
         public void windowClosing(WindowEvent e) {
             setVisible(false);
-            new BreakImportDialog(mainScreen, CompareCalibratorsDialog.this).setVisible(true);
+            int result = JOptionPane.showConfirmDialog(CompareCalibratorsDialog.this,
+                    "Припинити імпорт?", IMPORT, JOptionPane.OK_CANCEL_OPTION);
+            if (result == 0){
+                dispose();
+            }else {
+                setVisible(true);
+            }
         }
     };
 

@@ -1,67 +1,30 @@
 package certificates;
 
+import calculation.Calculation;
 import constants.Key;
-import service.FileBrowser;
-import model.Calibrator;
 import constants.MeasurementConstants;
 import converters.VariableConverter;
-import calculation.Calculation;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import model.Calibrator;
 import model.Channel;
 import model.Sensor;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import service.FileBrowser;
 import settings.Settings;
 
-import java.awt.*;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Locale;
 
-public class TemperatureCertificate implements Certificate {
-    private static String YEAR_WORD(double d){
-        if (d == 0D){
-            return "років";
-        }else if (d > 0 && d < 1){
-            return "року";
-        }else if (d == 1D){
-            return "рік";
-        }else if (d > 1 && d < 5){
-            return "роки";
-        }else {
-            return "років";
-        }
-    }
+public class TemperatureCertificate extends Certificate {
     private static final String EXTRAORDINARY = "Позачерговий";
     private static final String ALARM_MESSAGE = "Сигналізація спрацювала при t = ";
 
-    private Calculation result;
-    private HashMap<Integer, Object> values;
-    private Channel channel;
-
-    private String numberOfCertificate;
-    private Calendar checkDate;
-    private boolean alarmCheck;
-    private String alarmValue;
-    private String measurementValue;
-    private HSSFWorkbook book;
-    private File certificateFile;
-    private String numberOfReference;
-
-    private HSSFCell cell(int row, int column){
-        HSSFSheet sheet = this.book.getSheetAt(0);
-        HSSFRow Row = sheet.getRow(row);
-        return Row.getCell(column);
-    }
-
     @Override
     public void init(Calculation result, HashMap<Integer, Object> values, Channel channel) {
-        this.result = result;
-        this.values = values;
-        this.channel = channel;
+        super.init(result, values, channel);
 
         if (this.result.goodChannel()){
             try{
@@ -79,14 +42,6 @@ public class TemperatureCertificate implements Certificate {
                 ex.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void formation() {
-        this.putCertificateData();
-        this.putChannelData();
-        this.putCalibratorData();
-        this.putPersons();
     }
 
     @Override
@@ -401,67 +356,7 @@ public class TemperatureCertificate implements Certificate {
     }
 
     @Override
-    public void save() {
-        String fileName = "№"
-                + this.numberOfCertificate +
-                " ("
-                + VariableConverter.dateToString(this.checkDate)
-                + ").xls";
-        this.certificateFile = FileBrowser.certificateFile(fileName);
-        try {
-            FileOutputStream out = new FileOutputStream(Objects.requireNonNull(this.certificateFile));
-            this.book.write(out);
-            out.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    @Override
-    public void show() {
-        Desktop desktop;
-        if (Desktop.isDesktopSupported()){
-            desktop = Desktop.getDesktop();
-            try {
-                desktop.open(this.certificateFile);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void print() {
-        Desktop desktop;
-        if (Desktop.isDesktopSupported()){
-            desktop = Desktop.getDesktop();
-            try {
-                desktop.print(this.certificateFile);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void openInExplorer(){
-        Desktop desktop;
-        if (Desktop.isDesktopSupported()){
-            desktop = Desktop.getDesktop();
-            try {
-                desktop.open(FileBrowser.DIR_CERTIFICATES);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public File getCertificateFile() {
-        return this.certificateFile;
-    }
-
-    private double[][]measurementValues(){
+    protected double[][]measurementValues(){
         double[][]measurements = new double[5][8];
         double[]measurement1 = (double[]) this.values.get(Key.MEASUREMENT_1);
         double[]measurement2 = (double[]) this.values.get(Key.MEASUREMENT_2);
