@@ -3,6 +3,7 @@ package ui.controlPointsValues;
 import model.ControlPointsValues;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
@@ -12,10 +13,12 @@ public class ControlPointsValuesTable extends JTable {
         super(tableModel(list));
 
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.setCenterAlignment();
     }
 
     public void setList(ArrayList<ControlPointsValues> list) {
         this.setModel(tableModel(list));
+        this.setCenterAlignment();
     }
 
     private static DefaultTableModel tableModel(ArrayList<ControlPointsValues> cpvList){
@@ -37,5 +40,13 @@ public class ControlPointsValuesTable extends JTable {
         }
 
         return model;
+    }
+
+    private void setCenterAlignment(){
+        DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
+        centerRender.setHorizontalAlignment(SwingConstants.CENTER);
+        for (int x=0;x<this.getColumnCount();x++){
+            this.getColumnModel().getColumn(x).setCellRenderer(centerRender);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package def;
 
 import constants.MeasurementConstants;
+import constants.SensorType;
 import model.Sensor;
 
 import java.util.ArrayList;
@@ -10,8 +11,8 @@ public class DefaultSensors {
         ArrayList<Sensor>sensors = new ArrayList<>();
 
         Sensor tcm_50m = new Sensor();
-        tcm_50m.setType("ТСМ-50М");
-        tcm_50m.setName("ТСМ-50М");
+        tcm_50m.setType(SensorType.TCM_50M);
+        tcm_50m.setName(SensorType.TCM_50M);
         tcm_50m.setRange(-50D,180D);
         tcm_50m.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         tcm_50m.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
@@ -19,8 +20,8 @@ public class DefaultSensors {
         sensors.add(tcm_50m);
 
         Sensor tcp_100 = new Sensor();
-        tcp_100.setType("ТОП  Pt 100");
-        tcp_100.setName("ТОП  Pt 100");
+        tcp_100.setType(SensorType.Pt100);
+        tcp_100.setName(SensorType.Pt100);
         tcp_100.setRange(-50D,500D);
         tcp_100.setValue(MeasurementConstants.DEGREE_CELSIUS.getValue());
         tcp_100.setMeasurement(MeasurementConstants.TEMPERATURE.getValue());
