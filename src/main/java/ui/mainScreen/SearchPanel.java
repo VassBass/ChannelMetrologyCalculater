@@ -137,6 +137,11 @@ public class SearchPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (buttonSearch.getText().equals(START_SEARCH)){
+                if (field != null) field.setEnabled(false);
+                if (valueText != null) valueText.setEnabled(false);
+                if (valueComboBox != null) valueComboBox.setEnabled(false);
+                if (valueSuitability != null) valueSuitability.setEnabled(false);
+
                 buttonSearch.setText(FINISH_SEARCH);
                 int index = field.getSelectedIndex();
                 switch (index){
@@ -155,6 +160,10 @@ public class SearchPanel extends JPanel {
             }else{
                 Application.context.channelSorter.setOff();
                 Application.context.mainScreen.setChannelsList(Application.context.channelService.getAll());
+                if (field != null) field.setEnabled(true);
+                if (valueText != null) valueText.setEnabled(true);
+                if (valueComboBox != null) valueComboBox.setEnabled(true);
+                if (valueSuitability != null) valueSuitability.setEnabled(true);
                 buttonSearch.setText(START_SEARCH);
             }
         }
