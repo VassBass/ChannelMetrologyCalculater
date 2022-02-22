@@ -15,6 +15,8 @@ public class TemperaturePanel extends MeasurementPanel {
 
     public TemperaturePanel(Channel channel){
         super(new GridBagLayout(), channel);
+        this.createElements();
+        this.build();
     }
 
     @Override

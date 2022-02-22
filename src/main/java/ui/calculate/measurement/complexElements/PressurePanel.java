@@ -21,6 +21,8 @@ public class PressurePanel extends MeasurementPanel {
     public PressurePanel(Channel channel, Calibrator calibrator){
         super(new GridBagLayout(), channel);
         this.calibrator = calibrator;
+        this.createElements();
+        this.build();
     }
 
     @Override

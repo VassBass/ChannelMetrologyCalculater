@@ -20,9 +20,6 @@ public abstract class MeasurementPanel extends JPanel {
     public MeasurementPanel(LayoutManager layout, Channel channel){
         super(layout);
         this.channel = channel;
-
-        this.createElements();
-        this.build();
     }
 
     public double[] getControlPointsValues() {

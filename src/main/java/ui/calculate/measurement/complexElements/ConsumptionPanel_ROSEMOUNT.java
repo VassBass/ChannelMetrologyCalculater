@@ -16,6 +16,8 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
 
     public ConsumptionPanel_ROSEMOUNT(Channel channel){
         super(new GridBagLayout(), channel);
+        this.createElements();
+        this.build();
     }
 
     @Override

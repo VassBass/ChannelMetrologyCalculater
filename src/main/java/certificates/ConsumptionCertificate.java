@@ -304,6 +304,8 @@ public class ConsumptionCertificate extends Certificate {
         } else if (this.alarmCheck) {
             alarm = ALARM_MESSAGE + VariableConverter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
             cell(39, 9).setCellValue(alarm);
+        }else {
+            cell(39,9).setCellValue("");
         }
     }
 

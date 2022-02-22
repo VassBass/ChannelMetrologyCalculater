@@ -15,6 +15,8 @@ public class ConsumptionPanel extends MeasurementPanel {
 
     public ConsumptionPanel(Channel channel){
         super(new GridBagLayout(), channel);
+        this.createElements();
+        this.build();
     }
 
     @Override
@@ -76,7 +78,7 @@ public class ConsumptionPanel extends MeasurementPanel {
         for (int x=0;x<this.userMeasurements.length;x++){
             this.userMeasurements[x] = new JTextField(5);
             this.userMeasurements[x].setHorizontalAlignment(SwingConstants.CENTER);
-            this.userMeasurements[x].addFocusListener(focusMeasurement);
+            this.userMeasurements[x].addFocusListener(this.focusMeasurement);
         }
         this.userMeasurements[0].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
         this.userMeasurements[1].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
@@ -152,33 +154,28 @@ public class ConsumptionPanel extends MeasurementPanel {
         public void focusLost(FocusEvent e){
             JTextField cell = (JTextField) e.getSource();
             if (cell.getText().length()==0 || cell.getText().equals("-")){
-                double value0 = channel.getRangeMin();
-                double value25 = ((channel.getRange() / 100) * 25) + channel.getRangeMin();
-                double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
-                double value75 = ((channel.getRange() / 100) * 75) + channel.getRangeMin();
-                double value100 = channel.getRangeMax();
                 for (int x=0;x<userMeasurements.length;x++){
                     if (cell.equals(userMeasurements[x])){
                         switch (x){
                             case 0:
                             case 1:
-                                cell.setText(String.valueOf(value0));
+                                cell.setText(String.valueOf(values[0]));
                                 break;
                             case 2:
                             case 3:
-                                cell.setText(String.valueOf(value25));
+                                cell.setText(String.valueOf(values[1]));
                                 break;
                             case 4:
                             case 5:
-                                cell.setText(String.valueOf(value50));
+                                cell.setText(String.valueOf(values[2]));
                                 break;
                             case 6:
                             case 7:
-                                cell.setText(String.valueOf(value75));
+                                cell.setText(String.valueOf(values[3]));
                                 break;
                             case 8:
                             case 9:
-                                cell.setText(String.valueOf(value100));
+                                cell.setText(String.valueOf(values[4]));
                                 break;
                         }
                     }

@@ -3,6 +3,14 @@
     <groupId>com.vassbassapp</groupId>
     <artifactId>ChannelMetrologyCalculater</artifactId>
     <version>5.2</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>7</maven.compiler.source>
+        <maven.compiler.target>7</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -31,12 +39,7 @@
             <version>1.3.1</version>
         </dependency>
     </dependencies>
-    <packaging>jar</packaging>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>7</maven.compiler.source>
-        <maven.compiler.target>7</maven.compiler.target>
-    </properties>
+
     <build>
         <plugins>
             <plugin>
