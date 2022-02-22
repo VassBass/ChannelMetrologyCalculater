@@ -21,8 +21,11 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class SensorInfoDialog extends JDialog {
+    private static final Logger LOGGER = Logger.getLogger(SensorInfoDialog.class.getName());
+
     private static final String SENSOR = "Первинний вимірювальний пристрій";
     private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
     private static final String TYPE = "Тип";
@@ -69,6 +72,7 @@ public class SensorInfoDialog extends JDialog {
 
     public SensorInfoDialog(SensorsListDialog parent, Sensor oldSensor){
         super(parent, SENSOR, true);
+        LOGGER.info("SensorInfoDialog: creation ...");
         this.parent = parent;
         this.oldSensor = oldSensor;
 
@@ -76,9 +80,11 @@ public class SensorInfoDialog extends JDialog {
         this.setInfo();
         this.setReactions();
         this.build();
+        LOGGER.info("SensorInfoDialog: creation SUCCESS");
     }
 
     private void createElements() {
+        LOGGER.fine("SensorInfoDialog: create elements ...");
         this.labelMeasurement = new ButtonCell(true, TYPE_OF_MEASUREMENT);
         this.labelType = new ButtonCell(true, TYPE);
         this.labelName = new ButtonCell(true, NAME);
@@ -184,10 +190,14 @@ public class SensorInfoDialog extends JDialog {
 
         this.buttonCancel = new DefaultButton(CANCEL);
         this.buttonSave = new DefaultButton(SAVE);
+
+        LOGGER.fine("SensorInfoDialog: create elements SUCCESS");
     }
 
     private void setInfo(){
         if (this.oldSensor != null){
+            LOGGER.fine("SensorInfoDialog: set info from sensor [" + this.oldSensor + "]");
+
             this.measurementsList.setSelectedItem(this.oldSensor.getMeasurement());
             if (this.oldSensor.getMeasurement().equals(MeasurementConstants.CONSUMPTION.getValue())){
                 String type = this.oldSensor.getType();
@@ -206,6 +216,8 @@ public class SensorInfoDialog extends JDialog {
                 this.rangePanel.setEnabled(false);
             }
             this.measurementsList.setEnabled(false);
+
+            LOGGER.fine("SensorInfoDialog: set info SUCCESS");
         }
     }
 

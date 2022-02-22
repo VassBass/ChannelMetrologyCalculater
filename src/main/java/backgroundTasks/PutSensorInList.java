@@ -8,8 +8,9 @@ import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.ExecutionException;
 
-public class PutSensorInList extends SwingWorker<Void, Void> {
+public class PutSensorInList extends SwingWorker<Boolean, Void> {
     private static final String SUCCESS = "Успіх";
 
     private final SensorsListDialog mainDialog;
@@ -17,7 +18,6 @@ public class PutSensorInList extends SwingWorker<Void, Void> {
     private final Sensor newSensor;
     private Sensor oldSensor;
     private final LoadDialog loadDialog;
-
 
     public PutSensorInList(SensorsListDialog mainDialog, SensorInfoDialog dialog, Sensor sensor){
         super();
@@ -49,27 +49,28 @@ public class PutSensorInList extends SwingWorker<Void, Void> {
     }
 
     @Override
-    protected Void doInBackground() throws Exception {
+    protected Boolean doInBackground() throws Exception {
         if (this.oldSensor == null) {
-            Application.context.sensorService.add(this.newSensor);
+            return Application.context.sensorService.add(this.newSensor) != null;
         } else {
             Application.context.sensorService.setInCurrentThread(this.oldSensor, this.newSensor);
             Application.context.channelService.changeSensor(this.oldSensor, this.newSensor);
+            return true;
         }
-        return null;
     }
 
     @Override
     protected void done() {
         this.loadDialog.dispose();
         this.dialog.dispose();
-        String m;
-        if (this.oldSensor == null){
-            m = "ПВП успішно додано до списку!";
-        }else {
-            m = "ПВП успішно змінено!";
+        try {
+            if (this.get()) {
+                String m = this.oldSensor == null ?  "ПВП успішно додано до списку!" : "ПВП успішно змінено!";
+                JOptionPane.showMessageDialog(Application.context.mainScreen, m, SUCCESS, JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
-        JOptionPane.showMessageDialog(Application.context.mainScreen, m, SUCCESS, JOptionPane.INFORMATION_MESSAGE);
         mainDialog.update();
     }
 }

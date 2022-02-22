@@ -1,18 +1,21 @@
 package service.impl;
 
-import service.FileBrowser;
 import def.DefaultAreas;
 import model.Model;
 import repository.Repository;
 import service.AreaService;
+import service.FileBrowser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 public class AreaServiceImpl implements AreaService {
+    private static final Logger LOGGER = Logger.getLogger(AreaService.class.getName());
+
     private static final String ERROR = "Помилка";
 
     private Window window;
@@ -30,14 +33,17 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     public void init(Window window){
+        LOGGER.info("AreaService: initialization start ...");
         try {
             this.areas = new Repository<String>(null, Model.AREA).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_AREAS.getName() + "\" is empty");
+            LOGGER.info("AreaService: file \"" + FileBrowser.FILE_AREAS.getName() + "\" is empty");
+            LOGGER.info("AreaService: set default list");
             this.areas = DefaultAreas.get();
             this.save();
         }
         this.window = window;
+        LOGGER.info("AreaService: initialization SUCCESS");
     }
 
     @Override

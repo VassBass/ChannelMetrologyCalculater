@@ -11,8 +11,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 public class InstallationServiceImpl implements InstallationService {
+    private static final Logger LOGGER = Logger.getLogger(InstallationService.class.getName());
+
     private static final String ERROR = "Помилка";
 
     private Window window;
@@ -30,14 +33,17 @@ public class InstallationServiceImpl implements InstallationService {
 
     @Override
     public void init(Window window){
+        LOGGER.info("InstallationService: initialization start ...");
         try {
             this.installations = new Repository<String>(null, Model.INSTALLATION).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_INSTALLATIONS.getName() + "\" is empty");
+            LOGGER.info("InstallationService: file \"" + FileBrowser.FILE_INSTALLATIONS.getName() + "\" is empty");
+            LOGGER.info("InstallationService: set default list");
             this.installations = DefaultInstallations.get();
             this.save();
         }
         this.window = window;
+        LOGGER.info("InstallationService: initialization SUCCESS");
     }
 
     @Override

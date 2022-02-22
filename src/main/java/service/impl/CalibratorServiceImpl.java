@@ -1,20 +1,23 @@
 package service.impl;
 
-import service.FileBrowser;
 import def.DefaultCalibrators;
 import measurements.Measurement;
 import model.Calibrator;
 import model.Model;
 import repository.Repository;
 import service.CalibratorService;
+import service.FileBrowser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 public class CalibratorServiceImpl implements CalibratorService {
+    private static final Logger LOGGER = Logger.getLogger(CalibratorService.class.getName());
+
     private static final String ERROR = "Помилка";
 
     private Window window;
@@ -32,14 +35,17 @@ public class CalibratorServiceImpl implements CalibratorService {
 
     @Override
     public void init(Window window){
+        LOGGER.info("CalibratorService: initialization start ...");
         try {
             this.calibrators = new Repository<Calibrator>(null, Model.CALIBRATOR).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_CALIBRATORS.getName() + "\" is empty");
+            LOGGER.info("CalibratorService: file \"" + FileBrowser.FILE_CALIBRATORS.getName() + "\" is empty");
+            LOGGER.info("CalibratorService: set default list");
             this.calibrators = DefaultCalibrators.get();
             this.save();
         }
         this.window = window;
+        LOGGER.info("CalibratorService: initialization SUCCESS");
     }
 
     @Override
@@ -61,7 +67,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     @Override
     public ArrayList<Calibrator> add(Calibrator calibrator) {
         int index = this.calibrators.indexOf(calibrator);
-        if (index == -1){
+        if (this.calibrators.contains(calibrator)){
             this.showExistMessage();
         }else {
             this.calibrators.add(calibrator);

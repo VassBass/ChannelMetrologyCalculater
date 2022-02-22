@@ -7,11 +7,13 @@ import ui.model.ApplicationLogo;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Application extends SwingWorker<Void, String> {
     public static final String appVersion = "v5.2";
     public static final Dimension sizeOfScreen = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
-
+    private static final Logger LOGGER = Logger.getLogger(Application.class.getName());
     public static ApplicationContext context;
     private static ApplicationLogo logo;
     private static boolean busy = false;
@@ -23,6 +25,7 @@ public class Application extends SwingWorker<Void, String> {
     }
 
     public static void main(String[] args){
+        LOGGER.info("Application starts from main!");
         try {
             Application application = new Application();
 
@@ -38,7 +41,7 @@ public class Application extends SwingWorker<Void, String> {
 
             application.start();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Exception in main: ", e);
         }
     }
 

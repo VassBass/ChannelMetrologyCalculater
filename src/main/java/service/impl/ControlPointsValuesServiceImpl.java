@@ -8,19 +8,25 @@ import service.FileBrowser;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 public class ControlPointsValuesServiceImpl implements ControlPointsValuesService {
+    private static final Logger LOGGER = Logger.getLogger(ControlPointsValuesService.class.getName());
+
     private ArrayList<ControlPointsValues> mainList;
 
     @Override
     public void init() {
+        LOGGER.info("ControlPointsValuesService: initialization start ...");
         try {
             this.mainList = new ControlPointsValuesRepository().readList();
         }catch (Exception ex){
-            System.out.println("File \"" + FileBrowser.FILE_CONTROL_POINTS_VALUES.getName() + "\" is empty");
+            LOGGER.info("ControlPointsValuesService: file \"" + FileBrowser.FILE_CONTROL_POINTS_VALUES.getName() + "\" is empty");
+            LOGGER.info("ControlPointsValuesService: set default list");
             this.mainList = DefaultControlPointsValues.get();
             this.save();
         }
+        LOGGER.info("ControlPointsValuesService: initialization SUCCESS");
     }
 
     @Override

@@ -1,12 +1,12 @@
 package service.impl;
 
 import application.Application;
-import service.FileBrowser;
 import model.Channel;
 import model.Model;
 import model.Sensor;
 import repository.Repository;
 import service.ChannelService;
+import service.FileBrowser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,8 +14,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.logging.Logger;
 
 public class ChannelServiceImpl implements ChannelService {
+    private static final Logger LOGGER = Logger.getLogger(ChannelService.class.getName());
+
     private static final String ERROR = "Помилка";
 
     private Window window;
@@ -33,13 +36,16 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public void init(Window window){
+        LOGGER.info("ChannelService: initialization start ...");
         try {
             this.channels = new Repository<Channel>(null, Model.CHANNEL).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_CHANNELS.getName() + "\" is empty");
+            LOGGER.info("ChannelService: file \"" + FileBrowser.FILE_CHANNELS.getName() + "\" is empty");
+            LOGGER.info("ChannelService: set default list");
             this.channels = new ArrayList<>();
         }
         this.window = window;
+        LOGGER.info("ChannelService: initialization SUCCESS");
     }
 
     @Override
@@ -49,12 +55,11 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public ArrayList<Channel> add(Channel channel) {
-        int index = this.channels.indexOf(channel);
-        if (index < 0){
+        if (this.channels.contains(channel)){
+            this.showExistMessage();
+        }else {
             this.channels.add(channel);
             this.save();
-        }else {
-            this.showExistMessage();
         }
         return this.channels;
     }

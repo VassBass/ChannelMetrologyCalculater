@@ -10,8 +10,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class MainScreen extends JFrame {
+    private static final Logger LOGGER = Logger.getLogger(MainScreen.class.getName());
 
     private static String windowHeader(int listSize){
         return "Вимірювальні канали [кількість : "+ listSize + "]";
@@ -31,12 +33,14 @@ public class MainScreen extends JFrame {
     }
 
     public void init(ArrayList<Channel>channelsList){
+        LOGGER.info("MainScreen: initialization start ...");
         this.channelsList = channelsList;
         this.setTitle(windowHeader(channelsList.size()));
 
         this.createElements();
         this.setReactions();
         this.build();
+        LOGGER.info("MainScreen: initialization SUCCESS");
     }
 
     private void createElements() {

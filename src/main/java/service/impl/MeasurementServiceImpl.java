@@ -9,19 +9,25 @@ import service.FileBrowser;
 import service.MeasurementService;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class MeasurementServiceImpl implements MeasurementService {
+    private static final Logger LOGGER = Logger.getLogger(MeasurementService.class.getName());
+
     private ArrayList<Measurement> measurements;
 
     @Override
     public void init(){
+        LOGGER.info("MeasurementService: initialization start ...");
         try {
             this.measurements = new Repository<Measurement>(null, Model.MEASUREMENT).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_MEASUREMENTS.getName() + "\" is empty");
+            LOGGER.info("MeasurementService: file \"" + FileBrowser.FILE_MEASUREMENTS.getName() + "\" is empty");
+            LOGGER.info("MeasurementService: set default list");
             this.measurements = DefaultMeasurements.get();
             this.save();
         }
+        LOGGER.info("MeasurementService: initialization SUCCESS");
     }
 
     @Override

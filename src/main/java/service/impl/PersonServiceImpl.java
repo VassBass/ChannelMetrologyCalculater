@@ -14,8 +14,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 public class PersonServiceImpl implements PersonService {
+    private static final Logger LOGGER = Logger.getLogger(PersonService.class.getName());
+
     private static final String EMPTY_ARRAY = "<Порожньо>";
     private static final String ERROR = "Помилка";
 
@@ -34,14 +37,17 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void init(Window window){
+        LOGGER.info("PersonService: initialization start ...");
         try {
             this.persons = new Repository<Worker>(null, Model.PERSON).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_PERSONS.getName() + "\" is empty");
+            LOGGER.info("PersonService: file \"" + FileBrowser.FILE_PERSONS.getName() + "\" is empty");
+            LOGGER.info("PersonService: set default list");
             this.persons = DefaultPersons.get();
             this.save();
         }
         this.window = window;
+        LOGGER.info("PersonService: initialization SUCCESS");
     }
 
     @Override

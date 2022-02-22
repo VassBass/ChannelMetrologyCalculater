@@ -11,8 +11,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Repository<M> extends SwingWorker<Void, Void> {
+    private static final Logger LOGGER = Logger.getLogger(Repository.class.getName());
+
     private final Window window;
     private final File file;
     private ArrayList<M>list;
@@ -59,9 +63,9 @@ public class Repository<M> extends SwingWorker<Void, Void> {
             try (ObjectInputStream reader = FileBrowser.getInputStream(this.file)) {
                 return (ArrayList<M>) reader.readObject();
             } catch (IOException e) {
-                throw new IOException();
+                throw new IOException(e.getMessage());
             } catch (ClassNotFoundException e) {
-                throw new ClassNotFoundException();
+                throw new ClassNotFoundException(e.getMessage());
             }
         }else return null;
     }
@@ -85,7 +89,7 @@ public class Repository<M> extends SwingWorker<Void, Void> {
         try {
             FileBrowser.saveToFile(this.file, list);
         }catch (Exception e){
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Exception while writing file: " + this.file.getName());
         }
     }
 
@@ -94,7 +98,7 @@ public class Repository<M> extends SwingWorker<Void, Void> {
         try {
             FileBrowser.saveToFile(this.file, list);
         }catch (Exception e){
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "Exception while writing file: " + this.file.getName());
         }
         return null;
     }

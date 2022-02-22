@@ -6,8 +6,11 @@ import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.logging.Logger;
 
 public class ApplicationContext {
+    private static final Logger LOGGER = Logger.getLogger(ApplicationContext.class.getName());
+
     public static final String CANCEL = "Відміна";
     public static final String IMPORT = "Імпорт";
     public static final String FILE_NAME = "Назва файлу";
@@ -49,6 +52,7 @@ public class ApplicationContext {
     }
 
     private void localizationOfComponents(){
+        LOGGER.info("Set Ukrainian localization of \"FileChooser\" components");
         //File chooser
         UIManager.put("FileChooser.cancelButtonText", CANCEL);
         UIManager.put("FileChooser.openButtonText", IMPORT);

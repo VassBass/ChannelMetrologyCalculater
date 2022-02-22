@@ -14,8 +14,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 public class SensorServiceImpl implements SensorService {
+    private static final Logger LOGGER = Logger.getLogger(SensorService.class.getName());
+
     private static final String ERROR = "Помилка";
 
     private Window window;
@@ -33,14 +36,17 @@ public class SensorServiceImpl implements SensorService {
 
     @Override
     public void init(Window window){
+        LOGGER.info("SensorService: initialization start ...");
         try {
             this.sensors = new Repository<Sensor>(null, Model.SENSOR).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_SENSORS.getName() + "\" is empty");
+            LOGGER.info("SensorService: file \"" + FileBrowser.FILE_SENSORS.getName() + "\" is empty");
+            LOGGER.info("SensorService: set default list");
             this.sensors = DefaultSensors.get();
             this.save();
         }
         this.window = window;
+        LOGGER.info("SensorService: initialization SUCCESS");
     }
 
     @Override
@@ -110,8 +116,7 @@ public class SensorServiceImpl implements SensorService {
 
     @Override
     public ArrayList<Sensor> add(Sensor sensor) {
-        int index = this.sensors.indexOf(sensor);
-        if (index == -1){
+        if (this.sensors.contains(sensor)){
             this.showExistMessage();
         }else {
             this.sensors.add(sensor);

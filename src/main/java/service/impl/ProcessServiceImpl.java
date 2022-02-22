@@ -11,8 +11,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 public class ProcessServiceImpl implements ProcessService {
+    private static final Logger LOGGER = Logger.getLogger(ProcessService.class.getName());
+
     private static final String ERROR = "Помилка";
 
     private Window window;
@@ -30,14 +33,17 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void init(Window window){
+        LOGGER.info("ProcessService: initialization start ...");
         try {
             this.processes = new Repository<String>(null, Model.PROCESS).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_PROCESSES.getName() + "\" is empty");
+            LOGGER.info("ProcessService: file \"" + FileBrowser.FILE_PROCESSES.getName() + "\" is empty");
+            LOGGER.info("ProcessService: set default list");
             this.processes = DefaultProcesses.get();
             this.save();
         }
         this.window = window;
+        LOGGER.info("ProcessService: initialization SUCCESS");
     }
 
     @Override

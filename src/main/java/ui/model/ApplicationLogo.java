@@ -6,8 +6,11 @@ import converters.ConverterUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.logging.Logger;
 
 public class ApplicationLogo extends JWindow {
+    private static final Logger LOGGER = Logger.getLogger(ApplicationLogo.class.getName());
+
     private static final String LOADING = "Завантаження...";
     private static final String DEVELOPER = "VassBassApp";
     private static final String VERSION = Application.appVersion;
@@ -16,6 +19,7 @@ public class ApplicationLogo extends JWindow {
 
     public ApplicationLogo(){
         super();
+        LOGGER.info("ApplicationLogo: creation ...");
 
         Icon appName = new ImageIcon(FileBrowser.FILE_IMAGE_NAME_LOGO.getAbsolutePath());
         JLabel name = new JLabel(appName);
@@ -42,6 +46,8 @@ public class ApplicationLogo extends JWindow {
         this.setSize(340,153);
         this.setLocation(ConverterUI.POINT_CENTER(Application.sizeOfScreen, this));
         this.getContentPane().add(panel);
+
+        LOGGER.info("ApplicationLogo: creation SUCCESS");
     }
 
     public void setMessage(String message){
@@ -49,8 +55,6 @@ public class ApplicationLogo extends JWindow {
     }
 
     private static class Cell extends GridBagConstraints {
-
-        private static final long serialVersionUID = 1L;
 
         protected Cell(int x, int y, int width) {
             this.fill = BOTH;

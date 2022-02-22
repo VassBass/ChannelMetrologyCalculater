@@ -11,8 +11,11 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.logging.Logger;
 
 public class DepartmentServiceImpl implements DepartmentService {
+    private static final Logger LOGGER = Logger.getLogger(DepartmentService.class.getName());
+
     private static final String ERROR = "Помилка";
 
     private Window window;
@@ -30,14 +33,17 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void init(Window window){
+        LOGGER.info("DepartmentService: initialization start ...");
         try {
             this.departments = new Repository<String>(null, Model.DEPARTMENT).readList();
         }catch (Exception e){
-            System.out.println("File \"" + FileBrowser.FILE_DEPARTMENTS.getName() + "\" is empty");
+            LOGGER.info("DepartmentService: file \"" + FileBrowser.FILE_DEPARTMENTS.getName() + "\" is empty");
+            LOGGER.info("DepartmentService: set default list");
             this.departments = DefaultDepartments.get();
             this.save();
         }
         this.window = window;
+        LOGGER.info("DepartmentService: initialization SUCCESS");
     }
 
     @Override

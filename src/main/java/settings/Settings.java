@@ -5,8 +5,12 @@ import service.FileBrowser;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Settings {
+    private static final Logger LOGGER = Logger.getLogger(Settings.class.getName());
+
     private static HashMap<String, String> settings = null;
 
     private static void setDefaultSettings(){
@@ -22,13 +26,18 @@ public class Settings {
 
     @SuppressWarnings("unchecked")
     public static void checkSettings(){
+        LOGGER.info("Settings: checking the settings...");
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FileBrowser.FILE_SETTINGS))){
             settings = (HashMap<String, String>) in.readObject();
         }catch (Exception ex){
+            LOGGER.info("Settings: file \"" + FileBrowser.FILE_SETTINGS.getName() + "\" is empty.");
+            LOGGER.info("Settings: set default settings");
             try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FileBrowser.FILE_SETTINGS))){
                 out.writeObject(new HashMap<String, String>());
                 setDefaultSettings();
-            }catch (Exception ignored){}
+            }catch (Exception e){
+                LOGGER.log(Level.WARNING, "Settings: Exception during default setup: ", e);
+            }
         }
     }
 
