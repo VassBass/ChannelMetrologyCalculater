@@ -68,16 +68,16 @@ public class PathElementName extends JDialog {
             dispose();
             if (elementName.getText().length() > 0) {
                 switch (elementType) {
-                    case PathListsTable.DEPARTMENTS_LIST:
+                    case PathListsDialog.DEPARTMENT:
                         Application.context.departmentService.set(oldNameOfElement, elementName.getText());
                         break;
-                    case PathListsTable.AREAS_LIST:
+                    case PathListsDialog.AREA:
                         Application.context.areaService.set(oldNameOfElement, elementName.getText());
                         break;
-                    case PathListsTable.PROCESSES_LIST:
+                    case PathListsDialog.PROCESS:
                         Application.context.processService.set(oldNameOfElement, elementName.getText());
                         break;
-                    case PathListsTable.INSTALLATIONS_LIST:
+                    case PathListsDialog.INSTALLATION:
                         Application.context.installationService.set(oldNameOfElement, elementName.getText());
                         break;
                 }

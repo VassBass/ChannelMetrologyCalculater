@@ -57,15 +57,6 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public ArrayList<String> add(String object) {
-        if (!this.processes.contains(object)){
-            this.processes.add(object);
-            this.save();
-        }
-        return this.processes;
-    }
-
-    @Override
     public ArrayList<String> remove(String object) {
         if (this.processes.contains(object)){
             this.processes.remove(object);
@@ -85,8 +76,12 @@ public class ProcessServiceImpl implements ProcessService {
                 int index = this.processes.indexOf(oldObject);
                 this.processes.set(index, newObject);
             }
-            this.save();
+        }else {
+            if (!this.processes.contains(newObject)){
+                this.processes.add(newObject);
+            }
         }
+        this.save();
         return this.processes;
     }
 

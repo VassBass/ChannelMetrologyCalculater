@@ -15,10 +15,10 @@ public class PathListsDialog extends JDialog {
     private static final String CHANGE = "Змінити";
     private static final String ADD = "Додати";
     private static final String CANCEL = "Відміна";
-    private static final String DEPARTMENT = "Цех";
-    private static final String AREA = "Ділянка";
-    private static final String PROCESS = "Лінія, секція і т.п.";
-    private static final String INSTALLATION = "Установка";
+    public static final String DEPARTMENT = "Цех";
+    public static final String AREA = "Ділянка";
+    public static final String PROCESS = "Лінія, секція і т.п.";
+    public static final String INSTALLATION = "Установка";
 
     private final MainScreen mainScreen;
 
@@ -40,10 +40,14 @@ public class PathListsDialog extends JDialog {
     }
 
     private void createElements() {
-        this.buttonDepartments = new DefaultButton(PathListsTable.DEPARTMENTS_LIST);
-        this.buttonAreas = new DefaultButton(PathListsTable.AREAS_LIST);
-        this.buttonProcesses = new DefaultButton(PathListsTable.PROCESSES_LIST);
-        this.buttonInstallations = new DefaultButton(PathListsTable.INSTALLATIONS_LIST);
+        this.buttonDepartments = new JButton(PathListsTable.DEPARTMENTS_LIST);
+        this.buttonDepartments.setFocusPainted(false);
+        this.buttonAreas = new JButton(PathListsTable.AREAS_LIST);
+        this.buttonAreas.setFocusPainted(false);
+        this.buttonProcesses = new JButton(PathListsTable.PROCESSES_LIST);
+        this.buttonProcesses.setFocusPainted(false);
+        this.buttonInstallations = new JButton(PathListsTable.INSTALLATIONS_LIST);
+        this.buttonInstallations.setFocusPainted(false);
 
         this.buttonRemove = new DefaultButton(REMOVE);
         this.buttonChange = new DefaultButton(CHANGE);
@@ -119,12 +123,15 @@ public class PathListsDialog extends JDialog {
 
     public void update(String elementsType){
         switch (elementsType){
+            case PathListsDialog.AREA:
             case PathListsTable.AREAS_LIST:
                 this.title = PathListsTable.AREAS_LIST;
                 break;
+            case PathListsDialog.PROCESS:
             case PathListsTable.PROCESSES_LIST:
                 this.title = PathListsTable.PROCESSES_LIST;
                 break;
+            case PathListsDialog.INSTALLATION:
             case PathListsTable.INSTALLATIONS_LIST:
                 this.title = PathListsTable.INSTALLATIONS_LIST;
                 break;

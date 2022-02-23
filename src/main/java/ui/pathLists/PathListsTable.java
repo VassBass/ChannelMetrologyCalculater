@@ -4,6 +4,7 @@ import application.Application;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 public class PathListsTable extends JTable {
     public static final String DEPARTMENTS_LIST = "Список цехів";
@@ -13,7 +14,6 @@ public class PathListsTable extends JTable {
 
     public PathListsTable(String list){
         super(tableModel(list));
-
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
