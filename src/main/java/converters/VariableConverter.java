@@ -239,4 +239,74 @@ public class VariableConverter {
             return s;
         }
     }
+
+    public static String kirillToLatinLetters(String in){
+        StringBuilder builder = new StringBuilder();
+        char[]chars = in.toCharArray();
+        for (char ch : chars){
+            switch (ch) {
+                case 'Е':
+                    builder.append('E');
+                    break;
+                case 'е':
+                    builder.append('e');
+                    break;
+                case 'Т':
+                    builder.append('T');
+                    break;
+                case 'І':
+                    builder.append('I');
+                    break;
+                case 'і':
+                    builder.append('i');
+                    break;
+                case 'О':
+                    builder.append('O');
+                    break;
+                case 'о':
+                    builder.append('o');
+                    break;
+                case 'Р':
+                    builder.append('P');
+                    break;
+                case 'р':
+                    builder.append('p');
+                    break;
+                case 'А':
+                    builder.append('A');
+                    break;
+                case 'а':
+                    builder.append('a');
+                    break;
+                case 'Н':
+                    builder.append('H');
+                    break;
+                case 'К':
+                    builder.append('K');
+                    break;
+                case 'Х':
+                    builder.append('X');
+                    break;
+                case 'х':
+                    builder.append('x');
+                    break;
+                case 'С':
+                    builder.append('C');
+                    break;
+                case 'с':
+                    builder.append('c');
+                    break;
+                case 'В':
+                    builder.append('B');
+                    break;
+                case 'М':
+                    builder.append('M');
+                    break;
+                default:
+                    builder.append(ch);
+                    break;
+            }
+        }
+        return builder.toString();
+    }
 }
