@@ -93,7 +93,7 @@ public class SensorInfoDialog extends JDialog {
 
         this.measurementsList = new JComboBox<>(Application.context.measurementService.getAllNames());
 
-        String[]consumptionTypes = new String[]{SensorType.YOKOGAWA, SensorType.ROSEMOUNT};
+        String[]consumptionTypes = new String[]{"",SensorType.YOKOGAWA, SensorType.ROSEMOUNT};
         this.typeText = new JTextField(10);
         this.typesList = new JComboBox<>(consumptionTypes);
         this.typeText.setToolTipText(TYPE_HINT);

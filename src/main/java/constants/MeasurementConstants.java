@@ -12,9 +12,9 @@ public enum MeasurementConstants {
     KPA("кПа"),
     PA("Па"),
     MM_ACVA("мм вод ст"),
-    KG_SM2("кг/см" + "\u00B2"),
+    KGS_SM2("кгс/см" + "\u00B2"),
     BAR("бар"),
-    KG_MM2("кг/мм" + "\u00B2"),
+    KGS_MM2("кгc/мм" + "\u00B2"),
     ML_BAR("мбар"),
 
     M3_HOUR("м" + "\u00B3" + "/h"),

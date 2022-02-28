@@ -17,8 +17,8 @@ public class DefaultMeasurements {
         measurements.add(new Pressure(MeasurementConstants.KPA));
         measurements.add(new Pressure(MeasurementConstants.PA));
         measurements.add(new Pressure(MeasurementConstants.MM_ACVA));
-        measurements.add(new Pressure(MeasurementConstants.KG_SM2));
-        measurements.add(new Pressure(MeasurementConstants.KG_MM2));
+        measurements.add(new Pressure(MeasurementConstants.KGS_SM2));
+        measurements.add(new Pressure(MeasurementConstants.KGS_MM2));
         measurements.add(new Pressure(MeasurementConstants.BAR));
         measurements.add(new Pressure(MeasurementConstants.ML_BAR));
 

@@ -22,11 +22,11 @@ public class ValueConverter {
                         return from * 101.9716;
                     case PA:
                         return from * 0.1019716;
-                    case KG_SM2:
+                    case KGS_SM2:
                         return from * 10000D;
                     case BAR:
                         return from * 10197.16;
-                    case KG_MM2:
+                    case KGS_MM2:
                         return from * 1000027D;
                     case ML_BAR:
                         return from * 10.19744288922;
@@ -40,11 +40,11 @@ public class ValueConverter {
                         return from * (9.807750 * 0.001);
                     case PA:
                         return from * 0.001;
-                    case KG_SM2:
+                    case KGS_SM2:
                         return from * 98.0665;
                     case BAR:
                         return from * 100D;
-                    case KG_MM2:
+                    case KGS_MM2:
                         return from * 9806.65;
                     case ML_BAR:
                         return from * 0.1;
@@ -58,11 +58,11 @@ public class ValueConverter {
                         return from * 9.80665;
                     case KPA:
                         return from * 1000D;
-                    case KG_SM2:
+                    case KGS_SM2:
                         return from * 98066.5;
                     case BAR:
                         return from * 100000D;
-                    case KG_MM2:
+                    case KGS_MM2:
                         return from * 9806650D;
                     case ML_BAR:
                         return from * 100;
@@ -70,7 +70,7 @@ public class ValueConverter {
                         return from;
                 }
 
-            case KG_SM2:
+            case KGS_SM2:
                 switch (this.inValue){
                     case MM_ACVA:
                         return from * 0.0001;
@@ -80,7 +80,7 @@ public class ValueConverter {
                         return from * (10.19716 * 0.000001);
                     case BAR:
                         return from * 1.019716;
-                    case KG_MM2:
+                    case KGS_MM2:
                         return from * 100;
                     case ML_BAR:
                         return from * 0.001019716212978;
@@ -90,7 +90,7 @@ public class ValueConverter {
 
             case BAR:
                 switch (this.inValue){
-                    case KG_SM2:
+                    case KGS_SM2:
                         return from * 0.980665;
                     case MM_ACVA:
                         return from * (98.0665 * 0.000001);
@@ -98,7 +98,7 @@ public class ValueConverter {
                         return from * 0.01;
                     case PA:
                         return from * 0.00001;
-                    case KG_MM2:
+                    case KGS_MM2:
                         return from * 98.0665;
                     case ML_BAR:
                         return from * 0.001;
@@ -106,11 +106,11 @@ public class ValueConverter {
                         return from;
                 }
 
-            case KG_MM2:
+            case KGS_MM2:
                 switch (this.inValue){
                     case BAR:
                         return from * 0.01019716212978;
-                    case KG_SM2:
+                    case KGS_SM2:
                         return from * 0.01;
                     case MM_ACVA:
                         return from * (9.999724776623 * 0.0000001);
@@ -128,9 +128,9 @@ public class ValueConverter {
                 switch (this.inValue){
                     case BAR:
                         return from * 1000;
-                    case KG_MM2:
+                    case KGS_MM2:
                         return from * 98066.5;
-                    case KG_SM2:
+                    case KGS_SM2:
                         return from * 980.665;
                     case MM_ACVA:
                         return from * 0.0980638;

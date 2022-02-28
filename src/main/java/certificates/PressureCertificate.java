@@ -169,7 +169,7 @@ public class PressureCertificate extends Certificate {
         String errorPercent = VariableConverter.roundingDouble3(eP, Locale.GERMAN);
         cell(21,5).setCellValue(errorPercent);
 
-        String error = VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN);
+        String error = VariableConverter.roundingDouble3(errorSensor, Locale.GERMAN);
         cell(21,7).setCellValue(error);
 
         double min = new ValueConverter(MeasurementConstants.getConstantFromString(sensor.getValue()),
@@ -226,7 +226,7 @@ public class PressureCertificate extends Certificate {
         Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
 
         if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)){
-            double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+            double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
             if (value5 < maxCalibratorPower){
                 value5 = maxCalibratorPower;
             }

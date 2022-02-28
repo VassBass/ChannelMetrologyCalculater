@@ -416,7 +416,7 @@ public class PressurePanel extends JPanel {
                     Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
                     double value5 = calculation.getControlPointsValues()[1];
                     if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)) {
-                        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
+                        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
                         if (value5 < maxCalibratorPower){
                             cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
                         }else {

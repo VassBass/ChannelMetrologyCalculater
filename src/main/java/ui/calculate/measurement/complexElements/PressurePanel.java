@@ -49,7 +49,7 @@ public class PressurePanel extends MeasurementPanel {
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KG_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
 
         this.values = Application.context.controlPointsValuesService.getValues(
                 this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
