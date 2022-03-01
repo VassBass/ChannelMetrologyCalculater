@@ -3,6 +3,7 @@ package application;
 import service.FileBrowser;
 import settings.Settings;
 import ui.model.ApplicationLogo;
+import updater.Updater;
 
 import javax.swing.*;
 import java.awt.*;
@@ -95,6 +96,8 @@ public class Application extends SwingWorker<Void, String> {
     protected Void doInBackground() throws Exception {
         publish("Завантаження налаштуваннь користувача");
         Settings.checkSettings();
+        publish("Оновлення");
+        Updater.update();
         publish("Завантаження списку цехів");
         context.departmentService.init(context.mainScreen);
         publish("Завантаження списку ділянок");

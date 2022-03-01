@@ -39,4 +39,6 @@ public class Key {
     public static final int INSTALLATION = 29;
 
     public static final int CONTROL_POINTS = 30;
+
+    public static final String VERSION = "version";
 }
