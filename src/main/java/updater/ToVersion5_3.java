@@ -1,32 +1,21 @@
 package updater;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import converters.VariableConverter;
 import measurements.Measurement;
 import model.*;
 import org.sqlite.JDBC;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ToVersion5_3 {
     private static final Logger LOGGER = Logger.getLogger(ToVersion5_3.class.getName());
-
-    private final String channelsFilePath = "Support/Lists/Channels.dat";
-    private final String sensorsFilePath = "Support/Lists/Sensors.dat";
-    private final String personsFilePath = "Support/Lists/Persons.dat";
-    private final String calibratorsFilePath = "Support/Lists/Calibrators.dat";
-    private final String measurementsFilePath = "Support/Lists/Measurements.dat";
-    private final String controlPointsValuesFilePath = "Support/Lists/control_points_values.dat";
-    private final String departmentsFilePath = "Support/Lists/Departments.dat";
-    private final String areasFilePath = "Support/Lists/Areas.dat";
-    private final String processesFilePath = "Support/Lists/Processes.dat";
-    private final String installationsFilePath = "Support/Lists/Installations.dat";
-    private final String dbUrl = "jdbc:sqlite:Support/Data.db";
 
     private ArrayList<Channel>channels = new ArrayList<>();
     private ArrayList<Sensor>sensors = new ArrayList<>();
@@ -52,11 +41,23 @@ public class ToVersion5_3 {
         this.installations = this.readInstallations();
 
         this.createTables();
+
+        this.rewriteChannelsToDB();
+        this.rewriteSensorsToDB();
+        this.rewritePersonsToDB();
+        this.rewriteCalibratorsToDB();
+        this.rewriteMeasurementsToDB();
+        this.rewriteCPVToDB();
+        this.rewriteDepartmentsToDB();
+        this.rewriteAreasToDB();
+        this.rewriteProcessesToDB();
+        this.rewriteInstallationsToDB();
     }
 
     private Connection getConnection() throws SQLException {
         DriverManager.registerDriver(new JDBC());
-        return DriverManager.getConnection(this.dbUrl);
+        String dbUrl = "jdbc:sqlite:Support/Data.db";
+        return DriverManager.getConnection(dbUrl);
     }
 
     private void createTables(){
@@ -128,9 +129,17 @@ public class ToVersion5_3 {
                 + ");";
         String sqlCreateCPVTable = "CREATE TABLE IF NOT EXISTS control_points ("
                 + "sensor_type text NOT NULL"
-                + ", values text NOT NULL"
+                + ", points text NOT NULL"
                 + ", range_min real NOT NULL"
                 + ", range_max real NOT NULL"
+                + ");";
+        String sqlCreatePersonTable = "CREATE TABLE IF NOT EXISTS persons ("
+                + "id integer NOT NULL UNIQUE"
+                + ", name text NOT NULL"
+                + ", surname text NOT NULL"
+                + ", patronymic text"
+                + ", position text NOT NULL"
+                + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
                 + ");";
 
         LOGGER.info("Create SQL tables GET SQL CONNECTION");
@@ -143,6 +152,11 @@ public class ToVersion5_3 {
             statement.execute(sqlCreateProcessTable);
             statement.execute(sqlCreateInstallationTable);
             statement.execute(sqlCreateSensorTable);
+            statement.execute(sqlCreateCalibratorTable);
+            statement.execute(sqlCreateChannelTable);
+            statement.execute(sqlCreateCPVTable);
+            statement.execute(sqlCreateMeasurementTable);
+            statement.execute(sqlCreatePersonTable);
 
             LOGGER.info("Create SQL tables CLOSE SQL CONNECTION");
             statement.close();
@@ -153,11 +167,312 @@ public class ToVersion5_3 {
         LOGGER.info("Create SQL tables SUCCESS");
     }
 
+    private void rewriteChannelsToDB(){
+        LOGGER.info("Rewrite channels ...");
+        String sql = "INSERT INTO channels ("
+                + "'code', 'name', 'department', 'area', 'process', 'installation', 'technology_number', 'protocol_number', 'reference'"
+                + ", 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'"
+                + ", 'allowable_error_percent', 'allowable_error_value'"
+                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        LOGGER.info("Rewrite channels GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite channels SEND REQUESTS");
+
+            for (Channel channel : this.channels){
+                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+                String date = VariableConverter.dateToString(channel.getDate());
+                String suitability = String.valueOf(channel.isSuitability());
+                String measurement = writer.writeValueAsString(channel.getMeasurement());
+                String sensor = writer.writeValueAsString(channel.getSensor());
+
+                statement.setString(1, channel.getCode());
+                statement.setString(2, channel.getName());
+                statement.setString(3, channel.getDepartment());
+                statement.setString(4, channel.getArea());
+                statement.setString(5, channel.getProcess());
+                statement.setString(6, channel.getInstallation());
+                statement.setString(7, channel.getTechnologyNumber());
+                statement.setString(8, channel.getNumberOfProtocol());
+                statement.setString(9, channel.getReference());
+                statement.setString(10, date);
+                statement.setString(11, suitability);
+                statement.setString(12, measurement);
+                statement.setString(13, sensor);
+                statement.setDouble(14, channel.getFrequency());
+                statement.setDouble(15, channel.getRangeMin());
+                statement.setDouble(16, channel.getRangeMax());
+                statement.setDouble(17, channel.getAllowableErrorPercent());
+                statement.setDouble(18, channel.getAllowableError());
+
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite channels CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException | JsonProcessingException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite channels ERROR", ex);
+        }
+        LOGGER.info("Rewrite channels SUCCESS");
+    }
+
+    private void rewriteSensorsToDB(){
+        LOGGER.info("Rewrite sensors ...");
+        String sql = "INSERT INTO sensors ("
+                + "'name', 'type', 'range_min', 'range_max', 'number', 'value', 'measurement', 'error_formula'"
+                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        LOGGER.info("Rewrite sensors GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite sensors SEND REQUESTS");
+
+            for (Sensor sensor : this.sensors){
+                statement.setString(1, sensor.getName());
+                statement.setString(2, sensor.getType());
+                statement.setDouble(3, sensor.getRangeMin());
+                statement.setDouble(4, sensor.getRangeMax());
+                statement.setString(5, sensor.getNumber());
+                statement.setString(6, sensor.getValue());
+                statement.setString(7, sensor.getMeasurement());
+                statement.setString(8, sensor.getErrorFormula());
+
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite sensors CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite sensors ERROR", ex);
+        }
+        LOGGER.info("Rewrite sensors SUCCESS");
+    }
+
+    private void rewritePersonsToDB(){
+        LOGGER.info("Rewrite persons ...");
+        String sql = "INSERT INTO persons ("
+                + "'name', 'surname', 'patronymic', 'position'"
+                + ") VALUES (?, ?, ?, ?)";
+
+        LOGGER.info("Rewrite persons GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite persons SEND REQUESTS");
+
+            for (Worker person : this.persons){
+                statement.setString(1, person.getName());
+                statement.setString(2, person.getSurname());
+                statement.setString(3, person.getPatronymic());
+                statement.setString(4, person.getPosition());
+
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite persons CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite persons ERROR", ex);
+        }
+        LOGGER.info("Rewrite persons SUCCESS");
+    }
+
+    private void rewriteCalibratorsToDB(){
+        LOGGER.info("Rewrite calibrators ...");
+        String sql = "INSERT INTO calibrators ("
+                + "'name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max'"
+                + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        LOGGER.info("Rewrite calibrators GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite calibrators SEND REQUESTS");
+
+            for (Calibrator calibrator : this.calibrators){
+                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
+                String certificate = writer.writeValueAsString(calibrator.getCertificate());
+
+                statement.setString(1, calibrator.getName());
+                statement.setString(2, calibrator.getType());
+                statement.setString(3, calibrator.getNumber());
+                statement.setString(4, calibrator.getMeasurement());
+                statement.setString(5, calibrator.getValue());
+                statement.setString(6, calibrator.getErrorFormula());
+                statement.setString(7, certificate);
+                statement.setDouble(8, calibrator.getRangeMin());
+                statement.setDouble(9, calibrator.getRangeMax());
+
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite calibrators CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException | JsonProcessingException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite calibrators ERROR", ex);
+        }
+        LOGGER.info("Rewrite calibrators SUCCESS");
+    }
+
+    private void rewriteCPVToDB(){
+        LOGGER.info("Rewrite control points values ...");
+        String sql = "INSERT INTO control_points ("
+                + "'sensor_type', 'points', 'range_min', 'range_max'"
+                + ") VALUES (?, ?, ?, ?)";
+
+        LOGGER.info("Rewrite control points values GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite control points values SEND REQUESTS");
+
+            for (ControlPointsValues cpv : this.controlPointsValues){
+                String points = VariableConverter.arrayToString(cpv.getValues());
+
+                statement.setString(1, cpv.getSensorType());
+                statement.setString(2, points);
+                statement.setDouble(3, cpv.getRangeMin());
+                statement.setDouble(4, cpv.getRangeMax());
+
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite control points values CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite control points values ERROR", ex);
+        }
+        LOGGER.info("Rewrite control points values SUCCESS");
+    }
+
+    private void rewriteMeasurementsToDB(){
+        LOGGER.info("Rewrite measurements ...");
+        String sql = "INSERT INTO measurements ("
+                + "'name', 'value'"
+                + ") VALUES (?, ?)";
+
+        LOGGER.info("Rewrite measurements GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite measurements SEND REQUESTS");
+
+            for (Measurement measurement : this.measurements){
+                statement.setString(1, measurement.getName());
+                statement.setString(2, measurement.getValue());
+
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite measurements CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite measurements ERROR", ex);
+        }
+        LOGGER.info("Rewrite measurements SUCCESS");
+    }
+
+    private void rewriteDepartmentsToDB(){
+        LOGGER.info("Rewrite departments ...");
+        String sql = "INSERT INTO departments ("
+                + "'department'"
+                + ") VALUES (?)";
+
+        LOGGER.info("Rewrite departments GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite departments SEND REQUESTS");
+
+            for (String department : this.departments){
+                statement.setString(1, department);
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite departments CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite departments ERROR", ex);
+        }
+        LOGGER.info("Rewrite departments SUCCESS");
+    }
+
+    private void rewriteAreasToDB(){
+        LOGGER.info("Rewrite areas ...");
+        String sql = "INSERT INTO areas ("
+                + "'area'"
+                + ") VALUES (?)";
+
+        LOGGER.info("Rewrite areas GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite areas SEND REQUESTS");
+
+            for (String area : this.areas){
+                statement.setString(1, area);
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite areas CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite areas ERROR", ex);
+        }
+        LOGGER.info("Rewrite areas SUCCESS");
+    }
+
+    private void rewriteProcessesToDB(){
+        LOGGER.info("Rewrite processes ...");
+        String sql = "INSERT INTO processes ("
+                + "'process'"
+                + ") VALUES (?)";
+
+        LOGGER.info("Rewrite processes GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite processes SEND REQUESTS");
+
+            for (String process : this.processes){
+                statement.setString(1, process);
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite processes CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite processes ERROR", ex);
+        }
+        LOGGER.info("Rewrite processes SUCCESS");
+    }
+
+    private void rewriteInstallationsToDB(){
+        LOGGER.info("Rewrite installations ...");
+        String sql = "INSERT INTO installations ("
+                + "'installation'"
+                + ") VALUES (?)";
+
+        LOGGER.info("Rewrite installations GET SQL CONNECTION");
+        try (Connection connection = this.getConnection()){
+            PreparedStatement statement = connection.prepareStatement(sql);
+            LOGGER.info("Rewrite installations SEND REQUESTS");
+
+            for (String installation : this.installations){
+                statement.setString(1, installation);
+                statement.execute();
+            }
+
+            LOGGER.info("Rewrite installations CLOSE SQL CONNECTION");
+            statement.close();
+        }catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Rewrite installations ERROR", ex);
+        }
+        LOGGER.info("Rewrite installations SUCCESS");
+    }
+
     @SuppressWarnings("unchecked")
     private ArrayList<Channel> readChannels() {
         LOGGER.info("Read channels ...");
         ArrayList<Channel>channels = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.channelsFilePath))){
+        String channelsFilePath = "Support/Lists/Channels.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(channelsFilePath))){
             channels = (ArrayList<Channel>) reader.readObject();
             if (channels != null) {
                 LOGGER.info("Read channels SUCCESS");
@@ -174,7 +489,8 @@ public class ToVersion5_3 {
     private ArrayList<Sensor> readSensors() {
         LOGGER.info("Read sensors ...");
         ArrayList<Sensor>sensors = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.sensorsFilePath))){
+        String sensorsFilePath = "Support/Lists/Sensors.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(sensorsFilePath))){
             sensors = (ArrayList<Sensor>) reader.readObject();
             if (sensors != null) {
                 LOGGER.info("Read sensors SUCCESS");
@@ -191,7 +507,8 @@ public class ToVersion5_3 {
     private ArrayList<Worker> readPersons() {
         LOGGER.info("Read persons ...");
         ArrayList<Worker>persons = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.personsFilePath))){
+        String personsFilePath = "Support/Lists/Persons.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(personsFilePath))){
             persons = (ArrayList<Worker>) reader.readObject();
             if (persons != null) {
                 LOGGER.info("Read persons SUCCESS");
@@ -208,7 +525,8 @@ public class ToVersion5_3 {
     private ArrayList<Calibrator> readCalibrators() {
         LOGGER.info("Read calibrators ...");
         ArrayList<Calibrator>calibrators = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.calibratorsFilePath))){
+        String calibratorsFilePath = "Support/Lists/Calibrators.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(calibratorsFilePath))){
             calibrators = (ArrayList<Calibrator>) reader.readObject();
             if (calibrators != null) {
                 LOGGER.info("Read calibrators SUCCESS");
@@ -225,7 +543,8 @@ public class ToVersion5_3 {
     private ArrayList<Measurement> readMeasurements() {
         LOGGER.info("Read measurements ...");
         ArrayList<Measurement>measurements = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.measurementsFilePath))){
+        String measurementsFilePath = "Support/Lists/Measurements.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(measurementsFilePath))){
             measurements = (ArrayList<Measurement>) reader.readObject();
             if (measurements != null) {
                 LOGGER.info("Read measurements SUCCESS");
@@ -242,7 +561,8 @@ public class ToVersion5_3 {
     private ArrayList<ControlPointsValues> readControlPointsValues() {
         LOGGER.info("Read controlPointsValues ...");
         ArrayList<ControlPointsValues>controlPointsValues = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.controlPointsValuesFilePath))){
+        String controlPointsValuesFilePath = "Support/Lists/control_points_values.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(controlPointsValuesFilePath))){
             controlPointsValues = (ArrayList<ControlPointsValues>) reader.readObject();
             if (controlPointsValues != null) {
                 LOGGER.info("Read controlPointsValues SUCCESS");
@@ -259,7 +579,8 @@ public class ToVersion5_3 {
     private ArrayList<String> readDepartments() {
         LOGGER.info("Read departments ...");
         ArrayList<String>departments = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.departmentsFilePath))){
+        String departmentsFilePath = "Support/Lists/Departments.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(departmentsFilePath))){
             departments = (ArrayList<String>) reader.readObject();
             if (departments != null) {
                 LOGGER.info("Read departments SUCCESS");
@@ -276,7 +597,8 @@ public class ToVersion5_3 {
     private ArrayList<String> readAreas() {
         LOGGER.info("Read areas ...");
         ArrayList<String>areas = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.areasFilePath))){
+        String areasFilePath = "Support/Lists/Areas.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(areasFilePath))){
             areas = (ArrayList<String>) reader.readObject();
             if (areas != null) {
                 LOGGER.info("Read areas SUCCESS");
@@ -293,7 +615,8 @@ public class ToVersion5_3 {
     private ArrayList<String> readProcesses() {
         LOGGER.info("Read processes ...");
         ArrayList<String>processes = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.processesFilePath))){
+        String processesFilePath = "Support/Lists/Processes.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(processesFilePath))){
             processes = (ArrayList<String>) reader.readObject();
             if (processes != null) {
                 LOGGER.info("Read processes SUCCESS");
@@ -310,7 +633,8 @@ public class ToVersion5_3 {
     private ArrayList<String> readInstallations() {
         LOGGER.info("Read installations ...");
         ArrayList<String>installations = null;
-        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(this.installationsFilePath))){
+        String installationsFilePath = "Support/Lists/Installations.dat";
+        try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(installationsFilePath))){
             installations = (ArrayList<String>) reader.readObject();
             if (installations != null) {
                 LOGGER.info("Read installations SUCCESS");

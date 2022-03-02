@@ -38,9 +38,9 @@ public class Calibrator implements Serializable {
     public double getRange(){return this.rangeMax - this.rangeMin;}
     public String getValue(){return this.value;}
     public String getMeasurement(){return this.measurement;}
-    public String getCertificateName(){return this.certificate.name;}
-    public Calendar getCertificateDate(){return this.certificate.date;}
-    public String getCertificateCompany(){return this.certificate.company;}
+    public String getCertificateName(){return this.certificate.getName();}
+    public Calendar getCertificateDate(){return this.certificate.getDate();}
+    public String getCertificateCompany(){return this.certificate.getCompany();}
     public String getErrorFormula(){return this.errorFormula;}
 
     //Setters
@@ -50,18 +50,18 @@ public class Calibrator implements Serializable {
     public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
     public void setValue(String value){this.value = value;}
-    public void setCertificateName(String name){this.certificate.name = name;}
-    public void setCertificateDate(Calendar date){this.certificate.date = date;}
-    public void setCertificateCompany(String company){this.certificate.company = company;}
+    public void setCertificateName(String name){this.certificate.setName(name);}
+    public void setCertificateDate(Calendar date){this.certificate.setDate(date);}
+    public void setCertificateCompany(String company){this.certificate.setCompany(company);}
     public void setErrorFormula(String errorFormula){this.errorFormula = errorFormula;}
     public void setMeasurement(String measurement){this.measurement = measurement;}
 
     public String getCertificateToString(){
-        return this.certificate.name
+        return this.certificate.getName()
                 + " від "
-                + VariableConverter.dateToString(this.certificate.date)
+                + VariableConverter.dateToString(this.certificate.getDate())
                 + "р "
-                + this.certificate.company;
+                + this.certificate.getCompany();
     }
 
     /*
@@ -89,9 +89,17 @@ public class Calibrator implements Serializable {
     }
 
     public static class Certificate implements Serializable {
-        protected String name = "";
-        protected Calendar date = Calendar.getInstance();
-        protected String company = "";
+        private String name = "";
+        private Calendar date = Calendar.getInstance();
+        private String company = "";
+
+        public String getName(){return this.name;}
+        public Calendar getDate(){return this.date;}
+        public String getCompany(){return this.company;}
+
+        public void setName(String name){this.name = name;}
+        public void setDate(Calendar date){this.date = date;}
+        public void setCompany(String company){this.company = company;}
 
         @Override
         public boolean equals(Object object){

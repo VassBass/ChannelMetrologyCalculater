@@ -12,6 +12,7 @@ public class Updater {
         if (version == null || version.equals(V5_2)){
             ToVersion5_3 upTo5_3 = new ToVersion5_3();
             upTo5_3.update();
+            Settings.setSettingValue(Key.VERSION, V5_3);
         }
     }
 }

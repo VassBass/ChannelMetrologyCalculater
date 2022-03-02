@@ -1,5 +1,8 @@
 package converters;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -308,5 +311,31 @@ public class VariableConverter {
             }
         }
         return builder.toString();
+    }
+
+    public static String arrayToString(double[]array){
+        StringBuilder builder = new StringBuilder();
+        for (int i=0;i< array.length;i++){
+            builder.append(array[i]);
+            if (i != (array.length-1)) builder.append("|");
+        }
+        return builder.toString();
+    }
+
+    public static double[]stringToArray(String stringArray){
+        StringBuilder builder = new StringBuilder();
+        char[]chars = stringArray.toCharArray();
+        ArrayList<Double>array = new ArrayList<>();
+        for (char ch : chars){
+            if (ch == '|'){
+                Double d = Double.parseDouble(builder.toString());
+                array.add(d);
+                builder.setLength(0);
+            }else {
+                builder.append(ch);
+            }
+        }
+        Double[]arrr = array.toArray(new Double[0]);
+        return ArrayUtils.toPrimitive(arrr);
     }
 }
