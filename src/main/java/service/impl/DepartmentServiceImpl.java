@@ -1,13 +1,13 @@
 package service.impl;
 
+import application.Application;
+import repository.DepartmentRepository;
+import repository.impl.DepartmentRepositoryImpl;
 import service.FileBrowser;
 import def.DefaultDepartments;
-import model.Model;
-import repository.Repository;
 import service.DepartmentService;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,7 +18,8 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private static final String ERROR = "Помилка";
 
-    private Window window;
+    private final DepartmentRepository repository = new DepartmentRepositoryImpl();
+
     private ArrayList<String> departments;
 
     private String exportFileName(Calendar date){
@@ -32,17 +33,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void init(Window window){
+    public void init(){
         LOGGER.info("DepartmentService: initialization start ...");
-        try {
-            this.departments = new Repository<String>(null, Model.DEPARTMENT).readList();
-        }catch (Exception e){
-            LOGGER.info("DepartmentService: file \"" + FileBrowser.FILE_DEPARTMENTS.getName() + "\" is empty");
-            LOGGER.info("DepartmentService: set default list");
-            this.departments = DefaultDepartments.get();
-            this.save();
-        }
-        this.window = window;
+        this.departments = repository.getAll();
         LOGGER.info("DepartmentService: initialization SUCCESS");
     }
 
@@ -60,7 +53,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public ArrayList<String> add(String object) {
         if (!this.departments.contains(object)){
             this.departments.add(object);
-            this.save();
+            this.repository.add(object);
         }
         return this.departments;
     }
@@ -69,7 +62,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     public ArrayList<String> remove(String object) {
         if (this.departments.contains(object)){
             this.departments.remove(object);
-            this.save();
+            this.repository.remove(object);
         }else {
             this.showNotFoundMessage();
         }
@@ -84,30 +77,21 @@ public class DepartmentServiceImpl implements DepartmentService {
             }else {
                 int index = this.departments.indexOf(oldObject);
                 this.departments.set(index, newObject);
+                this.repository.set(oldObject, newObject);
             }
-            this.save();
         }
         return this.departments;
     }
 
     @Override
     public String get(int index) {
-        if (index >= 0) {
-            return this.departments.get(index);
-        }else {
-            return null;
-        }
+        return index >= 0 ? this.departments.get(index) : null;
     }
 
     @Override
     public void clear() {
         this.departments.clear();
-        this.save();
-    }
-
-    @Override
-    public void save() {
-        new Repository<String>(this.window, Model.DEPARTMENT).writeList(this.departments);
+        this.repository.clear();
     }
 
     @Override
@@ -125,11 +109,17 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public void rewriteInCurrentThread(ArrayList<String>departments){
         this.departments = departments;
-        new Repository<String>(null, Model.DEPARTMENT).writeListInCurrentThread(departments);
+        this.repository.rewrite(departments);
+    }
+
+    @Override
+    public void resetToDefault() {
+        this.departments = DefaultDepartments.get();
+        this.repository.rewrite(this.departments);
     }
 
     private void showNotFoundMessage() {
         String message = "Цех з такою назвою не знайдено в списку цехів.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
     }
 }

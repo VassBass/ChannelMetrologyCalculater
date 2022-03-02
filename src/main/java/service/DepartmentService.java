@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public interface DepartmentService {
-    void init(Window window);
+    void init();
     ArrayList<String> getAll();
     String[] getAllInStrings();
     ArrayList<String> add(String object);
@@ -12,7 +12,7 @@ public interface DepartmentService {
     ArrayList<String> set(String oldObject, String newObject);
     String get(int index);
     void clear();
-    void save();
     boolean exportData();
     void rewriteInCurrentThread(ArrayList<String>areas);
+    void resetToDefault();
 }
