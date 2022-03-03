@@ -1,6 +1,7 @@
 package repository.impl;
 
 import application.Application;
+import application.ApplicationContext;
 import constants.Action;
 import org.sqlite.JDBC;
 import repository.DepartmentRepository;
@@ -15,11 +16,43 @@ import java.util.logging.Logger;
 
 public class DepartmentRepositoryImpl implements DepartmentRepository {
     private static final Logger LOGGER = Logger.getLogger(DepartmentRepository.class.getName());
-    private static final String dbUrl = "jdbc:sqlite:Support/Data.db";
+    private final String dbUrl;
+
+    public DepartmentRepositoryImpl(){
+        this.dbUrl = Application.pathToDB;
+        this.init();
+    }
+
+    public DepartmentRepositoryImpl(String dbUrl){
+        this.dbUrl = dbUrl;
+        this.init();
+    }
 
     private Connection getConnection() throws SQLException {
         DriverManager.registerDriver(new JDBC());
-        return DriverManager.getConnection(dbUrl);
+        return DriverManager.getConnection(this.dbUrl);
+    }
+
+    private void init(){
+        LOGGER.info("Initialization ...");
+        String sql = "CREATE TABLE IF NOT EXISTS departments ("
+                + "department text NOT NULL UNIQUE"
+                + ", PRIMARY KEY (\"department\")"
+                + ");";
+
+        LOGGER.fine("Get connection with DB");
+        try (Connection connection = this.getConnection()){
+            Statement statement = connection.createStatement();
+
+            LOGGER.fine("Send request");
+            statement.execute(sql);
+
+            LOGGER.fine("Close connection");
+            statement.close();
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
+        }
+        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
@@ -100,7 +133,13 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
         private String object, old;
         private ArrayList<String>list;
         private Action action;
-        private final SaveMessage saveMessage = new SaveMessage(Application.context.mainScreen);
+        private final SaveMessage saveMessage;
+
+        public BackgroundAction(){
+            ApplicationContext context = Application.context;
+            Window mainScreen = context == null ? null : Application.context.mainScreen;
+            this.saveMessage = mainScreen == null ? null : new SaveMessage(mainScreen);
+        }
 
         void add(String object){
             this.object = object;
@@ -137,7 +176,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    saveMessage.setVisible(true);
+                    if (saveMessage != null) saveMessage.setVisible(true);
                 }
             });
             this.execute();
@@ -202,10 +241,9 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
                     statementClear.execute(sql);
 
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO departments ('department') VALUES (?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    statement.setString(1, this.object);
-                    statement.execute();
+                    sql = "INSERT INTO departments ('department') VALUES ('" + this.object + "');";
+                    Statement statement = connection.createStatement();
+                    statement.execute(sql);
 
                     LOGGER.fine("Close connections");
                     statementClear.close();
@@ -220,7 +258,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
         @Override
         protected void done() {
             Application.setBusy(false);
-            this.saveMessage.dispose();
+             if (this.saveMessage != null) this.saveMessage.dispose();
         }
     }
 }

@@ -1,6 +1,5 @@
 package service;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public interface DepartmentService {
@@ -13,6 +12,6 @@ public interface DepartmentService {
     String get(int index);
     void clear();
     boolean exportData();
-    void rewriteInCurrentThread(ArrayList<String>areas);
+    void rewriteInCurrentThread(ArrayList<String>departments);
     void resetToDefault();
 }

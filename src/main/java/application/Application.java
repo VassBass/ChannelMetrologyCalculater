@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 public class Application extends SwingWorker<Void, String> {
     public static final String appVersion = "v5.2";
+    public static final String pathToDB = "jdbc:sqlite:Support/Data.db";
     public static final Dimension sizeOfScreen = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
     private static final Logger LOGGER = Logger.getLogger(Application.class.getName());
     public static ApplicationContext context;
@@ -99,7 +100,7 @@ public class Application extends SwingWorker<Void, String> {
         publish("Оновлення");
         Updater.update();
         publish("Завантаження списку цехів");
-        context.departmentService.init(context.mainScreen);
+        context.departmentService.init();
         publish("Завантаження списку ділянок");
         context.areaService.init(context.mainScreen);
         publish("Завантаження списку процесів");

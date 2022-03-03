@@ -18,9 +18,17 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private static final String ERROR = "Помилка";
 
-    private final DepartmentRepository repository = new DepartmentRepositoryImpl();
+    private final DepartmentRepository repository;
 
     private ArrayList<String> departments;
+
+    public DepartmentServiceImpl(){
+        this.repository = new DepartmentRepositoryImpl();
+    }
+
+    public DepartmentServiceImpl(String dbUrl){
+        this.repository = new DepartmentRepositoryImpl(dbUrl);
+    }
 
     private String exportFileName(Calendar date){
         return "export_departments ["
@@ -85,7 +93,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public String get(int index) {
-        return index >= 0 ? this.departments.get(index) : null;
+        return index < 0 | index >= this.departments.size() ? null : this.departments.get(index);
     }
 
     @Override
