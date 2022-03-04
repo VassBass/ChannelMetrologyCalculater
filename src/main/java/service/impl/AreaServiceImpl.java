@@ -1,13 +1,13 @@
 package service.impl;
 
+import application.Application;
 import def.DefaultAreas;
-import model.Model;
-import repository.Repository;
+import repository.AreaRepository;
+import repository.impl.AreaRepositoryImpl;
 import service.AreaService;
 import service.FileBrowser;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,9 +16,10 @@ import java.util.logging.Logger;
 public class AreaServiceImpl implements AreaService {
     private static final Logger LOGGER = Logger.getLogger(AreaService.class.getName());
 
+    private final AreaRepository repository;
+
     private static final String ERROR = "Помилка";
 
-    private Window window;
     private ArrayList<String> areas;
 
     private String exportFileName(Calendar date){
@@ -31,19 +32,19 @@ public class AreaServiceImpl implements AreaService {
                 + "].are";
     }
 
+    public AreaServiceImpl(){
+        this.repository = new AreaRepositoryImpl();
+    }
+
+    public AreaServiceImpl(String dbUrl){
+        this.repository = new AreaRepositoryImpl(dbUrl);
+    }
+
     @Override
-    public void init(Window window){
-        LOGGER.info("AreaService: initialization start ...");
-        try {
-            this.areas = new Repository<String>(null, Model.AREA).readList();
-        }catch (Exception e){
-            LOGGER.info("AreaService: file \"" + FileBrowser.FILE_AREAS.getName() + "\" is empty");
-            LOGGER.info("AreaService: set default list");
-            this.areas = DefaultAreas.get();
-            this.save();
-        }
-        this.window = window;
-        LOGGER.info("AreaService: initialization SUCCESS");
+    public void init(){
+        LOGGER.fine("AreaService: initialization start ...");
+        this.areas = this.repository.getAll();
+        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
@@ -58,56 +59,47 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     public ArrayList<String> add(String object) {
-        if (!this.areas.contains(object)){
+        if (object != null && !this.areas.contains(object)){
             this.areas.add(object);
-            this.save();
+            this.repository.add(object);
         }
         return this.areas;
     }
 
     @Override
     public ArrayList<String> remove(String object) {
-        if (this.areas.contains(object)){
-            this.areas.remove(object);
-            this.save();
-        }else {
-            this.showNotFoundMessage();
+        if (object != null) {
+            if (this.areas.contains(object)) {
+                this.areas.remove(object);
+                this.repository.remove(object);
+            } else {
+                this.showNotFoundMessage();
+            }
         }
         return this.areas;
     }
 
     @Override
     public ArrayList<String> set(String oldObject, String newObject) {
-        if (oldObject != null){
-            if (newObject == null){
-                this.remove(oldObject);
-            }else {
-                int index = this.areas.indexOf(oldObject);
+        if (oldObject != null && newObject != null){
+            int index = this.areas.indexOf(oldObject);
+            if (index >= 0) {
                 this.areas.set(index, newObject);
+                this.repository.set(oldObject, newObject);
             }
-            this.save();
         }
         return this.areas;
     }
 
     @Override
     public String get(int index) {
-        if (index >= 0) {
-            return this.areas.get(index);
-        }else {
-            return null;
-        }
+        return index < 0 | index >= this.areas.size() ? null : this.areas.get(index);
     }
 
     @Override
     public void clear() {
         this.areas.clear();
-        this.save();
-    }
-
-    @Override
-    public void save() {
-        new Repository<String>(this.window, Model.AREA).writeList(this.areas);
+        this.repository.clear();
     }
 
     @Override
@@ -124,12 +116,22 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>areas){
-        this.areas = areas;
-        new Repository<String>(null, Model.AREA).writeListInCurrentThread(areas);
+        if (areas != null) {
+            this.areas = areas;
+            this.repository.rewriteInCurrentThread(areas);
+        }
+    }
+
+    @Override
+    public void resetToDefault() {
+        this.areas = DefaultAreas.get();
+        this.repository.rewrite(this.areas);
     }
 
     private void showNotFoundMessage() {
-        String message = "Ділянка з такою назвою не знайдена в списку ділянок.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        if (Application.context != null) {
+            String message = "Ділянка з такою назвою не знайдена в списку ділянок.";
+            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

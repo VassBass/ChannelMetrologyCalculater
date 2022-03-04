@@ -1,11 +1,12 @@
 package service;
 
+import def.DefaultAreas;
 import def.DefaultDepartments;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sqlite.JDBC;
-import service.impl.DepartmentServiceImpl;
+import service.impl.AreaServiceImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,29 +16,29 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DepartmentServiceTest {
+class AreaServiceTest {
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
-    private final DepartmentService service = new DepartmentServiceImpl(DB_URL);
+    private final AreaService service = new AreaServiceImpl(DB_URL);
 
-    private static final String DOF = "ДОФ";
-    private static final String CVO = "ЦВО";
-    private static final String VC = "ВЦ";
+    private static final String OVSD_1 = "ОВЗД-1";
+    private static final String OVSD_2 = "ОВЗД-2";
+    private static final String OVSD_3 = "ОВЗД-3";
 
     @BeforeEach
     void setUp() {
         try {
             DriverManager.registerDriver(new JDBC());
             Connection connection = DriverManager.getConnection(DB_URL);
-            String sql = "DELETE FROM departments;";
+            String sql = "DELETE FROM areas;";
             Statement statement = connection.createStatement();
             statement.execute(sql);
             statement.close();
             this.service.rewriteInCurrentThread(new ArrayList<String>());
 
-            sql = "INSERT INTO departments ('department') "
+            sql = "INSERT INTO areas ('area') "
                     + "VALUES "
-                    +       "('" + DOF + "'),"
-                    +       "('" + CVO + "');";
+                    +       "('" + OVSD_1 + "'),"
+                    +       "('" + OVSD_2 + "');";
             statement = connection.createStatement();
             statement.execute(sql);
             statement.close();
@@ -50,56 +51,56 @@ class DepartmentServiceTest {
     @Test
     void getAll() {
         ArrayList<String>testArray = new ArrayList<>();
-        testArray.add(DOF);
-        testArray.add(CVO);
+        testArray.add(OVSD_1);
+        testArray.add(OVSD_2);
         assertIterableEquals(testArray, this.service.getAll());
     }
 
     @Test
     void getAllInStrings() {
-        String[]testArray = new String[]{DOF, CVO};
+        String[]testArray = new String[]{OVSD_1, OVSD_2};
         assertArrayEquals(testArray, this.service.getAllInStrings());
     }
 
     @Test
     void add() {
         ArrayList<String>testArray = new ArrayList<>();
-        testArray.add(DOF);
-        testArray.add(CVO);
-        testArray.add(VC);
-        ArrayList<String>departments = this.service.add(VC);
-        assertIterableEquals(testArray, departments);
-        departments = this.service.add(null);
-        assertIterableEquals(testArray, departments);
+        testArray.add(OVSD_1);
+        testArray.add(OVSD_2);
+        testArray.add(OVSD_3);
+        ArrayList<String>areas = this.service.add(OVSD_3);
+        assertIterableEquals(testArray, areas);
+        areas = this.service.add(null);
+        assertIterableEquals(testArray, areas);
     }
 
     @Test
     void remove() {
         ArrayList<String>testArray = new ArrayList<>();
-        testArray.add(DOF);
-        ArrayList<String>departments = this.service.remove(CVO);
-        assertIterableEquals(testArray, departments);
-        departments = this.service.remove(null);
-        assertIterableEquals(testArray, departments);
-        departments = this.service.remove(VC);
-        assertIterableEquals(testArray, departments);
+        testArray.add(OVSD_1);
+        ArrayList<String>areas = this.service.remove(OVSD_2);
+        assertIterableEquals(testArray, areas);
+        areas = this.service.remove(null);
+        assertIterableEquals(testArray, areas);
+        areas = this.service.remove(OVSD_3);
+        assertIterableEquals(testArray, areas);
     }
 
     @Test
     void set() {
         ArrayList<String>testArray = new ArrayList<>();
-        testArray.add(DOF);
-        testArray.add(VC);
-        ArrayList<String>departments = this.service.set(CVO, VC);
-        assertIterableEquals(testArray, departments);
-        departments = this.service.set(null, VC);
-        assertIterableEquals(testArray, departments);
-        departments = this.service.set(null, null);
-        assertIterableEquals(testArray, departments);
-        departments = this.service.set(CVO, VC);
-        assertIterableEquals(testArray, departments);
-        departments = this.service.set(VC, null);
-        assertIterableEquals(testArray, departments);
+        testArray.add(OVSD_1);
+        testArray.add(OVSD_3);
+        ArrayList<String>areas = this.service.set(OVSD_2, OVSD_3);
+        assertIterableEquals(testArray, areas);
+        areas = this.service.set(null, OVSD_3);
+        assertIterableEquals(testArray, areas);
+        areas = this.service.set(null, null);
+        assertIterableEquals(testArray, areas);
+        areas = this.service.set(OVSD_2, OVSD_3);
+        assertIterableEquals(testArray, areas);
+        areas = this.service.set(OVSD_3, null);
+        assertIterableEquals(testArray, areas);
     }
 
     @Test
@@ -107,8 +108,8 @@ class DepartmentServiceTest {
         String dof = this.service.get(0);
         String cvo = this.service.get(1);
         String nullString = this.service.get(2);
-        assertEquals(DOF, dof);
-        assertEquals(CVO, cvo);
+        assertEquals(OVSD_1, dof);
+        assertEquals(OVSD_2, cvo);
         assertNull(nullString);
     }
 
@@ -121,9 +122,9 @@ class DepartmentServiceTest {
     @Test
     void rewriteInCurrentThread() {
         ArrayList<String>testArray = new ArrayList<>();
-        testArray.add(VC);
-        testArray.add(CVO);
-        testArray.add(DOF);
+        testArray.add(OVSD_3);
+        testArray.add(OVSD_2);
+        testArray.add(OVSD_1);
         this.service.rewriteInCurrentThread(testArray);
         assertIterableEquals(testArray, this.service.getAll());
         this.service.rewriteInCurrentThread(null);
@@ -132,7 +133,7 @@ class DepartmentServiceTest {
 
     @Test
     void resetToDefault() {
-        ArrayList<String>testArray = DefaultDepartments.get();
+        ArrayList<String>testArray = DefaultAreas.get();
         this.service.resetToDefault();
         assertIterableEquals(testArray, this.service.getAll());
     }

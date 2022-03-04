@@ -102,11 +102,11 @@ public class Application extends SwingWorker<Void, String> {
         publish("Завантаження списку цехів");
         context.departmentService.init();
         publish("Завантаження списку ділянок");
-        context.areaService.init(context.mainScreen);
+        context.areaService.init();
         publish("Завантаження списку процесів");
-        context.processService.init(context.mainScreen);
+        context.processService.init();
         publish("Завантаження списку установок");
-        context.installationService.init(context.mainScreen);
+        context.installationService.init();
         publish("Завантаження списку працівників");
         context.personService.init(context.mainScreen);
         publish("Завантаження списку вимірюваннь");

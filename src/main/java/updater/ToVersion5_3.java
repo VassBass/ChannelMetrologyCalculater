@@ -61,7 +61,7 @@ public class ToVersion5_3 {
     }
 
     private void createTables(){
-        LOGGER.info("Create SQL tables ...");
+        LOGGER.fine("Create SQL tables ...");
 
         String sqlCreateDepartmentTable = "CREATE TABLE IF NOT EXISTS departments ("
                 + "department text NOT NULL UNIQUE"
@@ -142,9 +142,9 @@ public class ToVersion5_3 {
                 + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
                 + ");";
 
-        LOGGER.info("Create SQL tables GET SQL CONNECTION");
+        LOGGER.fine("Create SQL tables GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
-            LOGGER.info("Create SQL tables SEND REQUESTS");
+            LOGGER.fine("Create SQL tables SEND REQUESTS");
             Statement statement = connection.createStatement();
 
             statement.execute(sqlCreateDepartmentTable);
@@ -158,7 +158,7 @@ public class ToVersion5_3 {
             statement.execute(sqlCreateMeasurementTable);
             statement.execute(sqlCreatePersonTable);
 
-            LOGGER.info("Create SQL tables CLOSE SQL CONNECTION");
+            LOGGER.fine("Create SQL tables CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "Create SQL tables ERROR", ex);
@@ -168,14 +168,14 @@ public class ToVersion5_3 {
     }
 
     private void rewriteChannelsToDB(){
-        LOGGER.info("Rewrite channels ...");
+        LOGGER.fine("Rewrite channels ...");
         String sql = "INSERT INTO channels ("
                 + "'code', 'name', 'department', 'area', 'process', 'installation', 'technology_number', 'protocol_number', 'reference'"
                 + ", 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'"
                 + ", 'allowable_error_percent', 'allowable_error_value'"
                 + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        LOGGER.info("Rewrite channels GET SQL CONNECTION");
+        LOGGER.fine("Rewrite channels GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
             LOGGER.info("Rewrite channels SEND REQUESTS");
@@ -210,7 +210,7 @@ public class ToVersion5_3 {
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite channels CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite channels CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException | JsonProcessingException ex){
             LOGGER.log(Level.SEVERE, "Rewrite channels ERROR", ex);
@@ -219,15 +219,15 @@ public class ToVersion5_3 {
     }
 
     private void rewriteSensorsToDB(){
-        LOGGER.info("Rewrite sensors ...");
+        LOGGER.fine("Rewrite sensors ...");
         String sql = "INSERT INTO sensors ("
                 + "'name', 'type', 'range_min', 'range_max', 'number', 'value', 'measurement', 'error_formula'"
                 + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        LOGGER.info("Rewrite sensors GET SQL CONNECTION");
+        LOGGER.fine("Rewrite sensors GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
-            LOGGER.info("Rewrite sensors SEND REQUESTS");
+            LOGGER.fine("Rewrite sensors SEND REQUESTS");
 
             for (Sensor sensor : this.sensors){
                 statement.setString(1, sensor.getName());
@@ -242,7 +242,7 @@ public class ToVersion5_3 {
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite sensors CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite sensors CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "Rewrite sensors ERROR", ex);
@@ -251,15 +251,15 @@ public class ToVersion5_3 {
     }
 
     private void rewritePersonsToDB(){
-        LOGGER.info("Rewrite persons ...");
+        LOGGER.fine("Rewrite persons ...");
         String sql = "INSERT INTO persons ("
                 + "'name', 'surname', 'patronymic', 'position'"
                 + ") VALUES (?, ?, ?, ?)";
 
-        LOGGER.info("Rewrite persons GET SQL CONNECTION");
+        LOGGER.fine("Rewrite persons GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
-            LOGGER.info("Rewrite persons SEND REQUESTS");
+            LOGGER.fine("Rewrite persons SEND REQUESTS");
 
             for (Worker person : this.persons){
                 statement.setString(1, person.getName());
@@ -270,7 +270,7 @@ public class ToVersion5_3 {
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite persons CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite persons CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "Rewrite persons ERROR", ex);
@@ -279,15 +279,15 @@ public class ToVersion5_3 {
     }
 
     private void rewriteCalibratorsToDB(){
-        LOGGER.info("Rewrite calibrators ...");
+        LOGGER.fine("Rewrite calibrators ...");
         String sql = "INSERT INTO calibrators ("
                 + "'name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max'"
                 + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        LOGGER.info("Rewrite calibrators GET SQL CONNECTION");
+        LOGGER.fine("Rewrite calibrators GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
-            LOGGER.info("Rewrite calibrators SEND REQUESTS");
+            LOGGER.fine("Rewrite calibrators SEND REQUESTS");
 
             for (Calibrator calibrator : this.calibrators){
                 ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -307,7 +307,7 @@ public class ToVersion5_3 {
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite calibrators CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite calibrators CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException | JsonProcessingException ex){
             LOGGER.log(Level.SEVERE, "Rewrite calibrators ERROR", ex);
@@ -316,15 +316,15 @@ public class ToVersion5_3 {
     }
 
     private void rewriteCPVToDB(){
-        LOGGER.info("Rewrite control points values ...");
+        LOGGER.fine("Rewrite control points values ...");
         String sql = "INSERT INTO control_points ("
                 + "'sensor_type', 'points', 'range_min', 'range_max'"
                 + ") VALUES (?, ?, ?, ?)";
 
-        LOGGER.info("Rewrite control points values GET SQL CONNECTION");
+        LOGGER.fine("Rewrite control points values GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
-            LOGGER.info("Rewrite control points values SEND REQUESTS");
+            LOGGER.fine("Rewrite control points values SEND REQUESTS");
 
             for (ControlPointsValues cpv : this.controlPointsValues){
                 String points = VariableConverter.arrayToString(cpv.getValues());
@@ -337,7 +337,7 @@ public class ToVersion5_3 {
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite control points values CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite control points values CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "Rewrite control points values ERROR", ex);
@@ -346,15 +346,15 @@ public class ToVersion5_3 {
     }
 
     private void rewriteMeasurementsToDB(){
-        LOGGER.info("Rewrite measurements ...");
+        LOGGER.fine("Rewrite measurements ...");
         String sql = "INSERT INTO measurements ("
                 + "'name', 'value'"
                 + ") VALUES (?, ?)";
 
-        LOGGER.info("Rewrite measurements GET SQL CONNECTION");
+        LOGGER.fine("Rewrite measurements GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
-            LOGGER.info("Rewrite measurements SEND REQUESTS");
+            LOGGER.fine("Rewrite measurements SEND REQUESTS");
 
             for (Measurement measurement : this.measurements){
                 statement.setString(1, measurement.getName());
@@ -363,7 +363,7 @@ public class ToVersion5_3 {
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite measurements CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite measurements CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "Rewrite measurements ERROR", ex);
@@ -372,22 +372,22 @@ public class ToVersion5_3 {
     }
 
     private void rewriteDepartmentsToDB(){
-        LOGGER.info("Rewrite departments ...");
+        LOGGER.fine("Rewrite departments ...");
         String sql = "INSERT INTO departments ("
                 + "'department'"
                 + ") VALUES (?)";
 
-        LOGGER.info("Rewrite departments GET SQL CONNECTION");
+        LOGGER.fine("Rewrite departments GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
-            LOGGER.info("Rewrite departments SEND REQUESTS");
+            LOGGER.fine("Rewrite departments SEND REQUESTS");
 
             for (String department : this.departments){
                 statement.setString(1, department);
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite departments CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite departments CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "Rewrite departments ERROR", ex);
@@ -396,22 +396,22 @@ public class ToVersion5_3 {
     }
 
     private void rewriteAreasToDB(){
-        LOGGER.info("Rewrite areas ...");
+        LOGGER.fine("Rewrite areas ...");
         String sql = "INSERT INTO areas ("
                 + "'area'"
                 + ") VALUES (?)";
 
-        LOGGER.info("Rewrite areas GET SQL CONNECTION");
+        LOGGER.fine("Rewrite areas GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
-            LOGGER.info("Rewrite areas SEND REQUESTS");
+            LOGGER.fine("Rewrite areas SEND REQUESTS");
 
             for (String area : this.areas){
                 statement.setString(1, area);
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite areas CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite areas CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "Rewrite areas ERROR", ex);
@@ -420,22 +420,22 @@ public class ToVersion5_3 {
     }
 
     private void rewriteProcessesToDB(){
-        LOGGER.info("Rewrite processes ...");
+        LOGGER.fine("Rewrite processes ...");
         String sql = "INSERT INTO processes ("
                 + "'process'"
                 + ") VALUES (?)";
 
-        LOGGER.info("Rewrite processes GET SQL CONNECTION");
+        LOGGER.fine("Rewrite processes GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
-            LOGGER.info("Rewrite processes SEND REQUESTS");
+            LOGGER.fine("Rewrite processes SEND REQUESTS");
 
             for (String process : this.processes){
                 statement.setString(1, process);
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite processes CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite processes CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "Rewrite processes ERROR", ex);
@@ -444,22 +444,22 @@ public class ToVersion5_3 {
     }
 
     private void rewriteInstallationsToDB(){
-        LOGGER.info("Rewrite installations ...");
+        LOGGER.fine("Rewrite installations ...");
         String sql = "INSERT INTO installations ("
                 + "'installation'"
                 + ") VALUES (?)";
 
-        LOGGER.info("Rewrite installations GET SQL CONNECTION");
+        LOGGER.fine("Rewrite installations GET SQL CONNECTION");
         try (Connection connection = this.getConnection()){
             PreparedStatement statement = connection.prepareStatement(sql);
-            LOGGER.info("Rewrite installations SEND REQUESTS");
+            LOGGER.fine("Rewrite installations SEND REQUESTS");
 
             for (String installation : this.installations){
                 statement.setString(1, installation);
                 statement.execute();
             }
 
-            LOGGER.info("Rewrite installations CLOSE SQL CONNECTION");
+            LOGGER.fine("Rewrite installations CLOSE SQL CONNECTION");
             statement.close();
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "Rewrite installations ERROR", ex);
@@ -469,7 +469,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<Channel> readChannels() {
-        LOGGER.info("Read channels ...");
+        LOGGER.fine("Read channels ...");
         ArrayList<Channel>channels = null;
         String channelsFilePath = "Support/Lists/Channels.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(channelsFilePath))){
@@ -487,7 +487,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<Sensor> readSensors() {
-        LOGGER.info("Read sensors ...");
+        LOGGER.fine("Read sensors ...");
         ArrayList<Sensor>sensors = null;
         String sensorsFilePath = "Support/Lists/Sensors.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(sensorsFilePath))){
@@ -505,7 +505,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<Worker> readPersons() {
-        LOGGER.info("Read persons ...");
+        LOGGER.fine("Read persons ...");
         ArrayList<Worker>persons = null;
         String personsFilePath = "Support/Lists/Persons.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(personsFilePath))){
@@ -523,7 +523,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<Calibrator> readCalibrators() {
-        LOGGER.info("Read calibrators ...");
+        LOGGER.fine("Read calibrators ...");
         ArrayList<Calibrator>calibrators = null;
         String calibratorsFilePath = "Support/Lists/Calibrators.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(calibratorsFilePath))){
@@ -541,7 +541,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<Measurement> readMeasurements() {
-        LOGGER.info("Read measurements ...");
+        LOGGER.fine("Read measurements ...");
         ArrayList<Measurement>measurements = null;
         String measurementsFilePath = "Support/Lists/Measurements.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(measurementsFilePath))){
@@ -559,7 +559,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<ControlPointsValues> readControlPointsValues() {
-        LOGGER.info("Read controlPointsValues ...");
+        LOGGER.fine("Read controlPointsValues ...");
         ArrayList<ControlPointsValues>controlPointsValues = null;
         String controlPointsValuesFilePath = "Support/Lists/control_points_values.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(controlPointsValuesFilePath))){
@@ -577,7 +577,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<String> readDepartments() {
-        LOGGER.info("Read departments ...");
+        LOGGER.fine("Read departments ...");
         ArrayList<String>departments = null;
         String departmentsFilePath = "Support/Lists/Departments.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(departmentsFilePath))){
@@ -595,7 +595,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<String> readAreas() {
-        LOGGER.info("Read areas ...");
+        LOGGER.fine("Read areas ...");
         ArrayList<String>areas = null;
         String areasFilePath = "Support/Lists/Areas.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(areasFilePath))){
@@ -613,7 +613,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<String> readProcesses() {
-        LOGGER.info("Read processes ...");
+        LOGGER.fine("Read processes ...");
         ArrayList<String>processes = null;
         String processesFilePath = "Support/Lists/Processes.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(processesFilePath))){
@@ -631,7 +631,7 @@ public class ToVersion5_3 {
 
     @SuppressWarnings("unchecked")
     private ArrayList<String> readInstallations() {
-        LOGGER.info("Read installations ...");
+        LOGGER.fine("Read installations ...");
         ArrayList<String>installations = null;
         String installationsFilePath = "Support/Lists/Installations.dat";
         try (ObjectInputStream reader = new ObjectInputStream(new FileInputStream(installationsFilePath))){

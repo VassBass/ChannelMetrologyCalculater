@@ -42,9 +42,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void init(){
-        LOGGER.info("DepartmentService: initialization start ...");
+        LOGGER.fine("DepartmentService: initialization start ...");
         this.departments = repository.getAll();
-        LOGGER.info("DepartmentService: initialization SUCCESS");
+        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
@@ -81,15 +81,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public ArrayList<String> set(String oldObject, String newObject) {
-        if (oldObject != null){
-            if (newObject == null){
-                this.remove(oldObject);
-            }else {
-                int index = this.departments.indexOf(oldObject);
-                if (index >= 0) {
-                    this.departments.set(index, newObject);
-                    this.repository.set(oldObject, newObject);
-                }
+        if (oldObject != null && newObject != null){
+            int index = this.departments.indexOf(oldObject);
+            if (index >= 0) {
+                this.departments.set(index, newObject);
+                this.repository.set(oldObject, newObject);
             }
         }
         return this.departments;

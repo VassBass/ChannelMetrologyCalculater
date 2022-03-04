@@ -1,10 +1,9 @@
 package service;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public interface InstallationService {
-    void init(Window window);
+    void init();
     ArrayList<String> getAll();
     String[] getAllInStrings();
     ArrayList<String> add(String object);
@@ -12,7 +11,7 @@ public interface InstallationService {
     ArrayList<String> set(String oldObject, String newObject);
     String get(int index);
     void clear();
-    void save();
     boolean exportData();
     void rewriteInCurrentThread(ArrayList<String>areas);
+    void resetToDefault();
 }

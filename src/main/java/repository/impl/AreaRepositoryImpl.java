@@ -4,7 +4,7 @@ import application.Application;
 import application.ApplicationContext;
 import constants.Action;
 import org.sqlite.JDBC;
-import repository.DepartmentRepository;
+import repository.AreaRepository;
 import ui.model.SaveMessage;
 
 import javax.swing.*;
@@ -14,16 +14,16 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DepartmentRepositoryImpl implements DepartmentRepository {
-    private static final Logger LOGGER = Logger.getLogger(DepartmentRepository.class.getName());
+public class AreaRepositoryImpl implements AreaRepository {
+    private static final Logger LOGGER = Logger.getLogger(AreaRepository.class.getName());
     private final String dbUrl;
 
-    public DepartmentRepositoryImpl(){
+    public AreaRepositoryImpl(){
         this.dbUrl = Application.pathToDB;
         this.init();
     }
 
-    public DepartmentRepositoryImpl(String dbUrl){
+    public AreaRepositoryImpl(String dbUrl){
         this.dbUrl = dbUrl;
         this.init();
     }
@@ -35,9 +35,9 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
 
     private void init(){
         LOGGER.info("Initialization ...");
-        String sql = "CREATE TABLE IF NOT EXISTS departments ("
-                + "department text NOT NULL UNIQUE"
-                + ", PRIMARY KEY (\"department\")"
+        String sql = "CREATE TABLE IF NOT EXISTS areas ("
+                + "area text NOT NULL UNIQUE"
+                + ", PRIMARY KEY (\"area\")"
                 + ");";
 
         LOGGER.fine("Get connection with DB");
@@ -57,17 +57,17 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
 
     @Override
     public ArrayList<String> getAll() {
-        ArrayList<String>departments = new ArrayList<>();
+        ArrayList<String>areas = new ArrayList<>();
         LOGGER.fine("Get connection with DB");
         try (Connection connection = this.getConnection()){
             Statement statement = connection.createStatement();
 
             LOGGER.fine("Send request");
-            String sql = "SELECT * FROM departments";
+            String sql = "SELECT * FROM areas";
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
-                departments.add(resultSet.getString("department"));
+                areas.add(resultSet.getString("area"));
             }
 
             LOGGER.fine("Close connections");
@@ -76,7 +76,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-        return departments;
+        return areas;
     }
 
     @Override
@@ -111,14 +111,14 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
             try (Connection connection = this.getConnection()) {
                 LOGGER.fine("Send request to clear");
                 Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM departments;";
+                String sql = "DELETE FROM areas;";
                 statementClear.execute(sql);
 
                 LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO departments ('department') VALUES (?);";
+                sql = "INSERT INTO areas ('area') VALUES (?);";
                 PreparedStatement statement = connection.prepareStatement(sql);
-                for (String department : newList) {
-                    statement.setString(1, department);
+                for (String area : newList) {
+                    statement.setString(1, area);
                     statement.execute();
                 }
 
@@ -131,10 +131,10 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
         }
     }
 
-    private class BackgroundAction extends SwingWorker<Void, Void>{
+    private class BackgroundAction extends SwingWorker<Void, Void> {
         private String object, old;
         private ArrayList<String>list;
-        private Action action;
+        private constants.Action action;
         private final SaveMessage saveMessage;
 
         public BackgroundAction(){
@@ -145,24 +145,24 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
 
         void add(String object){
             this.object = object;
-            this.action = Action.ADD;
+            this.action = constants.Action.ADD;
             this.start();
         }
 
         void remove(String object){
             this.object = object;
-            this.action = Action.REMOVE;
+            this.action = constants.Action.REMOVE;
             this.start();
         }
 
         void clear(){
-            this.action = Action.CLEAR;
+            this.action = constants.Action.CLEAR;
             this.start();
         }
 
         void rewrite(ArrayList<String>list){
             this.list = list;
-            this.action = list == null ? Action.CLEAR : Action.REWRITE;
+            this.action = list == null ? constants.Action.CLEAR : constants.Action.REWRITE;
             this.start();
         }
 
@@ -189,14 +189,14 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
             String sql = null;
             switch (this.action){
                 case ADD:
-                    sql = "REPLACE INTO departments (department) "
+                    sql = "REPLACE INTO areas (area) "
                             + "VALUES('" + this.object + "');";
                     break;
                 case REMOVE:
-                    sql = "DELETE FROM departments WHERE department = '" + this.object + "';";
+                    sql = "DELETE FROM areas WHERE area = '" + this.object + "';";
                     break;
                 case CLEAR:
-                    sql = "DELETE FROM departments;";
+                    sql = "DELETE FROM areas;";
                     break;
             }
             if (sql != null) {
@@ -217,14 +217,14 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
                 try (Connection connection = getConnection()){
                     LOGGER.fine("Send request to clear");
                     Statement statementClear = connection.createStatement();
-                    sql = "DELETE FROM departments;";
+                    sql = "DELETE FROM areas;";
                     statementClear.execute(sql);
 
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO departments ('department') VALUES (?);";
+                    sql = "INSERT INTO areas ('area') VALUES (?);";
                     PreparedStatement statement = connection.prepareStatement(sql);
-                    for (String department : this.list){
-                        statement.setString(1, department);
+                    for (String area : this.list){
+                        statement.setString(1, area);
                         statement.execute();
                     }
 
@@ -239,11 +239,11 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
                 try (Connection connection = getConnection()){
                     LOGGER.fine("Send request to delete");
                     Statement statementClear = connection.createStatement();
-                    sql = "DELETE FROM departments WHERE department = '" + this.old + "';";
+                    sql = "DELETE FROM areas WHERE area = '" + this.old + "';";
                     statementClear.execute(sql);
 
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO departments ('department') VALUES ('" + this.object + "');";
+                    sql = "INSERT INTO areas ('area') VALUES ('" + this.object + "');";
                     Statement statement = connection.createStatement();
                     statement.execute(sql);
 
@@ -260,7 +260,7 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
         @Override
         protected void done() {
             Application.setBusy(false);
-             if (this.saveMessage != null) this.saveMessage.dispose();
+            if (this.saveMessage != null) this.saveMessage.dispose();
         }
     }
 }
