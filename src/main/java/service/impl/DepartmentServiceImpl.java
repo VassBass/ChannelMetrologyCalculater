@@ -59,7 +59,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public ArrayList<String> add(String object) {
-        if (!this.departments.contains(object)){
+        if (object != null && !this.departments.contains(object)){
             this.departments.add(object);
             this.repository.add(object);
         }
@@ -68,11 +68,13 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public ArrayList<String> remove(String object) {
-        if (this.departments.contains(object)){
-            this.departments.remove(object);
-            this.repository.remove(object);
-        }else {
-            this.showNotFoundMessage();
+        if (object != null) {
+            if (this.departments.contains(object)) {
+                this.departments.remove(object);
+                this.repository.remove(object);
+            } else {
+                this.showNotFoundMessage();
+            }
         }
         return this.departments;
     }
@@ -84,8 +86,10 @@ public class DepartmentServiceImpl implements DepartmentService {
                 this.remove(oldObject);
             }else {
                 int index = this.departments.indexOf(oldObject);
-                this.departments.set(index, newObject);
-                this.repository.set(oldObject, newObject);
+                if (index >= 0) {
+                    this.departments.set(index, newObject);
+                    this.repository.set(oldObject, newObject);
+                }
             }
         }
         return this.departments;
@@ -116,8 +120,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>departments){
-        this.departments = departments;
-        this.repository.rewrite(departments);
+        if (departments != null) {
+            this.departments = departments;
+            this.repository.rewrite(departments);
+        }
     }
 
     @Override
@@ -127,7 +133,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     private void showNotFoundMessage() {
-        String message = "Цех з такою назвою не знайдено в списку цехів.";
-        JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        if (Application.context != null) {
+            String message = "Цех з такою назвою не знайдено в списку цехів.";
+            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

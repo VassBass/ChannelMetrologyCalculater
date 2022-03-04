@@ -47,11 +47,6 @@ class DepartmentServiceTest {
         }
     }
 
-    @AfterEach
-    void tearDown() {
-
-    }
-
     @Test
     void getAll() {
         ArrayList<String>testArray = new ArrayList<>();
@@ -73,7 +68,8 @@ class DepartmentServiceTest {
         testArray.add(CVO);
         testArray.add(VC);
         ArrayList<String>departments = this.service.add(VC);
-        assertEquals(3, departments.size());
+        assertIterableEquals(testArray, departments);
+        departments = this.service.add(null);
         assertIterableEquals(testArray, departments);
     }
 
@@ -82,7 +78,10 @@ class DepartmentServiceTest {
         ArrayList<String>testArray = new ArrayList<>();
         testArray.add(DOF);
         ArrayList<String>departments = this.service.remove(CVO);
-        assertEquals(1, departments.size());
+        assertIterableEquals(testArray, departments);
+        departments = this.service.remove(null);
+        assertIterableEquals(testArray, departments);
+        departments = this.service.remove(VC);
         assertIterableEquals(testArray, departments);
     }
 
@@ -93,13 +92,19 @@ class DepartmentServiceTest {
         testArray.add(VC);
         ArrayList<String>departments = this.service.set(CVO, VC);
         assertIterableEquals(testArray, departments);
+        departments = this.service.set(null, VC);
+        assertIterableEquals(testArray, departments);
+        departments = this.service.set(null, null);
+        assertIterableEquals(testArray, departments);
+        departments = this.service.set(CVO, VC);
+        assertIterableEquals(testArray, departments);
+        departments = this.service.set(VC, null);
+        testArray.remove(VC);
+        assertIterableEquals(testArray, departments);
     }
 
     @Test
     void get() {
-        for (String s : this.service.getAll()){
-            System.out.println(s);
-        }
         String dof = this.service.get(0);
         String cvo = this.service.get(1);
         String nullString = this.service.get(2);
@@ -115,15 +120,14 @@ class DepartmentServiceTest {
     }
 
     @Test
-    void exportData() {}
-
-    @Test
     void rewriteInCurrentThread() {
         ArrayList<String>testArray = new ArrayList<>();
         testArray.add(VC);
         testArray.add(CVO);
         testArray.add(DOF);
         this.service.rewriteInCurrentThread(testArray);
+        assertIterableEquals(testArray, this.service.getAll());
+        this.service.rewriteInCurrentThread(null);
         assertIterableEquals(testArray, this.service.getAll());
     }
 
