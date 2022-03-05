@@ -3,7 +3,6 @@ package application;
 import service.FileBrowser;
 import settings.Settings;
 import ui.model.ApplicationLogo;
-import updater.Updater;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Application extends SwingWorker<Void, String> {
-    public static final String appVersion = "v5.2";
+    public static final String appVersion = "v5.3";
     public static final String pathToDB = "jdbc:sqlite:Support/Data.db";
     public static final Dimension sizeOfScreen = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
     private static final Logger LOGGER = Logger.getLogger(Application.class.getName());
@@ -97,8 +96,6 @@ public class Application extends SwingWorker<Void, String> {
     protected Void doInBackground() throws Exception {
         publish("Завантаження налаштуваннь користувача");
         Settings.checkSettings();
-        publish("Оновлення");
-        Updater.update();
         publish("Завантаження списку цехів");
         context.departmentService.init();
         publish("Завантаження списку ділянок");
@@ -108,7 +105,7 @@ public class Application extends SwingWorker<Void, String> {
         publish("Завантаження списку установок");
         context.installationService.init();
         publish("Завантаження списку працівників");
-        context.personService.init(context.mainScreen);
+        context.personService.init();
         publish("Завантаження списку вимірюваннь");
         context.measurementService.init();
         publish("Завантаження списку калібраторів");

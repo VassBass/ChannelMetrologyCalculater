@@ -3,8 +3,8 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import org.sqlite.JDBC;
 import repository.DepartmentRepository;
+import repository.Repository;
 import ui.model.SaveMessage;
 
 import javax.swing.*;
@@ -14,27 +14,15 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DepartmentRepositoryImpl implements DepartmentRepository {
+public class DepartmentRepositoryImpl extends Repository implements DepartmentRepository {
     private static final Logger LOGGER = Logger.getLogger(DepartmentRepository.class.getName());
-    private final String dbUrl;
 
-    public DepartmentRepositoryImpl(){
-        this.dbUrl = Application.pathToDB;
-        this.init();
-    }
+    public DepartmentRepositoryImpl(){super();}
+    public DepartmentRepositoryImpl(String dbUrl){super(dbUrl);}
 
-    public DepartmentRepositoryImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-        this.init();
-    }
-
-    private Connection getConnection() throws SQLException {
-        DriverManager.registerDriver(new JDBC());
-        return DriverManager.getConnection(this.dbUrl);
-    }
-
-    private void init(){
-        LOGGER.info("Initialization ...");
+    @Override
+    protected void init(){
+        LOGGER.fine("Initialization ...");
         String sql = "CREATE TABLE IF NOT EXISTS departments ("
                 + "department text NOT NULL UNIQUE"
                 + ", PRIMARY KEY (\"department\")"
@@ -114,17 +102,19 @@ public class DepartmentRepositoryImpl implements DepartmentRepository {
                 String sql = "DELETE FROM departments;";
                 statementClear.execute(sql);
 
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO departments ('department') VALUES (?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                for (String department : newList) {
-                    statement.setString(1, department);
-                    statement.execute();
-                }
+                if (!newList.isEmpty()) {
+                    LOGGER.fine("Send requests to add");
+                    sql = "INSERT INTO departments ('department') VALUES (?);";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    for (String department : newList) {
+                        statement.setString(1, department);
+                        statement.execute();
+                    }
 
-                LOGGER.fine("Close connections");
-                statementClear.close();
-                statement.close();
+                    LOGGER.fine("Close connections");
+                    statementClear.close();
+                    statement.close();
+                }
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
             }

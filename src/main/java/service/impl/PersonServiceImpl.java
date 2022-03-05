@@ -1,16 +1,15 @@
 package service.impl;
 
+import application.Application;
 import constants.WorkPositions;
 import def.DefaultPersons;
-import model.Model;
-import model.Worker;
-import repository.Repository;
+import model.Person;
+import repository.PersonRepository;
+import repository.impl.PersonRepositoryImpl;
 import service.FileBrowser;
 import service.PersonService;
-import support.Comparator;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,8 +21,8 @@ public class PersonServiceImpl implements PersonService {
     private static final String EMPTY_ARRAY = "<Порожньо>";
     private static final String ERROR = "Помилка";
 
-    private Window window;
-    private ArrayList<Worker> persons;
+    private final PersonRepository repository;
+    private ArrayList<Person> persons;
 
     private String exportFileName(Calendar date){
         return "export_persons ["
@@ -35,23 +34,24 @@ public class PersonServiceImpl implements PersonService {
                 + "].per";
     }
 
-    @Override
-    public void init(Window window){
-        LOGGER.info("PersonService: initialization start ...");
-        try {
-            this.persons = new Repository<Worker>(null, Model.PERSON).readList();
-        }catch (Exception e){
-            LOGGER.info("PersonService: file \"" + FileBrowser.FILE_PERSONS.getName() + "\" is empty");
-            LOGGER.info("PersonService: set default list");
-            this.persons = DefaultPersons.get();
-            this.save();
-        }
-        this.window = window;
-        LOGGER.info("PersonService: initialization SUCCESS");
+    public PersonServiceImpl(){
+        this.repository = new PersonRepositoryImpl();
+        this.init();
+    }
+
+    public PersonServiceImpl(String dbUrl){
+        this.repository = new PersonRepositoryImpl(dbUrl);
+        this.init();
     }
 
     @Override
-    public ArrayList<Worker> getAll() {
+    public void init(){
+        this.persons = this.repository.getAll();
+        LOGGER.info("Initialization SUCCESS");
+    }
+
+    @Override
+    public ArrayList<Person> getAll() {
         return this.persons;
     }
 
@@ -71,7 +71,7 @@ public class PersonServiceImpl implements PersonService {
     public String[] getNamesOfHeads(){
         ArrayList<String>heads = new ArrayList<>();
         heads.add(EMPTY_ARRAY);
-        for (Worker worker : this.persons){
+        for (Person worker : this.persons){
             if (worker.getPosition().equals(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP)){
                 heads.add(worker.getFullName());
             }
@@ -80,66 +80,45 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public ArrayList<Worker> add(Worker worker) {
-        boolean exist = false;
-        for (Worker person : this.persons){
-            if (Comparator.personsMatch(person, worker)){
-                exist = true;
-                break;
-            }
-        }
-        if (exist){
-            this.showExistMessage();
-        }else {
-            this.persons.add(worker);
-            this.save();
-        }
-        return this.persons;
-    }
-
-    @Override
-    public ArrayList<Worker> remove(Worker person) {
-        boolean removed = false;
-
-        for (Worker worker : this.persons){
-            if (Comparator.personsMatch(worker, person)){
-                this.persons.remove(worker);
-                removed = true;
-                break;
-            }
-        }
-
-        if (removed){
-            this.save();
-        }else {
-            this.showNotFoundMessage();
-        }
-        return this.persons;
-    }
-
-    @Override
-    public ArrayList<Worker> set(Worker oldPerson, Worker newPerson) {
-        if (oldPerson != null){
-            if (newPerson == null){
-                this.remove(oldPerson);
+    public ArrayList<Person> add(Person person) {
+        if (person != null){
+            if (!this.persons.contains(person)){
+                this.persons.add(person);
+                this.repository.add(person);
             }else {
-                if (!Comparator.personsMatch(oldPerson, newPerson)) {
-                    for (int p=0;p<this.persons.size();p++){
-                        Worker person = this.persons.get(p);
-                        if (Comparator.personsMatch(person, oldPerson)){
-                            this.persons.set(p, newPerson);
-                            break;
-                        }
-                    }
-                }
+                this.showExistMessage();
             }
-            this.save();
         }
         return this.persons;
     }
 
     @Override
-    public Worker get(int index) {
+    public ArrayList<Person> remove(Person person) {
+        if (person != null){
+            if (this.persons.contains(person)) {
+                this.persons.remove(person);
+                this.repository.remove(person);
+            }else {
+                this.showNotFoundMessage();
+            }
+        }
+        return this.persons;
+    }
+
+    @Override
+    public ArrayList<Person> set(Person oldPerson, Person newPerson) {
+        if (oldPerson != null && newPerson != null){
+            int index = this.persons.indexOf(oldPerson);
+            if (index >= 0){
+                this.persons.set(index, newPerson);
+                this.repository.set(oldPerson, newPerson);
+            }
+        }
+        return this.persons;
+    }
+
+    @Override
+    public Person get(int index) {
         if (index >= 0) {
             return this.persons.get(index);
         }else {
@@ -150,12 +129,7 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void clear() {
         this.persons.clear();
-        this.save();
-    }
-
-    @Override
-    public void save() {
-        new Repository<Worker>(this.window, Model.PERSON).writeList(this.persons);
+        this.repository.clear();
     }
 
     @Override
@@ -171,18 +145,28 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public void rewriteInCurrentThread(ArrayList<Worker>workers){
-        this.persons = workers;
-        new Repository<Worker>(null,Model.PERSON).writeListInCurrentThread(workers);
+    public void rewriteInCurrentThread(ArrayList<Person>persons){
+        this.persons = persons;
+        this.repository.rewriteInCurrentThread(persons);
+    }
+
+    @Override
+    public void resetToDefault(){
+        this.persons = DefaultPersons.get();
+        this.repository.rewrite(this.persons);
     }
 
     private void showNotFoundMessage() {
-        String message = "Працівник не знайден в списку працівників.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        if (Application.context != null) {
+            String message = "Працівник не знайден в списку працівників.";
+            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void showExistMessage() {
-        String message = "Працівник з такими даними вже існує в списку працівниців.-";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        if (Application.context != null) {
+            String message = "Працівник з такими даними вже існує в списку працівниців.-";
+            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

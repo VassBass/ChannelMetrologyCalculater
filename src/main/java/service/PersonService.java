@@ -1,21 +1,20 @@
 package service;
 
-import model.Worker;
+import model.Person;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public interface PersonService {
-    void init(Window window);
-    ArrayList<Worker> getAll();
+    void init();
+    ArrayList<Person> getAll();
     String[] getAllNames();
     String[] getNamesOfHeads();
-    ArrayList<Worker> add(Worker person);
-    ArrayList<Worker> remove(Worker person);
-    ArrayList<Worker> set(Worker oldPerson, Worker newPerson);
-    Worker get(int index);
+    ArrayList<Person> add(Person person);
+    ArrayList<Person> remove(Person person);
+    ArrayList<Person> set(Person oldPerson, Person newPerson);
+    Person get(int index);
     void clear();
-    void save();
     boolean exportData();
-    void rewriteInCurrentThread(ArrayList<Worker>persons);
+    void rewriteInCurrentThread(ArrayList<Person>persons);
+    void resetToDefault();
 }

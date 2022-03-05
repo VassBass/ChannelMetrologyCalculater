@@ -34,7 +34,7 @@ public class InstallationRepositoryImpl implements InstallationRepository {
     }
 
     private void init(){
-        LOGGER.info("Initialization ...");
+        LOGGER.fine("Initialization ...");
         String sql = "CREATE TABLE IF NOT EXISTS installations ("
                 + "installation text NOT NULL UNIQUE"
                 + ", PRIMARY KEY (\"installation\")"
@@ -114,17 +114,19 @@ public class InstallationRepositoryImpl implements InstallationRepository {
                 String sql = "DELETE FROM installations;";
                 statementClear.execute(sql);
 
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO installations ('installation') VALUES (?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                for (String installation : newList) {
-                    statement.setString(1, installation);
-                    statement.execute();
-                }
+                if (!newList.isEmpty()) {
+                    LOGGER.fine("Send requests to add");
+                    sql = "INSERT INTO installations ('installation') VALUES (?);";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    for (String installation : newList) {
+                        statement.setString(1, installation);
+                        statement.execute();
+                    }
 
-                LOGGER.fine("Close connections");
-                statementClear.close();
-                statement.close();
+                    LOGGER.fine("Close connections");
+                    statementClear.close();
+                    statement.close();
+                }
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
             }
@@ -220,17 +222,19 @@ public class InstallationRepositoryImpl implements InstallationRepository {
                     sql = "DELETE FROM installations;";
                     statementClear.execute(sql);
 
-                    LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO installations ('installation') VALUES (?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    for (String installation : this.list){
-                        statement.setString(1, installation);
-                        statement.execute();
-                    }
+                    if (!this.list.isEmpty()) {
+                        LOGGER.fine("Send requests to add");
+                        sql = "INSERT INTO installations ('installation') VALUES (?);";
+                        PreparedStatement statement = connection.prepareStatement(sql);
+                        for (String installation : this.list) {
+                            statement.setString(1, installation);
+                            statement.execute();
+                        }
 
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
+                        LOGGER.fine("Close connections");
+                        statementClear.close();
+                        statement.close();
+                    }
                 }catch (SQLException ex){
                     LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 }

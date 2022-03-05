@@ -18,5 +18,5 @@ public interface MeasurementService {
     Measurement get(int index);
     ArrayList<Measurement>getMeasurements(MeasurementConstants name);
     ArrayList<Measurement>getMeasurements(String name);
-    void save();
+    void resetToDefault();
 }

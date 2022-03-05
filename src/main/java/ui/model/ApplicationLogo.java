@@ -19,7 +19,7 @@ public class ApplicationLogo extends JWindow {
 
     public ApplicationLogo(){
         super();
-        LOGGER.info("ApplicationLogo: creation ...");
+        LOGGER.fine("ApplicationLogo: creation ...");
 
         Icon appName = new ImageIcon(FileBrowser.FILE_IMAGE_NAME_LOGO.getAbsolutePath());
         JLabel name = new JLabel(appName);

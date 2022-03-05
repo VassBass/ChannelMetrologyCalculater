@@ -3,9 +3,8 @@ package service.impl;
 import constants.MeasurementConstants;
 import def.DefaultMeasurements;
 import measurements.Measurement;
-import model.Model;
-import repository.Repository;
-import service.FileBrowser;
+import repository.MeasurementRepository;
+import repository.impl.MeasurementRepositoryImpl;
 import service.MeasurementService;
 
 import java.util.ArrayList;
@@ -14,20 +13,20 @@ import java.util.logging.Logger;
 public class MeasurementServiceImpl implements MeasurementService {
     private static final Logger LOGGER = Logger.getLogger(MeasurementService.class.getName());
 
+    private final MeasurementRepository repository;
+
     private ArrayList<Measurement> measurements;
+
+    public MeasurementServiceImpl(){
+        this.repository = new MeasurementRepositoryImpl();
+    }
 
     @Override
     public void init(){
-        LOGGER.info("MeasurementService: initialization start ...");
-        try {
-            this.measurements = new Repository<Measurement>(null, Model.MEASUREMENT).readList();
-        }catch (Exception e){
-            LOGGER.info("MeasurementService: file \"" + FileBrowser.FILE_MEASUREMENTS.getName() + "\" is empty");
-            LOGGER.info("MeasurementService: set default list");
-            this.measurements = DefaultMeasurements.get();
-            this.save();
-        }
-        LOGGER.info("MeasurementService: initialization SUCCESS");
+        LOGGER.fine("MeasurementService: initialization start ...");
+        this.measurements = this.repository.getAll();
+        if (measurements == null || measurements.isEmpty()) this.resetToDefault();
+        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
@@ -148,7 +147,8 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public void save() {
-        new Repository<Measurement>(null, Model.MEASUREMENT).writeList(this.measurements);
+    public void resetToDefault() {
+        this.measurements = DefaultMeasurements.get();
+        this.repository.rewriteInCurrentThread(this.measurements);
     }
 }

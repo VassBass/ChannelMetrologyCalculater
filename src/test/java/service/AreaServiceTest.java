@@ -1,8 +1,6 @@
 package service;
 
 import def.DefaultAreas;
-import def.DefaultDepartments;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.sqlite.JDBC;

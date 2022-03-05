@@ -3,7 +3,8 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import repository.ProcessRepository;
+import model.Person;
+import repository.PersonRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
 
@@ -14,23 +15,21 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ProcessRepositoryImpl extends Repository implements ProcessRepository {
-    private static final Logger LOGGER = Logger.getLogger(ProcessRepository.class.getName());
+public class PersonRepositoryImpl extends Repository implements PersonRepository {
+    private static final Logger LOGGER = Logger.getLogger(PersonRepository.class.getName());
 
-    public ProcessRepositoryImpl(){
-        super();
-    }
-
-    public ProcessRepositoryImpl(String dbUrl){
-        super(dbUrl);
-    }
+    public PersonRepositoryImpl(){super();}
+    public PersonRepositoryImpl(String dbUrl){super(dbUrl);}
 
     @Override
-    protected void init(){
-        LOGGER.fine("Initialization ...");
-        String sql = "CREATE TABLE IF NOT EXISTS processes ("
-                + "process text NOT NULL UNIQUE"
-                + ", PRIMARY KEY (\"process\")"
+    protected void init() {
+        String sql = "CREATE TABLE IF NOT EXISTS persons ("
+                + "id integer NOT NULL UNIQUE"
+                + ", name text NOT NULL"
+                + ", surname text NOT NULL"
+                + ", patronymic text"
+                + ", position text NOT NULL"
+                + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
                 + ");";
 
         LOGGER.fine("Get connection with DB");
@@ -49,18 +48,24 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
     }
 
     @Override
-    public ArrayList<String> getAll() {
-        ArrayList<String>processes = new ArrayList<>();
+    public ArrayList<Person> getAll() {
+        ArrayList<Person>persons = new ArrayList<>();
         LOGGER.fine("Get connection with DB");
         try (Connection connection = this.getConnection()){
             Statement statement = connection.createStatement();
 
             LOGGER.fine("Send request");
-            String sql = "SELECT * FROM processes";
+            String sql = "SELECT * FROM persons";
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
-                processes.add(resultSet.getString("process"));
+                Person person = new Person();
+                person.setId(resultSet.getInt("id"));
+                person.setName(resultSet.getString("name"));
+                person.setSurname(resultSet.getString("surname"));
+                person.setPatronymic(resultSet.getString("patronymic"));
+                person.setPosition(resultSet.getString("position"));
+                persons.add(person);
             }
 
             LOGGER.fine("Close connections");
@@ -69,22 +74,22 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-        return processes;
+        return persons;
     }
 
     @Override
-    public void add(String object) {
-        new BackgroundAction().add(object);
+    public void add(Person person) {
+        new BackgroundAction().add(person);
     }
 
     @Override
-    public void set(String oldObject, String newObject) {
-        new BackgroundAction().set(oldObject, newObject);
+    public void remove(Person person) {
+        new BackgroundAction().remove(person);
     }
 
     @Override
-    public void remove(String object) {
-        new BackgroundAction().remove(object);
+    public void set(Person oldPerson, Person newPerson) {
+        new BackgroundAction().set(oldPerson, newPerson);
     }
 
     @Override
@@ -93,26 +98,26 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
     }
 
     @Override
-    public void rewrite(ArrayList<String> newList) {
-        new BackgroundAction().rewrite(newList);
-    }
-
-    @Override
-    public void rewriteInCurrentThread(ArrayList<String>newList){
-        if (newList != null) {
+    public void rewriteInCurrentThread(ArrayList<Person> persons) {
+        if (persons != null) {
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = this.getConnection()) {
+            try (Connection connection = getConnection()) {
                 LOGGER.fine("Send request to clear");
                 Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM processes;";
+                String sql = "DELETE FROM persons;";
                 statementClear.execute(sql);
 
-                if (!newList.isEmpty()) {
+                if (!persons.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO processes ('process') VALUES (?);";
+                    sql = "INSERT INTO areas ('id', 'name', 'surname', 'patronymic', 'position')" +
+                            " VALUES (?, ?, ?, ?, ?);";
                     PreparedStatement statement = connection.prepareStatement(sql);
-                    for (String process : newList) {
-                        statement.setString(1, process);
+                    for (Person person : persons) {
+                        statement.setInt(1, person.getId());
+                        statement.setString(2, person.getName());
+                        statement.setString(3, person.getSurname());
+                        statement.setString(4, person.getPatronymic());
+                        statement.setString(5, person.getPosition());
                         statement.execute();
                     }
 
@@ -126,10 +131,15 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
         }
     }
 
+    @Override
+    public void rewrite(ArrayList<Person> persons) {
+        new BackgroundAction().rewrite(persons);
+    }
+
     private class BackgroundAction extends SwingWorker<Void, Void> {
-        private String object, old;
-        private ArrayList<String>list;
-        private constants.Action action;
+        private Person person, old;
+        private ArrayList<Person>list;
+        private Action action;
         private final SaveMessage saveMessage;
 
         public BackgroundAction(){
@@ -138,32 +148,32 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
             this.saveMessage = mainScreen == null ? null : new SaveMessage(mainScreen);
         }
 
-        void add(String object){
-            this.object = object;
-            this.action = constants.Action.ADD;
+        void add(Person person){
+            this.person = person;
+            this.action = Action.ADD;
             this.start();
         }
 
-        void remove(String object){
-            this.object = object;
-            this.action = constants.Action.REMOVE;
+        void remove(Person person){
+            this.person = person;
+            this.action = Action.REMOVE;
             this.start();
         }
 
         void clear(){
-            this.action = constants.Action.CLEAR;
+            this.action = Action.CLEAR;
             this.start();
         }
 
-        void rewrite(ArrayList<String>list){
+        void rewrite(ArrayList<Person>list){
             this.list = list;
-            this.action = list == null ? constants.Action.CLEAR : constants.Action.REWRITE;
+            this.action = list == null ? Action.CLEAR : Action.REWRITE;
             this.start();
         }
 
-        void set(String oldObject, String newObject){
-            this.old = oldObject;
-            this.object = newObject;
+        void set(Person oldPerson, Person newPerson){
+            this.old = oldPerson;
+            this.person = newPerson;
             this.action = Action.SET;
             this.start();
         }
@@ -184,14 +194,20 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
             String sql = null;
             switch (this.action){
                 case ADD:
-                    sql = "REPLACE INTO processes (process) "
-                            + "VALUES('" + this.object + "');";
+                    sql = "REPLACE INTO persons (id, surname, name, patronymic, position) "
+                            + "VALUES("
+                            + "'" + this.person.getId() + "'"
+                            + ", '" + this.person.getSurname() + "'"
+                            + ", '" + this.person.getName() + "'"
+                            + ", '" + this.person.getPatronymic() + "'"
+                            + ", '" + this.person.getPosition() + "'"
+                            + ");";
                     break;
                 case REMOVE:
-                    sql = "DELETE FROM processes WHERE process = '" + this.object + "';";
+                    sql = "DELETE FROM persons WHERE id = '" + this.person.getId() + "';";
                     break;
                 case CLEAR:
-                    sql = "DELETE FROM processes;";
+                    sql = "DELETE FROM persons;";
                     break;
             }
             if (sql != null) {
@@ -212,15 +228,20 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
                 try (Connection connection = getConnection()){
                     LOGGER.fine("Send request to clear");
                     Statement statementClear = connection.createStatement();
-                    sql = "DELETE FROM processes;";
+                    sql = "DELETE FROM persons;";
                     statementClear.execute(sql);
 
                     if (!this.list.isEmpty()) {
                         LOGGER.fine("Send requests to add");
-                        sql = "INSERT INTO processes ('process') VALUES (?);";
+                        sql = "INSERT INTO areas ('id', 'name', 'surname', 'patronymic', 'position')" +
+                                " VALUES (?, ?, ?, ?, ?);";
                         PreparedStatement statement = connection.prepareStatement(sql);
-                        for (String process : this.list) {
-                            statement.setString(1, process);
+                        for (Person person : this.list) {
+                            statement.setInt(1, person.getId());
+                            statement.setString(2, person.getName());
+                            statement.setString(3, person.getSurname());
+                            statement.setString(4, person.getPatronymic());
+                            statement.setString(5, person.getPosition());
                             statement.execute();
                         }
 
@@ -236,12 +257,18 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
                 try (Connection connection = getConnection()){
                     LOGGER.fine("Send request to delete");
                     Statement statementClear = connection.createStatement();
-                    sql = "DELETE FROM processes WHERE process = '" + this.old + "';";
+                    sql = "DELETE FROM persons WHERE id = '" + this.old.getId() + "';";
                     statementClear.execute(sql);
 
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO processes ('process') VALUES ('" + this.object + "');";
-                    Statement statement = connection.createStatement();
+                    sql = "INSERT INTO areas ('id', 'name', 'surname', 'patronymic', 'position')" +
+                    " VALUES (?, ?, ?, ?, ?);";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    statement.setInt(1, this.person.getId());
+                    statement.setString(2, this.person.getName());
+                    statement.setString(3, this.person.getSurname());
+                    statement.setString(4, this.person.getPatronymic());
+                    statement.setString(5, this.person.getPosition());
                     statement.execute(sql);
 
                     LOGGER.fine("Close connections");

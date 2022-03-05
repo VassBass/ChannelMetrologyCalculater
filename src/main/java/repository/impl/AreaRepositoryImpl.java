@@ -3,8 +3,8 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import org.sqlite.JDBC;
 import repository.AreaRepository;
+import repository.Repository;
 import ui.model.SaveMessage;
 
 import javax.swing.*;
@@ -14,27 +14,14 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AreaRepositoryImpl implements AreaRepository {
+public class AreaRepositoryImpl extends Repository implements AreaRepository {
     private static final Logger LOGGER = Logger.getLogger(AreaRepository.class.getName());
-    private final String dbUrl;
 
-    public AreaRepositoryImpl(){
-        this.dbUrl = Application.pathToDB;
-        this.init();
-    }
+    public AreaRepositoryImpl(){super();}
+    public AreaRepositoryImpl(String dbUrl){super(dbUrl);}
 
-    public AreaRepositoryImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-        this.init();
-    }
-
-    private Connection getConnection() throws SQLException {
-        DriverManager.registerDriver(new JDBC());
-        return DriverManager.getConnection(this.dbUrl);
-    }
-
-    private void init(){
-        LOGGER.info("Initialization ...");
+    @Override
+    protected void init(){
         String sql = "CREATE TABLE IF NOT EXISTS areas ("
                 + "area text NOT NULL UNIQUE"
                 + ", PRIMARY KEY (\"area\")"
@@ -114,22 +101,25 @@ public class AreaRepositoryImpl implements AreaRepository {
                 String sql = "DELETE FROM areas;";
                 statementClear.execute(sql);
 
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO areas ('area') VALUES (?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                for (String area : newList) {
-                    statement.setString(1, area);
-                    statement.execute();
-                }
+                if (!newList.isEmpty()) {
+                    LOGGER.fine("Send requests to add");
+                    sql = "INSERT INTO areas ('area') VALUES (?);";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    for (String area : newList) {
+                        statement.setString(1, area);
+                        statement.execute();
+                    }
 
-                LOGGER.fine("Close connections");
-                statementClear.close();
-                statement.close();
+                    LOGGER.fine("Close connections");
+                    statementClear.close();
+                    statement.close();
+                }
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
             }
         }
     }
+
 
     private class BackgroundAction extends SwingWorker<Void, Void> {
         private String object, old;
@@ -220,17 +210,19 @@ public class AreaRepositoryImpl implements AreaRepository {
                     sql = "DELETE FROM areas;";
                     statementClear.execute(sql);
 
-                    LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO areas ('area') VALUES (?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    for (String area : this.list){
-                        statement.setString(1, area);
-                        statement.execute();
-                    }
+                    if (!this.list.isEmpty()) {
+                        LOGGER.fine("Send requests to add");
+                        sql = "INSERT INTO areas ('area') VALUES (?);";
+                        PreparedStatement statement = connection.prepareStatement(sql);
+                        for (String area : this.list) {
+                            statement.setString(1, area);
+                            statement.execute();
+                        }
 
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
+                        LOGGER.fine("Close connections");
+                        statementClear.close();
+                        statement.close();
+                    }
                 }catch (SQLException ex){
                     LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 }
