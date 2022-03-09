@@ -105,12 +105,12 @@ public class FileBrowser {
     }
 
     public static void init() throws IOException {
-        LOGGER.info("FileBrowser: initialization start...");
+        LOGGER.fine("Initialization start...");
         createDirsIfNotExists();
         createFilesIfNotExists();
         unpackForms();
         unpackImages();
-        LOGGER.info("FileBrowser: initialization SUCCESS");
+        LOGGER.info("Initialization SUCCESS");
     }
 
     private static void createFilesIfNotExists() throws IOException {
@@ -309,10 +309,6 @@ public class FileBrowser {
         }catch (Exception ex){
             LOGGER.log(Level.WARNING, "FileBrowser: Exception while unpack images!", ex);
         }
-    }
-
-    public static ObjectInputStream getInputStream(File file) throws IOException {
-        return new ObjectInputStream(new FileInputStream(file));
     }
 
     public static void saveToFile(File file, Object object) throws IOException {
