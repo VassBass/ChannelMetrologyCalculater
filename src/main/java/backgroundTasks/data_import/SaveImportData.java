@@ -3,8 +3,8 @@ package backgroundTasks.data_import;
 import application.Application;
 import model.Calibrator;
 import model.Channel;
+import model.Person;
 import model.Sensor;
-import model.Worker;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
 
@@ -20,7 +20,7 @@ public class SaveImportData extends SwingWorker<Void, Void> {
     private final LoadDialog loadDialog;
     private ArrayList<Channel> channels;
     private final ArrayList<Sensor>sensors;
-    private ArrayList<Worker>persons;
+    private ArrayList<Person>persons;
     private ArrayList<Calibrator>calibrators;
     private ArrayList<String>departments, areas, processes, installations;
 
@@ -41,7 +41,7 @@ public class SaveImportData extends SwingWorker<Void, Void> {
     }
 
     public SaveImportData(MainScreen mainScreen,
-                          ArrayList<Sensor>sensors, ArrayList<Channel>channels, ArrayList<Worker>persons, ArrayList<Calibrator>calibrators,
+                          ArrayList<Sensor>sensors, ArrayList<Channel>channels, ArrayList<Person>persons, ArrayList<Calibrator>calibrators,
                           ArrayList<String>departments, ArrayList<String>areas, ArrayList<String>processes, ArrayList<String>installations){
         super();
 

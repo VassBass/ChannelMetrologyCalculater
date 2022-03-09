@@ -1,18 +1,15 @@
 package service.impl;
 
+import application.Application;
 import def.DefaultCalibrators;
 import measurements.Measurement;
 import model.Calibrator;
-import model.Model;
-import repository.Repository;
+import repository.CalibratorRepository;
+import repository.impl.CalibratorRepositoryImpl;
 import service.CalibratorService;
-import service.FileBrowser;
 
 import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Logger;
 
 public class CalibratorServiceImpl implements CalibratorService {
@@ -20,32 +17,21 @@ public class CalibratorServiceImpl implements CalibratorService {
 
     private static final String ERROR = "Помилка";
 
-    private Window window;
+    private final CalibratorRepository repository;
     private ArrayList<Calibrator> calibrators;
 
-    private String exportFileName(Calendar date){
-        return "export_calibrators ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].cal";
+    public CalibratorServiceImpl(){
+        this.repository = new CalibratorRepositoryImpl();
+    }
+
+    public CalibratorServiceImpl(String dbUrl){
+        this.repository = new CalibratorRepositoryImpl(dbUrl);
     }
 
     @Override
-    public void init(Window window){
-        LOGGER.info("CalibratorService: initialization start ...");
-        try {
-            this.calibrators = new Repository<Calibrator>(null, Model.CALIBRATOR).readList();
-        }catch (Exception e){
-            LOGGER.info("CalibratorService: file \"" + FileBrowser.FILE_CALIBRATORS.getName() + "\" is empty");
-            LOGGER.info("CalibratorService: set default list");
-            this.calibrators = DefaultCalibrators.get();
-            this.save();
-        }
-        this.window = window;
-        LOGGER.info("CalibratorService: initialization SUCCESS");
+    public void init(){
+        this.calibrators = this.repository.getAll();
+        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
@@ -66,12 +52,11 @@ public class CalibratorServiceImpl implements CalibratorService {
 
     @Override
     public ArrayList<Calibrator> add(Calibrator calibrator) {
-        int index = this.calibrators.indexOf(calibrator);
         if (this.calibrators.contains(calibrator)){
             this.showExistMessage();
         }else {
             this.calibrators.add(calibrator);
-            this.save();
+            this.repository.add(calibrator);
         }
         return this.calibrators;
     }
@@ -80,8 +65,8 @@ public class CalibratorServiceImpl implements CalibratorService {
     public ArrayList<Calibrator> remove(Calibrator calibrator) {
         int index = this.calibrators.indexOf(calibrator);
         if (index >= 0){
+            this.repository.remove(calibrator.getName());
             this.calibrators.remove(index);
-            this.save();
         }else {
             this.showNotFoundMessage();
         }
@@ -91,23 +76,20 @@ public class CalibratorServiceImpl implements CalibratorService {
     @Override
     public ArrayList<Calibrator> remove(int index){
         if (index >= 0 && index<this.calibrators.size()){
+            String name = this.calibrators.get(index).getName();
+            this.repository.remove(name);
             this.calibrators.remove(index);
-            this.save();
         }
         return this.calibrators;
     }
 
     @Override
     public ArrayList<Calibrator> set(Calibrator oldCalibrator, Calibrator newCalibrator) {
-        if (oldCalibrator != null){
+        if (oldCalibrator != null && newCalibrator != null){
             int index = this.calibrators.indexOf(oldCalibrator);
             if (index >= 0) {
-                if (newCalibrator == null) {
-                    this.calibrators.remove(index);
-                } else {
-                    this.calibrators.set(index, newCalibrator);
-                }
-                this.save();
+                this.calibrators.set(index, newCalibrator);
+                this.repository.set(oldCalibrator, newCalibrator);
             }
         }
         return this.calibrators;
@@ -115,13 +97,15 @@ public class CalibratorServiceImpl implements CalibratorService {
 
     @Override
     public Calibrator get(String name) {
-        for (Calibrator calibrator : this.calibrators) {
-            if (calibrator.getName().equals(name)) {
-                return calibrator;
-            }
+        Calibrator calibrator = new Calibrator();
+        calibrator.setName(name);
+        int index = this.calibrators.indexOf(calibrator);
+        if (index >= 0){
+            return this.calibrators.get(index);
+        }else {
+            this.showNotFoundMessage();
+            return null;
         }
-        this.showNotFoundMessage();
-        return null;
     }
 
     @Override
@@ -136,24 +120,12 @@ public class CalibratorServiceImpl implements CalibratorService {
     @Override
     public void clear() {
         this.calibrators.clear();
-        this.save();
+        this.repository.clear();
     }
 
     @Override
-    public void save() {
-        new Repository<Calibrator>(this.window, Model.CALIBRATOR).writeList(this.calibrators);
-    }
-
-    @Override
-    public boolean exportData(){
-        try {
-            String fileName = this.exportFileName(Calendar.getInstance());
-            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.calibrators);
-            return true;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
+    public void exportData(){
+        this.repository.export(this.calibrators);
     }
 
     @Override
@@ -163,22 +135,32 @@ public class CalibratorServiceImpl implements CalibratorService {
             if (index >= 0) this.calibrators.set(index, calibrator);
         }
         this.calibrators.addAll(newCalibrators);
-        new Repository<Calibrator>(null,Model.CALIBRATOR).writeListInCurrentThread(this.calibrators);
+        this.repository.rewriteInCurrentThread(this.calibrators);
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Calibrator>calibrators){
         this.calibrators = calibrators;
-        new Repository<Calibrator>(null, Model.CALIBRATOR).writeListInCurrentThread(calibrators);
+        this.repository.rewriteInCurrentThread(calibrators);
+    }
+
+    @Override
+    public void resetToDefault() {
+        this.calibrators = DefaultCalibrators.get();
+        this.repository.rewrite(this.calibrators);
     }
 
     private void showNotFoundMessage() {
-        String message = "Калібратор з данною назвою не знайдено в списку калібраторів.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        if (Application.context != null) {
+            String message = "Калібратор з данною назвою не знайдено в списку калібраторів.";
+            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void showExistMessage() {
-        String message = "Калібратор з данною назвою вже існує в списку калібраторів. Змініть будь ласка назву.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        if (Application.context != null) {
+            String message = "Калібратор з данною назвою вже існує в списку калібраторів. Змініть будь ласка назву.";
+            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

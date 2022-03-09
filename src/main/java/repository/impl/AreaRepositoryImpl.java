@@ -2,7 +2,12 @@ package repository.impl;
 
 import application.Application;
 import application.ApplicationContext;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import constants.Action;
+import model.Calibrator;
+import org.sqlite.JDBC;
 import repository.AreaRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
@@ -11,6 +16,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -93,31 +99,12 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>newList){
-        if (newList != null) {
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = this.getConnection()) {
-                LOGGER.fine("Send request to clear");
-                Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM areas;";
-                statementClear.execute(sql);
+        new BackgroundAction().rewriteAreas(newList);
+    }
 
-                if (!newList.isEmpty()) {
-                    LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO areas ('area') VALUES (?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    for (String area : newList) {
-                        statement.setString(1, area);
-                        statement.execute();
-                    }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
-                }
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-            }
-        }
+    @Override
+    public void export(ArrayList<String> areas) {
+        new BackgroundAction().export(areas);
     }
 
 
@@ -135,24 +122,24 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
 
         void add(String object){
             this.object = object;
-            this.action = constants.Action.ADD;
+            this.action = Action.ADD;
             this.start();
         }
 
         void remove(String object){
             this.object = object;
-            this.action = constants.Action.REMOVE;
+            this.action = Action.REMOVE;
             this.start();
         }
 
         void clear(){
-            this.action = constants.Action.CLEAR;
+            this.action = Action.CLEAR;
             this.start();
         }
 
         void rewrite(ArrayList<String>list){
             this.list = list;
-            this.action = list == null ? constants.Action.CLEAR : constants.Action.REWRITE;
+            this.action = list == null ? Action.CLEAR : Action.REWRITE;
             this.start();
         }
 
@@ -160,6 +147,12 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
             this.old = oldObject;
             this.object = newObject;
             this.action = Action.SET;
+            this.start();
+        }
+
+        void export(ArrayList<String>areas){
+            this.list = areas;
+            this.action = Action.EXPORT;
             this.start();
         }
 
@@ -176,75 +169,25 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
 
         @Override
         protected Void doInBackground() throws Exception {
-            String sql = null;
             switch (this.action){
                 case ADD:
-                    sql = "REPLACE INTO areas (area) "
-                            + "VALUES('" + this.object + "');";
+                    this.addArea(this.object);
                     break;
                 case REMOVE:
-                    sql = "DELETE FROM areas WHERE area = '" + this.object + "';";
+                    this.removeArea(this.object);
                     break;
                 case CLEAR:
-                    sql = "DELETE FROM areas;";
+                    this.clearAreas();
                     break;
-            }
-            if (sql != null) {
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()) {
-                    Statement statement = connection.createStatement();
-
-                    LOGGER.fine("Send request");
-                    statement.execute(sql);
-
-                    LOGGER.fine("Close connections");
-                    statement.close();
-                } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                }
-            }else if (this.list != null) {
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()){
-                    LOGGER.fine("Send request to clear");
-                    Statement statementClear = connection.createStatement();
-                    sql = "DELETE FROM areas;";
-                    statementClear.execute(sql);
-
-                    if (!this.list.isEmpty()) {
-                        LOGGER.fine("Send requests to add");
-                        sql = "INSERT INTO areas ('area') VALUES (?);";
-                        PreparedStatement statement = connection.prepareStatement(sql);
-                        for (String area : this.list) {
-                            statement.setString(1, area);
-                            statement.execute();
-                        }
-
-                        LOGGER.fine("Close connections");
-                        statementClear.close();
-                        statement.close();
-                    }
-                }catch (SQLException ex){
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                }
-            }else if (this.old != null){
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()){
-                    LOGGER.fine("Send request to delete");
-                    Statement statementClear = connection.createStatement();
-                    sql = "DELETE FROM areas WHERE area = '" + this.old + "';";
-                    statementClear.execute(sql);
-
-                    LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO areas ('area') VALUES ('" + this.object + "');";
-                    Statement statement = connection.createStatement();
-                    statement.execute(sql);
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
-                }catch (SQLException ex){
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                }
+                case REWRITE:
+                    this.rewriteAreas(this.list);
+                    break;
+                case SET:
+                    this.setArea(this.old, this.object);
+                    break;
+                case EXPORT:
+                    this.exportAreas(this.list);
+                    break;
             }
             return null;
         }
@@ -253,6 +196,161 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
         protected void done() {
             Application.setBusy(false);
             if (this.saveMessage != null) this.saveMessage.dispose();
+        }
+
+        private void addArea(String area){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                LOGGER.fine("Send request to delete");
+                String sql = "DELETE FROM areas WHERE area = '?';";
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, area);
+                statement.execute();
+
+                LOGGER.fine("Send requests to add");
+                sql = "INSERT INTO areas ('area') "
+                        + "VALUES(?);";
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, area);
+                statement.execute();
+
+                LOGGER.fine("Close connection");
+                statement.close();
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+
+        private void removeArea(String area){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                LOGGER.fine("Send request to delete");
+                String sql = "DELETE FROM areas WHERE area = '" + area + "';";
+                Statement statement = connection.createStatement();
+                statement.execute(sql);
+
+                LOGGER.fine("Close connection");
+                statement.close();
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+
+        private void clearAreas(){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()) {
+                LOGGER.fine("Send request");
+                String sql = "DELETE FROM areas;";
+                Statement statement = connection.createStatement();
+                statement.execute(sql);
+
+                LOGGER.fine("Close connections");
+                statement.close();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+
+        private void setArea(String oldArea, String newArea){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                LOGGER.fine("Send request to delete");
+                Statement statementClear = connection.createStatement();
+                String sql = "DELETE FROM areas WHERE area = '" + oldArea + "';";
+                statementClear.execute(sql);
+
+                LOGGER.fine("Send requests to add");
+                sql = "INSERT INTO areas ('area') "
+                        + "VALUES(?);";
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, newArea);
+                statement.execute(sql);
+
+                LOGGER.fine("Close connections");
+                statementClear.close();
+                statement.close();
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+
+        public void rewriteAreas(ArrayList<String>areas){
+            if (areas != null) {
+                LOGGER.fine("Get connection with DB");
+                try (Connection connection = getConnection()) {
+                    LOGGER.fine("Send request to clear");
+                    Statement statementClear = connection.createStatement();
+                    String sql = "DELETE FROM areas;";
+                    statementClear.execute(sql);
+
+                    if (!areas.isEmpty()) {
+                        LOGGER.fine("Send requests to add");
+                        sql = "INSERT INTO areas ('area') "
+                                + "VALUES(?);";
+                        PreparedStatement statement = connection.prepareStatement(sql);
+                        for (String area : areas) {
+                            statement.setString(1, area);
+                            statement.execute();
+                        }
+
+                        LOGGER.fine("Close connections");
+                        statementClear.close();
+                        statement.close();
+                    }
+                } catch (SQLException ex) {
+                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                }
+            }
+        }
+
+        private void exportAreas(ArrayList<String>areas){
+            Calendar date = Calendar.getInstance();
+            String fileName = "export_areas ["
+                    + date.get(Calendar.DAY_OF_MONTH)
+                    + "."
+                    + (date.get(Calendar.MONTH) + 1)
+                    + "."
+                    + date.get(Calendar.YEAR)
+                    + "].db";
+            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
+            String sql = "CREATE TABLE IF NOT EXISTS areas ("
+                    + "area text NOT NULL UNIQUE"
+                    + ", PRIMARY KEY (\"area\")"
+                    + ");";
+
+            Connection connection = null;
+            Statement statement = null;
+            PreparedStatement preparedStatement = null;
+            try {
+                LOGGER.fine("Get connection with DB");
+                DriverManager.registerDriver(new JDBC());
+                connection = DriverManager.getConnection(dbUrl);
+                statement = connection.createStatement();
+
+                LOGGER.fine("Send requests to create table");
+                statement.execute(sql);
+
+                LOGGER.fine("Send requests to add");
+                sql = "INSERT INTO areas ('area') "
+                        + "VALUES(?);";
+                preparedStatement = connection.prepareStatement(sql);
+                for (String area : areas) {
+                    preparedStatement.setString(1, area);
+                    preparedStatement.execute();
+                }
+
+                LOGGER.fine("Close connection");
+                statement.close();
+                preparedStatement.close();
+                connection.close();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
+                try {
+                    if (statement != null) statement.close();
+                    if (preparedStatement != null) preparedStatement.close();
+                    if (connection != null) connection.close();
+                } catch (SQLException ignored) {}
+            }
         }
     }
 }

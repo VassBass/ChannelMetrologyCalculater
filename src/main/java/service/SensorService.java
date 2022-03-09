@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public interface SensorService {
-    void init(Window window);
+    void init();
     String[]getAllTypes();
     String[]getAllTypesWithoutROSEMOUNT();
     ArrayList<Sensor> getAll();
@@ -21,6 +21,6 @@ public interface SensorService {
     void clear();
     boolean isLastInMeasurement(Sensor sensor);
     void rewriteInCurrentThread(ArrayList<Sensor>sensors);
-    void save();
-    boolean exportData();
+    void exportData();
+    void resetToDefault();
 }

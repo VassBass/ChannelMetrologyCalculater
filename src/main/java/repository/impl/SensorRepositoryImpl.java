@@ -3,10 +3,10 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import model.Person;
+import model.Sensor;
 import org.sqlite.JDBC;
-import repository.PersonRepository;
 import repository.Repository;
+import repository.SensorRepository;
 import ui.model.SaveMessage;
 
 import javax.swing.*;
@@ -17,21 +17,24 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PersonRepositoryImpl extends Repository implements PersonRepository {
-    private static final Logger LOGGER = Logger.getLogger(PersonRepository.class.getName());
+public class SensorRepositoryImpl extends Repository implements SensorRepository {
+    private static final Logger LOGGER = Logger.getLogger(SensorRepository.class.getName());
 
-    public PersonRepositoryImpl(){super();}
-    public PersonRepositoryImpl(String dbUrl){super(dbUrl);}
+    public SensorRepositoryImpl(){super();}
+    public SensorRepositoryImpl(String dbUrl){super(dbUrl);}
 
     @Override
     protected void init() {
-        String sql = "CREATE TABLE IF NOT EXISTS persons ("
-                + "id integer NOT NULL UNIQUE"
-                + ", name text NOT NULL"
-                + ", surname text NOT NULL"
-                + ", patronymic text"
-                + ", position text NOT NULL"
-                + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
+        String sql = "CREATE TABLE IF NOT EXISTS sensors ("
+                + "name text NOT NULL UNIQUE"
+                + ", type text NOT NULL"
+                + ", number text"
+                + ", measurement text NOT NULL"
+                + ", value text"
+                + ", error_formula text NOT NULL"
+                + ", range_min real NOT NULL"
+                + ", range_max real NOT NULL"
+                + ", PRIMARY KEY (\"name\")"
                 + ");";
 
         LOGGER.fine("Get connection with DB");
@@ -50,24 +53,27 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     }
 
     @Override
-    public ArrayList<Person> getAll() {
-        ArrayList<Person>persons = new ArrayList<>();
+    public ArrayList<Sensor> getAll() {
+        ArrayList<Sensor>sensors = new ArrayList<>();
         LOGGER.fine("Get connection with DB");
         try (Connection connection = this.getConnection()){
             Statement statement = connection.createStatement();
 
             LOGGER.fine("Send request");
-            String sql = "SELECT * FROM persons";
+            String sql = "SELECT * FROM sensors";
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
-                Person person = new Person();
-                person.setId(resultSet.getInt("id"));
-                person.setName(resultSet.getString("name"));
-                person.setSurname(resultSet.getString("surname"));
-                person.setPatronymic(resultSet.getString("patronymic"));
-                person.setPosition(resultSet.getString("position"));
-                persons.add(person);
+                Sensor sensor = new Sensor();
+                sensor.setName(resultSet.getString("name"));
+                sensor.setType(resultSet.getString("type"));
+                sensor.setNumber(resultSet.getString("number"));
+                sensor.setMeasurement(resultSet.getString("measurement"));
+                sensor.setValue(resultSet.getString("value"));
+                sensor.setErrorFormula(resultSet.getString("error_formula"));
+                sensor.setRangeMin(resultSet.getDouble("range_min"));
+                sensor.setRangeMax(resultSet.getDouble("range_max"));
+                sensors.add(sensor);
             }
 
             LOGGER.fine("Close connections");
@@ -76,22 +82,27 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
         }catch (SQLException ex){
             LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-        return persons;
+        return sensors;
     }
 
     @Override
-    public void add(Person person) {
-        new BackgroundAction().add(person);
+    public void add(Sensor sensor) {
+        new BackgroundAction().add(sensor);
     }
 
     @Override
-    public void remove(Person person) {
-        new BackgroundAction().remove(person);
+    public void removeInCurrentThread(String sensorName) {
+        new BackgroundAction().removeSensor(sensorName);
     }
 
     @Override
-    public void set(Person oldPerson, Person newPerson) {
-        new BackgroundAction().set(oldPerson, newPerson);
+    public void setInCurrentThread(Sensor oldSensor, Sensor newSensor) {
+        new BackgroundAction().setSensor(oldSensor, newSensor);
+    }
+
+    @Override
+    public void rewriteInCurrentThread(ArrayList<Sensor> sensors) {
+        new BackgroundAction().rewriteSensors(sensors);
     }
 
     @Override
@@ -100,23 +111,18 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     }
 
     @Override
-    public void rewriteInCurrentThread(ArrayList<Person> persons) {
-        new BackgroundAction().rewritePersons(persons);
+    public void export(ArrayList<Sensor> sensors) {
+        new BackgroundAction().export(sensors);
     }
 
     @Override
-    public void rewrite(ArrayList<Person> persons) {
-        new BackgroundAction().rewrite(persons);
-    }
-
-    @Override
-    public void export(ArrayList<Person> persons) {
-        new BackgroundAction().export(persons);
+    public void rewrite(ArrayList<Sensor> sensors) {
+        new BackgroundAction().rewrite(sensors);
     }
 
     private class BackgroundAction extends SwingWorker<Void, Void> {
-        private Person person, old;
-        private ArrayList<Person>list;
+        private Sensor sensor;
+        private ArrayList<Sensor>list;
         private Action action;
         private final SaveMessage saveMessage;
 
@@ -126,15 +132,9 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             this.saveMessage = mainScreen == null ? null : new SaveMessage(mainScreen);
         }
 
-        void add(Person person){
-            this.person = person;
+        void add(Sensor sensor){
+            this.sensor = sensor;
             this.action = Action.ADD;
-            this.start();
-        }
-
-        void remove(Person person){
-            this.person = person;
-            this.action = Action.REMOVE;
             this.start();
         }
 
@@ -143,21 +143,14 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             this.start();
         }
 
-        void rewrite(ArrayList<Person>list){
+        void rewrite(ArrayList<Sensor>list){
             this.list = list;
-            this.action = list == null ? Action.CLEAR : Action.REWRITE;
+            this.action = list == null ? constants.Action.CLEAR : constants.Action.REWRITE;
             this.start();
         }
 
-        void set(Person oldPerson, Person newPerson){
-            this.old = oldPerson;
-            this.person = newPerson;
-            this.action = Action.SET;
-            this.start();
-        }
-
-        void export(ArrayList<Person>persons){
-            this.list = persons;
+        void export(ArrayList<Sensor>sensors){
+            this.list = sensors;
             this.action = Action.EXPORT;
             this.start();
         }
@@ -177,22 +170,16 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
         protected Void doInBackground() throws Exception {
             switch (this.action){
                 case ADD:
-                    this.addPerson(this.person);
-                    break;
-                case REMOVE:
-                    this.removePerson(this.person.getId());
+                    this.addSensor(this.sensor);
                     break;
                 case CLEAR:
-                    this.clearPersons();
-                    break;
-                case SET:
-                    this.setPerson(this.old, this.person);
+                    this.clearSensors();
                     break;
                 case REWRITE:
-                    this.rewritePersons(this.list);
+                    this.rewriteSensors(this.list);
                     break;
                 case EXPORT:
-                    this.exportPersons(this.list);
+                    this.exportSensors(this.list);
                     break;
             }
             return null;
@@ -204,24 +191,27 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private void addPerson(Person person){
+        private void addSensor(Sensor sensor){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM persons WHERE id = '?';";
+                String sql = "DELETE FROM sensors WHERE name = '?';";
                 PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setInt(1, person.getId());
+                statement.setString(1, sensor.getName());
                 statement.execute();
 
                 LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO persons ('id', 'surname', 'name', 'patronymic', 'position') "
-                        + "VALUES(?, ?, ?, ?, ?);";
+                sql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
+                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
                 statement = connection.prepareStatement(sql);
-                statement.setInt(1, person.getId());
-                statement.setString(2, person.getSurname());
-                statement.setString(3, person.getName());
-                statement.setString(4, person.getPatronymic());
-                statement.setString(5, person.getPosition());
+                statement.setString(1, sensor.getName());
+                statement.setString(2, sensor.getType());
+                statement.setString(3, sensor.getNumber());
+                statement.setString(4, sensor.getMeasurement());
+                statement.setString(5, sensor.getValue());
+                statement.setString(6, sensor.getErrorFormula());
+                statement.setDouble(7, sensor.getRangeMin());
+                statement.setDouble(8, sensor.getRangeMax());
                 statement.execute();
 
                 LOGGER.fine("Close connection");
@@ -231,11 +221,11 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             }
         }
 
-        private void removePerson(int id){
+        void removeSensor(String sensorName){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM persons WHERE id = '" + id + "';";
+                String sql = "DELETE FROM sensors WHERE name = '" + sensorName + "';";
                 Statement statement = connection.createStatement();
                 statement.execute(sql);
 
@@ -246,11 +236,11 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             }
         }
 
-        private void clearPersons(){
+        private void clearSensors(){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()) {
                 LOGGER.fine("Send request");
-                String sql = "DELETE FROM persons;";
+                String sql = "DELETE FROM sensors;";
                 Statement statement = connection.createStatement();
                 statement.execute(sql);
 
@@ -261,23 +251,26 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             }
         }
 
-        private void setPerson(Person oldPerson, Person newPerson){
+        void setSensor(Sensor oldSensor, Sensor newSensor){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
                 Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM persons WHERE id = '" + oldPerson.getId() + "';";
+                String sql = "DELETE FROM sensors WHERE name = '" + oldSensor.getName() + "';";
                 statementClear.execute(sql);
 
                 LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO areas ('id', 'name', 'surname', 'patronymic', 'position')" +
-                        " VALUES (?, ?, ?, ?, ?);";
+                sql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
+                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
                 PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setInt(1, newPerson.getId());
-                statement.setString(2, newPerson.getName());
-                statement.setString(3, newPerson.getSurname());
-                statement.setString(4, newPerson.getPatronymic());
-                statement.setString(5, newPerson.getPosition());
+                statement.setString(1, newSensor.getName());
+                statement.setString(2, newSensor.getType());
+                statement.setString(3, newSensor.getNumber());
+                statement.setString(4, newSensor.getMeasurement());
+                statement.setString(5, newSensor.getValue());
+                statement.setString(6, newSensor.getErrorFormula());
+                statement.setDouble(7, newSensor.getRangeMin());
+                statement.setDouble(8, newSensor.getRangeMax());
                 statement.execute(sql);
 
                 LOGGER.fine("Close connections");
@@ -288,26 +281,29 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             }
         }
 
-        public void rewritePersons(ArrayList<Person>persons){
-            if (persons != null) {
+        void rewriteSensors(ArrayList<Sensor>sensors){
+            if (sensors != null) {
                 LOGGER.fine("Get connection with DB");
                 try (Connection connection = getConnection()) {
                     LOGGER.fine("Send request to clear");
                     Statement statementClear = connection.createStatement();
-                    String sql = "DELETE FROM persons;";
+                    String sql = "DELETE FROM sensors;";
                     statementClear.execute(sql);
 
-                    if (!persons.isEmpty()) {
+                    if (!sensors.isEmpty()) {
                         LOGGER.fine("Send requests to add");
-                        sql = "INSERT INTO persons ('id', 'name', 'surname', 'patronymic', 'position')" +
-                                " VALUES (?, ?, ?, ?, ?);";
+                        sql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
+                                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
                         PreparedStatement statement = connection.prepareStatement(sql);
-                        for (Person person : persons) {
-                            statement.setInt(1, person.getId());
-                            statement.setString(2, person.getName());
-                            statement.setString(3, person.getSurname());
-                            statement.setString(4, person.getPatronymic());
-                            statement.setString(5, person.getPosition());
+                        for (Sensor sensor : sensors) {
+                            statement.setString(1, sensor.getName());
+                            statement.setString(2, sensor.getType());
+                            statement.setString(3, sensor.getNumber());
+                            statement.setString(4, sensor.getMeasurement());
+                            statement.setString(5, sensor.getValue());
+                            statement.setString(6, sensor.getErrorFormula());
+                            statement.setDouble(7, sensor.getRangeMin());
+                            statement.setDouble(8, sensor.getRangeMax());
                             statement.execute();
                         }
 
@@ -321,9 +317,9 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             }
         }
 
-        private void exportPersons(ArrayList<Person>persons){
+        private void exportSensors(ArrayList<Sensor>sensors){
             Calendar date = Calendar.getInstance();
-            String fileName = "export_persons ["
+            String fileName = "export_sensors ["
                     + date.get(Calendar.DAY_OF_MONTH)
                     + "."
                     + (date.get(Calendar.MONTH) + 1)
@@ -331,13 +327,16 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
                     + date.get(Calendar.YEAR)
                     + "].db";
             String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
-            String sql = "CREATE TABLE IF NOT EXISTS persons ("
-                    + "id integer NOT NULL UNIQUE"
-                    + ", name text NOT NULL"
-                    + ", surname text NOT NULL"
-                    + ", patronymic text"
-                    + ", position text NOT NULL"
-                    + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
+            String sql = "CREATE TABLE IF NOT EXISTS sensors ("
+                    + "name text NOT NULL UNIQUE"
+                    + ", type text NOT NULL"
+                    + ", number text"
+                    + ", measurement text NOT NULL"
+                    + ", value text"
+                    + ", error_formula text NOT NULL"
+                    + ", range_min real NOT NULL"
+                    + ", range_max real NOT NULL"
+                    + ", PRIMARY KEY (\"name\")"
                     + ");";
 
             Connection connection = null;
@@ -353,15 +352,18 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
                 statement.execute(sql);
 
                 LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO persons ('id', 'name', 'surname', 'patronymic', 'position')" +
-                        " VALUES (?, ?, ?, ?, ?);";
+                sql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
+                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
                 preparedStatement = connection.prepareStatement(sql);
-                for (Person person : persons) {
-                    preparedStatement.setInt(1, person.getId());
-                    preparedStatement.setString(2, person.getName());
-                    preparedStatement.setString(3, person.getSurname());
-                    preparedStatement.setString(4, person.getPatronymic());
-                    preparedStatement.setString(5, person.getPosition());
+                for (Sensor sensor : sensors) {
+                    preparedStatement.setString(1, sensor.getName());
+                    preparedStatement.setString(2, sensor.getType());
+                    preparedStatement.setString(3, sensor.getNumber());
+                    preparedStatement.setString(4, sensor.getMeasurement());
+                    preparedStatement.setString(5, sensor.getValue());
+                    preparedStatement.setString(6, sensor.getErrorFormula());
+                    preparedStatement.setDouble(7, sensor.getRangeMin());
+                    preparedStatement.setDouble(8, sensor.getRangeMax());
                     preparedStatement.execute();
                 }
 

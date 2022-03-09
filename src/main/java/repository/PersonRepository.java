@@ -12,4 +12,5 @@ public interface PersonRepository {
     void clear();
     void rewriteInCurrentThread(ArrayList<Person>persons);
     void rewrite(ArrayList<Person>persons);
+    void export(ArrayList<Person>persons);
 }

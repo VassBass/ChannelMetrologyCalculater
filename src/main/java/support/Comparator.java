@@ -5,8 +5,8 @@ import converters.VariableConverter;
 import measurements.Measurement;
 import model.Calibrator;
 import model.Channel;
+import model.Person;
 import model.Sensor;
-import model.Worker;
 
 import java.util.Calendar;
 
@@ -78,7 +78,7 @@ public class Comparator {
         return VariableConverter.dateToString(date1).equals(VariableConverter.dateToString(date2));
     }
 
-    public static boolean personsMatch(Worker person1, Worker person2){
+    public static boolean personsMatch(Person person1, Person person2){
         return person1.getSurname().equals(person2.getSurname())
                 && person1.getName().equals(person2.getName())
                 && person1.getPatronymic().equals(person2.getPatronymic())

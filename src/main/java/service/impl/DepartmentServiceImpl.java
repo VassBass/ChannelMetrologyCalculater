@@ -1,16 +1,13 @@
 package service.impl;
 
 import application.Application;
+import def.DefaultDepartments;
 import repository.DepartmentRepository;
 import repository.impl.DepartmentRepositoryImpl;
-import service.FileBrowser;
-import def.DefaultDepartments;
 import service.DepartmentService;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Logger;
 
 public class DepartmentServiceImpl implements DepartmentService {
@@ -28,16 +25,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     public DepartmentServiceImpl(String dbUrl){
         this.repository = new DepartmentRepositoryImpl(dbUrl);
-    }
-
-    private String exportFileName(Calendar date){
-        return "export_departments ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].dep";
     }
 
     @Override
@@ -103,15 +90,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public boolean exportData(){
-        try {
-            String fileName = this.exportFileName(Calendar.getInstance());
-            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.departments);
-            return true;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
+    public void exportData(){
+        this.repository.export(this.departments);
     }
 
     @Override

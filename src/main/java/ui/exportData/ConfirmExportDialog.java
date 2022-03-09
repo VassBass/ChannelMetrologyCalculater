@@ -96,28 +96,28 @@ public class ConfirmExportDialog extends JDialog {
                     new ExportChannels(mainScreen).execute();
                     break;
                 case SENSOR://Sensors
-                    new ExportSensors(mainScreen).execute();
+                    Application.context.sensorService.exportData();
                     break;
                 case CALIBRATOR://Calibrators
-                    new ExportCalibrators(mainScreen).execute();
+                    Application.context.calibratorService.exportData();
                     break;
                 case DEPARTMENT://Departments
-                    new ExportDepartments(mainScreen).execute();
+                    Application.context.departmentService.exportData();
                     break;
                 case AREA://Areas
-                    new ExportAreas(mainScreen).execute();
+                    Application.context.areaService.exportData();
                     break;
                 case PROCESS://Processes
-                    new ExportProcesses(mainScreen).execute();
+                    Application.context.processService.exportData();
                     break;
                 case INSTALLATION://Installations
-                    new ExportInstallations(mainScreen).execute();
+                    Application.context.installationService.exportData();
                     break;
                 case PATH_ELEMENT://Path elements
                     new ExportPathElements(mainScreen).execute();
                     break;
                 case PERSON://Persons
-                    new ExportPersons(mainScreen).execute();
+                    Application.context.personService.exportData();
                     break;
             }
         }

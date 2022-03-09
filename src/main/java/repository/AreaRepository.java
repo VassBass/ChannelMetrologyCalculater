@@ -10,4 +10,5 @@ public interface AreaRepository {
     void clear();
     void rewrite(ArrayList<String>newList);
     void rewriteInCurrentThread(ArrayList<String>newList);
+    void export(ArrayList<String>areas);
 }

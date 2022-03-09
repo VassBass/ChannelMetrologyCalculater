@@ -4,13 +4,10 @@ import application.Application;
 import def.DefaultProcesses;
 import repository.ProcessRepository;
 import repository.impl.ProcessRepositoryImpl;
-import service.FileBrowser;
 import service.ProcessService;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Logger;
 
 public class ProcessServiceImpl implements ProcessService {
@@ -30,16 +27,6 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     private ArrayList<String> processes;
-
-    private String exportFileName(Calendar date){
-        return "export_processes ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].prc";
-    }
 
     @Override
     public void init(){
@@ -104,15 +91,8 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public boolean exportData(){
-        try {
-            String fileName = this.exportFileName(Calendar.getInstance());
-            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.processes);
-            return true;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
+    public void exportData(){
+        this.repository.export(this.processes);
     }
 
     @Override

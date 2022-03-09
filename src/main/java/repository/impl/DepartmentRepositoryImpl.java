@@ -3,6 +3,7 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
+import org.sqlite.JDBC;
 import repository.DepartmentRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
@@ -11,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,31 +96,12 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>newList){
-        if (newList != null) {
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = this.getConnection()) {
-                LOGGER.fine("Send request to clear");
-                Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM departments;";
-                statementClear.execute(sql);
+        new BackgroundAction().rewriteDepartments(newList);
+    }
 
-                if (!newList.isEmpty()) {
-                    LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO departments ('department') VALUES (?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    for (String department : newList) {
-                        statement.setString(1, department);
-                        statement.execute();
-                    }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
-                }
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-            }
-        }
+    @Override
+    public void export(ArrayList<String> departments) {
+        new BackgroundAction().export(departments);
     }
 
     private class BackgroundAction extends SwingWorker<Void, Void>{
@@ -163,6 +146,12 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
             this.start();
         }
 
+        void export(ArrayList<String>departments){
+            this.list = departments;
+            this.action = Action.EXPORT;
+            this.start();
+        }
+
         private void start(){
             Application.setBusy(true);
             EventQueue.invokeLater(new Runnable() {
@@ -176,73 +165,25 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
 
         @Override
         protected Void doInBackground() throws Exception {
-            String sql = null;
             switch (this.action){
                 case ADD:
-                    sql = "REPLACE INTO departments (department) "
-                            + "VALUES('" + this.object + "');";
+                    this.addDepartment(this.object);
                     break;
                 case REMOVE:
-                    sql = "DELETE FROM departments WHERE department = '" + this.object + "';";
+                    this.removeDepartment(this.object);
                     break;
                 case CLEAR:
-                    sql = "DELETE FROM departments;";
+                    this.clearDepartments();
                     break;
-            }
-            if (sql != null) {
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()) {
-                    Statement statement = connection.createStatement();
-
-                    LOGGER.fine("Send request");
-                    statement.execute(sql);
-
-                    LOGGER.fine("Close connections");
-                    statement.close();
-                } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                }
-            }else if (this.list != null) {
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()){
-                    LOGGER.fine("Send request to clear");
-                    Statement statementClear = connection.createStatement();
-                    sql = "DELETE FROM departments;";
-                    statementClear.execute(sql);
-
-                    LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO departments ('department') VALUES (?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
-                    for (String department : this.list){
-                        statement.setString(1, department);
-                        statement.execute();
-                    }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
-                }catch (SQLException ex){
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                }
-            }else if (this.old != null){
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()){
-                    LOGGER.fine("Send request to delete");
-                    Statement statementClear = connection.createStatement();
-                    sql = "DELETE FROM departments WHERE department = '" + this.old + "';";
-                    statementClear.execute(sql);
-
-                    LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO departments ('department') VALUES ('" + this.object + "');";
-                    Statement statement = connection.createStatement();
-                    statement.execute(sql);
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
-                }catch (SQLException ex){
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                }
+                case REWRITE:
+                    this.rewriteDepartments(this.list);
+                    break;
+                case SET:
+                    this.setDepartment(this.old, this.object);
+                    break;
+                case EXPORT:
+                    this.exportDepartments(this.list);
+                    break;
             }
             return null;
         }
@@ -251,6 +192,161 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
         protected void done() {
             Application.setBusy(false);
              if (this.saveMessage != null) this.saveMessage.dispose();
+        }
+
+        private void addDepartment(String department){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                LOGGER.fine("Send request to delete");
+                String sql = "DELETE FROM departments WHERE department = '?';";
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, department);
+                statement.execute();
+
+                LOGGER.fine("Send requests to add");
+                sql = "INSERT INTO department ('department') "
+                        + "VALUES(?);";
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, department);
+                statement.execute();
+
+                LOGGER.fine("Close connection");
+                statement.close();
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+
+        private void removeDepartment(String department){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                LOGGER.fine("Send request to delete");
+                String sql = "DELETE FROM departments WHERE department = '" + department + "';";
+                Statement statement = connection.createStatement();
+                statement.execute(sql);
+
+                LOGGER.fine("Close connection");
+                statement.close();
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+
+        private void clearDepartments(){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()) {
+                LOGGER.fine("Send request");
+                String sql = "DELETE FROM departments;";
+                Statement statement = connection.createStatement();
+                statement.execute(sql);
+
+                LOGGER.fine("Close connections");
+                statement.close();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+
+        private void setDepartment(String oldDepartment, String newDepartment){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                LOGGER.fine("Send request to delete");
+                Statement statementClear = connection.createStatement();
+                String sql = "DELETE FROM departments WHERE department = '" + oldDepartment + "';";
+                statementClear.execute(sql);
+
+                LOGGER.fine("Send requests to add");
+                sql = "INSERT INTO departments ('department') "
+                        + "VALUES(?);";
+                PreparedStatement statement = connection.prepareStatement(sql);
+                statement.setString(1, newDepartment);
+                statement.execute(sql);
+
+                LOGGER.fine("Close connections");
+                statementClear.close();
+                statement.close();
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+
+        public void rewriteDepartments(ArrayList<String>departments){
+            if (departments != null) {
+                LOGGER.fine("Get connection with DB");
+                try (Connection connection = getConnection()) {
+                    LOGGER.fine("Send request to clear");
+                    Statement statementClear = connection.createStatement();
+                    String sql = "DELETE FROM departments;";
+                    statementClear.execute(sql);
+
+                    if (!departments.isEmpty()) {
+                        LOGGER.fine("Send requests to add");
+                        sql = "INSERT INTO departments ('department') "
+                                + "VALUES(?);";
+                        PreparedStatement statement = connection.prepareStatement(sql);
+                        for (String department : departments) {
+                            statement.setString(1, department);
+                            statement.execute();
+                        }
+
+                        LOGGER.fine("Close connections");
+                        statementClear.close();
+                        statement.close();
+                    }
+                } catch (SQLException ex) {
+                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                }
+            }
+        }
+
+        private void exportDepartments(ArrayList<String>departments){
+            Calendar date = Calendar.getInstance();
+            String fileName = "export_departments ["
+                    + date.get(Calendar.DAY_OF_MONTH)
+                    + "."
+                    + (date.get(Calendar.MONTH) + 1)
+                    + "."
+                    + date.get(Calendar.YEAR)
+                    + "].db";
+            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
+            String sql = "CREATE TABLE IF NOT EXISTS departments ("
+                    + "department text NOT NULL UNIQUE"
+                    + ", PRIMARY KEY (\"department\")"
+                    + ");";
+
+            Connection connection = null;
+            Statement statement = null;
+            PreparedStatement preparedStatement = null;
+            try {
+                LOGGER.fine("Get connection with DB");
+                DriverManager.registerDriver(new JDBC());
+                connection = DriverManager.getConnection(dbUrl);
+                statement = connection.createStatement();
+
+                LOGGER.fine("Send requests to create table");
+                statement.execute(sql);
+
+                LOGGER.fine("Send requests to add");
+                sql = "INSERT INTO departments ('department') "
+                        + "VALUES(?);";
+                preparedStatement = connection.prepareStatement(sql);
+                for (String department : departments) {
+                    preparedStatement.setString(1, department);
+                    preparedStatement.execute();
+                }
+
+                LOGGER.fine("Close connection");
+                statement.close();
+                preparedStatement.close();
+                connection.close();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
+                try {
+                    if (statement != null) statement.close();
+                    if (preparedStatement != null) preparedStatement.close();
+                    if (connection != null) connection.close();
+                } catch (SQLException ignored) {}
+            }
         }
     }
 }

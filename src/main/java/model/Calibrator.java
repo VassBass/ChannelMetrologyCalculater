@@ -16,7 +16,7 @@ public class Calibrator implements Serializable {
 
     private String type = "";
     private String name = "";
-    private final Certificate certificate;
+    private Certificate certificate;
     private String number = "";
     private String measurement = "";
     private double rangeMin = 0D;
@@ -55,13 +55,10 @@ public class Calibrator implements Serializable {
     public void setCertificateCompany(String company){this.certificate.setCompany(company);}
     public void setErrorFormula(String errorFormula){this.errorFormula = errorFormula;}
     public void setMeasurement(String measurement){this.measurement = measurement;}
+    public void setCertificate(Certificate certificate){this.certificate = certificate;}
 
     public String getCertificateToString(){
-        return this.certificate.getName()
-                + " від "
-                + VariableConverter.dateToString(this.certificate.getDate())
-                + "р "
-                + this.certificate.getCompany();
+        return this.certificate.toString();
     }
 
     /*
@@ -102,6 +99,11 @@ public class Calibrator implements Serializable {
         public void setCompany(String company){this.company = company;}
 
         @Override
+        public int hashCode() {
+            return Objects.hash(this.name, this.date, this.company);
+        }
+
+        @Override
         public boolean equals(Object object){
             if (!object.getClass().equals(this.getClass())){
                 return false;
@@ -110,6 +112,11 @@ public class Calibrator implements Serializable {
             return this.name.equals(c.name) &&
                     this.company.equals(c.company) &&
                     Comparator.datesMatch(this.date, c.date);
+        }
+
+        @Override
+        public String toString() {
+            return this.name + " від " + VariableConverter.dateToString(this.date) + "р " + this.company;
         }
     }
 

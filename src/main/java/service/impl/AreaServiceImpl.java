@@ -5,12 +5,9 @@ import def.DefaultAreas;
 import repository.AreaRepository;
 import repository.impl.AreaRepositoryImpl;
 import service.AreaService;
-import service.FileBrowser;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Logger;
 
 public class AreaServiceImpl implements AreaService {
@@ -21,16 +18,6 @@ public class AreaServiceImpl implements AreaService {
     private static final String ERROR = "Помилка";
 
     private ArrayList<String> areas;
-
-    private String exportFileName(Calendar date){
-        return "export_areas ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].are";
-    }
 
     public AreaServiceImpl(){
         this.repository = new AreaRepositoryImpl();
@@ -103,15 +90,8 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public boolean exportData(){
-        try {
-            String fileName = this.exportFileName(Calendar.getInstance());
-            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.areas);
-            return true;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
+    public void exportData(){
+        this.repository.export(this.areas);
     }
 
     @Override

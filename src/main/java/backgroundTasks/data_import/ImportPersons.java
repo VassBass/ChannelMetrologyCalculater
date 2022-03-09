@@ -1,7 +1,7 @@
 package backgroundTasks.data_import;
 
 import application.Application;
-import model.Worker;
+import model.Person;
 import support.Comparator;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
@@ -75,13 +75,13 @@ public class ImportPersons extends SwingWorker<Integer, Void> {
     @SuppressWarnings("unchecked")
     private boolean copyPersons() throws Exception {
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(this.exportDataFile));
-        ArrayList<Worker> importedPersons = (ArrayList<Worker>) ois.readObject();
+        ArrayList<Person> importedPersons = (ArrayList<Person>) ois.readObject();
         if (!importedPersons.isEmpty()) {
-            ArrayList<Worker> oldPersonsList = Application.context.personService.getAll();
+            ArrayList<Person> oldPersonsList = Application.context.personService.getAll();
 
-            for (Worker imp : importedPersons) {
+            for (Person imp : importedPersons) {
                 boolean exist = false;
-                for (Worker old : oldPersonsList) {
+                for (Person old : oldPersonsList) {
                     if (Comparator.personsMatch(imp, old)) {
                         exist = true;
                         break;

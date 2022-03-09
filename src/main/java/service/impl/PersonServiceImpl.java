@@ -24,16 +24,6 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository repository;
     private ArrayList<Person> persons;
 
-    private String exportFileName(Calendar date){
-        return "export_persons ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].per";
-    }
-
     public PersonServiceImpl(){
         this.repository = new PersonRepositoryImpl();
         this.init();
@@ -133,15 +123,8 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public boolean exportData(){
-        try {
-            String fileName = this.exportFileName(Calendar.getInstance());
-            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.persons);
-            return true;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
+    public void exportData(){
+        this.repository.export(this.persons);
     }
 
     @Override

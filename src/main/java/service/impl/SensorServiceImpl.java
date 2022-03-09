@@ -3,17 +3,13 @@ package service.impl;
 import application.Application;
 import constants.SensorType;
 import def.DefaultSensors;
-import model.Model;
 import model.Sensor;
-import repository.Repository;
-import service.FileBrowser;
+import repository.SensorRepository;
+import repository.impl.SensorRepositoryImpl;
 import service.SensorService;
 
 import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Logger;
 
 public class SensorServiceImpl implements SensorService {
@@ -21,31 +17,20 @@ public class SensorServiceImpl implements SensorService {
 
     private static final String ERROR = "Помилка";
 
-    private Window window;
+    private final SensorRepository repository;
     private ArrayList<Sensor> sensors;
 
-    private String exportFileName(Calendar date){
-        return "export_sensors ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].sen";
+    public SensorServiceImpl(){
+        this.repository = new SensorRepositoryImpl();
+    }
+
+    public SensorServiceImpl(String dbUrl){
+        this.repository = new SensorRepositoryImpl(dbUrl);
     }
 
     @Override
-    public void init(Window window){
-        LOGGER.info("SensorService: initialization start ...");
-        try {
-            this.sensors = new Repository<Sensor>(null, Model.SENSOR).readList();
-        }catch (Exception e){
-            LOGGER.info("SensorService: file \"" + FileBrowser.FILE_SENSORS.getName() + "\" is empty");
-            LOGGER.info("SensorService: set default list");
-            this.sensors = DefaultSensors.get();
-            this.save();
-        }
-        this.window = window;
+    public void init(){
+        this.sensors = this.repository.getAll();
         LOGGER.info("SensorService: initialization SUCCESS");
     }
 
@@ -120,7 +105,7 @@ public class SensorServiceImpl implements SensorService {
             this.showExistMessage();
         }else {
             this.sensors.add(sensor);
-            new Repository<Sensor>(null,Model.SENSOR).writeListInCurrentThread(this.sensors);
+            this.repository.add(sensor);
         }
         return this.sensors;
     }
@@ -137,21 +122,17 @@ public class SensorServiceImpl implements SensorService {
             if (numByType <= 0) Application.context.controlPointsValuesService.removeAllInCurrentThread(sen.getType());
 
             this.sensors.remove(index);
-            new Repository<Sensor>(this.window, Model.SENSOR).writeListInCurrentThread(this.sensors);
+            this.repository.removeInCurrentThread(sensor.getName());
         }
     }
 
     @Override
     public void setInCurrentThread(Sensor oldSensor, Sensor newSensor) {
-        if (oldSensor != null) {
+        if (oldSensor != null || newSensor != null) {
             int index = this.sensors.indexOf(oldSensor);
             if (index >= 0) {
-                if (newSensor == null) {
-                    this.sensors.remove(index);
-                } else {
-                    this.sensors.set(index, newSensor);
-                }
-                new Repository<Sensor>(null, Model.SENSOR).writeListInCurrentThread(this.sensors);
+                this.sensors.set(index, newSensor);
+                this.repository.setInCurrentThread(oldSensor, newSensor);
             }
         }
     }
@@ -163,33 +144,26 @@ public class SensorServiceImpl implements SensorService {
             if (index >= 0) this.sensors.set(index, sensor);
         }
         this.sensors.addAll(newSensors);
-        new Repository<Sensor>(null,Model.SENSOR).writeListInCurrentThread(this.sensors);
+        this.repository.rewriteInCurrentThread(this.sensors);
     }
 
     @Override
     public Sensor get(String sensorName) {
-        for (Sensor sensor : this.sensors) {
-            if (sensor.getName().equals(sensorName)) {
-                return sensor;
-            }
-        }
-        this.showNotFoundMessage();
-        return null;
+        Sensor sensor = new Sensor();
+        sensor.setName(sensorName);
+        int index = this.sensors.indexOf(sensor);
+        return index < 0 ? null : this.sensors.get(index);
     }
 
     @Override
     public Sensor get(int index) {
-        if (index >= 0) {
-            return this.sensors.get(index);
-        }else {
-            return null;
-        }
+        return index < 0 | index >= this.sensors.size() ? null : this.sensors.get(index);
     }
 
     @Override
     public void clear() {
         this.sensors.clear();
-        this.save();
+        this.repository.clear();
     }
 
     @Override
@@ -207,33 +181,24 @@ public class SensorServiceImpl implements SensorService {
     @Override
     public void rewriteInCurrentThread(ArrayList<Sensor>sensors){
         this.sensors = sensors;
-        new Repository<Sensor>(null, Model.SENSOR).writeListInCurrentThread(sensors);
+        this.repository.rewriteInCurrentThread(sensors);
     }
 
     @Override
-    public void save() {
-        new Repository<Sensor>(this.window, Model.SENSOR).writeList(this.sensors);
+    public void exportData(){
+        this.repository.export(this.sensors);
     }
 
     @Override
-    public boolean exportData(){
-        try {
-            String fileName = this.exportFileName(Calendar.getInstance());
-            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.sensors);
-            return true;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private void showNotFoundMessage() {
-        String message = "ПВП з данною назвою не знайдено в списку ПВП.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+    public void resetToDefault() {
+        this.sensors = DefaultSensors.get();
+        this.repository.rewrite(this.sensors);
     }
 
     private void showExistMessage() {
-        String message = "ПВП з данною назвою вже існує в списку ПВП. Змініть будь ласка назву.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        if (Application.context != null) {
+            String message = "ПВП з данною назвою вже існує в списку ПВП. Змініть будь ласка назву.";
+            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
