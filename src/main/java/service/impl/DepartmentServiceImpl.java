@@ -1,117 +1,84 @@
 package service.impl;
 
-import application.Application;
 import def.DefaultDepartments;
 import repository.DepartmentRepository;
 import repository.impl.DepartmentRepositoryImpl;
 import service.DepartmentService;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class DepartmentServiceImpl implements DepartmentService {
     private static final Logger LOGGER = Logger.getLogger(DepartmentService.class.getName());
 
-    private static final String ERROR = "Помилка";
+    private DepartmentRepository repository;
 
-    private final DepartmentRepository repository;
-
-    private ArrayList<String> departments;
+    private final String dbUrl;
 
     public DepartmentServiceImpl(){
-        this.repository = new DepartmentRepositoryImpl();
+        this.dbUrl = null;
     }
 
     public DepartmentServiceImpl(String dbUrl){
-        this.repository = new DepartmentRepositoryImpl(dbUrl);
+        this.dbUrl = dbUrl;
     }
 
     @Override
     public void init(){
-        LOGGER.fine("DepartmentService: initialization start ...");
-        this.departments = repository.getAll();
+        this.repository = this.dbUrl == null ? new DepartmentRepositoryImpl() : new DepartmentRepositoryImpl(this.dbUrl);
         LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
     public ArrayList<String> getAll() {
-        return this.departments;
+        return this.repository.getAll();
     }
 
     @Override
     public String[] getAllInStrings(){
-        return this.departments.toArray(new String[0]);
+        return this.repository.getAll().toArray(new String[0]);
     }
 
     @Override
     public ArrayList<String> add(String object) {
-        if (object != null && !this.departments.contains(object)){
-            this.departments.add(object);
-            this.repository.add(object);
-        }
-        return this.departments;
+        this.repository.add(object);
+        return this.repository.getAll();
     }
 
     @Override
     public ArrayList<String> remove(String object) {
-        if (object != null) {
-            if (this.departments.contains(object)) {
-                this.departments.remove(object);
-                this.repository.remove(object);
-            } else {
-                this.showNotFoundMessage();
-            }
-        }
-        return this.departments;
+        this.repository.remove(object);
+        return this.repository.getAll();
     }
 
     @Override
     public ArrayList<String> set(String oldObject, String newObject) {
-        if (oldObject != null && newObject != null){
-            int index = this.departments.indexOf(oldObject);
-            if (index >= 0) {
-                this.departments.set(index, newObject);
-                this.repository.set(oldObject, newObject);
-            }
-        }
-        return this.departments;
+        this.repository.set(oldObject, newObject);
+        return this.repository.getAll();
     }
 
     @Override
     public String get(int index) {
-        return index < 0 | index >= this.departments.size() ? null : this.departments.get(index);
+        return this.repository.get(index);
     }
 
     @Override
     public void clear() {
-        this.departments.clear();
         this.repository.clear();
     }
 
     @Override
     public void exportData(){
-        this.repository.export(this.departments);
+        this.repository.export();
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>departments){
-        if (departments != null) {
-            this.departments = departments;
-            this.repository.rewrite(departments);
-        }
+        this.repository.rewriteInCurrentThread(departments);
     }
 
     @Override
     public void resetToDefault() {
-        this.departments = DefaultDepartments.get();
-        this.repository.rewrite(this.departments);
-    }
-
-    private void showNotFoundMessage() {
-        if (Application.context != null) {
-            String message = "Цех з такою назвою не знайдено в списку цехів.";
-            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
-        }
+        this.repository.rewrite(DefaultDepartments.get());
     }
 }

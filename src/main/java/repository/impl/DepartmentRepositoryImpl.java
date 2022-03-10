@@ -13,31 +13,40 @@ import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DepartmentRepositoryImpl extends Repository implements DepartmentRepository {
     private static final Logger LOGGER = Logger.getLogger(DepartmentRepository.class.getName());
 
+    private final ArrayList<String>departments = new ArrayList<>();
+
     public DepartmentRepositoryImpl(){super();}
     public DepartmentRepositoryImpl(String dbUrl){super(dbUrl);}
 
     @Override
     protected void init(){
-        LOGGER.fine("Initialization ...");
-        String sql = "CREATE TABLE IF NOT EXISTS departments ("
-                + "department text NOT NULL UNIQUE"
-                + ", PRIMARY KEY (\"department\")"
-                + ");";
-
         LOGGER.fine("Get connection with DB");
         try (Connection connection = this.getConnection()){
+            String sql = "CREATE TABLE IF NOT EXISTS departments ("
+                    + "department text NOT NULL UNIQUE"
+                    + ", PRIMARY KEY (\"department\")"
+                    + ");";
             Statement statement = connection.createStatement();
 
-            LOGGER.fine("Send request");
+            LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
+            LOGGER.fine("Send request to read departments from DB");
+            sql = "SELECT * FROM departments";
+            ResultSet resultSet = statement.executeQuery(sql);
+            while (resultSet.next()){
+                departments.add(resultSet.getString("department"));
+            }
+
             LOGGER.fine("Close connection");
+            resultSet.close();
             statement.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
@@ -47,64 +56,70 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
 
     @Override
     public ArrayList<String> getAll() {
-        ArrayList<String>departments = new ArrayList<>();
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
-            Statement statement = connection.createStatement();
+        return this.departments;
+    }
 
-            LOGGER.fine("Send request");
-            String sql = "SELECT * FROM departments";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                departments.add(resultSet.getString("department"));
-            }
-
-            LOGGER.fine("Close connections");
-            resultSet.close();
-            statement.close();
-        }catch (SQLException ex){
-            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-        }
-        return departments;
+    @Override
+    public String get(int index) {
+        return index < 0 | index >= this.departments.size() ? null : this.departments.get(index);
     }
 
     @Override
     public void add(String object) {
-        new BackgroundAction().add(object);
+        if (object != null && !this.departments.contains(object)) {
+            this.departments.add(object);
+            new BackgroundAction().add(object);
+        }
     }
 
     @Override
     public void set(String oldObject, String newObject) {
-        new BackgroundAction().set(oldObject, newObject);
+        if (oldObject != null && newObject != null
+                && this.departments.contains(oldObject) && !this.departments.contains(newObject)) {
+            int index = this.departments.indexOf(oldObject);
+            this.departments.set(index, newObject);
+            new BackgroundAction().set(oldObject, newObject);
+        }
     }
 
     @Override
     public void remove(String object) {
-        new BackgroundAction().remove(object);
+        if (object != null && this.departments.contains(object)) {
+            this.departments.remove(object);
+            new BackgroundAction().remove(object);
+        }
     }
 
     @Override
     public void clear() {
+        this.departments.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewrite(ArrayList<String> newList) {
-        new BackgroundAction().rewrite(newList);
+        if (newList != null && !newList.isEmpty()) {
+            this.departments.clear();
+            this.departments.addAll(newList);
+            new BackgroundAction().rewrite(newList);
+        }
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>newList){
-        new BackgroundAction().rewriteDepartments(newList);
+        if (newList != null && !newList.isEmpty()) {
+            this.departments.clear();
+            this.departments.addAll(newList);
+            new BackgroundAction().rewriteDepartments(newList);
+        }
     }
 
     @Override
-    public void export(ArrayList<String> departments) {
-        new BackgroundAction().export(departments);
+    public void export() {
+        new BackgroundAction().export(this.departments);
     }
 
-    private class BackgroundAction extends SwingWorker<Void, Void>{
+    private class BackgroundAction extends SwingWorker<Boolean, Void>{
         private String object, old;
         private ArrayList<String>list;
         private Action action;
@@ -164,37 +179,51 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Boolean doInBackground() throws Exception {
             switch (this.action){
                 case ADD:
-                    this.addDepartment(this.object);
-                    break;
+                    return this.addDepartment(this.object);
                 case REMOVE:
-                    this.removeDepartment(this.object);
-                    break;
+                    return this.removeDepartment(this.object);
                 case CLEAR:
-                    this.clearDepartments();
-                    break;
+                    return this.clearDepartments();
                 case REWRITE:
-                    this.rewriteDepartments(this.list);
-                    break;
+                    return this.rewriteDepartments(this.list);
                 case SET:
-                    this.setDepartment(this.old, this.object);
-                    break;
+                    return this.setDepartment(this.old, this.object);
                 case EXPORT:
-                    this.exportDepartments(this.list);
-                    break;
+                    return this.exportDepartments(this.list);
             }
-            return null;
+            return true;
         }
 
         @Override
         protected void done() {
+            try {
+                if (!this.get()){
+                    switch (this.action){
+                        case ADD:
+                            departments.remove(this.object);
+                            break;
+                        case REMOVE:
+                            departments.add(this.object);
+                            break;
+                        case SET:
+                            departments.remove(this.object);
+                            if (!departments.contains(this.old)) departments.add(this.old);
+                            break;
+                    }
+                    String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
+                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", e);
+            }
             Application.setBusy(false);
              if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private void addDepartment(String department){
+        private boolean addDepartment(String department){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -212,12 +241,14 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void removeDepartment(String department){
+        private boolean removeDepartment(String department){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -227,12 +258,14 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void clearDepartments(){
+        private boolean clearDepartments(){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()) {
                 LOGGER.fine("Send request");
@@ -242,12 +275,14 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
 
                 LOGGER.fine("Close connections");
                 statement.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void setDepartment(String oldDepartment, String newDepartment){
+        private boolean setDepartment(String oldDepartment, String newDepartment){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -265,12 +300,14 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
                 LOGGER.fine("Close connections");
                 statementClear.close();
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        public void rewriteDepartments(ArrayList<String>departments){
+        public boolean rewriteDepartments(ArrayList<String>departments){
             if (departments != null) {
                 LOGGER.fine("Get connection with DB");
                 try (Connection connection = getConnection()) {
@@ -293,13 +330,16 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
                         statementClear.close();
                         statement.close();
                     }
+                    return true;
                 } catch (SQLException ex) {
                     LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    return false;
                 }
             }
+            return true;
         }
 
-        private void exportDepartments(ArrayList<String>departments){
+        private boolean exportDepartments(ArrayList<String>departments){
             Calendar date = Calendar.getInstance();
             String fileName = "export_departments ["
                     + date.get(Calendar.DAY_OF_MONTH)
@@ -339,13 +379,17 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
                 statement.close();
                 preparedStatement.close();
                 connection.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
                 try {
                     if (statement != null) statement.close();
                     if (preparedStatement != null) preparedStatement.close();
                     if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
+                    return false;
+                } catch (SQLException ignored) {
+                    return false;
+                }
             }
         }
     }
