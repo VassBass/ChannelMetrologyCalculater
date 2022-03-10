@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 public class AreaRepositoryImpl extends Repository implements AreaRepository {
     private static final Logger LOGGER = Logger.getLogger(AreaRepository.class.getName());
 
+    private final ArrayList<String>areas = new ArrayList<>();
+
     public AreaRepositoryImpl(){super();}
     public AreaRepositoryImpl(String dbUrl){super(dbUrl);}
 
@@ -33,11 +35,20 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
         try (Connection connection = this.getConnection()){
             Statement statement = connection.createStatement();
 
-            LOGGER.fine("Send request");
+            LOGGER.fine("Send request to create table");
             statement.execute(sql);
+
+            LOGGER.fine("Send request to read areas from DB");
+            sql = "SELECT * FROM areas";
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                this.areas.add(resultSet.getString("area"));
+            }
 
             LOGGER.fine("Close connection");
             statement.close();
+            resultSet.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -46,61 +57,62 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
 
     @Override
     public ArrayList<String> getAll() {
-        ArrayList<String>areas = new ArrayList<>();
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
-            Statement statement = connection.createStatement();
+        return this.areas;
+    }
 
-            LOGGER.fine("Send request");
-            String sql = "SELECT * FROM areas";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                areas.add(resultSet.getString("area"));
-            }
-
-            LOGGER.fine("Close connections");
-            resultSet.close();
-            statement.close();
-        }catch (SQLException ex){
-            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-        }
-        return areas;
+    @Override
+    public String get(int index) {
+        return index < 0 | index >= this.areas.size() ? null : this.areas.get(index);
     }
 
     @Override
     public void add(String object) {
-        new BackgroundAction().add(object);
+        if (object != null && !this.areas.contains(object)){
+            new BackgroundAction().add(object);
+            this.areas.add(object);
+        }
     }
 
     @Override
     public void set(String oldObject, String newObject) {
-        new BackgroundAction().set(oldObject, newObject);
+        if (oldObject != null && newObject != null
+                && this.areas.contains(oldObject) && !this.areas.contains(newObject)) {
+            new BackgroundAction().set(oldObject, newObject);
+        }
     }
 
     @Override
     public void remove(String object) {
-        new BackgroundAction().remove(object);
+        if (object != null && this.areas.contains(object)) new BackgroundAction().remove(object);
     }
 
     @Override
     public void clear() {
+        this.areas.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewrite(ArrayList<String> newList) {
-        new BackgroundAction().rewrite(newList);
+        if (newList != null && !newList.isEmpty()) {
+            this.areas.clear();
+            this.areas.addAll(newList);
+            new BackgroundAction().rewrite(newList);
+        }
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>newList){
-        new BackgroundAction().rewriteAreas(newList);
+        if (newList != null && !newList.isEmpty()) {
+            this.areas.clear();
+            this.areas.addAll(newList);
+            new BackgroundAction().rewriteAreas(newList);
+        }
     }
 
     @Override
-    public void export(ArrayList<String> areas) {
-        new BackgroundAction().export(areas);
+    public void export() {
+        new BackgroundAction().export(this.areas);
     }
 
 
@@ -270,7 +282,7 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
             }
         }
 
-        public void rewriteAreas(ArrayList<String>areas){
+        void rewriteAreas(ArrayList<String>areas){
             if (areas != null) {
                 LOGGER.fine("Get connection with DB");
                 try (Connection connection = getConnection()) {

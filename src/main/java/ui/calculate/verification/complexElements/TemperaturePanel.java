@@ -525,7 +525,7 @@ public class TemperaturePanel extends JPanel {
             cells[11].setText(s95);
             cells[12].setText("Міжконтрольний інтервал");
             cells[13].setText(VariableConverter.roundingDouble(channel.getFrequency(), Locale.GERMAN)
-                    + YEAR_WORD(channel.getFrequency()));
+                    + " " + YEAR_WORD(channel.getFrequency()));
 
             this.add(cells[0], new Cell(0, 0, 1, 1));
             this.add(cells[1], new Cell(0, 1, 1, 1));

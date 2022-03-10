@@ -630,7 +630,8 @@ public class ConsumptionPanel extends JPanel {
                 cells[12].setText(s914);
                 cells[13].setText("Міжконтрольний інтервал");
                 double frequency = channel.getFrequency();
-                cells[14].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + YEAR_WORD(frequency));
+                cells[14].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN)
+                        + " " + YEAR_WORD(frequency));
 
                 this.add(cells[13], new Cell(2,0,1,1));
                 this.add(cells[14], new Cell(2,1,1,8));
@@ -720,7 +721,8 @@ public class ConsumptionPanel extends JPanel {
                 cells[13].setText(s100);
                 cells[14].setText("Міжконтрольний інтервал");
                 double frequency = channel.getFrequency();
-                cells[15].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + YEAR_WORD(frequency));
+                cells[15].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN)
+                        + " " + YEAR_WORD(frequency));
 
                 this.add(cells[13], new Cell(1,8,1,1));
                 this.add(cells[14], new Cell(2,0,1,1));
