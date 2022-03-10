@@ -2,11 +2,7 @@ package repository.impl;
 
 import application.Application;
 import application.ApplicationContext;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import constants.Action;
-import model.Calibrator;
 import org.sqlite.JDBC;
 import repository.AreaRepository;
 import repository.Repository;

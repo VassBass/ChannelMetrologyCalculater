@@ -2,17 +2,14 @@ package service.impl;
 
 import application.Application;
 import model.Channel;
-import model.Model;
 import model.Sensor;
-import repository.Repository;
+import repository.ChannelRepository;
+import repository.impl.ChannelRepositoryImpl;
 import service.ChannelService;
-import service.FileBrowser;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.logging.Logger;
 
@@ -21,31 +18,21 @@ public class ChannelServiceImpl implements ChannelService {
 
     private static final String ERROR = "Помилка";
 
-    private Window window;
+    private final ChannelRepository repository;
     private ArrayList<Channel> channels;
 
-    private String exportFileName(Calendar date){
-        return "export_channels ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].chn";
+    public ChannelServiceImpl(){
+        this.repository = new ChannelRepositoryImpl();
+    }
+
+    public ChannelServiceImpl(String dbUrl){
+        this.repository = new ChannelRepositoryImpl(dbUrl);
     }
 
     @Override
-    public void init(Window window){
-        LOGGER.info("ChannelService: initialization start ...");
-        try {
-            this.channels = new Repository<Channel>(null, Model.CHANNEL).readList();
-        }catch (Exception e){
-            LOGGER.info("ChannelService: file \"" + FileBrowser.FILE_CHANNELS.getName() + "\" is empty");
-            LOGGER.info("ChannelService: set default list");
-            this.channels = new ArrayList<>();
-        }
-        this.window = window;
-        LOGGER.info("ChannelService: initialization SUCCESS");
+    public void init(){
+        this.channels = this.repository.getAll();
+        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
@@ -55,29 +42,33 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public ArrayList<Channel> add(Channel channel) {
-        if (this.channels.contains(channel)){
-            this.showExistMessage();
-        }else {
-            this.channels.add(channel);
-            this.save();
+        if (channel != null) {
+            if (this.channels.contains(channel)) {
+                this.showExistMessage();
+            } else {
+                this.channels.add(channel);
+                this.repository.add(channel);
+            }
         }
         return this.channels;
     }
 
     @Override
     public ArrayList<Channel> remove(Channel channel) {
-        int index = this.channels.indexOf(channel);
-        if (index < 0){
-            this.showNotFoundMessage();
-        }else {
-            this.channels.remove(index);
-            this.save();
+        if (channel != null) {
+            int index = this.channels.indexOf(channel);
+            if (index < 0) {
+                this.showNotFoundMessage();
+            } else {
+                this.channels.remove(index);
+                this.repository.remove(channel.getCode());
+            }
         }
         return this.channels;
     }
 
     @Override
-    public void removeBySensor(Sensor sensor){
+    public void removeBySensorInCurrentThread(Sensor sensor){
         ArrayList<Integer>indexes = new ArrayList<>();
         String sensorName = sensor.getName();
         for (int c=0;c<this.channels.size();c++){
@@ -90,10 +81,11 @@ public class ChannelServiceImpl implements ChannelService {
         for (int index : indexes){
             this.channels.remove(index);
         }
+        this.repository.rewriteInCurrentThread(this.channels);
     }
 
     @Override
-    public void changeSensor(Sensor oldSensor, Sensor newSensor){
+    public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor){
         for (Channel channel : this.channels){
             if (channel.getSensor().getName().equals(oldSensor.getName())){
                 double minRange = channel.getSensor().getRangeMin();
@@ -104,7 +96,7 @@ public class ChannelServiceImpl implements ChannelService {
                 channel.setSensor(newSensor);
             }
         }
-        new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(this.channels);
+        this.repository.rewriteInCurrentThread(this.channels);
     }
 
     @Override
@@ -116,20 +108,16 @@ public class ChannelServiceImpl implements ChannelService {
                 }
             }
         }
-        new Repository<Channel>(null, Model.CHANNEL).writeListInCurrentThread(this.channels);
+        this.repository.rewriteInCurrentThread(this.channels);
     }
 
     @Override
     public ArrayList<Channel> set(Channel oldChannel, Channel newChannel) {
-        if (oldChannel != null){
+        if (oldChannel != null && newChannel != null){
             int index = this.channels.indexOf(oldChannel);
             if (index >= 0) {
-                if (newChannel == null) {
-                    this.channels.remove(index);
-                } else {
-                    this.channels.set(index, newChannel);
-                }
-                this.save();
+                this.channels.set(index, newChannel);
+                this.repository.set(oldChannel, newChannel);
             }
         }
         return this.channels;
@@ -138,23 +126,21 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public boolean isExist(String code){
         for (Channel c : this.channels){
-            if (c.getCode().equals(code)){
-                return true;
-            }
+            if (c.getCode().equals(code)) return true;
         }
         return false;
     }
 
     @Override
     public boolean isExist(String oldChannelCode, String newChannelCode){
-        Channel oldChannel = new Channel();
-        oldChannel.setCode(oldChannelCode);
+        if (oldChannelCode != null && newChannelCode != null) {
+            Channel oldChannel = new Channel();
+            oldChannel.setCode(oldChannelCode);
 
-        int oldIndex = this.channels.indexOf(oldChannel);
-        for (int index=0;index<this.channels.size();index++){
-            String channelCode = this.channels.get(index).getCode();
-            if (channelCode.equals(newChannelCode) && index != oldIndex){
-                return true;
+            int oldIndex = this.channels.indexOf(oldChannel);
+            for (int index = 0; index < this.channels.size(); index++) {
+                String channelCode = this.channels.get(index).getCode();
+                if (channelCode.equals(newChannelCode) && index != oldIndex) return true;
             }
         }
         return false;
@@ -163,26 +149,12 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public void clear() {
         this.channels.clear();
-        this.save();
+        this.repository.clear();
     }
 
     @Override
-    public void save() {
-        new Repository<Channel>(this.window, Model.CHANNEL).writeList(this.channels);
-    }
-
-    @Override
-    public boolean exportData() {
-        String fileName = this.exportFileName(Calendar.getInstance());
-        ArrayList<Sensor>sensors = Application.context.sensorService.getAll();
-        ArrayList<?>[]list = new ArrayList<?>[]{this.channels, sensors};
-        try {
-            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), list);
-            return true;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
+    public void exportData() {
+        this.repository.export(this.channels);
     }
 
     @Override
@@ -192,23 +164,27 @@ public class ChannelServiceImpl implements ChannelService {
             if (index >= 0) this.channels.set(index, channel);
         }
         this.channels.addAll(newChannels);
-        new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(this.channels);
+        this.repository.rewriteInCurrentThread(this.channels);
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Channel>channels){
         this.channels = channels;
-        new Repository<Channel>(null,Model.CHANNEL).writeListInCurrentThread(channels);
+        this.repository.rewriteInCurrentThread(channels);
     }
 
     private void showNotFoundMessage() {
-        String message = "Канал з данним кодом не знайдено в списку каналів.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        if (Application.context != null) {
+            String message = "Канал з данним кодом не знайдено в списку каналів.";
+            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void showExistMessage() {
-        String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        if (Application.context != null) {
+            String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
+            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @Override

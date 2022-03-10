@@ -6,7 +6,6 @@ import constants.Action;
 import converters.VariableConverter;
 import def.DefaultControlPointsValues;
 import model.ControlPointsValues;
-import model.Person;
 import repository.AreaRepository;
 import repository.ControlPointsValuesRepository;
 import repository.Repository;
@@ -135,7 +134,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     }
 
     private class BackgroundAction extends SwingWorker<Void, Void> {
-        private ControlPointsValues cpv, old;
+        private ControlPointsValues cpv;
         private int id;
         private String sensorType;
         private Action action;
@@ -178,7 +177,6 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
 
         @Override
         protected Void doInBackground() throws Exception {
-            String sql = null;
             switch (this.action){
                 case ADD:
                     this.putControlPoints(this.cpv);

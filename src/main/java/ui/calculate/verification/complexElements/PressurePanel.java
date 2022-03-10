@@ -39,8 +39,8 @@ public class PressurePanel extends JPanel {
     private static final String CHANNEL_IS_GOOD = "Канал придатний";
     private static final String CHANNEL_IS_BAD = "Канал не придатний";
     private static final String ALARM_MESSAGE = "Сигналізація спрацювала при t = ";
-    private static final String ADVICE_FIX = "Порада: налаштувати вимірювальний канал.";
-    private static final String ADVICE_FIX_PRESSURE = "Порада: ущільнити датчик, не допускаючи стравлювання.";
+    private static final String ADVICE_FIX = "Порада: налаштувати вимірювальний канал";
+    private static final String ADVICE_FIX_PRESSURE = "Порада: ущільнити датчик, не допускаючи стравлювання";
     private static final String ADVICE_RANGE = "Порада: для кращих показів налаштуйте вимірювальний канал на вказаний діапазон вимірювання";
     private static final String GAMMA = "\u03B3";
     private static final String DELTA = "\u0394";

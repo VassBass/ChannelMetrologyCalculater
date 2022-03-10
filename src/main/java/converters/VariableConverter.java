@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class VariableConverter {
@@ -93,6 +94,13 @@ public class VariableConverter {
         }
 
         return String.valueOf(output);
+    }
+
+    public static Calendar stringToDate(String date){
+        int day = Integer.parseInt(date.substring(0,2));
+        int month = Integer.parseInt(date.substring(3,5));
+        int year = Integer.parseInt(date.substring(6));
+        return new GregorianCalendar(year, --month, day);
     }
 
     public static Double parseToDouble(String str){

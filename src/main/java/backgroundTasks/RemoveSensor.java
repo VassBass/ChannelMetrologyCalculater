@@ -44,7 +44,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
             return false;
         }else {
             Application.context.sensorService.removeInCurrentThread(sensor);
-            Application.context.channelService.removeBySensor(sensor);
+            Application.context.channelService.removeBySensorInCurrentThread(sensor);
             return true;
         }
     }
