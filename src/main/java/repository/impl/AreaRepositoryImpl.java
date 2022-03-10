@@ -13,6 +13,7 @@ import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -116,7 +117,7 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
     }
 
 
-    private class BackgroundAction extends SwingWorker<Void, Void> {
+    private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private String object, old;
         private ArrayList<String>list;
         private constants.Action action;
@@ -176,37 +177,51 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Boolean doInBackground() throws Exception {
             switch (this.action){
                 case ADD:
-                    this.addArea(this.object);
-                    break;
+                    return this.addArea(this.object);
                 case REMOVE:
-                    this.removeArea(this.object);
-                    break;
+                    return this.removeArea(this.object);
                 case CLEAR:
-                    this.clearAreas();
-                    break;
+                    return this.clearAreas();
                 case REWRITE:
-                    this.rewriteAreas(this.list);
-                    break;
+                    return this.rewriteAreas(this.list);
                 case SET:
-                    this.setArea(this.old, this.object);
-                    break;
+                    return this.setArea(this.old, this.object);
                 case EXPORT:
-                    this.exportAreas(this.list);
-                    break;
+                    return this.exportAreas(this.list);
             }
-            return null;
+            return true;
         }
 
         @Override
         protected void done() {
+            try {
+                if (!this.get()){
+                    switch (this.action){
+                        case ADD:
+                            areas.remove(this.object);
+                            break;
+                        case REMOVE:
+                            areas.add(this.object);
+                            break;
+                        case SET:
+                            areas.remove(this.object);
+                            if (!areas.contains(this.old)) areas.add(this.old);
+                            break;
+                    }
+                    String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
+                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", e);
+            }
             Application.setBusy(false);
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private void addArea(String area){
+        private boolean addArea(String area){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -224,12 +239,14 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void removeArea(String area){
+        private boolean removeArea(String area){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -239,12 +256,14 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void clearAreas(){
+        private boolean clearAreas(){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()) {
                 LOGGER.fine("Send request");
@@ -254,12 +273,14 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
 
                 LOGGER.fine("Close connections");
                 statement.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void setArea(String oldArea, String newArea){
+        private boolean setArea(String oldArea, String newArea){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -277,12 +298,14 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
                 LOGGER.fine("Close connections");
                 statementClear.close();
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        void rewriteAreas(ArrayList<String>areas){
+        boolean rewriteAreas(ArrayList<String>areas){
             if (areas != null) {
                 LOGGER.fine("Get connection with DB");
                 try (Connection connection = getConnection()) {
@@ -305,13 +328,16 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
                         statementClear.close();
                         statement.close();
                     }
+                    return true;
                 } catch (SQLException ex) {
                     LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    return false;
                 }
             }
+            return true;
         }
 
-        private void exportAreas(ArrayList<String>areas){
+        private boolean exportAreas(ArrayList<String>areas){
             Calendar date = Calendar.getInstance();
             String fileName = "export_areas ["
                     + date.get(Calendar.DAY_OF_MONTH)
@@ -351,13 +377,17 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
                 statement.close();
                 preparedStatement.close();
                 connection.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
                 try {
                     if (statement != null) statement.close();
                     if (preparedStatement != null) preparedStatement.close();
                     if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
+                    return false;
+                } catch (SQLException ignored) {
+                    return false;
+                }
             }
         }
     }
