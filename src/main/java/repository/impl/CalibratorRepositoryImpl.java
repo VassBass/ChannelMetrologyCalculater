@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import constants.Action;
+import measurements.Measurement;
 import model.Calibrator;
 import org.sqlite.JDBC;
 import repository.CalibratorRepository;
@@ -17,54 +18,41 @@ import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CalibratorRepositoryImpl extends Repository implements CalibratorRepository {
     private static final Logger LOGGER = Logger.getLogger(CalibratorRepository.class.getName());
 
+    private final ArrayList<Calibrator>calibrators = new ArrayList<>();
+
     public CalibratorRepositoryImpl(){super();}
     public CalibratorRepositoryImpl(String dbUrl){super(dbUrl);}
 
     @Override
     protected void init() {
-        String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
-                + "name text NOT NULL UNIQUE"
-                + ", type text NOT NULL"
-                + ", number text NOT NULL"
-                + ", measurement text NOT NULL"
-                + ", value text NOT NULL"
-                + ", error_formula text NOT NULL"
-                + ", certificate text NOT NULL"
-                + ", range_min real NOT NULL"
-                + ", range_max real NOT NULL"
-                + ", PRIMARY KEY (\"name\")"
-                + ");";
-
         LOGGER.fine("Get connection with DB");
         try (Connection connection = this.getConnection()){
+            String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
+                    + "name text NOT NULL UNIQUE"
+                    + ", type text NOT NULL"
+                    + ", number text NOT NULL"
+                    + ", measurement text NOT NULL"
+                    + ", value text NOT NULL"
+                    + ", error_formula text NOT NULL"
+                    + ", certificate text NOT NULL"
+                    + ", range_min real NOT NULL"
+                    + ", range_max real NOT NULL"
+                    + ", PRIMARY KEY (\"name\")"
+                    + ");";
             Statement statement = connection.createStatement();
 
-            LOGGER.fine("Send request");
+            LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
-            LOGGER.fine("Close connection");
-            statement.close();
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-        }
-        LOGGER.info("Initialization SUCCESS");
-    }
-
-    @Override
-    public ArrayList<Calibrator> getAll() {
-        ArrayList<Calibrator>calibrators = new ArrayList<>();
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
-            Statement statement = connection.createStatement();
-
-            LOGGER.fine("Send request");
-            String sql = "SELECT * FROM calibrators";
+            LOGGER.fine("Send request to read calibrators from DB");
+            sql = "SELECT * FROM calibrators";
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
@@ -83,53 +71,109 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 calibrators.add(calibrator);
             }
 
-            LOGGER.fine("Close connections");
+            LOGGER.fine("Close connection");
             resultSet.close();
             statement.close();
-        }catch (SQLException | JsonProcessingException ex){
-            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+        } catch (SQLException | JsonProcessingException ex) {
+            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
-        return calibrators;
+        LOGGER.info("Initialization SUCCESS");
+    }
+
+    @Override
+    public ArrayList<Calibrator> getAll() {
+        return this.calibrators;
+    }
+
+    @Override
+    public String[] getAllNames(Measurement measurement) {
+        ArrayList<String>cal = new ArrayList<>();
+        for (Calibrator c : this.calibrators){
+            if (c.getMeasurement().equals(measurement.getName())){
+                cal.add(c.getName());
+            }
+        }
+        return cal.toArray(new String[0]);
+    }
+
+    @Override
+    public Calibrator get(String name) {
+        Calibrator calibrator = new Calibrator();
+        calibrator.setName(name);
+        int index = this.calibrators.indexOf(calibrator);
+        return index >= 0 ? this.calibrators.get(index) : null;
+    }
+
+    @Override
+    public Calibrator get(int index) {
+        return index < 0 | index >= this.calibrators.size() ? null : this.calibrators.get(index);
     }
 
     @Override
     public void add(Calibrator calibrator) {
-        new BackgroundAction().add(calibrator);
+        if (calibrator != null && !this.calibrators.contains(calibrator)) {
+            this.calibrators.add(calibrator);
+            new BackgroundAction().add(calibrator);
+        }
     }
 
     @Override
-    public void remove(String calibratorName) {
-        new BackgroundAction().remove(calibratorName);
+    public void remove(Calibrator calibrator) {
+        if (calibrator != null && this.calibrators.contains(calibrator)){
+            this.calibrators.remove(calibrator);
+            new BackgroundAction().remove(calibrator);
+        }
+    }
+
+    @Override
+    public void remove(int index) {
+        if (index >= 0 && index < this.calibrators.size()){
+            new BackgroundAction().remove(this.calibrators.get(index));
+            this.calibrators.remove(index);
+        }
     }
 
     @Override
     public void set(Calibrator oldCalibrator, Calibrator newCalibrator) {
-        new BackgroundAction().set(oldCalibrator, newCalibrator);
+        if (oldCalibrator != null && newCalibrator != null
+                && this.calibrators.contains(oldCalibrator) && !this.calibrators.contains(newCalibrator)){
+            int index = this.calibrators.indexOf(oldCalibrator);
+            this.calibrators.set(index, newCalibrator);
+            new BackgroundAction().set(oldCalibrator, newCalibrator);
+        }
     }
 
     @Override
     public void clear() {
+        this.calibrators.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Calibrator> calibrators) {
-        new BackgroundAction().rewriteCalibrators(calibrators);
+        if (calibrators != null && !calibrators.isEmpty()) {
+            this.calibrators.clear();
+            this.calibrators.addAll(calibrators);
+            new BackgroundAction().rewriteCalibrators(calibrators);
+        }
     }
 
     @Override
-    public void export(ArrayList<Calibrator>calibrators) {
-        new BackgroundAction().export(calibrators);
+    public void export() {
+        new BackgroundAction().export(this.calibrators);
     }
 
     @Override
     public void rewrite(ArrayList<Calibrator> calibrators) {
-        new BackgroundAction().rewrite(calibrators);
+        if (calibrators != null && !calibrators.isEmpty()) {
+            this.calibrators.clear();
+            this.calibrators.addAll(calibrators);
+            new BackgroundAction().rewrite(calibrators);
+        }
     }
 
-    private class BackgroundAction extends SwingWorker<Void, Void> {
+    private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private Calibrator calibrator, old;
-        private String calibratorName;
         private ArrayList<Calibrator>list;
         private Action action;
         private final SaveMessage saveMessage;
@@ -146,8 +190,8 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
             this.start();
         }
 
-        void remove(String calibratorName){
-            this.calibratorName = calibratorName;
+        void remove(Calibrator calibrator){
+            this.calibrator = calibrator;
             this.action = Action.REMOVE;
             this.start();
         }
@@ -188,49 +232,58 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Boolean doInBackground() throws Exception {
             switch (this.action){
                 case ADD:
-                    this.addCalibrator(this.calibrator);
-                    break;
+                    return this.addCalibrator(this.calibrator);
                 case REMOVE:
-                    this.removeCalibrator(this.calibratorName);
-                    break;
+                    return this.removeCalibrator(this.calibrator);
                 case CLEAR:
-                    this.clearCalibrators();
-                    break;
+                    return this.clearCalibrators();
                 case SET:
-                    this.setCalibrator(this.old, this.calibrator);
-                    break;
+                    return this.setCalibrator(this.old, this.calibrator);
                 case REWRITE:
-                    this.rewriteCalibrators(this.list);
-                    break;
+                    return this.rewriteCalibrators(this.list);
                 case EXPORT:
-                    this.exportCalibrators(this.list);
-                    break;
+                    return this.exportCalibrators(this.list);
             }
-            return null;
+            return true;
         }
 
         @Override
         protected void done() {
+            try {
+                if (!this.get()){
+                    switch (this.action){
+                        case ADD:
+                            calibrators.remove(this.calibrator);
+                            break;
+                        case REMOVE:
+                            calibrators.add(this.calibrator);
+                            break;
+                        case SET:
+                            calibrators.remove(this.calibrator);
+                            if (!calibrators.contains(this.old)) calibrators.add(this.old);
+                            break;
+                    }
+                    String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
+                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", e);
+            }
             Application.setBusy(false);
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private void addCalibrator(Calibrator calibrator){
+        private boolean addCalibrator(Calibrator calibrator){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
-                LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM calibrators WHERE name = '?';";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, calibrator.getName());
-                statement.execute();
 
                 LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+                String sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
                         + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                statement = connection.prepareStatement(sql);
+                PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, calibrator.getName());
                 statement.setString(2, calibrator.getType());
                 statement.setString(3, calibrator.getNumber());
@@ -246,27 +299,31 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException | JsonProcessingException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void removeCalibrator(String calibratorName){
+        private boolean removeCalibrator(Calibrator calibrator){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM calibrators WHERE name = '" + calibratorName + "';";
+                String sql = "DELETE FROM calibrators WHERE name = '" + calibrator.getName() + "';";
                 Statement statement = connection.createStatement();
                 statement.execute(sql);
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void clearCalibrators(){
+        private boolean clearCalibrators(){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()) {
                 LOGGER.fine("Send request");
@@ -276,12 +333,14 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
 
                 LOGGER.fine("Close connections");
                 statement.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void setCalibrator(Calibrator oldCalibrator, Calibrator newCalibrator){
+        private boolean setCalibrator(Calibrator oldCalibrator, Calibrator newCalibrator){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -309,51 +368,53 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 LOGGER.fine("Close connections");
                 statementClear.close();
                 statement.close();
+                return true;
             }catch (SQLException | JsonProcessingException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        public void rewriteCalibrators(ArrayList<Calibrator>calibrators){
-            if (calibrators != null) {
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()) {
-                    LOGGER.fine("Send request to clear");
-                    Statement statementClear = connection.createStatement();
-                    String sql = "DELETE FROM calibrators;";
-                    statementClear.execute(sql);
+        public boolean rewriteCalibrators(ArrayList<Calibrator>calibrators){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()) {
+                LOGGER.fine("Send request to clear");
+                Statement statementClear = connection.createStatement();
+                String sql = "DELETE FROM calibrators;";
+                statementClear.execute(sql);
 
-                    if (!calibrators.isEmpty()) {
-                        LOGGER.fine("Send requests to add");
-                        sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
-                                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                        PreparedStatement statement = connection.prepareStatement(sql);
-                        for (Calibrator calibrator : calibrators) {
-                            statement.setString(1, calibrator.getName());
-                            statement.setString(2, calibrator.getType());
-                            statement.setString(3, calibrator.getNumber());
-                            statement.setString(4, calibrator.getMeasurement());
-                            statement.setString(5, calibrator.getValue());
-                            statement.setString(6, calibrator.getErrorFormula());
-                            ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                            String certificate = writer.writeValueAsString(calibrator.getCertificate());
-                            statement.setString(7, certificate);
-                            statement.setDouble(8, calibrator.getRangeMin());
-                            statement.setDouble(9, calibrator.getRangeMax());
-                            statement.execute();
-                        }
-
-                        LOGGER.fine("Close connections");
-                        statementClear.close();
-                        statement.close();
+                if (!calibrators.isEmpty()) {
+                    LOGGER.fine("Send requests to add");
+                    sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    for (Calibrator calibrator : calibrators) {
+                        statement.setString(1, calibrator.getName());
+                        statement.setString(2, calibrator.getType());
+                        statement.setString(3, calibrator.getNumber());
+                        statement.setString(4, calibrator.getMeasurement());
+                        statement.setString(5, calibrator.getValue());
+                        statement.setString(6, calibrator.getErrorFormula());
+                        ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                        String certificate = writer.writeValueAsString(calibrator.getCertificate());
+                        statement.setString(7, certificate);
+                        statement.setDouble(8, calibrator.getRangeMin());
+                        statement.setDouble(9, calibrator.getRangeMax());
+                        statement.execute();
                     }
-                } catch (SQLException | JsonProcessingException ex) {
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+
+                    LOGGER.fine("Close connections");
+                    statementClear.close();
+                    statement.close();
                 }
+                return true;
+            } catch (SQLException | JsonProcessingException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void exportCalibrators(ArrayList<Calibrator>calibrators){
+        private boolean exportCalibrators(ArrayList<Calibrator>calibrators){
             Calendar date = Calendar.getInstance();
             String fileName = "export_calibrators ["
                     + date.get(Calendar.DAY_OF_MONTH)
@@ -411,6 +472,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 statement.close();
                 preparedStatement.close();
                 connection.close();
+                return true;
             } catch (SQLException | JsonProcessingException ex) {
                 LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
                 try {
@@ -418,6 +480,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                     if (preparedStatement != null) preparedStatement.close();
                     if (connection != null) connection.close();
                 } catch (SQLException ignored) {}
+                return false;
             }
         }
     }
