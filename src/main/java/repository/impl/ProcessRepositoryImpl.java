@@ -13,11 +13,14 @@ import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ProcessRepositoryImpl extends Repository implements ProcessRepository {
     private static final Logger LOGGER = Logger.getLogger(ProcessRepository.class.getName());
+
+    private final ArrayList<String> processes = new ArrayList<>();
 
     public ProcessRepositoryImpl(){
         super();
@@ -29,20 +32,27 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
 
     @Override
     protected void init(){
-        LOGGER.fine("Initialization ...");
-        String sql = "CREATE TABLE IF NOT EXISTS processes ("
-                + "process text NOT NULL UNIQUE"
-                + ", PRIMARY KEY (\"process\")"
-                + ");";
-
         LOGGER.fine("Get connection with DB");
         try (Connection connection = this.getConnection()){
+            String sql = "CREATE TABLE IF NOT EXISTS processes ("
+                    + "process text NOT NULL UNIQUE"
+                    + ", PRIMARY KEY (\"process\")"
+                    + ");";
             Statement statement = connection.createStatement();
 
-            LOGGER.fine("Send request");
+            LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
+            LOGGER.fine("Send request to read processes from DB");
+            sql = "SELECT * FROM processes";
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()){
+                this.processes.add(resultSet.getString("process"));
+            }
+
             LOGGER.fine("Close connection");
+            resultSet.close();
             statement.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
@@ -52,64 +62,70 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
 
     @Override
     public ArrayList<String> getAll() {
-        ArrayList<String>processes = new ArrayList<>();
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
-            Statement statement = connection.createStatement();
+        return this.processes;
+    }
 
-            LOGGER.fine("Send request");
-            String sql = "SELECT * FROM processes";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                processes.add(resultSet.getString("process"));
-            }
-
-            LOGGER.fine("Close connections");
-            resultSet.close();
-            statement.close();
-        }catch (SQLException ex){
-            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-        }
-        return processes;
+    @Override
+    public String get(int index) {
+        return index < 0 | index >= this.processes.size() ? null : this.processes.get(index);
     }
 
     @Override
     public void add(String object) {
-        new BackgroundAction().add(object);
+        if (object != null && !this.processes.contains(object)) {
+            this.processes.add(object);
+            new BackgroundAction().add(object);
+        }
     }
 
     @Override
     public void set(String oldObject, String newObject) {
-        new BackgroundAction().set(oldObject, newObject);
+        if (oldObject != null && newObject != null
+                && this.processes.contains(oldObject) && !this.processes.contains(newObject)) {
+            int index = this.processes.indexOf(oldObject);
+            this.processes.set(index, newObject);
+            new BackgroundAction().set(oldObject, newObject);
+        }
     }
 
     @Override
     public void remove(String object) {
-        new BackgroundAction().remove(object);
+        if (object != null && this.processes.contains(object)) {
+            this.processes.remove(object);
+            new BackgroundAction().remove(object);
+        }
     }
 
     @Override
     public void clear() {
+        this.processes.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewrite(ArrayList<String> newList) {
-        new BackgroundAction().rewrite(newList);
+        if (newList != null && !newList.isEmpty()) {
+            this.processes.clear();
+            this.processes.addAll(newList);
+            new BackgroundAction().rewrite(newList);
+        }
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>newList){
-        new BackgroundAction().rewriteProcesses(newList);
+        if (newList != null && !newList.isEmpty()) {
+            this.processes.clear();
+            this.processes.addAll(newList);
+            new BackgroundAction().rewriteProcesses(newList);
+        }
     }
 
     @Override
-    public void export(ArrayList<String> processes) {
-        new BackgroundAction().export(processes);
+    public void export() {
+        new BackgroundAction().export(this.processes);
     }
 
-    private class BackgroundAction extends SwingWorker<Void, Void> {
+    private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private String object, old;
         private ArrayList<String>list;
         private constants.Action action;
@@ -169,60 +185,70 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Boolean doInBackground() throws Exception {
             switch (this.action){
                 case ADD:
-                    this.addProcess(this.object);
-                    break;
+                    return this.addProcess(this.object);
                 case REMOVE:
-                    this.removeProcess(this.object);
-                    break;
+                    return this.removeProcess(this.object);
                 case CLEAR:
-                    this.clearProcesses();
-                    break;
+                    return this.clearProcesses();
                 case REWRITE:
-                    this.rewriteProcesses(this.list);
-                    break;
+                    return this.rewriteProcesses(this.list);
                 case SET:
-                    this.setProcess(this.old, this.object);
-                    break;
+                    return this.setProcess(this.old, this.object);
                 case EXPORT:
-                    this.exportProcesses(this.list);
-                    break;
+                    return this.exportProcesses(this.list);
             }
-            return null;
+            return true;
         }
 
         @Override
         protected void done() {
+            try {
+                if (!this.get()){
+                    switch (this.action){
+                        case ADD:
+                            processes.remove(this.object);
+                            break;
+                        case REMOVE:
+                            processes.add(this.object);
+                            break;
+                        case SET:
+                            processes.remove(this.object);
+                            if (!processes.contains(this.old)) processes.add(this.old);
+                            break;
+                    }
+                    String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
+                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", e);
+            }
             Application.setBusy(false);
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private void addProcess(String process){
+        private boolean addProcess(String process){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
-                LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM processes WHERE process = '?';";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, process);
-                statement.execute();
-
                 LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO process ('process') "
+                String sql = "INSERT INTO process ('process') "
                         + "VALUES(?);";
-                statement = connection.prepareStatement(sql);
+                PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, process);
                 statement.execute();
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void removeProcess(String process){
+        private boolean removeProcess(String process){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -232,12 +258,14 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void clearProcesses(){
+        private boolean clearProcesses(){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()) {
                 LOGGER.fine("Send request");
@@ -247,64 +275,60 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
 
                 LOGGER.fine("Close connections");
                 statement.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void setProcess(String oldProcess, String newProcess){
+        private boolean setProcess(String oldProcess, String newProcess){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
-                LOGGER.fine("Send request to delete");
-                Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM processes WHERE process = '" + oldProcess + "';";
-                statementClear.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO processes ('process') "
-                        + "VALUES(?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, newProcess);
+                LOGGER.fine("Send request");
+                Statement statement = connection.createStatement();
+                String sql = "UPDATE processes SET process = '" + newProcess + "' WHERE process = '" + oldProcess + "';";
                 statement.execute(sql);
 
                 LOGGER.fine("Close connections");
-                statementClear.close();
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        public void rewriteProcesses(ArrayList<String>processes){
-            if (processes != null) {
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()) {
-                    LOGGER.fine("Send request to clear");
-                    Statement statementClear = connection.createStatement();
-                    String sql = "DELETE FROM processes;";
-                    statementClear.execute(sql);
+        public boolean rewriteProcesses(ArrayList<String>processes){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()) {
+                LOGGER.fine("Send request to clear");
+                Statement statementClear = connection.createStatement();
+                String sql = "DELETE FROM processes;";
+                statementClear.execute(sql);
 
-                    if (!processes.isEmpty()) {
-                        LOGGER.fine("Send requests to add");
-                        sql = "INSERT INTO processes ('process') "
+                if (!processes.isEmpty()) {
+                    LOGGER.fine("Send requests to add");
+                    sql = "INSERT INTO processes ('process') "
                                 + "VALUES(?);";
-                        PreparedStatement statement = connection.prepareStatement(sql);
-                        for (String process : processes) {
-                            statement.setString(1, process);
-                            statement.execute();
-                        }
-
-                        LOGGER.fine("Close connections");
-                        statementClear.close();
-                        statement.close();
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    for (String process : processes) {
+                        statement.setString(1, process);
+                        statement.execute();
                     }
-                } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+
+                    LOGGER.fine("Close connections");
+                    statementClear.close();
+                    statement.close();
                 }
+                return true;
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void exportProcesses(ArrayList<String>processes){
+        private boolean exportProcesses(ArrayList<String>processes){
             Calendar date = Calendar.getInstance();
             String fileName = "export_processes ["
                     + date.get(Calendar.DAY_OF_MONTH)
@@ -344,13 +368,17 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
                 statement.close();
                 preparedStatement.close();
                 connection.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
                 try {
                     if (statement != null) statement.close();
                     if (preparedStatement != null) preparedStatement.close();
                     if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
+                    return false;
+                } catch (SQLException ignored) {
+                    return false;
+                }
             }
         }
     }

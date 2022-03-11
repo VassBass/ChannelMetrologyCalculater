@@ -12,6 +12,6 @@ public interface ProcessService {
     String get(int index);
     void clear();
     void exportData();
-    void rewriteInCurrentThread(ArrayList<String>processs);
+    void rewriteInCurrentThread(ArrayList<String>process);
     void resetToDefault();
 }

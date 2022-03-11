@@ -16,12 +16,10 @@ public class AreaServiceImpl implements AreaService {
 
     public AreaServiceImpl(){
         this.dbUrl = null;
-        this.repository = new AreaRepositoryImpl();
     }
 
     public AreaServiceImpl(String dbUrl){
         this.dbUrl = dbUrl;
-        this.repository = new AreaRepositoryImpl(dbUrl);
     }
 
     @Override
