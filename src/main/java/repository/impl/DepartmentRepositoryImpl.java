@@ -369,10 +369,8 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
                     if (statement != null) statement.close();
                     if (preparedStatement != null) preparedStatement.close();
                     if (connection != null) connection.close();
-                    return false;
-                } catch (SQLException ignored) {
-                    return false;
-                }
+                } catch (SQLException ignored) {}
+                return false;
             }
         }
     }

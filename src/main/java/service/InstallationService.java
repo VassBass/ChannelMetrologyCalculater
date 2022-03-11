@@ -12,6 +12,6 @@ public interface InstallationService {
     String get(int index);
     void clear();
     void exportData();
-    void rewriteInCurrentThread(ArrayList<String>areas);
+    void rewriteInCurrentThread(ArrayList<String>installations);
     void resetToDefault();
 }

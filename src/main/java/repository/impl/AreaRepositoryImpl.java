@@ -368,10 +368,8 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
                     if (statement != null) statement.close();
                     if (preparedStatement != null) preparedStatement.close();
                     if (connection != null) connection.close();
-                    return false;
-                } catch (SQLException ignored) {
-                    return false;
-                }
+                } catch (SQLException ignored) {}
+                return false;
             }
         }
     }

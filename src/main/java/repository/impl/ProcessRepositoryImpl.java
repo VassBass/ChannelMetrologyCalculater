@@ -375,10 +375,8 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
                     if (statement != null) statement.close();
                     if (preparedStatement != null) preparedStatement.close();
                     if (connection != null) connection.close();
-                    return false;
-                } catch (SQLException ignored) {
-                    return false;
-                }
+                } catch (SQLException ignored) {}
+                return false;
             }
         }
     }
