@@ -119,8 +119,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
 
     @Override
     public void remove(Channel channel) {
-        if (channel != null && this.channels.contains(channel)) {
-            this.channels.remove(channel);
+        if (channel != null && this.channels.remove(channel)) {
             new BackgroundAction().remove(channel.getCode());
         }
     }
@@ -311,7 +310,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                             channels.remove(this.channel);
                             break;
                         case REMOVE:
-                            channels.add(this.channel);
+                            if (!channels.contains(this.channel)) channels.add(this.channel);
                             break;
                         case SET:
                             channels.remove(this.channel);

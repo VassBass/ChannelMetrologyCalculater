@@ -84,8 +84,7 @@ public class InstallationRepositoryImpl extends Repository implements Installati
 
     @Override
     public void remove(String object) {
-        if (object != null && this.installations.contains(object)) {
-            this.installations.remove(object);
+        if (object != null && this.installations.remove(object)) {
             new BackgroundAction().remove(object);
         }
     }
@@ -206,7 +205,7 @@ public class InstallationRepositoryImpl extends Repository implements Installati
                             installations.remove(this.object);
                             break;
                         case REMOVE:
-                            installations.add(this.object);
+                            if (!installations.contains(this.object)) installations.add(this.object);
                             break;
                         case SET:
                             installations.remove(this.object);

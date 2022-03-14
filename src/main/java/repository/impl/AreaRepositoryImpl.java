@@ -78,13 +78,15 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
                 && this.areas.contains(oldObject) && !this.areas.contains(newObject)) {
+            int index = this.areas.indexOf(oldObject);
+            this.areas.set(index, newObject);
             new BackgroundAction().set(oldObject, newObject);
         }
     }
 
     @Override
     public void remove(String object) {
-        if (object != null && this.areas.contains(object)) new BackgroundAction().remove(object);
+        if (object != null && this.areas.remove(object)) new BackgroundAction().remove(object);
     }
 
     @Override
@@ -204,7 +206,7 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
                             areas.remove(this.object);
                             break;
                         case REMOVE:
-                            areas.add(this.object);
+                            if (!areas.contains(this.object)) areas.add(this.object);
                             break;
                         case SET:
                             areas.remove(this.object);

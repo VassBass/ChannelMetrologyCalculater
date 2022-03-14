@@ -84,8 +84,7 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
 
     @Override
     public void remove(String object) {
-        if (object != null && this.departments.contains(object)) {
-            this.departments.remove(object);
+        if (object != null && this.departments.remove(object)) {
             new BackgroundAction().remove(object);
         }
     }
@@ -206,7 +205,7 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
                             departments.remove(this.object);
                             break;
                         case REMOVE:
-                            departments.add(this.object);
+                            if (!departments.contains(this.object)) departments.add(this.object);
                             break;
                         case SET:
                             departments.remove(this.object);

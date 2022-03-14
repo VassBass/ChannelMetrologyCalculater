@@ -119,8 +119,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
 
     @Override
     public void remove(Calibrator calibrator) {
-        if (calibrator != null && this.calibrators.contains(calibrator)){
-            this.calibrators.remove(calibrator);
+        if (calibrator != null && this.calibrators.remove(calibrator)){
             new BackgroundAction().remove(calibrator);
         }
     }
@@ -259,7 +258,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                             calibrators.remove(this.calibrator);
                             break;
                         case REMOVE:
-                            calibrators.add(this.calibrator);
+                            if (!calibrators.contains(this.calibrator)) calibrators.add(this.calibrator);
                             break;
                         case SET:
                             calibrators.remove(this.calibrator);

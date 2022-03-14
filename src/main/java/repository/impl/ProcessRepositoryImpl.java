@@ -90,8 +90,7 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
 
     @Override
     public void remove(String object) {
-        if (object != null && this.processes.contains(object)) {
-            this.processes.remove(object);
+        if (object != null && this.processes.remove(object)) {
             new BackgroundAction().remove(object);
         }
     }
@@ -212,7 +211,7 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
                             processes.remove(this.object);
                             break;
                         case REMOVE:
-                            processes.add(this.object);
+                            if (!processes.contains(this.object)) processes.add(this.object);
                             break;
                         case SET:
                             processes.remove(this.object);

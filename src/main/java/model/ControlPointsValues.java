@@ -31,17 +31,6 @@ public class ControlPointsValues implements Serializable {
     public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
 
-    public boolean isMatch(String sensorType, double rangeMin, double rangeMax){
-        return this.sensorType.equals(sensorType) &&
-                this.rangeMin == rangeMin && this.rangeMax == rangeMax;
-    }
-
-    public boolean isMatch(ControlPointsValues controlPointsValues){
-        return this.sensorType.equals(controlPointsValues.getSensorType()) &&
-                this.rangeMin == controlPointsValues.getRangeMin() &&
-                this.rangeMax == controlPointsValues.getRangeMax();
-    }
-
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.sensorType, this.rangeMin, this.rangeMax, Arrays.hashCode(this.values));
@@ -52,7 +41,15 @@ public class ControlPointsValues implements Serializable {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         if (obj == this) return true;
         ControlPointsValues cpv = (ControlPointsValues) obj;
-        return cpv.getId() == this.id;
+        return cpv.getSensorType().equals(this.sensorType)
+                && cpv.getRangeMin() == this.rangeMin
+                && cpv.getRangeMax() == this.rangeMax;
+    }
+
+    public boolean equalsBy(String sensorType, double rangeMin, double rangeMax){
+        return this.sensorType.equals(sensorType)
+                && this.rangeMin == rangeMin
+                && this.rangeMax == rangeMax;
     }
 
     @Override
