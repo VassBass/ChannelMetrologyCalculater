@@ -20,63 +20,51 @@ import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ChannelRepositoryImpl extends Repository implements ChannelRepository {
     private static final Logger LOGGER = Logger.getLogger(ChannelRepository.class.getName());
+    
+    private final ArrayList<Channel>channels = new ArrayList<>();
 
     public ChannelRepositoryImpl(){super();}
     public ChannelRepositoryImpl(String dbUrl){super(dbUrl);}
 
     @Override
     protected void init() {
-        String sql = "CREATE TABLE IF NOT EXISTS channels ("
-                + "code text NOT NULL UNIQUE"
-                + ", name text NOT NULL"
-                + ", department text"
-                + ", area text"
-                + ", process text"
-                + ", installation text"
-                + ", technology_number text NOT NULL"
-                + ", protocol_number text"
-                + ", reference text"
-                + ", date text"
-                + ", suitability text NOT NULL"
-                + ", measurement text NOT NULL"
-                + ", sensor text NOT NULL"
-                + ", frequency real NOT NULL"
-                + ", range_min real NOT NULL"
-                + ", range_max real NOT NULL"
-                + ", allowable_error_percent real NOT NULL"
-                + ", allowable_error_value real NOT NULL"
-                + ", PRIMARY KEY (\"code\")"
-                + ");";
-
         LOGGER.fine("Get connection with DB");
         try (Connection connection = this.getConnection()){
+            String sql = "CREATE TABLE IF NOT EXISTS channels ("
+                    + "code text NOT NULL UNIQUE"
+                    + ", name text NOT NULL"
+                    + ", department text"
+                    + ", area text"
+                    + ", process text"
+                    + ", installation text"
+                    + ", technology_number text NOT NULL"
+                    + ", protocol_number text"
+                    + ", reference text"
+                    + ", date text"
+                    + ", suitability text NOT NULL"
+                    + ", measurement text NOT NULL"
+                    + ", sensor text NOT NULL"
+                    + ", frequency real NOT NULL"
+                    + ", range_min real NOT NULL"
+                    + ", range_max real NOT NULL"
+                    + ", allowable_error_percent real NOT NULL"
+                    + ", allowable_error_value real NOT NULL"
+                    + ", PRIMARY KEY (\"code\")"
+                    + ");";
             Statement statement = connection.createStatement();
 
-            LOGGER.fine("Send request");
+            LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
-            LOGGER.fine("Close connection");
-            statement.close();
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-        }
-        LOGGER.info("Initialization SUCCESS");
-    }
-
-    @Override
-    public ArrayList<Channel> getAll() {
-        ArrayList<Channel>channels = new ArrayList<>();
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
-            Statement statement = connection.createStatement();
-
-            LOGGER.fine("Send request");
-            String sql = "SELECT * FROM channels";
+            LOGGER.fine("Send request to read channels from DB");
+            sql = "SELECT * FROM channels";
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
@@ -104,49 +92,146 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 double allowableErrorPercent = resultSet.getDouble("allowable_error_percent");
                 double allowableErrorValue = resultSet.getDouble("allowable_error_value");
                 channel.setAllowableError(allowableErrorPercent, allowableErrorValue);
-                channels.add(channel);
+                this.channels.add(channel);
             }
 
-            LOGGER.fine("Close connections");
+            LOGGER.fine("Close connection");
             resultSet.close();
             statement.close();
-        }catch (SQLException | JsonProcessingException ex){
-            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+        } catch (SQLException | JsonProcessingException ex) {
+            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
-        return channels;
+        LOGGER.info("Initialization SUCCESS");
+    }
+
+    @Override
+    public ArrayList<Channel> getAll() {
+        return this.channels;
     }
 
     @Override
     public void add(Channel channel) {
-        new BackgroundAction().add(channel);
+        if (channel != null && !this.channels.contains(channel)) {
+            this.channels.add(channel);
+            new BackgroundAction().add(channel);
+        }
     }
 
     @Override
-    public void remove(String channelCode) {
-        new BackgroundAction().remove(channelCode);
+    public void remove(Channel channel) {
+        if (channel != null && this.channels.contains(channel)) {
+            this.channels.remove(channel);
+            new BackgroundAction().remove(channel.getCode());
+        }
+    }
+
+    @Override
+    public void removeBySensorInCurrentThread(Sensor sensor) {
+        ArrayList<Integer>indexes = new ArrayList<>();
+        String sensorName = sensor.getName();
+        for (int c=0;c<this.channels.size();c++){
+            String channelSensor = this.channels.get(c).getSensor().getName();
+            if (channelSensor.equals(sensorName)){
+                indexes.add(c);
+            }
+        }
+        Collections.reverse(indexes);
+        for (int index : indexes){
+            this.channels.remove(index);
+        }
+        new BackgroundAction().rewriteChannels(this.channels);
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Channel> channels) {
-        new BackgroundAction().rewriteChannels(channels);
+        if (channels != null && !channels.isEmpty()) {
+            this.channels.clear();
+            this.channels.addAll(channels);
+            new BackgroundAction().rewriteChannels(channels);
+        }
+    }
+
+    @Override
+    public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor) {
+        for (Channel channel : this.channels){
+            if (channel.getSensor().equals(oldSensor)){
+                double minRange = channel.getSensor().getRangeMin();
+                double maxRange = channel.getSensor().getRangeMax();
+                String value = channel.getSensor().getValue();
+                newSensor.setRange(minRange, maxRange);
+                newSensor.setValue(value);
+                channel.setSensor(newSensor);
+            }
+        }
+        new BackgroundAction().rewriteChannels(this.channels);
+    }
+
+    @Override
+    public void changeSensorsInCurrentThread(ArrayList<Sensor> sensors) {
+        for (Sensor sensor : sensors){
+            for (Channel channel : this.channels){
+                if (channel.getSensor().equals(sensor)){
+                    channel.setSensor(sensor);
+                }
+            }
+        }
+        new BackgroundAction().rewriteChannels(this.channels);
     }
 
     @Override
     public void set(Channel oldChannel, Channel newChannel) {
-        new BackgroundAction().set(oldChannel, newChannel);
+        if (oldChannel != null && newChannel != null
+                && this.channels.contains(oldChannel) && !this.channels.contains(newChannel)) {
+            int index = this.channels.indexOf(oldChannel);
+            this.channels.set(index, newChannel);
+            new BackgroundAction().set(oldChannel, newChannel);
+        }
     }
 
     @Override
     public void clear() {
+        this.channels.clear();
         new BackgroundAction().clear();
     }
 
     @Override
-    public void export(ArrayList<Channel> channels) {
-        new BackgroundAction().export(channels);
+    public void export() {
+        new BackgroundAction().export(this.channels);
     }
 
-    private class BackgroundAction extends SwingWorker<Void, Void> {
+    @Override
+    public void importData(ArrayList<Channel> newChannels, ArrayList<Channel> channelsForChange) {
+        for (Channel channel : channelsForChange){
+            int index = this.channels.indexOf(channel);
+            if (index >= 0) this.channels.set(index, channel);
+        }
+        this.channels.addAll(newChannels);
+        new BackgroundAction().rewriteChannels(this.channels);
+    }
+
+    @Override
+    public boolean isExist(String code) {
+        Channel channel = new Channel();
+        channel.setCode(code);
+        return code != null && this.channels.contains(channel);
+    }
+
+    @Override
+    public boolean isExist(String oldChannelCode, String newChannelCode) {
+        if (oldChannelCode != null && newChannelCode != null) {
+            Channel oldChannel = new Channel();
+            oldChannel.setCode(oldChannelCode);
+
+            int oldIndex = this.channels.indexOf(oldChannel);
+            for (int index = 0; index < this.channels.size(); index++) {
+                String channelCode = this.channels.get(index).getCode();
+                if (channelCode.equals(newChannelCode) && index != oldIndex) return true;
+            }
+        }
+        return false;
+    }
+
+    private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private Channel channel, old;
         private String channelCode;
         private ArrayList<Channel>list;
@@ -201,34 +286,49 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Boolean doInBackground() throws Exception {
             switch (this.action){
                 case ADD:
-                    this.addChannel(this.channel);
-                    break;
+                    return this.addChannel(this.channel);
                 case REMOVE:
-                    this.removeChannel(this.channelCode);
-                    break;
+                    return this.removeChannel(this.channelCode);
                 case CLEAR:
-                    this.clearChannels();
-                    break;
+                    return this.clearChannels();
                 case SET:
-                    this.setChannel(this.old, this.channel);
-                    break;
+                    return this.setChannel(this.old, this.channel);
                 case EXPORT:
-                    this.exportChannels(this.list);
-                    break;
+                    return this.exportChannels(this.list);
             }
-            return null;
+            return true;
         }
 
         @Override
         protected void done() {
+            try {
+                if (!this.get()){
+                    switch (this.action){
+                        case ADD:
+                            channels.remove(this.channel);
+                            break;
+                        case REMOVE:
+                            channels.add(this.channel);
+                            break;
+                        case SET:
+                            channels.remove(this.channel);
+                            if (!channels.contains(this.old)) channels.add(this.old);
+                            break;
+                    }
+                    String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
+                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", e);
+            }
             Application.setBusy(false);
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private void addChannel(Channel channel){
+        private boolean addChannel(Channel channel){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -268,12 +368,14 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException | JsonProcessingException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void removeChannel(String channelCode){
+        private boolean removeChannel(String channelCode){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -283,12 +385,14 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void clearChannels(){
+        private boolean clearChannels(){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()) {
                 LOGGER.fine("Send request");
@@ -298,12 +402,14 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
 
                 LOGGER.fine("Close connections");
                 statement.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void setChannel(Channel oldChannel, Channel newChannel){
+        private boolean setChannel(Channel oldChannel, Channel newChannel){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -343,63 +449,63 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 LOGGER.fine("Close connections");
                 statementClear.close();
                 statement.close();
+                return true;
             }catch (SQLException | JsonProcessingException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
         public void rewriteChannels(ArrayList<Channel>channels){
-            if (channels != null) {
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()) {
-                    LOGGER.fine("Send request to clear");
-                    Statement statementClear = connection.createStatement();
-                    String sql = "DELETE FROM channels;";
-                    statementClear.execute(sql);
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()) {
+                LOGGER.fine("Send request to clear");
+                Statement statementClear = connection.createStatement();
+                String sql = "DELETE FROM channels;";
+                statementClear.execute(sql);
 
-                    if (!channels.isEmpty()) {
-                        LOGGER.fine("Send requests to add");
-                        sql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
-                                ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'" +
-                                ", 'allowable_error_percent', 'allowable_error_value') "
-                                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                        PreparedStatement statement = connection.prepareStatement(sql);
-                        for (Channel channel : channels) {
-                            statement.setString(1, channel.getCode());
-                            statement.setString(2, channel.getName());
-                            statement.setString(3, channel.getDepartment());
-                            statement.setString(4, channel.getArea());
-                            statement.setString(5, channel.getProcess());
-                            statement.setString(6, channel.getInstallation());
-                            statement.setString(7, channel.getTechnologyNumber());
-                            statement.setString(8, channel.getNumberOfProtocol());
-                            statement.setString(9,channel.getReference());
-                            statement.setString(10, VariableConverter.dateToString(channel.getDate()));
-                            statement.setString(11, String.valueOf(channel.isSuitability()));
-                            ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                            String measurement = writer.writeValueAsString(channel.getMeasurement());
-                            statement.setString(12, measurement);
-                            String sensor = writer.writeValueAsString(channel.getSensor());
-                            statement.setString(13, sensor);
-                            statement.setDouble(14, channel.getFrequency());
-                            statement.setDouble(15, channel.getRangeMin());
-                            statement.setDouble(16, channel.getRangeMax());
-                            statement.setDouble(17, channel.getAllowableErrorPercent());
-                            statement.setDouble(18, channel.getAllowableError());
-                            statement.execute();
-                        }
-
-                        LOGGER.fine("Close connections");
-                        statementClear.close();
-                        statement.close();
+                if (!channels.isEmpty()) {
+                    LOGGER.fine("Send requests to add");
+                    sql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
+                            ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'" +
+                            ", 'allowable_error_percent', 'allowable_error_value') "
+                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    for (Channel channel : channels) {
+                        statement.setString(1, channel.getCode());
+                        statement.setString(2, channel.getName());
+                        statement.setString(3, channel.getDepartment());
+                        statement.setString(4, channel.getArea());
+                        statement.setString(5, channel.getProcess());
+                        statement.setString(6, channel.getInstallation());
+                        statement.setString(7, channel.getTechnologyNumber());
+                        statement.setString(8, channel.getNumberOfProtocol());
+                        statement.setString(9,channel.getReference());
+                        statement.setString(10, VariableConverter.dateToString(channel.getDate()));
+                        statement.setString(11, String.valueOf(channel.isSuitability()));
+                        ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                        String measurement = writer.writeValueAsString(channel.getMeasurement());
+                        statement.setString(12, measurement);
+                        String sensor = writer.writeValueAsString(channel.getSensor());
+                        statement.setString(13, sensor);
+                        statement.setDouble(14, channel.getFrequency());
+                        statement.setDouble(15, channel.getRangeMin());
+                        statement.setDouble(16, channel.getRangeMax());
+                        statement.setDouble(17, channel.getAllowableErrorPercent());
+                        statement.setDouble(18, channel.getAllowableError());
+                        statement.execute();
                     }
-                } catch (SQLException | JsonProcessingException ex) {
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+
+                    LOGGER.fine("Close connections");
+                    statementClear.close();
+                    statement.close();
                 }
+            } catch (SQLException | JsonProcessingException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
             }
         }
 
-        private void exportChannels(ArrayList<Channel>channels){
+        private boolean exportChannels(ArrayList<Channel>channels){
             Calendar date = Calendar.getInstance();
             String fileName = "export_channels ["
                     + date.get(Calendar.DAY_OF_MONTH)
@@ -478,6 +584,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 statement.close();
                 preparedStatement.close();
                 connection.close();
+                return true;
             } catch (SQLException | JsonProcessingException ex) {
                 LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
                 try {
@@ -485,6 +592,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                     if (preparedStatement != null) preparedStatement.close();
                     if (connection != null) connection.close();
                 } catch (SQLException ignored) {}
+                return false;
             }
         }
     }

@@ -1,6 +1,5 @@
 package service.impl;
 
-import application.Application;
 import model.Channel;
 import model.Sensor;
 import repository.ChannelRepository;
@@ -10,7 +9,6 @@ import service.ChannelService;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 public class ChannelServiceImpl implements ChannelService {
@@ -18,173 +16,90 @@ public class ChannelServiceImpl implements ChannelService {
 
     private static final String ERROR = "Помилка";
 
-    private final ChannelRepository repository;
-    private ArrayList<Channel> channels;
+    private final String dbUrl;
+
+    private ChannelRepository repository;
 
     public ChannelServiceImpl(){
-        this.repository = new ChannelRepositoryImpl();
+        this.dbUrl = null;
     }
 
     public ChannelServiceImpl(String dbUrl){
-        this.repository = new ChannelRepositoryImpl(dbUrl);
+        this.dbUrl = dbUrl;
     }
 
     @Override
     public void init(){
-        this.channels = this.repository.getAll();
+        this.repository = this.dbUrl == null ? new ChannelRepositoryImpl() : new ChannelRepositoryImpl(this.dbUrl);
         LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
     public ArrayList<Channel> getAll() {
-        return this.channels;
+        return this.repository.getAll();
     }
 
     @Override
     public ArrayList<Channel> add(Channel channel) {
-        if (channel != null) {
-            if (this.channels.contains(channel)) {
-                this.showExistMessage();
-            } else {
-                this.channels.add(channel);
-                this.repository.add(channel);
-            }
-        }
-        return this.channels;
+        this.repository.add(channel);
+        return this.repository.getAll();
     }
 
     @Override
     public ArrayList<Channel> remove(Channel channel) {
-        if (channel != null) {
-            int index = this.channels.indexOf(channel);
-            if (index < 0) {
-                this.showNotFoundMessage();
-            } else {
-                this.channels.remove(index);
-                this.repository.remove(channel.getCode());
-            }
-        }
-        return this.channels;
+        this.repository.remove(channel);
+        return this.repository.getAll();
     }
 
     @Override
     public void removeBySensorInCurrentThread(Sensor sensor){
-        ArrayList<Integer>indexes = new ArrayList<>();
-        String sensorName = sensor.getName();
-        for (int c=0;c<this.channels.size();c++){
-            String channelSensor = this.channels.get(c).getSensor().getName();
-            if (channelSensor.equals(sensorName)){
-                indexes.add(c);
-            }
-        }
-        Collections.reverse(indexes);
-        for (int index : indexes){
-            this.channels.remove(index);
-        }
-        this.repository.rewriteInCurrentThread(this.channels);
+        this.repository.removeBySensorInCurrentThread(sensor);
     }
 
     @Override
     public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor){
-        for (Channel channel : this.channels){
-            if (channel.getSensor().getName().equals(oldSensor.getName())){
-                double minRange = channel.getSensor().getRangeMin();
-                double maxRange = channel.getSensor().getRangeMax();
-                String value = channel.getSensor().getValue();
-                newSensor.setRange(minRange, maxRange);
-                newSensor.setValue(value);
-                channel.setSensor(newSensor);
-            }
-        }
-        this.repository.rewriteInCurrentThread(this.channels);
+        this.repository.changeSensorInCurrentThread(oldSensor, newSensor);
     }
 
     @Override
     public void changeSensorsInCurrentThread(ArrayList<Sensor>sensors){
-        for (Sensor sensor : sensors){
-            for (Channel channel : this.channels){
-                if (channel.getSensor().getName().equals(sensor.getName())){
-                    channel.setSensor(sensor);
-                }
-            }
-        }
-        this.repository.rewriteInCurrentThread(this.channels);
+        this.repository.changeSensorsInCurrentThread(sensors);
     }
 
     @Override
     public ArrayList<Channel> set(Channel oldChannel, Channel newChannel) {
-        if (oldChannel != null && newChannel != null){
-            int index = this.channels.indexOf(oldChannel);
-            if (index >= 0) {
-                this.channels.set(index, newChannel);
-                this.repository.set(oldChannel, newChannel);
-            }
-        }
-        return this.channels;
+        this.repository.set(oldChannel, newChannel);
+        return this.repository.getAll();
     }
 
     @Override
     public boolean isExist(String code){
-        for (Channel c : this.channels){
-            if (c.getCode().equals(code)) return true;
-        }
-        return false;
+        return this.repository.isExist(code);
     }
 
     @Override
     public boolean isExist(String oldChannelCode, String newChannelCode){
-        if (oldChannelCode != null && newChannelCode != null) {
-            Channel oldChannel = new Channel();
-            oldChannel.setCode(oldChannelCode);
-
-            int oldIndex = this.channels.indexOf(oldChannel);
-            for (int index = 0; index < this.channels.size(); index++) {
-                String channelCode = this.channels.get(index).getCode();
-                if (channelCode.equals(newChannelCode) && index != oldIndex) return true;
-            }
-        }
-        return false;
+        return this.repository.isExist(oldChannelCode, newChannelCode);
     }
 
     @Override
     public void clear() {
-        this.channels.clear();
         this.repository.clear();
     }
 
     @Override
     public void exportData() {
-        this.repository.export(this.channels);
+        this.repository.export();
     }
 
     @Override
     public void importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
-        for (Channel channel : channelsForChange){
-            int index = this.channels.indexOf(channel);
-            if (index >= 0) this.channels.set(index, channel);
-        }
-        this.channels.addAll(newChannels);
-        this.repository.rewriteInCurrentThread(this.channels);
+        this.repository.importData(newChannels, channelsForChange);
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Channel>channels){
-        this.channels = channels;
         this.repository.rewriteInCurrentThread(channels);
-    }
-
-    private void showNotFoundMessage() {
-        if (Application.context != null) {
-            String message = "Канал з данним кодом не знайдено в списку каналів.";
-            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void showExistMessage() {
-        if (Application.context != null) {
-            String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
-            JOptionPane.showMessageDialog(Application.context.mainScreen, message, ERROR, JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     @Override
