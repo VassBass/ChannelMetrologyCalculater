@@ -3,6 +3,7 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
+import constants.WorkPositions;
 import model.Person;
 import org.sqlite.JDBC;
 import repository.PersonRepository;
@@ -14,50 +15,39 @@ import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class PersonRepositoryImpl extends Repository implements PersonRepository {
     private static final Logger LOGGER = Logger.getLogger(PersonRepository.class.getName());
 
+    private static final String EMPTY_ARRAY = "<Порожньо>";
+
+    private final ArrayList<Person>persons = new ArrayList<>();
+
     public PersonRepositoryImpl(){super();}
     public PersonRepositoryImpl(String dbUrl){super(dbUrl);}
 
     @Override
     protected void init() {
-        String sql = "CREATE TABLE IF NOT EXISTS persons ("
-                + "id integer NOT NULL UNIQUE"
-                + ", name text NOT NULL"
-                + ", surname text NOT NULL"
-                + ", patronymic text"
-                + ", position text NOT NULL"
-                + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
-                + ");";
-
         LOGGER.fine("Get connection with DB");
         try (Connection connection = this.getConnection()){
+            String sql = "CREATE TABLE IF NOT EXISTS persons ("
+                    + "id integer NOT NULL UNIQUE"
+                    + ", name text NOT NULL"
+                    + ", surname text NOT NULL"
+                    + ", patronymic text"
+                    + ", position text NOT NULL"
+                    + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
+                    + ");";
             Statement statement = connection.createStatement();
 
-            LOGGER.fine("Send request");
+            LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
-            LOGGER.fine("Close connection");
-            statement.close();
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-        }
-        LOGGER.info("Initialization SUCCESS");
-    }
-
-    @Override
-    public ArrayList<Person> getAll() {
-        ArrayList<Person>persons = new ArrayList<>();
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
-            Statement statement = connection.createStatement();
-
             LOGGER.fine("Send request");
-            String sql = "SELECT * FROM persons";
+            sql = "SELECT * FROM persons";
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
@@ -67,54 +57,107 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
                 person.setSurname(resultSet.getString("surname"));
                 person.setPatronymic(resultSet.getString("patronymic"));
                 person.setPosition(resultSet.getString("position"));
-                persons.add(person);
+                this.persons.add(person);
             }
 
-            LOGGER.fine("Close connections");
+            LOGGER.fine("Close connection");
             resultSet.close();
             statement.close();
-        }catch (SQLException ex){
-            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
+        }
+        LOGGER.info("Initialization SUCCESS");
+    }
+
+    @Override
+    public ArrayList<Person> getAll() {
+        return this.persons;
+    }
+
+    @Override
+    public String[] getAllNames() {
+        int length = this.persons.size() + 1;
+        String[] persons = new String[length];
+        persons[0] = EMPTY_ARRAY;
+        for (int x = 0; x< this.persons.size(); x++){
+            int y = x+1;
+            persons[y] = this.persons.get(x).getFullName();
         }
         return persons;
     }
 
     @Override
+    public String[] getNamesOfHeads() {
+        ArrayList<String>heads = new ArrayList<>();
+        heads.add(EMPTY_ARRAY);
+        for (Person worker : this.persons){
+            if (worker.getPosition().equals(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP)){
+                heads.add(worker.getFullName());
+            }
+        }
+        return heads.toArray(new String[0]);
+    }
+
+    @Override
+    public Person get(int index) {
+        return index < 0 | index >= this.persons.size() ? null : this.persons.get(index);
+    }
+
+    @Override
     public void add(Person person) {
-        new BackgroundAction().add(person);
+        if (person != null && !this.persons.contains(person)) {
+            this.persons.add(person);
+            new BackgroundAction().add(person);
+        }
     }
 
     @Override
     public void remove(Person person) {
-        new BackgroundAction().remove(person);
+        if (person != null && this.persons.remove(person)) {
+            new BackgroundAction().remove(person);
+        }
     }
 
     @Override
     public void set(Person oldPerson, Person newPerson) {
-        new BackgroundAction().set(oldPerson, newPerson);
+        if (oldPerson != null && newPerson != null
+                && this.persons.contains(oldPerson) && !this.persons.contains(newPerson)) {
+            int index = this.persons.indexOf(oldPerson);
+            this.persons.set(index, newPerson);
+            new BackgroundAction().set(oldPerson, newPerson);
+        }
     }
 
     @Override
     public void clear() {
+        this.persons.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Person> persons) {
-        new BackgroundAction().rewritePersons(persons);
+        if (persons != null && !persons.isEmpty()) {
+            this.persons.clear();
+            this.persons.addAll(persons);
+            new BackgroundAction().rewritePersons(persons);
+        }
     }
 
     @Override
     public void rewrite(ArrayList<Person> persons) {
-        new BackgroundAction().rewrite(persons);
+        if (persons != null && !persons.isEmpty()) {
+            this.persons.clear();
+            this.persons.addAll(persons);
+            new BackgroundAction().rewrite(persons);
+        }
     }
 
     @Override
-    public void export(ArrayList<Person> persons) {
-        new BackgroundAction().export(persons);
+    public void export() {
+        new BackgroundAction().export(this.persons);
     }
 
-    private class BackgroundAction extends SwingWorker<Void, Void> {
+    private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private Person person, old;
         private ArrayList<Person>list;
         private Action action;
@@ -174,37 +217,51 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
         }
 
         @Override
-        protected Void doInBackground() throws Exception {
+        protected Boolean doInBackground() throws Exception {
             switch (this.action){
                 case ADD:
-                    this.addPerson(this.person);
-                    break;
+                    return this.addPerson(this.person);
                 case REMOVE:
-                    this.removePerson(this.person.getId());
-                    break;
+                    return this.removePerson(this.person.getId());
                 case CLEAR:
-                    this.clearPersons();
-                    break;
+                    return this.clearPersons();
                 case SET:
-                    this.setPerson(this.old, this.person);
-                    break;
+                    return this.setPerson(this.old, this.person);
                 case REWRITE:
-                    this.rewritePersons(this.list);
-                    break;
+                    return this.rewritePersons(this.list);
                 case EXPORT:
-                    this.exportPersons(this.list);
-                    break;
+                    return this.exportPersons(this.list);
             }
-            return null;
+            return true;
         }
 
         @Override
         protected void done() {
+            try {
+                if (!this.get()){
+                    switch (this.action){
+                        case ADD:
+                            persons.remove(this.person);
+                            break;
+                        case REMOVE:
+                            if (!persons.contains(this.person)) persons.add(this.person);
+                            break;
+                        case SET:
+                            persons.remove(this.person);
+                            if (!persons.contains(this.old)) persons.add(this.old);
+                            break;
+                    }
+                    String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
+                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", e);
+            }
             Application.setBusy(false);
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private void addPerson(Person person){
+        private boolean addPerson(Person person){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -226,12 +283,14 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void removePerson(int id){
+        private boolean removePerson(int id){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -241,12 +300,14 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
 
                 LOGGER.fine("Close connection");
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void clearPersons(){
+        private boolean clearPersons(){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()) {
                 LOGGER.fine("Send request");
@@ -256,12 +317,14 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
 
                 LOGGER.fine("Close connections");
                 statement.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void setPerson(Person oldPerson, Person newPerson){
+        private boolean setPerson(Person oldPerson, Person newPerson){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -283,45 +346,47 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
                 LOGGER.fine("Close connections");
                 statementClear.close();
                 statement.close();
+                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        public void rewritePersons(ArrayList<Person>persons){
-            if (persons != null) {
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection()) {
-                    LOGGER.fine("Send request to clear");
-                    Statement statementClear = connection.createStatement();
-                    String sql = "DELETE FROM persons;";
-                    statementClear.execute(sql);
+        public boolean rewritePersons(ArrayList<Person>persons){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()) {
+                LOGGER.fine("Send request to clear");
+                Statement statementClear = connection.createStatement();
+                String sql = "DELETE FROM persons;";
+                statementClear.execute(sql);
 
-                    if (!persons.isEmpty()) {
-                        LOGGER.fine("Send requests to add");
-                        sql = "INSERT INTO persons ('id', 'name', 'surname', 'patronymic', 'position')" +
-                                " VALUES (?, ?, ?, ?, ?);";
-                        PreparedStatement statement = connection.prepareStatement(sql);
-                        for (Person person : persons) {
-                            statement.setInt(1, person.getId());
-                            statement.setString(2, person.getName());
-                            statement.setString(3, person.getSurname());
-                            statement.setString(4, person.getPatronymic());
-                            statement.setString(5, person.getPosition());
-                            statement.execute();
-                        }
-
-                        LOGGER.fine("Close connections");
-                        statementClear.close();
-                        statement.close();
+                if (!persons.isEmpty()) {
+                    LOGGER.fine("Send requests to add");
+                    sql = "INSERT INTO persons ('id', 'name', 'surname', 'patronymic', 'position')" +
+                            " VALUES (?, ?, ?, ?, ?);";
+                    PreparedStatement statement = connection.prepareStatement(sql);
+                    for (Person person : persons) {
+                        statement.setInt(1, person.getId());
+                        statement.setString(2, person.getName());
+                        statement.setString(3, person.getSurname());
+                        statement.setString(4, person.getPatronymic());
+                        statement.setString(5, person.getPosition());
+                        statement.execute();
                     }
-                } catch (SQLException ex) {
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+
+                    LOGGER.fine("Close connections");
+                    statementClear.close();
+                    statement.close();
                 }
+                return true;
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                return false;
             }
         }
 
-        private void exportPersons(ArrayList<Person>persons){
+        private boolean exportPersons(ArrayList<Person>persons){
             Calendar date = Calendar.getInstance();
             String fileName = "export_persons ["
                     + date.get(Calendar.DAY_OF_MONTH)
@@ -369,6 +434,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
                 statement.close();
                 preparedStatement.close();
                 connection.close();
+                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
                 try {
@@ -376,6 +442,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
                     if (preparedStatement != null) preparedStatement.close();
                     if (connection != null) connection.close();
                 } catch (SQLException ignored) {}
+                return false;
             }
         }
     }

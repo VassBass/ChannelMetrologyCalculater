@@ -109,12 +109,12 @@ public class Application extends SwingWorker<Void, String> {
         publish("Завантаження списку вимірюваннь");
         context.measurementService.init();
         publish("Завантаження списку калібраторів");
-        context.calibratorService.init(context.mainScreen);
+        context.calibratorService.init();
         publish("Завантаження списку ПВП");
-        context.sensorService.init(context.mainScreen);
+        context.sensorService.init();
         context.controlPointsValuesService.init();
         publish("Завантаження списку каналів");
-        context.channelService.init(context.mainScreen);
+        context.channelService.init();
         publish("Завантаження головного вікна");
         context.mainScreen.init(context.channelService.getAll());
         return null;

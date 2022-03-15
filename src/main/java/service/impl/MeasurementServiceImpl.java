@@ -13,142 +13,80 @@ import java.util.logging.Logger;
 public class MeasurementServiceImpl implements MeasurementService {
     private static final Logger LOGGER = Logger.getLogger(MeasurementService.class.getName());
 
-    private final MeasurementRepository repository;
-
-    private ArrayList<Measurement> measurements;
+    private final String dbUrl;
+    private  MeasurementRepository repository;
 
     public MeasurementServiceImpl(){
-        this.repository = new MeasurementRepositoryImpl();
+        this.dbUrl = null;
+    }
+
+    public MeasurementServiceImpl(String dbUrl){
+        this.dbUrl = dbUrl;
     }
 
     @Override
     public void init(){
-        LOGGER.fine("MeasurementService: initialization start ...");
-        this.measurements = this.repository.getAll();
-        if (measurements == null || measurements.isEmpty()) this.resetToDefault();
+        this.repository = this.dbUrl == null ? new MeasurementRepositoryImpl() : new MeasurementRepositoryImpl(dbUrl);
         LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
     public String[]getAllNames(){
-        ArrayList<String>names = new ArrayList<>();
-        for (Measurement measurement : this.measurements){
-            String name = measurement.getName();
-            boolean exist = false;
-            for (String n : names){
-                if (n.equals(name)) {
-                    exist = true;
-                    break;
-                }
-            }
-            if (!exist){
-                names.add(name);
-            }
-        }
-        return names.toArray(new String[0]);
+        return this.repository.getAllNames();
     }
 
     @Override
     public String[]getAllValues(){
-        String[]values = new String[this.measurements.size()];
-        for (int m=0;m<this.measurements.size();m++){
-            values[m] = this.measurements.get(m).getValue();
-        }
-        return values;
+        return this.repository.getAllValues();
     }
 
     @Override
     public String[]getValues(Measurement measurement){
-        ArrayList<String> values  = new ArrayList<>();
-        for (Measurement m : this.measurements) {
-            if (m.getName().equals(measurement.getName())) {
-                values.add(m.getValue());
-            }
-        }
-        return values.toArray(new String[0]);
+        return this.repository.getValues(measurement);
     }
 
     @Override
     public String[]getValues(MeasurementConstants name){
-        ArrayList<String> values  = new ArrayList<>();
-        for (Measurement measurement : this.measurements) {
-            if (measurement.getNameConstant() == name) {
-                values.add(measurement.getValue());
-            }
-        }
-        return values.toArray(new String[0]);
+        return this.repository.getValues(name);
     }
 
     @Override
     public String[]getValues(String name){
-        ArrayList<String> values  = new ArrayList<>();
-        for (Measurement measurement : this.measurements) {
-            if (measurement.getName().equals(name)) {
-                values.add(measurement.getValue());
-            }
-        }
-        return values.toArray(new String[0]);
+        return this.repository.getValues(name);
     }
 
     @Override
     public ArrayList<Measurement> getAll() {
-        return this.measurements;
+        return this.repository.getAll();
     }
 
     @Override
     public Measurement get(MeasurementConstants value){
-        for (Measurement measurement : this.measurements){
-            if (measurement.getValueConstant() == value){
-                return measurement;
-            }
-        }
-        return null;
+        return this.repository.get(value);
     }
 
     @Override
     public Measurement get(String value){
-        for (Measurement measurement : this.measurements){
-            if (measurement.getValue().equals(value)){
-                return measurement;
-            }
-        }
-        return null;
+        return this.repository.get(value);
     }
 
     @Override
     public Measurement get(int index) {
-        if (index >= 0) {
-            return this.measurements.get(index);
-        }else {
-            return null;
-        }
+        return this.repository.get(index);
     }
 
     @Override
     public ArrayList<Measurement>getMeasurements(MeasurementConstants name){
-        ArrayList<Measurement>measurements = new ArrayList<>();
-        for (Measurement measurement : this.measurements){
-            if (measurement.getNameConstant() == name){
-                measurements.add(measurement);
-            }
-        }
-        return measurements;
+        return this.repository.getMeasurements(name);
     }
 
     @Override
     public ArrayList<Measurement>getMeasurements(String name){
-        ArrayList<Measurement>measurements = new ArrayList<>();
-        for (Measurement measurement : this.measurements){
-            if (measurement.getName().equals(name)){
-                measurements.add(measurement);
-            }
-        }
-        return measurements;
+        return this.repository.getMeasurements(name);
     }
 
     @Override
     public void resetToDefault() {
-        this.measurements = DefaultMeasurements.get();
-        this.repository.rewriteInCurrentThread(this.measurements);
+        this.repository.rewriteInCurrentThread(DefaultMeasurements.get());
     }
 }
