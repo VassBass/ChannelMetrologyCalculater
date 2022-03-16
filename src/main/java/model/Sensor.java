@@ -1,9 +1,11 @@
 package model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
-import model.Channel;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
@@ -12,8 +14,6 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Sensor implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     private String type;
     private String name = "Sensor";
@@ -85,5 +85,23 @@ public class Sensor implements Serializable {
 
         Sensor in = (Sensor) obj;
         return in.getName().equals(this.name);
+    }
+
+    @Override
+    public String toString() {
+        int attempt = 0;
+        while (attempt < 10) {
+            try {
+                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                return writer.writeValueAsString(this);
+            } catch (JsonProcessingException e) {
+                attempt++;
+            }
+        }
+        return null;
+    }
+
+    public static Sensor fromString(String json) throws JsonProcessingException {
+        return new ObjectMapper().readValue(json, Sensor.class);
     }
 }

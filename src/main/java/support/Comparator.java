@@ -2,7 +2,7 @@ package support;
 
 import constants.MeasurementConstants;
 import converters.VariableConverter;
-import measurements.Measurement;
+import model.Measurement;
 import model.Calibrator;
 import model.Channel;
 import model.Person;

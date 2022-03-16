@@ -1,5 +1,9 @@
 package model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -54,6 +58,19 @@ public class ControlPointsValues implements Serializable {
 
     @Override
     public String toString() {
-        return this.sensorType + "[" + this.rangeMin + "..." + this.rangeMax + "]";
+        int attempt = 0;
+        while (attempt < 10) {
+            try {
+                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                return writer.writeValueAsString(this);
+            } catch (JsonProcessingException e) {
+                attempt++;
+            }
+        }
+        return null;
+    }
+
+    public static ControlPointsValues fromString(String json) throws JsonProcessingException {
+        return new ObjectMapper().readValue(json, ControlPointsValues.class);
     }
 }

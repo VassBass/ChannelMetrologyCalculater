@@ -2,7 +2,7 @@ package ui.channelInfo.complexElements;
 
 import application.Application;
 import constants.MeasurementConstants;
-import measurements.Measurement;
+import model.Measurement;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;

@@ -1,5 +1,9 @@
 package model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import java.util.Locale;
 import java.util.Objects;
 
@@ -34,5 +38,23 @@ public class Person {
         if (obj == this) return true;
         Person person = (Person) obj;
         return this.id == person.getId();
+    }
+
+    @Override
+    public String toString() {
+        int attempt = 0;
+        while (attempt < 10) {
+            try {
+                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                return writer.writeValueAsString(this);
+            } catch (JsonProcessingException e) {
+                attempt++;
+            }
+        }
+        return null;
+    }
+
+    public static Person fromString(String json) throws JsonProcessingException {
+        return new ObjectMapper().readValue(json, Person.class);
     }
 }

@@ -3,12 +3,10 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import constants.Action;
 import converters.VariableConverter;
-import measurements.Measurement;
 import model.Channel;
+import model.Measurement;
 import model.Sensor;
 import org.sqlite.JDBC;
 import repository.ChannelRepository;
@@ -80,12 +78,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 channel.setReference(resultSet.getString("reference"));
                 channel.setDate(VariableConverter.stringToDate(resultSet.getString("date")));
                 channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
-                String measurementString = resultSet.getString("measurement");
-                Measurement measurement = new ObjectMapper().readValue(measurementString, Measurement.class);
-                channel.setMeasurement(measurement);
-                String sensorString = resultSet.getString("sensor");
-                Sensor sensor = new ObjectMapper().readValue(sensorString, Sensor.class);
-                channel.setSensor(sensor);
+                channel.setMeasurement(Measurement.fromString(resultSet.getString("measurement")));
+                channel.setSensor(Sensor.fromString(resultSet.getString("sensor")));
                 channel.setFrequency(resultSet.getDouble("frequency"));
                 channel.setRangeMin(resultSet.getDouble("range_min"));
                 channel.setRangeMax(resultSet.getDouble("range_max"));
@@ -353,11 +347,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 statement.setString(9,channel.getReference());
                 statement.setString(10, VariableConverter.dateToString(channel.getDate()));
                 statement.setString(11, String.valueOf(channel.isSuitability()));
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                String measurement = writer.writeValueAsString(channel.getMeasurement());
-                statement.setString(12, measurement);
-                String sensor = writer.writeValueAsString(channel.getSensor());
-                statement.setString(13, sensor);
+                statement.setString(12, channel.getMeasurement().toString());
+                statement.setString(13, channel.getSensor().toString());
                 statement.setDouble(14, channel.getFrequency());
                 statement.setDouble(15, channel.getRangeMin());
                 statement.setDouble(16, channel.getRangeMax());
@@ -368,7 +359,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 LOGGER.fine("Close connection");
                 statement.close();
                 return true;
-            }catch (SQLException | JsonProcessingException ex){
+            }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
@@ -433,11 +424,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 statement.setString(9,newChannel.getReference());
                 statement.setString(10, VariableConverter.dateToString(newChannel.getDate()));
                 statement.setString(11, String.valueOf(newChannel.isSuitability()));
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                String measurement = writer.writeValueAsString(newChannel.getMeasurement());
-                statement.setString(12, measurement);
-                String sensor = writer.writeValueAsString(newChannel.getSensor());
-                statement.setString(13, sensor);
+                statement.setString(12, newChannel.getMeasurement().toString());
+                statement.setString(13, newChannel.getSensor().toString());
                 statement.setDouble(14, newChannel.getFrequency());
                 statement.setDouble(15, newChannel.getRangeMin());
                 statement.setDouble(16, newChannel.getRangeMax());
@@ -449,7 +437,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 statementClear.close();
                 statement.close();
                 return true;
-            }catch (SQLException | JsonProcessingException ex){
+            }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
@@ -482,11 +470,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                         statement.setString(9,channel.getReference());
                         statement.setString(10, VariableConverter.dateToString(channel.getDate()));
                         statement.setString(11, String.valueOf(channel.isSuitability()));
-                        ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                        String measurement = writer.writeValueAsString(channel.getMeasurement());
-                        statement.setString(12, measurement);
-                        String sensor = writer.writeValueAsString(channel.getSensor());
-                        statement.setString(13, sensor);
+                        statement.setString(12, channel.getMeasurement().toString());
+                        statement.setString(13, channel.getSensor().toString());
                         statement.setDouble(14, channel.getFrequency());
                         statement.setDouble(15, channel.getRangeMin());
                         statement.setDouble(16, channel.getRangeMax());
@@ -499,7 +484,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                     statementClear.close();
                     statement.close();
                 }
-            } catch (SQLException | JsonProcessingException ex) {
+            } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
             }
         }
@@ -566,11 +551,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                     preparedStatement.setString(9,channel.getReference());
                     preparedStatement.setString(10, VariableConverter.dateToString(channel.getDate()));
                     preparedStatement.setString(11, String.valueOf(channel.isSuitability()));
-                    ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                    String measurement = writer.writeValueAsString(channel.getMeasurement());
-                    preparedStatement.setString(12, measurement);
-                    String sensor = writer.writeValueAsString(channel.getSensor());
-                    preparedStatement.setString(13, sensor);
+                    preparedStatement.setString(12, channel.getMeasurement().toString());
+                    preparedStatement.setString(13, channel.getSensor().toString());
                     preparedStatement.setDouble(14, channel.getFrequency());
                     preparedStatement.setDouble(15, channel.getRangeMin());
                     preparedStatement.setDouble(16, channel.getRangeMax());
@@ -584,7 +566,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 preparedStatement.close();
                 connection.close();
                 return true;
-            } catch (SQLException | JsonProcessingException ex) {
+            } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
                 try {
                     if (statement != null) statement.close();

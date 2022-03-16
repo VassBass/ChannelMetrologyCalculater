@@ -3,10 +3,8 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import constants.Action;
-import measurements.Measurement;
+import model.Measurement;
 import model.Calibrator;
 import org.sqlite.JDBC;
 import repository.CalibratorRepository;
@@ -64,8 +62,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 calibrator.setValue(resultSet.getString("value"));
                 calibrator.setErrorFormula(resultSet.getString("error_formula"));
                 String certificateString = resultSet.getString("certificate");
-                Calibrator.Certificate certificate = new ObjectMapper().readValue(certificateString, Calibrator.Certificate.class);
-                calibrator.setCertificate(certificate);
+                calibrator.setCertificate(Calibrator.Certificate.fromString(certificateString));
                 calibrator.setRangeMin(resultSet.getDouble("range_min"));
                 calibrator.setRangeMax(resultSet.getDouble("range_max"));
                 calibrators.add(calibrator);
@@ -289,9 +286,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 statement.setString(4, calibrator.getMeasurement());
                 statement.setString(5, calibrator.getValue());
                 statement.setString(6, calibrator.getErrorFormula());
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                String certificate = writer.writeValueAsString(calibrator.getCertificate());
-                statement.setString(7, certificate);
+                statement.setString(7, calibrator.getCertificate().toString());
                 statement.setDouble(8, calibrator.getRangeMin());
                 statement.setDouble(9, calibrator.getRangeMax());
                 statement.execute();
@@ -299,7 +294,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 LOGGER.fine("Close connection");
                 statement.close();
                 return true;
-            }catch (SQLException | JsonProcessingException ex){
+            }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
@@ -357,9 +352,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 statement.setString(4, newCalibrator.getMeasurement());
                 statement.setString(5, newCalibrator.getValue());
                 statement.setString(6, newCalibrator.getErrorFormula());
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                String certificate = writer.writeValueAsString(newCalibrator.getCertificate());
-                statement.setString(7, certificate);
+                statement.setString(7, newCalibrator.getCertificate().toString());
                 statement.setDouble(8, newCalibrator.getRangeMin());
                 statement.setDouble(9, newCalibrator.getRangeMax());
                 statement.execute(sql);
@@ -368,7 +361,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 statementClear.close();
                 statement.close();
                 return true;
-            }catch (SQLException | JsonProcessingException ex){
+            }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
@@ -394,9 +387,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                         statement.setString(4, calibrator.getMeasurement());
                         statement.setString(5, calibrator.getValue());
                         statement.setString(6, calibrator.getErrorFormula());
-                        ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                        String certificate = writer.writeValueAsString(calibrator.getCertificate());
-                        statement.setString(7, certificate);
+                        statement.setString(7, calibrator.getCertificate().toString());
                         statement.setDouble(8, calibrator.getRangeMin());
                         statement.setDouble(9, calibrator.getRangeMax());
                         statement.execute();
@@ -407,7 +398,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                     statement.close();
                 }
                 return true;
-            } catch (SQLException | JsonProcessingException ex) {
+            } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
@@ -459,9 +450,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                     preparedStatement.setString(4, calibrator.getMeasurement());
                     preparedStatement.setString(5, calibrator.getValue());
                     preparedStatement.setString(6, calibrator.getErrorFormula());
-                    ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                    String certificate = writer.writeValueAsString(calibrator.getCertificate());
-                    preparedStatement.setString(7, certificate);
+                    preparedStatement.setString(7, calibrator.getCertificate().toString());
                     preparedStatement.setDouble(8, calibrator.getRangeMin());
                     preparedStatement.setDouble(9, calibrator.getRangeMax());
                     preparedStatement.execute();
@@ -472,7 +461,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 preparedStatement.close();
                 connection.close();
                 return true;
-            } catch (SQLException | JsonProcessingException ex) {
+            } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
                 try {
                     if (statement != null) statement.close();

@@ -1,7 +1,7 @@
 package service.impl;
 
 import def.DefaultCalibrators;
-import measurements.Measurement;
+import model.Measurement;
 import model.Calibrator;
 import repository.CalibratorRepository;
 import repository.impl.CalibratorRepositoryImpl;

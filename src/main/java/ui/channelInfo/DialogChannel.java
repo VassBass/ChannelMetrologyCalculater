@@ -4,7 +4,7 @@ import application.Application;
 import backgroundTasks.CheckChannel;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
-import measurements.Measurement;
+import model.Measurement;
 import model.Sensor;
 import model.Channel;
 import ui.channelInfo.complexElements.*;

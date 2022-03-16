@@ -1,7 +1,7 @@
 package service;
 
 import constants.MeasurementConstants;
-import measurements.Measurement;
+import model.Measurement;
 
 import java.util.ArrayList;
 

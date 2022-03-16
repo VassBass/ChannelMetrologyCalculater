@@ -1,5 +1,8 @@
-package measurements;
+package model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import constants.MeasurementConstants;
 
 import java.io.Serializable;
@@ -50,5 +53,23 @@ public class Measurement implements Serializable {
         Measurement measurement = (Measurement) obj;
         return this.name == measurement.getNameConstant()
                 && this.value == measurement.getValueConstant();
+    }
+
+    @Override
+    public String toString() {
+        int attempt = 0;
+        while (attempt < 10) {
+            try {
+                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                return writer.writeValueAsString(this);
+            } catch (JsonProcessingException e) {
+                attempt++;
+            }
+        }
+        return null;
+    }
+
+    public static Measurement fromString(String json) throws JsonProcessingException {
+        return new ObjectMapper().readValue(json, Measurement.class);
     }
 }

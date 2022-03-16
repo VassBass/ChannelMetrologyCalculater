@@ -2,7 +2,7 @@ package service.impl;
 
 import constants.MeasurementConstants;
 import def.DefaultMeasurements;
-import measurements.Measurement;
+import model.Measurement;
 import repository.MeasurementRepository;
 import repository.impl.MeasurementRepositoryImpl;
 import service.MeasurementService;

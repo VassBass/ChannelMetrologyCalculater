@@ -87,10 +87,10 @@ public class CalibratorInfoWindow extends JWindow {
 
         this.certificateLabel = new ButtonCell(true, CERTIFICATE);
         this.certificateLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        this.certificateLabel.setToolTipText(this.calibrator.getCertificateToString());
-        this.certificate = new ButtonCell(false, this.calibrator.getCertificateToString());
+        this.certificateLabel.setToolTipText(this.calibrator.getCertificateInfo());
+        this.certificate = new ButtonCell(false, this.calibrator.getCertificateInfo());
         this.certificate.setHorizontalAlignment(SwingConstants.LEFT);
-        this.certificate.setToolTipText(this.calibrator.getCertificateToString());
+        this.certificate.setToolTipText(this.calibrator.getCertificateInfo());
 
         this.errorFormulaLabel = new ButtonCell(true, ERROR_FORMULA);
         this.errorFormulaLabel.setHorizontalAlignment(SwingConstants.LEFT);

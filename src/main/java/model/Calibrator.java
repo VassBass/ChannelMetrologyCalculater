@@ -1,5 +1,8 @@
 package model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
@@ -57,8 +60,8 @@ public class Calibrator implements Serializable {
     public void setMeasurement(String measurement){this.measurement = measurement;}
     public void setCertificate(Certificate certificate){this.certificate = certificate;}
 
-    public String getCertificateToString(){
-        return this.certificate.toString();
+    public String getCertificateInfo(){
+        return this.certificate.getInfoString();
     }
 
     /*
@@ -97,6 +100,9 @@ public class Calibrator implements Serializable {
         public void setName(String name){this.name = name;}
         public void setDate(Calendar date){this.date = date;}
         public void setCompany(String company){this.company = company;}
+        public String getInfoString(){
+            return this.name + " від " + VariableConverter.dateToString(this.date) + "р " + this.company;
+        }
 
         @Override
         public int hashCode() {
@@ -116,7 +122,20 @@ public class Calibrator implements Serializable {
 
         @Override
         public String toString() {
-            return this.name + " від " + VariableConverter.dateToString(this.date) + "р " + this.company;
+            int attempt = 0;
+            while (attempt < 10) {
+                try {
+                    ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                    return writer.writeValueAsString(this);
+                } catch (JsonProcessingException e) {
+                    attempt++;
+                }
+            }
+            return null;
+        }
+
+        public static Certificate fromString (String json) throws JsonProcessingException {
+            return new ObjectMapper().readValue(json, Certificate.class);
         }
     }
 
@@ -132,6 +151,28 @@ public class Calibrator implements Serializable {
 
         Calibrator in = (Calibrator) obj;
         return in.getName().equals(this.name);
+    }
+
+    @Override
+    public String toString() {
+        int attempt = 0;
+        while (attempt < 10) {
+            try {
+                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                return writer.writeValueAsString(this);
+            } catch (JsonProcessingException e) {
+                attempt++;
+            }
+        }
+        return null;
+    }
+
+    public static Calibrator fromString(String json){
+        try {
+            return new ObjectMapper().readValue(json, Calibrator.class);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
     }
 }
 

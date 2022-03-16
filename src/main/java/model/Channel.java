@@ -6,11 +6,11 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
-import measurements.Measurement;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class Channel implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     private String code = "";
     private String name = "";
@@ -125,6 +125,24 @@ public class Channel implements Serializable {
 
         Channel in = (Channel) obj;
         return in.getCode().equals(this.code);
+    }
+
+    @Override
+    public String toString() {
+        int attempt = 0;
+        while (attempt < 10) {
+            try {
+                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+                return writer.writeValueAsString(this);
+            } catch (JsonProcessingException e) {
+                attempt++;
+            }
+        }
+        return null;
+    }
+
+    public static Channel fromString(String json) throws JsonProcessingException {
+        return new ObjectMapper().readValue(json, Channel.class);
     }
 
     public Channel copyFrom(Channel channel){

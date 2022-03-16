@@ -3,7 +3,7 @@ package ui.calibratorsList.calibratorInfo.complexElements;
 import application.Application;
 import constants.MeasurementConstants;
 import converters.VariableConverter;
-import measurements.Measurement;
+import model.Measurement;
 
 import javax.swing.*;
 import java.awt.*;

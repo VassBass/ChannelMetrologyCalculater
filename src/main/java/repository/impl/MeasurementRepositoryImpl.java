@@ -1,7 +1,7 @@
 package repository.impl;
 
 import constants.MeasurementConstants;
-import measurements.Measurement;
+import model.Measurement;
 import repository.MeasurementRepository;
 import repository.Repository;
 

@@ -1,6 +1,6 @@
 package service;
 
-import measurements.Measurement;
+import model.Measurement;
 import model.Calibrator;
 
 import java.util.ArrayList;

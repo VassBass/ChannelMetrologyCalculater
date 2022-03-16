@@ -2,7 +2,7 @@ package def;
 
 import constants.MeasurementConstants;
 import measurements.Consumption;
-import measurements.Measurement;
+import model.Measurement;
 import measurements.Pressure;
 import measurements.Temperature;
 

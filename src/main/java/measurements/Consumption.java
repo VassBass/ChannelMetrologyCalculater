@@ -1,6 +1,7 @@
 package measurements;
 
 import constants.MeasurementConstants;
+import model.Measurement;
 
 public class Consumption extends Measurement {
 
