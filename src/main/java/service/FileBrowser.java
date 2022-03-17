@@ -43,7 +43,7 @@ public class FileBrowser {
     private static final String FILE_NAME_IMAGE_ANIM_LOAD = "anim_load.gif";
     private static final String FILE_NAME_IMAGE_NAME_LOGO = "name_logo.png";
 
-    private static final File DIR_MAIN = new File(DIR_NAME_MAIN);
+    public static final File DIR_MAIN = new File(DIR_NAME_MAIN);
     private static final File DIR_LISTS = new File(DIR_MAIN, DIR_NAME_LISTS);
     public static final File DIR_CERTIFICATES = new File(DIR_MAIN, DIR_NAME_CERTIFICATES);
     public static final File DIR_EXPORT = new File(DIR_MAIN, DIR_NAME_EXPORT);
