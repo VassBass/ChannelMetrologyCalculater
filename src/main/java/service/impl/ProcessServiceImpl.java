@@ -45,6 +45,11 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<String> processes) {
+        this.repository.addInCurrentThread(processes);
+    }
+
+    @Override
     public ArrayList<String> remove(String object) {
         this.repository.remove(object);
         return this.repository.getAll();

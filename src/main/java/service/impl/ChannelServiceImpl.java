@@ -46,6 +46,11 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
+    public void addInCurrentThread(Channel channel) {
+        this.repository.addInCurrentThread(channel);
+    }
+
+    @Override
     public ArrayList<Channel> remove(Channel channel) {
         this.repository.remove(channel);
         return this.repository.getAll();
@@ -70,6 +75,11 @@ public class ChannelServiceImpl implements ChannelService {
     public ArrayList<Channel> set(Channel oldChannel, Channel newChannel) {
         this.repository.set(oldChannel, newChannel);
         return this.repository.getAll();
+    }
+
+    @Override
+    public void setInCurrentThread(Channel oldChannel, Channel newChannel) {
+        this.repository.setInCurrentThread(oldChannel, newChannel);
     }
 
     @Override

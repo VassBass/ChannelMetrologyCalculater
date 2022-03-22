@@ -49,6 +49,11 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
+    public void putInCurrentThread(ControlPointsValues cpv) {
+        this.repository.putInCurrentThread(cpv);
+    }
+
+    @Override
     public void remove(ControlPointsValues controlPointsValues) {
         this.repository.remove(controlPointsValues);
     }

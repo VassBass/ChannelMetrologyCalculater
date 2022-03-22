@@ -79,6 +79,18 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<String> processes) {
+        if (processes != null && !processes.isEmpty()) {
+            for (String process : processes) {
+                if (!this.processes.contains(process)){
+                    this.processes.add(process);
+                }
+            }
+            new BackgroundAction().addProcesses(processes);
+        }
+    }
+
+    @Override
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
                 && this.processes.contains(oldObject) && !this.processes.contains(newObject)) {
@@ -244,6 +256,25 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
+            }
+        }
+
+        void addProcesses(ArrayList<String>processes){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                Statement statement = connection.createStatement();
+                LOGGER.fine("Send request to add");
+                for (String process : processes){
+                    String sql = "INSERT INTO processes(process)"
+                            + "SELECT " + process + " "
+                            + "WHERE NOT EXISTS(SELECT 1 FROM processes WHERE process = " + process + ");";
+                    statement.execute(sql);
+                }
+
+                LOGGER.fine("Close connection");
+                statement.close();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Error: ", ex);
             }
         }
 

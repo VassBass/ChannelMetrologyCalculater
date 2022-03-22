@@ -1,8 +1,7 @@
-package backgroundTasks.data_import;
+package backgroundTasks;
 
 import application.Application;
-import model.Channel;
-import model.Sensor;
+import model.Calibrator;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
@@ -10,23 +9,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class SaveImportedChannels extends SwingWorker<Void, Void> {
+public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
     private static final String IMPORT = "Імпорт";
     private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
 
     private final MainScreen mainScreen;
-    private final ArrayList<Channel>newChannels, channelsForChange;
-    private final ArrayList<Sensor>newSensors, sensorsForChange;
+    private final ArrayList<Calibrator>newCalibrators, calibratorsForChange;
     private final LoadDialog loadDialog;
 
-    public SaveImportedChannels(ArrayList<Channel>newChannels, ArrayList<Channel> channelsForChange,
-                                ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange){
+    public SaveImportedCalibrators(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator> calibratorsForChange){
         super();
         this.mainScreen = Application.context.mainScreen;
-        this.newChannels = newChannels;
-        this.channelsForChange = channelsForChange;
-        this.newSensors = newSensors;
-        this.sensorsForChange = sensorsForChange;
+        this.newCalibrators = newCalibrators;
+        this.calibratorsForChange = calibratorsForChange;
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -38,9 +33,7 @@ public class SaveImportedChannels extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Application.context.sensorService.importData(this.newSensors, this.sensorsForChange);
-        Application.context.channelService.changeSensorsInCurrentThread(this.sensorsForChange);
-        Application.context.channelService.importData(this.newChannels, this.channelsForChange);
+        Application.context.calibratorService.importData(this.newCalibrators, this.calibratorsForChange);
         return null;
     }
 

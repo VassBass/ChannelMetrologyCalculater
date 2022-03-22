@@ -46,6 +46,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<String> departments) {
+        this.repository.addInCurrentThread(departments);
+    }
+
+    @Override
     public ArrayList<String> remove(String object) {
         this.repository.remove(object);
         return this.repository.getAll();

@@ -10,8 +10,10 @@ public interface PersonService {
     String[] getAllNames();
     String[] getNamesOfHeads();
     ArrayList<Person> add(Person person);
+    void addInCurrentThread(Person person);
     ArrayList<Person> remove(Person person);
     ArrayList<Person> set(Person oldPerson, Person newPerson);
+    void setInCurrentThread(Person oldPerson, Person newPerson);
     Person get(int index);
     void clear();
     void exportData();

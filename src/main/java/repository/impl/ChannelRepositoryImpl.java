@@ -112,6 +112,14 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     }
 
     @Override
+    public void addInCurrentThread(Channel channel) {
+        if (channel != null && !this.channels.contains(channel)) {
+            this.channels.add(channel);
+            new BackgroundAction().addChannel(channel);
+        }
+    }
+
+    @Override
     public void remove(Channel channel) {
         if (channel != null && this.channels.remove(channel)) {
             new BackgroundAction().remove(channel.getCode());
@@ -178,6 +186,16 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
             int index = this.channels.indexOf(oldChannel);
             this.channels.set(index, newChannel);
             new BackgroundAction().set(oldChannel, newChannel);
+        }
+    }
+
+    @Override
+    public void setInCurrentThread(Channel oldChannel, Channel newChannel) {
+        if (oldChannel != null && newChannel != null
+                && this.channels.contains(oldChannel) && !this.channels.contains(newChannel)) {
+            int index = this.channels.indexOf(oldChannel);
+            this.channels.set(index, newChannel);
+            new BackgroundAction().setChannel(oldChannel, newChannel);
         }
     }
 
@@ -321,7 +339,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private boolean addChannel(Channel channel){
+        boolean addChannel(Channel channel){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -399,7 +417,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
             }
         }
 
-        private boolean setChannel(Channel oldChannel, Channel newChannel){
+        boolean setChannel(Channel oldChannel, Channel newChannel){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");

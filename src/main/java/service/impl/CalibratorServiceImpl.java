@@ -47,6 +47,11 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
+    public void addInCurrentThread(Calibrator calibrator) {
+        this.repository.addInCurrentThread(calibrator);
+    }
+
+    @Override
     public ArrayList<Calibrator> remove(Calibrator calibrator) {
         this.repository.remove(calibrator);
         return this.repository.getAll();
@@ -62,6 +67,11 @@ public class CalibratorServiceImpl implements CalibratorService {
     public ArrayList<Calibrator> set(Calibrator oldCalibrator, Calibrator newCalibrator) {
         this.repository.set(oldCalibrator, newCalibrator);
         return this.repository.getAll();
+    }
+
+    @Override
+    public void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator) {
+        this.repository.setInCurrentThread(oldCalibrator, newCalibrator);
     }
 
     @Override

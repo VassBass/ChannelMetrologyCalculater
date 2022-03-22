@@ -1,7 +1,7 @@
-package backgroundTasks.data_import;
+package backgroundTasks;
 
 import application.Application;
-import model.Calibrator;
+import model.Sensor;
 import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
 
@@ -9,19 +9,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
+public class SaveImportedSensors extends SwingWorker<Void, Void> {
     private static final String IMPORT = "Імпорт";
     private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
 
     private final MainScreen mainScreen;
-    private final ArrayList<Calibrator>newCalibrators, calibratorsForChange;
+    private final ArrayList<Sensor>newSensors, sensorsForChange;
     private final LoadDialog loadDialog;
 
-    public SaveImportedCalibrators(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator> calibratorsForChange){
+    public SaveImportedSensors(ArrayList<Sensor>newSensors, ArrayList<Sensor> sensorsForChange){
         super();
         this.mainScreen = Application.context.mainScreen;
-        this.newCalibrators = newCalibrators;
-        this.calibratorsForChange = calibratorsForChange;
+        this.newSensors = newSensors;
+        this.sensorsForChange = sensorsForChange;
         this.loadDialog = new LoadDialog(mainScreen);
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -33,7 +33,8 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Application.context.calibratorService.importData(this.newCalibrators, this.calibratorsForChange);
+        Application.context.sensorService.importData(this.newSensors, this.sensorsForChange);
+        Application.context.channelService.changeSensorsInCurrentThread(this.sensorsForChange);
         return null;
     }
 

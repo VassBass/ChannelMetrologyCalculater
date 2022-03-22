@@ -112,6 +112,14 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     }
 
     @Override
+    public void addInCurrentThread(Person person) {
+        if (person != null && !this.persons.contains(person)) {
+            this.persons.add(person);
+            new BackgroundAction().addPerson(person);
+        }
+    }
+
+    @Override
     public void remove(Person person) {
         if (person != null && this.persons.remove(person)) {
             new BackgroundAction().remove(person);
@@ -125,6 +133,16 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             int index = this.persons.indexOf(oldPerson);
             this.persons.set(index, newPerson);
             new BackgroundAction().set(oldPerson, newPerson);
+        }
+    }
+
+    @Override
+    public void setInCurrentThread(Person oldPerson, Person newPerson) {
+        if (oldPerson != null && newPerson != null
+                && this.persons.contains(oldPerson) && !this.persons.contains(newPerson)) {
+            int index = this.persons.indexOf(oldPerson);
+            this.persons.set(index, newPerson);
+            new BackgroundAction().setPerson(oldPerson, newPerson);
         }
     }
 
@@ -261,7 +279,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private boolean addPerson(Person person){
+        boolean addPerson(Person person){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
@@ -324,7 +342,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
             }
         }
 
-        private boolean setPerson(Person oldPerson, Person newPerson){
+        boolean setPerson(Person oldPerson, Person newPerson){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");

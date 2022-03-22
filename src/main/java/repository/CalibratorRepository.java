@@ -11,9 +11,11 @@ public interface CalibratorRepository {
     Calibrator get(String name);
     Calibrator get(int index);
     void add(Calibrator calibrator);
+    void addInCurrentThread(Calibrator calibrator);
     void remove(Calibrator calibrator);
     void remove(int index);
     void set(Calibrator oldCalibrator, Calibrator newCalibrator);
+    void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator);
     void clear();
     void rewriteInCurrentThread(ArrayList<Calibrator>calibrators);
     void export();

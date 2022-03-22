@@ -126,6 +126,20 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     }
 
     @Override
+    public void putInCurrentThread(ControlPointsValues cpv) {
+        if (cpv != null){
+            int index = this.controlPoints.indexOf(cpv);
+            if (index >= 0){
+                new BackgroundAction().setControlPoints(this.controlPoints.get(index), cpv);
+                this.controlPoints.set(index, cpv);
+            }else {
+                this.controlPoints.add(cpv);
+                new BackgroundAction().addControlPoints(cpv);
+            }
+        }
+    }
+
+    @Override
     public void remove(ControlPointsValues cpv) {
         if (cpv != null && this.controlPoints.remove(cpv)){
             new BackgroundAction().remove(cpv.getId());
@@ -287,7 +301,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private boolean addControlPoints(ControlPointsValues cpv){
+        boolean addControlPoints(ControlPointsValues cpv){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send requests");
@@ -310,7 +324,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
             }
         }
 
-        private boolean setControlPoints(ControlPointsValues oldControlPoints, ControlPointsValues newControlPoints){
+        boolean setControlPoints(ControlPointsValues oldControlPoints, ControlPointsValues newControlPoints){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");

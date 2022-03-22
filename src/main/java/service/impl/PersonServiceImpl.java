@@ -51,6 +51,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public void addInCurrentThread(Person person) {
+        this.repository.addInCurrentThread(person);
+    }
+
+    @Override
     public ArrayList<Person> remove(Person person) {
         this.repository.remove(person);
         return this.repository.getAll();
@@ -60,6 +65,11 @@ public class PersonServiceImpl implements PersonService {
     public ArrayList<Person> set(Person oldPerson, Person newPerson) {
         this.repository.set(oldPerson, newPerson);
         return this.repository.getAll();
+    }
+
+    @Override
+    public void setInCurrentThread(Person oldPerson, Person newPerson) {
+        this.repository.setInCurrentThread(oldPerson, newPerson);
     }
 
     @Override

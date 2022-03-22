@@ -1,7 +1,7 @@
 package ui.importData.compareSensors;
 
 import application.Application;
-import backgroundTasks.data_import.SaveImportedSensors;
+import backgroundTasks.SaveImportedSensors;
 import converters.ConverterUI;
 import model.Sensor;
 import ui.importData.compareSensors.complexElements.ChangedSensorsTable;

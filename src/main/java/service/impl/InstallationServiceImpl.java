@@ -45,6 +45,11 @@ public class InstallationServiceImpl implements InstallationService {
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<String> installations) {
+        this.repository.addInCurrentThread(installations);
+    }
+
+    @Override
     public ArrayList<String> remove(String object) {
         this.repository.remove(object);
         return this.repository.getAll();

@@ -115,6 +115,14 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     }
 
     @Override
+    public void addInCurrentThread(Calibrator calibrator) {
+        if (calibrator != null && !this.calibrators.contains(calibrator)) {
+            this.calibrators.add(calibrator);
+            new BackgroundAction().addCalibrator(calibrator);
+        }
+    }
+
+    @Override
     public void remove(Calibrator calibrator) {
         if (calibrator != null && this.calibrators.remove(calibrator)){
             new BackgroundAction().remove(calibrator);
@@ -136,6 +144,16 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
             int index = this.calibrators.indexOf(oldCalibrator);
             this.calibrators.set(index, newCalibrator);
             new BackgroundAction().set(oldCalibrator, newCalibrator);
+        }
+    }
+
+    @Override
+    public void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator) {
+        if (oldCalibrator != null && newCalibrator != null
+                && this.calibrators.contains(oldCalibrator) && !this.calibrators.contains(newCalibrator)){
+            int index = this.calibrators.indexOf(oldCalibrator);
+            this.calibrators.set(index, newCalibrator);
+            new BackgroundAction().setCalibrator(oldCalibrator, newCalibrator);
         }
     }
 
@@ -272,7 +290,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private boolean addCalibrator(Calibrator calibrator){
+        boolean addCalibrator(Calibrator calibrator){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
 
@@ -334,7 +352,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
             }
         }
 
-        private boolean setCalibrator(Calibrator oldCalibrator, Calibrator newCalibrator){
+        boolean setCalibrator(Calibrator oldCalibrator, Calibrator newCalibrator){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");

@@ -75,6 +75,18 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<String> areas) {
+        if (areas != null && !areas.isEmpty()) {
+            for (String area : areas) {
+                if (!this.areas.contains(area)){
+                    this.areas.add(area);
+                }
+            }
+            new BackgroundAction().addAreas(areas);
+        }
+    }
+
+    @Override
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
                 && this.areas.contains(oldObject) && !this.areas.contains(newObject)) {
@@ -240,6 +252,25 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
+            }
+        }
+
+        void addAreas(ArrayList<String>areas){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                Statement statement = connection.createStatement();
+                LOGGER.fine("Send request to add");
+                for (String area : areas){
+                    String sql = "INSERT INTO areas(area)"
+                            + "SELECT " + area + " "
+                            + "WHERE NOT EXISTS(SELECT 1 FROM areas WHERE area = " + area + ");";
+                    statement.execute(sql);
+                }
+
+                LOGGER.fine("Close connection");
+                statement.close();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Error: ", ex);
             }
         }
 

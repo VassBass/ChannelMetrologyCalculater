@@ -61,6 +61,11 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
+    public void addInCurrentThread(Sensor sensor) {
+        this.repository.addInCurrentThread(sensor);
+    }
+
+    @Override
     public void removeInCurrentThread(Sensor sensor) {
         this.repository.removeInCurrentThread(sensor);
     }

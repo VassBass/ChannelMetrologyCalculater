@@ -165,6 +165,14 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     }
 
     @Override
+    public void addInCurrentThread(Sensor sensor) {
+        if (sensor != null && !this.sensors.contains(sensor)) {
+            this.sensors.add(sensor);
+            new BackgroundAction().addSensor(sensor);
+        }
+    }
+
+    @Override
     public void removeInCurrentThread(Sensor sensor) {
         if (sensor != null && this.sensors.remove(sensor)) {
             new BackgroundAction().removeSensor(sensor);
@@ -309,7 +317,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
-        private boolean addSensor(Sensor sensor){
+        boolean addSensor(Sensor sensor){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");

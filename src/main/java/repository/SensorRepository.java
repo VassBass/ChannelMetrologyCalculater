@@ -13,6 +13,7 @@ public interface SensorRepository {
     Sensor get(String sensorName);
     Sensor get(int index);
     void add(Sensor sensor);
+    void addInCurrentThread(Sensor sensor);
     void removeInCurrentThread(Sensor sensor);
     void setInCurrentThread(Sensor oldSensor, Sensor newSensor);
     void rewriteInCurrentThread(ArrayList<Sensor>sensors);

@@ -1,5 +1,5 @@
 package constants;
 
 public enum Action {
-    ADD, REMOVE, SET, CLEAR, REWRITE, EXPORT
+    ADD, ADD_ARRAY, REMOVE, SET, CLEAR, REWRITE, EXPORT
 }

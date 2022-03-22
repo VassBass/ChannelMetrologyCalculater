@@ -7,6 +7,7 @@ public interface InstallationService {
     ArrayList<String> getAll();
     String[] getAllInStrings();
     ArrayList<String> add(String object);
+    void addInCurrentThread(ArrayList<String>installations);
     ArrayList<String> remove(String object);
     ArrayList<String> set(String oldObject, String newObject);
     String get(int index);

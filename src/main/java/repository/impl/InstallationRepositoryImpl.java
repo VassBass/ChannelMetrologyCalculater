@@ -73,6 +73,18 @@ public class InstallationRepositoryImpl extends Repository implements Installati
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<String> installations) {
+        if (installations != null && !installations.isEmpty()) {
+            for (String installation : installations) {
+                if (!this.installations.contains(installation)){
+                    this.installations.add(installation);
+                }
+            }
+            new BackgroundAction().addInstallations(installations);
+        }
+    }
+
+    @Override
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
                 && this.installations.contains(oldObject) && !this.installations.contains(newObject)) {
@@ -238,6 +250,25 @@ public class InstallationRepositoryImpl extends Repository implements Installati
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
+            }
+        }
+
+        void addInstallations(ArrayList<String>installations){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                Statement statement = connection.createStatement();
+                LOGGER.fine("Send request to add");
+                for (String installation : installations){
+                    String sql = "INSERT INTO installations(installation)"
+                            + "SELECT " + installation + " "
+                            + "WHERE NOT EXISTS(SELECT 1 FROM installations WHERE installation = " + installation + ");";
+                    statement.execute(sql);
+                }
+
+                LOGGER.fine("Close connection");
+                statement.close();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Error: ", ex);
             }
         }
 

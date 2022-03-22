@@ -45,6 +45,11 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<String> areas) {
+        this.repository.addInCurrentThread(areas);
+    }
+
+    @Override
     public ArrayList<String> remove(String object) {
         this.repository.remove(object);
         return this.repository.getAll();

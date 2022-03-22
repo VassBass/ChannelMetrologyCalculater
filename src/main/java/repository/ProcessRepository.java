@@ -6,6 +6,7 @@ public interface ProcessRepository {
     ArrayList<String> getAll();
     String get(int index);
     void add(String object);
+    void addInCurrentThread(ArrayList<String>processes);
     void set(String oldObject, String newObject);
     void remove(String object);
     void clear();

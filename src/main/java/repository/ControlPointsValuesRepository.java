@@ -10,6 +10,7 @@ public interface ControlPointsValuesRepository {
     double[] getValues(String sensorType, double rangeMin, double rangeMax);
     ControlPointsValues getControlPointsValues(String sensorType, int index);
     void put(ControlPointsValues cpv);
+    void putInCurrentThread(ControlPointsValues cpv);
     void remove(ControlPointsValues cpv);
     void removeAllInCurrentThread(String sensorType);
     void clear(String sensorType);

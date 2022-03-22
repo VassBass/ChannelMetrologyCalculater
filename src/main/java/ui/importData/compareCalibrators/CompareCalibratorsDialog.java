@@ -1,7 +1,7 @@
 package ui.importData.compareCalibrators;
 
 import application.Application;
-import backgroundTasks.data_import.SaveImportedCalibrators;
+import backgroundTasks.SaveImportedCalibrators;
 import converters.ConverterUI;
 import model.Calibrator;
 import ui.importData.compareCalibrators.complexElements.CalibratorInfoWindow;

@@ -73,6 +73,18 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<String> departments) {
+        if (departments != null && !departments.isEmpty()) {
+            for (String department : departments) {
+                if (!this.departments.contains(department)){
+                    this.departments.add(department);
+                }
+            }
+            new BackgroundAction().addDepartments(departments);
+        }
+    }
+
+    @Override
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
                 && this.departments.contains(oldObject) && !this.departments.contains(newObject)) {
@@ -238,6 +250,25 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
+            }
+        }
+
+        void addDepartments(ArrayList<String>departments){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection()){
+                Statement statement = connection.createStatement();
+                LOGGER.fine("Send request to add");
+                for (String department : departments){
+                    String sql = "INSERT INTO departments(department)"
+                            + "SELECT " + department + " "
+                            + "WHERE NOT EXISTS(SELECT 1 FROM departments WHERE department = " + department + ");";
+                    statement.execute(sql);
+                }
+
+                LOGGER.fine("Close connection");
+                statement.close();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Error: ", ex);
             }
         }
 
