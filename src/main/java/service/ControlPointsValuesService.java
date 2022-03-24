@@ -14,4 +14,5 @@ public interface ControlPointsValuesService {
     void remove(ControlPointsValues controlPointsValues);
     void removeAllInCurrentThread(String sensorType);
     void clear(String sensorType);
+    void resetToDefault();
 }

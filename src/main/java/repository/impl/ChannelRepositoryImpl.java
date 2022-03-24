@@ -23,10 +23,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ChannelRepositoryImpl extends Repository implements ChannelRepository {
+public class ChannelRepositoryImpl extends Repository<Channel> implements ChannelRepository {
     private static final Logger LOGGER = Logger.getLogger(ChannelRepository.class.getName());
-    
-    private final ArrayList<Channel>channels = new ArrayList<>();
 
     public ChannelRepositoryImpl(){super();}
     public ChannelRepositoryImpl(String dbUrl){super(dbUrl);}
@@ -86,7 +84,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 double allowableErrorPercent = resultSet.getDouble("allowable_error_percent");
                 double allowableErrorValue = resultSet.getDouble("allowable_error_value");
                 channel.setAllowableError(allowableErrorPercent, allowableErrorValue);
-                this.channels.add(channel);
+                this.mainList.add(channel);
             }
 
             LOGGER.fine("Close connection");
@@ -100,28 +98,28 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
 
     @Override
     public ArrayList<Channel> getAll() {
-        return this.channels;
+        return this.mainList;
     }
 
     @Override
     public void add(Channel channel) {
-        if (channel != null && !this.channels.contains(channel)) {
-            this.channels.add(channel);
+        if (channel != null && !this.mainList.contains(channel)) {
+            this.mainList.add(channel);
             new BackgroundAction().add(channel);
         }
     }
 
     @Override
     public void addInCurrentThread(Channel channel) {
-        if (channel != null && !this.channels.contains(channel)) {
-            this.channels.add(channel);
+        if (channel != null && !this.mainList.contains(channel)) {
+            this.mainList.add(channel);
             new BackgroundAction().addChannel(channel);
         }
     }
 
     @Override
     public void remove(Channel channel) {
-        if (channel != null && this.channels.remove(channel)) {
+        if (channel != null && this.mainList.remove(channel)) {
             new BackgroundAction().remove(channel.getCode());
         }
     }
@@ -130,31 +128,31 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     public void removeBySensorInCurrentThread(Sensor sensor) {
         ArrayList<Integer>indexes = new ArrayList<>();
         String sensorName = sensor.getName();
-        for (int c=0;c<this.channels.size();c++){
-            String channelSensor = this.channels.get(c).getSensor().getName();
+        for (int c=0;c<this.mainList.size();c++){
+            String channelSensor = this.mainList.get(c).getSensor().getName();
             if (channelSensor.equals(sensorName)){
                 indexes.add(c);
             }
         }
         Collections.reverse(indexes);
         for (int index : indexes){
-            this.channels.remove(index);
+            this.mainList.remove(index);
         }
-        new BackgroundAction().rewriteChannels(this.channels);
+        new BackgroundAction().rewriteChannels(this.mainList);
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Channel> channels) {
         if (channels != null && !channels.isEmpty()) {
-            this.channels.clear();
-            this.channels.addAll(channels);
+            this.mainList.clear();
+            this.mainList.addAll(channels);
             new BackgroundAction().rewriteChannels(channels);
         }
     }
 
     @Override
     public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor) {
-        for (Channel channel : this.channels){
+        for (Channel channel : this.mainList){
             if (channel.getSensor().equals(oldSensor)){
                 double minRange = channel.getSensor().getRangeMin();
                 double maxRange = channel.getSensor().getRangeMax();
@@ -164,27 +162,27 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 channel.setSensor(newSensor);
             }
         }
-        new BackgroundAction().rewriteChannels(this.channels);
+        new BackgroundAction().rewriteChannels(this.mainList);
     }
 
     @Override
     public void changeSensorsInCurrentThread(ArrayList<Sensor> sensors) {
         for (Sensor sensor : sensors){
-            for (Channel channel : this.channels){
+            for (Channel channel : this.mainList){
                 if (channel.getSensor().equals(sensor)){
                     channel.setSensor(sensor);
                 }
             }
         }
-        new BackgroundAction().rewriteChannels(this.channels);
+        new BackgroundAction().rewriteChannels(this.mainList);
     }
 
     @Override
     public void set(Channel oldChannel, Channel newChannel) {
         if (oldChannel != null && newChannel != null
-                && this.channels.contains(oldChannel) && !this.channels.contains(newChannel)) {
-            int index = this.channels.indexOf(oldChannel);
-            this.channels.set(index, newChannel);
+                && this.mainList.contains(oldChannel) && !this.mainList.contains(newChannel)) {
+            int index = this.mainList.indexOf(oldChannel);
+            this.mainList.set(index, newChannel);
             new BackgroundAction().set(oldChannel, newChannel);
         }
     }
@@ -192,39 +190,39 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     @Override
     public void setInCurrentThread(Channel oldChannel, Channel newChannel) {
         if (oldChannel != null && newChannel != null
-                && this.channels.contains(oldChannel) && !this.channels.contains(newChannel)) {
-            int index = this.channels.indexOf(oldChannel);
-            this.channels.set(index, newChannel);
+                && this.mainList.contains(oldChannel) && !this.mainList.contains(newChannel)) {
+            int index = this.mainList.indexOf(oldChannel);
+            this.mainList.set(index, newChannel);
             new BackgroundAction().setChannel(oldChannel, newChannel);
         }
     }
 
     @Override
     public void clear() {
-        this.channels.clear();
+        this.mainList.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void export() {
-        new BackgroundAction().export(this.channels);
+        new BackgroundAction().export(this.mainList);
     }
 
     @Override
     public void importData(ArrayList<Channel> newChannels, ArrayList<Channel> channelsForChange) {
         for (Channel channel : channelsForChange){
-            int index = this.channels.indexOf(channel);
-            if (index >= 0) this.channels.set(index, channel);
+            int index = this.mainList.indexOf(channel);
+            if (index >= 0) this.mainList.set(index, channel);
         }
-        this.channels.addAll(newChannels);
-        new BackgroundAction().rewriteChannels(this.channels);
+        this.mainList.addAll(newChannels);
+        new BackgroundAction().rewriteChannels(this.mainList);
     }
 
     @Override
     public boolean isExist(String code) {
         Channel channel = new Channel();
         channel.setCode(code);
-        return code != null && this.channels.contains(channel);
+        return code != null && this.mainList.contains(channel);
     }
 
     @Override
@@ -233,9 +231,9 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
             Channel oldChannel = new Channel();
             oldChannel.setCode(oldChannelCode);
 
-            int oldIndex = this.channels.indexOf(oldChannel);
-            for (int index = 0; index < this.channels.size(); index++) {
-                String channelCode = this.channels.get(index).getCode();
+            int oldIndex = this.mainList.indexOf(oldChannel);
+            for (int index = 0; index < this.mainList.size(); index++) {
+                String channelCode = this.mainList.get(index).getCode();
                 if (channelCode.equals(newChannelCode) && index != oldIndex) return true;
             }
         }
@@ -319,14 +317,14 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 if (!this.get()){
                     switch (this.action){
                         case ADD:
-                            channels.remove(this.channel);
+                            mainList.remove(this.channel);
                             break;
                         case REMOVE:
-                            if (!channels.contains(this.channel)) channels.add(this.channel);
+                            if (!mainList.contains(this.channel)) mainList.add(this.channel);
                             break;
                         case SET:
-                            channels.remove(this.channel);
-                            if (!channels.contains(this.old)) channels.add(this.old);
+                            mainList.remove(this.channel);
+                            if (!mainList.contains(this.old)) mainList.add(this.old);
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";

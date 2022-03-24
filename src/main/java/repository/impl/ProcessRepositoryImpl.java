@@ -17,10 +17,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ProcessRepositoryImpl extends Repository implements ProcessRepository {
+public class ProcessRepositoryImpl extends Repository<String> implements ProcessRepository {
     private static final Logger LOGGER = Logger.getLogger(ProcessRepository.class.getName());
-
-    private final ArrayList<String> processes = new ArrayList<>();
 
     public ProcessRepositoryImpl(){
         super();
@@ -48,7 +46,7 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
-                this.processes.add(resultSet.getString("process"));
+                this.mainList.add(resultSet.getString("process"));
             }
 
             LOGGER.fine("Close connection");
@@ -62,18 +60,18 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
 
     @Override
     public ArrayList<String> getAll() {
-        return this.processes;
+        return this.mainList;
     }
 
     @Override
     public String get(int index) {
-        return index < 0 | index >= this.processes.size() ? null : this.processes.get(index);
+        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
     }
 
     @Override
     public void add(String object) {
-        if (object != null && !this.processes.contains(object)) {
-            this.processes.add(object);
+        if (object != null && !this.mainList.contains(object)) {
+            this.mainList.add(object);
             new BackgroundAction().add(object);
         }
     }
@@ -82,8 +80,8 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
     public void addInCurrentThread(ArrayList<String> processes) {
         if (processes != null && !processes.isEmpty()) {
             for (String process : processes) {
-                if (!this.processes.contains(process)){
-                    this.processes.add(process);
+                if (!this.mainList.contains(process)){
+                    this.mainList.add(process);
                 }
             }
             new BackgroundAction().addProcesses(processes);
@@ -93,31 +91,31 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
     @Override
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
-                && this.processes.contains(oldObject) && !this.processes.contains(newObject)) {
-            int index = this.processes.indexOf(oldObject);
-            this.processes.set(index, newObject);
+                && this.mainList.contains(oldObject) && !this.mainList.contains(newObject)) {
+            int index = this.mainList.indexOf(oldObject);
+            this.mainList.set(index, newObject);
             new BackgroundAction().set(oldObject, newObject);
         }
     }
 
     @Override
     public void remove(String object) {
-        if (object != null && this.processes.remove(object)) {
+        if (object != null && this.mainList.remove(object)) {
             new BackgroundAction().remove(object);
         }
     }
 
     @Override
     public void clear() {
-        this.processes.clear();
+        this.mainList.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewrite(ArrayList<String> newList) {
         if (newList != null && !newList.isEmpty()) {
-            this.processes.clear();
-            this.processes.addAll(newList);
+            this.mainList.clear();
+            this.mainList.addAll(newList);
             new BackgroundAction().rewrite(newList);
         }
     }
@@ -125,15 +123,15 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
     @Override
     public void rewriteInCurrentThread(ArrayList<String>newList){
         if (newList != null && !newList.isEmpty()) {
-            this.processes.clear();
-            this.processes.addAll(newList);
+            this.mainList.clear();
+            this.mainList.addAll(newList);
             new BackgroundAction().rewriteProcesses(newList);
         }
     }
 
     @Override
     public void export() {
-        new BackgroundAction().export(this.processes);
+        new BackgroundAction().export(this.mainList);
     }
 
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
@@ -220,14 +218,14 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
                 if (!this.get()){
                     switch (this.action){
                         case ADD:
-                            processes.remove(this.object);
+                            mainList.remove(this.object);
                             break;
                         case REMOVE:
-                            if (!processes.contains(this.object)) processes.add(this.object);
+                            if (!mainList.contains(this.object)) mainList.add(this.object);
                             break;
                         case SET:
-                            processes.remove(this.object);
-                            if (!processes.contains(this.old)) processes.add(this.old);
+                            mainList.remove(this.object);
+                            if (!mainList.contains(this.old)) mainList.add(this.old);
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";

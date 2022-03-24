@@ -83,6 +83,6 @@ public class AreaServiceImpl implements AreaService {
 
     @Override
     public void resetToDefault() {
-        this.repository.rewrite(DefaultAreas.get());
+        this.repository.rewriteInCurrentThread(DefaultAreas.get());
     }
 }

@@ -20,10 +20,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CalibratorRepositoryImpl extends Repository implements CalibratorRepository {
+public class CalibratorRepositoryImpl extends Repository<Calibrator> implements CalibratorRepository {
     private static final Logger LOGGER = Logger.getLogger(CalibratorRepository.class.getName());
-
-    private final ArrayList<Calibrator>calibrators = new ArrayList<>();
 
     public CalibratorRepositoryImpl(){super();}
     public CalibratorRepositoryImpl(String dbUrl){super(dbUrl);}
@@ -65,7 +63,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 calibrator.setCertificate(Calibrator.Certificate.fromString(certificateString));
                 calibrator.setRangeMin(resultSet.getDouble("range_min"));
                 calibrator.setRangeMax(resultSet.getDouble("range_max"));
-                calibrators.add(calibrator);
+                this.mainList.add(calibrator);
             }
 
             LOGGER.fine("Close connection");
@@ -79,13 +77,13 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
 
     @Override
     public ArrayList<Calibrator> getAll() {
-        return this.calibrators;
+        return this.mainList;
     }
 
     @Override
     public String[] getAllNames(Measurement measurement) {
         ArrayList<String>cal = new ArrayList<>();
-        for (Calibrator c : this.calibrators){
+        for (Calibrator c : this.mainList){
             if (c.getMeasurement().equals(measurement.getName())){
                 cal.add(c.getName());
             }
@@ -97,52 +95,52 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     public Calibrator get(String name) {
         Calibrator calibrator = new Calibrator();
         calibrator.setName(name);
-        int index = this.calibrators.indexOf(calibrator);
-        return index >= 0 ? this.calibrators.get(index) : null;
+        int index = this.mainList.indexOf(calibrator);
+        return index >= 0 ? this.mainList.get(index) : null;
     }
 
     @Override
     public Calibrator get(int index) {
-        return index < 0 | index >= this.calibrators.size() ? null : this.calibrators.get(index);
+        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
     }
 
     @Override
     public void add(Calibrator calibrator) {
-        if (calibrator != null && !this.calibrators.contains(calibrator)) {
-            this.calibrators.add(calibrator);
+        if (calibrator != null && !this.mainList.contains(calibrator)) {
+            this.mainList.add(calibrator);
             new BackgroundAction().add(calibrator);
         }
     }
 
     @Override
     public void addInCurrentThread(Calibrator calibrator) {
-        if (calibrator != null && !this.calibrators.contains(calibrator)) {
-            this.calibrators.add(calibrator);
+        if (calibrator != null && !this.mainList.contains(calibrator)) {
+            this.mainList.add(calibrator);
             new BackgroundAction().addCalibrator(calibrator);
         }
     }
 
     @Override
     public void remove(Calibrator calibrator) {
-        if (calibrator != null && this.calibrators.remove(calibrator)){
+        if (calibrator != null && this.mainList.remove(calibrator)){
             new BackgroundAction().remove(calibrator);
         }
     }
 
     @Override
     public void remove(int index) {
-        if (index >= 0 && index < this.calibrators.size()){
-            new BackgroundAction().remove(this.calibrators.get(index));
-            this.calibrators.remove(index);
+        if (index >= 0 && index < this.mainList.size()){
+            new BackgroundAction().remove(this.mainList.get(index));
+            this.mainList.remove(index);
         }
     }
 
     @Override
     public void set(Calibrator oldCalibrator, Calibrator newCalibrator) {
         if (oldCalibrator != null && newCalibrator != null
-                && this.calibrators.contains(oldCalibrator) && !this.calibrators.contains(newCalibrator)){
-            int index = this.calibrators.indexOf(oldCalibrator);
-            this.calibrators.set(index, newCalibrator);
+                && this.mainList.contains(oldCalibrator) && !this.mainList.contains(newCalibrator)){
+            int index = this.mainList.indexOf(oldCalibrator);
+            this.mainList.set(index, newCalibrator);
             new BackgroundAction().set(oldCalibrator, newCalibrator);
         }
     }
@@ -150,38 +148,38 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     @Override
     public void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator) {
         if (oldCalibrator != null && newCalibrator != null
-                && this.calibrators.contains(oldCalibrator) && !this.calibrators.contains(newCalibrator)){
-            int index = this.calibrators.indexOf(oldCalibrator);
-            this.calibrators.set(index, newCalibrator);
+                && this.mainList.contains(oldCalibrator) && !this.mainList.contains(newCalibrator)){
+            int index = this.mainList.indexOf(oldCalibrator);
+            this.mainList.set(index, newCalibrator);
             new BackgroundAction().setCalibrator(oldCalibrator, newCalibrator);
         }
     }
 
     @Override
     public void clear() {
-        this.calibrators.clear();
+        this.mainList.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Calibrator> calibrators) {
         if (calibrators != null && !calibrators.isEmpty()) {
-            this.calibrators.clear();
-            this.calibrators.addAll(calibrators);
+            this.mainList.clear();
+            this.mainList.addAll(calibrators);
             new BackgroundAction().rewriteCalibrators(calibrators);
         }
     }
 
     @Override
     public void export() {
-        new BackgroundAction().export(this.calibrators);
+        new BackgroundAction().export(this.mainList);
     }
 
     @Override
     public void rewrite(ArrayList<Calibrator> calibrators) {
         if (calibrators != null && !calibrators.isEmpty()) {
-            this.calibrators.clear();
-            this.calibrators.addAll(calibrators);
+            this.mainList.clear();
+            this.mainList.addAll(calibrators);
             new BackgroundAction().rewrite(calibrators);
         }
     }
@@ -270,14 +268,14 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 if (!this.get()){
                     switch (this.action){
                         case ADD:
-                            calibrators.remove(this.calibrator);
+                            mainList.remove(this.calibrator);
                             break;
                         case REMOVE:
-                            if (!calibrators.contains(this.calibrator)) calibrators.add(this.calibrator);
+                            if (!mainList.contains(this.calibrator)) mainList.add(this.calibrator);
                             break;
                         case SET:
-                            calibrators.remove(this.calibrator);
-                            if (!calibrators.contains(this.old)) calibrators.add(this.old);
+                            mainList.remove(this.calibrator);
+                            if (!mainList.contains(this.old)) mainList.add(this.old);
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";

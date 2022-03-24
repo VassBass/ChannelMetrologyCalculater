@@ -67,4 +67,9 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     public void clear(String sensorType) {
         this.repository.clear(sensorType);
     }
+
+    @Override
+    public void resetToDefault() {
+        this.repository.resetToDefault();
+    }
 }

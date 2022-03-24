@@ -17,10 +17,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class InstallationRepositoryImpl extends Repository implements InstallationRepository {
+public class InstallationRepositoryImpl extends Repository<String> implements InstallationRepository {
     private static final Logger LOGGER = Logger.getLogger(InstallationRepository.class.getName());
-
-    private final ArrayList<String>installations = new ArrayList<>();
 
     public InstallationRepositoryImpl(){super();}
     public InstallationRepositoryImpl(String dbUrl){super(dbUrl);}
@@ -42,7 +40,7 @@ public class InstallationRepositoryImpl extends Repository implements Installati
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
-                this.installations.add(resultSet.getString("installation"));
+                this.mainList.add(resultSet.getString("installation"));
             }
 
             LOGGER.fine("Close connection");
@@ -56,18 +54,18 @@ public class InstallationRepositoryImpl extends Repository implements Installati
 
     @Override
     public ArrayList<String> getAll() {
-        return this.installations;
+        return this.mainList;
     }
 
     @Override
     public String get(int index) {
-        return index < 0 | index >= this.installations.size() ? null : this.installations.get(index);
+        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
     }
 
     @Override
     public void add(String object) {
-        if (object != null && !this.installations.contains(object)) {
-            this.installations.add(object);
+        if (object != null && !this.mainList.contains(object)) {
+            this.mainList.add(object);
             new BackgroundAction().add(object);
         }
     }
@@ -76,8 +74,8 @@ public class InstallationRepositoryImpl extends Repository implements Installati
     public void addInCurrentThread(ArrayList<String> installations) {
         if (installations != null && !installations.isEmpty()) {
             for (String installation : installations) {
-                if (!this.installations.contains(installation)){
-                    this.installations.add(installation);
+                if (!this.mainList.contains(installation)){
+                    this.mainList.add(installation);
                 }
             }
             new BackgroundAction().addInstallations(installations);
@@ -87,31 +85,31 @@ public class InstallationRepositoryImpl extends Repository implements Installati
     @Override
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
-                && this.installations.contains(oldObject) && !this.installations.contains(newObject)) {
-            int index = this.installations.indexOf(oldObject);
-            this.installations.set(index, newObject);
+                && this.mainList.contains(oldObject) && !this.mainList.contains(newObject)) {
+            int index = this.mainList.indexOf(oldObject);
+            this.mainList.set(index, newObject);
             new BackgroundAction().set(oldObject, newObject);
         }
     }
 
     @Override
     public void remove(String object) {
-        if (object != null && this.installations.remove(object)) {
+        if (object != null && this.mainList.remove(object)) {
             new BackgroundAction().remove(object);
         }
     }
 
     @Override
     public void clear() {
-        this.installations.clear();
+        this.mainList.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewrite(ArrayList<String> newList) {
         if (newList != null && !newList.isEmpty()) {
-            this.installations.clear();
-            this.installations.addAll(newList);
+            this.mainList.clear();
+            this.mainList.addAll(newList);
             new BackgroundAction().rewrite(newList);
         }
     }
@@ -119,15 +117,15 @@ public class InstallationRepositoryImpl extends Repository implements Installati
     @Override
     public void rewriteInCurrentThread(ArrayList<String>newList){
         if (newList != null && !newList.isEmpty()) {
-            this.installations.clear();
-            this.installations.addAll(newList);
+            this.mainList.clear();
+            this.mainList.addAll(newList);
             new BackgroundAction().rewriteInstallations(newList);
         }
     }
 
     @Override
     public void export() {
-        new BackgroundAction().export(this.installations);
+        new BackgroundAction().export(this.mainList);
     }
 
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
@@ -214,14 +212,14 @@ public class InstallationRepositoryImpl extends Repository implements Installati
                 if (!this.get()){
                     switch (this.action){
                         case ADD:
-                            installations.remove(this.object);
+                            mainList.remove(this.object);
                             break;
                         case REMOVE:
-                            if (!installations.contains(this.object)) installations.add(this.object);
+                            if (!mainList.contains(this.object)) mainList.add(this.object);
                             break;
                         case SET:
-                            installations.remove(this.object);
-                            if (!installations.contains(this.old)) installations.add(this.old);
+                            mainList.remove(this.object);
+                            if (!mainList.contains(this.old)) mainList.add(this.old);
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";

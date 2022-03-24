@@ -17,10 +17,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class AreaRepositoryImpl extends Repository implements AreaRepository {
+public class AreaRepositoryImpl extends Repository<String> implements AreaRepository {
     private static final Logger LOGGER = Logger.getLogger(AreaRepository.class.getName());
-
-    private final ArrayList<String>areas = new ArrayList<>();
 
     public AreaRepositoryImpl(){super();}
     public AreaRepositoryImpl(String dbUrl){super(dbUrl);}
@@ -44,7 +42,7 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()){
-                this.areas.add(resultSet.getString("area"));
+                this.mainList.add(resultSet.getString("area"));
             }
 
             LOGGER.fine("Close connection");
@@ -58,19 +56,19 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
 
     @Override
     public ArrayList<String> getAll() {
-        return this.areas;
+        return this.mainList;
     }
 
     @Override
     public String get(int index) {
-        return index < 0 | index >= this.areas.size() ? null : this.areas.get(index);
+        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
     }
 
     @Override
     public void add(String object) {
-        if (object != null && !this.areas.contains(object)){
+        if (object != null && !this.mainList.contains(object)){
             new BackgroundAction().add(object);
-            this.areas.add(object);
+            this.mainList.add(object);
         }
     }
 
@@ -78,8 +76,8 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
     public void addInCurrentThread(ArrayList<String> areas) {
         if (areas != null && !areas.isEmpty()) {
             for (String area : areas) {
-                if (!this.areas.contains(area)){
-                    this.areas.add(area);
+                if (!this.mainList.contains(area)){
+                    this.mainList.add(area);
                 }
             }
             new BackgroundAction().addAreas(areas);
@@ -89,29 +87,29 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
     @Override
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
-                && this.areas.contains(oldObject) && !this.areas.contains(newObject)) {
-            int index = this.areas.indexOf(oldObject);
-            this.areas.set(index, newObject);
+                && this.mainList.contains(oldObject) && !this.mainList.contains(newObject)) {
+            int index = this.mainList.indexOf(oldObject);
+            this.mainList.set(index, newObject);
             new BackgroundAction().set(oldObject, newObject);
         }
     }
 
     @Override
     public void remove(String object) {
-        if (object != null && this.areas.remove(object)) new BackgroundAction().remove(object);
+        if (object != null && this.mainList.remove(object)) new BackgroundAction().remove(object);
     }
 
     @Override
     public void clear() {
-        this.areas.clear();
+        this.mainList.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewrite(ArrayList<String> newList) {
         if (newList != null && !newList.isEmpty()) {
-            this.areas.clear();
-            this.areas.addAll(newList);
+            this.mainList.clear();
+            this.mainList.addAll(newList);
             new BackgroundAction().rewrite(newList);
         }
     }
@@ -119,15 +117,15 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
     @Override
     public void rewriteInCurrentThread(ArrayList<String>newList){
         if (newList != null && !newList.isEmpty()) {
-            this.areas.clear();
-            this.areas.addAll(newList);
+            this.mainList.clear();
+            this.mainList.addAll(newList);
             new BackgroundAction().rewriteAreas(newList);
         }
     }
 
     @Override
     public void export() {
-        new BackgroundAction().export(this.areas);
+        new BackgroundAction().export(this.mainList);
     }
 
 
@@ -215,14 +213,14 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
                 if (!this.get()){
                     switch (this.action){
                         case ADD:
-                            areas.remove(this.object);
+                            mainList.remove(this.object);
                             break;
                         case REMOVE:
-                            if (!areas.contains(this.object)) areas.add(this.object);
+                            if (!mainList.contains(this.object)) mainList.add(this.object);
                             break;
                         case SET:
-                            areas.remove(this.object);
-                            if (!areas.contains(this.old)) areas.add(this.old);
+                            mainList.remove(this.object);
+                            if (!mainList.contains(this.old)) mainList.add(this.old);
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";

@@ -83,6 +83,6 @@ public class InstallationServiceImpl implements InstallationService {
 
     @Override
     public void resetToDefault() {
-        this.repository.rewrite(DefaultInstallations.get());
+        this.repository.rewriteInCurrentThread(DefaultInstallations.get());
     }
 }

@@ -19,10 +19,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SensorRepositoryImpl extends Repository implements SensorRepository {
+public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRepository {
     private static final Logger LOGGER = Logger.getLogger(SensorRepository.class.getName());
-
-    private final ArrayList<Sensor>sensors = new ArrayList<>();
 
     public SensorRepositoryImpl(){super();}
     public SensorRepositoryImpl(String dbUrl){super(dbUrl);}
@@ -61,7 +59,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
                 sensor.setErrorFormula(resultSet.getString("error_formula"));
                 sensor.setRangeMin(resultSet.getDouble("range_min"));
                 sensor.setRangeMax(resultSet.getDouble("range_max"));
-                this.sensors.add(sensor);
+                this.mainList.add(sensor);
             }
 
             LOGGER.fine("Close connection");
@@ -75,13 +73,13 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
 
     @Override
     public ArrayList<Sensor> getAll() {
-        return this.sensors;
+        return this.mainList;
     }
 
     @Override
     public String[] getAllTypes() {
         ArrayList<String>types = new ArrayList<>();
-        for (Sensor sensor : this.sensors){
+        for (Sensor sensor : this.mainList){
             String type = sensor.getType();
             boolean exist = false;
             for (String t : types){
@@ -100,7 +98,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     @Override
     public String[] getAllTypesWithoutROSEMOUNT() {
         ArrayList<String>types = new ArrayList<>();
-        for (Sensor sensor : this.sensors){
+        for (Sensor sensor : this.mainList){
             String type = sensor.getType();
             if (!type.contains(SensorType.ROSEMOUNT)) {
                 boolean exist = false;
@@ -121,7 +119,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     @Override
     public String getMeasurement(String sensorType) {
         if (sensorType != null && sensorType.length() > 0) {
-            for (Sensor sensor : this.sensors) {
+            for (Sensor sensor : this.mainList) {
                 if (sensor.getType().equals(sensorType)) {
                     return sensor.getMeasurement();
                 }
@@ -133,7 +131,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     @Override
     public String[] getAllSensorsName(String measurementName) {
         ArrayList<String> names = new ArrayList<>();
-        for (Sensor sensor : this.sensors) {
+        for (Sensor sensor : this.mainList) {
             if (sensor.getMeasurement().equals(measurementName)) {
                 names.add(sensor.getName());
             }
@@ -146,44 +144,44 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
         if (sensorName != null && sensorName.length() > 0) {
             Sensor sensor = new Sensor();
             sensor.setName(sensorName);
-            int index = this.sensors.indexOf(sensor);
-            return index < 0 ? null : this.sensors.get(index);
+            int index = this.mainList.indexOf(sensor);
+            return index < 0 ? null : this.mainList.get(index);
         }else return null;
     }
 
     @Override
     public Sensor get(int index) {
-        return index < 0 | index >= this.sensors.size() ? null : this.sensors.get(index);
+        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
     }
 
     @Override
     public void add(Sensor sensor) {
-        if (sensor != null && !this.sensors.contains(sensor)) {
-            this.sensors.add(sensor);
+        if (sensor != null && !this.mainList.contains(sensor)) {
+            this.mainList.add(sensor);
             new BackgroundAction().add(sensor);
         }
     }
 
     @Override
     public void addInCurrentThread(Sensor sensor) {
-        if (sensor != null && !this.sensors.contains(sensor)) {
-            this.sensors.add(sensor);
+        if (sensor != null && !this.mainList.contains(sensor)) {
+            this.mainList.add(sensor);
             new BackgroundAction().addSensor(sensor);
         }
     }
 
     @Override
     public void removeInCurrentThread(Sensor sensor) {
-        if (sensor != null && this.sensors.remove(sensor)) {
+        if (sensor != null && this.mainList.remove(sensor)) {
             new BackgroundAction().removeSensor(sensor);
         }
     }
 
     @Override
     public void setInCurrentThread(Sensor oldSensor, Sensor newSensor) {
-        if (oldSensor != null && newSensor != null && this.sensors.contains(oldSensor) && !this.sensors.contains(newSensor)){
-            int index = this.sensors.indexOf(oldSensor);
-            this.sensors.set(index, newSensor);
+        if (oldSensor != null && newSensor != null && this.mainList.contains(oldSensor) && !this.mainList.contains(newSensor)){
+            int index = this.mainList.indexOf(oldSensor);
+            this.mainList.set(index, newSensor);
             new BackgroundAction().setSensor(oldSensor, newSensor);
         }
     }
@@ -191,37 +189,37 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     @Override
     public void rewriteInCurrentThread(ArrayList<Sensor> sensors) {
         if (sensors != null && !sensors.isEmpty()) {
-            this.sensors.clear();
-            this.sensors.addAll(sensors);
+            this.mainList.clear();
+            this.mainList.addAll(sensors);
             new BackgroundAction().rewriteSensors(sensors);
         }
     }
 
     @Override
     public void clear() {
-        this.sensors.clear();
+        this.mainList.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void export() {
-        new BackgroundAction().export(this.sensors);
+        new BackgroundAction().export(this.mainList);
     }
 
     @Override
     public void importData(ArrayList<Sensor> newSensors, ArrayList<Sensor> sensorsForChange) {
         for (Sensor sensor : sensorsForChange){
-            int index = this.sensors.indexOf(sensor);
-            if (index >= 0) this.sensors.set(index, sensor);
+            int index = this.mainList.indexOf(sensor);
+            if (index >= 0) this.mainList.set(index, sensor);
         }
-        this.sensors.addAll(newSensors);
-        new BackgroundAction().rewriteSensors(this.sensors);
+        this.mainList.addAll(newSensors);
+        new BackgroundAction().rewriteSensors(this.mainList);
     }
 
     @Override
     public void rewrite(ArrayList<Sensor> sensors) {
-        this.sensors.clear();
-        this.sensors.addAll(sensors);
+        this.mainList.clear();
+        this.mainList.addAll(sensors);
         new BackgroundAction().rewrite(sensors);
     }
 
@@ -230,7 +228,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
         if (sensor != null) {
             String measurement = sensor.getMeasurement();
             int numberOfSensors = 0;
-            for (Sensor s : this.sensors) {
+            for (Sensor s : this.mainList) {
                 if (s.getMeasurement().equals(measurement)) {
                     numberOfSensors++;
                 }
@@ -305,7 +303,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
             try {
                 if (!this.get()){
                     if (this.action == Action.ADD) {
-                        sensors.remove(this.sensor);
+                        mainList.remove(this.sensor);
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
                     JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);

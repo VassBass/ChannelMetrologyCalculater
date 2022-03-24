@@ -17,10 +17,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DepartmentRepositoryImpl extends Repository implements DepartmentRepository {
+public class DepartmentRepositoryImpl extends Repository<String> implements DepartmentRepository {
     private static final Logger LOGGER = Logger.getLogger(DepartmentRepository.class.getName());
-
-    private final ArrayList<String>departments = new ArrayList<>();
 
     public DepartmentRepositoryImpl(){super();}
     public DepartmentRepositoryImpl(String dbUrl){super(dbUrl);}
@@ -42,7 +40,7 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
             sql = "SELECT * FROM departments";
             ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()){
-                this.departments.add(resultSet.getString("department"));
+                this.mainList.add(resultSet.getString("department"));
             }
 
             LOGGER.fine("Close connection");
@@ -56,18 +54,18 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
 
     @Override
     public ArrayList<String> getAll() {
-        return this.departments;
+        return this.mainList;
     }
 
     @Override
     public String get(int index) {
-        return index < 0 | index >= this.departments.size() ? null : this.departments.get(index);
+        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
     }
 
     @Override
     public void add(String object) {
-        if (object != null && !this.departments.contains(object)) {
-            this.departments.add(object);
+        if (object != null && !this.mainList.contains(object)) {
+            this.mainList.add(object);
             new BackgroundAction().add(object);
         }
     }
@@ -76,8 +74,8 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
     public void addInCurrentThread(ArrayList<String> departments) {
         if (departments != null && !departments.isEmpty()) {
             for (String department : departments) {
-                if (!this.departments.contains(department)){
-                    this.departments.add(department);
+                if (!this.mainList.contains(department)){
+                    this.mainList.add(department);
                 }
             }
             new BackgroundAction().addDepartments(departments);
@@ -87,31 +85,31 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
     @Override
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
-                && this.departments.contains(oldObject) && !this.departments.contains(newObject)) {
-            int index = this.departments.indexOf(oldObject);
-            this.departments.set(index, newObject);
+                && this.mainList.contains(oldObject) && !this.mainList.contains(newObject)) {
+            int index = this.mainList.indexOf(oldObject);
+            this.mainList.set(index, newObject);
             new BackgroundAction().set(oldObject, newObject);
         }
     }
 
     @Override
     public void remove(String object) {
-        if (object != null && this.departments.remove(object)) {
+        if (object != null && this.mainList.remove(object)) {
             new BackgroundAction().remove(object);
         }
     }
 
     @Override
     public void clear() {
-        this.departments.clear();
+        this.mainList.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewrite(ArrayList<String> newList) {
         if (newList != null && !newList.isEmpty()) {
-            this.departments.clear();
-            this.departments.addAll(newList);
+            this.mainList.clear();
+            this.mainList.addAll(newList);
             new BackgroundAction().rewrite(newList);
         }
     }
@@ -119,15 +117,15 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
     @Override
     public void rewriteInCurrentThread(ArrayList<String>newList){
         if (newList != null && !newList.isEmpty()) {
-            this.departments.clear();
-            this.departments.addAll(newList);
+            this.mainList.clear();
+            this.mainList.addAll(newList);
             new BackgroundAction().rewriteDepartments(newList);
         }
     }
 
     @Override
     public void export() {
-        new BackgroundAction().export(this.departments);
+        new BackgroundAction().export(this.mainList);
     }
 
     private class BackgroundAction extends SwingWorker<Boolean, Void>{
@@ -214,14 +212,14 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
                 if (!this.get()){
                     switch (this.action){
                         case ADD:
-                            departments.remove(this.object);
+                            mainList.remove(this.object);
                             break;
                         case REMOVE:
-                            if (!departments.contains(this.object)) departments.add(this.object);
+                            if (!mainList.contains(this.object)) mainList.add(this.object);
                             break;
                         case SET:
-                            departments.remove(this.object);
-                            if (!departments.contains(this.old)) departments.add(this.old);
+                            mainList.remove(this.object);
+                            if (!mainList.contains(this.old)) mainList.add(this.old);
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";

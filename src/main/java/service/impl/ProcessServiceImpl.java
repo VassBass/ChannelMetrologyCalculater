@@ -83,6 +83,6 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void resetToDefault() {
-        this.repository.rewrite(DefaultProcesses.get());
+        this.repository.rewriteInCurrentThread(DefaultProcesses.get());
     }
 }

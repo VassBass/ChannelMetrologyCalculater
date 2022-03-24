@@ -10,6 +10,7 @@ public class DefaultPersons {
         ArrayList<Person>persons = new ArrayList<>();
 
         Person chekunovTM = new Person();
+        chekunovTM.setId(1);
         chekunovTM.setName("Тимофій");
         chekunovTM.setSurname("Чекунов");
         chekunovTM.setPatronymic("Миколайович");
@@ -17,6 +18,7 @@ public class DefaultPersons {
         persons.add(chekunovTM);
 
         Person fesenkoEV = new Person();
+        fesenkoEV.setId(2);
         fesenkoEV.setName("Євгеній");
         fesenkoEV.setSurname("Фесенко");
         fesenkoEV.setPatronymic("Вітальйович");
@@ -24,6 +26,7 @@ public class DefaultPersons {
         persons.add(fesenkoEV);
 
         Person lenTV = new Person();
+        lenTV.setId(3);
         lenTV.setName("Тетяна");
         lenTV.setSurname("Лень");
         lenTV.setPatronymic("Володимирівна");
@@ -31,6 +34,7 @@ public class DefaultPersons {
         persons.add(lenTV);
 
         Person pohiliiOO = new Person();
+        pohiliiOO.setId(4);
         pohiliiOO.setName("Олександр");
         pohiliiOO.setSurname("Похилий");
         pohiliiOO.setPatronymic("Олександрович");
@@ -38,6 +42,7 @@ public class DefaultPersons {
         persons.add(pohiliiOO);
 
         Person sergienkoOV = new Person();
+        sergienkoOV.setId(5);
         sergienkoOV.setName("Олександр");
         sergienkoOV.setSurname("Сергієнко");
         sergienkoOV.setPatronymic("Вікторович");
@@ -45,6 +50,7 @@ public class DefaultPersons {
         persons.add(sergienkoOV);
 
         Person vasilevIS = new Person();
+        vasilevIS.setId(6);
         vasilevIS.setName("Ігор");
         vasilevIS.setSurname("Васильєв");
         vasilevIS.setPatronymic("Сергійович");

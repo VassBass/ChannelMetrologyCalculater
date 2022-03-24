@@ -84,6 +84,6 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public void resetToDefault() {
-        this.repository.rewrite(DefaultDepartments.get());
+        this.repository.rewriteInCurrentThread(DefaultDepartments.get());
     }
 }

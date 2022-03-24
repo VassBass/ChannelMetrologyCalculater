@@ -10,10 +10,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MeasurementRepositoryImpl extends Repository implements MeasurementRepository {
+public class MeasurementRepositoryImpl extends Repository<Measurement> implements MeasurementRepository {
     private static final Logger LOGGER = Logger.getLogger(MeasurementRepository.class.getName());
-
-    private final ArrayList<Measurement>measurements = new ArrayList<>();
 
     public MeasurementRepositoryImpl(){super();}
     public MeasurementRepositoryImpl(String dbUrl){super(dbUrl);}
@@ -44,7 +42,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
                 int id = resultSet.getInt("id");
                 Measurement measurement = new Measurement(name, value);
                 measurement.setId(id);
-                this.measurements.add(measurement);
+                this.mainList.add(measurement);
             }
 
             LOGGER.fine("Close connection");
@@ -58,13 +56,13 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
 
     @Override
     public ArrayList<Measurement> getAll() {
-        return this.measurements;
+        return this.mainList;
     }
 
     @Override
     public String[] getAllNames() {
         ArrayList<String>names = new ArrayList<>();
-        for (Measurement measurement : this.measurements){
+        for (Measurement measurement : this.mainList){
             String name = measurement.getName();
             boolean exist = false;
             for (String n : names){
@@ -82,9 +80,9 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
 
     @Override
     public String[] getAllValues() {
-        String[]values = new String[this.measurements.size()];
-        for (int m=0;m<this.measurements.size();m++){
-            values[m] = this.measurements.get(m).getValue();
+        String[]values = new String[this.mainList.size()];
+        for (int m=0;m<this.mainList.size();m++){
+            values[m] = this.mainList.get(m).getValue();
         }
         return values;
     }
@@ -93,7 +91,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     public String[] getValues(Measurement measurement) {
         if (measurement != null) {
             ArrayList<String> values = new ArrayList<>();
-            for (Measurement m : this.measurements) {
+            for (Measurement m : this.mainList) {
                 if (m.getName().equals(measurement.getName())) {
                     values.add(m.getValue());
                 }
@@ -106,7 +104,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     public String[] getValues(MeasurementConstants name) {
         if (name != null) {
             ArrayList<String> values = new ArrayList<>();
-            for (Measurement measurement : this.measurements) {
+            for (Measurement measurement : this.mainList) {
                 if (measurement.getNameConstant() == name) {
                     values.add(measurement.getValue());
                 }
@@ -119,7 +117,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     public String[] getValues(String name) {
         if (name != null && name.length() > 0) {
             ArrayList<String> values = new ArrayList<>();
-            for (Measurement measurement : this.measurements) {
+            for (Measurement measurement : this.mainList) {
                 if (measurement.getName().equals(name)) {
                     values.add(measurement.getValue());
                 }
@@ -131,7 +129,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     @Override
     public Measurement get(MeasurementConstants value) {
         if (value != null) {
-            for (Measurement measurement : this.measurements) {
+            for (Measurement measurement : this.mainList) {
                 if (measurement.getValueConstant() == value) {
                     return measurement;
                 }
@@ -143,7 +141,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     @Override
     public Measurement get(String value) {
         if (value != null && value.length() > 0) {
-            for (Measurement measurement : this.measurements) {
+            for (Measurement measurement : this.mainList) {
                 if (measurement.getValue().equals(value)) {
                     return measurement;
                 }
@@ -154,14 +152,14 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
 
     @Override
     public Measurement get(int index) {
-        return index < 0 || index >= this.measurements.size() ? null : this.measurements.get(index);
+        return index < 0 || index >= this.mainList.size() ? null : this.mainList.get(index);
     }
 
     @Override
     public ArrayList<Measurement> getMeasurements(MeasurementConstants name) {
         if (name != null) {
             ArrayList<Measurement> measurements = new ArrayList<>();
-            for (Measurement measurement : this.measurements) {
+            for (Measurement measurement : this.mainList) {
                 if (measurement.getNameConstant() == name) {
                     measurements.add(measurement);
                 }
@@ -174,7 +172,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     public ArrayList<Measurement> getMeasurements(String name) {
         if (name != null && name.length() > 0) {
             ArrayList<Measurement> measurements = new ArrayList<>();
-            for (Measurement measurement : this.measurements) {
+            for (Measurement measurement : this.mainList) {
                 if (measurement.getName().equals(name)) {
                     measurements.add(measurement);
                 }
@@ -185,8 +183,8 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Measurement> measurements) {
-        this.measurements.clear();
-        this.measurements.addAll(measurements);
+        this.mainList.clear();
+        this.mainList.addAll(measurements);
 
         String sql = measurements == null || measurements.isEmpty() ? "DELETE FROM measurements;" : null;
 

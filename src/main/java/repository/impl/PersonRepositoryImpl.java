@@ -19,12 +19,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PersonRepositoryImpl extends Repository implements PersonRepository {
+public class PersonRepositoryImpl extends Repository<Person> implements PersonRepository {
     private static final Logger LOGGER = Logger.getLogger(PersonRepository.class.getName());
 
     private static final String EMPTY_ARRAY = "<Порожньо>";
-
-    private final ArrayList<Person>persons = new ArrayList<>();
 
     public PersonRepositoryImpl(){super();}
     public PersonRepositoryImpl(String dbUrl){super(dbUrl);}
@@ -57,7 +55,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
                 person.setSurname(resultSet.getString("surname"));
                 person.setPatronymic(resultSet.getString("patronymic"));
                 person.setPosition(resultSet.getString("position"));
-                this.persons.add(person);
+                this.mainList.add(person);
             }
 
             LOGGER.fine("Close connection");
@@ -71,17 +69,17 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
 
     @Override
     public ArrayList<Person> getAll() {
-        return this.persons;
+        return this.mainList;
     }
 
     @Override
     public String[] getAllNames() {
-        int length = this.persons.size() + 1;
+        int length = this.mainList.size() + 1;
         String[] persons = new String[length];
         persons[0] = EMPTY_ARRAY;
-        for (int x = 0; x< this.persons.size(); x++){
+        for (int x = 0; x< this.mainList.size(); x++){
             int y = x+1;
-            persons[y] = this.persons.get(x).getFullName();
+            persons[y] = this.mainList.get(x).getFullName();
         }
         return persons;
     }
@@ -90,7 +88,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     public String[] getNamesOfHeads() {
         ArrayList<String>heads = new ArrayList<>();
         heads.add(EMPTY_ARRAY);
-        for (Person worker : this.persons){
+        for (Person worker : this.mainList){
             if (worker.getPosition().equals(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP)){
                 heads.add(worker.getFullName());
             }
@@ -100,28 +98,28 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
 
     @Override
     public Person get(int index) {
-        return index < 0 | index >= this.persons.size() ? null : this.persons.get(index);
+        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
     }
 
     @Override
     public void add(Person person) {
-        if (person != null && !this.persons.contains(person)) {
-            this.persons.add(person);
+        if (person != null && !this.mainList.contains(person)) {
+            this.mainList.add(person);
             new BackgroundAction().add(person);
         }
     }
 
     @Override
     public void addInCurrentThread(Person person) {
-        if (person != null && !this.persons.contains(person)) {
-            this.persons.add(person);
+        if (person != null && !this.mainList.contains(person)) {
+            this.mainList.add(person);
             new BackgroundAction().addPerson(person);
         }
     }
 
     @Override
     public void remove(Person person) {
-        if (person != null && this.persons.remove(person)) {
+        if (person != null && this.mainList.remove(person)) {
             new BackgroundAction().remove(person);
         }
     }
@@ -129,9 +127,9 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     @Override
     public void set(Person oldPerson, Person newPerson) {
         if (oldPerson != null && newPerson != null
-                && this.persons.contains(oldPerson) && !this.persons.contains(newPerson)) {
-            int index = this.persons.indexOf(oldPerson);
-            this.persons.set(index, newPerson);
+                && this.mainList.contains(oldPerson) && !this.mainList.contains(newPerson)) {
+            int index = this.mainList.indexOf(oldPerson);
+            this.mainList.set(index, newPerson);
             new BackgroundAction().set(oldPerson, newPerson);
         }
     }
@@ -139,24 +137,24 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     @Override
     public void setInCurrentThread(Person oldPerson, Person newPerson) {
         if (oldPerson != null && newPerson != null
-                && this.persons.contains(oldPerson) && !this.persons.contains(newPerson)) {
-            int index = this.persons.indexOf(oldPerson);
-            this.persons.set(index, newPerson);
+                && this.mainList.contains(oldPerson) && !this.mainList.contains(newPerson)) {
+            int index = this.mainList.indexOf(oldPerson);
+            this.mainList.set(index, newPerson);
             new BackgroundAction().setPerson(oldPerson, newPerson);
         }
     }
 
     @Override
     public void clear() {
-        this.persons.clear();
+        this.mainList.clear();
         new BackgroundAction().clear();
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<Person> persons) {
         if (persons != null && !persons.isEmpty()) {
-            this.persons.clear();
-            this.persons.addAll(persons);
+            this.mainList.clear();
+            this.mainList.addAll(persons);
             new BackgroundAction().rewritePersons(persons);
         }
     }
@@ -164,15 +162,15 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     @Override
     public void rewrite(ArrayList<Person> persons) {
         if (persons != null && !persons.isEmpty()) {
-            this.persons.clear();
-            this.persons.addAll(persons);
+            this.mainList.clear();
+            this.mainList.addAll(persons);
             new BackgroundAction().rewrite(persons);
         }
     }
 
     @Override
     public void export() {
-        new BackgroundAction().export(this.persons);
+        new BackgroundAction().export(this.mainList);
     }
 
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
@@ -259,14 +257,14 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
                 if (!this.get()){
                     switch (this.action){
                         case ADD:
-                            persons.remove(this.person);
+                            mainList.remove(this.person);
                             break;
                         case REMOVE:
-                            if (!persons.contains(this.person)) persons.add(this.person);
+                            if (!mainList.contains(this.person)) mainList.add(this.person);
                             break;
                         case SET:
-                            persons.remove(this.person);
-                            if (!persons.contains(this.old)) persons.add(this.old);
+                            mainList.remove(this.person);
+                            if (!mainList.contains(this.old)) mainList.add(this.old);
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";

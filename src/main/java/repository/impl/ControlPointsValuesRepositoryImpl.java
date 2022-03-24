@@ -20,10 +20,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ControlPointsValuesRepositoryImpl extends Repository implements ControlPointsValuesRepository {
+public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsValues> implements ControlPointsValuesRepository {
     private static final Logger LOGGER = Logger.getLogger(AreaRepository.class.getName());
-
-    private final ArrayList<ControlPointsValues>controlPoints = new ArrayList<>();
 
     public ControlPointsValuesRepositoryImpl(){super();}
     public ControlPointsValuesRepositoryImpl(String dbUrl){super(dbUrl);}
@@ -56,7 +54,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
                 cpv.setValues(VariableConverter.stringToArray(resultSet.getString("points")));
                 cpv.setRangeMin(resultSet.getDouble("range_min"));
                 cpv.setRangeMax(resultSet.getDouble("range_max"));
-                this.controlPoints.add(cpv);
+                this.mainList.add(cpv);
             }
 
             LOGGER.fine("Close connection");
@@ -70,13 +68,13 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
 
     @Override
     public ArrayList<ControlPointsValues> getAll() {
-        return this.controlPoints;
+        return this.mainList;
     }
 
     @Override
     public ArrayList<ControlPointsValues> getBySensorType(String sensorType) {
         ArrayList<ControlPointsValues>list = new ArrayList<>();
-        for (ControlPointsValues cpv : this.controlPoints){
+        for (ControlPointsValues cpv : this.mainList){
             if (cpv.getSensorType().equals(sensorType)){
                 list.add(cpv);
             }
@@ -87,7 +85,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     @Override
     public double[] getValues(String sensorType, double rangeMin, double rangeMax) {
         if (sensorType != null) {
-            for (ControlPointsValues cpv : this.controlPoints) {
+            for (ControlPointsValues cpv : this.mainList) {
                 if (cpv.equalsBy(sensorType, rangeMin, rangeMax)) {
                     return cpv.getValues();
                 }
@@ -99,7 +97,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     @Override
     public ControlPointsValues getControlPointsValues(String sensorType, int index) {
         int i = 0;
-        for (ControlPointsValues cpv : this.controlPoints){
+        for (ControlPointsValues cpv : this.mainList){
             if (cpv.getSensorType().equals(sensorType)){
                 if (i == index){
                     return cpv;
@@ -114,12 +112,12 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     @Override
     public void put(ControlPointsValues cpv) {
         if (cpv != null){
-            int index = this.controlPoints.indexOf(cpv);
+            int index = this.mainList.indexOf(cpv);
             if (index >= 0){
-                new BackgroundAction().set(this.controlPoints.get(index), cpv);
-                this.controlPoints.set(index, cpv);
+                new BackgroundAction().set(this.mainList.get(index), cpv);
+                this.mainList.set(index, cpv);
             }else {
-                this.controlPoints.add(cpv);
+                this.mainList.add(cpv);
                 new BackgroundAction().add(cpv);
             }
         }
@@ -128,12 +126,12 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     @Override
     public void putInCurrentThread(ControlPointsValues cpv) {
         if (cpv != null){
-            int index = this.controlPoints.indexOf(cpv);
+            int index = this.mainList.indexOf(cpv);
             if (index >= 0){
-                new BackgroundAction().setControlPoints(this.controlPoints.get(index), cpv);
-                this.controlPoints.set(index, cpv);
+                new BackgroundAction().setControlPoints(this.mainList.get(index), cpv);
+                this.mainList.set(index, cpv);
             }else {
-                this.controlPoints.add(cpv);
+                this.mainList.add(cpv);
                 new BackgroundAction().addControlPoints(cpv);
             }
         }
@@ -141,7 +139,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
 
     @Override
     public void remove(ControlPointsValues cpv) {
-        if (cpv != null && this.controlPoints.remove(cpv)){
+        if (cpv != null && this.mainList.remove(cpv)){
             new BackgroundAction().remove(cpv.getId());
         }
     }
@@ -149,15 +147,15 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     @Override
     public void removeAllInCurrentThread(String sensorType) {
         ArrayList<Integer>indexes = new ArrayList<>();
-        for (int i=0;i<this.controlPoints.size();i++){
-            ControlPointsValues cpv = this.controlPoints.get(i);
+        for (int i=0;i<this.mainList.size();i++){
+            ControlPointsValues cpv = this.mainList.get(i);
             if (cpv.getSensorType().equals(sensorType)){
                 indexes.add(i);
             }
         }
         Collections.reverse(indexes);
         for (int i : indexes){
-            this.controlPoints.remove(i);
+            this.mainList.remove(i);
         }
         new BackgroundAction().clearControlPoints(sensorType);
     }
@@ -165,15 +163,15 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     @Override
     public void clear(String sensorType) {
         ArrayList<Integer>indexes = new ArrayList<>();
-        for (int i=0;i<this.controlPoints.size();i++){
-            ControlPointsValues cpv = this.controlPoints.get(i);
+        for (int i=0;i<this.mainList.size();i++){
+            ControlPointsValues cpv = this.mainList.get(i);
             if (cpv.getSensorType().equals(sensorType)){
                 indexes.add(i);
             }
         }
         Collections.reverse(indexes);
         for (int i : indexes){
-            this.controlPoints.remove(i);
+            this.mainList.remove(i);
         }
         new BackgroundAction().clear(sensorType);
     }
@@ -185,15 +183,16 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
                 LOGGER.fine("Send request to clear");
                 Statement statementClear = connection.createStatement();
                 String sql = "DELETE FROM control_points;";
+                this.mainList.clear();
                 statementClear.execute(sql);
 
-                ArrayList<ControlPointsValues>cpvs = DefaultControlPointsValues.get();
-                if (!cpvs.isEmpty()) {
+                this.mainList.addAll(DefaultControlPointsValues.get());
+                if (!this.mainList.isEmpty()) {
                     LOGGER.fine("Send requests to add");
                     sql = "INSERT INTO control_points ('id', 'sensor_type', 'points', 'range_min', 'range_max')" +
                             " VALUES (?, ?, ?, ?, ?);";
                     PreparedStatement statement = connection.prepareStatement(sql);
-                    for (ControlPointsValues cpv : cpvs) {
+                    for (ControlPointsValues cpv : this.mainList) {
                         statement.setInt(1, cpv.getId());
                         statement.setString(2, cpv.getSensorType());
                         statement.setString(3, VariableConverter.arrayToString(cpv.getValues()));
@@ -281,14 +280,14 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
                 if (!this.get()){
                     switch (this.action){
                         case ADD:
-                            controlPoints.remove(this.cpv);
+                            mainList.remove(this.cpv);
                             break;
                         case REMOVE:
-                            if (!controlPoints.contains(this.cpv)) controlPoints.add(this.cpv);
+                            if (!mainList.contains(this.cpv)) mainList.add(this.cpv);
                             break;
                         case SET:
-                            controlPoints.remove(this.cpv);
-                            if (!controlPoints.contains(this.oldCpv)) controlPoints.add(this.oldCpv);
+                            mainList.remove(this.cpv);
+                            if (!mainList.contains(this.oldCpv)) mainList.add(this.oldCpv);
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";

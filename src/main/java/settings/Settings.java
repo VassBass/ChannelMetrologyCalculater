@@ -1,5 +1,6 @@
 package settings;
 
+import application.Application;
 import constants.MeasurementConstants;
 import service.FileBrowser;
 
@@ -29,6 +30,7 @@ public class Settings {
         LOGGER.info("Settings: checking the settings...");
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FileBrowser.FILE_SETTINGS))){
             settings = (HashMap<String, String>) in.readObject();
+            Application.setNotFirstRun();
         }catch (Exception ex){
             LOGGER.info("Settings: file \"" + FileBrowser.FILE_SETTINGS.getName() + "\" is empty.");
             LOGGER.info("Settings: set default settings");

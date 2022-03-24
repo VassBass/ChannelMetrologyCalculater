@@ -94,6 +94,6 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public void resetToDefault(){
-        this.repository.rewrite(DefaultPersons.get());
+        this.repository.rewriteInCurrentThread(DefaultPersons.get());
     }
 }

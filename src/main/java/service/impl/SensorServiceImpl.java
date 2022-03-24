@@ -112,6 +112,6 @@ public class SensorServiceImpl implements SensorService {
 
     @Override
     public void resetToDefault() {
-        this.repository.rewrite(DefaultSensors.get());
+        this.repository.rewriteInCurrentThread(DefaultSensors.get());
     }
 }

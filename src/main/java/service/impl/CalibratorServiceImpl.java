@@ -112,6 +112,6 @@ public class CalibratorServiceImpl implements CalibratorService {
 
     @Override
     public void resetToDefault() {
-        this.repository.rewrite(DefaultCalibrators.get());
+        this.repository.rewriteInCurrentThread(DefaultCalibrators.get());
     }
 }

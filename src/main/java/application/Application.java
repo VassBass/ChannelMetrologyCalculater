@@ -18,6 +18,7 @@ public class Application extends SwingWorker<Void, String> {
     public static ApplicationContext context;
     private static ApplicationLogo logo;
     private static boolean busy = false;
+    private static boolean firstStart = true;
 
     private static final String[] bufferNamesOfChannels = new String[10];
 
@@ -89,6 +90,8 @@ public class Application extends SwingWorker<Void, String> {
         }
     }
 
+    public static void setNotFirstRun(){firstStart = false;}
+
     public void start(){
         this.execute();
     }
@@ -98,21 +101,30 @@ public class Application extends SwingWorker<Void, String> {
         Settings.checkSettings();
         publish("Завантаження списку цехів");
         context.departmentService.init();
+        if (firstStart) context.departmentService.resetToDefault();
         publish("Завантаження списку ділянок");
         context.areaService.init();
+        if (firstStart) context.areaService.resetToDefault();
         publish("Завантаження списку процесів");
         context.processService.init();
+        if (firstStart) context.processService.resetToDefault();
         publish("Завантаження списку установок");
         context.installationService.init();
+        if (firstStart) context.installationService.resetToDefault();
         publish("Завантаження списку працівників");
         context.personService.init();
+        if (firstStart) context.personService.resetToDefault();
         publish("Завантаження списку вимірюваннь");
         context.measurementService.init();
+        if (firstStart) context.measurementService.resetToDefault();
         publish("Завантаження списку калібраторів");
         context.calibratorService.init();
+        if (firstStart) context.calibratorService.resetToDefault();
         publish("Завантаження списку ПВП");
         context.sensorService.init();
+        if (firstStart) context.sensorService.resetToDefault();
         context.controlPointsValuesService.init();
+        if (firstStart) context.controlPointsValuesService.resetToDefault();
         publish("Завантаження списку каналів");
         context.channelService.init();
         publish("Завантаження головного вікна");
