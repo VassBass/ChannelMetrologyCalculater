@@ -46,7 +46,7 @@ public class CalculateStartDialog_weatherPanel extends JPanel {
         this.labelHumidity = new ButtonCell(false, RELATIVE_HUMIDITY);
         this.labelPressure = new ButtonCell(false, ATMOSPHERE_PRESSURE);
 
-        this.temperatureValue = new ButtonCell(false, MeasurementConstants.DEGREE_CELSIUS.getValue());
+        this.temperatureValue = new ButtonCell(false, MeasurementConstants.DEGREE_CELSIUS);
         this.humidityValue = new ButtonCell(false, PERCENT);
         this.pressureValue = new ButtonCell(false, ATMOSPHERE_PRESSURE_VALUE);
 

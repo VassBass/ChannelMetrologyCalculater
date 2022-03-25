@@ -1,6 +1,5 @@
 package repository.impl;
 
-import constants.MeasurementConstants;
 import model.Measurement;
 import repository.MeasurementRepository;
 import repository.Repository;
@@ -19,10 +18,8 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
     @Override
     protected void init(){
         String sql = "CREATE TABLE IF NOT EXISTS measurements ("
-                + "id integer NOT NULL UNIQUE"
-                + ", name text NOT NULL"
+                + "name text NOT NULL"
                 + ", value text NOT NULL"
-                + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
                 + ");";
 
         LOGGER.fine("Get connection with DB");
@@ -39,9 +36,7 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
             while (resultSet.next()){
                 String name = resultSet.getString("name");
                 String value = resultSet.getString("value");
-                int id = resultSet.getInt("id");
                 Measurement measurement = new Measurement(name, value);
-                measurement.setId(id);
                 this.mainList.add(measurement);
             }
 
@@ -101,19 +96,6 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
     }
 
     @Override
-    public String[] getValues(MeasurementConstants name) {
-        if (name != null) {
-            ArrayList<String> values = new ArrayList<>();
-            for (Measurement measurement : this.mainList) {
-                if (measurement.getNameConstant() == name) {
-                    values.add(measurement.getValue());
-                }
-            }
-            return values.toArray(new String[0]);
-        }else return null;
-    }
-
-    @Override
     public String[] getValues(String name) {
         if (name != null && name.length() > 0) {
             ArrayList<String> values = new ArrayList<>();
@@ -124,18 +106,6 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
             }
             return values.toArray(new String[0]);
         }else return null;
-    }
-
-    @Override
-    public Measurement get(MeasurementConstants value) {
-        if (value != null) {
-            for (Measurement measurement : this.mainList) {
-                if (measurement.getValueConstant() == value) {
-                    return measurement;
-                }
-            }
-        }
-        return null;
     }
 
     @Override
@@ -153,19 +123,6 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
     @Override
     public Measurement get(int index) {
         return index < 0 || index >= this.mainList.size() ? null : this.mainList.get(index);
-    }
-
-    @Override
-    public ArrayList<Measurement> getMeasurements(MeasurementConstants name) {
-        if (name != null) {
-            ArrayList<Measurement> measurements = new ArrayList<>();
-            for (Measurement measurement : this.mainList) {
-                if (measurement.getNameConstant() == name) {
-                    measurements.add(measurement);
-                }
-            }
-            return measurements;
-        }else return null;
     }
 
     @Override

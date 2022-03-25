@@ -55,12 +55,11 @@ public class PressureCertificate extends Certificate {
             cell(18,20).setCellValue(this.numberOfCertificate);
         }
 
-        this.checkDate = (Calendar) this.values.get(Key.CHANNEL_DATE);
-        String date = VariableConverter.dateToString(this.checkDate);
-        cell(12,5).setCellValue(date);
-        cell(12,14).setCellValue(date);
+        this.checkDate = (String) this.values.get(Key.CHANNEL_DATE);
+        cell(12,5).setCellValue(this.checkDate);
+        cell(12,14).setCellValue(this.checkDate);
         if (!this.result.goodChannel()){
-            cell(10,24).setCellValue(date);
+            cell(10,24).setCellValue(this.checkDate);
         }
 
         String externalTemperature = (String) values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE);
@@ -75,7 +74,7 @@ public class PressureCertificate extends Certificate {
         this.alarmCheck = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
-        String methodName = Settings.getSettingValue(MeasurementConstants.PRESSURE.getValue());
+        String methodName = Settings.getSettingValue(MeasurementConstants.PRESSURE);
         cell(34,15).setCellValue(methodName);
     }
 
@@ -146,7 +145,7 @@ public class PressureCertificate extends Certificate {
         if (this.result.goodChannel()){
             long l = (long) (31536000000L * this.channel.getFrequency());
             Calendar nextDateCal = new GregorianCalendar();
-            nextDateCal.setTimeInMillis(this.checkDate.getTimeInMillis() + l);
+            nextDateCal.setTimeInMillis(VariableConverter.stringToDate(this.checkDate).getTimeInMillis() + l);
             nextDate = VariableConverter.dateToString(nextDateCal);
         }else {
             nextDate = EXTRAORDINARY;
@@ -172,10 +171,8 @@ public class PressureCertificate extends Certificate {
         String error = VariableConverter.roundingDouble3(errorSensor, Locale.GERMAN);
         cell(21,7).setCellValue(error);
 
-        double min = new ValueConverter(MeasurementConstants.getConstantFromString(sensor.getValue()),
-                this.channel.getMeasurement().getValueConstant()).get(sensor.getRangeMin());
-        double max = new ValueConverter(MeasurementConstants.getConstantFromString(sensor.getValue()),
-                this.channel.getMeasurement().getValueConstant()).get(sensor.getRangeMax());
+        double min = new ValueConverter(sensor.getValue(), this.channel.getMeasurement().getValue()).get(sensor.getRangeMin());
+        double max = new ValueConverter(sensor.getValue(), this.channel.getMeasurement().getValue()).get(sensor.getRangeMax());
         String rangeMin = VariableConverter.roundingDouble2(min, Locale.GERMAN);
         String rangeMax = VariableConverter.roundingDouble2(max, Locale.GERMAN);
         cell(22,5).setCellValue(rangeMin);
@@ -200,9 +197,8 @@ public class PressureCertificate extends Certificate {
         if (calibrator.getValue().equals(this.channel.getMeasurement().getValue())) {
             eP = errorCalibrator / (this.channel.getRange() / 100);
         }else {
-            MeasurementConstants calibratorValue = MeasurementConstants.getConstantFromString(calibrator.getValue());
             double calibratorRange = calibrator.getRange();
-            double convertedCalibratorRange = new ValueConverter(calibratorValue, this.channel.getMeasurement().getValueConstant()).get(calibratorRange);
+            double convertedCalibratorRange = new ValueConverter(calibrator.getValue(), this.channel.getMeasurement().getValue()).get(calibratorRange);
             eP = errorCalibrator / (convertedCalibratorRange/100);
         }
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
@@ -226,7 +222,7 @@ public class PressureCertificate extends Certificate {
         Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
 
         if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)){
-            double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+            double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
             if (value5 < maxCalibratorPower){
                 value5 = maxCalibratorPower;
             }

@@ -20,9 +20,9 @@ public class Settings {
         String namePressureMethod = "МКМХ №5300.02:18";
         String nameConsumptionMethod = "МКМХ №5300.07:20";
 
-        setSettingValue(MeasurementConstants.TEMPERATURE.getValue(), nameTemperatureMethod);
-        setSettingValue(MeasurementConstants.PRESSURE.getValue(), namePressureMethod);
-        setSettingValue(MeasurementConstants.CONSUMPTION.getValue(), nameConsumptionMethod);
+        setSettingValue(MeasurementConstants.TEMPERATURE, nameTemperatureMethod);
+        setSettingValue(MeasurementConstants.PRESSURE, namePressureMethod);
+        setSettingValue(MeasurementConstants.CONSUMPTION, nameConsumptionMethod);
     }
 
     @SuppressWarnings("unchecked")

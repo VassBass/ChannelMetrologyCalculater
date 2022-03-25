@@ -234,7 +234,7 @@ public class CalibratorInfoDialog extends JDialog {
             this.errorFormulaText.setText(this.oldCalibrator.getErrorFormula());
             this.showErrorHintsIfNeed();
             this.certificateNameText.setText(this.oldCalibrator.getCertificateName());
-            this.certificateDatePanel.setDate(this.oldCalibrator.getCertificateDate());
+            this.certificateDatePanel.setDate(VariableConverter.stringToDate(this.oldCalibrator.getCertificateDate()));
             this.certificateCompanyText.setText(this.oldCalibrator.getCertificateCompany());
 
             this.measurementsList.setEnabled(false);
@@ -295,7 +295,7 @@ public class CalibratorInfoDialog extends JDialog {
                 calibrator.setName(nameText.getText());
                 calibrator.setNumber(numberText.getText());
                 calibrator.setMeasurement(measurement);
-                if (measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
+                if (measurement.equals(MeasurementConstants.PRESSURE)) {
                     calibrator.setRangeMin(rangePanel.getRangeMin());
                     calibrator.setRangeMax(rangePanel.getRangeMax());
                 }
@@ -397,7 +397,7 @@ public class CalibratorInfoDialog extends JDialog {
 
     private boolean checkCalibrator(){
         if (this.typeText.getText().length() == 0 &&
-                !Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION.getValue())){
+                !Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION)){
             JOptionPane.showMessageDialog(this, "Ви не ввели тип калібратора");
             return false;
         }else if (this.nameText.getText().length() == 0){

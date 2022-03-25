@@ -17,7 +17,6 @@ import ui.model.DefaultButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -121,7 +120,7 @@ public class CalculateStartDialog extends JDialog {
     private void setValues(HashMap<Integer, Object> values){
         if (values != null){
             this.numberOfProtocol.setText((String) values.get(Key.CHANNEL_PROTOCOL_NUMBER));
-            this.datePanel.update((Calendar) values.get(Key.CHANNEL_DATE));
+            this.datePanel.update((String) values.get(Key.CHANNEL_DATE));
             String[] calibrators = Application.context.calibratorService.getAllNames(this.channel.getMeasurement());
             Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
             for (int x=0;x<calibrators.length;x++){

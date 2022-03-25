@@ -53,12 +53,11 @@ public class TemperatureCertificate extends Certificate {
             cell(18, 20).setCellValue(this.numberOfCertificate);
         }
 
-        this.checkDate = (Calendar) this.values.get(Key.CHANNEL_DATE);
-        String date = VariableConverter.dateToString(this.checkDate);
-        cell(12,5).setCellValue(date);
-        cell(12,14).setCellValue(date);
+        this.checkDate = (String) this.values.get(Key.CHANNEL_DATE);
+        cell(12,5).setCellValue(this.checkDate);
+        cell(12,14).setCellValue(this.checkDate);
         if (!this.result.goodChannel()) {
-            cell(10, 24).setCellValue(date);
+            cell(10, 24).setCellValue(this.checkDate);
         }
 
         String externalTemperature = (String) values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE);
@@ -73,7 +72,7 @@ public class TemperatureCertificate extends Certificate {
         this.alarmCheck = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
-        String methodName = Settings.getSettingValue(MeasurementConstants.TEMPERATURE.getValue());
+        String methodName = Settings.getSettingValue(MeasurementConstants.TEMPERATURE);
         cell(34,15).setCellValue(methodName);
     }
 
@@ -145,7 +144,7 @@ public class TemperatureCertificate extends Certificate {
         if (this.result.goodChannel()){
             long l = (long) (31536000000L * this.channel.getFrequency());
             Calendar nextDateCal = new GregorianCalendar();
-            nextDateCal.setTimeInMillis(this.checkDate.getTimeInMillis() + l);
+            nextDateCal.setTimeInMillis(VariableConverter.stringToDate(this.checkDate).getTimeInMillis() + l);
             nextDate = VariableConverter.dateToString(nextDateCal);
         }else {
             nextDate = EXTRAORDINARY;
@@ -164,7 +163,7 @@ public class TemperatureCertificate extends Certificate {
         cell(20,4).setCellValue(type);
 
         double errorSensor = sensor.getError(this.channel);
-        double eP = errorSensor / (sensor.getRange() / 100);
+        double eP = errorSensor / (sensor._getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(21,5).setCellValue(errorPercent);
 

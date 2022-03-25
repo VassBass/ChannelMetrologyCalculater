@@ -38,7 +38,7 @@ public class DialogChannel_measurementPanel extends JPanel {
         this.measurementName.setBackground(Color.WHITE);
 
         this.measurementValue = new JComboBox<>(Application.context.measurementService.getValues(
-                MeasurementConstants.TEMPERATURE.getValue()));
+                MeasurementConstants.TEMPERATURE));
         this.measurementValue.setBackground(Color.WHITE);
         this.measurementValue.setEditable(false);
     }
@@ -76,12 +76,12 @@ public class DialogChannel_measurementPanel extends JPanel {
         ArrayList<String> values  = new ArrayList<>();
         ArrayList<Measurement>measurements = Application.context.measurementService.getAll();
         for (Measurement measurement : measurements) {
-            if (measurement.getNameConstant() == MeasurementConstants.CONSUMPTION) {
+            if (measurement.getName().equals(MeasurementConstants.CONSUMPTION)) {
                 values.add(measurement.getValue());
             }
         }
-        values.add(MeasurementConstants.M_S.getValue());
-        values.add(MeasurementConstants.CM_S.getValue());
+        values.add(MeasurementConstants.M_S);
+        values.add(MeasurementConstants.CM_S);
         return values.toArray(new String[0]);
     }
 
@@ -103,10 +103,9 @@ public class DialogChannel_measurementPanel extends JPanel {
                 String measurementVal = Objects.requireNonNull(measurementValue.getSelectedItem()).toString();
                 parent.allowableErrorPanel.updateValue(measurementVal);
                 parent.rangePanel.updateValue(measurementVal);
-                parent.sensorPanel.update(MeasurementConstants.getConstantFromString(measurementName));
+                parent.sensorPanel.update(measurementName);
 
-                Measurement measurement = new Measurement(MeasurementConstants.getConstantFromString(measurementName),
-                        MeasurementConstants.getConstantFromString(measurementVal));
+                Measurement measurement = new Measurement(measurementName, measurementVal);
                 parent.update(measurement);
             }
         }

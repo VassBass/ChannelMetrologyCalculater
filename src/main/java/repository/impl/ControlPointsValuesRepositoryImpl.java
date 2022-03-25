@@ -327,21 +327,17 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM control_points WHERE id = '?';";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setInt(1, oldControlPoints.getId());
-                statement.execute();
+                Statement statement = connection.createStatement();
 
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO control_points ('id', 'sensor_type', 'points', 'range_min', 'range_max') "
-                        + "VALUES(?, ?, ?, ?, ?);";
-                statement = connection.prepareStatement(sql);
-                statement.setInt(1, newControlPoints.getId());
-                statement.setString(2, newControlPoints.getSensorType());
-                statement.setString(3, VariableConverter.arrayToString(newControlPoints.getValues()));
-                statement.setDouble(4, newControlPoints.getRangeMin());
-                statement.setDouble(5, newControlPoints.getRangeMax());
-                statement.execute();
+                LOGGER.fine("Send requests to update");
+                String sql = "UPDATE control_points SET "
+                        + "id = " + newControlPoints.getId() + ", "
+                        + "sensor_type = '" + newControlPoints.getSensorType() + "', "
+                        + "points = '" + VariableConverter.arrayToString(newControlPoints.getValues()) + "', "
+                        + "range_min = " + newControlPoints.getRangeMin() + ", "
+                        + "range_max = " + newControlPoints.getRangeMax() + " "
+                        + "WHERE id = " + oldControlPoints.getId() + ";";
+                statement.execute(sql);
 
                 LOGGER.fine("Close connection");
                 statement.close();

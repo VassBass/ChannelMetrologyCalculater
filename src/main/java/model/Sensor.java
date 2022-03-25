@@ -3,7 +3,6 @@ package model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import org.mariuszgromada.math.mxparser.Argument;
@@ -43,7 +42,7 @@ public class Sensor implements Serializable {
     public String getName(){return this.name;}
     public double getRangeMin() {return this.rangeMin;}
     public double getRangeMax() {return this.rangeMax;}
-    public double getRange(){return this.rangeMax - this.rangeMin;}
+    public double _getRange(){return this.rangeMax - this.rangeMin;}
     public String getNumber(){return this.number;}
     public String getValue(){return this.value;}
     public String getMeasurement(){return this.measurement;}
@@ -64,10 +63,9 @@ public class Sensor implements Serializable {
             cR = 0D;
         }else {
             R = new Argument("R = " + channel.getRange());
-            cR = new ValueConverter(MeasurementConstants.getConstantFromString(this.value),
-                    channel.getMeasurement().getValueConstant()).get(this.getRange());
+            cR = new ValueConverter(this.value, channel.getMeasurement().getValue()).get(this._getRange());
         }
-        Argument r = new Argument("r = " + this.getRange());
+        Argument r = new Argument("r = " + this._getRange());
         Argument convR = new Argument("convR = " + cR);
         Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
         return expression.calculate();

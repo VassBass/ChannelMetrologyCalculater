@@ -19,12 +19,12 @@ public class MethodInfoDialog extends JDialog {
     private static final String SAVE = "Зберегти";
 
     private final MainScreen mainScreen;
-    private final MeasurementConstants measurement;
+    private final String measurement;
 
     private JTextField userName;
     private JButton buttonCancel, buttonSave;
 
-    public MethodInfoDialog(MainScreen mainScreen, MeasurementConstants measurement){
+    public MethodInfoDialog(MainScreen mainScreen, String measurement){
         super(mainScreen, METHODS, true);
         this.mainScreen = mainScreen;
         this.measurement = measurement;
@@ -37,7 +37,7 @@ public class MethodInfoDialog extends JDialog {
     private void createElements() {
         this.userName = new JTextField(10);
         this.userName.setHorizontalAlignment(SwingConstants.CENTER);
-        String name = Settings.getSettingValue(this.measurement.getValue());
+        String name = Settings.getSettingValue(this.measurement);
         this.userName.setToolTipText(OLD_NAME + name);
         this.userName.setText(name);
 
@@ -68,7 +68,7 @@ public class MethodInfoDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (Application.isBusy(MethodInfoDialog.this)) return;
-            Settings.setSettingValue(measurement.getValue(), userName.getText());
+            Settings.setSettingValue(measurement, userName.getText());
             dispose();
             mainScreen.refreshMenu();
         }

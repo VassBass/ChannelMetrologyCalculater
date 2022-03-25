@@ -3,6 +3,7 @@ package ui.calculate.measurement;
 import backgroundTasks.CalculateChannel;
 import constants.CalibratorType;
 import constants.Key;
+import constants.MeasurementConstants;
 import model.Calibrator;
 import converters.ConverterUI;
 import model.Channel;
@@ -133,24 +134,22 @@ public class CalculateMeasurementDialog extends JDialog {
     }
 
     private void createMeasurementPanel(int index, double[] values){
-        switch (this.channel.getMeasurement().getNameConstant()){
-            case TEMPERATURE:
-                TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
-                this.measurementsPanels[index] = temperaturePanel;
-                break;
-            case PRESSURE:
-                PressurePanel pressurePanel = new PressurePanel(this.channel,(Calibrator) this.values.get(Key.CALIBRATOR));
-                this.measurementsPanels[index] = pressurePanel;
-                break;
-            case CONSUMPTION:
-                Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
-                if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
-                    ConsumptionPanel_ROSEMOUNT consumptionPanel = new ConsumptionPanel_ROSEMOUNT(this.channel);
-                    this.measurementsPanels[index] = consumptionPanel;
-                }else {
-                    ConsumptionPanel consumptionPanel = new ConsumptionPanel(this.channel);
-                    this.measurementsPanels[index] = consumptionPanel;
-                }
+        String measurementName = this.channel.getMeasurement().getName();
+        if (measurementName.equals(MeasurementConstants.TEMPERATURE)){
+            TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
+            this.measurementsPanels[index] = temperaturePanel;
+        }else if (measurementName.equals(MeasurementConstants.PRESSURE)){
+            PressurePanel pressurePanel = new PressurePanel(this.channel,(Calibrator) this.values.get(Key.CALIBRATOR));
+            this.measurementsPanels[index] = pressurePanel;
+        }else if (measurementName.equals(MeasurementConstants.CONSUMPTION)){
+            Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
+            if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+                ConsumptionPanel_ROSEMOUNT consumptionPanel = new ConsumptionPanel_ROSEMOUNT(this.channel);
+                this.measurementsPanels[index] = consumptionPanel;
+            }else {
+                ConsumptionPanel consumptionPanel = new ConsumptionPanel(this.channel);
+                this.measurementsPanels[index] = consumptionPanel;
+            }
         }
         if (values != null){
             this.measurementsPanels[index].setValues(values);

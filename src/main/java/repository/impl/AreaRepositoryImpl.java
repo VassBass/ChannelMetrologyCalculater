@@ -87,10 +87,13 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
     @Override
     public void set(String oldObject, String newObject) {
         if (oldObject != null && newObject != null
-                && this.mainList.contains(oldObject) && !this.mainList.contains(newObject)) {
-            int index = this.mainList.indexOf(oldObject);
-            this.mainList.set(index, newObject);
-            new BackgroundAction().set(oldObject, newObject);
+                && this.mainList.contains(oldObject)) {
+            int oldIndex = this.mainList.indexOf(oldObject);
+            int newIndex = this.mainList.indexOf(newObject);
+            if (newIndex == -1 || oldIndex == newIndex) {
+                this.mainList.set(oldIndex, newObject);
+                new BackgroundAction().set(oldObject, newObject);
+            }
         }
     }
 
@@ -311,7 +314,8 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
             try (Connection connection = getConnection()){
                 LOGGER.fine("Send request");
                 Statement statement = connection.createStatement();
-                String sql = "UPDATE areas SET area = '" + newArea + "' WHERE area = '" + oldArea + "';";
+                String sql = "UPDATE areas SET area = '" + newArea + "' "
+                        + "WHERE area = '" + oldArea + "';";
                 statement.execute(sql);
 
                 LOGGER.fine("Close connections");

@@ -164,7 +164,7 @@ public class ConsumptionPanel extends JPanel {
 
         this.channelName.setText(this.channel.getName());
         this.number.setText((String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER));
-        this.date.setText(VariableConverter.dateToString((Calendar) values.get(Key.CHANNEL_DATE)));
+        this.date.setText((String) values.get(Key.CHANNEL_DATE));
 
         String path = this.channel.getArea()
                 + " "
@@ -208,7 +208,7 @@ public class ConsumptionPanel extends JPanel {
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
-                + MeasurementConstants.DEGREE_CELSIUS.getValue());
+                + MeasurementConstants.DEGREE_CELSIUS);
         this.humidity.setText(this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY)
                 + "%");
         this.atmospherePressure.setText(this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE)
@@ -220,7 +220,7 @@ public class ConsumptionPanel extends JPanel {
 
         String certificateCalibrator = calibrator.getCertificateName()
                 + " від "
-                + VariableConverter.dateToString(calibrator.getCertificateDate())
+                + calibrator.getCertificateDate()
                 + "р. "
                 + calibrator.getCertificateCompany();
         this.calibratorCertificate.setText(certificateCalibrator);
@@ -459,7 +459,7 @@ public class ConsumptionPanel extends JPanel {
             double value91 = 0.91;
             double value305 = 3.05;
             double value914 = 9.14;
-            if (value.equals(MeasurementConstants.CM_S.getValue())){
+            if (value.equals(MeasurementConstants.CM_S)){
                 value91 = value91 * 100;
                 value305 = value305 * 100;
                 value914 = value914 * 100;

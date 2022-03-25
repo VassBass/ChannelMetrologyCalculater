@@ -42,9 +42,9 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
             double value91 = 0.91;
             double value305 = 3.05;
             double value914 = 9.14;
-            if (value.equals(MeasurementConstants.CM_S.getValue())) value91 *= 100;
-            if (value.equals(MeasurementConstants.CM_S.getValue())) value305 *= 100;
-            if (value.equals(MeasurementConstants.CM_S.getValue())) value914 *= 100;
+            if (value.equals(MeasurementConstants.CM_S)) value91 *= 100;
+            if (value.equals(MeasurementConstants.CM_S)) value305 *= 100;
+            if (value.equals(MeasurementConstants.CM_S)) value914 *= 100;
 
             this.values = new double[]{value0, value91, value305, value914};
         }
@@ -136,9 +136,9 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
                 double value91 = 0.91;
                 double value305 = 3.05;
                 double value914 = 9.14;
-                if (value.equals(MeasurementConstants.CM_S.getValue())) value91 = value91 * 100;
-                if (value.equals(MeasurementConstants.CM_S.getValue())) value305 = value305 * 100;
-                if (value.equals(MeasurementConstants.CM_S.getValue())) value914 = value914 * 100;
+                if (value.equals(MeasurementConstants.CM_S)) value91 = value91 * 100;
+                if (value.equals(MeasurementConstants.CM_S)) value305 = value305 * 100;
+                if (value.equals(MeasurementConstants.CM_S)) value914 = value914 * 100;
                 for (int x=0;x<userMeasurements.length;x++){
                     if (cell.equals(userMeasurements[x])){
                         switch (x){

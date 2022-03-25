@@ -57,12 +57,11 @@ public class ConsumptionCertificate_ROSEMOUNT extends Certificate {
             cell(19,20).setCellValue(this.numberOfCertificate);
         }
 
-        this.checkDate = (Calendar) this.values.get(Key.CHANNEL_DATE);
-        String date = VariableConverter.dateToString(this.checkDate);
-        cell(13,5).setCellValue(date);
-        cell(13,14).setCellValue(date);
+        this.checkDate = (String) this.values.get(Key.CHANNEL_DATE);
+        cell(13,5).setCellValue(this.checkDate);
+        cell(13,14).setCellValue(this.checkDate);
         if (!this.result.goodChannel()){
-            cell(10,24).setCellValue(date);
+            cell(10,24).setCellValue(this.checkDate);
         }
 
         String externalTemperature = (String) this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE);
@@ -77,7 +76,7 @@ public class ConsumptionCertificate_ROSEMOUNT extends Certificate {
         this.alarmCheck = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
-        String methodName = Settings.getSettingValue(MeasurementConstants.CONSUMPTION.getValue());
+        String methodName = Settings.getSettingValue(MeasurementConstants.CONSUMPTION);
         cell(35,15).setCellValue(methodName);
     }
 
@@ -145,7 +144,7 @@ public class ConsumptionCertificate_ROSEMOUNT extends Certificate {
         if (this.result.goodChannel()) {
             long l = (long) (31536000000L * this.channel.getFrequency());
             Calendar nextDateCal = new GregorianCalendar();
-            nextDateCal.setTimeInMillis(this.checkDate.getTimeInMillis() + l);
+            nextDateCal.setTimeInMillis(VariableConverter.stringToDate(this.checkDate).getTimeInMillis() + l);
             nextDate = VariableConverter.dateToString(nextDateCal);
         } else {
             nextDate = EXTRAORDINARY;

@@ -1,18 +1,18 @@
 package backgroundTasks;
 
 import application.Application;
-import constants.CalibratorType;
 import calculation.Calculation;
 import certificates.*;
+import constants.CalibratorType;
 import constants.Key;
+import constants.MeasurementConstants;
 import model.Channel;
-import ui.model.LoadDialog;
 import ui.calculate.end.CalculateEndDialog;
 import ui.mainScreen.MainScreen;
+import ui.model.LoadDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Calendar;
 import java.util.HashMap;
 
 public class CertificateFormation extends SwingWorker<Void, Void> {
@@ -45,20 +45,17 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        switch (this.channel.getMeasurement().getNameConstant()){
-            case TEMPERATURE:
-                this.certificate = new TemperatureCertificate();
-                break;
-            case PRESSURE:
-                this.certificate = new PressureCertificate();
-                break;
-            case CONSUMPTION:
-                if (this.calculation.getCalibrator().getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
-                    this.certificate = new ConsumptionCertificate_ROSEMOUNT();
-                }else {
-                    this.certificate = new ConsumptionCertificate();
-                }
-                break;
+        String measurementName = this.channel.getMeasurement().getName();
+        if (measurementName.equals(MeasurementConstants.TEMPERATURE)){
+            this.certificate = new TemperatureCertificate();
+        }else if (measurementName.equals(MeasurementConstants.PRESSURE)){
+            this.certificate = new PressureCertificate();
+        }else if (measurementName.equals(MeasurementConstants.CONSUMPTION)){
+            if (this.calculation.getCalibrator().getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+                this.certificate = new ConsumptionCertificate_ROSEMOUNT();
+            }else {
+                this.certificate = new ConsumptionCertificate();
+            }
         }
 
         try {
@@ -83,7 +80,7 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
     private void setChannel(){
         Channel newChannel = new Channel().copyFrom(this.channel);
 
-        newChannel.setDate((Calendar) this.values.get(Key.CHANNEL_DATE));
+        newChannel.setDate((String) this.values.get(Key.CHANNEL_DATE));
         newChannel.setNumberOfProtocol((String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER));
         newChannel.setSuitability(this.calculation.goodChannel());
 

@@ -138,10 +138,13 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
     @Override
     public void set(Calibrator oldCalibrator, Calibrator newCalibrator) {
         if (oldCalibrator != null && newCalibrator != null
-                && this.mainList.contains(oldCalibrator) && !this.mainList.contains(newCalibrator)){
-            int index = this.mainList.indexOf(oldCalibrator);
-            this.mainList.set(index, newCalibrator);
-            new BackgroundAction().set(oldCalibrator, newCalibrator);
+                && this.mainList.contains(oldCalibrator)){
+            int oldIndex = this.mainList.indexOf(oldCalibrator);
+            int newIndex = this.mainList.indexOf(newCalibrator);
+            if (newIndex == -1 || oldIndex == newIndex) {
+                this.mainList.set(oldIndex, newCalibrator);
+                new BackgroundAction().set(oldCalibrator, newCalibrator);
+            }
         }
     }
 
@@ -353,28 +356,23 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
         boolean setCalibrator(Calibrator oldCalibrator, Calibrator newCalibrator){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
-                LOGGER.fine("Send request to delete");
-                Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM calibrators WHERE name = '" + oldCalibrator.getName() + "';";
-                statementClear.execute(sql);
+                Statement statement = connection.createStatement();
 
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
-                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, newCalibrator.getName());
-                statement.setString(2, newCalibrator.getType());
-                statement.setString(3, newCalibrator.getNumber());
-                statement.setString(4, newCalibrator.getMeasurement());
-                statement.setString(5, newCalibrator.getValue());
-                statement.setString(6, newCalibrator.getErrorFormula());
-                statement.setString(7, newCalibrator.getCertificate().toString());
-                statement.setDouble(8, newCalibrator.getRangeMin());
-                statement.setDouble(9, newCalibrator.getRangeMax());
+                LOGGER.fine("Send requests to update");
+                String sql = "UPDATE calibrators SET "
+                        + "name = '" + newCalibrator.getName() + "', "
+                        + "type = '" + newCalibrator.getType() + "', "
+                        + "number = '" + newCalibrator.getNumber() + "', "
+                        + "measurement = '" + newCalibrator.getMeasurement() + "', "
+                        + "value = '" + newCalibrator.getValue() + "', "
+                        + "error_formula = '" + newCalibrator.getErrorFormula() + "', "
+                        + "certificate = '" + newCalibrator.getCertificate().toString() + "', "
+                        + "range_min = " + newCalibrator.getRangeMin() + ", "
+                        + "range_max = " + newCalibrator.getRangeMax() + " "
+                        + "WHERE name = '" + oldCalibrator.getName() + "';";
                 statement.execute(sql);
 
                 LOGGER.fine("Close connections");
-                statementClear.close();
                 statement.close();
                 return true;
             }catch (SQLException ex){

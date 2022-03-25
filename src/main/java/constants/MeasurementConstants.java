@@ -1,37 +1,24 @@
 package constants;
 
 
-public enum MeasurementConstants {
+public class MeasurementConstants {
 
-    TEMPERATURE("Температура"),
-    PRESSURE("Тиск"),
-    CONSUMPTION("Витрата"),
+    public static String TEMPERATURE= "Температура";
+    public static String PRESSURE = "Тиск";
+    public static String CONSUMPTION = "Витрата";
 
-    DEGREE_CELSIUS("\u2103"),
+    public static String DEGREE_CELSIUS = "\u2103";
 
-    KPA("кПа"),
-    PA("Па"),
-    MM_ACVA("мм вод ст"),
-    KGS_SM2("кгс/см" + "\u00B2"),
-    BAR("бар"),
-    KGS_MM2("кгc/мм" + "\u00B2"),
-    ML_BAR("мбар"),
+    public static String KPA = "кПа";
+    public static String PA = "Па";
+    public static String MM_ACVA = "мм вод ст";
+    public static String KGS_SM2 = "кгс/см" + "\u00B2";
+    public static String BAR = "бар";
+    public static String KGS_MM2 = "кгc/мм" + "\u00B2";
+    public static String ML_BAR = "мбар";
 
-    M3_HOUR("м" + "\u00B3" + "/h"),
+    public static String M3_HOUR = "м" + "\u00B3" + "/h";
 
-    M_S("м/с"),
-    CM_S("см/с");
-
-    private final String value;
-    MeasurementConstants(String value){this.value = value;}
-    public String getValue(){return this.value;}
-
-    public static MeasurementConstants getConstantFromString(String value){
-        for (MeasurementConstants constant : MeasurementConstants.values()){
-            if (value.equals(constant.getValue())){
-                return constant;
-            }
-        }
-        return null;
-    }
+    public static String M_S = "м/с";
+    public static String CM_S = "см/с";
 }

@@ -4,6 +4,7 @@ import application.Application;
 import backgroundTasks.CheckChannel;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
+import converters.VariableConverter;
 import model.Measurement;
 import model.Sensor;
 import model.Channel;
@@ -163,10 +164,10 @@ public class DialogChannel extends JDialog {
             this.userName.setToolTipText(this.oldChannel.getName());
             this.measurementPanel.update(this.oldChannel.getMeasurement().getName());
             this.userTechnologyNumber.setText(this.oldChannel.getTechnologyNumber());
-            this.datePanel.setDate(this.oldChannel.getDate());
-            this.frequencyPanel.updateFrequency(this.oldChannel.getFrequency(), this.oldChannel.getDate());
+            this.datePanel.setDate(VariableConverter.stringToDate(this.oldChannel.getDate()));
+            this.frequencyPanel.updateFrequency(this.oldChannel.getFrequency(), VariableConverter.stringToDate(this.oldChannel.getDate()));
             this.pathPanel.update(this.oldChannel.getDepartment(), this.oldChannel.getArea(), this.oldChannel.getProcess(), this.oldChannel.getInstallation());
-            this.sensorPanel.update(this.oldChannel.getMeasurement().getNameConstant());
+            this.sensorPanel.update(this.oldChannel.getMeasurement().getName());
             this.sensorPanel.update(this.oldChannel.getSensor());
             this.rangePanel.updateValue(this.oldChannel.getMeasurement().getValue());
             this.rangePanel.updateRange(this.oldChannel.getRangeMin(), this.oldChannel.getRangeMax());
@@ -240,7 +241,7 @@ public class DialogChannel extends JDialog {
             sensor.setRange(this.sensorRangePanel.getRangeMin(), this.sensorRangePanel.getRangeMax());
             sensor.setValue(this.sensorRangePanel.getValue());
         }
-        if (channel.getMeasurement().getNameConstant() == MeasurementConstants.CONSUMPTION){
+        if (channel.getMeasurement().getName().equals(MeasurementConstants.CONSUMPTION)){
             sensor.setNumber(this.sensorPanel.getSerialNumber());
             sensor.setRangeMin(this.rangePanel.getRangeMin());
             sensor.setRangeMax(this.rangePanel.getRangeMax());
@@ -260,41 +261,37 @@ public class DialogChannel extends JDialog {
     }
 
     private void setMeasurement(Measurement measurement){
-        MeasurementConstants measurementName;
+        String measurementName;
         if (measurement != null){
-            measurementName = measurement.getNameConstant();
+            measurementName = measurement.getName();
         }else {
             measurementName = MeasurementConstants.TEMPERATURE;
         }
-        this.measurementPanel.update(measurementName.getValue());
+        this.measurementPanel.update(measurementName);
         this.sensorPanel.update(measurementName);
-        switch (measurementName){
-            case TEMPERATURE:
-                this.setSize(800, 650);
-                this.sensorRangePanel = null;
-                this.rangeLabel.setText(RANGE_OF_CHANNEL);
-                this.allowableErrorPanel.setEnabled(true);
-                break;
-            case PRESSURE:
-                this.setSize(1000, 650);
-                this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
-                this.rangeLabel.setText(RANGE_OF_CHANNEL);
-                this.allowableErrorPanel.setEnabled(true);
-                break;
-            case CONSUMPTION:
-                this.setSize(800,650);
-                this.sensorRangePanel = null;
-                this.rangeLabel.setText(RANGE_OF_SENSOR);
-                Channel channel = new Channel();
-                channel.setMeasurement(measurement);
-                channel.setRangeMin(this.rangePanel.getRangeMin());
-                channel.setRangeMax(this.rangePanel.getRangeMax());
-                Sensor sensor = this.sensorPanel.getSensor();
-                sensor.setValue(channel.getMeasurement().getValue());
-                double errorSensor = sensor.getError(channel);
-                this.allowableErrorPanel.updateError(errorSensor, false, channel.getRange());
-                this.allowableErrorPanel.setEnabled(false);
-                break;
+        if (measurementName.equals(MeasurementConstants.TEMPERATURE)){
+            this.setSize(800, 650);
+            this.sensorRangePanel = null;
+            this.rangeLabel.setText(RANGE_OF_CHANNEL);
+            this.allowableErrorPanel.setEnabled(true);
+        }else if (measurementName.equals(MeasurementConstants.PRESSURE)){
+            this.setSize(1000, 650);
+            this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
+            this.rangeLabel.setText(RANGE_OF_CHANNEL);
+            this.allowableErrorPanel.setEnabled(true);
+        }else if (measurementName.equals(MeasurementConstants.CONSUMPTION)){
+            this.setSize(800,650);
+            this.sensorRangePanel = null;
+            this.rangeLabel.setText(RANGE_OF_SENSOR);
+            Channel channel = new Channel();
+            channel.setMeasurement(measurement);
+            channel.setRangeMin(this.rangePanel.getRangeMin());
+            channel.setRangeMax(this.rangePanel.getRangeMax());
+            Sensor sensor = this.sensorPanel.getSensor();
+            sensor.setValue(channel.getMeasurement().getValue());
+            double errorSensor = sensor.getError(channel);
+            this.allowableErrorPanel.updateError(errorSensor, false, channel.getRange());
+            this.allowableErrorPanel.setEnabled(false);
         }
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         this.setContentPane(new MainPanel());

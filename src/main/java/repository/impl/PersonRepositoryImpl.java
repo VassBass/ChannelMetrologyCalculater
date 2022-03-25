@@ -127,10 +127,13 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
     @Override
     public void set(Person oldPerson, Person newPerson) {
         if (oldPerson != null && newPerson != null
-                && this.mainList.contains(oldPerson) && !this.mainList.contains(newPerson)) {
-            int index = this.mainList.indexOf(oldPerson);
-            this.mainList.set(index, newPerson);
-            new BackgroundAction().set(oldPerson, newPerson);
+                && this.mainList.contains(oldPerson)) {
+            int oldIndex = this.mainList.indexOf(oldPerson);
+            int newIndex = this.mainList.indexOf(newPerson);
+            if (newIndex == -1 || oldIndex == newIndex) {
+                this.mainList.set(oldIndex, newPerson);
+                new BackgroundAction().set(oldPerson, newPerson);
+            }
         }
     }
 
@@ -343,24 +346,19 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
         boolean setPerson(Person oldPerson, Person newPerson){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
-                LOGGER.fine("Send request to delete");
-                Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM persons WHERE id = '" + oldPerson.getId() + "';";
-                statementClear.execute(sql);
+                Statement statement = connection.createStatement();
 
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO areas ('id', 'name', 'surname', 'patronymic', 'position')" +
-                        " VALUES (?, ?, ?, ?, ?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setInt(1, newPerson.getId());
-                statement.setString(2, newPerson.getName());
-                statement.setString(3, newPerson.getSurname());
-                statement.setString(4, newPerson.getPatronymic());
-                statement.setString(5, newPerson.getPosition());
+                LOGGER.fine("Send requests to update");
+                String sql = "UPDATE persons SET "
+                        + "id = " + newPerson.getId() + ", "
+                        + "name = '" + newPerson.getName() + "', "
+                        + "surname = '" + newPerson.getSurname() + "', "
+                        + "patronymic = '" + newPerson.getPatronymic() + "', "
+                        + "position = '" + newPerson.getPosition() + " "
+                        + "WHERE id = " + oldPerson.getId() + ";";
                 statement.execute(sql);
 
                 LOGGER.fine("Close connections");
-                statementClear.close();
                 statement.close();
                 return true;
             }catch (SQLException ex){

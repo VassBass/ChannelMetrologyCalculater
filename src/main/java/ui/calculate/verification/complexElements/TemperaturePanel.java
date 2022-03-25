@@ -172,7 +172,7 @@ public class TemperaturePanel extends JPanel {
 
         this.channelName.setText(this.channel.getName());
         this.number.setText((String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER));
-        this.date.setText(VariableConverter.dateToString((Calendar) values.get(Key.CHANNEL_DATE)));
+        this.date.setText((String) values.get(Key.CHANNEL_DATE));
 
         String path = this.channel.getArea()
                 + " "
@@ -203,7 +203,7 @@ public class TemperaturePanel extends JPanel {
         this.sensor.setText(this.channel.getSensor().getType());
 
         double errorSensor = this.channel.getSensor().getError(this.channel);
-        double ePS = errorSensor / (this.channel.getSensor().getRange() / 100);
+        double ePS = errorSensor / (this.channel.getSensor()._getRange() / 100);
         String allowableErrorSensor =
                 PLUS_MINUS
                 + VariableConverter.roundingDouble2(ePS, Locale.GERMAN)
@@ -223,7 +223,7 @@ public class TemperaturePanel extends JPanel {
         this.rangeSensor.setText(rangeSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
-                + MeasurementConstants.DEGREE_CELSIUS.getValue());
+                + MeasurementConstants.DEGREE_CELSIUS);
         this.humidity.setText(this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY)
                 + "%");
         this.atmospherePressure.setText(this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE)
@@ -235,7 +235,7 @@ public class TemperaturePanel extends JPanel {
 
         String certificateCalibrator = calibrator.getCertificateName()
                 + " від "
-                + VariableConverter.dateToString(calibrator.getCertificateDate())
+                + calibrator.getCertificateDate()
                 + "р. "
                 + calibrator.getCertificateCompany();
         this.calibratorCertificate.setText(certificateCalibrator);

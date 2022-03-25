@@ -40,7 +40,7 @@ public class CalculationConsumption extends Calculation {
                 this.controlPointsValues[1] = 0.91;
                 this.controlPointsValues[2] = 3.05;
                 this.controlPointsValues[3] = 9.14;
-                if (value.equals(MeasurementConstants.CM_S.getValue())){
+                if (value.equals(MeasurementConstants.CM_S)){
                     this.controlPointsValues[1] *= 100;
                     this.controlPointsValues[2] *= 100;
                     this.controlPointsValues[3] *= 100;

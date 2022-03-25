@@ -3,16 +3,13 @@ package model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
-import support.Comparator;
 
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Objects;
 
 public class Calibrator implements Serializable {
@@ -42,7 +39,7 @@ public class Calibrator implements Serializable {
     public String getValue(){return this.value;}
     public String getMeasurement(){return this.measurement;}
     public String getCertificateName(){return this.certificate.getName();}
-    public Calendar getCertificateDate(){return this.certificate.getDate();}
+    public String getCertificateDate(){return this.certificate.getDate();}
     public String getCertificateCompany(){return this.certificate.getCompany();}
     public String getErrorFormula(){return this.errorFormula;}
 
@@ -54,14 +51,14 @@ public class Calibrator implements Serializable {
     public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
     public void setValue(String value){this.value = value;}
     public void setCertificateName(String name){this.certificate.setName(name);}
-    public void setCertificateDate(Calendar date){this.certificate.setDate(date);}
+    public void setCertificateDate(String date){this.certificate.setDate(date);}
     public void setCertificateCompany(String company){this.certificate.setCompany(company);}
     public void setErrorFormula(String errorFormula){this.errorFormula = errorFormula;}
     public void setMeasurement(String measurement){this.measurement = measurement;}
     public void setCertificate(Certificate certificate){this.certificate = certificate;}
 
     public String getCertificateInfo(){
-        return this.certificate.getInfoString();
+        return this.certificate.getName() + " від " + this.certificate.getDate() + "р " + this.certificate.getCompany();
     }
 
     /*
@@ -79,8 +76,7 @@ public class Calibrator implements Serializable {
             cR = 0D;
         }else {
             R = new Argument("R = " + channel.getRange());
-            cR = new ValueConverter(MeasurementConstants.getConstantFromString(this.value),
-                    channel.getMeasurement().getValueConstant()).get(this.getRange());
+            cR = new ValueConverter(this.value, channel.getMeasurement().getValue()).get(this.getRange());
         }
         Argument r = new Argument("r = " + this.getRange());
         Argument convR = new Argument("convR = " + cR);
@@ -90,19 +86,16 @@ public class Calibrator implements Serializable {
 
     public static class Certificate implements Serializable {
         private String name = "";
-        private Calendar date = Calendar.getInstance();
+        private String date = "23.03.2022";
         private String company = "";
 
         public String getName(){return this.name;}
-        public Calendar getDate(){return this.date;}
+        public String getDate(){return this.date;}
         public String getCompany(){return this.company;}
 
         public void setName(String name){this.name = name;}
-        public void setDate(Calendar date){this.date = date;}
+        public void setDate(String date){this.date = date;}
         public void setCompany(String company){this.company = company;}
-        public String getInfoString(){
-            return this.name + " від " + VariableConverter.dateToString(this.date) + "р " + this.company;
-        }
 
         @Override
         public int hashCode() {
@@ -117,7 +110,7 @@ public class Calibrator implements Serializable {
             Certificate c = (Certificate) object;
             return this.name.equals(c.name) &&
                     this.company.equals(c.company) &&
-                    Comparator.datesMatch(this.date, c.date);
+                    this.date.equals(c.getDate());
         }
 
         @Override

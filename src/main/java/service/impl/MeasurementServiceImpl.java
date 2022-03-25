@@ -1,6 +1,5 @@
 package service.impl;
 
-import constants.MeasurementConstants;
 import def.DefaultMeasurements;
 import model.Measurement;
 import repository.MeasurementRepository;
@@ -46,11 +45,6 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public String[]getValues(MeasurementConstants name){
-        return this.repository.getValues(name);
-    }
-
-    @Override
     public String[]getValues(String name){
         return this.repository.getValues(name);
     }
@@ -61,11 +55,6 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public Measurement get(MeasurementConstants value){
-        return this.repository.get(value);
-    }
-
-    @Override
     public Measurement get(String value){
         return this.repository.get(value);
     }
@@ -73,11 +62,6 @@ public class MeasurementServiceImpl implements MeasurementService {
     @Override
     public Measurement get(int index) {
         return this.repository.get(index);
-    }
-
-    @Override
-    public ArrayList<Measurement>getMeasurements(MeasurementConstants name){
-        return this.repository.getMeasurements(name);
     }
 
     @Override

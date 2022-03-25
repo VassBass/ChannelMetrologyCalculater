@@ -35,11 +35,11 @@ public class ControlPointsValuesDialog extends JDialog {
 
     private void createElements(){
         String measurement = Application.context.sensorService.getMeasurement(this.values.getSensorType());
-        if (measurement.equals(MeasurementConstants.TEMPERATURE.getValue())){
+        if (measurement.equals(MeasurementConstants.TEMPERATURE)){
             this.controlPointsPanel = new TemperaturePanel(this.values.getRangeMin(), this.values.getRangeMax());
-        }else if (measurement.equals(MeasurementConstants.PRESSURE.getValue())){
+        }else if (measurement.equals(MeasurementConstants.PRESSURE)){
             this.controlPointsPanel = new PressurePanel(this.values.getRangeMin(), this.values.getRangeMax());
-        }else if (measurement.equals(MeasurementConstants.CONSUMPTION.getValue())){
+        }else if (measurement.equals(MeasurementConstants.CONSUMPTION)){
             this.controlPointsPanel = new ConsumptionPanel(this.values.getRangeMin(), this.values.getRangeMax());
         }
 

@@ -1,21 +1,17 @@
 package support;
 
 import constants.MeasurementConstants;
-import converters.VariableConverter;
-import model.Measurement;
 import model.Calibrator;
 import model.Channel;
 import model.Person;
 import model.Sensor;
 
-import java.util.Calendar;
-
 public class Comparator {
 
     public static boolean sensorsMatch(Sensor sensor1, Sensor sensor2){
         if (sensor1.getMeasurement().equals(sensor2.getMeasurement())){
-            if (sensor1.getMeasurement().equals(MeasurementConstants.TEMPERATURE.getValue()) ||
-                sensor1.getMeasurement().equals(MeasurementConstants.CONSUMPTION.getValue())) {
+            if (sensor1.getMeasurement().equals(MeasurementConstants.TEMPERATURE) ||
+                sensor1.getMeasurement().equals(MeasurementConstants.CONSUMPTION)) {
                 return sensor1.getName().equals(sensor2.getName())
                         && sensor1.getType().equals(sensor2.getType())
                         && sensor1.getRangeMin() == sensor2.getRangeMin()
@@ -23,7 +19,7 @@ public class Comparator {
                         && sensor1.getNumber().equals(sensor2.getNumber())
                         && sensor1.getValue().equals(sensor2.getValue())
                         && sensor1.getErrorFormula().equals(sensor2.getErrorFormula());
-            } else if (sensor1.getMeasurement().equals(MeasurementConstants.PRESSURE.getValue())) {
+            } else if (sensor1.getMeasurement().equals(MeasurementConstants.PRESSURE)) {
                 return sensor1.getName().equals(sensor2.getName())
                         && sensor1.getType().equals(sensor2.getType())
                         && sensor1.getNumber().equals(sensor2.getNumber())
@@ -51,12 +47,12 @@ public class Comparator {
     public static boolean channelsMatch(Channel channel1, Channel channel2){
         return channel1.getCode().equals(channel2.getCode())
                 && channel1.getName().equals(channel2.getName())
-                && measurementsMatch(channel1.getMeasurement(), channel2.getMeasurement())
+                && channel1.getMeasurement().equals(channel2.getMeasurement())
                 && channel1.getDepartment().equals(channel2.getDepartment())
                 && channel1.getArea().equals(channel2.getArea())
                 && channel1.getProcess().equals(channel2.getProcess())
                 && channel1.getInstallation().equals(channel2.getInstallation())
-                && datesMatch(channel1.getDate(), channel2.getDate())
+                && channel1.getDate().equals(channel2.getDate())
                 && channel1.getFrequency() == channel2.getFrequency()
                 && channel1.getTechnologyNumber().equals(channel2.getTechnologyNumber())
                 && sensorsMatch(channel1.getSensor(), channel2.getSensor())
@@ -67,15 +63,6 @@ public class Comparator {
                 && channel1.getAllowableErrorPercent() == channel2.getAllowableErrorPercent()
                 && channel1.getAllowableError() == channel2.getAllowableError()
                 && channel1.isSuitability() == channel2.isSuitability();
-    }
-
-    public static boolean measurementsMatch(Measurement measurement1, Measurement measurement2){
-        return measurement1.getNameConstant() == measurement2.getNameConstant()
-                && measurement1.getValueConstant() == measurement2.getValueConstant();
-    }
-
-    public static boolean datesMatch(Calendar date1, Calendar date2){
-        return VariableConverter.dateToString(date1).equals(VariableConverter.dateToString(date2));
     }
 
     public static boolean personsMatch(Person person1, Person person2){

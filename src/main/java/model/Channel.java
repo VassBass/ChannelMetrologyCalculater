@@ -9,6 +9,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import converters.VariableConverter;
 
 public class Channel implements Serializable {
 
@@ -19,7 +20,7 @@ public class Channel implements Serializable {
     private String area = "";
     private String process = "";
     private String installation = "";
-    private Calendar date = Calendar.getInstance();
+    private String date = VariableConverter.dateToString(Calendar.getInstance());
     private double frequency = 0D;
     private String numberT = "";
     private Sensor sensor = null;
@@ -39,7 +40,7 @@ public class Channel implements Serializable {
     public String getArea() {return this.area;}
     public String getProcess() {return this.process;}
     public String getInstallation() {return this.installation;}
-    public Calendar getDate() {return this.date;}
+    public String getDate() {return this.date;}
     public String getTechnologyNumber() {return this.numberT;}
     public Sensor getSensor() {return this.sensor;}
     public String getNumberOfProtocol() {return this.numberP;}
@@ -55,7 +56,7 @@ public class Channel implements Serializable {
         if (this.suitability) {
             long l = (long) (31536000000L * frequency);
             Calendar nextDate = new GregorianCalendar();
-            nextDate.setTimeInMillis(this.date.getTimeInMillis() + l);
+            nextDate.setTimeInMillis(VariableConverter.stringToDate(this.date).getTimeInMillis() + l);
             return nextDate;
         }else{
             return null;
@@ -92,7 +93,7 @@ public class Channel implements Serializable {
     public void setArea(String area) {this.area = area;}
     public void setProcess(String process) {this.process = process;}
     public void setInstallation(String installation) {this.installation = installation;}
-    public void setDate(Calendar date) {this.date = date;}
+    public void setDate(String date) {this.date = date;}
     public void setFrequency(double frequency) { this.frequency = frequency;}
     public void setTechnologyNumber(String number) {this.numberT = number;}
     public void setSensor(Sensor sensor) {this.sensor = sensor;}

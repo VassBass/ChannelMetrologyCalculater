@@ -54,12 +54,12 @@ public class MenuLists extends JMenu {
         this.buttonControlPoints = new JMenuItem(CONTROL_POINTS);
         this.buttonCalibrators = new JMenuItem(CALIBRATORS_LIST);
 
-        this.buttonTemperature = new JMenuItem(MeasurementConstants.TEMPERATURE.getValue());
-        this.buttonTemperature.setToolTipText(Settings.getSettingValue(MeasurementConstants.TEMPERATURE.getValue()));
-        this.buttonPressure = new JMenuItem(MeasurementConstants.PRESSURE.getValue());
-        this.buttonPressure.setToolTipText(Settings.getSettingValue(MeasurementConstants.PRESSURE.getValue()));
-        this.buttonConsumption = new JMenuItem(MeasurementConstants.CONSUMPTION.getValue());
-        this.buttonConsumption.setToolTipText(Settings.getSettingValue(MeasurementConstants.CONSUMPTION.getValue()));
+        this.buttonTemperature = new JMenuItem(MeasurementConstants.TEMPERATURE);
+        this.buttonTemperature.setToolTipText(Settings.getSettingValue(MeasurementConstants.TEMPERATURE));
+        this.buttonPressure = new JMenuItem(MeasurementConstants.PRESSURE);
+        this.buttonPressure.setToolTipText(Settings.getSettingValue(MeasurementConstants.PRESSURE));
+        this.buttonConsumption = new JMenuItem(MeasurementConstants.CONSUMPTION);
+        this.buttonConsumption.setToolTipText(Settings.getSettingValue(MeasurementConstants.CONSUMPTION));
     }
 
     private void setReactions() {

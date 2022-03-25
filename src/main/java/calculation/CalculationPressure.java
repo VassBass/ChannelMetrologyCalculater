@@ -17,7 +17,7 @@ public class CalculationPressure extends Calculation {
     public void setCalibrator(Calibrator calibrator) {
         super.setCalibrator(calibrator);
         if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)){
-            this.maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+            this.maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
         }
     }
 

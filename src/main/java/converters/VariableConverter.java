@@ -323,9 +323,9 @@ public class VariableConverter {
 
     public static String arrayToString(double[]array){
         StringBuilder builder = new StringBuilder();
-        for (int i=0;i< array.length;i++){
-            builder.append(array[i]);
-            if (i != (array.length-1)) builder.append("|");
+        for (double v : array) {
+            builder.append(v);
+            builder.append("|");
         }
         return builder.toString();
     }

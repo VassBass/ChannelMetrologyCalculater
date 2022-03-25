@@ -36,7 +36,7 @@ public class DialogChannel_rangePanel extends JPanel {
         this.minRange = new JTextField(DEFAULT_MIN_VALUE,5);
         this.dath = new JLabel(DASH);
         this.maxRange = new JTextField(DEFAULT_MAX_VALUE,5);
-        this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS.getValue());
+        this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS);
     }
 
     private void setReactions() {

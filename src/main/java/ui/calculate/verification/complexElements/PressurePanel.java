@@ -175,7 +175,7 @@ public class PressurePanel extends JPanel {
 
         this.channelName.setText(this.channel.getName());
         this.number.setText((String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER));
-        this.date.setText(VariableConverter.dateToString((Calendar) values.get(Key.CHANNEL_DATE)));
+        this.date.setText((String) values.get(Key.CHANNEL_DATE));
 
         String path = this.channel.getArea()
                 + " "
@@ -231,7 +231,7 @@ public class PressurePanel extends JPanel {
         this.rangeSensor.setText(rangeSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
-                + MeasurementConstants.DEGREE_CELSIUS.getValue());
+                + MeasurementConstants.DEGREE_CELSIUS);
         this.humidity.setText(this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY)
                 + "%");
         this.atmospherePressure.setText(this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE)
@@ -243,7 +243,7 @@ public class PressurePanel extends JPanel {
 
         String certificateCalibrator = calibrator.getCertificateName()
                 + " від "
-                + VariableConverter.dateToString(calibrator.getCertificateDate())
+                + calibrator.getCertificateDate()
                 + "р. "
                 + calibrator.getCertificateCompany();
         this.calibratorCertificate.setText(certificateCalibrator);
@@ -253,9 +253,8 @@ public class PressurePanel extends JPanel {
         if (calibrator.getValue().equals(this.channel.getMeasurement().getValue())) {
             ePC = errorCalibrator / (this.channel.getRange() / 100);
         }else {
-            MeasurementConstants calibratorValue = MeasurementConstants.getConstantFromString(calibrator.getValue());
             double calibratorRange = calibrator.getRange();
-            double convertedCalibratorRange = new ValueConverter(calibratorValue, this.channel.getMeasurement().getValueConstant()).get(calibratorRange);
+            double convertedCalibratorRange = new ValueConverter(calibrator.getValue(), this.channel.getMeasurement().getValue()).get(calibratorRange);
             ePC = errorCalibrator / (convertedCalibratorRange/100);
         }
         String error;
@@ -416,7 +415,7 @@ public class PressurePanel extends JPanel {
                     Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
                     double value5 = calculation.getControlPointsValues()[1];
                     if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)) {
-                        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, channel.getMeasurement().getValueConstant()).get(-0.8);
+                        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, channel.getMeasurement().getValue()).get(-0.8);
                         if (value5 < maxCalibratorPower){
                             cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
                         }else {

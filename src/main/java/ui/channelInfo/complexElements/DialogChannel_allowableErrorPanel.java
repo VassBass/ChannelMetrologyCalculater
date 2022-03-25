@@ -36,7 +36,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
     private void createElements() {
         this.labelPercent = new JLabel(PERCENT);
         this.and = new JLabel(AND);
-        this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS.getValue());
+        this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS);
 
         this.errorPercent = new JTextField(DEFAULT_VALUE, 5);
         this.errorValue = new JTextField(DEFAULT_VALUE, 5);

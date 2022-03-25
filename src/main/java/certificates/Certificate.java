@@ -1,7 +1,6 @@
 package certificates;
 
 import calculation.Calculation;
-import converters.VariableConverter;
 import model.Channel;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -12,7 +11,6 @@ import service.FileBrowser;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -39,7 +37,7 @@ public abstract class Certificate {
     protected Channel channel;
 
     protected String numberOfCertificate;
-    protected Calendar checkDate;
+    protected String checkDate;
     protected boolean alarmCheck;
     protected String alarmValue;
     protected String measurementValue;
@@ -76,7 +74,7 @@ public abstract class Certificate {
         String fileName = "№"
                 + this.numberOfCertificate +
                 " ("
-                + VariableConverter.dateToString(this.checkDate)
+                + this.checkDate
                 + ").xls";
         this.certificateFile = FileBrowser.certificateFile(fileName);
         try {

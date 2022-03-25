@@ -199,7 +199,7 @@ public class SensorInfoDialog extends JDialog {
             LOGGER.fine("SensorInfoDialog: set info from sensor [" + this.oldSensor + "]");
 
             this.measurementsList.setSelectedItem(this.oldSensor.getMeasurement());
-            if (this.oldSensor.getMeasurement().equals(MeasurementConstants.CONSUMPTION.getValue())){
+            if (this.oldSensor.getMeasurement().equals(MeasurementConstants.CONSUMPTION)){
                 String type = this.oldSensor.getType();
                 int spaceIndex = type.indexOf(" ");
                 this.typeText.setText(type.substring(++spaceIndex));
@@ -212,7 +212,7 @@ public class SensorInfoDialog extends JDialog {
             this.errorFormulaText.setText(this.oldSensor.getErrorFormula());
             this.showErrorHintsIfNeed();
 
-            if (!this.oldSensor.getMeasurement().equals(MeasurementConstants.TEMPERATURE.getValue())){
+            if (!this.oldSensor.getMeasurement().equals(MeasurementConstants.TEMPERATURE)){
                 this.rangePanel.setEnabled(false);
             }
             this.measurementsList.setEnabled(false);
@@ -274,7 +274,7 @@ public class SensorInfoDialog extends JDialog {
             if (Application.isBusy(SensorInfoDialog.this)) return;
             if (checkSensor()) {
                 Sensor sensor = new Sensor();
-                if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION.getValue())){
+                if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION)){
                     String type = Objects.requireNonNull(typesList.getSelectedItem()) + " " + typeText.getText();
                     sensor.setType(type);
                 }else {
@@ -306,7 +306,7 @@ public class SensorInfoDialog extends JDialog {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED){
                 build();
-                rangePanel.setEnabled(Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.TEMPERATURE.getValue()));
+                rangePanel.setEnabled(Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.TEMPERATURE));
                 refresh();
             }
         }
@@ -382,7 +382,7 @@ public class SensorInfoDialog extends JDialog {
 
     private boolean checkSensor(){
         if (this.typeText.getText().length() == 0 &&
-                !Objects.requireNonNull(this.measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION.getValue())){
+                !Objects.requireNonNull(this.measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION)){
             JOptionPane.showMessageDialog(this, "Ви не ввели тип ПВП");
             return false;
         }else if (this.nameText.getText().length() == 0){
@@ -416,7 +416,7 @@ public class SensorInfoDialog extends JDialog {
             this.add(labelMeasurement, new Cell(0, 0,1));
             this.add(measurementsList, new Cell(1, 0,2));
             this.add(labelType, new Cell(0, 1,1));
-            if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION.getValue())){
+            if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION)){
                 this.add(typesList, new Cell(1,1,1));
                 this.add(typeText, new Cell(2,1,1));
             }else {

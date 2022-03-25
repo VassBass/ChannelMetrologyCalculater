@@ -179,10 +179,14 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
 
     @Override
     public void setInCurrentThread(Sensor oldSensor, Sensor newSensor) {
-        if (oldSensor != null && newSensor != null && this.mainList.contains(oldSensor) && !this.mainList.contains(newSensor)){
-            int index = this.mainList.indexOf(oldSensor);
-            this.mainList.set(index, newSensor);
-            new BackgroundAction().setSensor(oldSensor, newSensor);
+        if (oldSensor != null && newSensor != null
+                && this.mainList.contains(oldSensor)){
+            int oldIndex = this.mainList.indexOf(oldSensor);
+            int newIndex = this.mainList.indexOf(newSensor);
+            if (newIndex == -1 || oldIndex == newIndex) {
+                this.mainList.set(oldIndex, newSensor);
+                new BackgroundAction().setSensor(oldSensor, newSensor);
+            }
         }
     }
 
@@ -318,16 +322,11 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
         boolean addSensor(Sensor sensor){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
-                LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM sensors WHERE name = '?';";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, sensor.getName());
-                statement.execute();
 
                 LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
+                String sql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
                         + "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
-                statement = connection.prepareStatement(sql);
+                PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, sensor.getName());
                 statement.setString(2, sensor.getType());
                 statement.setString(3, sensor.getNumber());
@@ -382,27 +381,22 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
         void setSensor(Sensor oldSensor, Sensor newSensor){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()){
-                LOGGER.fine("Send request to delete");
-                Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM sensors WHERE name = '" + oldSensor.getName() + "';";
-                statementClear.execute(sql);
+                Statement statement = connection.createStatement();
 
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
-                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, newSensor.getName());
-                statement.setString(2, newSensor.getType());
-                statement.setString(3, newSensor.getNumber());
-                statement.setString(4, newSensor.getMeasurement());
-                statement.setString(5, newSensor.getValue());
-                statement.setString(6, newSensor.getErrorFormula());
-                statement.setDouble(7, newSensor.getRangeMin());
-                statement.setDouble(8, newSensor.getRangeMax());
+                LOGGER.fine("Send requests to update");
+                String sql = "UPDATE sensors SET "
+                        + "name = '" + newSensor.getName() + "', "
+                        + "type = '" + newSensor.getType() + "', "
+                        + "number = '" + newSensor.getNumber() + "', "
+                        + "measurement = '" + newSensor.getMeasurement() + "', "
+                        + "value = '" + newSensor.getValue() + "', "
+                        + "error_formula = '" + newSensor.getErrorFormula() + "', "
+                        + "range_min = " + newSensor.getRangeMin() + ", "
+                        + "range_max = " + newSensor.getRangeMax() + " "
+                        + "WHERE name = '" + oldSensor.getName() + "';";
                 statement.execute(sql);
 
                 LOGGER.fine("Close connections");
-                statementClear.close();
                 statement.close();
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);

@@ -208,8 +208,7 @@ public class ChannelSorter {
         ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
-            String channelDateString = VariableConverter.dateToString(channel.getDate());
-            if (channelDateString.equals(date)){
+            if (channel.getDate().equals(date)){
                 sortedList.add(channel);
             }
         }
