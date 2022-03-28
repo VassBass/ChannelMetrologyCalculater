@@ -73,11 +73,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void exportData(){
-        this.repository.export();
-    }
-
-    @Override
     public void rewriteInCurrentThread(ArrayList<String>departments){
         this.repository.rewriteInCurrentThread(departments);
     }

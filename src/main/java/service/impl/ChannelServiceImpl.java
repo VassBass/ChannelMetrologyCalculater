@@ -98,11 +98,6 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public void exportData() {
-        this.repository.export();
-    }
-
-    @Override
     public void importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
         this.repository.importData(newChannels, channelsForChange);
     }

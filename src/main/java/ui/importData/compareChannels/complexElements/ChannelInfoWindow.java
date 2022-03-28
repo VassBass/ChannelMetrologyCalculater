@@ -1,6 +1,5 @@
 package ui.importData.compareChannels.complexElements;
 
-import converters.VariableConverter;
 import model.Channel;
 import ui.model.ButtonCell;
 

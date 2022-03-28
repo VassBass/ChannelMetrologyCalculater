@@ -1,9 +1,9 @@
 package ui.mainScreen;
 
 import service.FileBrowser;
-import ui.model.DefaultButton;
 import ui.calculate.start.CalculateStartDialog;
 import ui.channelInfo.DialogChannel;
+import ui.model.DefaultButton;
 import ui.removeChannels.DialogRemoveChannels;
 
 import javax.swing.*;

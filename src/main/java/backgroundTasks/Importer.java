@@ -22,15 +22,16 @@ public class Importer extends SwingWorker<Boolean, Void> {
 
     private final Connection connection;
     private final LoadDialog loadDialog = new LoadDialog(Application.context.mainScreen);
-    private Model model;
+    private final Model model;
 
     private ArrayList<Calibrator>newCalibrators, calibratorsForChange, changedCalibrators;
     private ArrayList<Channel>newChannels, channelsForChange, changedChannels;
     private ArrayList<Sensor>newSensors, sensorsForChange, changedSensors;
 
-    public Importer(File importFile) throws SQLException {
+    public Importer(File importFile, Model model) throws SQLException {
         super();
-        String dbUrl = "jdbc:sqlite:Support/" + importFile.getAbsolutePath();
+        String dbUrl = "jdbc:sqlite:" + importFile.getAbsolutePath();
+        this.model = model;
         DriverManager.registerDriver(new JDBC());
         this.connection = DriverManager.getConnection(dbUrl);
         EventQueue.invokeLater(new Runnable() {
@@ -39,11 +40,6 @@ public class Importer extends SwingWorker<Boolean, Void> {
                 loadDialog.setVisible(true);
             }
         });
-    }
-
-    public void importDepartment(){
-        this.model = Model.DEPARTMENT;
-        this.execute();
     }
 
     @Override

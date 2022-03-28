@@ -1,8 +1,8 @@
 package service.impl;
 
 import def.DefaultCalibrators;
-import model.Measurement;
 import model.Calibrator;
+import model.Measurement;
 import repository.CalibratorRepository;
 import repository.impl.CalibratorRepositoryImpl;
 import service.CalibratorService;
@@ -87,11 +87,6 @@ public class CalibratorServiceImpl implements CalibratorService {
     @Override
     public void clear() {
         this.repository.clear();
-    }
-
-    @Override
-    public void exportData(){
-        this.repository.export();
     }
 
     @Override

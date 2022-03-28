@@ -4,9 +4,8 @@ import application.Application;
 import application.ApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import constants.Action;
-import model.Measurement;
 import model.Calibrator;
-import org.sqlite.JDBC;
+import model.Measurement;
 import repository.CalibratorRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
@@ -15,7 +14,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -173,10 +171,7 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
         }
     }
 
-    @Override
-    public void export() {
-        new BackgroundAction().export(this.mainList);
-    }
+
 
     @Override
     public void rewrite(ArrayList<Calibrator> calibrators) {
@@ -229,12 +224,6 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
             this.start();
         }
 
-        void export(ArrayList<Calibrator>calibrators){
-            this.list = calibrators;
-            this.action = Action.EXPORT;
-            this.start();
-        }
-
         private void start(){
             Application.setBusy(true);
             EventQueue.invokeLater(new Runnable() {
@@ -259,8 +248,6 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
                     return this.setCalibrator(this.old, this.calibrator);
                 case REWRITE:
                     return this.rewriteCalibrators(this.list);
-                case EXPORT:
-                    return this.exportCalibrators(this.list);
             }
             return true;
         }
@@ -414,74 +401,6 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
                 return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-        }
-
-        private boolean exportCalibrators(ArrayList<Calibrator>calibrators){
-            Calendar date = Calendar.getInstance();
-            String fileName = "export_calibrators ["
-                    + date.get(Calendar.DAY_OF_MONTH)
-                    + "."
-                    + (date.get(Calendar.MONTH) + 1)
-                    + "."
-                    + date.get(Calendar.YEAR)
-                    + "].db";
-            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
-            String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
-                    + "name text NOT NULL UNIQUE"
-                    + ", type text NOT NULL"
-                    + ", number text NOT NULL"
-                    + ", measurement text NOT NULL"
-                    + ", value text NOT NULL"
-                    + ", error_formula text NOT NULL"
-                    + ", certificate text NOT NULL"
-                    + ", range_min real NOT NULL"
-                    + ", range_max real NOT NULL"
-                    + ", PRIMARY KEY (\"name\")"
-                    + ");";
-
-            Connection connection = null;
-            Statement statement = null;
-            PreparedStatement preparedStatement = null;
-            try {
-                LOGGER.fine("Get connection with DB");
-                DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection(dbUrl);
-                statement = connection.createStatement();
-
-                LOGGER.fine("Send requests to create table");
-                statement.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
-                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                preparedStatement = connection.prepareStatement(sql);
-                for (Calibrator calibrator : calibrators) {
-                    preparedStatement.setString(1, calibrator.getName());
-                    preparedStatement.setString(2, calibrator.getType());
-                    preparedStatement.setString(3, calibrator.getNumber());
-                    preparedStatement.setString(4, calibrator.getMeasurement());
-                    preparedStatement.setString(5, calibrator.getValue());
-                    preparedStatement.setString(6, calibrator.getErrorFormula());
-                    preparedStatement.setString(7, calibrator.getCertificate().toString());
-                    preparedStatement.setDouble(8, calibrator.getRangeMin());
-                    preparedStatement.setDouble(9, calibrator.getRangeMax());
-                    preparedStatement.execute();
-                }
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                preparedStatement.close();
-                connection.close();
-                return true;
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-                try {
-                    if (statement != null) statement.close();
-                    if (preparedStatement != null) preparedStatement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
                 return false;
             }
         }

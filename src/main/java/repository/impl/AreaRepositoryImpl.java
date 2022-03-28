@@ -3,7 +3,6 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import org.sqlite.JDBC;
 import repository.AreaRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
@@ -12,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -126,12 +124,6 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
         }
     }
 
-    @Override
-    public void export() {
-        new BackgroundAction().export(this.mainList);
-    }
-
-
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private String object, old;
         private ArrayList<String>list;
@@ -174,12 +166,6 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
             this.start();
         }
 
-        void export(ArrayList<String>areas){
-            this.list = areas;
-            this.action = Action.EXPORT;
-            this.start();
-        }
-
         private void start(){
             Application.setBusy(true);
             EventQueue.invokeLater(new Runnable() {
@@ -204,8 +190,6 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
                     return this.rewriteAreas(this.list);
                 case SET:
                     return this.setArea(this.old, this.object);
-                case EXPORT:
-                    return this.exportAreas(this.list);
             }
             return true;
         }
@@ -263,8 +247,8 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
                 LOGGER.fine("Send request to add");
                 for (String area : areas){
                     String sql = "INSERT INTO areas(area)"
-                            + "SELECT " + area + " "
-                            + "WHERE NOT EXISTS(SELECT 1 FROM areas WHERE area = " + area + ");";
+                            + "SELECT '" + area + "' "
+                            + "WHERE NOT EXISTS(SELECT 1 FROM areas WHERE area = '" + area + "');";
                     statement.execute(sql);
                 }
 
@@ -352,58 +336,6 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
                 return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-        }
-
-        private boolean exportAreas(ArrayList<String>areas){
-            Calendar date = Calendar.getInstance();
-            String fileName = "export_areas ["
-                    + date.get(Calendar.DAY_OF_MONTH)
-                    + "."
-                    + (date.get(Calendar.MONTH) + 1)
-                    + "."
-                    + date.get(Calendar.YEAR)
-                    + "].db";
-            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
-            String sql = "CREATE TABLE IF NOT EXISTS areas ("
-                    + "area text NOT NULL UNIQUE"
-                    + ", PRIMARY KEY (\"area\")"
-                    + ");";
-
-            Connection connection = null;
-            Statement statement = null;
-            PreparedStatement preparedStatement = null;
-            try {
-                LOGGER.fine("Get connection with DB");
-                DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection(dbUrl);
-                statement = connection.createStatement();
-
-                LOGGER.fine("Send requests to create table");
-                statement.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO areas ('area') "
-                        + "VALUES(?);";
-                preparedStatement = connection.prepareStatement(sql);
-                for (String area : areas) {
-                    preparedStatement.setString(1, area);
-                    preparedStatement.execute();
-                }
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                preparedStatement.close();
-                connection.close();
-                return true;
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-                try {
-                    if (statement != null) statement.close();
-                    if (preparedStatement != null) preparedStatement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
                 return false;
             }
         }

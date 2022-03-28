@@ -1,7 +1,7 @@
 package service;
 
-import model.Measurement;
 import model.Calibrator;
+import model.Measurement;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,6 @@ public interface CalibratorService {
     Calibrator get(String name);
     Calibrator get(int index);
     void clear();
-    void exportData();
     void importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange);
     void rewriteInCurrentThread(ArrayList<Calibrator>calibrators);
     void resetToDefault();

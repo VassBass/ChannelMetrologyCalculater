@@ -5,7 +5,6 @@ import application.ApplicationContext;
 import constants.Action;
 import constants.SensorType;
 import model.Sensor;
-import org.sqlite.JDBC;
 import repository.Repository;
 import repository.SensorRepository;
 import ui.model.SaveMessage;
@@ -14,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -206,11 +204,6 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
     }
 
     @Override
-    public void export() {
-        new BackgroundAction().export(this.mainList);
-    }
-
-    @Override
     public void importData(ArrayList<Sensor> newSensors, ArrayList<Sensor> sensorsForChange) {
         for (Sensor sensor : sensorsForChange){
             int index = this.mainList.indexOf(sensor);
@@ -270,12 +263,6 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
             this.start();
         }
 
-        void export(ArrayList<Sensor>sensors){
-            this.list = sensors;
-            this.action = Action.EXPORT;
-            this.start();
-        }
-
         private void start(){
             Application.setBusy(true);
             EventQueue.invokeLater(new Runnable() {
@@ -296,8 +283,6 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
                     return this.clearSensors();
                 case REWRITE:
                     return this.rewriteSensors(this.list);
-                case EXPORT:
-                    return this.exportSensors(this.list);
             }
             return true;
         }
@@ -435,72 +420,6 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
                 return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-        }
-
-        private boolean exportSensors(ArrayList<Sensor>sensors){
-            Calendar date = Calendar.getInstance();
-            String fileName = "export_sensors ["
-                    + date.get(Calendar.DAY_OF_MONTH)
-                    + "."
-                    + (date.get(Calendar.MONTH) + 1)
-                    + "."
-                    + date.get(Calendar.YEAR)
-                    + "].db";
-            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
-            String sql = "CREATE TABLE IF NOT EXISTS sensors ("
-                    + "name text NOT NULL UNIQUE"
-                    + ", type text NOT NULL"
-                    + ", number text"
-                    + ", measurement text NOT NULL"
-                    + ", value text"
-                    + ", error_formula text NOT NULL"
-                    + ", range_min real NOT NULL"
-                    + ", range_max real NOT NULL"
-                    + ", PRIMARY KEY (\"name\")"
-                    + ");";
-
-            Connection connection = null;
-            Statement statement = null;
-            PreparedStatement preparedStatement = null;
-            try {
-                LOGGER.fine("Get connection with DB");
-                DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection(dbUrl);
-                statement = connection.createStatement();
-
-                LOGGER.fine("Send requests to create table");
-                statement.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
-                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                preparedStatement = connection.prepareStatement(sql);
-                for (Sensor sensor : sensors) {
-                    preparedStatement.setString(1, sensor.getName());
-                    preparedStatement.setString(2, sensor.getType());
-                    preparedStatement.setString(3, sensor.getNumber());
-                    preparedStatement.setString(4, sensor.getMeasurement());
-                    preparedStatement.setString(5, sensor.getValue());
-                    preparedStatement.setString(6, sensor.getErrorFormula());
-                    preparedStatement.setDouble(7, sensor.getRangeMin());
-                    preparedStatement.setDouble(8, sensor.getRangeMax());
-                    preparedStatement.execute();
-                }
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                preparedStatement.close();
-                connection.close();
-                return true;
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-                try {
-                    if (statement != null) statement.close();
-                    if (preparedStatement != null) preparedStatement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
                 return false;
             }
         }

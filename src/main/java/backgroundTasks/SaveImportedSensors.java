@@ -2,8 +2,8 @@ package backgroundTasks;
 
 import application.Application;
 import model.Sensor;
-import ui.model.LoadDialog;
 import ui.mainScreen.MainScreen;
+import ui.model.LoadDialog;
 
 import javax.swing.*;
 import java.awt.*;

@@ -72,11 +72,6 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public void exportData(){
-        this.repository.export();
-    }
-
-    @Override
     public void rewriteInCurrentThread(ArrayList<String>areas){
         this.repository.rewriteInCurrentThread(areas);
     }

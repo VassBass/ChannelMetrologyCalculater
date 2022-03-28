@@ -1,7 +1,6 @@
 package ui.calculate.start.complexElements;
 
 import constants.CalendarConstants;
-import converters.ValueConverter;
 import converters.VariableConverter;
 
 import javax.swing.*;

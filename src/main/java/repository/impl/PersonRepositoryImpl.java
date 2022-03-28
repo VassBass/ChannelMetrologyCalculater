@@ -5,7 +5,6 @@ import application.ApplicationContext;
 import constants.Action;
 import constants.WorkPositions;
 import model.Person;
-import org.sqlite.JDBC;
 import repository.PersonRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
@@ -14,7 +13,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -171,11 +169,6 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
         }
     }
 
-    @Override
-    public void export() {
-        new BackgroundAction().export(this.mainList);
-    }
-
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private Person person, old;
         private ArrayList<Person>list;
@@ -218,12 +211,6 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
             this.start();
         }
 
-        void export(ArrayList<Person>persons){
-            this.list = persons;
-            this.action = Action.EXPORT;
-            this.start();
-        }
-
         private void start(){
             Application.setBusy(true);
             EventQueue.invokeLater(new Runnable() {
@@ -248,8 +235,6 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                     return this.setPerson(this.old, this.person);
                 case REWRITE:
                     return this.rewritePersons(this.list);
-                case EXPORT:
-                    return this.exportPersons(this.list);
             }
             return true;
         }
@@ -396,66 +381,6 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                 return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-        }
-
-        private boolean exportPersons(ArrayList<Person>persons){
-            Calendar date = Calendar.getInstance();
-            String fileName = "export_persons ["
-                    + date.get(Calendar.DAY_OF_MONTH)
-                    + "."
-                    + (date.get(Calendar.MONTH) + 1)
-                    + "."
-                    + date.get(Calendar.YEAR)
-                    + "].db";
-            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
-            String sql = "CREATE TABLE IF NOT EXISTS persons ("
-                    + "id integer NOT NULL UNIQUE"
-                    + ", name text NOT NULL"
-                    + ", surname text NOT NULL"
-                    + ", patronymic text"
-                    + ", position text NOT NULL"
-                    + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
-                    + ");";
-
-            Connection connection = null;
-            Statement statement = null;
-            PreparedStatement preparedStatement = null;
-            try {
-                LOGGER.fine("Get connection with DB");
-                DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection(dbUrl);
-                statement = connection.createStatement();
-
-                LOGGER.fine("Send requests to create table");
-                statement.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO persons ('id', 'name', 'surname', 'patronymic', 'position')" +
-                        " VALUES (?, ?, ?, ?, ?);";
-                preparedStatement = connection.prepareStatement(sql);
-                for (Person person : persons) {
-                    preparedStatement.setInt(1, person.getId());
-                    preparedStatement.setString(2, person.getName());
-                    preparedStatement.setString(3, person.getSurname());
-                    preparedStatement.setString(4, person.getPatronymic());
-                    preparedStatement.setString(5, person.getPosition());
-                    preparedStatement.execute();
-                }
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                preparedStatement.close();
-                connection.close();
-                return true;
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-                try {
-                    if (statement != null) statement.close();
-                    if (preparedStatement != null) preparedStatement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
                 return false;
             }
         }

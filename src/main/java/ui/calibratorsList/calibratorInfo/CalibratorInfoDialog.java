@@ -5,14 +5,14 @@ import constants.CalibratorType;
 import constants.MeasurementConstants;
 import converters.ConverterUI;
 import converters.VariableConverter;
+import model.Calibrator;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
-import model.Calibrator;
-import ui.model.ButtonCell;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
 import ui.calibratorsList.calibratorInfo.complexElements.CertificateDatePanel;
+import ui.model.ButtonCell;
 import ui.model.DefaultButton;
 
 import javax.swing.*;

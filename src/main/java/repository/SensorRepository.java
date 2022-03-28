@@ -18,7 +18,6 @@ public interface SensorRepository {
     void setInCurrentThread(Sensor oldSensor, Sensor newSensor);
     void rewriteInCurrentThread(ArrayList<Sensor>sensors);
     void clear();
-    void export();
     void importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange);
     void rewrite(ArrayList<Sensor>sensors);
     boolean isLastInMeasurement(Sensor sensor);

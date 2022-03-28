@@ -20,7 +20,6 @@ public interface ChannelService {
     boolean isExist(String code);
     boolean isExist(String oldChannelCode, String newChannelCode);
     void clear();
-    void exportData();
     void importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
     void rewriteInCurrentThread(ArrayList<Channel>channels);
     void showExistMessage(Window window);

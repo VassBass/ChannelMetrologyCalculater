@@ -4,7 +4,6 @@ import application.Application;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 public class PathListsTable extends JTable {
     public static final String DEPARTMENTS_LIST = "Список цехів";

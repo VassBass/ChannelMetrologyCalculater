@@ -16,7 +16,6 @@ public interface PersonService {
     void setInCurrentThread(Person oldPerson, Person newPerson);
     Person get(int index);
     void clear();
-    void exportData();
     void rewriteInCurrentThread(ArrayList<Person>persons);
     void resetToDefault();
 }

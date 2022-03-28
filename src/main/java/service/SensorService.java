@@ -2,7 +2,6 @@ package service;
 
 import model.Sensor;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public interface SensorService {
@@ -22,6 +21,5 @@ public interface SensorService {
     void clear();
     boolean isLastInMeasurement(Sensor sensor);
     void rewriteInCurrentThread(ArrayList<Sensor>sensors);
-    void exportData();
     void resetToDefault();
 }

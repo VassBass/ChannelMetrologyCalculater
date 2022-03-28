@@ -72,11 +72,6 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public void exportData(){
-        this.repository.export();
-    }
-
-    @Override
     public void rewriteInCurrentThread(ArrayList<String>processes){
         this.repository.rewriteInCurrentThread(processes);
     }

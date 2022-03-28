@@ -12,7 +12,6 @@ public interface ProcessService {
     ArrayList<String> set(String oldObject, String newObject);
     String get(int index);
     void clear();
-    void exportData();
     void rewriteInCurrentThread(ArrayList<String>process);
     void resetToDefault();
 }

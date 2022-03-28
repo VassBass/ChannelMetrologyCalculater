@@ -106,11 +106,6 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public void exportData(){
-        this.repository.export();
-    }
-
-    @Override
     public void resetToDefault() {
         this.repository.rewriteInCurrentThread(DefaultSensors.get());
     }

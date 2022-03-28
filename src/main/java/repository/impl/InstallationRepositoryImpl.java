@@ -3,7 +3,6 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import org.sqlite.JDBC;
 import repository.InstallationRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
@@ -12,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -126,11 +124,6 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
         }
     }
 
-    @Override
-    public void export() {
-        new BackgroundAction().export(this.mainList);
-    }
-
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private String object, old;
         private ArrayList<String>list;
@@ -173,12 +166,6 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
             this.start();
         }
 
-        void export(ArrayList<String>installations){
-            this.list = installations;
-            this.action = Action.EXPORT;
-            this.start();
-        }
-
         private void start(){
             Application.setBusy(true);
             EventQueue.invokeLater(new Runnable() {
@@ -203,8 +190,6 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
                     return this.rewriteInstallations(this.list);
                 case SET:
                     return this.setInstallation(this.old, this.object);
-                case EXPORT:
-                    return this.exportInstallations(this.list);
             }
             return true;
         }
@@ -261,8 +246,8 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
                 LOGGER.fine("Send request to add");
                 for (String installation : installations){
                     String sql = "INSERT INTO installations(installation)"
-                            + "SELECT " + installation + " "
-                            + "WHERE NOT EXISTS(SELECT 1 FROM installations WHERE installation = " + installation + ");";
+                            + "SELECT '" + installation + "' "
+                            + "WHERE NOT EXISTS(SELECT 1 FROM installations WHERE installation = '" + installation + "');";
                     statement.execute(sql);
                 }
 
@@ -349,58 +334,6 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
                 return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-        }
-
-        private boolean exportInstallations(ArrayList<String>installations){
-            Calendar date = Calendar.getInstance();
-            String fileName = "export_installations ["
-                    + date.get(Calendar.DAY_OF_MONTH)
-                    + "."
-                    + (date.get(Calendar.MONTH) + 1)
-                    + "."
-                    + date.get(Calendar.YEAR)
-                    + "].db";
-            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
-            String sql = "CREATE TABLE IF NOT EXISTS installations ("
-                    + "installation text NOT NULL UNIQUE"
-                    + ", PRIMARY KEY (\"installation\")"
-                    + ");";
-
-            Connection connection = null;
-            Statement statement = null;
-            PreparedStatement preparedStatement = null;
-            try {
-                LOGGER.fine("Get connection with DB");
-                DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection(dbUrl);
-                statement = connection.createStatement();
-
-                LOGGER.fine("Send requests to create table");
-                statement.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO installations ('installation') "
-                        + "VALUES(?);";
-                preparedStatement = connection.prepareStatement(sql);
-                for (String installation : installations) {
-                    preparedStatement.setString(1, installation);
-                    preparedStatement.execute();
-                }
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                preparedStatement.close();
-                connection.close();
-                return true;
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-                try {
-                    if (statement != null) statement.close();
-                    if (preparedStatement != null) preparedStatement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
                 return false;
             }
         }

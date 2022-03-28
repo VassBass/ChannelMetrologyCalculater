@@ -17,7 +17,6 @@ public interface ChannelRepository {
     void set(Channel oldChannel, Channel newChannel);
     void setInCurrentThread(Channel oldChannel, Channel newChannel);
     void clear();
-    void export();
     void importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
     boolean isExist(String code);
     boolean isExist(String oldChannelCode, String newChannelCode);

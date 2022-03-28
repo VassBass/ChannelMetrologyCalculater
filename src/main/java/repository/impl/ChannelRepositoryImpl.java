@@ -7,7 +7,6 @@ import constants.Action;
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
-import org.sqlite.JDBC;
 import repository.ChannelRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
@@ -16,7 +15,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -206,11 +204,6 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
     }
 
     @Override
-    public void export() {
-        new BackgroundAction().export(this.mainList);
-    }
-
-    @Override
     public void importData(ArrayList<Channel> newChannels, ArrayList<Channel> channelsForChange) {
         for (Channel channel : channelsForChange){
             int index = this.mainList.indexOf(channel);
@@ -245,7 +238,6 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private Channel channel, old;
         private String channelCode;
-        private ArrayList<Channel>list;
         private Action action;
         private final SaveMessage saveMessage;
 
@@ -279,12 +271,6 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
             this.start();
         }
 
-        void export(ArrayList<Channel>channels){
-            this.list = channels;
-            this.action = Action.EXPORT;
-            this.start();
-        }
-
         private void start(){
             Application.setBusy(true);
             EventQueue.invokeLater(new Runnable() {
@@ -307,8 +293,6 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                     return this.clearChannels();
                 case SET:
                     return this.setChannel(this.old, this.channel);
-                case EXPORT:
-                    return this.exportChannels(this.list);
             }
             return true;
         }
@@ -497,94 +481,6 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                 }
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-            }
-        }
-
-        private boolean exportChannels(ArrayList<Channel>channels){
-            Calendar date = Calendar.getInstance();
-            String fileName = "export_channels ["
-                    + date.get(Calendar.DAY_OF_MONTH)
-                    + "."
-                    + (date.get(Calendar.MONTH) + 1)
-                    + "."
-                    + date.get(Calendar.YEAR)
-                    + "].db";
-            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
-            String sql = "CREATE TABLE IF NOT EXISTS channels ("
-                    + "code text NOT NULL UNIQUE"
-                    + ", name text NOT NULL"
-                    + ", department text"
-                    + ", area text"
-                    + ", process text"
-                    + ", installation text"
-                    + ", technology_number text NOT NULL"
-                    + ", protocol_number text"
-                    + ", reference text"
-                    + ", date text"
-                    + ", suitability text NOT NULL"
-                    + ", measurement text NOT NULL"
-                    + ", sensor text NOT NULL"
-                    + ", frequency real NOT NULL"
-                    + ", range_min real NOT NULL"
-                    + ", range_max real NOT NULL"
-                    + ", allowable_error_percent real NOT NULL"
-                    + ", allowable_error_value real NOT NULL"
-                    + ", PRIMARY KEY (\"code\")"
-                    + ");";
-
-            Connection connection = null;
-            Statement statement = null;
-            PreparedStatement preparedStatement = null;
-            try {
-                LOGGER.fine("Get connection with DB");
-                DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection(dbUrl);
-                statement = connection.createStatement();
-
-                LOGGER.fine("Send requests to create table");
-                statement.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
-                        ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'" +
-                        ", 'allowable_error_percent', 'allowable_error_value') "
-                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                preparedStatement = connection.prepareStatement(sql);
-                for (Channel channel : channels) {
-                    preparedStatement.setString(1, channel.getCode());
-                    preparedStatement.setString(2, channel.getName());
-                    preparedStatement.setString(3, channel.getDepartment());
-                    preparedStatement.setString(4, channel.getArea());
-                    preparedStatement.setString(5, channel.getProcess());
-                    preparedStatement.setString(6, channel.getInstallation());
-                    preparedStatement.setString(7, channel.getTechnologyNumber());
-                    preparedStatement.setString(8, channel.getNumberOfProtocol());
-                    preparedStatement.setString(9,channel.getReference());
-                    preparedStatement.setString(10, channel.getDate());
-                    preparedStatement.setString(11, String.valueOf(channel.isSuitability()));
-                    preparedStatement.setString(12, channel.getMeasurement().toString());
-                    preparedStatement.setString(13, channel.getSensor().toString());
-                    preparedStatement.setDouble(14, channel.getFrequency());
-                    preparedStatement.setDouble(15, channel.getRangeMin());
-                    preparedStatement.setDouble(16, channel.getRangeMax());
-                    preparedStatement.setDouble(17, channel.getAllowableErrorPercent());
-                    preparedStatement.setDouble(18, channel.getAllowableError());
-                    preparedStatement.execute();
-                }
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                preparedStatement.close();
-                connection.close();
-                return true;
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-                try {
-                    if (statement != null) statement.close();
-                    if (preparedStatement != null) preparedStatement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
-                return false;
             }
         }
     }

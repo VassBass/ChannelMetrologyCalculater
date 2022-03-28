@@ -1,18 +1,18 @@
 package backgroundTasks;
 
 
+import calculation.Calculation;
 import calculation.CalculationConsumption;
 import calculation.CalculationPressure;
 import calculation.CalculationTemperature;
 import constants.CalibratorType;
 import constants.Key;
-import calculation.Calculation;
 import constants.MeasurementConstants;
 import model.Calibrator;
 import model.Channel;
-import ui.model.LoadDialog;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.mainScreen.MainScreen;
+import ui.model.LoadDialog;
 
 import javax.swing.*;
 import java.awt.*;

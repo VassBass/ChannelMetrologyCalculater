@@ -1,7 +1,7 @@
 package repository;
 
-import model.Measurement;
 import model.Calibrator;
+import model.Measurement;
 
 import java.util.ArrayList;
 
@@ -18,6 +18,5 @@ public interface CalibratorRepository {
     void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator);
     void clear();
     void rewriteInCurrentThread(ArrayList<Calibrator>calibrators);
-    void export();
     void rewrite(ArrayList<Calibrator>calibrators);
 }

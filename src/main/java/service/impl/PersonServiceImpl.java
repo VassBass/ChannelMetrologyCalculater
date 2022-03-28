@@ -83,11 +83,6 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public void exportData(){
-        this.repository.export();
-    }
-
-    @Override
     public void rewriteInCurrentThread(ArrayList<Person>persons){
         this.repository.rewriteInCurrentThread(persons);
     }

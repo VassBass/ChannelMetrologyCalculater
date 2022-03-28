@@ -72,11 +72,6 @@ public class InstallationServiceImpl implements InstallationService {
     }
 
     @Override
-    public void exportData(){
-        this.repository.export();
-    }
-
-    @Override
     public void rewriteInCurrentThread(ArrayList<String>installations){
         this.repository.rewriteInCurrentThread(installations);
     }

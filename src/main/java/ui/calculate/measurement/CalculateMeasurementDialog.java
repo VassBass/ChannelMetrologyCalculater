@@ -4,8 +4,8 @@ import backgroundTasks.CalculateChannel;
 import constants.CalibratorType;
 import constants.Key;
 import constants.MeasurementConstants;
-import model.Calibrator;
 import converters.ConverterUI;
+import model.Calibrator;
 import model.Channel;
 import ui.calculate.measurement.complexElements.*;
 import ui.calculate.start.CalculateStartDialog;
@@ -14,7 +14,8 @@ import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 public class CalculateMeasurementDialog extends JDialog {

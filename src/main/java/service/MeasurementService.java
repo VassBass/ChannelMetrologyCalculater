@@ -1,6 +1,5 @@
 package service;
 
-import constants.MeasurementConstants;
 import model.Measurement;
 
 import java.util.ArrayList;

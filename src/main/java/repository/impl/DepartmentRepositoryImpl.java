@@ -3,7 +3,6 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import org.sqlite.JDBC;
 import repository.DepartmentRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
@@ -12,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -126,11 +124,6 @@ public class DepartmentRepositoryImpl extends Repository<String> implements Depa
         }
     }
 
-    @Override
-    public void export() {
-        new BackgroundAction().export(this.mainList);
-    }
-
     private class BackgroundAction extends SwingWorker<Boolean, Void>{
         private String object, old;
         private ArrayList<String>list;
@@ -173,12 +166,6 @@ public class DepartmentRepositoryImpl extends Repository<String> implements Depa
             this.start();
         }
 
-        void export(ArrayList<String>departments){
-            this.list = departments;
-            this.action = Action.EXPORT;
-            this.start();
-        }
-
         private void start(){
             Application.setBusy(true);
             EventQueue.invokeLater(new Runnable() {
@@ -203,8 +190,6 @@ public class DepartmentRepositoryImpl extends Repository<String> implements Depa
                     return this.rewriteDepartments(this.list);
                 case SET:
                     return this.setDepartment(this.old, this.object);
-                case EXPORT:
-                    return this.exportDepartments(this.list);
             }
             return true;
         }
@@ -261,8 +246,8 @@ public class DepartmentRepositoryImpl extends Repository<String> implements Depa
                 LOGGER.fine("Send request to add");
                 for (String department : departments){
                     String sql = "INSERT INTO departments(department)"
-                            + "SELECT " + department + " "
-                            + "WHERE NOT EXISTS(SELECT 1 FROM departments WHERE department = " + department + ");";
+                            + "SELECT '" + department + "' "
+                            + "WHERE NOT EXISTS(SELECT 1 FROM departments WHERE department = '" + department + "');";
                     statement.execute(sql);
                 }
 
@@ -349,58 +334,6 @@ public class DepartmentRepositoryImpl extends Repository<String> implements Depa
                 return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-        }
-
-        private boolean exportDepartments(ArrayList<String>departments){
-            Calendar date = Calendar.getInstance();
-            String fileName = "export_departments ["
-                    + date.get(Calendar.DAY_OF_MONTH)
-                    + "."
-                    + (date.get(Calendar.MONTH) + 1)
-                    + "."
-                    + date.get(Calendar.YEAR)
-                    + "].db";
-            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
-            String sql = "CREATE TABLE IF NOT EXISTS departments ("
-                    + "department text NOT NULL UNIQUE"
-                    + ", PRIMARY KEY (\"department\")"
-                    + ");";
-
-            Connection connection = null;
-            Statement statement = null;
-            PreparedStatement preparedStatement = null;
-            try {
-                LOGGER.fine("Get connection with DB");
-                DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection(dbUrl);
-                statement = connection.createStatement();
-
-                LOGGER.fine("Send requests to create table");
-                statement.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO departments ('department') "
-                        + "VALUES(?);";
-                preparedStatement = connection.prepareStatement(sql);
-                for (String department : departments) {
-                    preparedStatement.setString(1, department);
-                    preparedStatement.execute();
-                }
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                preparedStatement.close();
-                connection.close();
-                return true;
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-                try {
-                    if (statement != null) statement.close();
-                    if (preparedStatement != null) preparedStatement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
                 return false;
             }
         }

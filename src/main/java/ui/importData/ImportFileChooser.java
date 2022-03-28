@@ -1,15 +1,19 @@
 package ui.importData;
 
 import application.Application;
+import backgroundTasks.Importer;
+import model.Model;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.sql.SQLException;
 
 public class ImportFileChooser extends JFileChooser {
     private static final String IMPORT_DATA = "Імпорт даних";
 
-    public ImportFileChooser(){
+    public ImportFileChooser(Model model) throws SQLException {
         super();
         final MainScreen mainScreen = Application.context.mainScreen;
 
@@ -24,7 +28,10 @@ public class ImportFileChooser extends JFileChooser {
 
         int result = this.showOpenDialog(mainScreen);
         if (result == JFileChooser.APPROVE_OPTION){
-
+            File file = this.getSelectedFile();
+            if (file != null){
+                new Importer(file, model).execute();
+            }
         }
     }
 }

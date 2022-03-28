@@ -3,7 +3,6 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import org.sqlite.JDBC;
 import repository.ProcessRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
@@ -12,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -132,11 +130,6 @@ public class ProcessRepositoryImpl extends Repository<String> implements Process
         }
     }
 
-    @Override
-    public void export() {
-        new BackgroundAction().export(this.mainList);
-    }
-
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private String object, old;
         private ArrayList<String>list;
@@ -179,12 +172,6 @@ public class ProcessRepositoryImpl extends Repository<String> implements Process
             this.start();
         }
 
-        void export(ArrayList<String>processes){
-            this.list = processes;
-            this.action = Action.EXPORT;
-            this.start();
-        }
-
         private void start(){
             Application.setBusy(true);
             EventQueue.invokeLater(new Runnable() {
@@ -209,8 +196,6 @@ public class ProcessRepositoryImpl extends Repository<String> implements Process
                     return this.rewriteProcesses(this.list);
                 case SET:
                     return this.setProcess(this.old, this.object);
-                case EXPORT:
-                    return this.exportProcesses(this.list);
             }
             return true;
         }
@@ -267,8 +252,8 @@ public class ProcessRepositoryImpl extends Repository<String> implements Process
                 LOGGER.fine("Send request to add");
                 for (String process : processes){
                     String sql = "INSERT INTO processes(process)"
-                            + "SELECT " + process + " "
-                            + "WHERE NOT EXISTS(SELECT 1 FROM processes WHERE process = " + process + ");";
+                            + "SELECT '" + process + "' "
+                            + "WHERE NOT EXISTS(SELECT 1 FROM processes WHERE process = '" + process + "');";
                     statement.execute(sql);
                 }
 
@@ -355,58 +340,6 @@ public class ProcessRepositoryImpl extends Repository<String> implements Process
                 return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-        }
-
-        private boolean exportProcesses(ArrayList<String>processes){
-            Calendar date = Calendar.getInstance();
-            String fileName = "export_processes ["
-                    + date.get(Calendar.DAY_OF_MONTH)
-                    + "."
-                    + (date.get(Calendar.MONTH) + 1)
-                    + "."
-                    + date.get(Calendar.YEAR)
-                    + "].db";
-            String dbUrl = "jdbc:sqlite:Support/Export/" + fileName;
-            String sql = "CREATE TABLE IF NOT EXISTS processes ("
-                    + "process text NOT NULL UNIQUE"
-                    + ", PRIMARY KEY (\"process\")"
-                    + ");";
-
-            Connection connection = null;
-            Statement statement = null;
-            PreparedStatement preparedStatement = null;
-            try {
-                LOGGER.fine("Get connection with DB");
-                DriverManager.registerDriver(new JDBC());
-                connection = DriverManager.getConnection(dbUrl);
-                statement = connection.createStatement();
-
-                LOGGER.fine("Send requests to create table");
-                statement.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO processes ('process') "
-                        + "VALUES(?);";
-                preparedStatement = connection.prepareStatement(sql);
-                for (String process : processes) {
-                    preparedStatement.setString(1, process);
-                    preparedStatement.execute();
-                }
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                preparedStatement.close();
-                connection.close();
-                return true;
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
-                try {
-                    if (statement != null) statement.close();
-                    if (preparedStatement != null) preparedStatement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
                 return false;
             }
         }

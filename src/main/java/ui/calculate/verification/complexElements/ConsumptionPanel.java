@@ -1,17 +1,20 @@
 package ui.calculate.verification.complexElements;
 
+import calculation.Calculation;
 import constants.CalibratorType;
 import constants.Key;
 import constants.MeasurementConstants;
 import converters.VariableConverter;
-import calculation.Calculation;
 import model.Calibrator;
 import model.Channel;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Objects;
 
 public class ConsumptionPanel extends JPanel {
     private static final String NAME = "Назва";

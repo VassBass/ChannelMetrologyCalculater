@@ -12,7 +12,6 @@ public interface AreaService {
     ArrayList<String> set(String oldObject, String newObject);
     String get(int index);
     void clear();
-    void exportData();
     void rewriteInCurrentThread(ArrayList<String>areas);
     void resetToDefault();
 }

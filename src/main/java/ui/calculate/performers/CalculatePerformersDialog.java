@@ -2,10 +2,10 @@ package ui.calculate.performers;
 
 import application.Application;
 import backgroundTasks.CertificateFormation;
+import calculation.Calculation;
 import constants.Key;
 import constants.WorkPositions;
 import converters.ConverterUI;
-import calculation.Calculation;
 import model.Channel;
 import ui.calculate.reference.CalculateReferenceDialog;
 import ui.calculate.verification.CalculateVerificationDialog;

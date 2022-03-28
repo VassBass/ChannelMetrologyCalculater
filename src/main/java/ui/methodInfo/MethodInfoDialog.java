@@ -1,7 +1,6 @@
 package ui.methodInfo;
 
 import application.Application;
-import constants.MeasurementConstants;
 import converters.ConverterUI;
 import settings.Settings;
 import ui.mainScreen.MainScreen;
