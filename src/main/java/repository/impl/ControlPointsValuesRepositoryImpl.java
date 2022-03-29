@@ -29,7 +29,8 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
     @Override
     protected void init() {
         LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
+        try (Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()){
             String sql = "CREATE TABLE IF NOT EXISTS control_points ("
                     + "id integer NOT NULL UNIQUE"
                     + ", sensor_type text NOT NULL"
@@ -38,28 +39,22 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
                     + ", range_max real NOT NULL"
                     + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
                     + ");";
-            Statement statement = connection.createStatement();
-
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
             LOGGER.fine("Send request to read control points from DB");
             sql = "SELECT * FROM control_points";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                ControlPointsValues cpv = new ControlPointsValues();
-                cpv.setId(resultSet.getInt("id"));
-                cpv.setSensorType(resultSet.getString("sensor_type"));
-                cpv.setValues(VariableConverter.stringToArray(resultSet.getString("points")));
-                cpv.setRangeMin(resultSet.getDouble("range_min"));
-                cpv.setRangeMax(resultSet.getDouble("range_max"));
-                this.mainList.add(cpv);
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    ControlPointsValues cpv = new ControlPointsValues();
+                    cpv.setId(resultSet.getInt("id"));
+                    cpv.setSensorType(resultSet.getString("sensor_type"));
+                    cpv.setValues(VariableConverter.stringToArray(resultSet.getString("points")));
+                    cpv.setRangeMin(resultSet.getDouble("range_min"));
+                    cpv.setRangeMax(resultSet.getDouble("range_max"));
+                    this.mainList.add(cpv);
+                }
             }
-
-            LOGGER.fine("Close connection");
-            resultSet.close();
-            statement.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -301,34 +296,30 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
         }
 
         boolean addControlPoints(ControlPointsValues cpv){
+            String sql = "INSERT INTO control_points ('id', 'sensor_type', 'points', 'range_min', 'range_max') "
+                    + "VALUES(?, ?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)){
                 LOGGER.fine("Send requests");
-                String sql = "INSERT INTO control_points ('id', 'sensor_type', 'points', 'range_min', 'range_max') "
-                        + "VALUES(?, ?, ?, ?, ?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setInt(1, cpv.getId());
                 statement.setString(2, cpv.getSensorType());
                 statement.setString(3, VariableConverter.arrayToString(cpv.getValues()));
                 statement.setDouble(4, cpv.getRangeMin());
                 statement.setDouble(5, cpv.getRangeMax());
                 statement.execute();
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         boolean setControlPoints(ControlPointsValues oldControlPoints, ControlPointsValues newControlPoints){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
-                Statement statement = connection.createStatement();
-
                 LOGGER.fine("Send requests to update");
                 String sql = "UPDATE control_points SET "
                         + "id = " + newControlPoints.getId() + ", "
@@ -338,48 +329,39 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
                         + "range_max = " + newControlPoints.getRangeMax() + " "
                         + "WHERE id = " + oldControlPoints.getId() + ";";
                 statement.execute(sql);
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean removeControlPoints(int id){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
                 String sql = "DELETE FROM control_points WHERE id = '" + id + "';";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         public boolean clearControlPoints(String sensorType){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request");
                 String sql = "DELETE FROM control_points WHERE sensor_type = '"+ sensorType + "';";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
     }
 }

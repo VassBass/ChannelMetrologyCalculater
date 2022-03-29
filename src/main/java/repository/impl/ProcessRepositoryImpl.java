@@ -29,27 +29,22 @@ public class ProcessRepositoryImpl extends Repository<String> implements Process
     @Override
     protected void init(){
         LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
+        try (Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()){
             String sql = "CREATE TABLE IF NOT EXISTS processes ("
                     + "process text NOT NULL UNIQUE"
                     + ", PRIMARY KEY (\"process\")"
                     + ");";
-            Statement statement = connection.createStatement();
-
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
             LOGGER.fine("Send request to read processes from DB");
             sql = "SELECT * FROM processes";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                this.mainList.add(resultSet.getString("process"));
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    this.mainList.add(resultSet.getString("process"));
+                }
             }
-
-            LOGGER.fine("Close connection");
-            resultSet.close();
-            statement.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -228,27 +223,23 @@ public class ProcessRepositoryImpl extends Repository<String> implements Process
 
         private boolean addProcess(String process){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send requests to add");
                 String sql = "INSERT INTO process ('process') "
-                        + "VALUES(?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, process);
-                statement.execute();
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
+                        + "VALUES('" + process + "');";
+                statement.execute(sql);
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         void addProcesses(ArrayList<String>processes){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-                Statement statement = connection.createStatement();
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to add");
                 for (String process : processes){
                     String sql = "INSERT INTO processes(process)"
@@ -256,9 +247,6 @@ public class ProcessRepositoryImpl extends Repository<String> implements Process
                             + "WHERE NOT EXISTS(SELECT 1 FROM processes WHERE process = '" + process + "');";
                     statement.execute(sql);
                 }
-
-                LOGGER.fine("Close connection");
-                statement.close();
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Error: ", ex);
             }
@@ -266,82 +254,67 @@ public class ProcessRepositoryImpl extends Repository<String> implements Process
 
         private boolean removeProcess(String process){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
                 String sql = "DELETE FROM processes WHERE process = '" + process + "';";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean clearProcesses(){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request");
                 String sql = "DELETE FROM processes;";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean setProcess(String oldProcess, String newProcess){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request");
-                Statement statement = connection.createStatement();
                 String sql = "UPDATE processes SET process = '" + newProcess + "' WHERE process = '" + oldProcess + "';";
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         public boolean rewriteProcesses(ArrayList<String>processes){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request to clear");
-                Statement statementClear = connection.createStatement();
                 String sql = "DELETE FROM processes;";
-                statementClear.execute(sql);
+                statement.execute(sql);
 
                 if (!processes.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO processes ('process') "
-                                + "VALUES(?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
                     for (String process : processes) {
-                        statement.setString(1, process);
-                        statement.execute();
+                        sql = "INSERT INTO processes ('process') "
+                                + "VALUES('" + process + "');";
+                        statement.execute(sql);
                     }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
                 }
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
     }
 }

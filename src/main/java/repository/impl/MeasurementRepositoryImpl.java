@@ -23,26 +23,21 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
                 + ");";
 
         LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
-            Statement statement = connection.createStatement();
-
+        try (Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()){
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
             LOGGER.fine("Send request to read measurements from DB");
             sql = "SELECT * FROM measurements";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                String name = resultSet.getString("name");
-                String value = resultSet.getString("value");
-                Measurement measurement = new Measurement(name, value);
-                this.mainList.add(measurement);
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    String name = resultSet.getString("name");
+                    String value = resultSet.getString("value");
+                    Measurement measurement = new Measurement(name, value);
+                    this.mainList.add(measurement);
+                }
             }
-
-            LOGGER.fine("Close connection");
-            resultSet.close();
-            statement.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -146,42 +141,28 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
         String sql = measurements == null || measurements.isEmpty() ? "DELETE FROM measurements;" : null;
 
         LOGGER.fine("Get connection with DB");
-        if (sql != null){
-            try (Connection connection = getConnection()) {
-                Statement statement = connection.createStatement();
-
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement()) {
+            if (sql != null) {
                 LOGGER.fine("Send request");
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-            }
-        }else {
-            try (Connection connection = getConnection()){
+            }else {
                 LOGGER.fine("Send request to clear");
-                Statement statementClear = connection.createStatement();
                 sql = "DELETE FROM measurements;";
-                statementClear.execute(sql);
+                statement.execute(sql);
 
                 if (!measurements.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO measurements ('name', 'value') VALUES (?, ?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
                     for (Measurement measurement : measurements) {
-                        statement.setString(1, measurement.getName());
-                        statement.setString(2, measurement.getValue());
-                        statement.execute();
+                        sql = "INSERT INTO measurements ('name', 'value') " +
+                                "VALUES ('" + measurement.getName() + "', " +
+                                "'" + measurement.getValue() + "');";
+                        statement.execute(sql);
                     }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
                 }
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
             }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
     }
 }

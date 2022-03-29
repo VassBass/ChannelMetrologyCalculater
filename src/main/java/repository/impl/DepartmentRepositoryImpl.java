@@ -24,26 +24,22 @@ public class DepartmentRepositoryImpl extends Repository<String> implements Depa
     @Override
     protected void init(){
         LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
+        try (Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()){
             String sql = "CREATE TABLE IF NOT EXISTS departments ("
                     + "department text NOT NULL UNIQUE"
                     + ", PRIMARY KEY (\"department\")"
                     + ");";
-            Statement statement = connection.createStatement();
-
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
             LOGGER.fine("Send request to read departments from DB");
             sql = "SELECT * FROM departments";
-            ResultSet resultSet = statement.executeQuery(sql);
-            while (resultSet.next()){
-                this.mainList.add(resultSet.getString("department"));
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    this.mainList.add(resultSet.getString("department"));
+                }
             }
-
-            LOGGER.fine("Close connection");
-            resultSet.close();
-            statement.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -222,27 +218,22 @@ public class DepartmentRepositoryImpl extends Repository<String> implements Depa
 
         private boolean addDepartment(String department){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send requests to add");
-                String sql = "INSERT INTO department ('department') "
-                        + "VALUES(?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, department);
-                statement.execute();
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
+                String sql = "INSERT INTO areas ('area') VALUES('" + department + "');";
+                statement.execute(sql);
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         void addDepartments(ArrayList<String>departments){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-                Statement statement = connection.createStatement();
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to add");
                 for (String department : departments){
                     String sql = "INSERT INTO departments(department)"
@@ -250,9 +241,6 @@ public class DepartmentRepositoryImpl extends Repository<String> implements Depa
                             + "WHERE NOT EXISTS(SELECT 1 FROM departments WHERE department = '" + department + "');";
                     statement.execute(sql);
                 }
-
-                LOGGER.fine("Close connection");
-                statement.close();
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Error: ", ex);
             }
@@ -260,82 +248,66 @@ public class DepartmentRepositoryImpl extends Repository<String> implements Depa
 
         private boolean removeDepartment(String department){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
                 String sql = "DELETE FROM departments WHERE department = '" + department + "';";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean clearDepartments(){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request");
                 String sql = "DELETE FROM departments;";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean setDepartment(String oldDepartment, String newDepartment){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request");
-                Statement statement = connection.createStatement();
                 String sql = "UPDATE departments SET department = '" + newDepartment + "' WHERE department = '" + oldDepartment + "';";
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         public boolean rewriteDepartments(ArrayList<String>departments){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                 Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request to clear");
-                Statement statementClear = connection.createStatement();
                 String sql = "DELETE FROM departments;";
-                statementClear.execute(sql);
+                statement.execute(sql);
 
                 if (!departments.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO departments ('department') "
-                            + "VALUES(?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
                     for (String department : departments) {
-                        statement.setString(1, department);
-                        statement.execute();
+                        sql = "INSERT INTO departments ('department') VALUES('" + department + "');";
+                        statement.execute(sql);
                     }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
                 }
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
     }
 }

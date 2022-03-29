@@ -23,29 +23,23 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
 
     @Override
     protected void init(){
-        String sql = "CREATE TABLE IF NOT EXISTS areas ("
+        String createSql = "CREATE TABLE IF NOT EXISTS areas ("
                 + "area text NOT NULL UNIQUE"
                 + ", PRIMARY KEY (\"area\")"
                 + ");";
-
+        String selectSql = "SELECT * FROM areas";
         LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
-            Statement statement = connection.createStatement();
-
+        try (Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()){
             LOGGER.fine("Send request to create table");
-            statement.execute(sql);
+            statement.execute(createSql);
 
             LOGGER.fine("Send request to read areas from DB");
-            sql = "SELECT * FROM areas";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                this.mainList.add(resultSet.getString("area"));
+            try (ResultSet resultSet = statement.executeQuery(selectSql)) {
+                while (resultSet.next()) {
+                    this.mainList.add(resultSet.getString("area"));
+                }
             }
-
-            LOGGER.fine("Close connection");
-            statement.close();
-            resultSet.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -222,28 +216,22 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
 
         private boolean addArea(String area){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send requests to add");
-                String sql = "INSERT INTO areas ('area') "
-                        + "VALUES(?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, area);
-                statement.execute();
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
+                String sql = "INSERT INTO areas ('area') VALUES('" + area + "');";
+                statement.execute(sql);
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         void addAreas(ArrayList<String>areas){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-                Statement statement = connection.createStatement();
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to add");
                 for (String area : areas){
                     String sql = "INSERT INTO areas(area)"
@@ -251,9 +239,6 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
                             + "WHERE NOT EXISTS(SELECT 1 FROM areas WHERE area = '" + area + "');";
                     statement.execute(sql);
                 }
-
-                LOGGER.fine("Close connection");
-                statement.close();
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Error: ", ex);
             }
@@ -261,83 +246,70 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
 
         private boolean removeArea(String area){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
                 String sql = "DELETE FROM areas WHERE area = '" + area + "';";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean clearAreas(){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request");
                 String sql = "DELETE FROM areas;";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean setArea(String oldArea, String newArea){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request");
-                Statement statement = connection.createStatement();
                 String sql = "UPDATE areas SET area = '" + newArea + "' "
                         + "WHERE area = '" + oldArea + "';";
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         boolean rewriteAreas(ArrayList<String>areas){
+            String insertSql = "INSERT INTO areas ('area') "
+                    + "VALUES(?);";
+            String clearSql = "DELETE FROM areas;";
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
-                LOGGER.fine("Send request to clear");
+            try (Connection connection = getConnection();
                 Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM areas;";
-                statementClear.execute(sql);
+                PreparedStatement statement = connection.prepareStatement(insertSql)) {
+                LOGGER.fine("Send request to clear");
+                statementClear.execute(clearSql);
 
                 if (!areas.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO areas ('area') "
-                                + "VALUES(?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
                     for (String area : areas) {
                         statement.setString(1, area);
                         statement.execute();
                     }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
                 }
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
     }
 }

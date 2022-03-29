@@ -23,27 +23,22 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
 
     public void init(){
         LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
+        try (Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()){
             String sql = "CREATE TABLE IF NOT EXISTS installations ("
                     + "installation text NOT NULL UNIQUE"
                     + ", PRIMARY KEY (\"installation\")"
                     + ");";
-            Statement statement = connection.createStatement();
-
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
             LOGGER.fine("Send request to read installations from DB");
             sql = "SELECT * FROM installations";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                this.mainList.add(resultSet.getString("installation"));
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    this.mainList.add(resultSet.getString("installation"));
+                }
             }
-
-            LOGGER.fine("Close connection");
-            resultSet.close();
-            statement.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -222,27 +217,22 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
 
         private boolean addInstallation(String installation){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send requests to add");
-                String sql = "INSERT INTO installations ('installation') "
-                        + "VALUES(?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, installation);
-                statement.execute();
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
+                String sql = "INSERT INTO installations ('installation') VALUES('" + installation + "');";
+                statement.execute(sql);
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         void addInstallations(ArrayList<String>installations){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-                Statement statement = connection.createStatement();
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to add");
                 for (String installation : installations){
                     String sql = "INSERT INTO installations(installation)"
@@ -250,9 +240,6 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
                             + "WHERE NOT EXISTS(SELECT 1 FROM installations WHERE installation = '" + installation + "');";
                     statement.execute(sql);
                 }
-
-                LOGGER.fine("Close connection");
-                statement.close();
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "Error: ", ex);
             }
@@ -260,82 +247,66 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
 
         private boolean removeInstallation(String installation){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
                 String sql = "DELETE FROM installations WHERE installation = '" + installation + "';";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean clearInstallations(){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request");
                 String sql = "DELETE FROM installations;";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean setInstallation(String oldInstallation, String newInstallation){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request");
-                Statement statement = connection.createStatement();
                 String sql = "UPDATE installations SET installation = '" + newInstallation + "' WHERE installation = '" + oldInstallation + "';";
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         public boolean rewriteInstallations(ArrayList<String>installations){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request to clear");
-                Statement statementClear = connection.createStatement();
                 String sql = "DELETE FROM installations;";
-                statementClear.execute(sql);
+                statement.execute(sql);
 
                 if (!installations.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO installations ('installation') "
-                                + "VALUES(?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
                     for (String installation : installations) {
-                        statement.setString(1, installation);
-                        statement.execute();
+                        sql = "INSERT INTO installations ('installation') VALUES('" + installation + "');";
+                        statement.execute(sql);
                     }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
                 }
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
     }
 }

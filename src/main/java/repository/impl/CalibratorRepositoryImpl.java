@@ -27,7 +27,8 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
     @Override
     protected void init() {
         LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
+        try (Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()){
             String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
                     + "name text NOT NULL UNIQUE"
                     + ", type text NOT NULL"
@@ -40,33 +41,27 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
                     + ", range_max real NOT NULL"
                     + ", PRIMARY KEY (\"name\")"
                     + ");";
-            Statement statement = connection.createStatement();
-
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
             LOGGER.fine("Send request to read calibrators from DB");
             sql = "SELECT * FROM calibrators";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                Calibrator calibrator = new Calibrator();
-                calibrator.setName(resultSet.getString("name"));
-                calibrator.setType(resultSet.getString("type"));
-                calibrator.setNumber(resultSet.getString("number"));
-                calibrator.setMeasurement(resultSet.getString("measurement"));
-                calibrator.setValue(resultSet.getString("value"));
-                calibrator.setErrorFormula(resultSet.getString("error_formula"));
-                String certificateString = resultSet.getString("certificate");
-                calibrator.setCertificate(Calibrator.Certificate.fromString(certificateString));
-                calibrator.setRangeMin(resultSet.getDouble("range_min"));
-                calibrator.setRangeMax(resultSet.getDouble("range_max"));
-                this.mainList.add(calibrator);
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    Calibrator calibrator = new Calibrator();
+                    calibrator.setName(resultSet.getString("name"));
+                    calibrator.setType(resultSet.getString("type"));
+                    calibrator.setNumber(resultSet.getString("number"));
+                    calibrator.setMeasurement(resultSet.getString("measurement"));
+                    calibrator.setValue(resultSet.getString("value"));
+                    calibrator.setErrorFormula(resultSet.getString("error_formula"));
+                    String certificateString = resultSet.getString("certificate");
+                    calibrator.setCertificate(Calibrator.Certificate.fromString(certificateString));
+                    calibrator.setRangeMin(resultSet.getDouble("range_min"));
+                    calibrator.setRangeMax(resultSet.getDouble("range_max"));
+                    this.mainList.add(calibrator);
+                }
             }
-
-            LOGGER.fine("Close connection");
-            resultSet.close();
-            statement.close();
         } catch (SQLException | JsonProcessingException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -279,13 +274,13 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
         }
 
         boolean addCalibrator(Calibrator calibrator){
+            String sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)){
 
                 LOGGER.fine("Send requests to add");
-                String sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
-                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                PreparedStatement statement = connection.prepareStatement(sql);
                 statement.setString(1, calibrator.getName());
                 statement.setString(2, calibrator.getType());
                 statement.setString(3, calibrator.getNumber());
@@ -296,55 +291,45 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
                 statement.setDouble(8, calibrator.getRangeMin());
                 statement.setDouble(9, calibrator.getRangeMax());
                 statement.execute();
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean removeCalibrator(Calibrator calibrator){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
                 String sql = "DELETE FROM calibrators WHERE name = '" + calibrator.getName() + "';";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean clearCalibrators(){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request");
                 String sql = "DELETE FROM calibrators;";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         boolean setCalibrator(Calibrator oldCalibrator, Calibrator newCalibrator){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-                Statement statement = connection.createStatement();
-
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send requests to update");
                 String sql = "UPDATE calibrators SET "
                         + "name = '" + newCalibrator.getName() + "', "
@@ -358,29 +343,26 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
                         + "range_max = " + newCalibrator.getRangeMax() + " "
                         + "WHERE name = '" + oldCalibrator.getName() + "';";
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         public boolean rewriteCalibrators(ArrayList<Calibrator>calibrators){
+            String clearSql = "DELETE FROM calibrators;";
+            String insertSql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
-                LOGGER.fine("Send request to clear");
+            try (Connection connection = getConnection();
                 Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM calibrators;";
-                statementClear.execute(sql);
+                PreparedStatement statement = connection.prepareStatement(insertSql)) {
+                LOGGER.fine("Send request to clear");
+                statementClear.execute(clearSql);
 
                 if (!calibrators.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
-                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
                     for (Calibrator calibrator : calibrators) {
                         statement.setString(1, calibrator.getName());
                         statement.setString(2, calibrator.getType());
@@ -393,16 +375,12 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
                         statement.setDouble(9, calibrator.getRangeMax());
                         statement.execute();
                     }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
                 }
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
     }
 }

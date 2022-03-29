@@ -29,7 +29,8 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
     @Override
     protected void init() {
         LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
+        try (Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()){
             String sql = "CREATE TABLE IF NOT EXISTS channels ("
                     + "code text NOT NULL UNIQUE"
                     + ", name text NOT NULL"
@@ -51,42 +52,36 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                     + ", allowable_error_value real NOT NULL"
                     + ", PRIMARY KEY (\"code\")"
                     + ");";
-            Statement statement = connection.createStatement();
-
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
             LOGGER.fine("Send request to read channels from DB");
             sql = "SELECT * FROM channels";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                Channel channel = new Channel();
-                channel.setCode(resultSet.getString("code"));
-                channel.setName(resultSet.getString("name"));
-                channel.setDepartment(resultSet.getString("department"));
-                channel.setArea(resultSet.getString("area"));
-                channel.setProcess(resultSet.getString("process"));
-                channel.setInstallation(resultSet.getString("installation"));
-                channel.setTechnologyNumber(resultSet.getString("technology_number"));
-                channel.setNumberOfProtocol(resultSet.getString("protocol_number"));
-                channel.setReference(resultSet.getString("reference"));
-                channel.setDate(resultSet.getString("date"));
-                channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
-                channel.setMeasurement(Measurement.fromString(resultSet.getString("measurement")));
-                channel.setSensor(Sensor.fromString(resultSet.getString("sensor")));
-                channel.setFrequency(resultSet.getDouble("frequency"));
-                channel.setRangeMin(resultSet.getDouble("range_min"));
-                channel.setRangeMax(resultSet.getDouble("range_max"));
-                double allowableErrorPercent = resultSet.getDouble("allowable_error_percent");
-                double allowableErrorValue = resultSet.getDouble("allowable_error_value");
-                channel.setAllowableError(allowableErrorPercent, allowableErrorValue);
-                this.mainList.add(channel);
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    Channel channel = new Channel();
+                    channel.setCode(resultSet.getString("code"));
+                    channel.setName(resultSet.getString("name"));
+                    channel.setDepartment(resultSet.getString("department"));
+                    channel.setArea(resultSet.getString("area"));
+                    channel.setProcess(resultSet.getString("process"));
+                    channel.setInstallation(resultSet.getString("installation"));
+                    channel.setTechnologyNumber(resultSet.getString("technology_number"));
+                    channel.setNumberOfProtocol(resultSet.getString("protocol_number"));
+                    channel.setReference(resultSet.getString("reference"));
+                    channel.setDate(resultSet.getString("date"));
+                    channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
+                    channel.setMeasurement(Measurement.fromString(resultSet.getString("measurement")));
+                    channel.setSensor(Sensor.fromString(resultSet.getString("sensor")));
+                    channel.setFrequency(resultSet.getDouble("frequency"));
+                    channel.setRangeMin(resultSet.getDouble("range_min"));
+                    channel.setRangeMax(resultSet.getDouble("range_max"));
+                    double allowableErrorPercent = resultSet.getDouble("allowable_error_percent");
+                    double allowableErrorValue = resultSet.getDouble("allowable_error_value");
+                    channel.setAllowableError(allowableErrorPercent, allowableErrorValue);
+                    this.mainList.add(channel);
+                }
             }
-
-            LOGGER.fine("Close connection");
-            resultSet.close();
-            statement.close();
         } catch (SQLException | JsonProcessingException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -324,88 +319,72 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
         }
 
         boolean addChannel(Channel channel){
+            String sql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
+                    ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'" +
+                    ", 'allowable_error_percent', 'allowable_error_value') "
+                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-                LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM channels WHERE code = '" + channel.getCode() + "';";
-                Statement statement = connection.createStatement();
-                statement.execute(sql);
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
-                        ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'" +
-                        ", 'allowable_error_percent', 'allowable_error_value') "
-                        + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                PreparedStatement preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1, channel.getCode());
-                preparedStatement.setString(2, channel.getName());
-                preparedStatement.setString(3, channel.getDepartment());
-                preparedStatement.setString(4, channel.getArea());
-                preparedStatement.setString(5, channel.getProcess());
-                preparedStatement.setString(6, channel.getInstallation());
-                preparedStatement.setString(7, channel.getTechnologyNumber());
-                preparedStatement.setString(8, channel.getNumberOfProtocol());
-                preparedStatement.setString(9,channel.getReference());
-                preparedStatement.setString(10, channel.getDate());
-                preparedStatement.setString(11, String.valueOf(channel.isSuitability()));
-                preparedStatement.setString(12, channel.getMeasurement().toString());
-                preparedStatement.setString(13, channel.getSensor().toString());
-                preparedStatement.setDouble(14, channel.getFrequency());
-                preparedStatement.setDouble(15, channel.getRangeMin());
-                preparedStatement.setDouble(16, channel.getRangeMax());
-                preparedStatement.setDouble(17, channel.getAllowableErrorPercent());
-                preparedStatement.setDouble(18, channel.getAllowableError());
-                preparedStatement.execute();
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                preparedStatement.close();
-                return true;
+            try (Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)){
+                LOGGER.fine("Send request");
+                statement.setString(1, channel.getCode());
+                statement.setString(2, channel.getName());
+                statement.setString(3, channel.getDepartment());
+                statement.setString(4, channel.getArea());
+                statement.setString(5, channel.getProcess());
+                statement.setString(6, channel.getInstallation());
+                statement.setString(7, channel.getTechnologyNumber());
+                statement.setString(8, channel.getNumberOfProtocol());
+                statement.setString(9,channel.getReference());
+                statement.setString(10, channel.getDate());
+                statement.setString(11, String.valueOf(channel.isSuitability()));
+                statement.setString(12, channel.getMeasurement().toString());
+                statement.setString(13, channel.getSensor().toString());
+                statement.setDouble(14, channel.getFrequency());
+                statement.setDouble(15, channel.getRangeMin());
+                statement.setDouble(16, channel.getRangeMax());
+                statement.setDouble(17, channel.getAllowableErrorPercent());
+                statement.setDouble(18, channel.getAllowableError());
+                statement.execute();
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean removeChannel(String channelCode){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
                 String sql = "DELETE FROM channels WHERE code = '" + channelCode + "';";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean clearChannels(){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request");
                 String sql = "DELETE FROM channels;";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         boolean setChannel(Channel oldChannel, Channel newChannel){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-                Statement statement = connection.createStatement();
-
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send requests to update");
                 String sql =  "UPDATE channels SET "
                         + "code = '" + newChannel.getCode() + "', "
@@ -428,31 +407,28 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                         + "allowable_error_value = " + newChannel.getAllowableError() + " "
                         + "WHERE code = '" + oldChannel.getCode() + "';";
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         public void rewriteChannels(ArrayList<Channel>channels){
+            String clearSql = "DELETE FROM channels;";
+            String insertSql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
+                    ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'" +
+                    ", 'allowable_error_percent', 'allowable_error_value') "
+                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
-                LOGGER.fine("Send request to clear");
+            try (Connection connection = getConnection();
                 Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM channels;";
-                statementClear.execute(sql);
+                PreparedStatement statement = connection.prepareStatement(insertSql)) {
+                LOGGER.fine("Send request to clear");
+                statementClear.execute(clearSql);
 
                 if (!channels.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
-                            ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'" +
-                            ", 'allowable_error_percent', 'allowable_error_value') "
-                            + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
                     for (Channel channel : channels) {
                         statement.setString(1, channel.getCode());
                         statement.setString(2, channel.getName());
@@ -474,10 +450,6 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                         statement.setDouble(18, channel.getAllowableError());
                         statement.execute();
                     }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
                 }
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);

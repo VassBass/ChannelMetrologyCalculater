@@ -28,7 +28,8 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
     @Override
     protected void init() {
         LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection()){
+        try (Connection connection = this.getConnection();
+            Statement statement = connection.createStatement()){
             String sql = "CREATE TABLE IF NOT EXISTS persons ("
                     + "id integer NOT NULL UNIQUE"
                     + ", name text NOT NULL"
@@ -37,28 +38,22 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                     + ", position text NOT NULL"
                     + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
                     + ");";
-            Statement statement = connection.createStatement();
-
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
 
             LOGGER.fine("Send request");
             sql = "SELECT * FROM persons";
-            ResultSet resultSet = statement.executeQuery(sql);
-
-            while (resultSet.next()){
-                Person person = new Person();
-                person.setId(resultSet.getInt("id"));
-                person.setName(resultSet.getString("name"));
-                person.setSurname(resultSet.getString("surname"));
-                person.setPatronymic(resultSet.getString("patronymic"));
-                person.setPosition(resultSet.getString("position"));
-                this.mainList.add(person);
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    Person person = new Person();
+                    person.setId(resultSet.getInt("id"));
+                    person.setName(resultSet.getString("name"));
+                    person.setSurname(resultSet.getString("surname"));
+                    person.setPatronymic(resultSet.getString("patronymic"));
+                    person.setPosition(resultSet.getString("position"));
+                    this.mainList.add(person);
+                }
             }
-
-            LOGGER.fine("Close connection");
-            resultSet.close();
-            statement.close();
         } catch (SQLException ex) {
             LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
         }
@@ -266,73 +261,57 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
         }
 
         boolean addPerson(Person person){
+            String sql = "INSERT INTO persons ('id', 'surname', 'name', 'patronymic', 'position') "
+                    + "VALUES(?, ?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-                LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM persons WHERE id = '?';";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setInt(1, person.getId());
-                statement.execute();
-
-                LOGGER.fine("Send requests to add");
-                sql = "INSERT INTO persons ('id', 'surname', 'name', 'patronymic', 'position') "
-                        + "VALUES(?, ?, ?, ?, ?);";
-                statement = connection.prepareStatement(sql);
+            try (Connection connection = getConnection();
+                PreparedStatement statement = connection.prepareStatement(sql)){
+                LOGGER.fine("Send request");
                 statement.setInt(1, person.getId());
                 statement.setString(2, person.getSurname());
                 statement.setString(3, person.getName());
                 statement.setString(4, person.getPatronymic());
                 statement.setString(5, person.getPosition());
                 statement.execute();
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean removePerson(int id){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
                 String sql = "DELETE FROM persons WHERE id = '" + id + "';";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connection");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         private boolean clearPersons(){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request");
                 String sql = "DELETE FROM persons;";
-                Statement statement = connection.createStatement();
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         boolean setPerson(Person oldPerson, Person newPerson){
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()){
-                Statement statement = connection.createStatement();
-
+            try (Connection connection = getConnection();
+                 Statement statement = connection.createStatement()){
                 LOGGER.fine("Send requests to update");
                 String sql = "UPDATE persons SET "
                         + "id = " + newPerson.getId() + ", "
@@ -342,29 +321,26 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                         + "position = '" + newPerson.getPosition() + " "
                         + "WHERE id = " + oldPerson.getId() + ";";
                 statement.execute(sql);
-
-                LOGGER.fine("Close connections");
-                statement.close();
-                return true;
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
 
         public boolean rewritePersons(ArrayList<Person>persons){
+            String clearSql = "DELETE FROM persons;";
+            String insertSql = "INSERT INTO persons ('id', 'name', 'surname', 'patronymic', 'position')" +
+                    " VALUES (?, ?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection()) {
-                LOGGER.fine("Send request to clear");
+            try (Connection connection = getConnection();
                 Statement statementClear = connection.createStatement();
-                String sql = "DELETE FROM persons;";
-                statementClear.execute(sql);
+                PreparedStatement statement = connection.prepareStatement(insertSql)) {
+                LOGGER.fine("Send request to clear");
+                statementClear.execute(clearSql);
 
                 if (!persons.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO persons ('id', 'name', 'surname', 'patronymic', 'position')" +
-                            " VALUES (?, ?, ?, ?, ?);";
-                    PreparedStatement statement = connection.prepareStatement(sql);
                     for (Person person : persons) {
                         statement.setInt(1, person.getId());
                         statement.setString(2, person.getName());
@@ -373,16 +349,12 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                         statement.setString(5, person.getPosition());
                         statement.execute();
                     }
-
-                    LOGGER.fine("Close connections");
-                    statementClear.close();
-                    statement.close();
                 }
-                return true;
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
+            return true;
         }
     }
 }

@@ -237,7 +237,7 @@ public class PressureCertificate extends Certificate {
         for (double[] value : measurementValues) {
             int row = 32;
             for (int z = 0; z < 6; z++) {
-                cell(++row, column).setCellValue(VariableConverter.roundingDouble2(value[z + 1], Locale.GERMAN));
+                cell(++row, column).setCellValue(VariableConverter.roundingDouble3(value[z + 1], Locale.GERMAN));
             }
             column++;
         }
