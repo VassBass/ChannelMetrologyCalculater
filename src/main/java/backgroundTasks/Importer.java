@@ -23,6 +23,8 @@ public class Importer extends SwingWorker<Boolean, Void> {
     private final Connection connection;
     private final LoadDialog loadDialog = new LoadDialog(Application.context.mainScreen);
     private final Model model;
+    private int stage;
+    private final File importFile;
 
     private ArrayList<Calibrator>newCalibrators, calibratorsForChange, changedCalibrators;
     private ArrayList<Channel>newChannels, channelsForChange, changedChannels;
@@ -30,8 +32,30 @@ public class Importer extends SwingWorker<Boolean, Void> {
 
     public Importer(File importFile, Model model) throws SQLException {
         super();
+        this.importFile = importFile;
         String dbUrl = "jdbc:sqlite:" + importFile.getAbsolutePath();
         this.model = model;
+        DriverManager.registerDriver(new JDBC());
+        this.connection = DriverManager.getConnection(dbUrl);
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                loadDialog.setVisible(true);
+            }
+        });
+    }
+
+    /*
+    stage 0 - import departments, areas, processes, installations, persons, controlPointsValues, calibrators
+    stage 1 - import sensors
+    stage 2 - import channels
+     */
+    public Importer(File importFile, int stage) throws SQLException {
+        super();
+        this.importFile = importFile;
+        this.stage = stage;
+        String dbUrl = "jdbc:sqlite:" + importFile.getAbsolutePath();
+        this.model = Model.ALL;
         DriverManager.registerDriver(new JDBC());
         this.connection = DriverManager.getConnection(dbUrl);
         EventQueue.invokeLater(new Runnable() {
@@ -47,6 +71,30 @@ public class Importer extends SwingWorker<Boolean, Void> {
         try {
             switch (this.model) {
                 default:
+                    switch (stage){
+                        case 0:
+                            Application.context.departmentService.addInCurrentThread(this.getDepartments());
+                            Application.context.areaService.addInCurrentThread(this.getAreas());
+                            Application.context.processService.addInCurrentThread(this.getProcesses());
+                            Application.context.installationService.addInCurrentThread(this.getInstallations());
+                            ArrayList<Person> p = this.getPersons();
+                            for (Person person : p) {
+                                Application.context.personService.set(person, person);
+                                Application.context.personService.add(person);
+                            }
+                            ArrayList<ControlPointsValues>points = this.getControlPoints();
+                            for (ControlPointsValues cpv : points){
+                                Application.context.controlPointsValuesService.putInCurrentThread(cpv);
+                            }
+                            this.fuelingCalibratorsLists(this.getCalibrators());
+                            break;
+                        case 1:
+                            this.fuelingSensorsLists(this.getSensors());
+                            break;
+                        case 2:
+                            this.fuelingChannelsLists(this.getChannels(), this.getSensors());
+                            break;
+                    }
                     return true;
                 case DEPARTMENT:
                     Application.context.departmentService.addInCurrentThread(this.getDepartments());
@@ -128,6 +176,36 @@ public class Importer extends SwingWorker<Boolean, Void> {
                                 new CompareSensorsDialog(newSensors, sensorsForChange, changedSensors).setVisible(true);
                             }
                         });
+                        break;
+                    default:
+                        switch (stage){
+                            case 0:
+                                EventQueue.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new CompareCalibratorsDialog(newCalibrators, calibratorsForChange, changedCalibrators, importFile).setVisible(true);
+                                    }
+                                });
+                                break;
+                            case 1:
+                                EventQueue.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new CompareSensorsDialog(newSensors, sensorsForChange, changedSensors, importFile).setVisible(true);
+                                    }
+                                });
+                                break;
+                            case 2:
+                                EventQueue.invokeLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        new CompareChannelsDialog(newChannels, channelsForChange, changedChannels,
+                                                newSensors, sensorsForChange).setVisible(true);
+                                    }
+                                });
+                                break;
+                        }
+                        break;
                 }
             }else {
                 JOptionPane.showMessageDialog(Application.context.mainScreen,
