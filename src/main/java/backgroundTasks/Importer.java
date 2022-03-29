@@ -23,7 +23,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
     private final Connection connection;
     private final LoadDialog loadDialog = new LoadDialog(Application.context.mainScreen);
     private final Model model;
-    private int stage;
+    private int stage = -1;
     private final File importFile;
 
     private ArrayList<Calibrator>newCalibrators, calibratorsForChange, changedCalibrators;
@@ -35,6 +35,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
         this.importFile = importFile;
         String dbUrl = "jdbc:sqlite:" + importFile.getAbsolutePath();
         this.model = model;
+        if (model == Model.ALL) this.stage = 0;
         DriverManager.registerDriver(new JDBC());
         this.connection = DriverManager.getConnection(dbUrl);
         EventQueue.invokeLater(new Runnable() {
@@ -70,7 +71,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
     protected Boolean doInBackground() throws Exception {
         try {
             switch (this.model) {
-                default:
+                case ALL:
                     switch (stage){
                         case 0:
                             Application.context.departmentService.addInCurrentThread(this.getDepartments());
@@ -131,6 +132,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
                     }
                     return true;
             }
+            return false;
         }catch (SQLException | JsonProcessingException ex){
             ex.printStackTrace();
             return false;
@@ -177,7 +179,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
                             }
                         });
                         break;
-                    default:
+                    case ALL:
                         switch (stage){
                             case 0:
                                 EventQueue.invokeLater(new Runnable() {
