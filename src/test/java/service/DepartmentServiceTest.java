@@ -3,13 +3,8 @@ package service;
 import def.DefaultDepartments;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.sqlite.JDBC;
 import service.impl.DepartmentServiceImpl;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,26 +19,12 @@ class DepartmentServiceTest {
 
     @BeforeEach
     void setUp() {
-        try {
-            DriverManager.registerDriver(new JDBC());
-            Connection connection = DriverManager.getConnection(DB_URL);
-            String sql = "DELETE FROM departments;";
-            Statement statement = connection.createStatement();
-            statement.execute(sql);
-            statement.close();
-            this.service.rewriteInCurrentThread(new ArrayList<String>());
-
-            sql = "INSERT INTO departments ('department') "
-                    + "VALUES "
-                    +       "('" + DOF + "'),"
-                    +       "('" + CVO + "');";
-            statement = connection.createStatement();
-            statement.execute(sql);
-            statement.close();
-            this.service.init();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        this.service.init();
+        this.service.clear();
+        ArrayList<String>testArray = new ArrayList<>();
+        testArray.add(DOF);
+        testArray.add(CVO);
+        this.service.addInCurrentThread(testArray);
     }
 
     @Test
@@ -109,12 +90,6 @@ class DepartmentServiceTest {
         assertEquals(DOF, dof);
         assertEquals(CVO, cvo);
         assertNull(nullString);
-    }
-
-    @Test
-    void clear() {
-        this.service.clear();
-        assertEquals(0, this.service.getAll().size());
     }
 
     @Test

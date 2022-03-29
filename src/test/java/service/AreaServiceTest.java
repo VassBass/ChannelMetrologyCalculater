@@ -3,13 +3,8 @@ package service;
 import def.DefaultAreas;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.sqlite.JDBC;
 import service.impl.AreaServiceImpl;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,26 +19,12 @@ class AreaServiceTest {
 
     @BeforeEach
     void setUp() {
-        try {
-            DriverManager.registerDriver(new JDBC());
-            Connection connection = DriverManager.getConnection(DB_URL);
-            String sql = "DELETE FROM areas;";
-            Statement statement = connection.createStatement();
-            statement.execute(sql);
-            statement.close();
-            this.service.rewriteInCurrentThread(new ArrayList<String>());
-
-            sql = "INSERT INTO areas ('area') "
-                    + "VALUES "
-                    +       "('" + OVSD_1 + "'),"
-                    +       "('" + OVSD_2 + "');";
-            statement = connection.createStatement();
-            statement.execute(sql);
-            statement.close();
-            this.service.init();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        this.service.init();
+        this.service.clear();
+        ArrayList<String>testArray = new ArrayList<>();
+        testArray.add(OVSD_1);
+        testArray.add(OVSD_2);
+        this.service.addInCurrentThread(testArray);
     }
 
     @Test
@@ -109,12 +90,6 @@ class AreaServiceTest {
         assertEquals(OVSD_1, dof);
         assertEquals(OVSD_2, cvo);
         assertNull(nullString);
-    }
-
-    @Test
-    void clear() {
-        this.service.clear();
-        assertEquals(0, this.service.getAll().size());
     }
 
     @Test

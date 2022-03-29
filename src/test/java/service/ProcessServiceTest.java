@@ -3,13 +3,8 @@ package service;
 import def.DefaultProcesses;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.sqlite.JDBC;
 import service.impl.ProcessServiceImpl;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,26 +19,12 @@ class ProcessServiceTest {
 
     @BeforeEach
     void setUp() {
-        try {
-            DriverManager.registerDriver(new JDBC());
-            Connection connection = DriverManager.getConnection(DB_URL);
-            String sql = "DELETE FROM processes;";
-            Statement statement = connection.createStatement();
-            statement.execute(sql);
-            statement.close();
-            this.service.rewriteInCurrentThread(new ArrayList<String>());
-
-            sql = "INSERT INTO processes ('process') "
-                    + "VALUES "
-                    +       "('" + SECTION + "'),"
-                    +       "('" + TECHNOLOGY_LINE + "');";
-            statement = connection.createStatement();
-            statement.execute(sql);
-            statement.close();
-            this.service.init();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        this.service.init();
+        this.service.clear();
+        ArrayList<String>testArray = new ArrayList<>();
+        testArray.add(SECTION);
+        testArray.add(TECHNOLOGY_LINE);
+        this.service.addInCurrentThread(testArray);
     }
 
     @Test
@@ -109,12 +90,6 @@ class ProcessServiceTest {
         assertEquals(SECTION, dof);
         assertEquals(TECHNOLOGY_LINE, cvo);
         assertNull(nullString);
-    }
-
-    @Test
-    void clear() {
-        this.service.clear();
-        assertEquals(0, this.service.getAll().size());
     }
 
     @Test
