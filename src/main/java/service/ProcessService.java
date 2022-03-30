@@ -13,5 +13,6 @@ public interface ProcessService {
     String get(int index);
     void clear();
     void rewriteInCurrentThread(ArrayList<String>process);
-    void resetToDefault();
+    void resetToDefaultInCurrentThread();
+    boolean backgroundTaskIsRun();
 }

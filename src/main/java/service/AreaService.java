@@ -13,5 +13,6 @@ public interface AreaService {
     String get(int index);
     void clear();
     void rewriteInCurrentThread(ArrayList<String>areas);
-    void resetToDefault();
+    void resetToDefaultInCurrentThread();
+    boolean backgroundTaskIsRun();
 }

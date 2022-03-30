@@ -77,7 +77,12 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public void resetToDefault() {
+    public void resetToDefaultInCurrentThread() {
         this.repository.rewriteInCurrentThread(DefaultProcesses.get());
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

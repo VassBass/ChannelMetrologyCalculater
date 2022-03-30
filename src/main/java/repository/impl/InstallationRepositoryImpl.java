@@ -18,6 +18,8 @@ import java.util.logging.Logger;
 public class InstallationRepositoryImpl extends Repository<String> implements InstallationRepository {
     private static final Logger LOGGER = Logger.getLogger(InstallationRepository.class.getName());
 
+    private boolean backgroundTaskRunning = false;
+
     public InstallationRepositoryImpl(){super();}
     public InstallationRepositoryImpl(String dbUrl){super(dbUrl);}
 
@@ -119,6 +121,11 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
         }
     }
 
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.backgroundTaskRunning;
+    }
+
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private String object, old;
         private ArrayList<String>list;
@@ -169,6 +176,7 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
                     if (saveMessage != null) saveMessage.setVisible(true);
                 }
             });
+            backgroundTaskRunning = true;
             this.execute();
         }
 
@@ -206,12 +214,13 @@ public class InstallationRepositoryImpl extends Repository<String> implements In
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
-                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
+                    if (Application.context != null) JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (ExecutionException | InterruptedException e) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", e);
             }
             Application.setBusy(false);
+            backgroundTaskRunning = false;
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 

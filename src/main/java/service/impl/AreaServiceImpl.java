@@ -77,7 +77,12 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public void resetToDefault() {
+    public void resetToDefaultInCurrentThread() {
         this.repository.rewriteInCurrentThread(DefaultAreas.get());
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

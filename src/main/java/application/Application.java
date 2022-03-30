@@ -57,6 +57,7 @@ public class Application extends SwingWorker<Void, String> {
         }
         return busy;
     }
+    public static boolean isBusy(){return busy;}
 
     public static String[] getHints(){
         return bufferNamesOfChannels;
@@ -101,16 +102,16 @@ public class Application extends SwingWorker<Void, String> {
         Settings.checkSettings();
         publish("Завантаження списку цехів");
         context.departmentService.init();
-        if (firstStart) context.departmentService.resetToDefault();
+        if (firstStart) context.departmentService.resetToDefaultInCurrentThread();
         publish("Завантаження списку ділянок");
         context.areaService.init();
-        if (firstStart) context.areaService.resetToDefault();
+        if (firstStart) context.areaService.resetToDefaultInCurrentThread();
         publish("Завантаження списку процесів");
         context.processService.init();
-        if (firstStart) context.processService.resetToDefault();
+        if (firstStart) context.processService.resetToDefaultInCurrentThread();
         publish("Завантаження списку установок");
         context.installationService.init();
-        if (firstStart) context.installationService.resetToDefault();
+        if (firstStart) context.installationService.resetToDefaultInCurrentThread();
         publish("Завантаження списку працівників");
         context.personService.init();
         if (firstStart) context.personService.resetToDefault();

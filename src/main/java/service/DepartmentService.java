@@ -13,5 +13,6 @@ public interface DepartmentService {
     String get(int index);
     void clear();
     void rewriteInCurrentThread(ArrayList<String>departments);
-    void resetToDefault();
+    void resetToDefaultInCurrentThread();
+    boolean backgroundTaskIsRun();
 }

@@ -13,5 +13,6 @@ public interface InstallationService {
     String get(int index);
     void clear();
     void rewriteInCurrentThread(ArrayList<String>installations);
-    void resetToDefault();
+    void resetToDefaultInCurrentThread();
+    boolean backgroundTaskIsRun();
 }

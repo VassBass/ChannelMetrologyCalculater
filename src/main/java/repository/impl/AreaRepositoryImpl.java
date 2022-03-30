@@ -21,6 +21,8 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
     public AreaRepositoryImpl(){super();}
     public AreaRepositoryImpl(String dbUrl){super(dbUrl);}
 
+    private boolean backgroundTaskRunning = false;
+
     @Override
     protected void init(){
         String createSql = "CREATE TABLE IF NOT EXISTS areas ("
@@ -118,6 +120,11 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
         }
     }
 
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.backgroundTaskRunning;
+    }
+
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private String object, old;
         private ArrayList<String>list;
@@ -168,6 +175,7 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
                     if (saveMessage != null) saveMessage.setVisible(true);
                 }
             });
+            backgroundTaskRunning = true;
             this.execute();
         }
 
@@ -205,12 +213,13 @@ public class AreaRepositoryImpl extends Repository<String> implements AreaReposi
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
-                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
+                    if (Application.context != null) JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (ExecutionException | InterruptedException e) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", e);
             }
             Application.setBusy(false);
+            backgroundTaskRunning = false;
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 

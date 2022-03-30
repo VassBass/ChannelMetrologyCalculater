@@ -78,7 +78,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void resetToDefault() {
+    public void resetToDefaultInCurrentThread() {
         this.repository.rewriteInCurrentThread(DefaultDepartments.get());
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

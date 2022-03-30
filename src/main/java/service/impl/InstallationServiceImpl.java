@@ -77,7 +77,12 @@ public class InstallationServiceImpl implements InstallationService {
     }
 
     @Override
-    public void resetToDefault() {
+    public void resetToDefaultInCurrentThread() {
         this.repository.rewriteInCurrentThread(DefaultInstallations.get());
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }
