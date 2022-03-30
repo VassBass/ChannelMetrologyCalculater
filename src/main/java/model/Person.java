@@ -8,7 +8,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class Person {
-    private int id;
+    private int id = -1;
     private String surname, name, patronymic, position;
 
     public int getId(){return this.id;}
@@ -37,7 +37,10 @@ public class Person {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         if (obj == this) return true;
         Person person = (Person) obj;
-        return this.id == person.getId();
+        return person.getName().equals(this.name)
+                && person.getSurname().equals(this.surname)
+                && person.getPatronymic().equals(this.patronymic)
+                && person.getPosition().equals(this.position);
     }
 
     @Override

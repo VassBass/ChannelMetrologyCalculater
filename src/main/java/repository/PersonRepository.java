@@ -10,6 +10,7 @@ public interface PersonRepository {
     String[] getNamesOfHeads();
     Person get(int index);
     void add(Person person);
+    void addInCurrentThread(ArrayList<Person>persons);
     void addInCurrentThread(Person person);
     void remove(Person person);
     void set(Person oldPerson, Person newPerson);
@@ -17,4 +18,5 @@ public interface PersonRepository {
     void clear();
     void rewriteInCurrentThread(ArrayList<Person>persons);
     void rewrite(ArrayList<Person>persons);
+    boolean backgroundTaskIsRun();
 }

@@ -114,7 +114,7 @@ public class Application extends SwingWorker<Void, String> {
         if (firstStart) context.installationService.resetToDefaultInCurrentThread();
         publish("Завантаження списку працівників");
         context.personService.init();
-        if (firstStart) context.personService.resetToDefault();
+        if (firstStart) context.personService.resetToDefaultInCurrentThread();
         publish("Завантаження списку вимірюваннь");
         context.measurementService.init();
         if (firstStart) context.measurementService.resetToDefault();

@@ -51,6 +51,11 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<Person> persons) {
+        this.repository.addInCurrentThread(persons);
+    }
+
+    @Override
     public void addInCurrentThread(Person person) {
         this.repository.addInCurrentThread(person);
     }
@@ -88,7 +93,12 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public void resetToDefault(){
+    public void resetToDefaultInCurrentThread(){
         this.repository.rewriteInCurrentThread(DefaultPersons.get());
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

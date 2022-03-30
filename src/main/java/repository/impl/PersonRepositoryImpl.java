@@ -22,6 +22,8 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
 
     private static final String EMPTY_ARRAY = "<Порожньо>";
 
+    private boolean backgroundTaskRunning = false;
+
     public PersonRepositoryImpl(){super();}
     public PersonRepositoryImpl(String dbUrl){super(dbUrl);}
 
@@ -103,6 +105,18 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
     }
 
     @Override
+    public void addInCurrentThread(ArrayList<Person> persons) {
+        if (persons != null && !persons.isEmpty()) {
+            for (Person person : persons) {
+                if (person != null && !this.mainList.contains(person)){
+                    this.mainList.add(person);
+                }
+            }
+            new BackgroundAction().addPersons(persons);
+        }
+    }
+
+    @Override
     public void addInCurrentThread(Person person) {
         if (person != null && !this.mainList.contains(person)) {
             this.mainList.add(person);
@@ -164,6 +178,11 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
         }
     }
 
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.backgroundTaskRunning;
+    }
+
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private Person person, old;
         private ArrayList<Person>list;
@@ -214,6 +233,7 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                     if (saveMessage != null) saveMessage.setVisible(true);
                 }
             });
+            backgroundTaskRunning = true;
             this.execute();
         }
 
@@ -251,33 +271,56 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                             break;
                     }
                     String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
-                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
+                    if (Application.context != null) JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
                 }
             } catch (ExecutionException | InterruptedException e) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", e);
             }
             Application.setBusy(false);
+            backgroundTaskRunning = false;
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
         boolean addPerson(Person person){
-            String sql = "INSERT INTO persons ('id', 'surname', 'name', 'patronymic', 'position') "
-                    + "VALUES(?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO persons ('surname', 'name', 'patronymic', 'position') "
+                        + "VALUES(?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)){
                 LOGGER.fine("Send request");
-                statement.setInt(1, person.getId());
-                statement.setString(2, person.getSurname());
-                statement.setString(3, person.getName());
-                statement.setString(4, person.getPatronymic());
-                statement.setString(5, person.getPosition());
+                statement.setString(1, person.getSurname());
+                statement.setString(2, person.getName());
+                statement.setString(3, person.getPatronymic());
+                statement.setString(4, person.getPosition());
                 statement.execute();
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
                 return false;
             }
             return true;
+        }
+
+        void addPersons(ArrayList<Person>persons){
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection();
+                 Statement statement = connection.createStatement()){
+                LOGGER.fine("Send request to add");
+                for (Person person : persons){
+                    if (person != null) {
+                        String sql = "INSERT INTO persons (id, name, surname, patronymic, position)"
+                                + "SELECT "
+                                + "" + person.getId() + ", "
+                                + "'" + person.getName() + "', "
+                                + "'" + person.getSurname() + "', "
+                                + "'" + person.getPatronymic() + "', "
+                                + "'" + person.getPosition() + "' "
+                                + "WHERE NOT EXISTS(SELECT 1 FROM persons WHERE id = " + person.getId() + ");";
+                        statement.execute(sql);
+                    }
+                }
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Error: ", ex);
+            }
         }
 
         private boolean removePerson(int id){
@@ -314,11 +357,10 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                  Statement statement = connection.createStatement()){
                 LOGGER.fine("Send requests to update");
                 String sql = "UPDATE persons SET "
-                        + "id = " + newPerson.getId() + ", "
                         + "name = '" + newPerson.getName() + "', "
                         + "surname = '" + newPerson.getSurname() + "', "
                         + "patronymic = '" + newPerson.getPatronymic() + "', "
-                        + "position = '" + newPerson.getPosition() + " "
+                        + "position = '" + newPerson.getPosition() + "' "
                         + "WHERE id = " + oldPerson.getId() + ";";
                 statement.execute(sql);
             }catch (SQLException ex){
