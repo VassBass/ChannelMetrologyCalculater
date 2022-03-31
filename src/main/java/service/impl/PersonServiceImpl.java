@@ -35,13 +35,13 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public String[] getAllNames(){
-        return this.repository.getAllNames();
+    public String[] getAllNamesWithFirstEmptyString(){
+        return this.repository.getAllNamesWithFirstEmptyString();
     }
 
     @Override
-    public String[] getNamesOfHeads(){
-        return this.repository.getNamesOfHeads();
+    public String[] getNamesOfHeadsWithFirstEmptyString(){
+        return this.repository.getNamesOfHeadsWithFirstEmptyString();
     }
 
     @Override

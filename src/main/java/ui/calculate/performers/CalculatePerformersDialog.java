@@ -130,11 +130,11 @@ public class CalculatePerformersDialog extends JDialog {
     }
 
     private String[]personsNames(){
-        return Application.context.personService.getAllNames();
+        return Application.context.personService.getAllNamesWithFirstEmptyString();
     }
 
     private String[]headsOfDepartment(){
-        return Application.context.personService.getNamesOfHeads();
+        return Application.context.personService.getNamesOfHeadsWithFirstEmptyString();
     }
 
     private void setValues(HashMap<Integer, Object> values){

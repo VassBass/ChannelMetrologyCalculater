@@ -30,6 +30,11 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
+    public void add(Measurement measurement) {
+        this.repository.add(measurement);
+    }
+
+    @Override
     public String[]getAllNames(){
         return this.repository.getAllNames();
     }
@@ -65,12 +70,22 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
+    public void delete(Measurement measurement) {
+        this.repository.delete(measurement);
+    }
+
+    @Override
+    public void clear() {
+        this.repository.clear();
+    }
+
+    @Override
     public ArrayList<Measurement>getMeasurements(String name){
         return this.repository.getMeasurements(name);
     }
 
     @Override
-    public void resetToDefault() {
+    public void resetToDefaultInCurrentThread() {
         this.repository.rewriteInCurrentThread(DefaultMeasurements.get());
     }
 }

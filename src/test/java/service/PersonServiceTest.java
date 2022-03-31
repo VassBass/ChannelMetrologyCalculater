@@ -22,7 +22,6 @@ class PersonServiceTest {
 
     private Person engineer(){
         Person person = new Person();
-        person.setId(1);
         person.setSurname("Петров");
         person.setName("Петр");
         person.setPatronymic("Петрович");
@@ -32,7 +31,6 @@ class PersonServiceTest {
 
     private Person juniorEngineer(){
         Person person = new Person();
-        person.setId(2);
         person.setSurname("Иванов");
         person.setName("Иван");
         person.setPatronymic("Иванович");
@@ -42,7 +40,6 @@ class PersonServiceTest {
 
     private Person headOfArea(){
         Person person = new Person();
-        person.setId(3);
         person.setSurname("Васильев");
         person.setName("Василий");
         person.setPatronymic("Васильевич");
@@ -52,7 +49,6 @@ class PersonServiceTest {
 
     private Person headOfDepartment(){
         Person person = new Person();
-        person.setId(4);
         person.setSurname("Семёнов");
         person.setName("Семён");
         person.setPatronymic("Семёнович");
@@ -62,7 +58,6 @@ class PersonServiceTest {
 
     private String getFullNameOfHeadOfDepartment(){
         Person person = new Person();
-        person.setId(4);
         person.setSurname("Семёнов");
         person.setName("Семён");
         person.setPatronymic("Семёнович");
@@ -72,7 +67,6 @@ class PersonServiceTest {
 
     private Person electronicEngineer(){
         Person person = new Person();
-        person.setId(5);
         person.setSurname("Павлов");
         person.setName("Павел");
         person.setPatronymic("Павлович");
@@ -99,7 +93,6 @@ class PersonServiceTest {
                  ResultSet resultSet = statement.executeQuery(sql)) {
                 while (resultSet.next()) {
                     Person person = new Person();
-                    person.setId(resultSet.getInt("id"));
                     person.setSurname(resultSet.getString("surname"));
                     person.setName(resultSet.getString("name"));
                     person.setPatronymic(resultSet.getString("patronymic"));
@@ -161,7 +154,7 @@ class PersonServiceTest {
             testArray[index++] = p.getFullName();
         }
 
-        assertArrayEquals(testArray, this.service.getAllNames());
+        assertArrayEquals(testArray, this.service.getAllNamesWithFirstEmptyString());
         testList = this.getAllFromDB();
 
         String[]allNamesFromDB = new String[testList.size() + 1];
@@ -181,7 +174,7 @@ class PersonServiceTest {
         Date start = new Date();
         String[]testArray = new String[]{EMPTY_ARRAY, this.getFullNameOfHeadOfDepartment()};
 
-        assertArrayEquals(testArray, this.service.getNamesOfHeads());
+        assertArrayEquals(testArray, this.service.getNamesOfHeadsWithFirstEmptyString());
         System.out.println("getNamesOfHeads() duration = " + this.howLong(start, new Date()) + " mills");
     }
 

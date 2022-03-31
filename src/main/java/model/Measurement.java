@@ -7,28 +7,27 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.annotation.Nonnull;
+
 public class Measurement implements Serializable {
 
-    protected String name, value;
+    @Nonnull protected String name = "measurement";
+    @Nonnull protected String value = "value";
 
     public Measurement(){}
 
-    public Measurement(String name, String value){
-        if (name == null || value == null){
-            throw new NullPointerException();
-        }else {
+    public Measurement(@Nonnull String name, @Nonnull String value){
             this.name = name;
             this.value = value;
-        }
     }
 
     //Getters
-    public String getName() {return this.name;}
-    public String getValue() {return this.value;}
+    @Nonnull public String getName() {return this.name;}
+    @Nonnull public String getValue() {return this.value;}
 
     //Setters
-    public void setName(String name) {this.name = name;}
-    public void setValue(String value){this.value = value;}
+    public void setName(@Nonnull String name) {this.name = name;}
+    public void setValue(@Nonnull String value){this.value = value;}
 
     @Override
     public int hashCode() {
@@ -40,8 +39,7 @@ public class Measurement implements Serializable {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         if (obj == this) return true;
         Measurement measurement = (Measurement) obj;
-        return this.name.equals(measurement.getName())
-                && this.value.equals(measurement.getValue());
+        return this.value.equals(measurement.getValue());
     }
 
     @Override

@@ -457,7 +457,6 @@ public class Importer extends SwingWorker<Boolean, Void> {
         ResultSet resultSet = statement.executeQuery(sql);
         while (resultSet.next()){
             Person person = new Person();
-            person.setId(resultSet.getInt("id"));
             person.setName(resultSet.getString("name"));
             person.setSurname(resultSet.getString("surname"));
             person.setPatronymic(resultSet.getString("patronymic"));

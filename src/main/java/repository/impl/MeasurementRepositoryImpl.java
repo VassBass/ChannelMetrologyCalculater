@@ -19,7 +19,8 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
     protected void init(){
         String sql = "CREATE TABLE IF NOT EXISTS measurements ("
                 + "name text NOT NULL"
-                + ", value text NOT NULL"
+                + ", value text NOT NULL UNIQUE, "
+                + "PRIMARY KEY(\"value\")"
                 + ");";
 
         LOGGER.fine("Get connection with DB");
@@ -105,19 +106,63 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
 
     @Override
     public Measurement get(String value) {
-        if (value != null && value.length() > 0) {
-            for (Measurement measurement : this.mainList) {
-                if (measurement.getValue().equals(value)) {
-                    return measurement;
-                }
-            }
-        }
-        return null;
+        if (value != null && value.length() > 0){
+            int index = this.mainList.indexOf(new Measurement("", value));
+            return index < 0 ? null : this.mainList.get(index);
+        }else return null;
     }
 
     @Override
     public Measurement get(int index) {
         return index < 0 || index >= this.mainList.size() ? null : this.mainList.get(index);
+    }
+
+    @Override
+    public void add(Measurement measurement) {
+        if (measurement != null && !this.mainList.contains(measurement)){
+            try (Connection connection = this.getConnection();
+                Statement statement = connection.createStatement()){
+                String sql = "INSERT INTO measurements ('name', 'value') "
+                        + "VALUES ("
+                        + "'" + measurement.getName() + "', "
+                        + "'" + measurement.getValue() + "'"
+                        + ");";
+                statement.execute(sql);
+
+                this.mainList.add(measurement);
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "Error: ", ex);
+            }
+        }
+    }
+
+    @Override
+    public void delete(Measurement measurement) {
+        if (measurement != null && this.mainList.contains(measurement)){
+            try (Connection connection = this.getConnection();
+                Statement statement = connection.createStatement()){
+                String sql = "DELETE FROM measurements "
+                        + "WHERE value = '" + measurement.getValue() + "';";
+                statement.execute(sql);
+
+                this.mainList.remove(measurement);
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "Error: ", ex);
+            }
+        }
+    }
+
+    @Override
+    public void clear() {
+        try (Connection connection = this.getConnection();
+             Statement statement = connection.createStatement()){
+            String sql = "DELETE FROM measurements;";
+            statement.execute(sql);
+
+            this.mainList.clear();
+        }catch (SQLException ex){
+            LOGGER.log(Level.SEVERE, "Error: ", ex);
+        }
     }
 
     @Override
@@ -138,17 +183,12 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
         this.mainList.clear();
         this.mainList.addAll(measurements);
 
-        String sql = measurements == null || measurements.isEmpty() ? "DELETE FROM measurements;" : null;
-
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            if (sql != null) {
-                LOGGER.fine("Send request");
-                statement.execute(sql);
-            }else {
+        if (measurements != null && !measurements.isEmpty()) {
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection();
+                 Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request to clear");
-                sql = "DELETE FROM measurements;";
+                String sql = "DELETE FROM measurements;";
                 statement.execute(sql);
 
                 if (!measurements.isEmpty()) {
@@ -160,9 +200,9 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
                         statement.execute(sql);
                     }
                 }
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
             }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
     }
 }

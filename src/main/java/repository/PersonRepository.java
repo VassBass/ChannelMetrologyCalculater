@@ -6,8 +6,13 @@ import java.util.ArrayList;
 
 public interface PersonRepository {
     ArrayList<Person>getAll();
-    String[] getAllNames();
-    String[] getNamesOfHeads();
+
+    //return array with first String equals "<Порожньо>"
+    String[] getAllNamesWithFirstEmptyString();
+
+    //return array with first String equals "<Порожньо>"
+    String[] getNamesOfHeadsWithFirstEmptyString();
+
     Person get(int index);
     void add(Person person);
     void addInCurrentThread(ArrayList<Person>persons);

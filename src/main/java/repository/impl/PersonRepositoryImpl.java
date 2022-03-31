@@ -33,12 +33,10 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
         try (Connection connection = this.getConnection();
             Statement statement = connection.createStatement()){
             String sql = "CREATE TABLE IF NOT EXISTS persons ("
-                    + "id integer NOT NULL UNIQUE"
-                    + ", name text NOT NULL"
+                    + "name text NOT NULL"
                     + ", surname text NOT NULL"
                     + ", patronymic text"
                     + ", position text NOT NULL"
-                    + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
                     + ");";
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
@@ -48,7 +46,6 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
             try (ResultSet resultSet = statement.executeQuery(sql)) {
                 while (resultSet.next()) {
                     Person person = new Person();
-                    person.setId(resultSet.getInt("id"));
                     person.setName(resultSet.getString("name"));
                     person.setSurname(resultSet.getString("surname"));
                     person.setPatronymic(resultSet.getString("patronymic"));
@@ -68,7 +65,7 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
     }
 
     @Override
-    public String[] getAllNames() {
+    public String[] getAllNamesWithFirstEmptyString() {
         int length = this.mainList.size() + 1;
         String[] persons = new String[length];
         persons[0] = EMPTY_ARRAY;
@@ -80,7 +77,7 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
     }
 
     @Override
-    public String[] getNamesOfHeads() {
+    public String[] getNamesOfHeadsWithFirstEmptyString() {
         ArrayList<String>heads = new ArrayList<>();
         heads.add(EMPTY_ARRAY);
         for (Person worker : this.mainList){
@@ -243,7 +240,7 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                 case ADD:
                     return this.addPerson(this.person);
                 case REMOVE:
-                    return this.removePerson(this.person.getId());
+                    return this.removePerson(this.person);
                 case CLEAR:
                     return this.clearPersons();
                 case SET:
@@ -307,14 +304,18 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                 LOGGER.fine("Send request to add");
                 for (Person person : persons){
                     if (person != null) {
-                        String sql = "INSERT INTO persons (id, name, surname, patronymic, position)"
+                        String sql = "INSERT INTO persons (name, surname, patronymic, position)"
                                 + "SELECT "
-                                + "" + person.getId() + ", "
                                 + "'" + person.getName() + "', "
                                 + "'" + person.getSurname() + "', "
                                 + "'" + person.getPatronymic() + "', "
                                 + "'" + person.getPosition() + "' "
-                                + "WHERE NOT EXISTS(SELECT 1 FROM persons WHERE id = " + person.getId() + ");";
+                                + "WHERE NOT EXISTS(SELECT 1 FROM persons " +
+                                "WHERE name = '" + person.getName() + "' "
+                                + "AND surname = '" + person.getSurname() + "' "
+                                + "AND patronymic = '" + person.getPatronymic() + "' "
+                                + "AND position = '" + person.getPosition() + "'"
+                                + ");";
                         statement.execute(sql);
                     }
                 }
@@ -323,12 +324,17 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
             }
         }
 
-        private boolean removePerson(int id){
+        private boolean removePerson(Person person){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection();
                 Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM persons WHERE id = '" + id + "';";
+                String sql = "DELETE FROM persons " +
+                        "WHERE name = '" + person.getName() + "' "
+                        + "AND surname = '" + person.getSurname() + "' "
+                        + "AND patronymic = '" + person.getPatronymic() + "' "
+                        + "AND position = '" + person.getPosition() + "'"
+                        + ";";
                 statement.execute(sql);
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
@@ -361,7 +367,11 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                         + "surname = '" + newPerson.getSurname() + "', "
                         + "patronymic = '" + newPerson.getPatronymic() + "', "
                         + "position = '" + newPerson.getPosition() + "' "
-                        + "WHERE id = " + oldPerson.getId() + ";";
+                        + "WHERE name = '" + oldPerson.getName() + "' "
+                        + "AND surname = '" + oldPerson.getSurname() + "' "
+                        + "AND patronymic = '" + oldPerson.getPatronymic() + "' "
+                        + "AND position = '" + oldPerson.getPosition() + "'"
+                        + ";";
                 statement.execute(sql);
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
@@ -372,8 +382,8 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
 
         public boolean rewritePersons(ArrayList<Person>persons){
             String clearSql = "DELETE FROM persons;";
-            String insertSql = "INSERT INTO persons ('id', 'name', 'surname', 'patronymic', 'position')" +
-                    " VALUES (?, ?, ?, ?, ?);";
+            String insertSql = "INSERT INTO persons ('name', 'surname', 'patronymic', 'position')" +
+                    " VALUES (?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection();
                 Statement statementClear = connection.createStatement();
@@ -384,11 +394,10 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
                 if (!persons.isEmpty()) {
                     LOGGER.fine("Send requests to add");
                     for (Person person : persons) {
-                        statement.setInt(1, person.getId());
-                        statement.setString(2, person.getName());
-                        statement.setString(3, person.getSurname());
-                        statement.setString(4, person.getPatronymic());
-                        statement.setString(5, person.getPosition());
+                        statement.setString(1, person.getName());
+                        statement.setString(2, person.getSurname());
+                        statement.setString(3, person.getPatronymic());
+                        statement.setString(4, person.getPosition());
                         statement.execute();
                     }
                 }
