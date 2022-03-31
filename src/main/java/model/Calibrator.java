@@ -9,53 +9,54 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Calibrator implements Serializable {
 
-    private String type = "";
-    private String name = "";
-    private Certificate certificate;
-    private String number = "";
-    private String measurement = "";
+    @Nonnull private String type = "";
+    @Nonnull private String name = "";
+    @Nonnull private Certificate certificate;
+    @Nonnull private String number = "";
+    @Nonnull private String measurement = "";
     private double rangeMin = 0D;
     private double rangeMax = 0D;
-    private String value = "";
-    private String errorFormula = "";
+    @Nonnull private String value = "";
+    @Nonnull private String errorFormula = "";
 
     public Calibrator(){
         this.certificate = new Certificate();
     }
 
     //Getters
-    public String getType() {return this.type;}
-    public String getName(){return this.name;}
-    public String getNumber(){return this.number;}
-    public Certificate getCertificate(){return this.certificate;}
+    @Nonnull public String getType() {return this.type;}
+    @Nonnull public String getName(){return this.name;}
+    @Nonnull public String getNumber(){return this.number;}
+    @Nonnull public Certificate getCertificate(){return this.certificate;}
     public double getRangeMin(){return this.rangeMin;}
     public double getRangeMax(){return this.rangeMax;}
     public double getRange(){return this.rangeMax - this.rangeMin;}
-    public String getValue(){return this.value;}
-    public String getMeasurement(){return this.measurement;}
-    public String getCertificateName(){return this.certificate.getName();}
-    public String getCertificateDate(){return this.certificate.getDate();}
-    public String getCertificateCompany(){return this.certificate.getCompany();}
-    public String getErrorFormula(){return this.errorFormula;}
+    @Nonnull public String getValue(){return this.value;}
+    @Nonnull public String getMeasurement(){return this.measurement;}
+    @Nonnull public String getCertificateName(){return this.certificate.getName();}
+    @Nonnull public String getCertificateDate(){return this.certificate.getDate();}
+    @Nonnull public String getCertificateCompany(){return this.certificate.getCompany();}
+    @Nonnull public String getErrorFormula(){return this.errorFormula;}
 
     //Setters
-    public void setType(String type) {this.type = type;}
-    public void setName(String name){this.name = name;}
-    public void setNumber(String number){this.number = number;}
+    public void setType(@Nonnull String type) {this.type = type;}
+    public void setName(@Nonnull String name){this.name = name;}
+    public void setNumber(@Nonnull String number){this.number = number;}
     public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
-    public void setValue(String value){this.value = value;}
-    public void setCertificateName(String name){this.certificate.setName(name);}
-    public void setCertificateDate(String date){this.certificate.setDate(date);}
-    public void setCertificateCompany(String company){this.certificate.setCompany(company);}
-    public void setErrorFormula(String errorFormula){this.errorFormula = errorFormula;}
-    public void setMeasurement(String measurement){this.measurement = measurement;}
-    public void setCertificate(Certificate certificate){this.certificate = certificate;}
+    public void setValue(@Nonnull String value){this.value = value;}
+    public void setCertificateName(@Nonnull String name){this.certificate.setName(name);}
+    public void setCertificateDate(@Nonnull String date){this.certificate.setDate(date);}
+    public void setCertificateCompany(@Nonnull String company){this.certificate.setCompany(company);}
+    public void setErrorFormula(@Nonnull String errorFormula){this.errorFormula = errorFormula;}
+    public void setMeasurement(@Nonnull String measurement){this.measurement = measurement;}
+    public void setCertificate(@Nonnull Certificate certificate){this.certificate = certificate;}
 
     public String getCertificateInfo(){
         return this.certificate.getName() + " від " + this.certificate.getDate() + "р " + this.certificate.getCompany();
@@ -85,17 +86,17 @@ public class Calibrator implements Serializable {
     }
 
     public static class Certificate implements Serializable {
-        private String name = "";
-        private String date = "23.03.2022";
-        private String company = "";
+        @Nonnull private String name = "";
+        @Nonnull private String date = "23.03.2022";
+        @Nonnull private String company = "";
 
-        public String getName(){return this.name;}
-        public String getDate(){return this.date;}
-        public String getCompany(){return this.company;}
+        @Nonnull public String getName(){return this.name;}
+        @Nonnull public String getDate(){return this.date;}
+        @Nonnull public String getCompany(){return this.company;}
 
-        public void setName(String name){this.name = name;}
-        public void setDate(String date){this.date = date;}
-        public void setCompany(String company){this.company = company;}
+        public void setName(@Nonnull String name){this.name = name;}
+        public void setDate(@Nonnull String date){this.date = date;}
+        public void setCompany(@Nonnull String company){this.company = company;}
 
         @Override
         public int hashCode() {

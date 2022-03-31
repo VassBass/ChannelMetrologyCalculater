@@ -18,7 +18,8 @@ public interface CalibratorService {
     Calibrator get(String name);
     Calibrator get(int index);
     void clear();
-    void importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange);
+    void importDataInCurrentThread(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange);
     void rewriteInCurrentThread(ArrayList<Calibrator>calibrators);
-    void resetToDefault();
+    void resetToDefaultInCurrentThread();
+    boolean backgroundTaskIsRun();
 }

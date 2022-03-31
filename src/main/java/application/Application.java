@@ -120,7 +120,7 @@ public class Application extends SwingWorker<Void, String> {
         if (firstStart) context.measurementService.resetToDefaultInCurrentThread();
         publish("Завантаження списку калібраторів");
         context.calibratorService.init();
-        if (firstStart) context.calibratorService.resetToDefault();
+        if (firstStart) context.calibratorService.resetToDefaultInCurrentThread();
         publish("Завантаження списку ПВП");
         context.sensorService.init();
         if (firstStart) context.sensorService.resetToDefault();

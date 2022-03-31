@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 public class CalibratorRepositoryImpl extends Repository<Calibrator> implements CalibratorRepository {
     private static final Logger LOGGER = Logger.getLogger(CalibratorRepository.class.getName());
 
+    private boolean backgroundTaskRunning = false;
+
     public CalibratorRepositoryImpl(){super();}
     public CalibratorRepositoryImpl(String dbUrl){super(dbUrl);}
 
@@ -75,6 +77,8 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
 
     @Override
     public String[] getAllNames(Measurement measurement) {
+        if (measurement == null) return null;
+
         ArrayList<String>cal = new ArrayList<>();
         for (Calibrator c : this.mainList){
             if (c.getMeasurement().equals(measurement.getName())){
@@ -86,6 +90,7 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
 
     @Override
     public Calibrator get(String name) {
+        if (name == null || name.length() == 0) return null;
         Calibrator calibrator = new Calibrator();
         calibrator.setName(name);
         int index = this.mainList.indexOf(calibrator);
@@ -177,6 +182,22 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
         }
     }
 
+    @Override
+    public void importDataInCurrentThread(ArrayList<Calibrator> newCalibrators, ArrayList<Calibrator> calibratorsForChange) {
+        if (calibratorsForChange != null && !calibratorsForChange.isEmpty()) {
+            for (Calibrator calibrator : calibratorsForChange) {
+                int index = this.mainList.indexOf(calibrator);
+                if (index >= 0) this.mainList.set(index, calibrator);
+            }
+        }
+        if (newCalibrators != null && !newCalibrators.isEmpty()) this.mainList.addAll(newCalibrators);
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.backgroundTaskRunning;
+    }
+
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private Calibrator calibrator, old;
         private ArrayList<Calibrator>list;
@@ -227,6 +248,7 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
                     if (saveMessage != null) saveMessage.setVisible(true);
                 }
             });
+            backgroundTaskRunning = true;
             this.execute();
         }
 
@@ -270,6 +292,7 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
                 LOGGER.log(Level.SEVERE, "ERROR: ", e);
             }
             Application.setBusy(false);
+            backgroundTaskRunning = false;
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
@@ -338,7 +361,7 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
                         + "measurement = '" + newCalibrator.getMeasurement() + "', "
                         + "value = '" + newCalibrator.getValue() + "', "
                         + "error_formula = '" + newCalibrator.getErrorFormula() + "', "
-                        + "certificate = '" + newCalibrator.getCertificate().toString() + "', "
+                        + "certificate = '" + newCalibrator.getCertificate() + "', "
                         + "range_min = " + newCalibrator.getRangeMin() + ", "
                         + "range_max = " + newCalibrator.getRangeMax() + " "
                         + "WHERE name = '" + oldCalibrator.getName() + "';";

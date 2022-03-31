@@ -90,14 +90,8 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public void importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange){
-        ArrayList<Calibrator>calibrators = this.repository.getAll();
-        for (Calibrator calibrator : calibratorsForChange){
-            int index = calibrators.indexOf(calibrator);
-            if (index >= 0) calibrators.set(index, calibrator);
-        }
-        calibrators.addAll(newCalibrators);
-        this.repository.rewriteInCurrentThread(calibrators);
+    public void importDataInCurrentThread(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange){
+        this.repository.importDataInCurrentThread(newCalibrators, calibratorsForChange);
     }
 
     @Override
@@ -106,7 +100,12 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public void resetToDefault() {
+    public void resetToDefaultInCurrentThread() {
         this.repository.rewriteInCurrentThread(DefaultCalibrators.get());
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

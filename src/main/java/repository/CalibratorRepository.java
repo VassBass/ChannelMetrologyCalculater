@@ -19,4 +19,6 @@ public interface CalibratorRepository {
     void clear();
     void rewriteInCurrentThread(ArrayList<Calibrator>calibrators);
     void rewrite(ArrayList<Calibrator>calibrators);
+    void importDataInCurrentThread(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange);
+    boolean backgroundTaskIsRun();
 }

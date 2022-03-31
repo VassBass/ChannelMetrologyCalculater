@@ -41,7 +41,7 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Application.context.calibratorService.importData(this.newCalibrators, this.calibratorsForChange);
+        Application.context.calibratorService.importDataInCurrentThread(this.newCalibrators, this.calibratorsForChange);
         return null;
     }
 
