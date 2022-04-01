@@ -98,8 +98,8 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public void importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
-        this.repository.importData(newChannels, channelsForChange);
+    public void importDataInCurrentThread(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
+        this.repository.importDataInCurrentThread(newChannels, channelsForChange);
     }
 
     @Override
@@ -111,5 +111,10 @@ public class ChannelServiceImpl implements ChannelService {
     public void showExistMessage(Window window) {
         String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
         JOptionPane.showMessageDialog(window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

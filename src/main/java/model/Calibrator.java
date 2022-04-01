@@ -11,18 +11,37 @@ import org.mariuszgromada.math.mxparser.Function;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Objects;
 
+//DB table = calibrators
 public class Calibrator implements Serializable {
 
+    //DB field = type [TEXT]
     @Nonnull private String type = "";
+
+    //DB field = name (primary key) [TEXT]
     @Nonnull private String name = "";
+
+    //DB field = certificate [TEXT{Json}]
     @Nonnull private Certificate certificate;
+
+    //DB field = number [TEXT]
     @Nonnull private String number = "";
+
+    //DB field = measurement [TEXT]
     @Nonnull private String measurement = "";
+
+    //DB field = range_min [REAL]
     private double rangeMin = 0D;
+
+    //DB field = range_max [REAL]
     private double rangeMax = 0D;
+
+    //DB field = value [TEXT]
     @Nonnull private String value = "";
+
+    //DB field = error_formula [TEXT]
     @Nonnull private String errorFormula = "";
 
     public Calibrator(){
@@ -91,6 +110,7 @@ public class Calibrator implements Serializable {
         @Nonnull private String company = "";
 
         @Nonnull public String getName(){return this.name;}
+        //Format = DD.MM.YYYY
         @Nonnull public String getDate(){return this.date;}
         @Nonnull public String getCompany(){return this.company;}
 

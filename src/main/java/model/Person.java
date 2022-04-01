@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import java.util.Locale;
 import java.util.Objects;
 
+//DB table = persons
 public class Person {
+    //DB fields = surname, name, patronymic, position [TEXT]
     private String surname, name, patronymic, position;
 
     public String getSurname(){return this.surname;}

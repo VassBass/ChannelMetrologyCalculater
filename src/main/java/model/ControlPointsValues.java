@@ -8,10 +8,18 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
+//DB table = control_points
 public class ControlPointsValues implements Serializable {
+    //DB field = id (primary key, autoincrement) [INTEGER]
     private int id;
+
+    //DB field = sensor_type [TEXT]
     private String sensorType;
+
+    //DB fields = range_min, range_max [REAL]
     private double rangeMin, rangeMax;
+
+    //DB field = points [TEXT{VariableConverter.arrayToString(), VariableConverter.stringToArray()}]
     private double[] values;
 
     public ControlPointsValues(){}

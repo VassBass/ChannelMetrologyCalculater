@@ -109,4 +109,9 @@ public class SensorServiceImpl implements SensorService {
     public void resetToDefault() {
         this.repository.rewriteInCurrentThread(DefaultSensors.get());
     }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
+    }
 }

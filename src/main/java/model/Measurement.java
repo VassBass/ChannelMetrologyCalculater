@@ -9,9 +9,12 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
+//DB table = measurements
 public class Measurement implements Serializable {
-
+    //DB field = name [TEXT]
     @Nonnull protected String name = "measurement";
+
+    //DB field = value (primary key) [TEXT]
     @Nonnull protected String value = "value";
 
     public Measurement(){}

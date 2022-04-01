@@ -22,4 +22,5 @@ public interface SensorService {
     boolean isLastInMeasurement(Sensor sensor);
     void rewriteInCurrentThread(ArrayList<Sensor>sensors);
     void resetToDefault();
+    boolean backgroundTaskIsRun();
 }

@@ -12,15 +12,28 @@ import org.mariuszgromada.math.mxparser.Function;
 import java.io.Serializable;
 import java.util.Objects;
 
+//DB table = sensors
 public class Sensor implements Serializable {
-
+    //DB field = type [TEXT]
     private String type;
+
+    //DB field = name (primary key) [TEXT]
     private String name = "Sensor";
+
+    //DB fields range_min, range_max [REAL]
     private double rangeMin = 0D;
     private double rangeMax = 0D;
+
+    //DB field = number [TEXT]
     private String number = "";
+
+    //DB field = value [TEXT]
     private String value = "";
+
+    //DB field = measurement [TEXT]
     private String measurement = "";
+
+    //DB field = error_formula [TEXT]
     private String errorFormula = "";
 
     //Setters

@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRepository {
     private static final Logger LOGGER = Logger.getLogger(SensorRepository.class.getName());
 
+    private boolean backgroundTaskRunning = false;
+
     public SensorRepositoryImpl(){super();}
     public SensorRepositoryImpl(String dbUrl){super(dbUrl);}
 
@@ -229,6 +231,11 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
         }else return false;
     }
 
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.backgroundTaskRunning;
+    }
+
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private Sensor sensor;
         private ArrayList<Sensor>list;
@@ -266,6 +273,7 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
                     if (saveMessage != null) saveMessage.setVisible(true);
                 }
             });
+            backgroundTaskRunning = true;
             this.execute();
         }
 
@@ -296,6 +304,7 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
                 LOGGER.log(Level.SEVERE, "ERROR: ", e);
             }
             Application.setBusy(false);
+            backgroundTaskRunning = false;
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 

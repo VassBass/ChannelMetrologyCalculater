@@ -21,4 +21,5 @@ public interface SensorRepository {
     void importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange);
     void rewrite(ArrayList<Sensor>sensors);
     boolean isLastInMeasurement(Sensor sensor);
+    boolean backgroundTaskIsRun();
 }
