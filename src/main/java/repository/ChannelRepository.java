@@ -17,7 +17,7 @@ public interface ChannelRepository {
     void importDataInCurrentThread(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
     void rewriteInCurrentThread(ArrayList<Channel>channels);
 
-    void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor);
+    void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored);
     void changeSensorsInCurrentThread(ArrayList<Sensor>sensors);
 
     void set(Channel oldChannel, Channel newChannel);

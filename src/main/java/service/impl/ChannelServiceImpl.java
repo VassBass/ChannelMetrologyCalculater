@@ -62,8 +62,8 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor){
-        this.repository.changeSensorInCurrentThread(oldSensor, newSensor);
+    public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored){
+        this.repository.changeSensorInCurrentThread(oldSensor, newSensor, ignored);
     }
 
     @Override

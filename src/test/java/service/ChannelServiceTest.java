@@ -1,7 +1,6 @@
 package service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import constants.MeasurementConstants;
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
@@ -26,8 +25,8 @@ class ChannelServiceTest {
         sensor.setName("T");
         sensor.setRange(0D, 100D);
         sensor.setNumber("T");
-        sensor.setValue(MeasurementConstants.DEGREE_CELSIUS);
-        sensor.setMeasurement(MeasurementConstants.TEMPERATURE);
+        sensor.setValue(Measurement.DEGREE_CELSIUS);
+        sensor.setMeasurement(Measurement.TEMPERATURE);
         sensor.setErrorFormula("r");
         return sensor;
     }
@@ -38,8 +37,8 @@ class ChannelServiceTest {
         sensor.setName("P");
         sensor.setRange(0D, 200D);
         sensor.setNumber("P");
-        sensor.setValue(MeasurementConstants.KPA);
-        sensor.setMeasurement(MeasurementConstants.PRESSURE);
+        sensor.setValue(Measurement.KPA);
+        sensor.setMeasurement(Measurement.PRESSURE);
         sensor.setErrorFormula("r");
         return sensor;
     }
@@ -50,8 +49,8 @@ class ChannelServiceTest {
         sensor.setName("P");
         sensor.setRange(0D, 300D);
         sensor.setNumber("P");
-        sensor.setValue(MeasurementConstants.BAR);
-        sensor.setMeasurement(MeasurementConstants.PRESSURE);
+        sensor.setValue(Measurement.BAR);
+        sensor.setMeasurement(Measurement.PRESSURE);
         sensor.setErrorFormula("r");
         return sensor;
     }
@@ -62,8 +61,8 @@ class ChannelServiceTest {
         sensor.setName("C");
         sensor.setRange(0D, 400D);
         sensor.setNumber("C");
-        sensor.setValue(MeasurementConstants.M3_HOUR);
-        sensor.setMeasurement(MeasurementConstants.CONSUMPTION);
+        sensor.setValue(Measurement.M3_HOUR);
+        sensor.setMeasurement(Measurement.CONSUMPTION);
         sensor.setErrorFormula("r");
         return sensor;
     }
@@ -74,8 +73,8 @@ class ChannelServiceTest {
         sensor.setName("C");
         sensor.setRange(0D, 500D);
         sensor.setNumber("C");
-        sensor.setValue(MeasurementConstants.CM_S);
-        sensor.setMeasurement(MeasurementConstants.CONSUMPTION);
+        sensor.setValue(Measurement.CM_S);
+        sensor.setMeasurement(Measurement.CONSUMPTION);
         sensor.setErrorFormula("r");
         return sensor;
     }
@@ -84,7 +83,7 @@ class ChannelServiceTest {
         Channel channel = new Channel();
         channel.setCode("1");
         channel.setName("t");
-        channel.setMeasurement(new Measurement(MeasurementConstants.TEMPERATURE, MeasurementConstants.DEGREE_CELSIUS));
+        channel.setMeasurement(new Measurement(Measurement.TEMPERATURE, Measurement.DEGREE_CELSIUS));
         channel.setDepartment("t");
         channel.setArea("t");
         channel.setProcess("t");
@@ -105,7 +104,7 @@ class ChannelServiceTest {
         Channel channel = new Channel();
         channel.setCode("2");
         channel.setName("p");
-        channel.setMeasurement(new Measurement(MeasurementConstants.PRESSURE, MeasurementConstants.KPA));
+        channel.setMeasurement(new Measurement(Measurement.PRESSURE, Measurement.KPA));
         channel.setDepartment("p");
         channel.setArea("p");
         channel.setProcess("p");
@@ -126,7 +125,7 @@ class ChannelServiceTest {
         Channel channel = new Channel();
         channel.setCode("3");
         channel.setName("p");
-        channel.setMeasurement(new Measurement(MeasurementConstants.PRESSURE, MeasurementConstants.BAR));
+        channel.setMeasurement(new Measurement(Measurement.PRESSURE, Measurement.BAR));
         channel.setDepartment("p");
         channel.setArea("p");
         channel.setProcess("p");
@@ -147,7 +146,7 @@ class ChannelServiceTest {
         Channel channel = new Channel();
         channel.setCode("4");
         channel.setName("c");
-        channel.setMeasurement(new Measurement(MeasurementConstants.CONSUMPTION, MeasurementConstants.M3_HOUR));
+        channel.setMeasurement(new Measurement(Measurement.CONSUMPTION, Measurement.M3_HOUR));
         channel.setDepartment("c");
         channel.setArea("c");
         channel.setProcess("c");
@@ -168,7 +167,7 @@ class ChannelServiceTest {
         Channel channel = new Channel();
         channel.setCode("5");
         channel.setName("c");
-        channel.setMeasurement(new Measurement(MeasurementConstants.CONSUMPTION, MeasurementConstants.CM_S));
+        channel.setMeasurement(new Measurement(Measurement.CONSUMPTION, Measurement.CM_S));
         channel.setDepartment("c");
         channel.setArea("c");
         channel.setProcess("c");

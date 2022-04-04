@@ -2,7 +2,6 @@ package ui.channelInfo;
 
 import application.Application;
 import backgroundTasks.CheckChannel;
-import constants.MeasurementConstants;
 import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Channel;
@@ -241,7 +240,7 @@ public class DialogChannel extends JDialog {
             sensor.setRange(this.sensorRangePanel.getRangeMin(), this.sensorRangePanel.getRangeMax());
             sensor.setValue(this.sensorRangePanel.getValue());
         }
-        if (channel.getMeasurement().getName().equals(MeasurementConstants.CONSUMPTION)){
+        if (channel.getMeasurement().getName().equals(Measurement.CONSUMPTION)){
             sensor.setNumber(this.sensorPanel.getSerialNumber());
             sensor.setRangeMin(this.rangePanel.getRangeMin());
             sensor.setRangeMax(this.rangePanel.getRangeMax());
@@ -265,21 +264,21 @@ public class DialogChannel extends JDialog {
         if (measurement != null){
             measurementName = measurement.getName();
         }else {
-            measurementName = MeasurementConstants.TEMPERATURE;
+            measurementName = Measurement.TEMPERATURE;
         }
         this.measurementPanel.update(measurementName);
         this.sensorPanel.update(measurementName);
-        if (measurementName.equals(MeasurementConstants.TEMPERATURE)){
+        if (measurementName.equals(Measurement.TEMPERATURE)){
             this.setSize(800, 650);
             this.sensorRangePanel = null;
             this.rangeLabel.setText(RANGE_OF_CHANNEL);
             this.allowableErrorPanel.setEnabled(true);
-        }else if (measurementName.equals(MeasurementConstants.PRESSURE)){
+        }else if (measurementName.equals(Measurement.PRESSURE)){
             this.setSize(1000, 650);
             this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
             this.rangeLabel.setText(RANGE_OF_CHANNEL);
             this.allowableErrorPanel.setEnabled(true);
-        }else if (measurementName.equals(MeasurementConstants.CONSUMPTION)){
+        }else if (measurementName.equals(Measurement.CONSUMPTION)){
             this.setSize(800,650);
             this.sensorRangePanel = null;
             this.rangeLabel.setText(RANGE_OF_SENSOR);

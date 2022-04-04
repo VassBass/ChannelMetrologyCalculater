@@ -3,7 +3,6 @@ package ui.personsList.personInfo;
 import application.Application;
 import converters.ConverterUI;
 import model.Person;
-import support.Comparator;
 import ui.model.DefaultButton;
 import ui.personsList.PersonsListDialog;
 import ui.personsList.personInfo.complexElements.PersonInfoPanel;
@@ -84,7 +83,7 @@ public class PersonInfoDialog extends JDialog {
                 if (worker == null){
                     Application.context.personService.add(newPerson);
                 }else {
-                    if (!Comparator.personsMatch(newPerson, worker)){
+                    if (!worker.equals(newPerson)){
                         Application.context.personService.set(worker, newPerson);
                     }
                 }

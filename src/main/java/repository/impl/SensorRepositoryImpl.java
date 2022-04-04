@@ -3,7 +3,6 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import constants.SensorType;
 import model.Sensor;
 import repository.Repository;
 import repository.SensorRepository;
@@ -95,7 +94,7 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
         ArrayList<String>types = new ArrayList<>();
         for (Sensor sensor : this.mainList){
             String type = sensor.getType();
-            if (!type.contains(SensorType.ROSEMOUNT)) {
+            if (!type.contains(Sensor.ROSEMOUNT)) {
                 boolean exist = false;
                 for (String t : types) {
                     if (t.equals(type)) {

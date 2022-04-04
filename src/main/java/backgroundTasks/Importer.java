@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import converters.VariableConverter;
 import model.*;
 import org.sqlite.JDBC;
-import support.Comparator;
 import ui.importData.compareCalibrators.CompareCalibratorsDialog;
 import ui.importData.compareChannels.CompareChannelsDialog;
 import ui.importData.compareSensors.CompareSensorsDialog;
@@ -233,7 +232,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
                 for (Calibrator oldCalibrator : oldList){
                     if (oldCalibrator.getName().equals(newCalibrator.getName())){
                         exist = true;
-                        if (!Comparator.calibratorsMatch(oldCalibrator, newCalibrator)) {
+                        if (!oldCalibrator.isMatch(newCalibrator)) {
                             calibratorsForChange.add(newCalibrator);
                             changedList.add(oldCalibrator);
                         }
@@ -262,7 +261,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
                 for (Sensor oldSensor : oldSensors) {
                     if (oldSensor.getName().equals(newSensor.getName())) {
                         exist = true;
-                        if (!Comparator.sensorsMatch(newSensor, oldSensor)) {
+                        if (!oldSensor.isMatch(newSensor)){
                             sensorsForChange.add(newSensor);
                         }
                         break;
@@ -289,7 +288,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
                 for (Channel oldChannel : oldList) {
                     if (oldChannel.getCode().equals(newChannel.getCode())) {
                         exist = true;
-                        if (!Comparator.channelsMatch(newChannel, oldChannel)) {
+                        if (!oldChannel.isMatch(newChannel)) {
                             changedList.add(oldChannel);
                             channelsForChange.add(newChannel);
                         }
@@ -319,7 +318,8 @@ public class Importer extends SwingWorker<Boolean, Void> {
                 for (Sensor oldSensor : oldList){
                     if (oldSensor.getName().equals(newSensor.getName())){
                         exist = true;
-                        if (!Comparator.sensorsMatch(oldSensor, newSensor)) {
+
+                        if (!oldSensor.isMatch(newSensor)){
                             sensorsForChange.add(newSensor);
                             changedList.add(oldSensor);
                         }

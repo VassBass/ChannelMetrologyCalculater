@@ -1,12 +1,11 @@
 package ui.calculate.start;
 
 import application.Application;
-import constants.CalibratorType;
 import constants.Key;
-import constants.SensorType;
 import converters.ConverterUI;
 import model.Calibrator;
 import model.Channel;
+import model.Sensor;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.start.complexElements.CalculateStartDialog_alarmPanel;
 import ui.calculate.start.complexElements.CalculateStartDialog_datePanel;
@@ -137,8 +136,8 @@ public class CalculateStartDialog extends JDialog {
             this.setContentPane(new MainPanel(withAlarmPanel));
         }else {
             this.values = new HashMap<>();
-            if (this.channel.getSensor().getType().contains(SensorType.ROSEMOUNT)){
-                this.calibrator.setSelectedItem(CalibratorType.ROSEMOUNT_8714DQ4);
+            if (this.channel.getSensor().getType().contains(Sensor.ROSEMOUNT)){
+                this.calibrator.setSelectedItem(Calibrator.ROSEMOUNT_8714DQ4);
             }
             this.setContentPane(new MainPanel(false));
         }

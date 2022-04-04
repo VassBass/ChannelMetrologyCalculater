@@ -1,6 +1,6 @@
 package converters;
 
-import static constants.MeasurementConstants.*;
+import static model.Measurement.*;
 
 public class ValueConverter {
 

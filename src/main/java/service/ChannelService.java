@@ -17,7 +17,7 @@ public interface ChannelService {
     ArrayList<Channel> remove(Channel channel);
     void removeBySensorInCurrentThread(Sensor sensor);
 
-    void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor);
+    void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored);
     void changeSensorsInCurrentThread(ArrayList<Sensor>sensors);
 
     ArrayList<Channel> set(Channel oldChannel, Channel newChannel);

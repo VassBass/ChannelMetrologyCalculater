@@ -5,11 +5,10 @@ import calculation.Calculation;
 import calculation.CalculationConsumption;
 import calculation.CalculationPressure;
 import calculation.CalculationTemperature;
-import constants.CalibratorType;
 import constants.Key;
-import constants.MeasurementConstants;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
@@ -52,15 +51,15 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
 
         double[][]measurements = new double[5][8];
         String measurementName = this.channel.getMeasurement().getName();
-        if (measurementName.equals(MeasurementConstants.TEMPERATURE)){
+        if (measurementName.equals(Measurement.TEMPERATURE)){
             this.calculation = new CalculationTemperature(this.channel);
             measurements = new double[5][8];
-        }else if (measurementName.equals(MeasurementConstants.PRESSURE)){
+        }else if (measurementName.equals(Measurement.PRESSURE)){
             this.calculation = new CalculationPressure(this.channel);
             measurements = new double[5][8];
-        }else if (measurementName.equals(MeasurementConstants.CONSUMPTION)){
+        }else if (measurementName.equals(Measurement.CONSUMPTION)){
             this.calculation = new CalculationConsumption(this.channel);
-            if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 measurements = new double[5][8];
             }else {
                 measurements = new double[5][10];

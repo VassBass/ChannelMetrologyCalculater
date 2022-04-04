@@ -4,9 +4,9 @@ import application.Application;
 import backgroundTasks.CertificateFormation;
 import calculation.Calculation;
 import constants.Key;
-import constants.WorkPositions;
 import converters.ConverterUI;
 import model.Channel;
+import model.Person;
 import ui.calculate.reference.CalculateReferenceDialog;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.mainScreen.MainScreen;
@@ -75,9 +75,9 @@ public class CalculatePerformersDialog extends JDialog {
         this.headsLabel = new JLabel(HEADS);
         this.headsLabel.setForeground(Color.RED.darker());
 
-        this.headOfMetrologyLabel = new JLabel(WorkPositions.HEAD_OF_AREA + " МЗтаП");
-        this.headOfAreaPosition = new JLabel(WorkPositions.HEAD_OF_AREA + " АСУТП " + this.channel.getArea());
-        this.headOfDepartmentLabel = new JLabel(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP);
+        this.headOfMetrologyLabel = new JLabel(Person.HEAD_OF_AREA + " МЗтаП");
+        this.headOfAreaPosition = new JLabel(Person.HEAD_OF_AREA + " АСУТП " + this.channel.getArea());
+        this.headOfDepartmentLabel = new JLabel(Person.HEAD_OF_DEPARTMENT_ASUTP);
 
         this.performer1Name = new JComboBox<>(personsNames());
         this.performer1Name.setEditable(true);

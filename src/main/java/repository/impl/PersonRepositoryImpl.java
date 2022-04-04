@@ -3,7 +3,6 @@ package repository.impl;
 import application.Application;
 import application.ApplicationContext;
 import constants.Action;
-import constants.WorkPositions;
 import model.Person;
 import repository.PersonRepository;
 import repository.Repository;
@@ -81,7 +80,7 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
         ArrayList<String>heads = new ArrayList<>();
         heads.add(EMPTY_ARRAY);
         for (Person worker : this.mainList){
-            if (worker.getPosition().equals(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP)){
+            if (worker.getPosition().equals(Person.HEAD_OF_DEPARTMENT_ASUTP)){
                 heads.add(worker.getFullName());
             }
         }

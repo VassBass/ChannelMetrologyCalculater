@@ -1,13 +1,12 @@
 package certificates;
 
 import calculation.Calculation;
-import constants.CalibratorType;
 import constants.Key;
-import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import model.Sensor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -74,7 +73,7 @@ public class PressureCertificate extends Certificate {
         this.alarmCheck = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
-        String methodName = Settings.getSettingValue(MeasurementConstants.PRESSURE);
+        String methodName = Settings.getSettingValue(Measurement.PRESSURE);
         cell(34,15).setCellValue(methodName);
     }
 
@@ -221,8 +220,8 @@ public class PressureCertificate extends Certificate {
         double value95 = cpv[3];
         Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
 
-        if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)){
-            double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
+        if (calibrator.getType().equals(Calibrator.FLUKE718_30G)){
+            double maxCalibratorPower = new ValueConverter(Measurement.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
             if (value5 < maxCalibratorPower){
                 value5 = maxCalibratorPower;
             }

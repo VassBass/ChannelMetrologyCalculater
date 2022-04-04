@@ -146,17 +146,29 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
         }
     }
 
+    private boolean contains(int[]array, int i){
+        for (int ii : array){
+            if (i == ii) return true;
+        }
+        return false;
+    }
+
     @Override
-    public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor) {
+    public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored) {
         if (oldSensor != null && newSensor != null) {
             for (Channel channel : this.mainList) {
                 if (channel.getSensor().equals(oldSensor)) {
-                    double minRange = channel.getSensor().getRangeMin();
-                    double maxRange = channel.getSensor().getRangeMax();
-                    String value = channel.getSensor().getValue();
-                    newSensor.setRange(minRange, maxRange);
-                    newSensor.setValue(value);
-                    channel.setSensor(newSensor);
+                    Sensor sensor = new Sensor();
+                    sensor.setType(contains(ignored, Sensor.TYPE) ? oldSensor.getType() : newSensor.getType());
+                    sensor.setName(contains(ignored, Sensor.NAME) ? oldSensor.getName() : newSensor.getName());
+                    double minRange = contains(ignored, Sensor.RANGE) ? oldSensor.getRangeMin() : newSensor.getRangeMin();
+                    double maxRange = contains(ignored, Sensor.RANGE) ? oldSensor.getRangeMax() : newSensor.getRangeMax();
+                    sensor.setRange(minRange, maxRange);
+                    sensor.setNumber(contains(ignored, Sensor.NUMBER) ? oldSensor.getNumber() : newSensor.getNumber());
+                    sensor.setValue(contains(ignored, Sensor.VALUE) ? oldSensor.getValue() : newSensor.getValue());
+                    sensor.setMeasurement(contains(ignored, Sensor.MEASUREMENT) ? oldSensor.getMeasurement() : newSensor.getMeasurement());
+                    sensor.setErrorFormula(contains(ignored, Sensor.ERROR_FORMULA) ? oldSensor.getErrorFormula() : newSensor.getErrorFormula());
+                    channel.setSensor(sensor);
                 }
             }
             new BackgroundAction().rewriteChannels(this.mainList);

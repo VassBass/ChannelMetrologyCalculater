@@ -1,13 +1,12 @@
 package ui.calculate.verification.complexElements;
 
 import calculation.Calculation;
-import constants.CalibratorType;
 import constants.Key;
-import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
@@ -234,7 +233,7 @@ public class PressurePanel extends JPanel {
         this.rangeSensor.setText(rangeSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
-                + MeasurementConstants.DEGREE_CELSIUS);
+                + Measurement.DEGREE_CELSIUS);
         this.humidity.setText(this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY)
                 + "%");
         this.atmospherePressure.setText(this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE)
@@ -417,8 +416,8 @@ public class PressurePanel extends JPanel {
                 }else if (x == 9) {
                     Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
                     double value5 = calculation.getControlPointsValues()[1];
-                    if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)) {
-                        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, channel.getMeasurement().getValue()).get(-0.8);
+                    if (calibrator.getType().equals(Calibrator.FLUKE718_30G)) {
+                        double maxCalibratorPower = new ValueConverter(Measurement.KGS_SM2, channel.getMeasurement().getValue()).get(-0.8);
                         if (value5 < maxCalibratorPower){
                             cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
                         }else {

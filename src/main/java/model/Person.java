@@ -7,9 +7,19 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import java.util.Locale;
 import java.util.Objects;
 
-//DB table = persons
+/**
+ * DB table = persons
+ */
 public class Person {
-    //DB fields = surname, name, patronymic, position [TEXT]
+    public static final String JUNIOR_ENGINEER = "Мол.інженер з АСКВ";
+    public static final String ELECTRONIC_ENGINEER = "Інженер-електронік";
+    public static final String ENGINEER_ASKV = "Інженер з АСКВ";
+    public static final String HEAD_OF_AREA = "Начальник дільниці";
+    public static final String HEAD_OF_DEPARTMENT_ASUTP = "Начальник ЦАСУ ТП";
+
+    /**
+     * DB fields = surname, name, patronymic, position [TEXT]
+     */
     private String surname, name, patronymic, position;
 
     public String getSurname(){return this.surname;}

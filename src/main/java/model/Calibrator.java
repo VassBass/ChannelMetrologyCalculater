@@ -11,37 +11,56 @@ import org.mariuszgromada.math.mxparser.Function;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Objects;
 
 //DB table = calibrators
 public class Calibrator implements Serializable {
+    public static final String FLUKE718_30G = "Fluke 718 30G";
+    public static final String ROSEMOUNT_8714DQ4 = "ROSEMOUNT 8714DQ4";
 
-    //DB field = type [TEXT]
+    /**
+     * DB field = type [TEXT]
+     */
     @Nonnull private String type = "";
 
-    //DB field = name (primary key) [TEXT]
+    /**
+     * DB field = name (primary key) [TEXT]
+     */
     @Nonnull private String name = "";
 
-    //DB field = certificate [TEXT{Json}]
+    /**
+     * DB field = certificate [TEXT{Json}]
+     */
     @Nonnull private Certificate certificate;
 
-    //DB field = number [TEXT]
+    /**
+     * DB field = number [TEXT]
+     */
     @Nonnull private String number = "";
 
-    //DB field = measurement [TEXT]
+    /**
+     * DB field = measurement [TEXT]
+     */
     @Nonnull private String measurement = "";
 
-    //DB field = range_min [REAL]
+    /**
+     * DB field = range_min [REAL]
+     */
     private double rangeMin = 0D;
 
-    //DB field = range_max [REAL]
+    /**
+     * DB field = range_max [REAL]
+     */
     private double rangeMax = 0D;
 
-    //DB field = value [TEXT]
+    /**
+     * DB field = value [TEXT]
+     */
     @Nonnull private String value = "";
 
-    //DB field = error_formula [TEXT]
+    /**
+     * DB field = error_formula [TEXT]
+     */
     @Nonnull private String errorFormula = "";
 
     public Calibrator(){
@@ -158,6 +177,14 @@ public class Calibrator implements Serializable {
         return Objects.hash(this.type, this.name, this.measurement);
     }
 
+    /**
+     *
+     * This method has been rewritten to work with ArrayList.
+     *
+     * @return true if calibrators names is equal
+     *
+     * If you need to compare all fields of Calibrators use {@link #isMatch(Calibrator)}
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass()) return false;
@@ -187,6 +214,23 @@ public class Calibrator implements Serializable {
         } catch (JsonProcessingException e) {
             return null;
         }
+    }
+
+    /**
+     *
+     * @param calibrator to compare with this
+     * @return true if calibrators fields equal
+     */
+    public boolean isMatch(Calibrator calibrator){
+        return this.name.equals(calibrator.getName())
+                && this.type.equals(calibrator.getType())
+                && this.number.equals(calibrator.getNumber())
+                && this.measurement.equals(calibrator.getMeasurement())
+                && this.certificate.equals(calibrator.getCertificate())
+                && this.rangeMin == calibrator.getRangeMin()
+                && this.rangeMax == calibrator.getRangeMax()
+                && this.value.equals(calibrator.getValue())
+                && this.errorFormula.equals(calibrator.getErrorFormula());
     }
 }
 

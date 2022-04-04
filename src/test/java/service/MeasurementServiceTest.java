@@ -1,6 +1,5 @@
 package service;
 
-import constants.MeasurementConstants;
 import def.DefaultMeasurements;
 import model.Measurement;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +17,11 @@ class MeasurementServiceTest {
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
     private static final MeasurementService service = new MeasurementServiceImpl(DB_URL);
 
-    private static final Measurement temperature = new Measurement(MeasurementConstants.TEMPERATURE, MeasurementConstants.DEGREE_CELSIUS);
-    private static final Measurement pressureKPA = new Measurement(MeasurementConstants.PRESSURE, MeasurementConstants.KPA);
-    private static final Measurement pressureBAR = new Measurement(MeasurementConstants.PRESSURE, MeasurementConstants.BAR);
-    private static final Measurement pressurePA = new Measurement(MeasurementConstants.PRESSURE, MeasurementConstants.PA);
-    private static final Measurement consumption = new Measurement(MeasurementConstants.CONSUMPTION, MeasurementConstants.M3_HOUR);
+    private static final Measurement temperature = new Measurement(Measurement.TEMPERATURE, Measurement.DEGREE_CELSIUS);
+    private static final Measurement pressureKPA = new Measurement(Measurement.PRESSURE, Measurement.KPA);
+    private static final Measurement pressureBAR = new Measurement(Measurement.PRESSURE, Measurement.BAR);
+    private static final Measurement pressurePA = new Measurement(Measurement.PRESSURE, Measurement.PA);
+    private static final Measurement consumption = new Measurement(Measurement.CONSUMPTION, Measurement.M3_HOUR);
 
     private ArrayList<Measurement> getAllFromDB() {
         ArrayList<Measurement>measurements = new ArrayList<>();
@@ -67,9 +66,9 @@ class MeasurementServiceTest {
         Date start = new Date();
 
         String[]testArray = new String[]{
-                MeasurementConstants.TEMPERATURE,
-                MeasurementConstants.PRESSURE,
-                MeasurementConstants.CONSUMPTION
+                Measurement.TEMPERATURE,
+                Measurement.PRESSURE,
+                Measurement.CONSUMPTION
         };
 
         assertArrayEquals(testArray, service.getAllNames());
@@ -82,10 +81,10 @@ class MeasurementServiceTest {
         Date start = new Date();
 
         String[]testArray = new String[]{
-                MeasurementConstants.DEGREE_CELSIUS,
-                MeasurementConstants.KPA,
-                MeasurementConstants.BAR,
-                MeasurementConstants.M3_HOUR
+                Measurement.DEGREE_CELSIUS,
+                Measurement.KPA,
+                Measurement.BAR,
+                Measurement.M3_HOUR
         };
 
         assertArrayEquals(testArray, service.getAllValues());
@@ -97,9 +96,9 @@ class MeasurementServiceTest {
     void getValues() {
         Date start = new Date();
 
-        String[]temperatureValues = new String[]{MeasurementConstants.DEGREE_CELSIUS};
-        String[]pressureValues = new String[]{MeasurementConstants.KPA, MeasurementConstants.BAR};
-        String[]consumptionValues = new String[]{MeasurementConstants.M3_HOUR};
+        String[]temperatureValues = new String[]{Measurement.DEGREE_CELSIUS};
+        String[]pressureValues = new String[]{Measurement.KPA, Measurement.BAR};
+        String[]consumptionValues = new String[]{Measurement.M3_HOUR};
         String[]emptyArray = new String[0];
 
         assertArrayEquals(temperatureValues, service.getValues(temperature));
@@ -112,9 +111,9 @@ class MeasurementServiceTest {
 
         start = new Date();
 
-        assertArrayEquals(temperatureValues, service.getValues(MeasurementConstants.TEMPERATURE));
-        assertArrayEquals(pressureValues, service.getValues(MeasurementConstants.PRESSURE));
-        assertArrayEquals(consumptionValues, service.getValues(MeasurementConstants.CONSUMPTION));
+        assertArrayEquals(temperatureValues, service.getValues(Measurement.TEMPERATURE));
+        assertArrayEquals(pressureValues, service.getValues(Measurement.PRESSURE));
+        assertArrayEquals(consumptionValues, service.getValues(Measurement.CONSUMPTION));
         assertArrayEquals(emptyArray, service.getValues(" "));
         assertNull(service.getValues((String) null));
         assertNull(service.getValues(""));
@@ -141,12 +140,12 @@ class MeasurementServiceTest {
     void get() {
         Date start = new Date();
 
-        assertEquals(temperature, service.get(MeasurementConstants.DEGREE_CELSIUS));
-        assertEquals(pressureKPA, service.get(MeasurementConstants.KPA));
-        assertNotEquals(pressureBAR, service.get(MeasurementConstants.KPA));
-        assertEquals(consumption, service.get(MeasurementConstants.M3_HOUR));
+        assertEquals(temperature, service.get(Measurement.DEGREE_CELSIUS));
+        assertEquals(pressureKPA, service.get(Measurement.KPA));
+        assertNotEquals(pressureBAR, service.get(Measurement.KPA));
+        assertEquals(consumption, service.get(Measurement.M3_HOUR));
         assertNull(service.get(null));
-        assertNull(service.get(MeasurementConstants.CM_S));
+        assertNull(service.get(Measurement.CM_S));
 
         System.out.println("get(String) duration = " + howLong(start, new Date()) + " mills");
 
@@ -167,7 +166,7 @@ class MeasurementServiceTest {
         testList.add(pressureKPA);
         testList.add(pressureBAR);
 
-        assertIterableEquals(testList, service.getMeasurements(MeasurementConstants.PRESSURE));
+        assertIterableEquals(testList, service.getMeasurements(Measurement.PRESSURE));
         assertIterableEquals(new ArrayList<Measurement>(), service.getMeasurements(" "));
         assertNull(service.getMeasurements(null));
         assertNull(service.getMeasurements(""));

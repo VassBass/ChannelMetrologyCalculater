@@ -1,7 +1,6 @@
 package ui.channelInfo.complexElements;
 
 import application.Application;
-import constants.MeasurementConstants;
 import model.Measurement;
 import ui.channelInfo.DialogChannel;
 
@@ -38,7 +37,7 @@ public class DialogChannel_measurementPanel extends JPanel {
         this.measurementName.setBackground(Color.WHITE);
 
         this.measurementValue = new JComboBox<>(Application.context.measurementService.getValues(
-                MeasurementConstants.TEMPERATURE));
+                Measurement.TEMPERATURE));
         this.measurementValue.setBackground(Color.WHITE);
         this.measurementValue.setEditable(false);
     }
@@ -76,12 +75,12 @@ public class DialogChannel_measurementPanel extends JPanel {
         ArrayList<String> values  = new ArrayList<>();
         ArrayList<Measurement>measurements = Application.context.measurementService.getAll();
         for (Measurement measurement : measurements) {
-            if (measurement.getName().equals(MeasurementConstants.CONSUMPTION)) {
+            if (measurement.getName().equals(Measurement.CONSUMPTION)) {
                 values.add(measurement.getValue());
             }
         }
-        values.add(MeasurementConstants.M_S);
-        values.add(MeasurementConstants.CM_S);
+        values.add(Measurement.M_S);
+        values.add(Measurement.CM_S);
         return values.toArray(new String[0]);
     }
 

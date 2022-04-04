@@ -155,6 +155,15 @@ public class Channel implements Serializable {
         return Objects.hash(this.code, this.name, this.technologyNumber);
     }
 
+
+    /**
+     *
+     * This method has been rewritten to work with ArrayList.
+     *
+     * @return true if channels codes is equal
+     *
+     * If you need to compare all fields of Channels use {@link #isMatch(Channel)}
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass()) return false;
@@ -183,24 +192,49 @@ public class Channel implements Serializable {
     }
 
     public Channel copyFrom(Channel channel){
-        this.code = channel.getCode();
-        this.name = channel.getName();
-        this.measurement = channel.getMeasurement();
-        this.department = channel.getDepartment();
-        this.area = channel.getArea();
-        this.process = channel.getProcess();
-        this.installation = channel.getInstallation();
-        this.date = channel.getDate();
-        this.frequency = channel.getFrequency();
-        this.technologyNumber = channel.getTechnologyNumber();
-        this.sensor = channel.getSensor();
-        this.numberOfProtocol = channel.getNumberOfProtocol();
-        this.reference = channel.getReference();
-        this.rangeMin = channel.getRangeMin();
-        this.rangeMax = channel.getRangeMax();
-        this.allowableErrorPercent = channel.getAllowableErrorPercent();
-        this.allowableError = channel.allowableError;
-        this.suitability = channel.suitability;
-        return this;
+        Channel c = new Channel();
+        c.setCode(channel.getCode());
+        c.setName(channel.getName());
+        c.setMeasurement(channel.getMeasurement());
+        c.setDepartment(channel.getDepartment());
+        c.setArea(channel.getArea());
+        c.setProcess(channel.getProcess());
+        c.setInstallation(channel.getInstallation());
+        c.setDate(channel.getDate());
+        c.setFrequency(channel.getFrequency());
+        c.setTechnologyNumber(channel.getTechnologyNumber());
+        c.setSensor(channel.getSensor());
+        c.setNumberOfProtocol(channel.getNumberOfProtocol());
+        c.setReference(channel.getReference());
+        c.setRange(channel.getRangeMin(), channel.getRangeMax());
+        c.setAllowableError(channel.getAllowableErrorPercent(), channel.getAllowableError());
+        c.setSuitability(channel.isSuitability());
+        return c;
+    }
+
+    /**
+     *
+     * @param channel to compare with this
+     * @return true if channels fields equal
+     */
+    public boolean isMatch(Channel channel){
+        return this.code.equals(channel.getCode())
+                && this.name.equals(channel.getName())
+                && this.measurement.equals(channel.getMeasurement())
+                && this.department.equals(channel.getDepartment())
+                && this.area.equals(channel.getArea())
+                && this.process.equals(channel.getProcess())
+                && this.installation.equals(channel.getInstallation())
+                && this.date.equals(channel.getDate())
+                && this.frequency == channel.getFrequency()
+                && this.technologyNumber.equals(channel.getTechnologyNumber())
+                && this.sensor.isMatch(channel.getSensor())
+                && this.numberOfProtocol.equals(channel.getNumberOfProtocol())
+                && this.reference.equals(channel.getReference())
+                && this.rangeMin == channel.getRangeMin()
+                && this.rangeMax == channel.getRangeMax()
+                && this.allowableErrorPercent == channel.getAllowableErrorPercent()
+                && this.allowableError == channel.getAllowableError()
+                && this.suitability == channel.isSuitability();
     }
 }

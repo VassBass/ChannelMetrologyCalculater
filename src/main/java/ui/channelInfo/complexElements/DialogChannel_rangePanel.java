@@ -1,7 +1,7 @@
 package ui.channelInfo.complexElements;
 
-import constants.MeasurementConstants;
 import converters.VariableConverter;
+import model.Measurement;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -36,7 +36,7 @@ public class DialogChannel_rangePanel extends JPanel {
         this.minRange = new JTextField(DEFAULT_MIN_VALUE,5);
         this.dath = new JLabel(DASH);
         this.maxRange = new JTextField(DEFAULT_MAX_VALUE,5);
-        this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS);
+        this.value = new JLabel(Measurement.DEGREE_CELSIUS);
     }
 
     private void setReactions() {

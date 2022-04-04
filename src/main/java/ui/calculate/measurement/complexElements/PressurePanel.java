@@ -1,12 +1,11 @@
 package ui.calculate.measurement.complexElements;
 
 import application.Application;
-import constants.CalibratorType;
-import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
@@ -49,7 +48,7 @@ public class PressurePanel extends MeasurementPanel {
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
+        double maxCalibratorPower = new ValueConverter(Measurement.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
 
         this.values = Application.context.controlPointsValuesService.getValues(
                 this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
@@ -64,7 +63,7 @@ public class PressurePanel extends MeasurementPanel {
 
 
         this.labelValue = new JButton[5];
-        if (this.calibrator.getType().equals(CalibratorType.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
+        if (this.calibrator.getType().equals(Calibrator.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
             if (this.values[1] <= maxCalibratorPower) {
                 this.labelValue[0] = new ButtonCell(false, " - ");
                 this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
@@ -94,7 +93,7 @@ public class PressurePanel extends MeasurementPanel {
             this.userMeasurements[x].setHorizontalAlignment(SwingConstants.CENTER);
             this.userMeasurements[x].addFocusListener(focusMeasurement);
         }
-        if (this.calibrator.getType().equals(CalibratorType.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
+        if (this.calibrator.getType().equals(Calibrator.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
             if (this.values[1] <= maxCalibratorPower) {
                 this.userMeasurements[0].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
                 this.userMeasurements[0].setEnabled(false);

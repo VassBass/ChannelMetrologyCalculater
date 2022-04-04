@@ -1,7 +1,6 @@
 package service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import constants.MeasurementConstants;
 import def.DefaultCalibrators;
 import model.Calibrator;
 import model.Measurement;
@@ -28,10 +27,10 @@ class CalibratorServiceTest {
         calibrator.setCertificateCompany("1");
         calibrator.setCertificateDate("23.03.2022");
         calibrator.setNumber("1");
-        calibrator.setMeasurement(MeasurementConstants.TEMPERATURE);
+        calibrator.setMeasurement(Measurement.TEMPERATURE);
         calibrator.setRangeMin(0D);
         calibrator.setRangeMax(100D);
-        calibrator.setValue(MeasurementConstants.DEGREE_CELSIUS);
+        calibrator.setValue(Measurement.DEGREE_CELSIUS);
         calibrator.setErrorFormula("r");
         return calibrator;
     }
@@ -44,10 +43,10 @@ class CalibratorServiceTest {
         calibrator.setCertificateCompany("2");
         calibrator.setCertificateDate("23.03.2022");
         calibrator.setNumber("2");
-        calibrator.setMeasurement(MeasurementConstants.PRESSURE);
+        calibrator.setMeasurement(Measurement.PRESSURE);
         calibrator.setRangeMin(0D);
         calibrator.setRangeMax(200D);
-        calibrator.setValue(MeasurementConstants.KPA);
+        calibrator.setValue(Measurement.KPA);
         calibrator.setErrorFormula("r");
         return calibrator;
     }
@@ -60,10 +59,10 @@ class CalibratorServiceTest {
         calibrator.setCertificateCompany("3");
         calibrator.setCertificateDate("23.03.2022");
         calibrator.setNumber("3");
-        calibrator.setMeasurement(MeasurementConstants.PRESSURE);
+        calibrator.setMeasurement(Measurement.PRESSURE);
         calibrator.setRangeMin(0D);
         calibrator.setRangeMax(300D);
-        calibrator.setValue(MeasurementConstants.BAR);
+        calibrator.setValue(Measurement.BAR);
         calibrator.setErrorFormula("r");
         return calibrator;
     }
@@ -76,10 +75,10 @@ class CalibratorServiceTest {
         calibrator.setCertificateCompany("4");
         calibrator.setCertificateDate("23.03.2022");
         calibrator.setNumber("4");
-        calibrator.setMeasurement(MeasurementConstants.PRESSURE);
+        calibrator.setMeasurement(Measurement.PRESSURE);
         calibrator.setRangeMin(0D);
         calibrator.setRangeMax(400D);
-        calibrator.setValue(MeasurementConstants.PA);
+        calibrator.setValue(Measurement.PA);
         calibrator.setErrorFormula("r");
         return calibrator;
     }
@@ -92,10 +91,10 @@ class CalibratorServiceTest {
         calibrator.setCertificateCompany("5");
         calibrator.setCertificateDate("23.03.2022");
         calibrator.setNumber("5");
-        calibrator.setMeasurement(MeasurementConstants.CONSUMPTION);
+        calibrator.setMeasurement(Measurement.CONSUMPTION);
         calibrator.setRangeMin(0D);
         calibrator.setRangeMax(500D);
-        calibrator.setValue(MeasurementConstants.M3_HOUR);
+        calibrator.setValue(Measurement.M3_HOUR);
         calibrator.setErrorFormula("r");
         return calibrator;
     }
@@ -178,8 +177,8 @@ class CalibratorServiceTest {
     void getAllNames() {
         Date start = new Date();
 
-        Measurement measurementPressure = new Measurement(MeasurementConstants.PRESSURE, MeasurementConstants.KPA);
-        Measurement measurementConsumption = new Measurement(MeasurementConstants.CONSUMPTION, MeasurementConstants.M3_HOUR);
+        Measurement measurementPressure = new Measurement(Measurement.PRESSURE, Measurement.KPA);
+        Measurement measurementConsumption = new Measurement(Measurement.CONSUMPTION, Measurement.M3_HOUR);
         String[] testArray = new String[]{
                 calibratorPressureKPA().getName(),
                 calibratorPressureBAR().getName()

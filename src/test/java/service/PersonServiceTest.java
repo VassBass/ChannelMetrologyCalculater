@@ -1,6 +1,5 @@
 package service;
 
-import constants.WorkPositions;
 import def.DefaultPersons;
 import model.Person;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +24,7 @@ class PersonServiceTest {
         person.setSurname("Петров");
         person.setName("Петр");
         person.setPatronymic("Петрович");
-        person.setPosition(WorkPositions.ENGINEER_ASKV);
+        person.setPosition(Person.ENGINEER_ASKV);
         return person;
     }
 
@@ -34,7 +33,7 @@ class PersonServiceTest {
         person.setSurname("Иванов");
         person.setName("Иван");
         person.setPatronymic("Иванович");
-        person.setPosition(WorkPositions.JUNIOR_ENGINEER);
+        person.setPosition(Person.JUNIOR_ENGINEER);
         return person;
     }
 
@@ -43,7 +42,7 @@ class PersonServiceTest {
         person.setSurname("Васильев");
         person.setName("Василий");
         person.setPatronymic("Васильевич");
-        person.setPosition(WorkPositions.HEAD_OF_AREA);
+        person.setPosition(Person.HEAD_OF_AREA);
         return person;
     }
 
@@ -52,7 +51,7 @@ class PersonServiceTest {
         person.setSurname("Семёнов");
         person.setName("Семён");
         person.setPatronymic("Семёнович");
-        person.setPosition(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP);
+        person.setPosition(Person.HEAD_OF_DEPARTMENT_ASUTP);
         return person;
     }
 
@@ -61,7 +60,7 @@ class PersonServiceTest {
         person.setSurname("Семёнов");
         person.setName("Семён");
         person.setPatronymic("Семёнович");
-        person.setPosition(WorkPositions.HEAD_OF_DEPARTMENT_ASUTP);
+        person.setPosition(Person.HEAD_OF_DEPARTMENT_ASUTP);
         return person.getFullName();
     }
 
@@ -70,7 +69,7 @@ class PersonServiceTest {
         person.setSurname("Павлов");
         person.setName("Павел");
         person.setPatronymic("Павлович");
-        person.setPosition(WorkPositions.ELECTRONIC_ENGINEER);
+        person.setPosition(Person.ELECTRONIC_ENGINEER);
         return person;
     }
 

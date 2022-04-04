@@ -1,7 +1,7 @@
 package settings;
 
 import application.Application;
-import constants.MeasurementConstants;
+import model.Measurement;
 import service.FileBrowser;
 
 import java.io.FileInputStream;
@@ -23,9 +23,9 @@ public class Settings {
         String namePressureMethod = "МКМХ №5300.02:18";
         String nameConsumptionMethod = "МКМХ №5300.07:20";
 
-        setSettingValue(MeasurementConstants.TEMPERATURE, nameTemperatureMethod);
-        setSettingValue(MeasurementConstants.PRESSURE, namePressureMethod);
-        setSettingValue(MeasurementConstants.CONSUMPTION, nameConsumptionMethod);
+        setSettingValue(Measurement.TEMPERATURE, nameTemperatureMethod);
+        setSettingValue(Measurement.PRESSURE, namePressureMethod);
+        setSettingValue(Measurement.CONSUMPTION, nameConsumptionMethod);
     }
 
     @SuppressWarnings("unchecked")

@@ -2,10 +2,10 @@ package certificates;
 
 import calculation.Calculation;
 import constants.Key;
-import constants.MeasurementConstants;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import model.Sensor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -72,7 +72,7 @@ public class TemperatureCertificate extends Certificate {
         this.alarmCheck = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
-        String methodName = Settings.getSettingValue(MeasurementConstants.TEMPERATURE);
+        String methodName = Settings.getSettingValue(Measurement.TEMPERATURE);
         cell(34,15).setCellValue(methodName);
     }
 

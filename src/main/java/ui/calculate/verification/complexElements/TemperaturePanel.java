@@ -2,10 +2,10 @@ package ui.calculate.verification.complexElements;
 
 import calculation.Calculation;
 import constants.Key;
-import constants.MeasurementConstants;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
@@ -226,7 +226,7 @@ public class TemperaturePanel extends JPanel {
         this.rangeSensor.setText(rangeSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
-                + MeasurementConstants.DEGREE_CELSIUS);
+                + Measurement.DEGREE_CELSIUS);
         this.humidity.setText(this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY)
                 + "%");
         this.atmospherePressure.setText(this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE)

@@ -33,12 +33,6 @@ public class Key {
     public static final int CALCULATER_POSITION = 24;
     public static final int HEAD_OF_DEPARTMENT = 25;
 
-    public static final int DEPARTMENT = 26;
-    public static final int AREA = 27;
-    public static final int PROCESS = 28;
-    public static final int INSTALLATION = 29;
+    public static final int CONTROL_POINTS = 26;
 
-    public static final int CONTROL_POINTS = 30;
-
-    public static final String VERSION = "version";
 }

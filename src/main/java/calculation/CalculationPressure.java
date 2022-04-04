@@ -1,10 +1,9 @@
 package calculation;
 
-import constants.CalibratorType;
-import constants.MeasurementConstants;
 import converters.ValueConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class CalculationPressure extends Calculation {
@@ -16,8 +15,8 @@ public class CalculationPressure extends Calculation {
     @Override
     public void setCalibrator(Calibrator calibrator) {
         super.setCalibrator(calibrator);
-        if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)){
-            this.maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
+        if (calibrator.getType().equals(Calibrator.FLUKE718_30G)){
+            this.maxCalibratorPower = new ValueConverter(Measurement.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
         }
     }
 

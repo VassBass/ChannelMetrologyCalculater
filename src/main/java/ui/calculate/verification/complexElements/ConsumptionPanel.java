@@ -1,12 +1,11 @@
 package ui.calculate.verification.complexElements;
 
 import calculation.Calculation;
-import constants.CalibratorType;
 import constants.Key;
-import constants.MeasurementConstants;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
@@ -211,7 +210,7 @@ public class ConsumptionPanel extends JPanel {
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
-                + MeasurementConstants.DEGREE_CELSIUS);
+                + Measurement.DEGREE_CELSIUS);
         this.humidity.setText(this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY)
                 + "%");
         this.atmospherePressure.setText(this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE)
@@ -356,7 +355,7 @@ public class ConsumptionPanel extends JPanel {
         protected TableProtocol(){
             super(new GridBagLayout());
 
-            if (calculation.getCalibrator().getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (calculation.getCalibrator().getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 createRosemountForm();
             }else {
                 createStandardForm();
@@ -462,7 +461,7 @@ public class ConsumptionPanel extends JPanel {
             double value91 = 0.91;
             double value305 = 3.05;
             double value914 = 9.14;
-            if (value.equals(MeasurementConstants.CM_S)){
+            if (value.equals(Measurement.CM_S)){
                 value91 = value91 * 100;
                 value305 = value305 * 100;
                 value914 = value914 * 100;
@@ -571,7 +570,7 @@ public class ConsumptionPanel extends JPanel {
                     + value);
 
             Calibrator calibrator = calculation.getCalibrator();
-            if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 String s0;
                 String s91;
                 String s305;

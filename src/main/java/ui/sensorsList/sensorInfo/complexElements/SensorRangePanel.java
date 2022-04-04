@@ -1,7 +1,7 @@
 package ui.sensorsList.sensorInfo.complexElements;
 
-import constants.MeasurementConstants;
 import converters.VariableConverter;
+import model.Measurement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +34,7 @@ public class SensorRangePanel extends JPanel {
         this.t = new JLabel(DASH);
         this.t.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS);
+        this.value = new JLabel(Measurement.DEGREE_CELSIUS);
     }
 
     private void setReactions() {
@@ -64,7 +64,7 @@ public class SensorRangePanel extends JPanel {
     @Override
     public void setEnabled(boolean enabled) {
         if (enabled){
-            this.value.setText(MeasurementConstants.DEGREE_CELSIUS);
+            this.value.setText(Measurement.DEGREE_CELSIUS);
             this.rangeMin.setText(this.rMin);
             this.rangeMax.setText(this.rMax);
         }else {

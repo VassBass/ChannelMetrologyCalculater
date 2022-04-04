@@ -1,7 +1,7 @@
 package ui.calculate.start.complexElements;
 
-import constants.MeasurementConstants;
 import converters.VariableConverter;
+import model.Measurement;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
@@ -46,7 +46,7 @@ public class CalculateStartDialog_weatherPanel extends JPanel {
         this.labelHumidity = new ButtonCell(false, RELATIVE_HUMIDITY);
         this.labelPressure = new ButtonCell(false, ATMOSPHERE_PRESSURE);
 
-        this.temperatureValue = new ButtonCell(false, MeasurementConstants.DEGREE_CELSIUS);
+        this.temperatureValue = new ButtonCell(false, Measurement.DEGREE_CELSIUS);
         this.humidityValue = new ButtonCell(false, PERCENT);
         this.pressureValue = new ButtonCell(false, ATMOSPHERE_PRESSURE_VALUE);
 

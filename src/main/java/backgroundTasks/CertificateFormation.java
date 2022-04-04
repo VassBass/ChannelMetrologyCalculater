@@ -3,10 +3,10 @@ package backgroundTasks;
 import application.Application;
 import calculation.Calculation;
 import certificates.*;
-import constants.CalibratorType;
 import constants.Key;
-import constants.MeasurementConstants;
+import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.calculate.end.CalculateEndDialog;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
@@ -46,12 +46,12 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         String measurementName = this.channel.getMeasurement().getName();
-        if (measurementName.equals(MeasurementConstants.TEMPERATURE)){
+        if (measurementName.equals(Measurement.TEMPERATURE)){
             this.certificate = new TemperatureCertificate();
-        }else if (measurementName.equals(MeasurementConstants.PRESSURE)){
+        }else if (measurementName.equals(Measurement.PRESSURE)){
             this.certificate = new PressureCertificate();
-        }else if (measurementName.equals(MeasurementConstants.CONSUMPTION)){
-            if (this.calculation.getCalibrator().getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+        }else if (measurementName.equals(Measurement.CONSUMPTION)){
+            if (this.calculation.getCalibrator().getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 this.certificate = new ConsumptionCertificate_ROSEMOUNT();
             }else {
                 this.certificate = new ConsumptionCertificate();

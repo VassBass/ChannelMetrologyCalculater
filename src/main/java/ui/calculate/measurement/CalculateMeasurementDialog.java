@@ -1,12 +1,11 @@
 package ui.calculate.measurement;
 
 import backgroundTasks.CalculateChannel;
-import constants.CalibratorType;
 import constants.Key;
-import constants.MeasurementConstants;
 import converters.ConverterUI;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.calculate.measurement.complexElements.*;
 import ui.calculate.start.CalculateStartDialog;
 import ui.mainScreen.MainScreen;
@@ -136,15 +135,15 @@ public class CalculateMeasurementDialog extends JDialog {
 
     private void createMeasurementPanel(int index, double[] values){
         String measurementName = this.channel.getMeasurement().getName();
-        if (measurementName.equals(MeasurementConstants.TEMPERATURE)){
+        if (measurementName.equals(Measurement.TEMPERATURE)){
             TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
             this.measurementsPanels[index] = temperaturePanel;
-        }else if (measurementName.equals(MeasurementConstants.PRESSURE)){
+        }else if (measurementName.equals(Measurement.PRESSURE)){
             PressurePanel pressurePanel = new PressurePanel(this.channel,(Calibrator) this.values.get(Key.CALIBRATOR));
             this.measurementsPanels[index] = pressurePanel;
-        }else if (measurementName.equals(MeasurementConstants.CONSUMPTION)){
+        }else if (measurementName.equals(Measurement.CONSUMPTION)){
             Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
-            if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 ConsumptionPanel_ROSEMOUNT consumptionPanel = new ConsumptionPanel_ROSEMOUNT(this.channel);
                 this.measurementsPanels[index] = consumptionPanel;
             }else {
