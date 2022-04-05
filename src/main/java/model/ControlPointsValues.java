@@ -71,6 +71,12 @@ public class ControlPointsValues implements Serializable {
                 && this.rangeMax == rangeMax;
     }
 
+    /**
+     * @return {@link ControlPointsValues} in JsonString
+     * if 10 times in a row throws {@link JsonProcessingException} return null
+     *
+     * @see com.fasterxml.jackson.core
+     */
     @Override
     public String toString() {
         int attempt = 0;
@@ -85,6 +91,15 @@ public class ControlPointsValues implements Serializable {
         return null;
     }
 
+    /**
+     * @param json {@link ControlPointsValues} in JsonString
+     *
+     * @see com.fasterxml.jackson.core
+     *
+     * @return {@link ControlPointsValues}
+     *
+     * @throws JsonProcessingException - if jackson can't transform String to ControlPointsValues
+     */
     public static ControlPointsValues fromString(String json) throws JsonProcessingException {
         return new ObjectMapper().readValue(json, ControlPointsValues.class);
     }

@@ -11,10 +11,20 @@ import org.mariuszgromada.math.mxparser.Function;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Objects;
 
-//DB table = calibrators
+/**
+ * DB table = calibrators
+ */
 public class Calibrator implements Serializable {
+    /**
+     * Default calibrators types
+     * 
+     * @see #type
+     * @see #getType()
+     * @see #setType(String)
+     */
     public static final String FLUKE718_30G = "Fluke 718 30G";
     public static final String ROSEMOUNT_8714DQ4 = "ROSEMOUNT 8714DQ4";
 
@@ -30,6 +40,8 @@ public class Calibrator implements Serializable {
 
     /**
      * DB field = certificate [TEXT{Json}]
+     * 
+     * @see Certificate
      */
     @Nonnull private Certificate certificate;
 
@@ -40,6 +52,8 @@ public class Calibrator implements Serializable {
 
     /**
      * DB field = measurement [TEXT]
+     *
+     * @see Measurement
      */
     @Nonnull private String measurement = "";
 
@@ -55,11 +69,25 @@ public class Calibrator implements Serializable {
 
     /**
      * DB field = value [TEXT]
+     *
+     * @see Measurement
      */
     @Nonnull private String value = "";
 
     /**
      * DB field = error_formula [TEXT]
+     * 
+     * @see #getError(Channel)
+     *
+     * R - Measurement range of channel (Диапазон измерения канала)
+     * @see Channel#getRange()
+     *
+     * r - Measurement range of calibrator (Диапазон измерения калибратора)
+     * @see Calibrator#getRange()
+     *
+     * convR - Measurement range of calibrator converted by measurement channel value
+     * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
+     * @see ValueConverter#get(double)
      */
     @Nonnull private String errorFormula = "";
 
@@ -67,7 +95,6 @@ public class Calibrator implements Serializable {
         this.certificate = new Certificate();
     }
 
-    //Getters
     @Nonnull public String getType() {return this.type;}
     @Nonnull public String getName(){return this.name;}
     @Nonnull public String getNumber(){return this.number;}
@@ -82,7 +109,6 @@ public class Calibrator implements Serializable {
     @Nonnull public String getCertificateCompany(){return this.certificate.getCompany();}
     @Nonnull public String getErrorFormula(){return this.errorFormula;}
 
-    //Setters
     public void setType(@Nonnull String type) {this.type = type;}
     public void setName(@Nonnull String name){this.name = name;}
     public void setNumber(@Nonnull String number){this.number = number;}
@@ -96,14 +122,30 @@ public class Calibrator implements Serializable {
     public void setMeasurement(@Nonnull String measurement){this.measurement = measurement;}
     public void setCertificate(@Nonnull Certificate certificate){this.certificate = certificate;}
 
+    /**
+     * @return main Certificate info in single string
+     *
+     * @see Certificate#getName()
+     * @see Certificate#getDate()
+     * @see Certificate#getCompany()
+     */
     public String getCertificateInfo(){
         return this.certificate.getName() + " від " + this.certificate.getDate() + "р " + this.certificate.getCompany();
     }
 
-    /*
-    R - Диапазон измерения канала
-    r - Диапазон измерения калибратора
-    convR - Диапазон измерения калибратора переконвертированый под измерительную величину канала
+    /**
+     * @param channel against which the calculation is made
+     * @return numerical value calculated by the {@link #errorFormula}
+     *
+     * R - Measurement range of channel (Диапазон измерения канала)
+     * @see Channel#getRange()
+     *
+     * r - Measurement range of calibrator (Диапазон измерения калибратора)
+     * @see Calibrator#getRange()
+     * 
+     * convR - Measurement range of calibrator converted by measurement channel value
+     * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
+     * @see ValueConverter#get(double)
      */
     public double getError(Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
@@ -129,7 +171,14 @@ public class Calibrator implements Serializable {
         @Nonnull private String company = "";
 
         @Nonnull public String getName(){return this.name;}
-        //Format = DD.MM.YYYY
+
+        /**
+         * @return date string in format = DD.MM.YYYY
+         *
+         * @see VariableConverter#dateToString(Calendar)
+         * @see VariableConverter#stringToDate(String)
+         * @see VariableConverter#stringToDateString(String)
+         */
         @Nonnull public String getDate(){return this.date;}
         @Nonnull public String getCompany(){return this.company;}
 
@@ -153,6 +202,10 @@ public class Calibrator implements Serializable {
                     this.date.equals(c.getDate());
         }
 
+        /**
+         * @return {@link Certificate} in JsonString
+         * @see com.fasterxml.jackson.core
+         */
         @Override
         public String toString() {
             int attempt = 0;
@@ -167,6 +220,13 @@ public class Calibrator implements Serializable {
             return null;
         }
 
+        /**
+         * @param json {@link Certificate} in JsonString
+         * @see com.fasterxml.jackson.core
+         *
+         * @return {@link Certificate}
+         * @throws JsonProcessingException - if jackson can't transform
+         */
         public static Certificate fromString (String json) throws JsonProcessingException {
             return new ObjectMapper().readValue(json, Certificate.class);
         }
@@ -194,6 +254,12 @@ public class Calibrator implements Serializable {
         return in.getName().equals(this.name);
     }
 
+    /**
+     * @return {@link Calibrator} in JsonString
+     * if 10 times in a row throws {@link JsonProcessingException} return null
+     *
+     * @see com.fasterxml.jackson.core
+     */
     @Override
     public String toString() {
         int attempt = 0;
@@ -208,16 +274,20 @@ public class Calibrator implements Serializable {
         return null;
     }
 
-    public static Calibrator fromString(String json){
-        try {
+    /**
+     * @param json {@link Calibrator} in JsonString
+     *
+     * @see com.fasterxml.jackson.core
+     *
+     * @return {@link Calibrator}
+     *
+     * @throws JsonProcessingException - if jackson can't transform String to Calibrator
+     */
+    public static Calibrator fromString(String json) throws JsonProcessingException{
             return new ObjectMapper().readValue(json, Calibrator.class);
-        } catch (JsonProcessingException e) {
-            return null;
-        }
     }
 
     /**
-     *
      * @param calibrator to compare with this
      * @return true if calibrators fields equal
      */

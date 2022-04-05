@@ -12,8 +12,13 @@ import org.mariuszgromada.math.mxparser.Function;
 import java.io.Serializable;
 import java.util.Objects;
 
-//DB table = sensors
+/**
+ * DB table = sensors
+ */
 public class Sensor implements Serializable {
+    /**
+     * @see repository.impl.ChannelRepositoryImpl#changeSensorInCurrentThread(Sensor, Sensor, int...)
+     */
     public static int TYPE = 0;
     public static int NAME = 1;
     public static int RANGE = 2;
@@ -22,6 +27,11 @@ public class Sensor implements Serializable {
     public static int MEASUREMENT = 5;
     public static int ERROR_FORMULA = 6;
 
+    /**
+     * Default sensors types
+     * @see #getType()
+     * @see #setType(String)
+     */
     public static final String YOKOGAWA = "YOKOGAWA";
     public static final String ROSEMOUNT = "ROSEMOUNT";
     public static final String TCM_50M = "ТСМ-50М";
@@ -50,16 +60,32 @@ public class Sensor implements Serializable {
 
     /**
      * DB field = value [TEXT]
+     *
+     * @see Measurement
      */
     private String value = "";
 
     /**
      * DB field = measurement [TEXT]
+     *
+     * @see Measurement
      */
     private String measurement = "";
 
     /**
      * DB field = error_formula [TEXT]
+     *
+     * @see #getError(Channel)
+     *
+     * R - Measurement range of channel (Диапазон измерения канала)
+     * @see Channel#getRange()
+     *
+     * r - Measurement range of sensor (Диапазон измерения датчика)
+     * @see Sensor#getRange()
+     *
+     * convR - Measurement range of sensor converted by measurement channel value
+     * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
+     * @see ValueConverter#get(double)
      */
     private String errorFormula = "";
 
@@ -80,16 +106,25 @@ public class Sensor implements Serializable {
     public String getName(){return this.name;}
     public double getRangeMin() {return this.rangeMin;}
     public double getRangeMax() {return this.rangeMax;}
-    public double _getRange(){return this.rangeMax - this.rangeMin;}
+    public double getRange(){return this.rangeMax - this.rangeMin;}
     public String getNumber(){return this.number;}
     public String getValue(){return this.value;}
     public String getMeasurement(){return this.measurement;}
     public String getErrorFormula(){return this.errorFormula;}
 
     /**
-     * R - Диапазон измерения канала
-     * r - Диапазон измерения датчика
-     * convR - Диапазон измерения датчика переконвертированый под измерительную величину канала
+     * @param channel against which the calculation is made
+     * @return numerical value calculated by the {@link #errorFormula}
+     *
+     * R - Measurement range of channel (Диапазон измерения канала)
+     * @see Channel#getRange()
+     *
+     * r - Measurement range of sensor (Диапазон измерения датчика)
+     * @see Calibrator#getRange()
+     *
+     * convR - Measurement range of sensor converted by measurement channel value
+     * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
+     * @see ValueConverter#get(double)
      */
     public double getError(Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
@@ -101,9 +136,9 @@ public class Sensor implements Serializable {
             cR = 0D;
         }else {
             R = new Argument("R = " + channel.getRange());
-            cR = new ValueConverter(this.value, channel.getMeasurement().getValue()).get(this._getRange());
+            cR = new ValueConverter(this.value, channel.getMeasurement().getValue()).get(this.getRange());
         }
-        Argument r = new Argument("r = " + this._getRange());
+        Argument r = new Argument("r = " + this.getRange());
         Argument convR = new Argument("convR = " + cR);
         Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
         return expression.calculate();
@@ -131,6 +166,10 @@ public class Sensor implements Serializable {
         return in.getName().equals(this.name);
     }
 
+    /**
+     * @return {@link Sensor} in JsonString
+     * @see com.fasterxml.jackson.core
+     */
     @Override
     public String toString() {
         int attempt = 0;
@@ -145,12 +184,20 @@ public class Sensor implements Serializable {
         return null;
     }
 
+    /**
+     * @param json {@link Sensor} in JsonString
+     *
+     * @see com.fasterxml.jackson.core
+     *
+     * @return {@link Sensor}
+     *
+     * @throws JsonProcessingException - if jackson can't transform String to Ыутыщк
+     */
     public static Sensor fromString(String json) throws JsonProcessingException {
         return new ObjectMapper().readValue(json, Sensor.class);
     }
 
     /**
-     *
      * @param sensor to compare with this
      * @return true if sensors fields equal
      */

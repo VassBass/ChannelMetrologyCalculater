@@ -9,12 +9,28 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-//DB table = measurements
+/**
+ * DB table = measurements
+ */
 public class Measurement implements Serializable {
+    /**
+     * Measurement names
+     * 
+     * @see #name
+     * @see Calibrator#getMeasurement() {@link Calibrator#setMeasurement(String)}
+     * @see Sensor#getMeasurement() {@link Sensor#setMeasurement(String)}
+     */
     public static String TEMPERATURE= "Температура";
     public static String PRESSURE = "Тиск";
     public static String CONSUMPTION = "Витрата";
 
+    /**
+     * Measurement values
+     *
+     * @see #value
+     * @see Calibrator#getValue() {@link Calibrator#setValue(String)}
+     * @see Sensor#getValue() {@link Sensor#setValue(String)}
+     */
     public static String DEGREE_CELSIUS = "\u2103";
 
     public static String KPA = "кПа";
@@ -26,14 +42,17 @@ public class Measurement implements Serializable {
     public static String ML_BAR = "мбар";
 
     public static String M3_HOUR = "м" + "\u00B3" + "/h";
-
     public static String M_S = "м/с";
     public static String CM_S = "см/с";
 
-    //DB field = name [TEXT]
+    /**
+     * DB field = name [TEXT]
+     */
     @Nonnull protected String name = "measurement";
 
-    //DB field = value (primary key) [TEXT]
+    /**
+     * DB field = value (primary key) [TEXT]
+     */
     @Nonnull protected String value = "value";
 
     public Measurement(){}
@@ -43,11 +62,9 @@ public class Measurement implements Serializable {
             this.value = value;
     }
 
-    //Getters
     @Nonnull public String getName() {return this.name;}
     @Nonnull public String getValue() {return this.value;}
 
-    //Setters
     public void setName(@Nonnull String name) {this.name = name;}
     public void setValue(@Nonnull String value){this.value = value;}
 
@@ -64,6 +81,12 @@ public class Measurement implements Serializable {
         return this.value.equals(measurement.getValue());
     }
 
+    /**
+     * @return {@link Measurement} in JsonString
+     * if 10 times in a row throws {@link JsonProcessingException} return null
+     *
+     * @see com.fasterxml.jackson.core
+     */
     @Override
     public String toString() {
         int attempt = 0;
@@ -78,6 +101,15 @@ public class Measurement implements Serializable {
         return null;
     }
 
+    /**
+     * @param json {@link Measurement} in JsonString
+     *
+     * @see com.fasterxml.jackson.core
+     *
+     * @return {@link Measurement}
+     *
+     * @throws JsonProcessingException - if jackson can't transform String to Measurement
+     */
     public static Measurement fromString(String json) throws JsonProcessingException {
         return new ObjectMapper().readValue(json, Measurement.class);
     }

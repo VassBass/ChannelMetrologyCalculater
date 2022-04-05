@@ -163,7 +163,7 @@ public class TemperatureCertificate extends Certificate {
         cell(20,4).setCellValue(type);
 
         double errorSensor = sensor.getError(this.channel);
-        double eP = errorSensor / (sensor._getRange() / 100);
+        double eP = errorSensor / (sensor.getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(21,5).setCellValue(errorPercent);
 

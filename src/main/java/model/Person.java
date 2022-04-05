@@ -27,6 +27,10 @@ public class Person {
     public String getPatronymic(){return this.patronymic;}
     public String getPosition(){return this.position;}
 
+    /**
+     * @return full name of person
+     * format {@link #name} + in upper case {@link #surname}
+     */
     public String getFullName(){
         return this.name + " " + this.surname.toUpperCase(Locale.ROOT);
     }
@@ -52,6 +56,12 @@ public class Person {
                 && person.getPosition().equals(this.position);
     }
 
+    /**
+     * @return {@link Person} in JsonString
+     * if 10 times in a row throws {@link JsonProcessingException} return null
+     *
+     * @see com.fasterxml.jackson.core
+     */
     @Override
     public String toString() {
         int attempt = 0;
@@ -66,6 +76,15 @@ public class Person {
         return null;
     }
 
+    /**
+     * @param json {@link Person} in JsonString
+     *
+     * @see com.fasterxml.jackson.core
+     *
+     * @return {@link Person}
+     *
+     * @throws JsonProcessingException - if jackson can't transform String to Person
+     */
     public static Person fromString(String json) throws JsonProcessingException {
         return new ObjectMapper().readValue(json, Person.class);
     }
