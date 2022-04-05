@@ -440,7 +440,6 @@ public class Importer extends SwingWorker<Boolean, Void> {
         ResultSet resultSet = statement.executeQuery(sql);
         while (resultSet.next()){
             ControlPointsValues cpv = new ControlPointsValues();
-            cpv.setId(resultSet.getInt("id"));
             cpv.setSensorType(resultSet.getString("sensor_type"));
             cpv.setValues(VariableConverter.stringToArray(resultSet.getString("points")));
             cpv.setRangeMin(resultSet.getDouble("range_min"));

@@ -8,18 +8,27 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
 
-//DB table = control_points
+/**
+ * DB table = control_points
+ */
 public class ControlPointsValues implements Serializable {
-    //DB field = id (primary key, autoincrement) [INTEGER]
-    private int id;
 
-    //DB field = sensor_type [TEXT]
+    /**
+     * DB field = sensor_type [TEXT]
+     */
     private String sensorType;
 
-    //DB fields = range_min, range_max [REAL]
+    /**
+     * DB fields = range_min, range_max [REAL]
+     */
     private double rangeMin, rangeMax;
 
-    //DB field = points [TEXT{VariableConverter.arrayToString(), VariableConverter.stringToArray()}]
+    /**
+     * DB field = points [TEXT]
+     * 
+     * @see converters.VariableConverter#arrayToString(double[])
+     * @see converters.VariableConverter#stringToArray(String)
+     */
     private double[] values;
 
     public ControlPointsValues(){}
@@ -31,13 +40,11 @@ public class ControlPointsValues implements Serializable {
         this.values = values;
     }
 
-    public int getId(){return this.id;}
     public String getSensorType(){return this.sensorType;}
     public double getRangeMin(){return this.rangeMin;}
     public double getRangeMax(){return this.rangeMax;}
     public double[]getValues(){return this.values;}
 
-    public void setId(int id){this.id = id;}
     public void setSensorType(String sensorType){this.sensorType = sensorType;}
     public void setValues(double[]values){this.values = values;}
     public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
@@ -45,7 +52,7 @@ public class ControlPointsValues implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.sensorType, this.rangeMin, this.rangeMax, Arrays.hashCode(this.values));
+        return Objects.hash(this.sensorType, this.rangeMin, this.rangeMax, Arrays.hashCode(this.values));
     }
 
     @Override

@@ -105,7 +105,7 @@ class PersonServiceTest {
         return persons;
     }
 
-    private long howLong(java.util.Date start, Date end){
+    private long howLong(Date start, Date end){
         return end.getTime() - start.getTime();
     }
 

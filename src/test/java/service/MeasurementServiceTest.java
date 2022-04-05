@@ -43,7 +43,7 @@ class MeasurementServiceTest {
         return measurements;
     }
 
-    private static long howLong(java.util.Date start, Date end){
+    private static long howLong(Date start, Date end){
         return end.getTime() - start.getTime();
     }
 

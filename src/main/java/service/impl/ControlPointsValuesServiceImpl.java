@@ -29,6 +29,11 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
+    public ArrayList<ControlPointsValues> getAll() {
+        return this.repository.getAll();
+    }
+
+    @Override
     public ArrayList<ControlPointsValues> getBySensorType(String sensorType) {
         return this.repository.getBySensorType(sensorType);
     }
@@ -69,7 +74,12 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public void resetToDefault() {
-        this.repository.resetToDefault();
+    public void resetToDefaultInCurrentThread() {
+        this.repository.resetToDefaultInCurrentThread();
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

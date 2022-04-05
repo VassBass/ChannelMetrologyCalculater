@@ -125,7 +125,7 @@ public class Application extends SwingWorker<Void, String> {
         context.sensorService.init();
         if (firstStart) context.sensorService.resetToDefault();
         context.controlPointsValuesService.init();
-        if (firstStart) context.controlPointsValuesService.resetToDefault();
+        if (firstStart) context.controlPointsValuesService.resetToDefaultInCurrentThread();
         publish("Завантаження списку каналів");
         context.channelService.init();
         publish("Завантаження головного вікна");

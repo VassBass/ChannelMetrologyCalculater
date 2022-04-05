@@ -6,6 +6,7 @@ import constants.Action;
 import converters.VariableConverter;
 import def.DefaultControlPointsValues;
 import model.ControlPointsValues;
+import model.Sensor;
 import repository.AreaRepository;
 import repository.ControlPointsValuesRepository;
 import repository.Repository;
@@ -26,18 +27,18 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
     public ControlPointsValuesRepositoryImpl(){super();}
     public ControlPointsValuesRepositoryImpl(String dbUrl){super(dbUrl);}
 
+    private boolean backgroundTaskRunning = false;
+
     @Override
     protected void init() {
         LOGGER.fine("Get connection with DB");
         try (Connection connection = this.getConnection();
             Statement statement = connection.createStatement()){
             String sql = "CREATE TABLE IF NOT EXISTS control_points ("
-                    + "id integer NOT NULL UNIQUE"
-                    + ", sensor_type text NOT NULL"
+                    + "sensor_type text NOT NULL"
                     + ", points text NOT NULL"
                     + ", range_min real NOT NULL"
                     + ", range_max real NOT NULL"
-                    + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
                     + ");";
             LOGGER.fine("Send request to create table");
             statement.execute(sql);
@@ -47,7 +48,6 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
             try (ResultSet resultSet = statement.executeQuery(sql)) {
                 while (resultSet.next()) {
                     ControlPointsValues cpv = new ControlPointsValues();
-                    cpv.setId(resultSet.getInt("id"));
                     cpv.setSensorType(resultSet.getString("sensor_type"));
                     cpv.setValues(VariableConverter.stringToArray(resultSet.getString("points")));
                     cpv.setRangeMin(resultSet.getDouble("range_min"));
@@ -89,8 +89,18 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
         return null;
     }
 
+    /**
+     *
+     * @param sensorType type of Sensor {@link Sensor#getType()}
+     * @param index sequence number in {@link #mainList} among control points with {@link Sensor#getType()}
+     * @return null if ControlPointsValues not exists in {@link #mainList}
+     * or if sensorType equals null
+     * or if index < 0 or if index >= {@link #mainList}.size()
+     */
     @Override
     public ControlPointsValues getControlPointsValues(String sensorType, int index) {
+        if (index < 0 || index >= this.mainList.size()) return null;
+
         int i = 0;
         for (ControlPointsValues cpv : this.mainList){
             if (cpv.getSensorType().equals(sensorType)){
@@ -135,44 +145,56 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
     @Override
     public void remove(ControlPointsValues cpv) {
         if (cpv != null && this.mainList.remove(cpv)){
-            new BackgroundAction().remove(cpv.getId());
+            new BackgroundAction().remove(cpv);
         }
     }
 
     @Override
     public void removeAllInCurrentThread(String sensorType) {
-        ArrayList<Integer>indexes = new ArrayList<>();
-        for (int i=0;i<this.mainList.size();i++){
-            ControlPointsValues cpv = this.mainList.get(i);
-            if (cpv.getSensorType().equals(sensorType)){
-                indexes.add(i);
+        if (sensorType == null){
+            this.mainList.clear();
+        }else {
+            ArrayList<Integer> indexes = new ArrayList<>();
+            for (int i = 0; i < this.mainList.size(); i++) {
+                ControlPointsValues cpv = this.mainList.get(i);
+                if (cpv.getSensorType().equals(sensorType)) {
+                    indexes.add(i);
+                }
             }
-        }
-        Collections.reverse(indexes);
-        for (int i : indexes){
-            this.mainList.remove(i);
+            Collections.reverse(indexes);
+            for (int i : indexes) {
+                this.mainList.remove(i);
+            }
         }
         new BackgroundAction().clearControlPoints(sensorType);
     }
 
+    /**
+     *
+     * @param sensorType is type of Sensor whose control points need to be cleared
+     * If sensorType is equals null the entire list is cleared
+     *
+     */
     @Override
     public void clear(String sensorType) {
-        ArrayList<Integer>indexes = new ArrayList<>();
-        for (int i=0;i<this.mainList.size();i++){
-            ControlPointsValues cpv = this.mainList.get(i);
-            if (cpv.getSensorType().equals(sensorType)){
-                indexes.add(i);
+        if (sensorType != null){
+            ArrayList<Integer> indexes = new ArrayList<>();
+            for (int i = 0; i < this.mainList.size(); i++) {
+                ControlPointsValues cpv = this.mainList.get(i);
+                if (cpv.getSensorType().equals(sensorType)) {
+                    indexes.add(i);
+                }
             }
-        }
-        Collections.reverse(indexes);
-        for (int i : indexes){
-            this.mainList.remove(i);
-        }
+            Collections.reverse(indexes);
+            for (int i : indexes) {
+                this.mainList.remove(i);
+            }
+        }else this.mainList.clear();
         new BackgroundAction().clear(sensorType);
     }
 
     @Override
-    public void resetToDefault() {
+    public void resetToDefaultInCurrentThread() {
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection()) {
                 LOGGER.fine("Send request to clear");
@@ -184,15 +206,14 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
                 this.mainList.addAll(DefaultControlPointsValues.get());
                 if (!this.mainList.isEmpty()) {
                     LOGGER.fine("Send requests to add");
-                    sql = "INSERT INTO control_points ('id', 'sensor_type', 'points', 'range_min', 'range_max')" +
-                            " VALUES (?, ?, ?, ?, ?);";
+                    sql = "INSERT INTO control_points ('sensor_type', 'points', 'range_min', 'range_max')" +
+                            " VALUES (?, ?, ?, ?);";
                     PreparedStatement statement = connection.prepareStatement(sql);
                     for (ControlPointsValues cpv : this.mainList) {
-                        statement.setInt(1, cpv.getId());
-                        statement.setString(2, cpv.getSensorType());
-                        statement.setString(3, VariableConverter.arrayToString(cpv.getValues()));
-                        statement.setDouble(4, cpv.getRangeMin());
-                        statement.setDouble(5, cpv.getRangeMax());
+                        statement.setString(1, cpv.getSensorType());
+                        statement.setString(2, VariableConverter.arrayToString(cpv.getValues()));
+                        statement.setDouble(3, cpv.getRangeMin());
+                        statement.setDouble(4, cpv.getRangeMax());
                         statement.execute();
                     }
 
@@ -205,9 +226,13 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
             }
     }
 
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return backgroundTaskRunning;
+    }
+
     private class BackgroundAction extends SwingWorker<Boolean, Void> {
         private ControlPointsValues cpv, oldCpv;
-        private int id;
         private String sensorType;
         private Action action;
         private final SaveMessage saveMessage;
@@ -231,8 +256,8 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
             this.start();
         }
 
-        void remove(int id){
-            this.id = id;
+        void remove(ControlPointsValues cpv){
+            this.cpv = cpv;
             this.action = Action.REMOVE;
             this.start();
         }
@@ -251,6 +276,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
                     if (saveMessage != null) saveMessage.setVisible(true);
                 }
             });
+            backgroundTaskRunning = true;
             this.execute();
         }
 
@@ -262,7 +288,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
                 case SET:
                     return this.setControlPoints(this.oldCpv, this.cpv);
                 case REMOVE:
-                    return this.removeControlPoints(this.id);
+                    return this.removeControlPoints(this.cpv);
                 case CLEAR:
                     return this.clearControlPoints(this.sensorType);
             }
@@ -292,21 +318,21 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
                 LOGGER.log(Level.SEVERE, "ERROR: ", e);
             }
             Application.setBusy(false);
+            backgroundTaskRunning = false;
             if (this.saveMessage != null) this.saveMessage.dispose();
         }
 
         boolean addControlPoints(ControlPointsValues cpv){
-            String sql = "INSERT INTO control_points ('id', 'sensor_type', 'points', 'range_min', 'range_max') "
-                    + "VALUES(?, ?, ?, ?, ?);";
+            String sql = "INSERT INTO control_points ('sensor_type', 'points', 'range_min', 'range_max') "
+                    + "VALUES(?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql)){
                 LOGGER.fine("Send requests");
-                statement.setInt(1, cpv.getId());
-                statement.setString(2, cpv.getSensorType());
-                statement.setString(3, VariableConverter.arrayToString(cpv.getValues()));
-                statement.setDouble(4, cpv.getRangeMin());
-                statement.setDouble(5, cpv.getRangeMax());
+                statement.setString(1, cpv.getSensorType());
+                statement.setString(2, VariableConverter.arrayToString(cpv.getValues()));
+                statement.setDouble(3, cpv.getRangeMin());
+                statement.setDouble(4, cpv.getRangeMax());
                 statement.execute();
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
@@ -322,12 +348,14 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
                 LOGGER.fine("Send request to delete");
                 LOGGER.fine("Send requests to update");
                 String sql = "UPDATE control_points SET "
-                        + "id = " + newControlPoints.getId() + ", "
                         + "sensor_type = '" + newControlPoints.getSensorType() + "', "
                         + "points = '" + VariableConverter.arrayToString(newControlPoints.getValues()) + "', "
                         + "range_min = " + newControlPoints.getRangeMin() + ", "
                         + "range_max = " + newControlPoints.getRangeMax() + " "
-                        + "WHERE id = " + oldControlPoints.getId() + ";";
+                        + "WHERE sensor_type = '" + oldControlPoints.getSensorType() + "' "
+                        + "AND range_min = " + oldControlPoints.getRangeMin() + " "
+                        + "AND range_max = " + oldControlPoints.getRangeMax() + " "
+                        + ";";
                 statement.execute(sql);
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
@@ -336,12 +364,15 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
             return true;
         }
 
-        private boolean removeControlPoints(int id){
+        private boolean removeControlPoints(ControlPointsValues cpv){
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection();
                 Statement statement = connection.createStatement()){
                 LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM control_points WHERE id = '" + id + "';";
+                String sql = "DELETE FROM control_points WHERE sensor_type = '" + cpv.getSensorType() + "' "
+                        + "AND range_min = " + cpv.getRangeMin() + " "
+                        + "AND range_max = " + cpv.getRangeMax()
+                        + ";";
                 statement.execute(sql);
             }catch (SQLException ex){
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
@@ -355,7 +386,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
             try (Connection connection = getConnection();
                 Statement statement = connection.createStatement()) {
                 LOGGER.fine("Send request");
-                String sql = "DELETE FROM control_points WHERE sensor_type = '"+ sensorType + "';";
+                String sql = sensorType == null ? "DELETE FROM control_points;" : "DELETE FROM control_points WHERE sensor_type = '"+ sensorType + "';";
                 statement.execute(sql);
             } catch (SQLException ex) {
                 LOGGER.log(Level.SEVERE, "ERROR: ", ex);
