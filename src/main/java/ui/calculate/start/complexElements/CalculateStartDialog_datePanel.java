@@ -1,6 +1,7 @@
 package ui.calculate.start.complexElements;
 
 import constants.CalendarConstants;
+import converters.VariableConverter;
 
 import javax.swing.*;
 import java.awt.event.FocusEvent;
@@ -51,9 +52,9 @@ public class CalculateStartDialog_datePanel extends JPanel {
         this.add(this.year);
     }
 
-    public void update(Calendar date){
+    public void update(String date){
         if (date != null){
-            setDate(date);
+            setDate(VariableConverter.stringToDate(date));
         }
     }
 
@@ -85,12 +86,8 @@ public class CalculateStartDialog_datePanel extends JPanel {
         }
     }
 
-    public Calendar getDate() {
-        int dayInt = Integer.parseInt(day.getText());
-        int monthInt = Integer.parseInt(month.getText());
-        monthInt--;
-        int yearInt = Integer.parseInt(year.getText());
-        return new GregorianCalendar(yearInt, monthInt, dayInt);
+    public String getDate() {
+        return this.day.getText() + "." + this.month.getText() + "." + this.year.getText();
     }
 
     private final FocusListener dayFocus = new FocusListener() {

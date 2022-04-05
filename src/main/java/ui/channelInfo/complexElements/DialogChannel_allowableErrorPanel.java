@@ -1,8 +1,8 @@
 package ui.channelInfo.complexElements;
 
-import constants.MeasurementConstants;
 import converters.ErrorConverter;
 import converters.VariableConverter;
+import model.Measurement;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -36,7 +36,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
     private void createElements() {
         this.labelPercent = new JLabel(PERCENT);
         this.and = new JLabel(AND);
-        this.value = new JLabel(MeasurementConstants.DEGREE_CELSIUS.getValue());
+        this.value = new JLabel(Measurement.DEGREE_CELSIUS);
 
         this.errorPercent = new JTextField(DEFAULT_VALUE, 5);
         this.errorValue = new JTextField(DEFAULT_VALUE, 5);

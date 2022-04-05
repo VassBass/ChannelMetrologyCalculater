@@ -1,8 +1,8 @@
 package ui.mainScreen.menu;
 
 import application.Application;
-import service.FileBrowser;
 import model.Model;
+import service.FileBrowser;
 import ui.exportData.ConfirmExportDialog;
 import ui.importData.ImportFileChooser;
 import ui.mainScreen.MainScreen;
@@ -11,35 +11,32 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MenuExpImp extends JMenu {
+    private static final Logger LOGGER = Logger.getLogger(MenuExpImp.class.getName());
+
     private static final String EXPORT_IMPORT = "Експорт/Імпорт";
-    private static final String EXPORT_ALL_DATA = "Експортувати все";
-    private static final String EXPORT_CHANNELS = "Експортувати канали";
-    private static final String EXPORT_SENSORS = "Експортувати ПВП";
-    private static final String EXPORT_CALIBRATORS = "Експортувати калібратори";
-    private static final String EXPORT_PERSONS = "Експортувати інформацію про робітників";
-    private static final String EXPORT_DEPARTMENTS = "Експортувати цехи";
-    private static final String EXPORT_AREAS = "Експортувати ділянки";
-    private static final String EXPORT_PROCESSES = "Експортувати лінії, секції і т.п.";
-    private static final String EXPORT_INSTALLATIONS = "Експортувати установки";
-    private static final String EXPORT_ALL_PATH = "Експортувати всі елементи розташування каналів";
-    private static final String IMPORT_DATA = "Імпорт даних";
+    private static final String EXPORT_DATA = "Експортувати дані";
     private static final String EXPORTED_FILES = "Файли експорту";
+    private static final String IMPORT_CHANNELS = "Імпорт каналів";
+    private static final String IMPORT_SENSORS = "Імпорт ПВП";
+    private static final String IMPORT_CPV = "Імпортувати значення контрольних точок для ПВП";
+    private static final String IMPORT_CALIBRATORS = "Імпорт калібраторів";
+    private static final String IMPORT_PERSONS = "Імпорт працівників";
+    private static final String IMPORT_DEPARTMENTS = "Імпорт цехів";
+    private static final String IMPORT_AREAS = "Імпорт ділянок";
+    private static final String IMPORT_PROCESSES = "Імпорт ліній, секцій і т.п";
+    private static final String IMPORT_INSTALLATIONS = "Імпорт установок";
+    private static final String IMPORT_DATA = "Імпортувати дані";
 
     private final MainScreen mainScreen;
 
-    private JMenuItem buttonExportChannels;
-    private JMenuItem buttonExportSensors;
-    private JMenuItem buttonExportCalibrators;
-    private JMenuItem buttonExportPersons;
-    private JMenuItem buttonExportDepartments;
-    private JMenuItem buttonExportAreas;
-    private JMenuItem buttonExportProcesses;
-    private JMenuItem buttonExportInstallations;
-    private JMenuItem buttonExportAllPathElements;
-    private JMenuItem buttonImport;
-    private JMenuItem buttonFolder;
+    private JMenuItem buttonExport, buttonImport, buttonFolder;
+    private JMenuItem btnImportChannels, btnImportSensors, btnImportCalibrators, btnImportPersons, btnControlPoints,
+            btnImportDepartments, btnImportAreas, btnImportProcesses, btnImportInstallations;
 
     public MenuExpImp(){
         super(EXPORT_IMPORT);
@@ -51,169 +48,223 @@ public class MenuExpImp extends JMenu {
     }
 
     private void createElements() {
-        this.buttonExportChannels = new JMenuItem(EXPORT_CHANNELS);
-        this.buttonExportSensors = new JMenuItem(EXPORT_SENSORS);
-        this.buttonExportCalibrators = new JMenuItem(EXPORT_CALIBRATORS);
-        this.buttonExportPersons = new JMenuItem(EXPORT_PERSONS);
-        this.buttonExportDepartments = new JMenuItem(EXPORT_DEPARTMENTS);
-        this.buttonExportAreas = new JMenuItem(EXPORT_AREAS);
-        this.buttonExportProcesses = new JMenuItem(EXPORT_PROCESSES);
-        this.buttonExportInstallations = new JMenuItem(EXPORT_INSTALLATIONS);
-        this.buttonExportAllPathElements = new JMenuItem(EXPORT_ALL_PATH);
+        this.buttonExport = new JMenuItem(EXPORT_DATA);
         this.buttonImport = new JMenuItem(IMPORT_DATA);
         this.buttonFolder = new JMenuItem(EXPORTED_FILES);
+        this.btnImportChannels = new JMenuItem(IMPORT_CHANNELS);
+        this.btnImportSensors = new JMenuItem(IMPORT_SENSORS);
+        this.btnControlPoints = new JMenuItem(IMPORT_CPV);
+        this.btnImportCalibrators = new JMenuItem(IMPORT_CALIBRATORS);
+        this.btnImportPersons = new JMenuItem(IMPORT_PERSONS);
+        this.btnImportDepartments = new JMenuItem(IMPORT_DEPARTMENTS);
+        this.btnImportAreas = new JMenuItem(IMPORT_AREAS);
+        this.btnImportProcesses = new JMenuItem(IMPORT_PROCESSES);
+        this.btnImportInstallations = new JMenuItem(IMPORT_INSTALLATIONS);
     }
 
     private void setReactions() {
-        this.buttonExportChannels.addActionListener(this.clickExportChannels);
-        this.buttonExportSensors.addActionListener(this.clickExportSensors);
-        this.buttonExportCalibrators.addActionListener(this.clickExportCalibrators);
-        this.buttonExportPersons.addActionListener(this.clickExportPersons);
-        this.buttonExportDepartments.addActionListener(this.clickExportDepartments);
-        this.buttonExportAreas.addActionListener(this.clickExportAreas);
-        this.buttonExportProcesses.addActionListener(this.clickExportProcesses);
-        this.buttonExportInstallations.addActionListener(this.clickExportInstallations);
-        this.buttonExportAllPathElements.addActionListener(this.clickExportAllPathElements);
+        this.buttonExport.addActionListener(this.clickExport);
         this.buttonImport.addActionListener(this.clickImport);
         this.buttonFolder.addActionListener(this.clickFolder);
+        this.btnImportChannels.addActionListener(this.clickImportChannel);
+        this.btnImportSensors.addActionListener(this.clickImportSensor);
+        this.btnControlPoints.addActionListener(this.clickImportCPV);
+        this.btnImportCalibrators.addActionListener(this.clickImportCalibrator);
+        this.btnImportPersons.addActionListener(this.clickImportPerson);
+        this.btnImportDepartments.addActionListener(this.clickImportDepartment);
+        this.btnImportAreas.addActionListener(this.clickImportArea);
+        this.btnImportProcesses.addActionListener(this.clickImportProcess);
+        this.btnImportInstallations.addActionListener(this.clickImportInstallation);
     }
 
     private void build() {
-        this.add(this.buttonExportChannels);
-        this.addSeparator();
-        this.add(this.buttonExportSensors);
-        this.addSeparator();
-        this.add(this.buttonExportCalibrators);
-        this.addSeparator();
-        this.add(this.buttonExportPersons);
-        this.addSeparator();
-        this.add(this.buttonExportDepartments);
-        this.add(this.buttonExportAreas);
-        this.add(this.buttonExportProcesses);
-        this.add(this.buttonExportInstallations);
-        this.add(this.buttonExportAllPathElements);
-        this.addSeparator();
+        this.add(this.buttonExport);
+        this.add(this.buttonFolder);
         this.add(this.buttonImport);
         this.addSeparator();
-        this.add(this.buttonFolder);
+        this.add(this.btnImportChannels);
+        this.add(this.btnImportSensors);
+        this.add(this.btnControlPoints);
+        this.add(this.btnImportCalibrators);
+        this.add(this.btnImportPersons);
+        this.add(this.btnImportDepartments);
+        this.add(this.btnImportAreas);
+        this.add(this.btnImportProcesses);
+        this.add(this.btnImportInstallations);
     }
 
-    private final ActionListener clickExportChannels = new ActionListener() {
+    private final ActionListener clickExport = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.CHANNEL).setVisible(true);
-                }
-            });
-        }
-    };
-
-    private final ActionListener clickExportSensors = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.SENSOR).setVisible(true);
-                }
-            });
-        }
-    };
-
-    private final ActionListener clickExportCalibrators = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.CALIBRATOR).setVisible(true);
-                }
-            });
-        }
-    };
-
-    private final ActionListener clickExportPersons = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.PERSON).setVisible(true);
-                }
-            });
-        }
-    };
-
-    private final ActionListener clickExportDepartments = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.DEPARTMENT).setVisible(true);
-                }
-            });
-        }
-    };
-
-    private final ActionListener clickExportAreas = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.AREA).setVisible(true);
-                }
-            });
-        }
-    };
-
-    private final ActionListener clickExportProcesses = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.PROCESS).setVisible(true);
-                }
-            });
-        }
-    };
-
-    private final ActionListener clickExportInstallations = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.INSTALLATION).setVisible(true);
-                }
-            });
-        }
-    };
-
-    private final ActionListener clickExportAllPathElements = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmExportDialog(mainScreen, Model.PATH_ELEMENT).setVisible(true);
-                }
-            });
+            new ConfirmExportDialog(mainScreen).setVisible(true);
         }
     };
 
     private final ActionListener clickImport = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    if (Application.isBusy(mainScreen)) return;
-                    new ImportFileChooser().setVisible(true);
+                    try {
+                        new ImportFileChooser(Model.ALL).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImportChannel = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new ImportFileChooser(Model.CHANNEL).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImportSensor = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new ImportFileChooser(Model.SENSOR).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImportCalibrator = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new ImportFileChooser(Model.CALIBRATOR).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImportCPV = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new ImportFileChooser(Model.SENSOR_VALUE).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImportPerson = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new ImportFileChooser(Model.PERSON).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImportDepartment = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new ImportFileChooser(Model.DEPARTMENT).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImportArea = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new ImportFileChooser(Model.AREA).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImportProcess = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new ImportFileChooser(Model.PROCESS).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickImportInstallation = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (Application.isBusy(mainScreen)) return;
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        new ImportFileChooser(Model.INSTALLATION).setVisible(true);
+                    } catch (SQLException ex) {
+                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+                    }
                 }
             });
         }

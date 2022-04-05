@@ -1,7 +1,7 @@
 package ui.importData.compareChannels;
 
 import application.Application;
-import backgroundTasks.data_import.SaveImportedChannels;
+import backgroundTasks.SaveImportedChannels;
 import converters.ConverterUI;
 import model.Channel;
 import model.Sensor;

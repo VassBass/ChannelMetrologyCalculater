@@ -1,6 +1,7 @@
 package ui.channelInfo.complexElements;
 
 import constants.CalendarConstants;
+import converters.VariableConverter;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -86,12 +87,8 @@ public class DialogChannel_datePanel extends JPanel {
         }
     }
 
-    public Calendar getDate() {
-        int dayInt = Integer.parseInt(this.day.getText());
-        int monthInt = Integer.parseInt(this.month.getText());
-        monthInt--;
-        int yearInt = Integer.parseInt(this.year.getText());
-        return new GregorianCalendar(yearInt, monthInt, dayInt);
+    public String getDate() {
+        return this.day.getText() + "." + this.month.getText() + "." + this.year.getText();
     }
 
     private final FocusListener dayFocus = new FocusListener() {
@@ -131,7 +128,7 @@ public class DialogChannel_datePanel extends JPanel {
                 }
             }
 
-            parent.frequencyPanel.setNextDate(getDate());
+            parent.frequencyPanel.setNextDate(VariableConverter.stringToDate(getDate()));
         }
     };
 
@@ -167,7 +164,7 @@ public class DialogChannel_datePanel extends JPanel {
                 }
             }
 
-            parent.frequencyPanel.setNextDate(getDate());
+            parent.frequencyPanel.setNextDate(VariableConverter.stringToDate(getDate()));
         }
     };
 
@@ -205,7 +202,7 @@ public class DialogChannel_datePanel extends JPanel {
                 year.setText(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
             }
 
-            parent.frequencyPanel.setNextDate(getDate());
+            parent.frequencyPanel.setNextDate(VariableConverter.stringToDate(getDate()));
         }
     };
 }

@@ -1,6 +1,6 @@
 package ui.mainScreen.menu;
 
-import constants.MeasurementConstants;
+import model.Measurement;
 import settings.Settings;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.controlPointsValues.ControlPointsListDialog;
@@ -54,12 +54,12 @@ public class MenuLists extends JMenu {
         this.buttonControlPoints = new JMenuItem(CONTROL_POINTS);
         this.buttonCalibrators = new JMenuItem(CALIBRATORS_LIST);
 
-        this.buttonTemperature = new JMenuItem(MeasurementConstants.TEMPERATURE.getValue());
-        this.buttonTemperature.setToolTipText(Settings.getSettingValue(MeasurementConstants.TEMPERATURE.getValue()));
-        this.buttonPressure = new JMenuItem(MeasurementConstants.PRESSURE.getValue());
-        this.buttonPressure.setToolTipText(Settings.getSettingValue(MeasurementConstants.PRESSURE.getValue()));
-        this.buttonConsumption = new JMenuItem(MeasurementConstants.CONSUMPTION.getValue());
-        this.buttonConsumption.setToolTipText(Settings.getSettingValue(MeasurementConstants.CONSUMPTION.getValue()));
+        this.buttonTemperature = new JMenuItem(Measurement.TEMPERATURE);
+        this.buttonTemperature.setToolTipText(Settings.getSettingValue(Measurement.TEMPERATURE));
+        this.buttonPressure = new JMenuItem(Measurement.PRESSURE);
+        this.buttonPressure.setToolTipText(Settings.getSettingValue(Measurement.PRESSURE));
+        this.buttonConsumption = new JMenuItem(Measurement.CONSUMPTION);
+        this.buttonConsumption.setToolTipText(Settings.getSettingValue(Measurement.CONSUMPTION));
     }
 
     private void setReactions() {
@@ -186,7 +186,7 @@ public class MenuLists extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new MethodInfoDialog(mainScreen, MeasurementConstants.TEMPERATURE).setVisible(true);
+                    new MethodInfoDialog(mainScreen, Measurement.TEMPERATURE).setVisible(true);
                 }
             });
         }
@@ -198,7 +198,7 @@ public class MenuLists extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new MethodInfoDialog(mainScreen, MeasurementConstants.PRESSURE).setVisible(true);
+                    new MethodInfoDialog(mainScreen, Measurement.PRESSURE).setVisible(true);
                 }
             });
         }
@@ -210,7 +210,7 @@ public class MenuLists extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new MethodInfoDialog(mainScreen, MeasurementConstants.CONSUMPTION).setVisible(true);
+                    new MethodInfoDialog(mainScreen, Measurement.CONSUMPTION).setVisible(true);
                 }
             });
         }

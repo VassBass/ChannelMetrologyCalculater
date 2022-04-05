@@ -1,10 +1,9 @@
 package calculation;
 
-import constants.CalibratorType;
-import constants.MeasurementConstants;
 import converters.ValueConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class CalculationPressure extends Calculation {
@@ -16,8 +15,8 @@ public class CalculationPressure extends Calculation {
     @Override
     public void setCalibrator(Calibrator calibrator) {
         super.setCalibrator(calibrator);
-        if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)){
-            this.maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+        if (calibrator.getType().equals(Calibrator.FLUKE718_30G)){
+            this.maxCalibratorPower = new ValueConverter(Measurement.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
         }
     }
 
@@ -37,9 +36,9 @@ public class CalculationPressure extends Calculation {
         if (this.controlPointsValues == null){
             this.controlPointsValues = new double[5];
             this.controlPointsValues[0] = this.channel.getRangeMin();
-            this.controlPointsValues[1] = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
-            this.controlPointsValues[2] = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-            this.controlPointsValues[3] = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+            this.controlPointsValues[1] = ((this.channel._getRange() / 100) * 5) + this.channel.getRangeMin();
+            this.controlPointsValues[2] = ((this.channel._getRange() / 100) * 50) + this.channel.getRangeMin();
+            this.controlPointsValues[3] = ((this.channel._getRange() / 100) * 95) + this.channel.getRangeMin();
             this.controlPointsValues[4] = this.channel.getRangeMax();
         }
         return this.controlPointsValues;
@@ -104,7 +103,7 @@ public class CalculationPressure extends Calculation {
     public double getErrorInRange(){
         if (this.errorD == -999999999D){
             double error = this.getMaxAbsoluteError();
-            double rangeChannel = this.channel.getRange();
+            double rangeChannel = this.channel._getRange();
             this.errorD = (error * 100D) / rangeChannel;
         }
         return this.errorD;
@@ -114,7 +113,7 @@ public class CalculationPressure extends Calculation {
     public double getErrorInRangeWidthSensorError(){
         if (this.errorD == -999999999D){
             double error = this.getAbsoluteErrorWithSensorError();
-            double rangeChannel = this.channel.getRange();
+            double rangeChannel = this.channel._getRange();
             this.errorD = (error * 100D) / rangeChannel;
         }
         return this.errorD;

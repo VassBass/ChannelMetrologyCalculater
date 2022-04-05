@@ -2,11 +2,10 @@ package ui.personsList.personInfo;
 
 import application.Application;
 import converters.ConverterUI;
-import support.Comparator;
+import model.Person;
 import ui.model.DefaultButton;
 import ui.personsList.PersonsListDialog;
 import ui.personsList.personInfo.complexElements.PersonInfoPanel;
-import model.Worker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,13 +21,13 @@ public class PersonInfoDialog extends JDialog {
     public static final String ERROR = "Помилка";
 
     private final PersonsListDialog parent;
-    private final Worker worker;
+    private final Person worker;
 
     private PersonInfoPanel infoPanel;
 
     private JButton positiveButton, negativeButton;
 
-    public PersonInfoDialog(PersonsListDialog parent, Worker worker){
+    public PersonInfoDialog(PersonsListDialog parent, Person worker){
         super(parent, title(worker), true);
         this.parent = parent;
         this.worker = worker;
@@ -59,11 +58,11 @@ public class PersonInfoDialog extends JDialog {
         this.setContentPane(new MainPanel());
     }
 
-    private static String title(Worker worker){
+    private static String title(Person worker){
         if (worker == null){
             return ADD;
         }else {
-            return CHANGE + "\"" + worker.getFullName() + " - " + worker.getPosition() + "\"";
+            return CHANGE + "\"" + worker._getFullName() + " - " + worker.getPosition() + "\"";
         }
     }
 
@@ -80,11 +79,11 @@ public class PersonInfoDialog extends JDialog {
             if (infoPanel.allTextsFull()){
                 if (Application.isBusy(PersonInfoDialog.this)) return;
                 dispose();
-                Worker newPerson = infoPanel.getWorker();
+                Person newPerson = infoPanel.getPerson();
                 if (worker == null){
                     Application.context.personService.add(newPerson);
                 }else {
-                    if (!Comparator.personsMatch(newPerson, worker)){
+                    if (!worker.equals(newPerson)){
                         Application.context.personService.set(worker, newPerson);
                     }
                 }

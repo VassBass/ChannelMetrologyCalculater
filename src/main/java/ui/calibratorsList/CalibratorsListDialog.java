@@ -1,7 +1,6 @@
 package ui.calibratorsList;
 
 import application.Application;
-import constants.CalibratorType;
 import converters.ConverterUI;
 import model.Calibrator;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
@@ -75,8 +74,8 @@ public class CalibratorsListDialog extends JDialog {
                     int index = mainTable.getSelectedRow();
                     if (index != -1) {
                         Calibrator calibrator = Application.context.calibratorService.get(index);
-                        if (calibrator.getName().equals(CalibratorType.FLUKE718_30G)
-                                || calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)) {
+                        if (calibrator.getName().equals(Calibrator.FLUKE718_30G)
+                                || calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)) {
                             JOptionPane.showMessageDialog(CalibratorsListDialog.this, NOT_REMOVED_CALIBRATOR_MESSAGE, ERROR, JOptionPane.WARNING_MESSAGE);
                         } else {
                             new CalibratorRemoveDialog(CalibratorsListDialog.this).setVisible(true);

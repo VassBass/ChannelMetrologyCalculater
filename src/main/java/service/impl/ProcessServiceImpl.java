@@ -1,130 +1,88 @@
 package service.impl;
 
 import def.DefaultProcesses;
-import model.Model;
-import repository.Repository;
-import service.FileBrowser;
+import repository.ProcessRepository;
+import repository.impl.ProcessRepositoryImpl;
 import service.ProcessService;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Logger;
 
 public class ProcessServiceImpl implements ProcessService {
     private static final Logger LOGGER = Logger.getLogger(ProcessService.class.getName());
 
-    private static final String ERROR = "Помилка";
+    private final String dbUrl;
+    private ProcessRepository repository;
 
-    private Window window;
-    private ArrayList<String> processes;
+    public ProcessServiceImpl(){
+        this.dbUrl = null;
+    }
 
-    private String exportFileName(Calendar date){
-        return "export_processes ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].prc";
+    public ProcessServiceImpl(String dbUrl){
+        this.dbUrl = dbUrl;
     }
 
     @Override
-    public void init(Window window){
-        LOGGER.info("ProcessService: initialization start ...");
-        try {
-            this.processes = new Repository<String>(null, Model.PROCESS).readList();
-        }catch (Exception e){
-            LOGGER.info("ProcessService: file \"" + FileBrowser.FILE_PROCESSES.getName() + "\" is empty");
-            LOGGER.info("ProcessService: set default list");
-            this.processes = DefaultProcesses.get();
-            this.save();
-        }
-        this.window = window;
+    public void init(){
+        this.repository = dbUrl == null ? new ProcessRepositoryImpl() : new ProcessRepositoryImpl(this.dbUrl);
         LOGGER.info("ProcessService: initialization SUCCESS");
     }
 
     @Override
     public ArrayList<String> getAll() {
-        return this.processes;
+        return this.repository.getAll();
     }
 
     @Override
     public String[] getAllInStrings(){
-        return this.processes.toArray(new String[0]);
+        return this.repository.getAll().toArray(new String[0]);
+    }
+
+    @Override
+    public ArrayList<String> add(String object) {
+        this.repository.add(object);
+        return this.repository.getAll();
+    }
+
+    @Override
+    public void addInCurrentThread(ArrayList<String> processes) {
+        this.repository.addInCurrentThread(processes);
     }
 
     @Override
     public ArrayList<String> remove(String object) {
-        if (this.processes.contains(object)){
-            this.processes.remove(object);
-            this.save();
-        }else {
-            this.showNotFoundMessage();
-        }
-        return this.processes;
+        this.repository.remove(object);
+        return this.repository.getAll();
     }
 
     @Override
     public ArrayList<String> set(String oldObject, String newObject) {
-        if (oldObject != null){
-            if (newObject == null){
-                this.remove(oldObject);
-            }else {
-                int index = this.processes.indexOf(oldObject);
-                this.processes.set(index, newObject);
-            }
-        }else {
-            if (!this.processes.contains(newObject)){
-                this.processes.add(newObject);
-            }
-        }
-        this.save();
-        return this.processes;
+        this.repository.set(oldObject, newObject);
+        return this.repository.getAll();
     }
 
     @Override
     public String get(int index) {
-        if (index >= 0) {
-            return this.processes.get(index);
-        }else {
-            return null;
-        }
+        return this.repository.get(index);
     }
 
     @Override
     public void clear() {
-        this.processes.clear();
-        this.save();
-    }
-
-    @Override
-    public void save() {
-        new Repository<String>(this.window, Model.PROCESS).writeList(this.processes);
-    }
-
-    @Override
-    public boolean exportData(){
-        try {
-            String fileName = this.exportFileName(Calendar.getInstance());
-            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.processes);
-            return true;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
+        this.repository.clear();
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>processes){
-        this.processes = processes;
-        new Repository<String>(null, Model.PROCESS).writeListInCurrentThread(processes);
+        this.repository.rewriteInCurrentThread(processes);
     }
 
-    private void showNotFoundMessage() {
-        String message = "Процес з такою назвою не знайдено в списку процесів.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+    @Override
+    public void resetToDefaultInCurrentThread() {
+        this.repository.rewriteInCurrentThread(DefaultProcesses.get());
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

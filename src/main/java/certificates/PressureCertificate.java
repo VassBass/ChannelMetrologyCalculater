@@ -1,13 +1,12 @@
 package certificates;
 
 import calculation.Calculation;
-import constants.CalibratorType;
 import constants.Key;
-import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import model.Sensor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -55,12 +54,11 @@ public class PressureCertificate extends Certificate {
             cell(18,20).setCellValue(this.numberOfCertificate);
         }
 
-        this.checkDate = (Calendar) this.values.get(Key.CHANNEL_DATE);
-        String date = VariableConverter.dateToString(this.checkDate);
-        cell(12,5).setCellValue(date);
-        cell(12,14).setCellValue(date);
+        this.checkDate = (String) this.values.get(Key.CHANNEL_DATE);
+        cell(12,5).setCellValue(this.checkDate);
+        cell(12,14).setCellValue(this.checkDate);
         if (!this.result.goodChannel()){
-            cell(10,24).setCellValue(date);
+            cell(10,24).setCellValue(this.checkDate);
         }
 
         String externalTemperature = (String) values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE);
@@ -75,7 +73,7 @@ public class PressureCertificate extends Certificate {
         this.alarmCheck = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
-        String methodName = Settings.getSettingValue(MeasurementConstants.PRESSURE.getValue());
+        String methodName = Settings.getSettingValue(Measurement.PRESSURE);
         cell(34,15).setCellValue(methodName);
     }
 
@@ -146,7 +144,7 @@ public class PressureCertificate extends Certificate {
         if (this.result.goodChannel()){
             long l = (long) (31536000000L * this.channel.getFrequency());
             Calendar nextDateCal = new GregorianCalendar();
-            nextDateCal.setTimeInMillis(this.checkDate.getTimeInMillis() + l);
+            nextDateCal.setTimeInMillis(VariableConverter.stringToDate(this.checkDate).getTimeInMillis() + l);
             nextDate = VariableConverter.dateToString(nextDateCal);
         }else {
             nextDate = EXTRAORDINARY;
@@ -165,17 +163,15 @@ public class PressureCertificate extends Certificate {
         cell(20,4).setCellValue(type);
 
         double errorSensor = sensor.getError(this.channel);
-        double eP = errorSensor / (this.channel.getRange() / 100);
+        double eP = errorSensor / (this.channel._getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble3(eP, Locale.GERMAN);
         cell(21,5).setCellValue(errorPercent);
 
         String error = VariableConverter.roundingDouble3(errorSensor, Locale.GERMAN);
         cell(21,7).setCellValue(error);
 
-        double min = new ValueConverter(MeasurementConstants.getConstantFromString(sensor.getValue()),
-                this.channel.getMeasurement().getValueConstant()).get(sensor.getRangeMin());
-        double max = new ValueConverter(MeasurementConstants.getConstantFromString(sensor.getValue()),
-                this.channel.getMeasurement().getValueConstant()).get(sensor.getRangeMax());
+        double min = new ValueConverter(sensor.getValue(), this.channel.getMeasurement().getValue()).get(sensor.getRangeMin());
+        double max = new ValueConverter(sensor.getValue(), this.channel.getMeasurement().getValue()).get(sensor.getRangeMax());
         String rangeMin = VariableConverter.roundingDouble2(min, Locale.GERMAN);
         String rangeMax = VariableConverter.roundingDouble2(max, Locale.GERMAN);
         cell(22,5).setCellValue(rangeMin);
@@ -192,17 +188,16 @@ public class PressureCertificate extends Certificate {
         String number = calibrator.getNumber();
         cell(18,12).setCellValue(number);
 
-        String certificate = calibrator.getCertificateToString();
+        String certificate = calibrator.getCertificateInfo();
         cell(19,12).setCellValue(certificate);
 
         double errorCalibrator = calibrator.getError(this.channel);
         double eP;
         if (calibrator.getValue().equals(this.channel.getMeasurement().getValue())) {
-            eP = errorCalibrator / (this.channel.getRange() / 100);
+            eP = errorCalibrator / (this.channel._getRange() / 100);
         }else {
-            MeasurementConstants calibratorValue = MeasurementConstants.getConstantFromString(calibrator.getValue());
-            double calibratorRange = calibrator.getRange();
-            double convertedCalibratorRange = new ValueConverter(calibratorValue, this.channel.getMeasurement().getValueConstant()).get(calibratorRange);
+            double calibratorRange = calibrator._getRange();
+            double convertedCalibratorRange = new ValueConverter(calibrator.getValue(), this.channel.getMeasurement().getValue()).get(calibratorRange);
             eP = errorCalibrator / (convertedCalibratorRange/100);
         }
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
@@ -225,8 +220,8 @@ public class PressureCertificate extends Certificate {
         double value95 = cpv[3];
         Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
 
-        if (calibrator.getType().equals(CalibratorType.FLUKE718_30G)){
-            double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+        if (calibrator.getType().equals(Calibrator.FLUKE718_30G)){
+            double maxCalibratorPower = new ValueConverter(Measurement.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
             if (value5 < maxCalibratorPower){
                 value5 = maxCalibratorPower;
             }
@@ -241,7 +236,7 @@ public class PressureCertificate extends Certificate {
         for (double[] value : measurementValues) {
             int row = 32;
             for (int z = 0; z < 6; z++) {
-                cell(++row, column).setCellValue(VariableConverter.roundingDouble2(value[z + 1], Locale.GERMAN));
+                cell(++row, column).setCellValue(VariableConverter.roundingDouble3(value[z + 1], Locale.GERMAN));
             }
             column++;
         }

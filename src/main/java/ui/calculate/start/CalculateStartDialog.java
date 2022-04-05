@@ -1,12 +1,11 @@
 package ui.calculate.start;
 
 import application.Application;
-import constants.CalibratorType;
 import constants.Key;
-import constants.SensorType;
 import converters.ConverterUI;
 import model.Calibrator;
 import model.Channel;
+import model.Sensor;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.start.complexElements.CalculateStartDialog_alarmPanel;
 import ui.calculate.start.complexElements.CalculateStartDialog_datePanel;
@@ -17,7 +16,6 @@ import ui.model.DefaultButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -121,7 +119,7 @@ public class CalculateStartDialog extends JDialog {
     private void setValues(HashMap<Integer, Object> values){
         if (values != null){
             this.numberOfProtocol.setText((String) values.get(Key.CHANNEL_PROTOCOL_NUMBER));
-            this.datePanel.update((Calendar) values.get(Key.CHANNEL_DATE));
+            this.datePanel.update((String) values.get(Key.CHANNEL_DATE));
             String[] calibrators = Application.context.calibratorService.getAllNames(this.channel.getMeasurement());
             Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
             for (int x=0;x<calibrators.length;x++){
@@ -138,8 +136,8 @@ public class CalculateStartDialog extends JDialog {
             this.setContentPane(new MainPanel(withAlarmPanel));
         }else {
             this.values = new HashMap<>();
-            if (this.channel.getSensor().getType().contains(SensorType.ROSEMOUNT)){
-                this.calibrator.setSelectedItem(CalibratorType.ROSEMOUNT_8714DQ4);
+            if (this.channel.getSensor().getType().contains(Sensor.ROSEMOUNT)){
+                this.calibrator.setSelectedItem(Calibrator.ROSEMOUNT_8714DQ4);
             }
             this.setContentPane(new MainPanel(false));
         }

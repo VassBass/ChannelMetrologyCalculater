@@ -1,6 +1,6 @@
 package ui.personsList.personInfo.complexElements;
 
-import model.Worker;
+import model.Person;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +21,7 @@ public class PersonInfoPanel extends JPanel {
     private JTextField patronymic;
     private JTextField position;
 
-    public PersonInfoPanel(Worker worker){
+    public PersonInfoPanel(Person worker){
         super(new GridBagLayout());
 
         this.createElements();
@@ -55,7 +55,7 @@ public class PersonInfoPanel extends JPanel {
         this.add(this.position, new Cell(1, 3, false));
     }
 
-    private void setInfo(Worker worker){
+    private void setInfo(Person worker){
         if (worker!=null){
             this.name.setText(worker.getName());
             this.surname.setText(worker.getSurname());
@@ -64,8 +64,8 @@ public class PersonInfoPanel extends JPanel {
         }
     }
 
-    public Worker getWorker(){
-        Worker worker = new Worker();
+    public Person getPerson(){
+        Person worker = new Person();
         worker.setName(this.name.getText());
         worker.setSurname(this.surname.getText());
         worker.setPatronymic(this.patronymic.getText());

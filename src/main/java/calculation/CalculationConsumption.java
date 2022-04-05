@@ -1,9 +1,8 @@
 package calculation;
 
-import constants.CalibratorType;
-import constants.MeasurementConstants;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class CalculationConsumption extends Calculation {
@@ -32,7 +31,7 @@ public class CalculationConsumption extends Calculation {
     @Override
     public double[] getControlPointsValues() {
         if (this.controlPointsValues == null){
-            if (this.calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (this.calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 this.controlPointsValues = new double[4];
                 String value = this.channel.getMeasurement().getValue();
 
@@ -40,7 +39,7 @@ public class CalculationConsumption extends Calculation {
                 this.controlPointsValues[1] = 0.91;
                 this.controlPointsValues[2] = 3.05;
                 this.controlPointsValues[3] = 9.14;
-                if (value.equals(MeasurementConstants.CM_S.getValue())){
+                if (value.equals(Measurement.CM_S)){
                     this.controlPointsValues[1] *= 100;
                     this.controlPointsValues[2] *= 100;
                     this.controlPointsValues[3] *= 100;
@@ -49,9 +48,9 @@ public class CalculationConsumption extends Calculation {
                 this.controlPointsValues = new double[5];
 
                 this.controlPointsValues[0] = this.channel.getRangeMin();
-                this.controlPointsValues[1] = ((this.channel.getRange() / 100) * 25) + this.channel.getRangeMin();
-                this.controlPointsValues[2] = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-                this.controlPointsValues[3] = ((this.channel.getRange() / 100) * 75) + this.channel.getRangeMin();
+                this.controlPointsValues[1] = ((this.channel._getRange() / 100) * 25) + this.channel.getRangeMin();
+                this.controlPointsValues[2] = ((this.channel._getRange() / 100) * 50) + this.channel.getRangeMin();
+                this.controlPointsValues[3] = ((this.channel._getRange() / 100) * 75) + this.channel.getRangeMin();
                 this.controlPointsValues[4] = this.channel.getRangeMax();
             }
         }
@@ -60,7 +59,7 @@ public class CalculationConsumption extends Calculation {
 
     @Override
     public double[][] getErrorsAbsolute() {
-        if (this.calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+        if (this.calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
             double value0 = this.controlPointsValues[0];
             double value91 = this.controlPointsValues[1];
             double value305 = this.controlPointsValues[2];
@@ -137,7 +136,7 @@ public class CalculationConsumption extends Calculation {
     public double getErrorInRange(){
         if (this.errorD == -999999999D){
             double error = this.getMaxAbsoluteError();
-            double rangeChannel = this.channel.getRange();
+            double rangeChannel = this.channel._getRange();
             this.errorD = (error * 100D) / rangeChannel;
         }
         return this.errorD;
@@ -147,7 +146,7 @@ public class CalculationConsumption extends Calculation {
     public double getErrorInRangeWidthSensorError(){
         if (this.errorD == -999999999D){
             double error = this.getAbsoluteErrorWithSensorError();
-            double rangeChannel = this.channel.getRange();
+            double rangeChannel = this.channel._getRange();
             this.errorD = (error * 100D) / rangeChannel;
         }
         return this.errorD;
@@ -156,7 +155,7 @@ public class CalculationConsumption extends Calculation {
     public double[] getSystematicErrors(){
         if (this.errorsS == null){
             double[][]errorsAbsolute = this.getErrorsAbsolute();
-            if (this.calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (this.calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 this.errorsS = new double[4];
 
                 double s0 = 0D;
@@ -269,7 +268,7 @@ public class CalculationConsumption extends Calculation {
         if (this.uA == -999999999D){
             double[][]errorsAbsolute = this.getErrorsAbsolute();
             double[] sum;
-            if (this.calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (this.calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 sum = new double[4];
                 for (double[] doubles : errorsAbsolute) {
                     sum[0] += Math.pow(doubles[0], 2D) + Math.pow(doubles[1], 2D);

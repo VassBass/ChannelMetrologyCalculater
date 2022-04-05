@@ -1,6 +1,5 @@
 package ui.importData.compareChannels.complexElements;
 
-import converters.VariableConverter;
 import model.Channel;
 import ui.model.ButtonCell;
 
@@ -143,10 +142,10 @@ public class ChannelInfoWindow extends JWindow {
 
         this.dateLabel = new ButtonCell(true, DATE);
         this.dateLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        this.dateLabel.setToolTipText(VariableConverter.dateToString(this.channel.getDate()));
-        this.date = new ButtonCell(false, VariableConverter.dateToString(this.channel.getDate()));
+        this.dateLabel.setToolTipText(this.channel.getDate());
+        this.date = new ButtonCell(false, this.channel.getDate());
         this.date.setHorizontalAlignment(SwingConstants.LEFT);
-        this.date.setToolTipText(VariableConverter.dateToString(this.channel.getDate()));
+        this.date.setToolTipText(this.channel.getDate());
 
         String pn = " - ";
         if (this.channel.getNumberOfProtocol().length() > 0) pn = this.channel.getNumberOfProtocol();
@@ -192,7 +191,7 @@ public class ChannelInfoWindow extends JWindow {
         this.sensorType.setToolTipText(this.channel.getSensor().getType());
 
         String r = " - ";
-        if (this.channel.getSensor().getRange() > 0) r = this.channel.getSensor().getRangeMin()
+        if (this.channel.getSensor()._getRange() > 0) r = this.channel.getSensor().getRangeMin()
                 + " ... "
                 + this.channel.getSensor().getRangeMax();
         this.sensorRangeLabel = new ButtonCell(true, RANGE);

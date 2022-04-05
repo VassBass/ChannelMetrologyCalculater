@@ -48,9 +48,9 @@ public class ConsumptionPanel extends MeasurementPanel {
 
         if (this.values == null){
             double value0 = this.channel.getRangeMin();
-            double value25 = ((this.channel.getRange() / 100) * 25) + this.channel.getRangeMin();
-            double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-            double value75 = ((this.channel.getRange() / 100) * 75) + this.channel.getRangeMin();
+            double value25 = ((this.channel._getRange() / 100) * 25) + this.channel.getRangeMin();
+            double value50 = ((this.channel._getRange() / 100) * 50) + this.channel.getRangeMin();
+            double value75 = ((this.channel._getRange() / 100) * 75) + this.channel.getRangeMin();
             double value100 = this.channel.getRangeMax();
             this.values = new double[]{value0, value25, value50, value75, value100};
         }

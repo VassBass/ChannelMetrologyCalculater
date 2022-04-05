@@ -81,12 +81,8 @@ public class CertificateDatePanel extends JPanel {
         }
     }
 
-    public Calendar getDate() {
-        int dayInt = Integer.parseInt(this.day.getText());
-        int monthInt = Integer.parseInt(this.month.getText());
-        monthInt--;
-        int yearInt = Integer.parseInt(this.year.getText());
-        return new GregorianCalendar(yearInt, monthInt, dayInt);
+    public String getDate() {
+        return this.day.getText() + "." + this.month.getText() + "." + this.year.getText();
     }
 
     private final FocusListener dayFocus = new FocusListener() {

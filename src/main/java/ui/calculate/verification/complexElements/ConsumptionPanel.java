@@ -1,17 +1,19 @@
 package ui.calculate.verification.complexElements;
 
-import constants.CalibratorType;
-import constants.Key;
-import constants.MeasurementConstants;
-import converters.VariableConverter;
 import calculation.Calculation;
+import constants.Key;
+import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Objects;
 
 public class ConsumptionPanel extends JPanel {
     private static final String NAME = "Назва";
@@ -37,7 +39,7 @@ public class ConsumptionPanel extends JPanel {
     private static final String CHANNEL_IS_BAD = "Канал не придатний";
     private static final String CHANNEL_IS_BAD_BUT = "Канал непридатний для комерційного обліку, але придатний як індикатор";
     private static final String ALARM_MESSAGE = "Сигналізація спрацювала при t = ";
-    private static final String ADVICE_FIX = "Порада: налаштувати вимірювальний канал.";
+    private static final String ADVICE_FIX = "Порада: налаштувати вимірювальний канал";
     private static final String ADVICE_RANGE = "Порада: для кращих показів налаштуйте вимірювальний канал на вказаний діапазон вимірювання";
     private static final String GAMMA = "\u03B3";
     private static final String DELTA = "\u0394";
@@ -164,7 +166,7 @@ public class ConsumptionPanel extends JPanel {
 
         this.channelName.setText(this.channel.getName());
         this.number.setText((String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER));
-        this.date.setText(VariableConverter.dateToString((Calendar) values.get(Key.CHANNEL_DATE)));
+        this.date.setText((String) values.get(Key.CHANNEL_DATE));
 
         String path = this.channel.getArea()
                 + " "
@@ -185,7 +187,7 @@ public class ConsumptionPanel extends JPanel {
         this.sensor.setText(this.channel.getSensor().getType());
 
         double errorSensor = this.channel.getSensor().getError(this.channel);
-        double ePS = errorSensor / (this.channel.getRange() / 100);
+        double ePS = errorSensor / (this.channel._getRange() / 100);
         String errorSensorPercent;
         if (ePS < 0.01){
             errorSensorPercent = VariableConverter.roundingDouble3(ePS, Locale.GERMAN);
@@ -208,7 +210,7 @@ public class ConsumptionPanel extends JPanel {
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
-                + MeasurementConstants.DEGREE_CELSIUS.getValue());
+                + Measurement.DEGREE_CELSIUS);
         this.humidity.setText(this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY)
                 + "%");
         this.atmospherePressure.setText(this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE)
@@ -220,13 +222,13 @@ public class ConsumptionPanel extends JPanel {
 
         String certificateCalibrator = calibrator.getCertificateName()
                 + " від "
-                + VariableConverter.dateToString(calibrator.getCertificateDate())
+                + calibrator.getCertificateDate()
                 + "р. "
                 + calibrator.getCertificateCompany();
         this.calibratorCertificate.setText(certificateCalibrator);
 
         double errorCalibrator = calibrator.getError(this.channel);
-        double ePC = errorCalibrator / (this.channel.getRange() / 100);
+        double ePC = errorCalibrator / (this.channel._getRange() / 100);
         String error;
         if (errorCalibrator < 0.001){
             error = VariableConverter.roundingDouble4(errorCalibrator, Locale.GERMAN);
@@ -353,7 +355,7 @@ public class ConsumptionPanel extends JPanel {
         protected TableProtocol(){
             super(new GridBagLayout());
 
-            if (calculation.getCalibrator().getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (calculation.getCalibrator().getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 createRosemountForm();
             }else {
                 createStandardForm();
@@ -459,7 +461,7 @@ public class ConsumptionPanel extends JPanel {
             double value91 = 0.91;
             double value305 = 3.05;
             double value914 = 9.14;
-            if (value.equals(MeasurementConstants.CM_S.getValue())){
+            if (value.equals(Measurement.CM_S)){
                 value91 = value91 * 100;
                 value305 = value305 * 100;
                 value914 = value914 * 100;
@@ -568,7 +570,7 @@ public class ConsumptionPanel extends JPanel {
                     + value);
 
             Calibrator calibrator = calculation.getCalibrator();
-            if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 String s0;
                 String s91;
                 String s305;
@@ -630,7 +632,8 @@ public class ConsumptionPanel extends JPanel {
                 cells[12].setText(s914);
                 cells[13].setText("Міжконтрольний інтервал");
                 double frequency = channel.getFrequency();
-                cells[14].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + YEAR_WORD(frequency));
+                cells[14].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN)
+                        + " " + YEAR_WORD(frequency));
 
                 this.add(cells[13], new Cell(2,0,1,1));
                 this.add(cells[14], new Cell(2,1,1,8));
@@ -720,7 +723,8 @@ public class ConsumptionPanel extends JPanel {
                 cells[13].setText(s100);
                 cells[14].setText("Міжконтрольний інтервал");
                 double frequency = channel.getFrequency();
-                cells[15].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN) + YEAR_WORD(frequency));
+                cells[15].setText(VariableConverter.roundingDouble(frequency, Locale.GERMAN)
+                        + " " + YEAR_WORD(frequency));
 
                 this.add(cells[13], new Cell(1,8,1,1));
                 this.add(cells[14], new Cell(2,0,1,1));

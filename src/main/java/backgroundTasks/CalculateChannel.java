@@ -1,17 +1,17 @@
 package backgroundTasks;
 
 
+import calculation.Calculation;
 import calculation.CalculationConsumption;
 import calculation.CalculationPressure;
 import calculation.CalculationTemperature;
-import constants.CalibratorType;
 import constants.Key;
-import calculation.Calculation;
 import model.Calibrator;
 import model.Channel;
-import ui.model.LoadDialog;
+import model.Measurement;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.mainScreen.MainScreen;
+import ui.model.LoadDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,23 +50,22 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
         double[]controlPointsValues = (double[]) this.values.get(Key.CONTROL_POINTS);
 
         double[][]measurements = new double[5][8];
-        switch (this.channel.getMeasurement().getNameConstant()){
-            case TEMPERATURE:
-                this.calculation = new CalculationTemperature(this.channel);
+        String measurementName = this.channel.getMeasurement().getName();
+        if (measurementName.equals(Measurement.TEMPERATURE)){
+            this.calculation = new CalculationTemperature(this.channel);
+            measurements = new double[5][8];
+        }else if (measurementName.equals(Measurement.PRESSURE)){
+            this.calculation = new CalculationPressure(this.channel);
+            measurements = new double[5][8];
+        }else if (measurementName.equals(Measurement.CONSUMPTION)){
+            this.calculation = new CalculationConsumption(this.channel);
+            if (calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 measurements = new double[5][8];
-                break;
-            case PRESSURE:
-                this.calculation = new CalculationPressure(this.channel);
-                measurements = new double[5][8];
-                break;
-            case CONSUMPTION:
-                this.calculation = new CalculationConsumption(this.channel);
-                if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
-                    measurements = new double[5][8];
-                }else {
-                    measurements = new double[5][10];
-                }
+            }else {
+                measurements = new double[5][10];
+            }
         }
+
         double[]measurement1 = (double[]) this.values.get(Key.MEASUREMENT_1);
         double[]measurement2 = (double[]) this.values.get(Key.MEASUREMENT_2);
         double[]measurement3 = (double[]) this.values.get(Key.MEASUREMENT_3);

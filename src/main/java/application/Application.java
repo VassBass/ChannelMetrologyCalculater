@@ -11,12 +11,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Application extends SwingWorker<Void, String> {
-    public static final String appVersion = "v5.2";
+    public static final String appVersion = "v5.3";
+    public static final String pathToDB = "jdbc:sqlite:Support/Data.db";
     public static final Dimension sizeOfScreen = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
     private static final Logger LOGGER = Logger.getLogger(Application.class.getName());
     public static ApplicationContext context;
     private static ApplicationLogo logo;
     private static boolean busy = false;
+    private static boolean firstStart = true;
 
     private static final String[] bufferNamesOfChannels = new String[10];
 
@@ -55,6 +57,7 @@ public class Application extends SwingWorker<Void, String> {
         }
         return busy;
     }
+    public static boolean isBusy(){return busy;}
 
     public static String[] getHints(){
         return bufferNamesOfChannels;
@@ -88,6 +91,8 @@ public class Application extends SwingWorker<Void, String> {
         }
     }
 
+    public static void setNotFirstRun(){firstStart = false;}
+
     public void start(){
         this.execute();
     }
@@ -96,24 +101,33 @@ public class Application extends SwingWorker<Void, String> {
         publish("Завантаження налаштуваннь користувача");
         Settings.checkSettings();
         publish("Завантаження списку цехів");
-        context.departmentService.init(context.mainScreen);
+        context.departmentService.init();
+        if (firstStart) context.departmentService.resetToDefaultInCurrentThread();
         publish("Завантаження списку ділянок");
-        context.areaService.init(context.mainScreen);
+        context.areaService.init();
+        if (firstStart) context.areaService.resetToDefaultInCurrentThread();
         publish("Завантаження списку процесів");
-        context.processService.init(context.mainScreen);
+        context.processService.init();
+        if (firstStart) context.processService.resetToDefaultInCurrentThread();
         publish("Завантаження списку установок");
-        context.installationService.init(context.mainScreen);
+        context.installationService.init();
+        if (firstStart) context.installationService.resetToDefaultInCurrentThread();
         publish("Завантаження списку працівників");
-        context.personService.init(context.mainScreen);
+        context.personService.init();
+        if (firstStart) context.personService.resetToDefaultInCurrentThread();
         publish("Завантаження списку вимірюваннь");
         context.measurementService.init();
+        if (firstStart) context.measurementService.resetToDefaultInCurrentThread();
         publish("Завантаження списку калібраторів");
-        context.calibratorService.init(context.mainScreen);
+        context.calibratorService.init();
+        if (firstStart) context.calibratorService.resetToDefaultInCurrentThread();
         publish("Завантаження списку ПВП");
-        context.sensorService.init(context.mainScreen);
+        context.sensorService.init();
+        if (firstStart) context.sensorService.resetToDefaultInCurrentThread();
         context.controlPointsValuesService.init();
+        if (firstStart) context.controlPointsValuesService.resetToDefaultInCurrentThread();
         publish("Завантаження списку каналів");
-        context.channelService.init(context.mainScreen);
+        context.channelService.init();
         publish("Завантаження головного вікна");
         context.mainScreen.init(context.channelService.getAll());
         return null;

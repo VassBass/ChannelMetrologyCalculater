@@ -1,7 +1,7 @@
 package ui.personsList;
 
 import application.Application;
-import model.Worker;
+import model.Person;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -37,10 +37,10 @@ public class PersonsListTable extends JTable {
         String[]columnsHeader = new String[]{FIO, POSITION};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Worker>workers = Application.context.personService.getAll();
+        ArrayList<Person>workers = Application.context.personService.getAll();
         String[][] list = new String[workers.size()][2];
         for (int x = 0; x < list.length; x++){
-            Worker worker = workers.get(x);
+            Person worker = workers.get(x);
             String fullName = worker.getSurname()
                     + " "
                     + worker.getName()

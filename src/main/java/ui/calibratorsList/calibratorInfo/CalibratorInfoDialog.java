@@ -1,18 +1,17 @@
 package ui.calibratorsList.calibratorInfo;
 
 import application.Application;
-import constants.CalibratorType;
-import constants.MeasurementConstants;
 import converters.ConverterUI;
 import converters.VariableConverter;
+import model.Calibrator;
+import model.Measurement;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
-import model.Calibrator;
-import ui.model.ButtonCell;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
 import ui.calibratorsList.calibratorInfo.complexElements.CertificateDatePanel;
+import ui.model.ButtonCell;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -223,8 +222,8 @@ public class CalibratorInfoDialog extends JDialog {
             this.typeText.setText(this.oldCalibrator.getType());
             this.nameText.setText(this.oldCalibrator.getName());
             this.rangePanel.setRange(this.oldCalibrator.getRangeMax(), this.oldCalibrator.getRangeMin());
-            if (this.oldCalibrator.getType().equals(CalibratorType.FLUKE718_30G)
-            || this.oldCalibrator.getType().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
+            if (this.oldCalibrator.getType().equals(Calibrator.FLUKE718_30G)
+            || this.oldCalibrator.getType().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 this.typeText.setEnabled(false);
                 this.nameText.setEnabled(false);
                 this.measurementsList.setEnabled(false);
@@ -234,7 +233,7 @@ public class CalibratorInfoDialog extends JDialog {
             this.errorFormulaText.setText(this.oldCalibrator.getErrorFormula());
             this.showErrorHintsIfNeed();
             this.certificateNameText.setText(this.oldCalibrator.getCertificateName());
-            this.certificateDatePanel.setDate(this.oldCalibrator.getCertificateDate());
+            this.certificateDatePanel.setDate(VariableConverter.stringToDate(this.oldCalibrator.getCertificateDate()));
             this.certificateCompanyText.setText(this.oldCalibrator.getCertificateCompany());
 
             this.measurementsList.setEnabled(false);
@@ -295,7 +294,7 @@ public class CalibratorInfoDialog extends JDialog {
                 calibrator.setName(nameText.getText());
                 calibrator.setNumber(numberText.getText());
                 calibrator.setMeasurement(measurement);
-                if (measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
+                if (measurement.equals(Measurement.PRESSURE)) {
                     calibrator.setRangeMin(rangePanel.getRangeMin());
                     calibrator.setRangeMax(rangePanel.getRangeMax());
                 }
@@ -397,7 +396,7 @@ public class CalibratorInfoDialog extends JDialog {
 
     private boolean checkCalibrator(){
         if (this.typeText.getText().length() == 0 &&
-                !Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(MeasurementConstants.CONSUMPTION.getValue())){
+                !Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(Measurement.CONSUMPTION)){
             JOptionPane.showMessageDialog(this, "Ви не ввели тип калібратора");
             return false;
         }else if (this.nameText.getText().length() == 0){

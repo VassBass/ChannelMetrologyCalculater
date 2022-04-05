@@ -53,7 +53,7 @@ public class MainTable extends Table<Channel> {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col){
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
                 try {
-                    long nextDate = channelsList.get(row).getNextDate().getTimeInMillis();
+                    long nextDate = channelsList.get(row)._getNextDate().getTimeInMillis();
 
                     long toNextControl = nextDate - Calendar.getInstance().getTimeInMillis();
                     long days90 = 7776000000L;

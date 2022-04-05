@@ -1,6 +1,10 @@
 package converters;
 
+import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class VariableConverter {
@@ -90,6 +94,13 @@ public class VariableConverter {
         }
 
         return String.valueOf(output);
+    }
+
+    public static Calendar stringToDate(String date){
+        int day = Integer.parseInt(date.substring(0,2));
+        int month = Integer.parseInt(date.substring(3,5));
+        int year = Integer.parseInt(date.substring(6));
+        return new GregorianCalendar(year, --month, day);
     }
 
     public static Double parseToDouble(String str){
@@ -308,5 +319,31 @@ public class VariableConverter {
             }
         }
         return builder.toString();
+    }
+
+    public static String arrayToString(double[]array){
+        StringBuilder builder = new StringBuilder();
+        for (double v : array) {
+            builder.append(v);
+            builder.append("|");
+        }
+        return builder.toString();
+    }
+
+    public static double[]stringToArray(String stringArray){
+        StringBuilder builder = new StringBuilder();
+        char[]chars = stringArray.toCharArray();
+        ArrayList<Double>array = new ArrayList<>();
+        for (char ch : chars){
+            if (ch == '|'){
+                Double d = Double.parseDouble(builder.toString());
+                array.add(d);
+                builder.setLength(0);
+            }else {
+                builder.append(ch);
+            }
+        }
+        Double[]arrr = array.toArray(new Double[0]);
+        return ArrayUtils.toPrimitive(arrr);
     }
 }

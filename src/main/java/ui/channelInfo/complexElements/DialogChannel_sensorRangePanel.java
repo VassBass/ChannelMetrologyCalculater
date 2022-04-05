@@ -2,7 +2,7 @@ package ui.channelInfo.complexElements;
 
 import application.Application;
 import converters.VariableConverter;
-import measurements.Measurement;
+import model.Measurement;
 import model.Sensor;
 
 import javax.swing.*;

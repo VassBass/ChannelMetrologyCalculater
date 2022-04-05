@@ -1,9 +1,13 @@
 package settings;
 
-import constants.MeasurementConstants;
+import application.Application;
+import model.Measurement;
 import service.FileBrowser;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,9 +23,9 @@ public class Settings {
         String namePressureMethod = "МКМХ №5300.02:18";
         String nameConsumptionMethod = "МКМХ №5300.07:20";
 
-        setSettingValue(MeasurementConstants.TEMPERATURE.getValue(), nameTemperatureMethod);
-        setSettingValue(MeasurementConstants.PRESSURE.getValue(), namePressureMethod);
-        setSettingValue(MeasurementConstants.CONSUMPTION.getValue(), nameConsumptionMethod);
+        setSettingValue(Measurement.TEMPERATURE, nameTemperatureMethod);
+        setSettingValue(Measurement.PRESSURE, namePressureMethod);
+        setSettingValue(Measurement.CONSUMPTION, nameConsumptionMethod);
     }
 
     @SuppressWarnings("unchecked")
@@ -29,6 +33,7 @@ public class Settings {
         LOGGER.info("Settings: checking the settings...");
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FileBrowser.FILE_SETTINGS))){
             settings = (HashMap<String, String>) in.readObject();
+            Application.setNotFirstRun();
         }catch (Exception ex){
             LOGGER.info("Settings: file \"" + FileBrowser.FILE_SETTINGS.getName() + "\" is empty.");
             LOGGER.info("Settings: set default settings");

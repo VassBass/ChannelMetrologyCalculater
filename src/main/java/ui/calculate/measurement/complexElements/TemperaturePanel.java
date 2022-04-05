@@ -47,9 +47,9 @@ public class TemperaturePanel extends MeasurementPanel {
                 this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
         if (this.values == null){
             double value0 = channel.getRangeMin();
-            double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
-            double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
-            double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+            double value5 = ((channel._getRange() / 100) * 5) + channel.getRangeMin();
+            double value50 = ((channel._getRange() / 100) * 50) + channel.getRangeMin();
+            double value95 = ((channel._getRange() / 100) * 95) + channel.getRangeMin();
             double value100 = channel.getRangeMax();
             this.values = new double[]{value0, value5, value50, value95, value100};
         }

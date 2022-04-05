@@ -1,12 +1,11 @@
 package ui.calculate.measurement.complexElements;
 
 import application.Application;
-import constants.CalibratorType;
-import constants.MeasurementConstants;
 import converters.ValueConverter;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
@@ -49,22 +48,22 @@ public class PressurePanel extends MeasurementPanel {
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double maxCalibratorPower = new ValueConverter(MeasurementConstants.KGS_SM2, this.channel.getMeasurement().getValueConstant()).get(-0.8);
+        double maxCalibratorPower = new ValueConverter(Measurement.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
 
         this.values = Application.context.controlPointsValuesService.getValues(
                 this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
         if (this.values == null){
             double value0 = this.channel.getRangeMin();
-            double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
-            double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-            double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+            double value5 = ((this.channel._getRange() / 100) * 5) + this.channel.getRangeMin();
+            double value50 = ((this.channel._getRange() / 100) * 50) + this.channel.getRangeMin();
+            double value95 = ((this.channel._getRange() / 100) * 95) + this.channel.getRangeMin();
             double value100 = this.channel.getRangeMax();
             this.values = new double[]{value0, value5, value50, value95, value100};
         }
 
 
         this.labelValue = new JButton[5];
-        if (this.calibrator.getType().equals(CalibratorType.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
+        if (this.calibrator.getType().equals(Calibrator.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
             if (this.values[1] <= maxCalibratorPower) {
                 this.labelValue[0] = new ButtonCell(false, " - ");
                 this.labelValue[1] = new ButtonCell(false, VariableConverter.roundingDouble3(maxCalibratorPower, Locale.ENGLISH) + value);
@@ -94,7 +93,7 @@ public class PressurePanel extends MeasurementPanel {
             this.userMeasurements[x].setHorizontalAlignment(SwingConstants.CENTER);
             this.userMeasurements[x].addFocusListener(focusMeasurement);
         }
-        if (this.calibrator.getType().equals(CalibratorType.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
+        if (this.calibrator.getType().equals(Calibrator.FLUKE718_30G) && this.values[0] < maxCalibratorPower) {
             if (this.values[1] <= maxCalibratorPower) {
                 this.userMeasurements[0].setText(VariableConverter.roundingDouble3(this.values[0], Locale.ENGLISH));
                 this.userMeasurements[0].setEnabled(false);
@@ -176,9 +175,9 @@ public class PressurePanel extends MeasurementPanel {
             JTextField cell = (JTextField) e.getSource();
             if (cell.getText().length()==0 || cell.getText().equals("-")){
                 double value0 = channel.getRangeMin();
-                double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
-                double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
-                double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+                double value5 = ((channel._getRange() / 100) * 5) + channel.getRangeMin();
+                double value50 = ((channel._getRange() / 100) * 50) + channel.getRangeMin();
+                double value95 = ((channel._getRange() / 100) * 95) + channel.getRangeMin();
                 double value100 = channel.getRangeMax();
                 for (int x=0;x<userMeasurements.length;x++){
                     if (cell.equals(userMeasurements[x])){

@@ -2,10 +2,10 @@ package certificates;
 
 import calculation.Calculation;
 import constants.Key;
-import constants.MeasurementConstants;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import model.Sensor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
@@ -57,12 +57,11 @@ public class ConsumptionCertificate extends Certificate {
             cell(19,20).setCellValue(this.numberOfCertificate);
         }
 
-        this.checkDate = (Calendar) this.values.get(Key.CHANNEL_DATE);
-        String date = VariableConverter.dateToString(this.checkDate);
-        cell(13,5).setCellValue(date);
-        cell(13,14).setCellValue(date);
+        this.checkDate = (String) this.values.get(Key.CHANNEL_DATE);
+        cell(13,5).setCellValue(this.checkDate);
+        cell(13,14).setCellValue(this.checkDate);
         if (!this.result.goodChannel()){
-            cell(10,24).setCellValue(date);
+            cell(10,24).setCellValue(this.checkDate);
         }
 
         String externalTemperature = (String) values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE);
@@ -77,7 +76,7 @@ public class ConsumptionCertificate extends Certificate {
         this.alarmCheck = (boolean) this.values.get(Key.CALCULATION_ALARM_PANEL);
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
-        String methodName = Settings.getSettingValue(MeasurementConstants.CONSUMPTION.getValue());
+        String methodName = Settings.getSettingValue(Measurement.CONSUMPTION);
         cell(35,15).setCellValue(methodName);
     }
 
@@ -147,7 +146,7 @@ public class ConsumptionCertificate extends Certificate {
         if (this.result.goodChannel()) {
             long l = (long) (31536000000L * this.channel.getFrequency());
             Calendar nextDateCal = new GregorianCalendar();
-            nextDateCal.setTimeInMillis(this.checkDate.getTimeInMillis() + l);
+            nextDateCal.setTimeInMillis(VariableConverter.stringToDate(this.checkDate).getTimeInMillis() + l);
             nextDate = VariableConverter.dateToString(nextDateCal);
         } else {
             nextDate = EXTRAORDINARY;
@@ -188,11 +187,11 @@ public class ConsumptionCertificate extends Certificate {
         String number = calibrator.getNumber();
         cell(18,12).setCellValue(number);
 
-        String certificate = calibrator.getCertificateToString();
+        String certificate = calibrator.getCertificateInfo();
         cell(19,12).setCellValue(certificate);
 
         double errorCalibrator = calibrator.getError(this.channel);
-        double eP = errorCalibrator / (this.channel.getRange() / 100);
+        double eP = errorCalibrator / (this.channel._getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(20,13).setCellValue(errorPercent);
 

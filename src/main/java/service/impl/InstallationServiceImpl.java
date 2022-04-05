@@ -1,135 +1,88 @@
 package service.impl;
 
 import def.DefaultInstallations;
-import model.Model;
-import repository.Repository;
-import service.FileBrowser;
+import repository.InstallationRepository;
+import repository.impl.InstallationRepositoryImpl;
 import service.InstallationService;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.logging.Logger;
 
 public class InstallationServiceImpl implements InstallationService {
     private static final Logger LOGGER = Logger.getLogger(InstallationService.class.getName());
 
-    private static final String ERROR = "Помилка";
+    private final String dbUrl;
+    private InstallationRepository repository;
 
-    private Window window;
-    private ArrayList<String> installations;
+    public InstallationServiceImpl(){
+        this.dbUrl = null;
+    }
 
-    private String exportFileName(Calendar date){
-        return "export_installations ["
-                + date.get(Calendar.DAY_OF_MONTH)
-                + "."
-                + (date.get(Calendar.MONTH) + 1)
-                + "."
-                + date.get(Calendar.YEAR)
-                + "].ins";
+    public InstallationServiceImpl(String dbUrl){
+        this.dbUrl = dbUrl;
     }
 
     @Override
-    public void init(Window window){
-        LOGGER.info("InstallationService: initialization start ...");
-        try {
-            this.installations = new Repository<String>(null, Model.INSTALLATION).readList();
-        }catch (Exception e){
-            LOGGER.info("InstallationService: file \"" + FileBrowser.FILE_INSTALLATIONS.getName() + "\" is empty");
-            LOGGER.info("InstallationService: set default list");
-            this.installations = DefaultInstallations.get();
-            this.save();
-        }
-        this.window = window;
-        LOGGER.info("InstallationService: initialization SUCCESS");
+    public void init(){
+        this.repository = this.dbUrl == null ? new InstallationRepositoryImpl() : new InstallationRepositoryImpl(this.dbUrl);
+        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
     public ArrayList<String> getAll() {
-        return this.installations;
+        return this.repository.getAll();
     }
 
     @Override
     public String[] getAllInStrings(){
-        return this.installations.toArray(new String[0]);
+        return this.repository.getAll().toArray(new String[0]);
     }
 
     @Override
     public ArrayList<String> add(String object) {
-        if (!this.installations.contains(object)){
-            this.installations.add(object);
-            this.save();
-        }
-        return this.installations;
+        this.repository.add(object);
+        return this.repository.getAll();
+    }
+
+    @Override
+    public void addInCurrentThread(ArrayList<String> installations) {
+        this.repository.addInCurrentThread(installations);
     }
 
     @Override
     public ArrayList<String> remove(String object) {
-        if (this.installations.contains(object)){
-            this.installations.remove(object);
-            this.save();
-        }else {
-            this.showNotFoundMessage();
-        }
-        return this.installations;
+        this.repository.remove(object);
+        return this.repository.getAll();
     }
 
     @Override
     public ArrayList<String> set(String oldObject, String newObject) {
-        if (oldObject != null){
-            if (newObject == null){
-                this.remove(oldObject);
-            }else {
-                int index = this.installations.indexOf(oldObject);
-                this.installations.set(index, newObject);
-            }
-            this.save();
-        }
-        return this.installations;
+        this.repository.set(oldObject, newObject);
+        return this.repository.getAll();
     }
 
     @Override
     public String get(int index) {
-        if (index >= 0) {
-            return this.installations.get(index);
-        }else {
-            return null;
-        }
+        return this.repository.get(index);
     }
 
     @Override
     public void clear() {
-        this.installations.clear();
-        this.save();
-    }
-
-    @Override
-    public void save() {
-        new Repository<String>(this.window, Model.INSTALLATION).writeList(this.installations);
-    }
-
-    @Override
-    public boolean exportData(){
-        try {
-            String fileName = this.exportFileName(Calendar.getInstance());
-            FileBrowser.saveToFile(FileBrowser.exportFile(fileName), this.installations);
-            return true;
-        }catch (IOException e){
-            e.printStackTrace();
-            return false;
-        }
+        this.repository.clear();
     }
 
     @Override
     public void rewriteInCurrentThread(ArrayList<String>installations){
-        this.installations = installations;
-        new Repository<String>(null, Model.INSTALLATION).writeListInCurrentThread(installations);
+        this.repository.rewriteInCurrentThread(installations);
     }
 
-    private void showNotFoundMessage() {
-        String message = "Установка з такою назвою не знайдена в списку установок.";
-        JOptionPane.showMessageDialog(this.window, message, ERROR, JOptionPane.ERROR_MESSAGE);
+    @Override
+    public void resetToDefaultInCurrentThread() {
+        this.repository.rewriteInCurrentThread(DefaultInstallations.get());
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

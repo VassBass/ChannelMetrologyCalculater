@@ -4,6 +4,7 @@ import calculation.Calculation;
 import constants.Key;
 import converters.ConverterUI;
 import model.Channel;
+import model.Measurement;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.performers.CalculatePerformersDialog;
 import ui.calculate.reference.CalculateReferenceDialog;
@@ -46,16 +47,13 @@ public class CalculateVerificationDialog extends JDialog {
     }
 
     private void createElements() {
-        switch (this.channel.getMeasurement().getNameConstant()){
-            case TEMPERATURE:
-                this.resultPanel = new TemperaturePanel(this.channel, this.values, this.calculation);
-                break;
-            case PRESSURE:
-                this.resultPanel = new PressurePanel(this.channel, this.values, this.calculation);
-                break;
-            case CONSUMPTION:
-                this.resultPanel = new ConsumptionPanel(this.channel, this.values, this.calculation);
-                break;
+        String measurementName = this.channel.getMeasurement().getName();
+        if (measurementName.equals(Measurement.TEMPERATURE)){
+            this.resultPanel = new TemperaturePanel(this.channel, this.values, this.calculation);
+        }else if (measurementName.equals(Measurement.PRESSURE)){
+            this.resultPanel = new PressurePanel(this.channel, this.values, this.calculation);
+        }else if (measurementName.equals(Measurement.CONSUMPTION)){
+            this.resultPanel = new ConsumptionPanel(this.channel, this.values, this.calculation);
         }
 
         this.buttonBack = new DefaultButton(BACK);

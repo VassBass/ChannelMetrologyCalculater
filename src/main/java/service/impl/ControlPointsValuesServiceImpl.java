@@ -1,134 +1,85 @@
 package service.impl;
 
-import def.DefaultControlPointsValues;
 import model.ControlPointsValues;
 import repository.ControlPointsValuesRepository;
+import repository.impl.ControlPointsValuesRepositoryImpl;
 import service.ControlPointsValuesService;
-import service.FileBrowser;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Logger;
 
 public class ControlPointsValuesServiceImpl implements ControlPointsValuesService {
     private static final Logger LOGGER = Logger.getLogger(ControlPointsValuesService.class.getName());
 
-    private ArrayList<ControlPointsValues> mainList;
+    private final String dbUrl;
+    private ControlPointsValuesRepository repository;
+
+    public ControlPointsValuesServiceImpl(){
+        this.dbUrl = null;
+    }
+
+    public ControlPointsValuesServiceImpl(String dbUrl){
+        this.dbUrl = dbUrl;
+    }
 
     @Override
     public void init() {
-        LOGGER.info("ControlPointsValuesService: initialization start ...");
-        try {
-            this.mainList = new ControlPointsValuesRepository().readList();
-        }catch (Exception ex){
-            LOGGER.info("ControlPointsValuesService: file \"" + FileBrowser.FILE_CONTROL_POINTS_VALUES.getName() + "\" is empty");
-            LOGGER.info("ControlPointsValuesService: set default list");
-            this.mainList = DefaultControlPointsValues.get();
-            this.save();
-        }
-        LOGGER.info("ControlPointsValuesService: initialization SUCCESS");
+        this.repository = this.dbUrl == null ? new ControlPointsValuesRepositoryImpl() : new ControlPointsValuesRepositoryImpl(this.dbUrl);
+        LOGGER.info("Initialization SUCCESS");
+    }
+
+    @Override
+    public ArrayList<ControlPointsValues> getAll() {
+        return this.repository.getAll();
     }
 
     @Override
     public ArrayList<ControlPointsValues> getBySensorType(String sensorType) {
-        ArrayList<ControlPointsValues>list = new ArrayList<>();
-        for (ControlPointsValues cpv : this.mainList){
-            if (cpv.getSensorType().equals(sensorType)){
-                list.add(cpv);
-            }
-        }
-        return list;
+        return this.repository.getBySensorType(sensorType);
     }
 
     @Override
     public double[] getValues(String sensorType, double rangeMin, double rangeMax) {
-        for (ControlPointsValues cpv : this.mainList){
-            if (cpv.isMatch(sensorType, rangeMin, rangeMax)){
-                return cpv.getValues();
-            }
-        }
-        return null;
+        return this.repository.getValues(sensorType, rangeMin, rangeMax);
     }
 
     @Override
     public ControlPointsValues getControlPointsValues(String sensorType, int index) {
-        int i = 0;
-        for (ControlPointsValues cpv : this.mainList){
-            if (cpv.getSensorType().equals(sensorType)){
-                if (i == index){
-                    return cpv;
-                }else {
-                    i++;
-                }
-            }
-        }
-        return null;
+        return this.repository.getControlPointsValues(sensorType, index);
     }
 
     @Override
     public void put(ControlPointsValues controlPointsValues) {
-        int index = -1;
-        for (int i=0;i<this.mainList.size();i++){
-            ControlPointsValues cpv = this.mainList.get(i);
-            if (cpv.isMatch(controlPointsValues)){
-                index = i;
-                break;
-            }
-        }
-        if (index >= 0){
-            this.mainList.set(index, controlPointsValues);
-        }else this.mainList.add(controlPointsValues);
+        this.repository.put(controlPointsValues);
+    }
 
-        this.save();
+    @Override
+    public void putInCurrentThread(ControlPointsValues cpv) {
+        this.repository.putInCurrentThread(cpv);
     }
 
     @Override
     public void remove(ControlPointsValues controlPointsValues) {
-        for (int i=0;i<this.mainList.size();i++){
-            ControlPointsValues cpv = this.mainList.get(i);
-            if (cpv.isMatch(controlPointsValues)){
-                this.mainList.remove(i);
-                break;
-            }
-        }
-
-        this.save();
+        this.repository.remove(controlPointsValues);
     }
 
     @Override
     public void removeAllInCurrentThread(String sensorType) {
-        ArrayList<Integer>indexes = new ArrayList<>();
-        for (int i=0;i<this.mainList.size();i++){
-            ControlPointsValues cpv = this.mainList.get(i);
-            if (cpv.getSensorType().equals(sensorType)){
-                indexes.add(i);
-            }
-        }
-        Collections.reverse(indexes);
-        for (int i : indexes){
-            this.mainList.remove(i);
-        }
-        new ControlPointsValuesRepository().writeListInCurrentThread(this.mainList);
+        this.repository.removeAllInCurrentThread(sensorType);
     }
 
     @Override
     public void clear(String sensorType) {
-        ArrayList<Integer>indexes = new ArrayList<>();
-        for (int i=0;i<this.mainList.size();i++){
-            ControlPointsValues cpv = this.mainList.get(i);
-            if (cpv.getSensorType().equals(sensorType)){
-                indexes.add(i);
-            }
-        }
-        Collections.reverse(indexes);
-        for (int i : indexes){
-            this.mainList.remove(i);
-        }
-        this.save();
+        this.repository.clear(sensorType);
     }
 
     @Override
-    public void save(){
-        new ControlPointsValuesRepository().writeList(this.mainList);
+    public void resetToDefaultInCurrentThread() {
+        this.repository.resetToDefaultInCurrentThread();
+    }
+
+    @Override
+    public boolean backgroundTaskIsRun() {
+        return this.repository.backgroundTaskIsRun();
     }
 }

@@ -1,11 +1,11 @@
 package ui.calculate.measurement;
 
 import backgroundTasks.CalculateChannel;
-import constants.CalibratorType;
 import constants.Key;
-import model.Calibrator;
 import converters.ConverterUI;
+import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.calculate.measurement.complexElements.*;
 import ui.calculate.start.CalculateStartDialog;
 import ui.mainScreen.MainScreen;
@@ -13,7 +13,8 @@ import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 
 public class CalculateMeasurementDialog extends JDialog {
@@ -133,24 +134,22 @@ public class CalculateMeasurementDialog extends JDialog {
     }
 
     private void createMeasurementPanel(int index, double[] values){
-        switch (this.channel.getMeasurement().getNameConstant()){
-            case TEMPERATURE:
-                TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
-                this.measurementsPanels[index] = temperaturePanel;
-                break;
-            case PRESSURE:
-                PressurePanel pressurePanel = new PressurePanel(this.channel,(Calibrator) this.values.get(Key.CALIBRATOR));
-                this.measurementsPanels[index] = pressurePanel;
-                break;
-            case CONSUMPTION:
-                Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
-                if (calibrator.getName().equals(CalibratorType.ROSEMOUNT_8714DQ4)){
-                    ConsumptionPanel_ROSEMOUNT consumptionPanel = new ConsumptionPanel_ROSEMOUNT(this.channel);
-                    this.measurementsPanels[index] = consumptionPanel;
-                }else {
-                    ConsumptionPanel consumptionPanel = new ConsumptionPanel(this.channel);
-                    this.measurementsPanels[index] = consumptionPanel;
-                }
+        String measurementName = this.channel.getMeasurement().getName();
+        if (measurementName.equals(Measurement.TEMPERATURE)){
+            TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
+            this.measurementsPanels[index] = temperaturePanel;
+        }else if (measurementName.equals(Measurement.PRESSURE)){
+            PressurePanel pressurePanel = new PressurePanel(this.channel,(Calibrator) this.values.get(Key.CALIBRATOR));
+            this.measurementsPanels[index] = pressurePanel;
+        }else if (measurementName.equals(Measurement.CONSUMPTION)){
+            Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
+            if (calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
+                ConsumptionPanel_ROSEMOUNT consumptionPanel = new ConsumptionPanel_ROSEMOUNT(this.channel);
+                this.measurementsPanels[index] = consumptionPanel;
+            }else {
+                ConsumptionPanel consumptionPanel = new ConsumptionPanel(this.channel);
+                this.measurementsPanels[index] = consumptionPanel;
+            }
         }
         if (values != null){
             this.measurementsPanels[index].setValues(values);

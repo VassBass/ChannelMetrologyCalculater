@@ -1,16 +1,19 @@
 package ui.calculate.verification.complexElements;
 
-import constants.Key;
-import model.Calibrator;
-import constants.MeasurementConstants;
-import converters.VariableConverter;
 import calculation.Calculation;
+import constants.Key;
+import converters.VariableConverter;
+import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Objects;
 
 public class TemperaturePanel extends JPanel {
     private static final String NAME = "Назва";
@@ -37,7 +40,7 @@ public class TemperaturePanel extends JPanel {
     private static final String CHANNEL_IS_GOOD = "Канал придатний";
     private static final String CHANNEL_IS_BAD = "Канал не придатний";
     private static final String ALARM_MESSAGE = "Сигналізація спрацювала при t = ";
-    private static final String ADVICE_FIX = "Порада: налаштувати вимірювальний канал.";
+    private static final String ADVICE_FIX = "Порада: налаштувати вимірювальний канал";
     private static final String ADVICE_RANGE = "Порада: для кращих показів налаштуйте вимірювальний канал на вказаний діапазон вимірювання";
     private static final String GAMMA = "\u03B3";
     private static final String DELTA = "\u0394";
@@ -172,7 +175,7 @@ public class TemperaturePanel extends JPanel {
 
         this.channelName.setText(this.channel.getName());
         this.number.setText((String) this.values.get(Key.CHANNEL_PROTOCOL_NUMBER));
-        this.date.setText(VariableConverter.dateToString((Calendar) values.get(Key.CHANNEL_DATE)));
+        this.date.setText((String) values.get(Key.CHANNEL_DATE));
 
         String path = this.channel.getArea()
                 + " "
@@ -203,7 +206,7 @@ public class TemperaturePanel extends JPanel {
         this.sensor.setText(this.channel.getSensor().getType());
 
         double errorSensor = this.channel.getSensor().getError(this.channel);
-        double ePS = errorSensor / (this.channel.getSensor().getRange() / 100);
+        double ePS = errorSensor / (this.channel.getSensor()._getRange() / 100);
         String allowableErrorSensor =
                 PLUS_MINUS
                 + VariableConverter.roundingDouble2(ePS, Locale.GERMAN)
@@ -223,7 +226,7 @@ public class TemperaturePanel extends JPanel {
         this.rangeSensor.setText(rangeSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
-                + MeasurementConstants.DEGREE_CELSIUS.getValue());
+                + Measurement.DEGREE_CELSIUS);
         this.humidity.setText(this.values.get(Key.CALCULATION_EXTERNAL_HUMIDITY)
                 + "%");
         this.atmospherePressure.setText(this.values.get(Key.CALCULATION_EXTERNAL_PRESSURE)
@@ -235,13 +238,13 @@ public class TemperaturePanel extends JPanel {
 
         String certificateCalibrator = calibrator.getCertificateName()
                 + " від "
-                + VariableConverter.dateToString(calibrator.getCertificateDate())
+                + calibrator.getCertificateDate()
                 + "р. "
                 + calibrator.getCertificateCompany();
         this.calibratorCertificate.setText(certificateCalibrator);
 
         double errorCalibrator = calibrator.getError(this.channel);
-        double ePC = errorCalibrator / (this.channel.getRange() / 100);
+        double ePC = errorCalibrator / (this.channel._getRange() / 100);
         String allowableErrorCalibrator = PLUS_MINUS
                 + VariableConverter.roundingDouble(ePC, Locale.GERMAN)
                 + "% або "
@@ -525,7 +528,7 @@ public class TemperaturePanel extends JPanel {
             cells[11].setText(s95);
             cells[12].setText("Міжконтрольний інтервал");
             cells[13].setText(VariableConverter.roundingDouble(channel.getFrequency(), Locale.GERMAN)
-                    + YEAR_WORD(channel.getFrequency()));
+                    + " " + YEAR_WORD(channel.getFrequency()));
 
             this.add(cells[0], new Cell(0, 0, 1, 1));
             this.add(cells[1], new Cell(0, 1, 1, 1));

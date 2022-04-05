@@ -1,7 +1,7 @@
 package ui.importData.compareCalibrators;
 
 import application.Application;
-import backgroundTasks.data_import.SaveImportedCalibrators;
+import backgroundTasks.SaveImportedCalibrators;
 import converters.ConverterUI;
 import model.Calibrator;
 import ui.importData.compareCalibrators.complexElements.CalibratorInfoWindow;
@@ -15,6 +15,7 @@ import ui.model.Table;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 
 public class CompareCalibratorsDialog extends JDialog {
@@ -30,6 +31,7 @@ public class CompareCalibratorsDialog extends JDialog {
     public final boolean CHANGED_SENSORS_TABLE = false;
 
     private final ArrayList<Calibrator>newCalibrators, calibratorsForChange, changedCalibrators;
+    private File importFile = null;
 
     private final MainScreen mainScreen;
     private JWindow newCalibratorInfo, oldCalibratorInfo;
@@ -44,6 +46,19 @@ public class CompareCalibratorsDialog extends JDialog {
         this.newCalibrators = newCalibratorsList;
         this.calibratorsForChange = calibratorsForChange;
         this.changedCalibrators = changedCalibratorsList;
+
+        this.createElements();
+        this.setReactions();
+        this.build();
+    }
+
+    public CompareCalibratorsDialog(ArrayList<Calibrator>newCalibratorsList,ArrayList<Calibrator>calibratorsForChange, ArrayList<Calibrator>changedCalibratorsList, File file){
+        super(Application.context.mainScreen, IMPORT, true);
+        this.mainScreen = Application.context.mainScreen;
+        this.newCalibrators = newCalibratorsList;
+        this.calibratorsForChange = calibratorsForChange;
+        this.changedCalibrators = changedCalibratorsList;
+        this.importFile = file;
 
         this.createElements();
         this.setReactions();
@@ -190,7 +205,7 @@ public class CompareCalibratorsDialog extends JDialog {
                 newCalibratorsTable.setEnabled(false);
             }else {
                 dispose();
-                new SaveImportedCalibrators(newCalibrators, calibratorsForChange).execute();
+                new SaveImportedCalibrators(newCalibrators, calibratorsForChange, importFile).execute();
             }
         }
     };
@@ -209,7 +224,7 @@ public class CompareCalibratorsDialog extends JDialog {
                 changedCalibratorsTable.setEnabled(false);
             }else {
                 dispose();
-                new SaveImportedCalibrators(newCalibrators, calibratorsForChange).execute();
+                new SaveImportedCalibrators(newCalibrators, calibratorsForChange, importFile).execute();
             }
         }
     };

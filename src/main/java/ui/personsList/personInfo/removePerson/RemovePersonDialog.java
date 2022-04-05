@@ -2,9 +2,9 @@ package ui.personsList.personInfo.removePerson;
 
 import application.Application;
 import converters.ConverterUI;
+import model.Person;
 import ui.model.DefaultButton;
 import ui.personsList.PersonsListDialog;
-import model.Worker;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,16 +16,16 @@ public class RemovePersonDialog extends JDialog {
     public static final String CANCEL = "Відміна";
 
     private final PersonsListDialog parent;
-    private final Worker worker;
+    private final Person person;
 
     private JLabel message;
 
     private JButton positiveButton, negativeButton;
 
-    public RemovePersonDialog(PersonsListDialog parent, Worker worker){
+    public RemovePersonDialog(PersonsListDialog parent, Person person){
         super(parent, REMOVE, true);
         this.parent = parent;
-        this.worker = worker;
+        this.person = person;
 
         this.createElements();
         this.setReactions();
@@ -35,13 +35,13 @@ public class RemovePersonDialog extends JDialog {
     private void createElements() {
         String s = REMOVE
                 + " зі списку працівника:\n"
-                + worker.getSurname()
+                + this.person.getSurname()
                 + " "
-                + worker.getName()
+                + this.person.getName()
                 + " "
-                + worker.getPatronymic()
+                + this.person.getPatronymic()
                 + " ("
-                + worker.getPosition()
+                + this.person.getPosition()
                 + ")?";
 
         this.message = new JLabel(s);
@@ -76,7 +76,7 @@ public class RemovePersonDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             if (Application.isBusy(RemovePersonDialog.this)) return;
             dispose();
-            Application.context.personService.remove(worker);
+            Application.context.personService.remove(person);
             parent.update();
         }
     };

@@ -51,7 +51,7 @@ public class DialogChannel_frequencyPanel extends JPanel {
         String frequencyString = VariableConverter.roundingDouble2(frequency, Locale.ENGLISH);
         this.frequency.setText(frequencyString);
         if (date == null){
-            this.setNextDate(this.parent.datePanel.getDate());
+            this.setNextDate(VariableConverter.stringToDate(this.parent.datePanel.getDate()));
         }else {
             this.setNextDate(date);
         }
@@ -75,7 +75,7 @@ public class DialogChannel_frequencyPanel extends JPanel {
                 frequency.setText(afterCheck);
             }
 
-            setNextDate(parent.datePanel.getDate());
+            setNextDate(VariableConverter.stringToDate(parent.datePanel.getDate()));
         }
     };
 

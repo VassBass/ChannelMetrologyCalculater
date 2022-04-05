@@ -1,9 +1,8 @@
 package ui.calibratorsList.calibratorInfo.complexElements;
 
 import application.Application;
-import constants.MeasurementConstants;
 import converters.VariableConverter;
-import measurements.Measurement;
+import model.Measurement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,7 +56,7 @@ public class CalibratorRangePanel extends JPanel {
 
         public void setList(String measurement){
             this.list.clear();
-            if (measurement != null && measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
+            if (measurement != null && measurement.equals(Measurement.PRESSURE)) {
                 ArrayList<Measurement> measurements = Application.context.measurementService.getAll();
                 for (Measurement m : Objects.requireNonNull(measurements)) {
                     if (m.getName().equals(measurement)) {
@@ -155,7 +154,7 @@ public class CalibratorRangePanel extends JPanel {
     public void setValues(String measurement, String selected){
         this.measurement = measurement;
         this.valuesModel.setList(measurement);
-        if (measurement.equals(MeasurementConstants.PRESSURE.getValue())) {
+        if (measurement.equals(Measurement.PRESSURE)) {
             setDisabledAndEmpty(false);
             if (selected == null) {
                 this.valuesModel.setSelectedIndex(0);

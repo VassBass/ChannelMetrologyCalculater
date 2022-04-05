@@ -58,7 +58,7 @@ public class SensorInfoWindow extends JWindow {
         this.type.setToolTipText(this.sensor.getType());
 
         String r = " - ";
-        if (this.sensor.getRange() > 0) r = this.sensor.getRangeMin() + " - " + this.sensor.getRangeMax();
+        if (this.sensor._getRange() > 0) r = this.sensor.getRangeMin() + " - " + this.sensor.getRangeMax();
         this.rangeLabel = new ButtonCell(true, RANGE);
         this.rangeLabel.setHorizontalAlignment(SwingConstants.LEFT);
         this.rangeLabel.setToolTipText(r);

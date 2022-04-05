@@ -1,7 +1,7 @@
 package ui.importData.compareSensors;
 
 import application.Application;
-import backgroundTasks.data_import.SaveImportedSensors;
+import backgroundTasks.SaveImportedSensors;
 import converters.ConverterUI;
 import model.Sensor;
 import ui.importData.compareSensors.complexElements.ChangedSensorsTable;
@@ -15,6 +15,7 @@ import ui.model.Table;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.ArrayList;
 
 public class CompareSensorsDialog extends JDialog {
@@ -28,6 +29,7 @@ public class CompareSensorsDialog extends JDialog {
 
     public final boolean NEW_SENSORS_TABLE = true;
     public final boolean CHANGED_SENSORS_TABLE = false;
+    private File importFile;
 
     private final ArrayList<Sensor>newSensors, sensorsForChange, changedSensors;
 
@@ -44,6 +46,19 @@ public class CompareSensorsDialog extends JDialog {
         this.newSensors = newSensorsList;
         this.sensorsForChange = sensorsForChange;
         this.changedSensors = changedSensorsList;
+
+        this.createElements();
+        this.setReactions();
+        this.build();
+    }
+
+    public CompareSensorsDialog(ArrayList<Sensor>newSensorsList,ArrayList<Sensor>sensorsForChange, ArrayList<Sensor>changedSensorsList, File file){
+        super(Application.context.mainScreen, IMPORT, true);
+        this.mainScreen = Application.context.mainScreen;
+        this.newSensors = newSensorsList;
+        this.sensorsForChange = sensorsForChange;
+        this.changedSensors = changedSensorsList;
+        this.importFile = file;
 
         this.createElements();
         this.setReactions();
@@ -190,7 +205,7 @@ public class CompareSensorsDialog extends JDialog {
                 newSensorsTable.setEnabled(false);
             }else {
                 dispose();
-                new SaveImportedSensors(newSensors, sensorsForChange).execute();
+                new SaveImportedSensors(newSensors, sensorsForChange, importFile).execute();
             }
         }
     };
@@ -209,7 +224,7 @@ public class CompareSensorsDialog extends JDialog {
                 changedSensorsTable.setEnabled(false);
             }else {
                 dispose();
-                new SaveImportedSensors(newSensors, sensorsForChange).execute();
+                new SaveImportedSensors(newSensors, sensorsForChange, importFile).execute();
             }
         }
     };

@@ -1,59 +1,27 @@
 package repository;
 
-import application.Application;
 import model.ControlPointsValues;
-import service.FileBrowser;
-import ui.model.SaveMessage;
+import model.Sensor;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
-public class ControlPointsValuesRepository extends SwingWorker<Void, Void> {
-    private ArrayList<ControlPointsValues>list;
-    private SaveMessage saveMessage;
+public interface ControlPointsValuesRepository {
+    ArrayList<ControlPointsValues> getAll();
+    ArrayList<ControlPointsValues>getBySensorType(String sensorType);
+    double[] getValues(String sensorType, double rangeMin, double rangeMax);
 
-    @SuppressWarnings("unchecked")
-    public ArrayList<ControlPointsValues>readList() throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FileBrowser.FILE_CONTROL_POINTS_VALUES));
-        ArrayList<ControlPointsValues>values = (ArrayList<ControlPointsValues>) ois.readObject();
-        ois.close();
-        return values;
-    }
-
-    public void writeList(ArrayList<ControlPointsValues>list){
-        this.list = list;
-        this.saveMessage = new SaveMessage(Application.context.mainScreen);
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                saveMessage.setVisible(true);
-            }
-        });
-        Application.setBusy(true);
-        this.execute();
-    }
-
-    public void writeListInCurrentThread(ArrayList<ControlPointsValues>list){
-        try {
-            FileBrowser.saveToFile(FileBrowser.FILE_CONTROL_POINTS_VALUES, list);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-        FileBrowser.saveToFile(FileBrowser.FILE_CONTROL_POINTS_VALUES, this.list);
-        return null;
-    }
-
-    @Override
-    protected void done() {
-        this.saveMessage.dispose();
-        Application.setBusy(false);
-    }
+    /**
+     *
+     * @param sensorType type of Sensor {@link Sensor#getType()}
+     * @param index sequence number among control points with {@link Sensor#getType()}
+     * @return null if ControlPointsValues not finds or if sensorType equals null
+     */
+    ControlPointsValues getControlPointsValues(String sensorType, int index);
+    void put(ControlPointsValues cpv);
+    void putInCurrentThread(ControlPointsValues cpv);
+    void remove(ControlPointsValues cpv);
+    void removeAllInCurrentThread(String sensorType);
+    void clear(String sensorType);
+    void resetToDefaultInCurrentThread();
+    boolean backgroundTaskIsRun();
 }
