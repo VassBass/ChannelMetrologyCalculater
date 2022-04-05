@@ -200,12 +200,14 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
     }
 
     @Override
-    public void importData(ArrayList<Sensor> newSensors, ArrayList<Sensor> sensorsForChange) {
-        for (Sensor sensor : sensorsForChange){
-            int index = this.mainList.indexOf(sensor);
-            if (index >= 0) this.mainList.set(index, sensor);
+    public void importDataInCurrentThread(ArrayList<Sensor> newSensors, ArrayList<Sensor> sensorsForChange) {
+        if (sensorsForChange != null) {
+            for (Sensor sensor : sensorsForChange) {
+                int index = this.mainList.indexOf(sensor);
+                if (index >= 0) this.mainList.set(index, sensor);
+            }
         }
-        this.mainList.addAll(newSensors);
+        if (newSensors != null) this.mainList.addAll(newSensors);
         new BackgroundAction().rewriteSensors(this.mainList);
     }
 
@@ -226,7 +228,7 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
                     numberOfSensors++;
                 }
             }
-            return numberOfSensors <= 1;
+            return numberOfSensors == 1;
         }else return false;
     }
 

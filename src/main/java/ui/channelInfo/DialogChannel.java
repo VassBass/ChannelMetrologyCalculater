@@ -289,7 +289,7 @@ public class DialogChannel extends JDialog {
             Sensor sensor = this.sensorPanel.getSensor();
             sensor.setValue(channel.getMeasurement().getValue());
             double errorSensor = sensor.getError(channel);
-            this.allowableErrorPanel.updateError(errorSensor, false, channel.getRange());
+            this.allowableErrorPanel.updateError(errorSensor, false, channel._getRange());
             this.allowableErrorPanel.setEnabled(false);
         }
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));

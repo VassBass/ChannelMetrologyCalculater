@@ -142,7 +142,7 @@ public class Channel implements Serializable {
      * @see #suitability
      * @see #date
      */
-    public Calendar getNextDate() {
+    public Calendar _getNextDate() {
         if (this.suitability) {
             long l = (long) (31536000000L * frequency);
             Calendar nextDate = new GregorianCalendar();
@@ -157,7 +157,7 @@ public class Channel implements Serializable {
      * @return string of full channel path
      * format {@link #department}/{@link #area}/{@link #process}/{@link #installation}
      */
-    public String getFullPath() {
+    public String _getFullPath() {
         StringBuilder builder = new StringBuilder();
         if (this.department!=null) {builder.append(this.department);}
         if (this.area!=null) {
@@ -178,7 +178,7 @@ public class Channel implements Serializable {
     /**
      * @return full channel range - {@link #rangeMax} minus {@link #rangeMin}
      */
-    public double getRange(){
+    public double _getRange(){
         return this.rangeMax - this.rangeMin;
     }
 

@@ -11,16 +11,25 @@ public interface SensorService {
     ArrayList<Sensor> getAll();
     String getMeasurement(String sensorType);
     String[] getAllSensorsName(String measurementName);
+
     ArrayList<Sensor> add(Sensor sensor);
     void addInCurrentThread(Sensor sensor);
+
     void removeInCurrentThread(Sensor sensor);
+
     void setInCurrentThread(Sensor oldSensor, Sensor newSensor);
-    void importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange);
+
+    void rewriteInCurrentThread(ArrayList<Sensor>sensors);
+    void importDataInCurrentThread(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange);
+
     Sensor get(String sensorName);
     Sensor get(int index);
+
     void clear();
+
     boolean isLastInMeasurement(Sensor sensor);
-    void rewriteInCurrentThread(ArrayList<Sensor>sensors);
-    void resetToDefault();
+
+    void resetToDefaultInCurrentThread();
+
     boolean backgroundTaskIsRun();
 }

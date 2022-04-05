@@ -206,7 +206,7 @@ public class PressurePanel extends JPanel {
         this.sensor.setText(this.channel.getSensor().getType());
 
         double errorSensor = this.channel.getSensor().getError(this.channel);
-        double ePS = errorSensor / (this.channel.getRange() / 100);
+        double ePS = errorSensor / (this.channel._getRange() / 100);
         String errorSensorPercent;
         errorSensorPercent = VariableConverter.roundingDouble3(ePS, Locale.GERMAN);
 
@@ -253,9 +253,9 @@ public class PressurePanel extends JPanel {
         double errorCalibrator = calibrator.getError(this.channel);
         double ePC;
         if (calibrator.getValue().equals(this.channel.getMeasurement().getValue())) {
-            ePC = errorCalibrator / (this.channel.getRange() / 100);
+            ePC = errorCalibrator / (this.channel._getRange() / 100);
         }else {
-            double calibratorRange = calibrator.getRange();
+            double calibratorRange = calibrator._getRange();
             double convertedCalibratorRange = new ValueConverter(calibrator.getValue(), this.channel.getMeasurement().getValue()).get(calibratorRange);
             ePC = errorCalibrator / (convertedCalibratorRange/100);
         }

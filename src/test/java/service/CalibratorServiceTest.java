@@ -381,6 +381,7 @@ class CalibratorServiceTest {
         assertIterableEquals(testList, service.getAll());
         service.importDataInCurrentThread(null, null);
         assertIterableEquals(testList, service.getAll());
+        assertIterableEquals(testList, getAllFromDB());
 
         System.out.println("importDataInCurrentThread() duration = " + howLong(start, new Date()) + " mills");
     }

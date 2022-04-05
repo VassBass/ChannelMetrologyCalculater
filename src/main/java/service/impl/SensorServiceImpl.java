@@ -76,8 +76,8 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public void importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange){
-        this.repository.importData(newSensors, sensorsForChange);
+    public void importDataInCurrentThread(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange){
+        this.repository.importDataInCurrentThread(newSensors, sensorsForChange);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public void resetToDefault() {
+    public void resetToDefaultInCurrentThread() {
         this.repository.rewriteInCurrentThread(DefaultSensors.get());
     }
 

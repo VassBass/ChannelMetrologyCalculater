@@ -48,9 +48,9 @@ public class CalculationConsumption extends Calculation {
                 this.controlPointsValues = new double[5];
 
                 this.controlPointsValues[0] = this.channel.getRangeMin();
-                this.controlPointsValues[1] = ((this.channel.getRange() / 100) * 25) + this.channel.getRangeMin();
-                this.controlPointsValues[2] = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-                this.controlPointsValues[3] = ((this.channel.getRange() / 100) * 75) + this.channel.getRangeMin();
+                this.controlPointsValues[1] = ((this.channel._getRange() / 100) * 25) + this.channel.getRangeMin();
+                this.controlPointsValues[2] = ((this.channel._getRange() / 100) * 50) + this.channel.getRangeMin();
+                this.controlPointsValues[3] = ((this.channel._getRange() / 100) * 75) + this.channel.getRangeMin();
                 this.controlPointsValues[4] = this.channel.getRangeMax();
             }
         }
@@ -136,7 +136,7 @@ public class CalculationConsumption extends Calculation {
     public double getErrorInRange(){
         if (this.errorD == -999999999D){
             double error = this.getMaxAbsoluteError();
-            double rangeChannel = this.channel.getRange();
+            double rangeChannel = this.channel._getRange();
             this.errorD = (error * 100D) / rangeChannel;
         }
         return this.errorD;
@@ -146,7 +146,7 @@ public class CalculationConsumption extends Calculation {
     public double getErrorInRangeWidthSensorError(){
         if (this.errorD == -999999999D){
             double error = this.getAbsoluteErrorWithSensorError();
-            double rangeChannel = this.channel.getRange();
+            double rangeChannel = this.channel._getRange();
             this.errorD = (error * 100D) / rangeChannel;
         }
         return this.errorD;

@@ -78,10 +78,10 @@ public class Sensor implements Serializable {
      * @see #getError(Channel)
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#getRange()
+     * @see Channel#_getRange()
      *
      * r - Measurement range of sensor (Диапазон измерения датчика)
-     * @see Sensor#getRange()
+     //* @see Sensor#getRange()
      *
      * convR - Measurement range of sensor converted by measurement channel value
      * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
@@ -106,7 +106,7 @@ public class Sensor implements Serializable {
     public String getName(){return this.name;}
     public double getRangeMin() {return this.rangeMin;}
     public double getRangeMax() {return this.rangeMax;}
-    public double getRange(){return this.rangeMax - this.rangeMin;}
+    public double _getRange(){return this.rangeMax - this.rangeMin;}
     public String getNumber(){return this.number;}
     public String getValue(){return this.value;}
     public String getMeasurement(){return this.measurement;}
@@ -117,10 +117,10 @@ public class Sensor implements Serializable {
      * @return numerical value calculated by the {@link #errorFormula}
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#getRange()
+     * @see Channel#_getRange()
      *
      * r - Measurement range of sensor (Диапазон измерения датчика)
-     * @see Calibrator#getRange()
+     * @see Calibrator#_getRange()
      *
      * convR - Measurement range of sensor converted by measurement channel value
      * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
@@ -135,10 +135,10 @@ public class Sensor implements Serializable {
             R = new Argument("R = 0");
             cR = 0D;
         }else {
-            R = new Argument("R = " + channel.getRange());
-            cR = new ValueConverter(this.value, channel.getMeasurement().getValue()).get(this.getRange());
+            R = new Argument("R = " + channel._getRange());
+            cR = new ValueConverter(this.value, channel.getMeasurement().getValue()).get(this._getRange());
         }
-        Argument r = new Argument("r = " + this.getRange());
+        Argument r = new Argument("r = " + this._getRange());
         Argument convR = new Argument("convR = " + cR);
         Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
         return expression.calculate();

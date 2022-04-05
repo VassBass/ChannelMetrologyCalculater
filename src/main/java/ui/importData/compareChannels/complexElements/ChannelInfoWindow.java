@@ -191,7 +191,7 @@ public class ChannelInfoWindow extends JWindow {
         this.sensorType.setToolTipText(this.channel.getSensor().getType());
 
         String r = " - ";
-        if (this.channel.getSensor().getRange() > 0) r = this.channel.getSensor().getRangeMin()
+        if (this.channel.getSensor()._getRange() > 0) r = this.channel.getSensor().getRangeMin()
                 + " ... "
                 + this.channel.getSensor().getRangeMax();
         this.sensorRangeLabel = new ButtonCell(true, RANGE);

@@ -54,9 +54,9 @@ public class PressurePanel extends MeasurementPanel {
                 this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
         if (this.values == null){
             double value0 = this.channel.getRangeMin();
-            double value5 = ((this.channel.getRange() / 100) * 5) + this.channel.getRangeMin();
-            double value50 = ((this.channel.getRange() / 100) * 50) + this.channel.getRangeMin();
-            double value95 = ((this.channel.getRange() / 100) * 95) + this.channel.getRangeMin();
+            double value5 = ((this.channel._getRange() / 100) * 5) + this.channel.getRangeMin();
+            double value50 = ((this.channel._getRange() / 100) * 50) + this.channel.getRangeMin();
+            double value95 = ((this.channel._getRange() / 100) * 95) + this.channel.getRangeMin();
             double value100 = this.channel.getRangeMax();
             this.values = new double[]{value0, value5, value50, value95, value100};
         }
@@ -175,9 +175,9 @@ public class PressurePanel extends MeasurementPanel {
             JTextField cell = (JTextField) e.getSource();
             if (cell.getText().length()==0 || cell.getText().equals("-")){
                 double value0 = channel.getRangeMin();
-                double value5 = ((channel.getRange() / 100) * 5) + channel.getRangeMin();
-                double value50 = ((channel.getRange() / 100) * 50) + channel.getRangeMin();
-                double value95 = ((channel.getRange() / 100) * 95) + channel.getRangeMin();
+                double value5 = ((channel._getRange() / 100) * 5) + channel.getRangeMin();
+                double value50 = ((channel._getRange() / 100) * 50) + channel.getRangeMin();
+                double value95 = ((channel._getRange() / 100) * 95) + channel.getRangeMin();
                 double value100 = channel.getRangeMax();
                 for (int x=0;x<userMeasurements.length;x++){
                     if (cell.equals(userMeasurements[x])){

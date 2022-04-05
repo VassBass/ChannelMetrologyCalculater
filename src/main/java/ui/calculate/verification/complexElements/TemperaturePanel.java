@@ -206,7 +206,7 @@ public class TemperaturePanel extends JPanel {
         this.sensor.setText(this.channel.getSensor().getType());
 
         double errorSensor = this.channel.getSensor().getError(this.channel);
-        double ePS = errorSensor / (this.channel.getSensor().getRange() / 100);
+        double ePS = errorSensor / (this.channel.getSensor()._getRange() / 100);
         String allowableErrorSensor =
                 PLUS_MINUS
                 + VariableConverter.roundingDouble2(ePS, Locale.GERMAN)
@@ -244,7 +244,7 @@ public class TemperaturePanel extends JPanel {
         this.calibratorCertificate.setText(certificateCalibrator);
 
         double errorCalibrator = calibrator.getError(this.channel);
-        double ePC = errorCalibrator / (this.channel.getRange() / 100);
+        double ePC = errorCalibrator / (this.channel._getRange() / 100);
         String allowableErrorCalibrator = PLUS_MINUS
                 + VariableConverter.roundingDouble(ePC, Locale.GERMAN)
                 + "% або "

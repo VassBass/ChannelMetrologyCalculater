@@ -61,7 +61,7 @@ class PersonServiceTest {
         person.setName("Семён");
         person.setPatronymic("Семёнович");
         person.setPosition(Person.HEAD_OF_DEPARTMENT_ASUTP);
-        return person.getFullName();
+        return person._getFullName();
     }
 
     private Person electronicEngineer(){
@@ -150,7 +150,7 @@ class PersonServiceTest {
         int index = 0;
         testArray[index++] = EMPTY_ARRAY;
         for (Person p : testList){
-            testArray[index++] = p.getFullName();
+            testArray[index++] = p._getFullName();
         }
 
         assertArrayEquals(testArray, this.service.getAllNamesWithFirstEmptyString());
@@ -160,7 +160,7 @@ class PersonServiceTest {
         index = 0;
         allNamesFromDB[index++] = EMPTY_ARRAY;
         for (Person p : testList){
-            allNamesFromDB[index++] = p.getFullName();
+            allNamesFromDB[index++] = p._getFullName();
         }
 
         assertArrayEquals(testArray, allNamesFromDB);

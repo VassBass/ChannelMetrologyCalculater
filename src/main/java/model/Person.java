@@ -31,7 +31,7 @@ public class Person {
      * @return full name of person
      * format {@link #name} + in upper case {@link #surname}
      */
-    public String getFullName(){
+    public String _getFullName(){
         return this.name + " " + this.surname.toUpperCase(Locale.ROOT);
     }
 

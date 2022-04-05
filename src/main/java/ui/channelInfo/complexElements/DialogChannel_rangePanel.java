@@ -12,7 +12,7 @@ import java.util.Locale;
 public class DialogChannel_rangePanel extends JPanel {
     private static final String DEFAULT_MIN_VALUE = "0.00";
     private static final String DEFAULT_MAX_VALUE = "100.00";
-    private static final String DASH = " - ";
+    private static final String DASH = " ... ";
 
     private final DialogChannel parent;
 

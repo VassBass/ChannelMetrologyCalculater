@@ -189,7 +189,7 @@ public class ConsumptionCertificate_ROSEMOUNT extends Certificate {
         cell(19,12).setCellValue(certificate);
 
         double errorCalibrator = calibrator.getError(this.channel);
-        double eP = errorCalibrator / (this.channel.getRange() / 100);
+        double eP = errorCalibrator / (this.channel._getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(20,13).setCellValue(errorPercent);
 

@@ -123,7 +123,7 @@ public class Application extends SwingWorker<Void, String> {
         if (firstStart) context.calibratorService.resetToDefaultInCurrentThread();
         publish("Завантаження списку ПВП");
         context.sensorService.init();
-        if (firstStart) context.sensorService.resetToDefault();
+        if (firstStart) context.sensorService.resetToDefaultInCurrentThread();
         context.controlPointsValuesService.init();
         if (firstStart) context.controlPointsValuesService.resetToDefaultInCurrentThread();
         publish("Завантаження списку каналів");

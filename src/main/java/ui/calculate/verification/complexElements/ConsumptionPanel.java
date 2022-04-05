@@ -187,7 +187,7 @@ public class ConsumptionPanel extends JPanel {
         this.sensor.setText(this.channel.getSensor().getType());
 
         double errorSensor = this.channel.getSensor().getError(this.channel);
-        double ePS = errorSensor / (this.channel.getRange() / 100);
+        double ePS = errorSensor / (this.channel._getRange() / 100);
         String errorSensorPercent;
         if (ePS < 0.01){
             errorSensorPercent = VariableConverter.roundingDouble3(ePS, Locale.GERMAN);
@@ -228,7 +228,7 @@ public class ConsumptionPanel extends JPanel {
         this.calibratorCertificate.setText(certificateCalibrator);
 
         double errorCalibrator = calibrator.getError(this.channel);
-        double ePC = errorCalibrator / (this.channel.getRange() / 100);
+        double ePC = errorCalibrator / (this.channel._getRange() / 100);
         String error;
         if (errorCalibrator < 0.001){
             error = VariableConverter.roundingDouble4(errorCalibrator, Locale.GERMAN);

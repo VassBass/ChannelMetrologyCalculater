@@ -70,7 +70,7 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
         persons[0] = EMPTY_ARRAY;
         for (int x = 0; x< this.mainList.size(); x++){
             int y = x+1;
-            persons[y] = this.mainList.get(x).getFullName();
+            persons[y] = this.mainList.get(x)._getFullName();
         }
         return persons;
     }
@@ -81,7 +81,7 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
         heads.add(EMPTY_ARRAY);
         for (Person worker : this.mainList){
             if (worker.getPosition().equals(Person.HEAD_OF_DEPARTMENT_ASUTP)){
-                heads.add(worker.getFullName());
+                heads.add(worker._getFullName());
             }
         }
         return heads.toArray(new String[0]);

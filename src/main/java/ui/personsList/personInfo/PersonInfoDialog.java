@@ -62,7 +62,7 @@ public class PersonInfoDialog extends JDialog {
         if (worker == null){
             return ADD;
         }else {
-            return CHANGE + "\"" + worker.getFullName() + " - " + worker.getPosition() + "\"";
+            return CHANGE + "\"" + worker._getFullName() + " - " + worker.getPosition() + "\"";
         }
     }
 

@@ -191,6 +191,7 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
             }
         }
         if (newCalibrators != null && !newCalibrators.isEmpty()) this.mainList.addAll(newCalibrators);
+        new BackgroundAction().rewriteCalibrators(this.mainList);
     }
 
     @Override

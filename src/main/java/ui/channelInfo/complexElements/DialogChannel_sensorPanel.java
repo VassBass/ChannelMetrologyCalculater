@@ -65,7 +65,7 @@ public class DialogChannel_sensorPanel extends JPanel {
                     Sensor sensor = getSensor();
                     sensor.setValue(channel.getMeasurement().getValue());
                     double errorSensorInPercent = sensor.getError(channel);
-                    parent.allowableErrorPanel.updateError(errorSensorInPercent, true, channel.getRange());
+                    parent.allowableErrorPanel.updateError(errorSensorInPercent, true, channel._getRange());
                     if (sensor.getType().toUpperCase(Locale.ROOT).contains(Sensor.ROSEMOUNT)){
                         parent.measurementPanel.setRosemountValues();
                     }else {

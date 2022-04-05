@@ -59,7 +59,7 @@ public class CalibratorInfoWindow extends JWindow {
         this.type.setToolTipText(this.calibrator.getType());
 
         String r = " - ";
-        if (this.calibrator.getRange() > 0) r = this.calibrator.getRangeMin() + " - " + this.calibrator.getRangeMax();
+        if (this.calibrator._getRange() > 0) r = this.calibrator.getRangeMin() + " - " + this.calibrator.getRangeMax();
         this.rangeLabel = new ButtonCell(true, RANGE);
         this.rangeLabel.setHorizontalAlignment(SwingConstants.LEFT);
         this.rangeLabel.setToolTipText(r);

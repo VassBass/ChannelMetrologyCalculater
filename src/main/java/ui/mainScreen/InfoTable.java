@@ -51,9 +51,9 @@ public class InfoTable extends JPanel {
             this.path.setText(DASH);
             this.sensor.setText(DASH);
         }else {
-            this.nextDate.setText(VariableConverter.dateToString(channel.getNextDate()));
-            this.nextDate.setBackground(setBackgroundColorFromDate(channel.getNextDate()));
-            this.path.setText(channel.getFullPath());
+            this.nextDate.setText(VariableConverter.dateToString(channel._getNextDate()));
+            this.nextDate.setBackground(setBackgroundColorFromDate(channel._getNextDate()));
+            this.path.setText(channel._getFullPath());
             this.sensor.setText(channel.getSensor().getType());
         }
     }
