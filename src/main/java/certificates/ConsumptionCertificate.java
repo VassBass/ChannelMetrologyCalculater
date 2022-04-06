@@ -77,7 +77,7 @@ public class ConsumptionCertificate extends Certificate {
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
         String methodName = Settings.getSettingValue(Measurement.CONSUMPTION);
-        cell(35,15).setCellValue(methodName);
+        cell(33,15).setCellValue(methodName);
     }
 
     @Override
@@ -124,23 +124,23 @@ public class ConsumptionCertificate extends Certificate {
         cell(20, 8).setCellValue(this.measurementValue);
         cell(29, 2).setCellValue(this.measurementValue);
         cell(20, 16).setCellValue(this.measurementValue);
-        cell(25, 15).setCellValue(this.measurementValue);
+        cell(24, 15).setCellValue(this.measurementValue);
+        cell(27, 15).setCellValue(this.measurementValue);
         cell(28, 15).setCellValue(this.measurementValue);
         cell(29, 15).setCellValue(this.measurementValue);
         cell(30, 15).setCellValue(this.measurementValue);
         cell(31, 15).setCellValue(this.measurementValue);
         cell(32, 15).setCellValue(this.measurementValue);
-        cell(33, 15).setCellValue(this.measurementValue);
 
         String errorPercent = VariableConverter.roundingDouble2(this.channel.getAllowableErrorPercent(), Locale.GERMAN);
         cell(20, 5).setCellValue(errorPercent);
-        cell(40, 15).setCellValue(errorPercent);
+        cell(38, 15).setCellValue(errorPercent);
 
         String error = VariableConverter.roundingDouble3(this.channel.getAllowableError(), Locale.GERMAN);
         cell(20, 7).setCellValue(error);
 
         String frequency = VariableConverter.roundingDouble(this.channel.getFrequency(), Locale.GERMAN);
-        cell(25, 16).setCellValue(frequency + " " + YEAR_WORD(this.channel.getFrequency()));
+        cell(24, 16).setCellValue(frequency + " " + YEAR_WORD(this.channel.getFrequency()));
 
         String nextDate;
         if (this.result.goodChannel()) {
@@ -151,7 +151,7 @@ public class ConsumptionCertificate extends Certificate {
         } else {
             nextDate = EXTRAORDINARY;
         }
-        cell(41, 14).setCellValue(nextDate);
+        cell(39, 14).setCellValue(nextDate);
 
         putSensorData();
         putResult();
@@ -164,14 +164,14 @@ public class ConsumptionCertificate extends Certificate {
         String type = sensor.getType();
         cell(11,4).setCellValue(type);
         cell(11,13).setCellValue(type);
-        cell(36,11).setCellValue(type);
+        cell(34,11).setCellValue(type);
         if (!this.result.goodChannel()){
             cell(14,20).setCellValue(type);
         }
 
         String sensorNum = sensor.getNumber();
         cell(18,4).setCellValue(sensorNum);
-        cell(37,11).setCellValue(sensorNum);
+        cell(35,11).setCellValue(sensorNum);
         if (!this.result.goodChannel()){
             cell(15,20).setCellValue(sensorNum);
         }
@@ -231,7 +231,7 @@ public class ConsumptionCertificate extends Certificate {
         }else {
             u = VariableConverter.roundingDouble2(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
         }
-        cell(25,14).setCellValue(u);
+        cell(24,14).setCellValue(u);
 
         String errorReduced;
         if (this.result.getErrorInRange() < 0.01 && this.result.getErrorInRange() > -0.01) {
@@ -246,9 +246,9 @@ public class ConsumptionCertificate extends Certificate {
         }else {
             absoluteError = VariableConverter.roundingDouble2(this.result.getMaxAbsoluteError(), Locale.GERMAN);
         }
-        cell(27,14).setCellValue(errorReduced);
-        cell(40,13).setCellValue(errorReduced);
-        cell(28,14).setCellValue(absoluteError);
+        cell(26,14).setCellValue(errorReduced);
+        cell(38,13).setCellValue(errorReduced);
+        cell(27,14).setCellValue(absoluteError);
 
         String s0;
         String s25;
@@ -282,16 +282,16 @@ public class ConsumptionCertificate extends Certificate {
             s100 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[4], Locale.GERMAN);
         }
 
-        cell(29,13).setCellValue(s0);
-        cell(30,13).setCellValue(s25);
-        cell(31,13).setCellValue(s50);
-        cell(32,13).setCellValue(s75);
-        cell(33,13).setCellValue(s100);
+        cell(28,13).setCellValue(s0);
+        cell(29,13).setCellValue(s25);
+        cell(30,13).setCellValue(s50);
+        cell(31,13).setCellValue(s75);
+        cell(32,13).setCellValue(s100);
 
         if (!this.result.goodChannel()){
             if (!this.badMessage.equals(CHANNEL_IS_BAD)){
-                cell(38, 11).setCellValue("не придатним до експлуатації".toUpperCase(Locale.ROOT) + " для комерційного обліку");
-                cell(39, 9).setCellValue("але" + " придатним".toUpperCase(Locale.ROOT) + " в якості " + "індикатора".toUpperCase(Locale.ROOT));
+                cell(37, 11).setCellValue("не придатним до експлуатації".toUpperCase(Locale.ROOT) + " для комерційного обліку");
+                cell(38, 9).setCellValue("але" + " придатним".toUpperCase(Locale.ROOT) + " в якості " + "індикатора".toUpperCase(Locale.ROOT));
             }
             return;
         }
@@ -299,12 +299,12 @@ public class ConsumptionCertificate extends Certificate {
         String alarm;
         if (this.result.closeToFalse() && this.result.goodChannel()) {
             alarm = (String) this.values.get(Key.CALCULATION_CLOSE_TO_FALSE);
-            cell(39, 9).setCellValue(alarm);
+            cell(38, 9).setCellValue(alarm);
         } else if (this.alarmCheck) {
             alarm = ALARM_MESSAGE + VariableConverter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
-            cell(39, 9).setCellValue(alarm);
+            cell(38, 9).setCellValue(alarm);
         }else {
-            cell(39,9).setCellValue("");
+            cell(38,9).setCellValue("");
         }
     }
 

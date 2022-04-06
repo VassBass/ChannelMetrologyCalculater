@@ -74,7 +74,7 @@ public class PressureCertificate extends Certificate {
         this.alarmValue = (String) this.values.get(Key.CALCULATION_ALARM_VALUE);
 
         String methodName = Settings.getSettingValue(Measurement.PRESSURE);
-        cell(34,15).setCellValue(methodName);
+        cell(32,15).setCellValue(methodName);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class PressureCertificate extends Certificate {
         String name = this.channel.getName();
         cell(10,0).setCellValue(name);
         cell(10,9).setCellValue(name);
-        cell(36,9).setCellValue(name);
+        cell(34,9).setCellValue(name);
         if (!this.result.goodChannel()){
             cell(13,18).setCellValue(name);
         }
@@ -123,22 +123,22 @@ public class PressureCertificate extends Certificate {
         cell(21,8).setCellValue(this.measurementValue);
         cell(22,8).setCellValue(this.measurementValue);
         cell(32,2).setCellValue(this.measurementValue);
-        cell(20,16).setCellValue(this.measurementValue);
-        cell(26,15).setCellValue(this.measurementValue);
+        cell(19,16).setCellValue(this.measurementValue);
+        cell(24,15).setCellValue(this.measurementValue);
+        cell(27,15).setCellValue(this.measurementValue);
+        cell(28,15).setCellValue(this.measurementValue);
         cell(29,15).setCellValue(this.measurementValue);
         cell(30,15).setCellValue(this.measurementValue);
-        cell(31,15).setCellValue(this.measurementValue);
-        cell(32,15).setCellValue(this.measurementValue);
 
         String errorPercent = VariableConverter.roundingDouble2(this.channel.getAllowableErrorPercent(), Locale.GERMAN);
         cell(18,5).setCellValue(errorPercent);
-        cell(38,15).setCellValue(errorPercent);
+        cell(36,15).setCellValue(errorPercent);
 
         String error = VariableConverter.roundingDouble2(this.channel.getAllowableError(), Locale.GERMAN);
         cell(18,7).setCellValue(error);
 
         String frequency = VariableConverter.roundingDouble(this.channel.getFrequency(), Locale.GERMAN);
-        cell(26,16).setCellValue(frequency + " " +  YEAR_WORD(this.channel.getFrequency()));
+        cell(24,16).setCellValue(frequency + " " +  YEAR_WORD(this.channel.getFrequency()));
 
         String nextDate;
         if (this.result.goodChannel()){
@@ -149,7 +149,7 @@ public class PressureCertificate extends Certificate {
         }else {
             nextDate = EXTRAORDINARY;
         }
-        cell(40,14).setCellValue(nextDate);
+        cell(38,14).setCellValue(nextDate);
 
         putSensorData();
         putResult();
@@ -183,13 +183,13 @@ public class PressureCertificate extends Certificate {
         Calibrator calibrator = (Calibrator) this.values.get(Key.CALIBRATOR);
 
         String type = calibrator.getType();
-        cell(17,15).setCellValue(type);
+        cell(16,15).setCellValue(type);
 
         String number = calibrator.getNumber();
-        cell(18,12).setCellValue(number);
+        cell(17,12).setCellValue(number);
 
         String certificate = calibrator.getCertificateInfo();
-        cell(19,12).setCellValue(certificate);
+        cell(18,12).setCellValue(certificate);
 
         double errorCalibrator = calibrator.getError(this.channel);
         double eP;
@@ -201,7 +201,7 @@ public class PressureCertificate extends Certificate {
             eP = errorCalibrator / (convertedCalibratorRange/100);
         }
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
-        cell(20,13).setCellValue(errorPercent);
+        cell(19,13).setCellValue(errorPercent);
 
         String error;
         if (errorCalibrator < 0.01){
@@ -209,7 +209,7 @@ public class PressureCertificate extends Certificate {
         }else {
             error = VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN);
         }
-        cell(20,15).setCellValue(error);
+        cell(19,15).setCellValue(error);
     }
 
     @Override
@@ -247,7 +247,7 @@ public class PressureCertificate extends Certificate {
         }else {
             u = VariableConverter.roundingDouble2(this.result.getExtendedIndeterminacy(), Locale.GERMAN);
         }
-        cell(26,14).setCellValue(u);
+        cell(24,14).setCellValue(u);
 
         String errorReduced;
         if (this.result.getErrorInRangeWidthSensorError() < 0.01 && this.result.getErrorInRangeWidthSensorError() > -0.01) {
@@ -262,9 +262,9 @@ public class PressureCertificate extends Certificate {
         }else {
             absoluteError = VariableConverter.roundingDouble2(this.result.getAbsoluteErrorWithSensorError(), Locale.GERMAN);
         }
-        cell(28,14).setCellValue(errorReduced);
-        cell(38,13).setCellValue(errorReduced);
-        cell(29,14).setCellValue(absoluteError);
+        cell(26,14).setCellValue(errorReduced);
+        cell(36,13).setCellValue(errorReduced);
+        cell(27,14).setCellValue(absoluteError);
 
         String s5;
         String s50;
@@ -285,19 +285,19 @@ public class PressureCertificate extends Certificate {
         }else {
             s95 = VariableConverter.roundingDouble2(this.result.getSystematicErrors()[2], Locale.GERMAN);
         }
-        cell(30,13).setCellValue(s5);
-        cell(31,13).setCellValue(s50);
-        cell(32,13).setCellValue(s95);
+        cell(28,13).setCellValue(s5);
+        cell(29,13).setCellValue(s50);
+        cell(30,13).setCellValue(s95);
 
         String alarm;
         if (this.result.closeToFalse() && this.result.goodChannel()) {
             alarm = (String) this.values.get(Key.CALCULATION_CLOSE_TO_FALSE);
-            cell(39, 9).setCellValue(alarm);
+            cell(37, 9).setCellValue(alarm);
         } else if (this.alarmCheck) {
             alarm = ALARM_MESSAGE + VariableConverter.roundingDouble(Double.parseDouble(alarmValue), Locale.GERMAN) + this.measurementValue;
-            cell(39, 9).setCellValue(alarm);
+            cell(37, 9).setCellValue(alarm);
         }else {
-            cell(39,9).setCellValue(" ");
+            cell(37,9).setCellValue(" ");
         }
     }
 

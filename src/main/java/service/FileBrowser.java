@@ -21,8 +21,6 @@ public class FileBrowser {
     private static final String DIR_NAME_IMAGES = "images";
 
     private static final String FILE_NAME_SETTINGS = "settings.dat";
-    private static final String FILE_NAME_TEMPERATURE_BAD_v3_4 = "form_temperature_bad_v3.4.xls";
-    private static final String FILE_NAME_TEMPERATURE_GOOD_v3_4 = "form_temperature_good_v3.4.xls";
     private static final String FILE_NAME_PRESSURE_BAD = "form_pressure_bad.xls";
     private static final String FILE_NAME_PRESSURE_GOOD = "form_pressure_good.xls";
     private static final String FILE_NAME_TEMPERATURE_BAD = "form_temperature_bad.xls";
@@ -41,8 +39,6 @@ public class FileBrowser {
     private static final File DIR_IMAGES = new File(DIR_MAIN, DIR_NAME_IMAGES);
 
     public static final File FILE_SETTINGS = new File(DIR_MAIN, FILE_NAME_SETTINGS);
-    private static final File FILE_TEMPERATURE_BAD_v3_4 = new File(DIR_FORMS, FILE_NAME_TEMPERATURE_BAD_v3_4);
-    private static final File FILE_TEMPERATURE_GOOD_v3_4 = new File(DIR_FORMS, FILE_NAME_TEMPERATURE_GOOD_v3_4);
     public static final File FILE_PRESSURE_BAD = new File(DIR_FORMS, FILE_NAME_PRESSURE_BAD);
     public static final File FILE_PRESSURE_GOOD = new File(DIR_FORMS, FILE_NAME_PRESSURE_GOOD);
     public static final File FILE_TEMPERATURE_BAD = new File(DIR_FORMS, FILE_NAME_TEMPERATURE_BAD);
@@ -110,27 +106,9 @@ public class FileBrowser {
 
     private static void unpackForms(){
         LOGGER.fine("FileBrowser: unpack forms from resources");
+        String packedPath;
+        InputStream in;
         try {
-            String packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_TEMPERATURE_BAD_v3_4;
-            InputStream in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
-            if (in == null){
-                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
-            }else {
-                Path unpackingPath = Paths.get(FILE_TEMPERATURE_BAD_v3_4.getAbsolutePath());
-                Files.copy(in, unpackingPath, REPLACE_EXISTING);
-                in.close();
-            }
-
-            packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_TEMPERATURE_GOOD_v3_4;
-            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
-            if (in == null){
-                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
-            }else {
-                Path unpackingPath = Paths.get(FILE_TEMPERATURE_GOOD_v3_4.getAbsolutePath());
-                Files.copy(in, unpackingPath, REPLACE_EXISTING);
-                in.close();
-            }
-
             packedPath = DIR_NAME_FORMS + "/" + FILE_NAME_TEMPERATURE_BAD;
             in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
             if (in == null){
@@ -239,25 +217,6 @@ public class FileBrowser {
             }
         }catch (Exception ex){
             LOGGER.log(Level.WARNING, "FileBrowser: Exception while unpack images!", ex);
-        }
-    }
-
-    public static String getFileExtension(File file){
-        if (file.exists()){
-            char[]chars = file.getName().toCharArray();
-            int index = -1;
-            for (int x=0;x<chars.length;x++){
-                if (chars[x] == '.'){
-                    index = x + 1;
-                }
-            }
-            if (index != -1) {
-                return file.getName().substring(index);
-            }else {
-                return null;
-            }
-        }else {
-            return null;
         }
     }
 }
