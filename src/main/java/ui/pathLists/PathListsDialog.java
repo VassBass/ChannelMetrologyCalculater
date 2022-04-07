@@ -2,6 +2,7 @@ package ui.pathLists;
 
 import application.Application;
 import converters.ConverterUI;
+import model.Model;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
@@ -19,20 +20,38 @@ public class PathListsDialog extends JDialog {
     public static final String AREA = "Ділянка";
     public static final String PROCESS = "Лінія, секція і т.п.";
     public static final String INSTALLATION = "Установка";
+    private static final String DEPARTMENTS_LIST = "Список цехів";
+    private static final String AREAS_LIST = "Список ділянок";
+    private static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
+    private static final String INSTALLATIONS_LIST = "Список установок";
 
     private final MainScreen mainScreen;
 
-    private String title;
+    private Model model;
+    private static String title(Model model){
+        switch (model){
+            case DEPARTMENT:
+                return DEPARTMENTS_LIST;
+            case AREA:
+                return AREAS_LIST;
+            case PROCESS:
+                return PROCESSES_LIST;
+            case INSTALLATION:
+                return INSTALLATIONS_LIST;
+            default:
+                return null;
+        }
+    }
 
     private JButton buttonDepartments, buttonAreas, buttonProcesses, buttonInstallations;
     private JButton buttonCancel, buttonRemove, buttonAdd, buttonChange;
 
     private PathListsTable mainTable;
 
-    public PathListsDialog(MainScreen mainScreen, String title){
-        super(mainScreen, title, true);
+    public PathListsDialog(MainScreen mainScreen, Model model){
+        super(mainScreen, title(model), true);
         this.mainScreen = mainScreen;
-        this.title = title;
+        this.model = model;
 
         this.createElements();
         this.setReactions();
@@ -40,13 +59,13 @@ public class PathListsDialog extends JDialog {
     }
 
     private void createElements() {
-        this.buttonDepartments = new JButton(PathListsTable.DEPARTMENTS_LIST);
+        this.buttonDepartments = new JButton(DEPARTMENTS_LIST);
         this.buttonDepartments.setFocusPainted(false);
-        this.buttonAreas = new JButton(PathListsTable.AREAS_LIST);
+        this.buttonAreas = new JButton(AREAS_LIST);
         this.buttonAreas.setFocusPainted(false);
-        this.buttonProcesses = new JButton(PathListsTable.PROCESSES_LIST);
+        this.buttonProcesses = new JButton(PROCESSES_LIST);
         this.buttonProcesses.setFocusPainted(false);
-        this.buttonInstallations = new JButton(PathListsTable.INSTALLATIONS_LIST);
+        this.buttonInstallations = new JButton(INSTALLATIONS_LIST);
         this.buttonInstallations.setFocusPainted(false);
 
         this.buttonRemove = new DefaultButton(REMOVE);
@@ -54,13 +73,13 @@ public class PathListsDialog extends JDialog {
         this.buttonAdd = new DefaultButton(ADD);
         this.buttonCancel = new DefaultButton(CANCEL);
 
-        this.mainTable = new PathListsTable(title);
+        this.mainTable = new PathListsTable(this.model);
         this.setButtonsColor();
     }
 
     private void setButtonsColor(){
-        switch (this.title){
-            case PathListsTable.DEPARTMENTS_LIST:
+        switch (this.model){
+            case DEPARTMENT:
                 this.buttonDepartments.setBackground(Color.WHITE);
                 this.buttonDepartments.setForeground(Color.BLACK);
                 this.buttonAreas.setBackground(DefaultButton.BACKGROUND_COLOR);
@@ -70,7 +89,7 @@ public class PathListsDialog extends JDialog {
                 this.buttonInstallations.setBackground(DefaultButton.BACKGROUND_COLOR);
                 this.buttonInstallations.setForeground(Color.WHITE);
                 break;
-            case PathListsTable.AREAS_LIST:
+            case AREA:
                 this.buttonDepartments.setBackground(DefaultButton.BACKGROUND_COLOR);
                 this.buttonDepartments.setForeground(Color.WHITE);
                 this.buttonAreas.setBackground(Color.WHITE);
@@ -80,7 +99,7 @@ public class PathListsDialog extends JDialog {
                 this.buttonInstallations.setBackground(DefaultButton.BACKGROUND_COLOR);
                 this.buttonInstallations.setForeground(Color.WHITE);
                 break;
-            case PathListsTable.PROCESSES_LIST:
+            case PROCESS:
                 this.buttonDepartments.setBackground(DefaultButton.BACKGROUND_COLOR);
                 this.buttonDepartments.setForeground(Color.WHITE);
                 this.buttonAreas.setBackground(DefaultButton.BACKGROUND_COLOR);
@@ -90,7 +109,7 @@ public class PathListsDialog extends JDialog {
                 this.buttonInstallations.setBackground(DefaultButton.BACKGROUND_COLOR);
                 this.buttonInstallations.setForeground(Color.WHITE);
                 break;
-            case PathListsTable.INSTALLATIONS_LIST:
+            case INSTALLATION:
                 this.buttonDepartments.setBackground(DefaultButton.BACKGROUND_COLOR);
                 this.buttonDepartments.setForeground(Color.WHITE);
                 this.buttonAreas.setBackground(DefaultButton.BACKGROUND_COLOR);
@@ -121,61 +140,37 @@ public class PathListsDialog extends JDialog {
         this.setContentPane(new MainPanel());
     }
 
-    public void update(String elementsType){
-        switch (elementsType){
-            case PathListsDialog.AREA:
-            case PathListsTable.AREAS_LIST:
-                this.title = PathListsTable.AREAS_LIST;
-                break;
-            case PathListsDialog.PROCESS:
-            case PathListsTable.PROCESSES_LIST:
-                this.title = PathListsTable.PROCESSES_LIST;
-                break;
-            case PathListsDialog.INSTALLATION:
-            case PathListsTable.INSTALLATIONS_LIST:
-                this.title = PathListsTable.INSTALLATIONS_LIST;
-                break;
-            default:
-                this.title = PathListsTable.DEPARTMENTS_LIST;
-                break;
-        }
+    public void update(Model model){
+        this.model = model;
         this.setButtonsColor();
-        this.mainTable.setList(this.title);
+        this.mainTable.setList(model);
     }
 
     private final ActionListener clickDepartments = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            title = PathListsTable.DEPARTMENTS_LIST;
-            setButtonsColor();
-            mainTable.setList(title);
+            update(Model.DEPARTMENT);
         }
     };
 
     private final ActionListener clickAreas = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            title = PathListsTable.AREAS_LIST;
-            setButtonsColor();
-            mainTable.setList(title);
+            update(Model.AREA);
         }
     };
 
     private final ActionListener clickProcesses = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            title = PathListsTable.PROCESSES_LIST;
-            setButtonsColor();
-            mainTable.setList(title);
+            update(Model.PROCESS);
         }
     };
 
     private final ActionListener clickInstallations = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            title = PathListsTable.INSTALLATIONS_LIST;
-            setButtonsColor();
-            mainTable.setList(title);
+            update(Model.INSTALLATION);
         }
     };
 
@@ -185,22 +180,7 @@ public class PathListsDialog extends JDialog {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    String elementType = null;
-                    switch (title){
-                        case PathListsTable.DEPARTMENTS_LIST:
-                            elementType = DEPARTMENT;
-                            break;
-                        case PathListsTable.AREAS_LIST:
-                            elementType = AREA;
-                            break;
-                        case PathListsTable.PROCESSES_LIST:
-                            elementType = PROCESS;
-                            break;
-                        case PathListsTable.INSTALLATIONS_LIST:
-                            elementType = INSTALLATION;
-                            break;
-                    }
-                    new PathElementName(PathListsDialog.this, elementType, null).setVisible(true);
+                    new PathElementName(PathListsDialog.this, model, null).setVisible(true);
                 }
             });
         }
@@ -213,27 +193,22 @@ public class PathListsDialog extends JDialog {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        String elementType = null;
                         String elementName = null;
-                        switch (title) {
-                            case PathListsTable.DEPARTMENTS_LIST:
-                                elementType = DEPARTMENT;
+                        switch (model) {
+                            case DEPARTMENT:
                                 elementName = Application.context.departmentService.get(mainTable.getSelectedRow());
                                 break;
-                            case PathListsTable.AREAS_LIST:
-                                elementType = AREA;
+                            case AREA:
                                 elementName = Application.context.areaService.get(mainTable.getSelectedRow());
                                 break;
-                            case PathListsTable.PROCESSES_LIST:
-                                elementType = PROCESS;
+                            case PROCESS:
                                 elementName = Application.context.processService.get(mainTable.getSelectedRow());
                                 break;
-                            case PathListsTable.INSTALLATIONS_LIST:
-                                elementType = INSTALLATION;
+                            case INSTALLATION:
                                 elementName = Application.context.installationService.get(mainTable.getSelectedRow());
                                 break;
                         }
-                        new PathElementName(PathListsDialog.this, elementType, elementName).setVisible(true);
+                        new PathElementName(PathListsDialog.this, model, elementName).setVisible(true);
                     }
                 });
             }
@@ -248,22 +223,22 @@ public class PathListsDialog extends JDialog {
                 public void run() {
                     String elementName = null;
                     if (mainTable.getSelectedRow() != -1){
-                        switch (title) {
-                            case PathListsTable.DEPARTMENTS_LIST:
+                        switch (model) {
+                            case DEPARTMENT:
                                 elementName = Application.context.departmentService.get(mainTable.getSelectedRow());
                                 break;
-                            case PathListsTable.AREAS_LIST:
+                            case AREA:
                                 elementName = Application.context.areaService.get(mainTable.getSelectedRow());
                                 break;
-                            case PathListsTable.PROCESSES_LIST:
+                            case PROCESS:
                                 elementName = Application.context.processService.get(mainTable.getSelectedRow());
                                 break;
-                            case PathListsTable.INSTALLATIONS_LIST:
+                            case INSTALLATION:
                                 elementName = Application.context.installationService.get(mainTable.getSelectedRow());
                                 break;
                         }
                     }
-                    new PathElementsRemove(PathListsDialog.this, title, elementName).setVisible(true);
+                    new PathElementsRemove(PathListsDialog.this, model, elementName).setVisible(true);
                 }
             });
         }

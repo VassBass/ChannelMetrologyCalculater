@@ -2,6 +2,7 @@ package ui.pathLists;
 
 import application.Application;
 import converters.ConverterUI;
+import model.Model;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -12,19 +13,38 @@ import java.awt.event.ActionListener;
 public class PathElementName extends JDialog {
     private static final String CANCEL = "Відміна";
     private static final String SAVE = "Зберегти";
+    public static final String DEPARTMENT_STRING = "Цех";
+    public static final String AREA_STRING = "Ділянка";
+    public static final String PROCESS_STRING = "Лінія, секція і т.п.";
+    public static final String INSTALLATION_STRING = "Установка";
 
     private final PathListsDialog parent;
 
     private JButton buttonSave, buttonCancel;
     private JTextField elementName;
 
-    private final String elementType;
+    private final Model model;
+    private static String elementType(Model model){
+        switch (model){
+            case DEPARTMENT:
+                return DEPARTMENT_STRING;
+            case AREA:
+                return AREA_STRING;
+            case PROCESS:
+                return PROCESS_STRING;
+            case INSTALLATION:
+                return INSTALLATION_STRING;
+            default:
+                return null;
+        }
+    }
+
     private final String oldNameOfElement;
 
-    public PathElementName(PathListsDialog parent, String elementType, String elementName){
-        super(parent, elementType, true);
+    public PathElementName(PathListsDialog parent, Model model, String elementName){
+        super(parent, elementType(model), true);
         this.parent = parent;
-        this.elementType = elementType;
+        this.model = model;
         this.oldNameOfElement = elementName;
 
         this.createElements();
@@ -64,24 +84,40 @@ public class PathElementName extends JDialog {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(PathElementName.this)) return;
-            dispose();
             if (elementName.getText().length() > 0) {
-                switch (elementType) {
-                    case PathListsDialog.DEPARTMENT:
-                        Application.context.departmentService.set(oldNameOfElement, elementName.getText());
+                if (Application.isBusy(PathElementName.this)) return;
+                dispose();
+                switch (model) {
+                    case DEPARTMENT:
+                        if (oldNameOfElement == null){
+                            Application.context.departmentService.add(elementName.getText());
+                        }else {
+                            Application.context.departmentService.set(oldNameOfElement, elementName.getText());
+                        }
                         break;
-                    case PathListsDialog.AREA:
-                        Application.context.areaService.set(oldNameOfElement, elementName.getText());
+                    case AREA:
+                        if (oldNameOfElement == null){
+                            Application.context.areaService.add(elementName.getText());
+                        }else {
+                            Application.context.areaService.set(oldNameOfElement, elementName.getText());
+                        }
                         break;
-                    case PathListsDialog.PROCESS:
-                        Application.context.processService.set(oldNameOfElement, elementName.getText());
+                    case PROCESS:
+                        if (oldNameOfElement == null){
+                            Application.context.processService.add(elementName.getText());
+                        }else {
+                            Application.context.processService.set(oldNameOfElement, elementName.getText());
+                        }
                         break;
-                    case PathListsDialog.INSTALLATION:
-                        Application.context.installationService.set(oldNameOfElement, elementName.getText());
+                    case INSTALLATION:
+                        if (oldNameOfElement == null){
+                            Application.context.installationService.add(elementName.getText());
+                        }else {
+                            Application.context.installationService.set(oldNameOfElement, elementName.getText());
+                        }
                         break;
                 }
-                parent.update(elementType);
+                parent.update(model);
             }
         }
     };

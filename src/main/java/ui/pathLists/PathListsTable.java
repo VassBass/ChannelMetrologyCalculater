@@ -1,40 +1,54 @@
 package ui.pathLists;
 
 import application.Application;
+import model.Model;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class PathListsTable extends JTable {
-    public static final String DEPARTMENTS_LIST = "Список цехів";
-    public static final String AREAS_LIST = "Список ділянок";
-    public static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
-    public static final String INSTALLATIONS_LIST = "Список установок";
+    private static final String DEPARTMENTS_LIST = "Список цехів";
+    private static final String AREAS_LIST = "Список ділянок";
+    private static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
+    private static final String INSTALLATIONS_LIST = "Список установок";
 
-    public PathListsTable(String list){
-        super(tableModel(list));
+    private static String list(Model model){
+        switch (model){
+            case DEPARTMENT:
+                return DEPARTMENTS_LIST;
+            case AREA:
+                return AREAS_LIST;
+            case PROCESS:
+                return PROCESSES_LIST;
+            case INSTALLATION:
+                return INSTALLATIONS_LIST;
+            default: return null;
+        }
+    }
+    public PathListsTable(Model model){
+        super(tableModel(model));
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
-    private static DefaultTableModel tableModel(String list){
-        DefaultTableModel model = new DefaultTableModel(){
+    private static DefaultTableModel tableModel(Model model){
+        DefaultTableModel defModel = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
             }
         };
 
-        model.setColumnIdentifiers(new String[]{list});
+        defModel.setColumnIdentifiers(new String[]{list(model)});
 
         String[] elements;
-        switch (list){
-            case AREAS_LIST:
+        switch (model){
+            case AREA:
                 elements = Application.context.areaService.getAllInStrings();
                 break;
-            case PROCESSES_LIST:
+            case PROCESS:
                 elements = Application.context.processService.getAllInStrings();
                 break;
-            case INSTALLATIONS_LIST:
+            case INSTALLATION:
                 elements = Application.context.installationService.getAllInStrings();
                 break;
             default:
@@ -42,12 +56,12 @@ public class PathListsTable extends JTable {
                 break;
         }
         for (String element : elements){
-            model.addRow(new String[]{element});
+            defModel.addRow(new String[]{element});
         }
-        return model;
+        return defModel;
     }
 
-    public void setList(String list){
-        this.setModel(tableModel(list));
+    public void setList(Model model){
+        this.setModel(tableModel(model));
     }
 }

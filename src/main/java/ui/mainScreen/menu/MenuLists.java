@@ -1,6 +1,7 @@
 package ui.mainScreen.menu;
 
 import model.Measurement;
+import model.Model;
 import settings.Settings;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.controlPointsValues.ControlPointsListDialog;
@@ -114,7 +115,7 @@ public class MenuLists extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new PathListsDialog(mainScreen, DEPARTMENTS_LIST).setVisible(true);
+                    new PathListsDialog(mainScreen, Model.DEPARTMENT).setVisible(true);
                 }
             });
         }
@@ -126,7 +127,7 @@ public class MenuLists extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new PathListsDialog(mainScreen, AREAS_LIST).setVisible(true);
+                    new PathListsDialog(mainScreen, Model.AREA).setVisible(true);
                 }
             });
         }
@@ -138,7 +139,7 @@ public class MenuLists extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new PathListsDialog(mainScreen, PROCESSES_LIST).setVisible(true);
+                    new PathListsDialog(mainScreen, Model.PROCESS).setVisible(true);
                 }
             });
         }
@@ -150,7 +151,7 @@ public class MenuLists extends JMenu {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new PathListsDialog(mainScreen, INSTALLATIONS_LIST).setVisible(true);
+                    new PathListsDialog(mainScreen, Model.INSTALLATION).setVisible(true);
                 }
             });
         }

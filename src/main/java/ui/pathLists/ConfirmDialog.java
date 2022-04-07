@@ -2,6 +2,7 @@ package ui.pathLists;
 
 import application.Application;
 import converters.ConverterUI;
+import model.Model;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -13,6 +14,11 @@ public class ConfirmDialog extends JDialog {
     private static final String REMOVE = "Видалити";
     private static final String CLEAR = "Очистити";
     private static final String CANCEL = "Відміна";
+    private static final String DEPARTMENTS_LIST = "Список цехів";
+    private static final String AREAS_LIST = "Список ділянок";
+    private static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
+    private static final String INSTALLATIONS_LIST = "Список установок";
+
     private String message(String elementType){
         return  "Ви впевнені що хочете очистити "
                 + elementType
@@ -20,15 +26,29 @@ public class ConfirmDialog extends JDialog {
     }
 
     private final PathListsDialog dialog;
-    private final String elementType;
+    private final Model model;
+    private static String elementType(Model model){
+        switch (model){
+            case DEPARTMENT:
+                return DEPARTMENTS_LIST;
+            case AREA:
+                return AREAS_LIST;
+            case PROCESS:
+                return PROCESSES_LIST;
+            case INSTALLATION:
+                return INSTALLATIONS_LIST;
+            default:
+                return null;
+        }
+    }
 
     private JLabel message;
     private JButton positiveButton, negativeButton;
 
-    public ConfirmDialog(PathListsDialog dialog, String elementType){
+    public ConfirmDialog(PathListsDialog dialog, Model model){
         super(dialog, REMOVE, true);
         this.dialog = dialog;
-        this.elementType = elementType;
+        this.model = model;
 
         this.createElements();
         this.setReactions();
@@ -36,7 +56,7 @@ public class ConfirmDialog extends JDialog {
     }
 
     private void createElements() {
-        this.message = new JLabel(this.message(this.elementType));
+        this.message = new JLabel(this.message(elementType(this.model)));
 
         this.positiveButton = new DefaultButton(CLEAR);
         this.negativeButton = new DefaultButton(CANCEL);
@@ -59,21 +79,21 @@ public class ConfirmDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             if (Application.isBusy(ConfirmDialog.this)) return;
             dispose();
-            switch (elementType){
-                case PathListsTable.DEPARTMENTS_LIST:
+            switch (model){
+                case DEPARTMENT:
                     Application.context.departmentService.clear();
                     break;
-                case PathListsTable.AREAS_LIST:
+                case AREA:
                     Application.context.areaService.clear();
                     break;
-                case PathListsTable.PROCESSES_LIST:
+                case PROCESS:
                     Application.context.processService.clear();
                     break;
-                case PathListsTable.INSTALLATIONS_LIST:
+                case INSTALLATION:
                     Application.context.installationService.clear();
                     break;
             }
-            dialog.update(elementType);
+            dialog.update(model);
         }
     };
 

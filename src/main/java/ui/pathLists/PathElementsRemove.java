@@ -2,6 +2,7 @@ package ui.pathLists;
 
 import application.Application;
 import converters.ConverterUI;
+import model.Model;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -14,9 +15,28 @@ public class PathElementsRemove extends JDialog {
     private static final String REMOVE = "Видалити";
     private static final String CANCEL = "Відміна";
     private static final String REMOVE_ALL = "Видалити всі";
+    private static final String DEPARTMENTS_LIST = "Список цехів";
+    private static final String AREAS_LIST = "Список ділянок";
+    private static final String PROCESSES_LIST = "Список ліній, секцій і т.п";
+    private static final String INSTALLATIONS_LIST = "Список установок";
 
     private final PathListsDialog parent;
-    private final String elementType;
+
+    private final Model model;
+    private static String elementType(Model model){
+        switch (model){
+            case DEPARTMENT:
+                return DEPARTMENTS_LIST;
+            case AREA:
+                return AREAS_LIST;
+            case PROCESS:
+                return PROCESSES_LIST;
+            case INSTALLATION:
+                return INSTALLATIONS_LIST;
+            default:
+                return null;
+        }
+    }
     private String elementName;
 
     private String[]elements;
@@ -25,10 +45,10 @@ public class PathElementsRemove extends JDialog {
     private JLabel removingElement;
     private JButton buttonCancel, buttonRemoveAll, buttonRemove;
 
-    public PathElementsRemove(PathListsDialog parent, String elementType, String elementName){
-        super(parent, REMOVE + " \"" + elementType + "\"", true);
+    public PathElementsRemove(PathListsDialog parent, Model model, String elementName){
+        super(parent, REMOVE + " \"" + elementType(model) + "\"", true);
         this.parent = parent;
-        this.elementType = elementType;
+        this.model = model;
         this.elementName = elementName;
 
         this.createElements();
@@ -37,17 +57,17 @@ public class PathElementsRemove extends JDialog {
     }
 
     private void createElements() {
-        switch (this.elementType){
-            case PathListsTable.DEPARTMENTS_LIST:
+        switch (model){
+            case DEPARTMENT:
                 this.elements = Application.context.departmentService.getAllInStrings();
                 break;
-            case PathListsTable.AREAS_LIST:
+            case AREA:
                 this.elements = Application.context.areaService.getAllInStrings();
                 break;
-            case PathListsTable.PROCESSES_LIST:
+            case PROCESS:
                 this.elements = Application.context.processService.getAllInStrings();
                 break;
-            case PathListsTable.INSTALLATIONS_LIST:
+            case INSTALLATION:
                 this.elements = Application.context.installationService.getAllInStrings();
                 break;
         }
@@ -93,7 +113,7 @@ public class PathElementsRemove extends JDialog {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new ConfirmDialog(parent, elementType).setVisible(true);
+                    new ConfirmDialog(parent, model).setVisible(true);
                 }
             });
         }
@@ -109,21 +129,21 @@ public class PathElementsRemove extends JDialog {
                     elementName = Objects.requireNonNull(elementList.getSelectedItem()).toString();
                 }catch (NullPointerException ignored){}
             }
-            switch (elementType){
-                case PathListsTable.DEPARTMENTS_LIST:
+            switch (model){
+                case DEPARTMENT:
                     Application.context.departmentService.remove(elementName);
                     break;
-                case PathListsTable.AREAS_LIST:
+                case AREA:
                     Application.context.areaService.remove(elementName);
                     break;
-                case PathListsTable.PROCESSES_LIST:
+                case PROCESS:
                     Application.context.processService.remove(elementName);
                     break;
-                case PathListsTable.INSTALLATIONS_LIST:
+                case INSTALLATION:
                     Application.context.installationService.remove(elementName);
                     break;
             }
-            parent.update(elementType);
+            parent.update(model);
         }
     };
 
