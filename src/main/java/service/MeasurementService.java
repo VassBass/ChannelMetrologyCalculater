@@ -10,10 +10,24 @@ public interface MeasurementService {
     String[]getAllNames();
     String[]getAllValues();
 
-    //return @null if @measurement == null
+    /**
+     * @param measurement for which you want to find the values
+     * @return array of values or null if measurement == null
+     *
+     * @see service.impl.MeasurementServiceImpl#getValues(Measurement)
+     * @see repository.MeasurementRepository#getValues(Measurement)
+     * @see repository.impl.MeasurementRepositoryImpl#getValues(Measurement)
+     */
     String[]getValues(Measurement measurement);
 
-    //return @null if @name == null | @name.length() == 0
+    /**
+     * @param name of measurement for which you want to find the values
+     * @return array of values or null if name == null | name.length() == 0
+     *
+     * @see service.impl.MeasurementServiceImpl#getValues(String)
+     * @see repository.MeasurementRepository#getValues(String)
+     * @see repository.impl.MeasurementRepositoryImpl#getValues(String)
+     */
     String[]getValues(String name);
 
     ArrayList<Measurement> getAll();

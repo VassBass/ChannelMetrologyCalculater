@@ -72,6 +72,9 @@ public class DialogChannel_sensorPanel extends JPanel {
                         parent.measurementPanel.update(Measurement.CONSUMPTION);
                     }
                 }
+                if (sensorsList.getSelectedItem() != null) {
+                    parent.sensorRangePanel.update(Application.context.sensorService.get(sensorsList.getSelectedItem().toString()));
+                }
             }
         }
     };

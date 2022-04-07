@@ -206,20 +206,22 @@ public class SensorInfoDialog extends JDialog {
                 int spaceIndex = type.indexOf(" ");
                 this.typeText.setText(type.substring(++spaceIndex));
                 this.typesList.setSelectedItem(type.substring(0, --spaceIndex));
+                this.rangePanel.setValues(null);
             }else {
                 this.typeText.setText(this.oldSensor.getType());
+                this.rangePanel.setRange(this.oldSensor.getRangeMax(), this.oldSensor.getRangeMin());
+                this.rangePanel.setValues(this.oldSensor.getMeasurement());
+                this.rangePanel.setValue(this.oldSensor.getValue());
             }
             this.nameText.setText(this.oldSensor.getName());
-            this.rangePanel.setRange(this.oldSensor.getRangeMax(), this.oldSensor.getRangeMin());
             this.errorFormulaText.setText(this.oldSensor.getErrorFormula());
             this.showErrorHintsIfNeed();
 
-            if (!this.oldSensor.getMeasurement().equals(Measurement.TEMPERATURE)){
-                this.rangePanel.setEnabled(false);
-            }
             this.measurementsList.setEnabled(false);
 
             LOGGER.fine("SensorInfoDialog: set info SUCCESS");
+        }else {
+            rangePanel.setValues(Measurement.TEMPERATURE);
         }
     }
 
@@ -306,9 +308,14 @@ public class SensorInfoDialog extends JDialog {
     private final ItemListener changeMeasurement = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED){
+            if (e.getStateChange() == ItemEvent.SELECTED && measurementsList.getSelectedItem() != null){
                 build();
-                rangePanel.setEnabled(Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(Measurement.TEMPERATURE));
+                String selected = measurementsList.getSelectedItem().toString();
+                if (selected.equals(Measurement.CONSUMPTION)){
+                    rangePanel.setValues(null);
+                }else {
+                    rangePanel.setValues(selected);
+                }
                 refresh();
             }
         }

@@ -1,7 +1,7 @@
 package ui.sensorsList.sensorInfo.complexElements;
 
+import application.Application;
 import converters.VariableConverter;
-import model.Measurement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,8 @@ public class SensorRangePanel extends JPanel {
     private static final String DASH = " - ";
 
     private JTextField rangeMin, rangeMax;
-    private JLabel t, value;
+    private JLabel t;
+    private JComboBox<String>values;
     private String rMin, rMax;
 
     public SensorRangePanel(){
@@ -34,7 +35,7 @@ public class SensorRangePanel extends JPanel {
         this.t = new JLabel(DASH);
         this.t.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.value = new JLabel(Measurement.DEGREE_CELSIUS);
+        this.values = new JComboBox<>();
     }
 
     private void setReactions() {
@@ -46,7 +47,7 @@ public class SensorRangePanel extends JPanel {
         this.add(this.rangeMin, new Cell(0));
         this.add(this.t, new Cell(1));
         this.add(this.rangeMax, new Cell(2));
-        this.add(this.value, new Cell(3));
+        this.add(this.values, new Cell(3));
     }
 
     public void setRange(double r1, double r2){
@@ -64,23 +65,43 @@ public class SensorRangePanel extends JPanel {
     @Override
     public void setEnabled(boolean enabled) {
         if (enabled){
-            this.value.setText(Measurement.DEGREE_CELSIUS);
             this.rangeMin.setText(this.rMin);
             this.rangeMax.setText(this.rMax);
         }else {
             this.rMin = this.rangeMin.getText();
             this.rMax = this.rangeMax.getText();
-            this.value.setText(DASH);
             this.rangeMin.setText(DASH);
             this.rangeMax.setText(DASH);
         }
+        this.values.setEnabled(enabled);
         this.rangeMin.setEnabled(enabled);
         this.rangeMax.setEnabled(enabled);
     }
 
+    public void setValues(String measurementName){
+        if (measurementName != null && measurementName.length() > 0){
+            String[]values = Application.context.measurementService.getValues(measurementName);
+            DefaultComboBoxModel<String>model = new DefaultComboBoxModel<>(values);
+            this.values.setModel(model);
+            setEnabled(true);
+            if (rangeMin.getText().length() == 0) rangeMin.setText(DEFAULT_VALUE);
+            if (rangeMax.getText().length() == 0) rangeMax.setText(DEFAULT_VALUE);
+        }else {
+            DefaultComboBoxModel<String>dash = new DefaultComboBoxModel<>(new String[]{DASH});
+            this.values.setModel(dash);
+            setEnabled(false);
+        }
+    }
+
+    public void setValue(String value){
+        if (value != null && value.length() > 0){
+            this.values.setSelectedItem(value);
+        }
+    }
+
     public String getValue(){
-        if (this.isEnabled()){
-            return this.value.getText();
+        if (this.isEnabled() && this.values.getSelectedItem() != null){
+            return this.values.getSelectedItem().toString();
         }else {
             return null;
         }

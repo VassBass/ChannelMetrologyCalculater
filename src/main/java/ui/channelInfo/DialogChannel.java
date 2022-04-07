@@ -260,22 +260,17 @@ public class DialogChannel extends JDialog {
     }
 
     private void setMeasurement(Measurement measurement){
-        String measurementName;
-        if (measurement != null){
-            measurementName = measurement.getName();
-        }else {
-            measurementName = Measurement.TEMPERATURE;
+        if (measurement == null){
+            measurement = new Measurement(Measurement.TEMPERATURE, Measurement.DEGREE_CELSIUS);
         }
+        String measurementName = measurement.getName();
         this.measurementPanel.update(measurementName);
         this.sensorPanel.update(measurementName);
-        if (measurementName.equals(Measurement.TEMPERATURE)){
-            this.setSize(800, 650);
-            this.sensorRangePanel = null;
-            this.rangeLabel.setText(RANGE_OF_CHANNEL);
-            this.allowableErrorPanel.setEnabled(true);
-        }else if (measurementName.equals(Measurement.PRESSURE)){
+        if (measurementName.equals(Measurement.TEMPERATURE)
+            || measurementName.equals(Measurement.PRESSURE)){
             this.setSize(1000, 650);
             this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
+            this.sensorRangePanel.update(Application.context.sensorService.get(this.sensorPanel.getSensor().getName()));
             this.rangeLabel.setText(RANGE_OF_CHANNEL);
             this.allowableErrorPanel.setEnabled(true);
         }else if (measurementName.equals(Measurement.CONSUMPTION)){
@@ -307,6 +302,7 @@ public class DialogChannel extends JDialog {
                     sensorRangePanel.setEnabled(false);
                 } else {
                     sensorRangePanel.setEnabled(true);
+                    sensorRangePanel.update(Application.context.sensorService.get(sensorPanel.getSensor().getName()));
                 }
             }
         }
