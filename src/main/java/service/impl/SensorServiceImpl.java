@@ -101,6 +101,11 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
+    public boolean isExists(String sensorName) {
+        return this.repository.isExists(sensorName);
+    }
+
+    @Override
     public void rewriteInCurrentThread(ArrayList<Sensor>sensors){
         this.repository.rewriteInCurrentThread(sensors);
     }

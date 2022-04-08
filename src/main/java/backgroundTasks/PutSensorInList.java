@@ -28,16 +28,6 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
         this.loadDialog = new LoadDialog(dialog);
     }
 
-    public void start(){
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.setVisible(true);
-            }
-        });
-        this.execute();
-    }
-
     public void start(Sensor oldSensor){
         this.oldSensor = oldSensor;
         EventQueue.invokeLater(new Runnable() {

@@ -233,6 +233,15 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
     }
 
     @Override
+    public boolean isExists(String sensorName) {
+        if (sensorName == null || sensorName.length() == 0) return true;
+
+        Sensor sensor = new Sensor();
+        sensor.setName(sensorName);
+        return this.mainList.contains(sensor);
+    }
+
+    @Override
     public boolean backgroundTaskIsRun() {
         return this.backgroundTaskRunning;
     }

@@ -365,6 +365,18 @@ class SensorServiceTest {
     }
 
     @Test
+    void isExists(){
+        Date start = new Date();
+
+        assertEquals(true, service.isExists(Sensor.ROSEMOUNT));
+        assertEquals(true, service.isExists(null));
+        assertEquals(true, service.isExists(""));
+        assertEquals(false, service.isExists(Sensor.Pt100));
+
+        System.out.println("isExists() duration = " + howLong(start, new Date()) + " mills");
+    }
+
+    @Test
     void rewriteInCurrentThread() {
         Date start = new Date();
 

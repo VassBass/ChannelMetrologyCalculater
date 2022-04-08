@@ -9,6 +9,7 @@ import model.Sensor;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
+import ui.channelInfo.DialogChannel;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
 import ui.sensorsList.SensorsListDialog;
@@ -51,6 +52,7 @@ public class SensorInfoDialog extends JDialog {
     }
 
     private final SensorsListDialog parent;
+    private final DialogChannel dialogChannel;
     private final Sensor oldSensor;
 
     private ButtonCell labelMeasurement;
@@ -72,10 +74,26 @@ public class SensorInfoDialog extends JDialog {
 
     private JButton buttonCancel, buttonSave;
 
+    private String fullType(){
+        StringBuilder builder = new StringBuilder();
+        if (measurementsList != null && typeText != null) {
+            if (measurementsList.getSelectedItem() != null
+                    && measurementsList.getSelectedItem().toString().equals(Measurement.CONSUMPTION)) {
+                if (typesList.getSelectedItem() != null){
+                    String pre = typesList.getSelectedItem().toString();
+                    builder.append(pre);
+                    if (pre.length() > 0) builder.append(" ");
+                }
+            }
+            builder.append(typeText.getText());
+        }
+        return builder.toString();
+    }
+
     public SensorInfoDialog(SensorsListDialog parent, Sensor oldSensor){
         super(parent, SENSOR, true);
-        LOGGER.info("SensorInfoDialog: creation ...");
         this.parent = parent;
+        this.dialogChannel = null;
         this.oldSensor = oldSensor;
 
         this.createElements();
@@ -83,6 +101,22 @@ public class SensorInfoDialog extends JDialog {
         this.setReactions();
         this.build();
         LOGGER.info("SensorInfoDialog: creation SUCCESS");
+    }
+
+    public SensorInfoDialog(DialogChannel dialogChannel){
+        super(dialogChannel, SENSOR, true);
+        this.dialogChannel = dialogChannel;
+        this.parent = null;
+        this.oldSensor = null;
+
+        this.createElements();
+        Measurement measurement = dialogChannel.measurementPanel.getMeasurement();
+        this.measurementsList.setSelectedItem(measurement.getName());
+        this.measurementsList.setEnabled(false);
+        this.rangePanel.setValues(measurement.getName());
+        this.rangePanel.setValue(measurement.getValue());
+        this.setReactions();
+        this.build();
     }
 
     private void createElements() {
@@ -221,7 +255,7 @@ public class SensorInfoDialog extends JDialog {
 
             LOGGER.fine("SensorInfoDialog: set info SUCCESS");
         }else {
-            rangePanel.setValues(Measurement.TEMPERATURE);
+            this.rangePanel.setValues(Measurement.TEMPERATURE);
         }
     }
 
@@ -230,6 +264,7 @@ public class SensorInfoDialog extends JDialog {
         this.buttonSave.addActionListener(this.clickSave);
 
         this.measurementsList.addItemListener(this.changeMeasurement);
+        this.typesList.addItemListener(this.changeSensorTypePre);
 
         this.typeText.getDocument().addDocumentListener(this.typeChange);
         this.errorFormulaText.getDocument().addDocumentListener(this.errorUpdate);
@@ -237,7 +272,11 @@ public class SensorInfoDialog extends JDialog {
 
     private void build() {
         this.setSize(850,550);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        if (this.dialogChannel == null) {
+            this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        }else {
+            this.setLocation(ConverterUI.POINT_CENTER(this.dialogChannel, this));
+        }
 
         this.setContentPane(new MainPanel());
     }
@@ -268,6 +307,7 @@ public class SensorInfoDialog extends JDialog {
     private final ActionListener clickCancel = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if (dialogChannel != null) dialogChannel.sensorPanel.setSelectedSensor(null);
             dispose();
         }
     };
@@ -295,11 +335,16 @@ public class SensorInfoDialog extends JDialog {
                     sensor.setValue("");
                 }
                 sensor.setErrorFormula(errorFormulaText.getText());
-                PutSensorInList putSensorInList = new PutSensorInList(parent, SensorInfoDialog.this, sensor);
-                if (oldSensor == null){
-                    putSensorInList.start();
-                }else {
+                if (dialogChannel == null) {
+                    PutSensorInList putSensorInList = new PutSensorInList(parent, SensorInfoDialog.this, sensor);
                     putSensorInList.start(oldSensor);
+                }else if (Application.context.sensorService.isExists(nameText.getText())) {
+                    JOptionPane.showMessageDialog(SensorInfoDialog.this, "ПВП с такою назвою вже існує в списку");
+                }else {
+                    Application.context.sensorService.add(sensor);
+                    dialogChannel.sensorPanel.update(dialogChannel.measurementPanel.getMeasurement().getName());
+                    dialogChannel.sensorPanel.setSelectedSensor(sensor.getName());
+                    dispose();
                 }
             }
         }
@@ -321,11 +366,23 @@ public class SensorInfoDialog extends JDialog {
         }
     };
 
+    private final ItemListener changeSensorTypePre = new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED && typesList.getSelectedItem() != null){
+                namePopupMenu.removeAll();
+                JMenuItem type = new JMenuItem(fullType());
+                type.addActionListener(clickPasteName);
+                namePopupMenu.add(type);
+            }
+        }
+    };
+
     private final DocumentListener typeChange = new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
             namePopupMenu.removeAll();
-            JMenuItem type = new JMenuItem(typeText.getText());
+            JMenuItem type = new JMenuItem(fullType());
             type.addActionListener(clickPasteName);
             namePopupMenu.add(type);
         }
@@ -333,7 +390,7 @@ public class SensorInfoDialog extends JDialog {
         @Override
         public void removeUpdate(DocumentEvent e) {
             namePopupMenu.removeAll();
-            JMenuItem type = new JMenuItem(typeText.getText());
+            JMenuItem type = new JMenuItem(fullType());
             type.addActionListener(clickPasteName);
             namePopupMenu.add(type);
         }
@@ -345,7 +402,7 @@ public class SensorInfoDialog extends JDialog {
     private final ActionListener clickPasteName = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            nameText.setText(typeText.getText());
+            nameText.setText(fullType());
             nameText.requestFocus();
         }
     };
@@ -394,7 +451,7 @@ public class SensorInfoDialog extends JDialog {
                 !Objects.requireNonNull(this.measurementsList.getSelectedItem()).toString().equals(Measurement.CONSUMPTION)){
             JOptionPane.showMessageDialog(this, "Ви не ввели тип ПВП");
             return false;
-        }else if (this.nameText.getText().length() == 0){
+        }else if (this.nameText.getText().length() == 0) {
             JOptionPane.showMessageDialog(this, "Ви не ввели назву ПВП");
             return false;
         }else if (this.errorFormulaText.getText().length() == 0) {

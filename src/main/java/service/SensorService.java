@@ -28,6 +28,7 @@ public interface SensorService {
     void clear();
 
     boolean isLastInMeasurement(Sensor sensor);
+    boolean isExists(String sensorName);
 
     void resetToDefaultInCurrentThread();
 
