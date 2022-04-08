@@ -418,4 +418,15 @@ class CalibratorServiceTest {
 
         System.out.println("resetToDefaultInCurrentThread() duration = " + howLong(start, new Date()) + " mills");
     }
+
+    @Test
+    void isExists(){
+        Date start = new Date();
+
+        assertEquals(true, service.isExists(calibratorTemperature()));
+        assertEquals(true, service.isExists(null));
+        assertEquals(false, service.isExists(calibratorConsumption()));
+
+        System.out.println("isExists() duration = " + howLong(start, new Date()) + " mills");
+    }
 }
