@@ -4,10 +4,12 @@ import application.Application;
 import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Calibrator;
+import model.Channel;
 import model.Measurement;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
+import ui.calculate.start.CalculateStartDialog;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
 import ui.calibratorsList.calibratorInfo.complexElements.CertificateDatePanel;
@@ -53,6 +55,7 @@ public class CalibratorInfoDialog extends JDialog {
 
     private final CalibratorsListDialog parent;
     private final Calibrator oldCalibrator;
+    private final CalculateStartDialog calculateDialog;
 
     private ButtonCell labelCalibrator;
     private ButtonCell labelMeasurement;
@@ -89,9 +92,24 @@ public class CalibratorInfoDialog extends JDialog {
         super(parent, CALIBRATOR, true);
         this.parent = parent;
         this.oldCalibrator = oldCalibrator;
+        this.calculateDialog = null;
 
         this.createElements();
         this.setInfo();
+        this.setReactions();
+        this.build();
+    }
+
+    public CalibratorInfoDialog(CalculateStartDialog calculateDialog, Channel channel){
+        super(calculateDialog, CALIBRATOR, true);
+        this.calculateDialog = calculateDialog;
+        this.parent = null;
+        this.oldCalibrator = null;
+
+        this.createElements();
+        this.measurementsList.setSelectedItem(channel.getMeasurement().getName());
+        this.measurementsList.setEnabled(false);
+        this.rangePanel.setValues(channel.getMeasurement().getName(), channel.getMeasurement().getValue());
         this.setReactions();
         this.build();
     }
@@ -254,7 +272,11 @@ public class CalibratorInfoDialog extends JDialog {
 
     private void build() {
         this.setSize(1050,550);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        if (calculateDialog == null) {
+            this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        }else {
+            this.setLocation(ConverterUI.POINT_CENTER(this.calculateDialog, this));
+        }
 
         this.setContentPane(new MainPanel());
     }
@@ -281,6 +303,9 @@ public class CalibratorInfoDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
+            if (calculateDialog != null){
+                calculateDialog.updateCalibrators(null);
+            }
         }
     };
 
@@ -306,12 +331,21 @@ public class CalibratorInfoDialog extends JDialog {
 
                 if (Application.isBusy(CalibratorInfoDialog.this)) return;
                 if (oldCalibrator == null){
-                    Application.context.calibratorService.add(calibrator);
+                    if (Application.context.calibratorService.isExists(calibrator)) {
+                        JOptionPane.showMessageDialog(CalibratorInfoDialog.this, "Калібратор з такою назвою вже існує в списку");
+                        return;
+                    }else {
+                        Application.context.calibratorService.add(calibrator);
+                    }
                 }else {
                     Application.context.calibratorService.set(oldCalibrator, calibrator);
                 }
                 dispose();
-                parent.mainTable.update();
+                if (calculateDialog == null && parent != null){
+                    parent.mainTable.update();
+                }else if (calculateDialog != null && measurementsList.getSelectedItem() != null){
+                    calculateDialog.updateCalibrators(measurementsList.getSelectedItem().toString());
+                }
             }
         }
     };

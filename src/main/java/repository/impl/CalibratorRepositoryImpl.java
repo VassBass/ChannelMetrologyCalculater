@@ -195,6 +195,15 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
     }
 
     @Override
+    public boolean isExists(Calibrator calibrator) {
+        if (calibrator == null){
+            return true;
+        }else{
+            return this.mainList.contains(calibrator);
+        }
+    }
+
+    @Override
     public boolean backgroundTaskIsRun() {
         return this.backgroundTaskRunning;
     }

@@ -5,11 +5,13 @@ import constants.Key;
 import converters.ConverterUI;
 import model.Calibrator;
 import model.Channel;
+import model.Measurement;
 import model.Sensor;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.start.complexElements.CalculateStartDialog_alarmPanel;
 import ui.calculate.start.complexElements.CalculateStartDialog_datePanel;
 import ui.calculate.start.complexElements.CalculateStartDialog_weatherPanel;
+import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
@@ -30,6 +32,7 @@ public class CalculateStartDialog extends JDialog {
     private static final String START = "Почати";
     private static final String CANCEL = "Відміна";
     private static final String ALARM_CHECK = "Перевірка сигналізації";
+    private static final String ADD_NEW = "<-Додати новий->";
 
     private final MainScreen mainScreen;
     private final Channel channel;
@@ -75,9 +78,10 @@ public class CalculateStartDialog extends JDialog {
         this.numberOfProtocol = new JTextField(DEFAULT_NUMBER_OF_PROTOCOL, 5);
         this.numberOfProtocol.setHorizontalAlignment(SwingConstants.CENTER);
 
-        this.calibrator = new JComboBox<>(Application.context.calibratorService.getAllNames(this.channel.getMeasurement()));
+        this.calibrator = new JComboBox<>();
         this.calibrator.setBackground(Color.WHITE);
         this.calibrator.setEditable(false);
+        this.updateCalibrators(this.channel.getMeasurement().getName());
 
         this.weatherPanel = new CalculateStartDialog_weatherPanel();
 
@@ -88,6 +92,19 @@ public class CalculateStartDialog extends JDialog {
         this.alarmPanel = new CalculateStartDialog_alarmPanel(this.channel);
     }
 
+    public void updateCalibrators(String measurement){
+        if (measurement == null){
+            this.calibrator.setSelectedIndex(0);
+        }else {
+            String[] cal = Application.context.calibratorService.getAllNames(new Measurement(measurement, ""));
+            String[] toModel = new String[cal.length + 1];
+            System.arraycopy(cal,0,toModel,0,cal.length);
+            toModel[toModel.length - 1] = ADD_NEW;
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(toModel);
+            this.calibrator.setModel(model);
+        }
+    }
+
     private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -96,7 +113,8 @@ public class CalculateStartDialog extends JDialog {
         this.positiveButton.addActionListener(this.clickPositiveButton);
         this.negativeButton.addActionListener(this.clickNegativeButton);
 
-        alarmCheck.addItemListener(this.clickAlarm);
+        this.alarmCheck.addItemListener(this.clickAlarm);
+        this.calibrator.addItemListener(this.changeCalibrator);
     }
 
     private void build() {
@@ -195,6 +213,22 @@ public class CalculateStartDialog extends JDialog {
                     }
                 }
             });
+        }
+    };
+
+    private final ItemListener changeCalibrator = new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED && calibrator.getSelectedItem() != null){
+                if (calibrator.getSelectedItem().toString().equals(ADD_NEW)){
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new CalibratorInfoDialog(CalculateStartDialog.this, channel).setVisible(true);
+                        }
+                    });
+                }
+            }
         }
     };
 

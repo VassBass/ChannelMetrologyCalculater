@@ -105,6 +105,11 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
+    public boolean isExists(Calibrator calibrator) {
+        return this.repository.isExists(calibrator);
+    }
+
+    @Override
     public boolean backgroundTaskIsRun() {
         return this.repository.backgroundTaskIsRun();
     }

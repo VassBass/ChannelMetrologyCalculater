@@ -235,10 +235,18 @@ public class DialogChannel extends JDialog {
         channel.setDate(this.datePanel.getDate());
         channel.setFrequency(this.frequencyPanel.getFrequency());
         channel.setTechnologyNumber(this.userTechnologyNumber.getText());
-        Sensor sensor = this.sensorPanel.getSensor();
+        Sensor s = this.sensorPanel.getSensor();
+        Sensor sensor = new Sensor();
+        sensor.setName(s.getName());
+        sensor.setType(s.getType());
+        sensor.setMeasurement(s.getMeasurement());
+        sensor.setErrorFormula(s.getErrorFormula());
         if (this.sensorRangePanel != null){
             sensor.setRange(this.sensorRangePanel.getRangeMin(), this.sensorRangePanel.getRangeMax());
             sensor.setValue(this.sensorRangePanel.getValue());
+        }else {
+            sensor.setRange(s.getRangeMin(), s.getRangeMax());
+            sensor.setValue(s.getValue());
         }
         if (channel.getMeasurement().getName().equals(Measurement.CONSUMPTION)){
             sensor.setNumber(this.sensorPanel.getSerialNumber());
