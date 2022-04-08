@@ -336,8 +336,12 @@ public class SensorInfoDialog extends JDialog {
                 }
                 sensor.setErrorFormula(errorFormulaText.getText());
                 if (dialogChannel == null) {
-                    PutSensorInList putSensorInList = new PutSensorInList(parent, SensorInfoDialog.this, sensor);
-                    putSensorInList.start(oldSensor);
+                    if (Objects.requireNonNull(oldSensor).isMatch(sensor)){
+                        dispose();
+                    }else {
+                        PutSensorInList putSensorInList = new PutSensorInList(parent, SensorInfoDialog.this, sensor);
+                        putSensorInList.start(oldSensor);
+                    }
                 }else if (Application.context.sensorService.isExists(nameText.getText())) {
                     JOptionPane.showMessageDialog(SensorInfoDialog.this, "ПВП с такою назвою вже існує в списку");
                 }else {

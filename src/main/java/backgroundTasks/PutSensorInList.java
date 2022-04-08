@@ -1,7 +1,6 @@
 package backgroundTasks;
 
 import application.Application;
-import model.Measurement;
 import model.Sensor;
 import ui.model.LoadDialog;
 import ui.sensorsList.SensorsListDialog;
@@ -33,9 +32,11 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
+                dialog.dispose();
                 loadDialog.setVisible(true);
             }
         });
+        Application.setBusy(true);
         this.execute();
     }
 
@@ -45,10 +46,8 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
             return Application.context.sensorService.add(this.newSensor) != null;
         } else {
             Application.context.sensorService.setInCurrentThread(this.oldSensor, this.newSensor);
-            if (this.oldSensor.getMeasurement().equals(Measurement.TEMPERATURE)){
-                Application.context.channelService.changeSensorInCurrentThread(this.oldSensor, this.newSensor, Sensor.MEASUREMENT);
-            }else {
-                Application.context.channelService.changeSensorInCurrentThread(this.oldSensor, this.newSensor,Sensor.MEASUREMENT, Sensor.RANGE, Sensor.VALUE);
+            if (!this.oldSensor.isMatch(this.newSensor, Sensor.RANGE, Sensor.VALUE)) {
+                Application.context.channelService.changeSensorInCurrentThread(this.oldSensor, this.newSensor, Sensor.MEASUREMENT, Sensor.RANGE, Sensor.VALUE);
             }
             return true;
         }
@@ -66,6 +65,7 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+        Application.setBusy(false);
         mainDialog.update();
     }
 }

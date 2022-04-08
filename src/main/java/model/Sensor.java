@@ -9,6 +9,7 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -155,7 +156,7 @@ public class Sensor implements Serializable {
      *
      * @return true if sensors names is equal
      *
-     * If you need to compare all fields of Sensors use {@link #isMatch(Sensor)}
+     * If you need to compare all fields of Sensors use {@link #isMatch(Sensor, int...)}
      */
     @Override
     public boolean equals(Object obj) {
@@ -198,26 +199,56 @@ public class Sensor implements Serializable {
     }
 
     /**
-     * @param sensor to compare with this
+     * @param sensor to compare
+     * @param ignored ignored fields
+     * @see #NAME
+     * @see #TYPE
+     * @see #RANGE
+     * @see #NUMBER
+     * @see #VALUE
+     * @see #ERROR_FORMULA
+     *
      * @return true if sensors fields equal
      */
-    public boolean isMatch(Sensor sensor){
+    public boolean isMatch(@Nonnull Sensor sensor, int ... ignored){
         if (this.measurement.equals(sensor.getMeasurement())){
-            if (this.measurement.equals(Measurement.TEMPERATURE) ||
-                    this.measurement.equals(Measurement.CONSUMPTION)) {
-                return this.name.equals(sensor.getName())
-                        && this.type.equals(sensor.getType())
-                        && this.rangeMin == sensor.getRangeMin()
-                        && this.rangeMax == sensor.getRangeMax()
-                        && this.number.equals(sensor.getNumber())
-                        && this.value.equals(sensor.getValue())
-                        && this.errorFormula.equals(sensor.getErrorFormula());
-            } else if (this.measurement.equals(Measurement.PRESSURE)) {
-                return this.name.equals(sensor.getName())
-                        && this.type.equals(sensor.getType())
-                        && this.number.equals(sensor.getNumber())
-                        && this.errorFormula.equals(sensor.getErrorFormula());
-            } else return false;
+            StringBuilder builderThis = new StringBuilder();
+            StringBuilder builderSensor = new StringBuilder();
+            if (!contain(ignored, Sensor.NAME)){
+                builderThis.append(this.name);
+                builderSensor.append(sensor.getName());
+            }
+            if (!contain(ignored, Sensor.TYPE)){
+                builderThis.append(this.type);
+                builderSensor.append(sensor.getType());
+            }
+            if (!contain(ignored, Sensor.RANGE)){
+                builderThis.append(this.rangeMin);
+                builderThis.append(this.rangeMax);
+                builderSensor.append(sensor.getRangeMin());
+                builderSensor.append(sensor.getRangeMax());
+            }
+            if (!contain(ignored, Sensor.NUMBER)){
+                builderThis.append(this.number);
+                builderSensor.append(sensor.getNumber());
+            }
+            if (!contain(ignored, Sensor.VALUE)){
+                builderThis.append(this.value);
+                builderSensor.append(sensor.getValue());
+            }
+            if (!contain(ignored, Sensor.ERROR_FORMULA)){
+                builderThis.append(this.errorFormula);
+                builderSensor.append(sensor.getErrorFormula());
+            }
+            return builderThis.toString().equals(builderSensor.toString());
         } else return false;
+    }
+
+    private boolean contain(int[]source, int value){
+        if (source == null || source.length == 0) return false;
+        for (int i : source){
+            if (i == value) return true;
+        }
+        return false;
     }
 }
