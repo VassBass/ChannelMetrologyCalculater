@@ -13,7 +13,7 @@ import java.util.Locale;
 public class DialogChannel_allowableErrorPanel extends JPanel {
     private static final String PERCENT = "% ";
     private static final String AND = " та ";
-    private static final String DEFAULT_VALUE = "0.00";
+    private static final String DEFAULT_VALUE = "1.5";
 
     private final DialogChannel parent;
 

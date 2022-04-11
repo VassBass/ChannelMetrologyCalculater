@@ -11,7 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class DialogChannel_frequencyPanel extends JPanel {
-    private static final String DEFAULT_FREQUENCY_VALUE = "1.00";
+    private static final String DEFAULT_FREQUENCY_VALUE = "2.00";
     private static final String NEXT_DATE = " Дата наступної перевірки: ";
     private static final String ZERO = "0.00";
 
