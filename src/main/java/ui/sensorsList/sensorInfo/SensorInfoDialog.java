@@ -19,10 +19,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -113,8 +110,12 @@ public class SensorInfoDialog extends JDialog {
         Measurement measurement = dialogChannel.measurementPanel.getMeasurement();
         this.measurementsList.setSelectedItem(measurement.getName());
         this.measurementsList.setEnabled(false);
-        this.rangePanel.setValues(measurement.getName());
-        this.rangePanel.setValue(measurement.getValue());
+        if (measurement.getName().equals(Measurement.CONSUMPTION)){
+            this.rangePanel.setValues(null);
+        }else {
+            this.rangePanel.setValues(measurement.getName());
+            this.rangePanel.setValue(measurement.getValue());
+        }
         this.setReactions();
         this.build();
     }
@@ -260,6 +261,9 @@ public class SensorInfoDialog extends JDialog {
     }
 
     private void setReactions() {
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(this.windowListener);
+
         this.buttonCancel.addActionListener(this.clickCancel);
         this.buttonSave.addActionListener(this.clickSave);
 
@@ -304,6 +308,13 @@ public class SensorInfoDialog extends JDialog {
         }
     }
 
+    private final WindowListener windowListener = new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            buttonCancel.doClick();
+        }
+    };
+
     private final ActionListener clickCancel = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -336,7 +347,7 @@ public class SensorInfoDialog extends JDialog {
                 }
                 sensor.setErrorFormula(errorFormulaText.getText());
                 if (dialogChannel == null) {
-                    if (Objects.requireNonNull(oldSensor).isMatch(sensor)){
+                    if (oldSensor != null && oldSensor.isMatch(sensor)){
                         dispose();
                     }else {
                         PutSensorInList putSensorInList = new PutSensorInList(parent, SensorInfoDialog.this, sensor);

@@ -6,9 +6,7 @@ import ui.mainScreen.menu.MenuBar;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 

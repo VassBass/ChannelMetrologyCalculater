@@ -20,10 +20,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.Objects;
 
 public class CalibratorInfoDialog extends JDialog {
@@ -261,6 +258,9 @@ public class CalibratorInfoDialog extends JDialog {
     }
 
     private void setReactions() {
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(this.windowListener);
+
         this.buttonCancel.addActionListener(this.clickCancel);
         this.buttonSave.addActionListener(this.clickSave);
 
@@ -298,6 +298,13 @@ public class CalibratorInfoDialog extends JDialog {
             errorPopupMenu.add(from_convR_item);
         }
     }
+
+    private final WindowListener windowListener = new WindowAdapter() {
+        @Override
+        public void windowClosing(WindowEvent e) {
+            buttonCancel.doClick();
+        }
+    };
 
     private final ActionListener clickCancel = new ActionListener() {
         @Override
