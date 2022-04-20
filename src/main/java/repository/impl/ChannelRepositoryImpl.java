@@ -11,6 +11,7 @@ import repository.ChannelRepository;
 import repository.Repository;
 import ui.model.SaveMessage;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
@@ -155,23 +156,39 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
 
     @Override
     public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored) {
+        ArrayList<Channel>changedChannels = new ArrayList<>();
+        Sensor sensor = new Sensor();
+        sensor.setType(contains(ignored, Sensor.TYPE) ? oldSensor.getType() : newSensor.getType());
+        sensor.setName(contains(ignored, Sensor.NAME) ? oldSensor.getName() : newSensor.getName());
+        double minRange = contains(ignored, Sensor.RANGE) ? oldSensor.getRangeMin() : newSensor.getRangeMin();
+        double maxRange = contains(ignored, Sensor.RANGE) ? oldSensor.getRangeMax() : newSensor.getRangeMax();
+        sensor.setRange(minRange, maxRange);
+        sensor.setNumber(contains(ignored, Sensor.NUMBER) ? oldSensor.getNumber() : newSensor.getNumber());
+        sensor.setValue(contains(ignored, Sensor.VALUE) ? oldSensor.getValue() : newSensor.getValue());
+        sensor.setMeasurement(contains(ignored, Sensor.MEASUREMENT) ? oldSensor.getMeasurement() : newSensor.getMeasurement());
+        sensor.setErrorFormula(contains(ignored, Sensor.ERROR_FORMULA) ? oldSensor.getErrorFormula() : newSensor.getErrorFormula());
         if (oldSensor != null && newSensor != null) {
             for (Channel channel : this.mainList) {
                 if (channel.getSensor().equals(oldSensor)) {
-                    Sensor sensor = new Sensor();
-                    sensor.setType(contains(ignored, Sensor.TYPE) ? oldSensor.getType() : newSensor.getType());
-                    sensor.setName(contains(ignored, Sensor.NAME) ? oldSensor.getName() : newSensor.getName());
-                    double minRange = contains(ignored, Sensor.RANGE) ? oldSensor.getRangeMin() : newSensor.getRangeMin();
-                    double maxRange = contains(ignored, Sensor.RANGE) ? oldSensor.getRangeMax() : newSensor.getRangeMax();
-                    sensor.setRange(minRange, maxRange);
-                    sensor.setNumber(contains(ignored, Sensor.NUMBER) ? oldSensor.getNumber() : newSensor.getNumber());
-                    sensor.setValue(contains(ignored, Sensor.VALUE) ? oldSensor.getValue() : newSensor.getValue());
-                    sensor.setMeasurement(contains(ignored, Sensor.MEASUREMENT) ? oldSensor.getMeasurement() : newSensor.getMeasurement());
-                    sensor.setErrorFormula(contains(ignored, Sensor.ERROR_FORMULA) ? oldSensor.getErrorFormula() : newSensor.getErrorFormula());
                     channel.setSensor(sensor);
+                    changedChannels.add(channel);
                 }
             }
-            new BackgroundAction().rewriteChannels(this.mainList);
+
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection();
+                 Statement statement = connection.createStatement()){
+                LOGGER.fine("Send requests to update");
+                String sql;
+                for (Channel channel : changedChannels) {
+                    sql = "UPDATE channels SET "
+                            + "sensor = '" + sensor + "' "
+                            + "WHERE code = '" + channel.getCode() + "';";
+                    statement.execute(sql);
+                }
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
         }
     }
 
@@ -230,10 +247,10 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
     }
 
     @Override
-    public boolean isExist(String code) {
+    public boolean isExist(@Nonnull String code) {
         Channel channel = new Channel();
         channel.setCode(code);
-        return code != null && this.mainList.contains(channel);
+        return this.mainList.contains(channel);
     }
 
     @Override
@@ -427,8 +444,8 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                         + "reference = '" + newChannel.getReference() + "', "
                         + "date = '" + newChannel.getDate() + "', "
                         + "suitability = '" + newChannel.isSuitability() + "', "
-                        + "measurement = '" + newChannel.getMeasurement().toString() + "', "
-                        + "sensor = '" + newChannel.getSensor().toString() + "', "
+                        + "measurement = '" + newChannel.getMeasurement() + "', "
+                        + "sensor = '" + newChannel.getSensor() + "', "
                         + "frequency = " + newChannel.getFrequency() + ", "
                         + "range_min = " + newChannel.getRangeMin() + ", "
                         + "range_max = " + newChannel.getRangeMax() + ", "
