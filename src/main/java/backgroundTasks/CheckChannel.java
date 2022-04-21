@@ -1,12 +1,14 @@
 package backgroundTasks;
 
 import application.Application;
+import model.Channel;
+import ui.channelInfo.ChannelExistsDialog;
 import ui.model.LoadDialog;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class CheckChannel extends SwingWorker<Boolean, Void> {
+public class CheckChannel extends SwingWorker<Channel, Void> {
     private final JDialog parent;
     private final String code;
     private final LoadDialog loadWindow;
@@ -32,26 +34,31 @@ public class CheckChannel extends SwingWorker<Boolean, Void> {
     }
 
     @Override
-    protected Boolean doInBackground() throws Exception {
-        return Application.context.channelService.isExist(this.code);
+    protected Channel doInBackground() throws Exception {
+        return Application.context.channelService.get(this.code);
     }
 
     @Override
     protected void done() {
         Application.setBusy(false);
         this.loadWindow.dispose();
-        String CHECK = "Перевірка";
         try {
-            String m;
-            if (this.get()){
-                m = "Канал з данним кодом вже існує в списку";
+            final Channel channel = this.get();
+            if (channel != null){
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new ChannelExistsDialog(parent, channel).setVisible(true);
+                    }
+                });
             }else {
-                m = "Канал з данним кодом відсутній в списку";
+                JOptionPane.showMessageDialog(parent,
+                        "Канал з данним кодом відсутній в списку", "Пошук",
+                        JOptionPane.INFORMATION_MESSAGE);
             }
-            JOptionPane.showMessageDialog(this.parent, m, CHECK, JOptionPane.INFORMATION_MESSAGE);
         }catch (Exception ex){
             String m = "Виникла помилка, спробуйте будь-ласка ще раз";
-            JOptionPane.showMessageDialog(this.parent, m, CHECK,JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this.parent, m, "Пошук",JOptionPane.ERROR_MESSAGE);
         }
     }
 }

@@ -35,6 +35,11 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
+    public Channel get(String code) {
+        return this.repository.get(code);
+    }
+
+    @Override
     public ArrayList<Channel> getAll() {
         return this.repository.getAll();
     }

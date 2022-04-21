@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public interface ChannelService {
     void init();
 
+    Channel get(String code);
     ArrayList<Channel> getAll();
 
     ArrayList<Channel> add(Channel channel);

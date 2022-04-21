@@ -40,7 +40,7 @@ public class DialogChannel extends JDialog {
     private static final String RANGE_OF_SENSOR = "Діапазон вимірювання ПВП";
     private static final String SET_RANGE_LIKE_CHANNEL = "Однакові діапазони";
     private static final String INSERT = "Вставка";
-    private static final String CHECK = "Перевірити";
+    private static final String SEARCH = "Пошук";
 
     private final MainScreen parent;
 
@@ -107,8 +107,8 @@ public class DialogChannel extends JDialog {
 
     private void createPrimitiveElements(){
         this.userCode = new JTextField(10);
-        JPopupMenu codePopupMenu = new JPopupMenu(CHECK);
-        JMenuItem check = new JMenuItem(CHECK);
+        JPopupMenu codePopupMenu = new JPopupMenu(SEARCH);
+        JMenuItem check = new JMenuItem(SEARCH);
         check.addActionListener(this.clickCheck);
         codePopupMenu.add(check);
         this.userCode.setComponentPopupMenu(codePopupMenu);

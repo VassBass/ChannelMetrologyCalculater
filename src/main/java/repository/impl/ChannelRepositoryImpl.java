@@ -92,6 +92,14 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
     }
 
     @Override
+    public Channel get(String code) {
+        Channel channel = new Channel();
+        channel.setCode(code);
+        int index = this.mainList.indexOf(channel);
+        return index >= 0 ? this.mainList.get(index) : null;
+    }
+
+    @Override
     public ArrayList<Channel> getAll() {
         return this.mainList;
     }
