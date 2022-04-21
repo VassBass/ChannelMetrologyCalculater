@@ -346,4 +346,56 @@ public class VariableConverter {
         Double[]arrr = array.toArray(new Double[0]);
         return ArrayUtils.toPrimitive(arrr);
     }
+
+    public static boolean isItInt(String str){
+        try {
+            Integer.parseInt(str);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    public static String superscript(String s){
+        StringBuilder builder = new StringBuilder();
+        char[] chars = s.toCharArray();
+        for (char c : chars){
+            switch (c){
+                case '-':
+                    builder.append("\u207B");
+                    break;
+                case '0':
+                    builder.append("\u2070");
+                    break;
+                case '1':
+                    builder.append("\u00B9");
+                    break;
+                case '2':
+                    builder.append("\u00B2");
+                    break;
+                case '3':
+                    builder.append("\u00B3");
+                    break;
+                case '4':
+                    builder.append("\u2074");
+                    break;
+                case '5':
+                    builder.append("\u2075");
+                    break;
+                case '6':
+                    builder.append("\u2076");
+                    break;
+                case '7':
+                    builder.append("\u2077");
+                    break;
+                case '8':
+                    builder.append("\u2078");
+                    break;
+                case '9':
+                    builder.append("\u2079");
+                    break;
+            }
+        }
+        return builder.toString();
+    }
 }

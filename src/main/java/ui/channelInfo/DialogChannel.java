@@ -15,10 +15,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class DialogChannel extends JDialog {
@@ -69,6 +66,7 @@ public class DialogChannel extends JDialog {
     public DialogChannel_rangePanel rangePanel;
     public DialogChannel_allowableErrorPanel allowableErrorPanel;
     public DialogChannel_sensorRangePanel sensorRangePanel;
+    private SpecialCharactersPanel specialCharactersPanel;
 
     public JCheckBox rangeLikeChannel;
     private JButton negativeButton;
@@ -141,10 +139,16 @@ public class DialogChannel extends JDialog {
         this.sensorPanel = new DialogChannel_sensorPanel(this);
         this.rangePanel = new DialogChannel_rangePanel(this);
         this.allowableErrorPanel = new DialogChannel_allowableErrorPanel(this);
+        this.specialCharactersPanel = new SpecialCharactersPanel();
     }
 
     private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        this.userCode.addFocusListener(focusOnText);
+        this.userName.addFocusListener(focusOnText);
+        this.userProtocolNumber.addFocusListener(focusOnText);
+        this.userTechnologyNumber.addFocusListener(focusOnText);
 
         this.rangeLikeChannel.addItemListener(this.clickRangeLikeChannel);
         this.negativeButton.addActionListener(this.clickNegativeButton);
@@ -154,6 +158,8 @@ public class DialogChannel extends JDialog {
     }
 
     private void build() {
+        this.setSize(1000, 650);
+        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         if (this.oldChannel == null){
             this.setMeasurement(null);
         }else {
@@ -276,13 +282,11 @@ public class DialogChannel extends JDialog {
         this.sensorPanel.update(measurementName);
         if (measurementName.equals(Measurement.TEMPERATURE)
             || measurementName.equals(Measurement.PRESSURE)){
-            this.setSize(1000, 650);
             this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
             this.sensorRangePanel.update(Application.context.sensorService.get(this.sensorPanel.getSensor().getName()));
             this.rangeLabel.setText(RANGE_OF_CHANNEL);
             this.allowableErrorPanel.setEnabled(true);
         }else if (measurementName.equals(Measurement.CONSUMPTION)){
-            this.setSize(800,650);
             this.sensorRangePanel = null;
             this.rangeLabel.setText(RANGE_OF_SENSOR);
             Channel channel = new Channel();
@@ -295,7 +299,6 @@ public class DialogChannel extends JDialog {
             this.allowableErrorPanel.updateError(errorSensor, false, channel._getRange());
             this.allowableErrorPanel.setEnabled(false);
         }
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         this.setContentPane(new MainPanel());
     }
 
@@ -375,6 +378,17 @@ public class DialogChannel extends JDialog {
         @Override public void changedUpdate(DocumentEvent e) {}
     };
 
+    private final FocusListener focusOnText = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            JTextField source = (JTextField) e.getSource();
+            if (source.equals(userCode) || source.equals(userName)
+                || source.equals(userProtocolNumber) || source.equals(userTechnologyNumber)) {
+                specialCharactersPanel.setFieldForInsert(source);
+            }
+        }
+    };
+
     private class MainPanel extends JPanel {
 
         protected MainPanel() {
@@ -382,6 +396,7 @@ public class DialogChannel extends JDialog {
 
             this.add(codeLabel, new Cell(0,0));
             this.add(userCode, new Cell(1,0));
+            this.add(specialCharactersPanel, new Cell(2,0,2));
 
             this.add(nameLabel, new Cell(0,1));
             this.add(userName, new Cell(1,1));
@@ -423,11 +438,7 @@ public class DialogChannel extends JDialog {
             JPanel buttonsPanel = new JPanel();
             buttonsPanel.add(positiveButton);
             buttonsPanel.add(negativeButton);
-            int width = 2;
-            if (sensorRangePanel != null){
-                width = 3;
-            }
-            this.add(buttonsPanel, new Cell(0, 11, new Insets(40, 0, 20, 0), width));
+            this.add(buttonsPanel, new Cell(0, 11, new Insets(40, 0, 20, 0), 3));
         }
 
         private class Cell extends GridBagConstraints {
@@ -451,6 +462,18 @@ public class DialogChannel extends JDialog {
                 this.gridwidth = width;
                 this.gridx = x;
                 this.gridy = y;
+            }
+
+            Cell (int x, int y, int height){
+                super();
+
+                this.weightx = 1.0;
+                this.fill = HORIZONTAL;
+                this.insets = new Insets(5,5,5,5);
+
+                this.gridx = x;
+                this.gridy = y;
+                this.gridheight = height;
             }
         }
     }
