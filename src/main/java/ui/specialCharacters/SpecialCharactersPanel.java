@@ -1,4 +1,4 @@
-package ui.channelInfo.complexElements;
+package ui.specialCharacters;
 
 import converters.VariableConverter;
 import model.Measurement;
@@ -13,6 +13,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class SpecialCharactersPanel extends JPanel {
+    private static final String DEGREE_CELSIUS = "\u2103";
+    private static final String DEGREE_OF = "X\u207F";
+    private static final String ALPHA = "\u03B1";
+    private static final String BETA = "\u03B2";
+    private static final String GAMMA = "\u03B3";
+    private static final String DELTA_UP = "\u0394";
+    private static final String DELTA_DOWN = "\u03B4";
+    private static final String OMEGA_UP = "\u03A9";
+    private static final String OMEGA_DOWN = "\u03C9";
+    private static final String THETA = "\u03B8";
+    private static final String LAMBDA = "\u03BB";
+    private static final String MU = "\u03BC";
+    private static final String PI = "\u03C0";
+    private static final String FI = "\u03C6";
+
+
     private static final String SPECIAL_CHARACTERS = "Спеціальні символи";
     private static final String INSERT = "Вставити";
     private static final String BACK = "Назад";
@@ -21,7 +37,9 @@ public class SpecialCharactersPanel extends JPanel {
     public static final int MODE_MAIN = 0;
     public static final int MODE_DEGREE = 1;
 
-    private JButton degreeCelsius, degreeOf;
+    private JButton degreeCelsius;
+    private JButton alpha, beta, gamma, deltaUp, deltaDown, omegaUp, omegaDown, theta, lambda, mu, pi, fi;
+    private JButton degreeOf;
     private JButton insert, back;
     private JTextField degreeOfText, fieldForInsert, buffer;
 
@@ -34,8 +52,23 @@ public class SpecialCharactersPanel extends JPanel {
     }
 
     private void createElements(){
-        this.degreeCelsius = new DefaultButton(Measurement.DEGREE_CELSIUS);
-        this.degreeOf = new DefaultButton("X\u207F");
+        this.degreeCelsius = new DefaultButton(DEGREE_CELSIUS);
+
+        this.alpha = new DefaultButton(ALPHA);
+        this.beta = new DefaultButton(BETA);
+        this.gamma = new DefaultButton(GAMMA);
+        this.deltaUp = new DefaultButton(DELTA_UP);
+        this.deltaDown = new DefaultButton(DELTA_DOWN);
+        this.omegaUp = new DefaultButton(OMEGA_UP);
+        this.omegaDown = new DefaultButton(OMEGA_DOWN);
+        this.theta = new DefaultButton(THETA);
+        this.lambda = new DefaultButton(LAMBDA);
+        this.mu = new DefaultButton(MU);
+        this.pi = new DefaultButton(PI);
+        this.fi = new DefaultButton(FI);
+
+        this.degreeOf = new DefaultButton(DEGREE_OF);
+
         this.insert = new DefaultButton(INSERT);
         this.insert.setEnabled(false);
         this.back = new DefaultButton(BACK);
@@ -46,9 +79,23 @@ public class SpecialCharactersPanel extends JPanel {
 
     private void setReactions(){
         this.degreeOf.addActionListener(clickDegree);
+
         this.back.addActionListener(clickBack);
-        this.degreeCelsius.addActionListener(clickPaste);
         this.insert.addActionListener(clickInsert);
+
+        this.degreeCelsius.addActionListener(clickPaste);
+        this.alpha.addActionListener(clickPaste);
+        this.beta.addActionListener(clickPaste);
+        this.gamma.addActionListener(clickPaste);
+        this.deltaUp.addActionListener(clickPaste);
+        this.deltaDown.addActionListener(clickPaste);
+        this.omegaUp.addActionListener(clickPaste);
+        this.omegaDown.addActionListener(clickPaste);
+        this.theta.addActionListener(clickPaste);
+        this.lambda.addActionListener(clickPaste);
+        this.mu.addActionListener(clickPaste);
+        this.pi.addActionListener(clickPaste);
+        this.fi.addActionListener(clickPaste);
 
         this.degreeOfText.getDocument().addDocumentListener(changeDegree);
     }
@@ -62,7 +109,21 @@ public class SpecialCharactersPanel extends JPanel {
             this.add(insert, new Cell(1, 1, 1));
         } else {
             this.add(degreeCelsius, new Cell(0, 0));
-            this.add(degreeOf, new Cell(1, 0));
+
+            this.add(alpha, new Cell(0,1));
+            this.add(beta, new Cell(1,1));
+            this.add(gamma, new Cell(2,1));
+            this.add(deltaUp, new Cell(3,1));
+            this.add(deltaDown, new Cell(0,2));
+            this.add(omegaUp, new Cell(1,2));
+            this.add(omegaDown, new Cell(2,2));
+            this.add(theta, new Cell(3,2));
+            this.add(lambda, new Cell(0,3));
+            this.add(mu, new Cell(1,3));
+            this.add(pi, new Cell(2,3));
+            this.add(fi, new Cell(3,3));
+
+            this.add(degreeOf, new Cell(0, 4));
         }
         TitledBorder border = BorderFactory.createTitledBorder(SPECIAL_CHARACTERS);
         border.setTitleJustification(TitledBorder.CENTER);

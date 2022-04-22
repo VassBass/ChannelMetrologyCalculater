@@ -6,6 +6,7 @@ import model.Measurement;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
@@ -14,6 +15,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
     private static final String PERCENT = "% ";
     private static final String AND = " та ";
     private static final String DEFAULT_VALUE = "1.5";
+    private static final String ALLOWABLE_ERROR_OF_CHANNEL = "Допустима похибка вимірювального каналу";
 
     private final DialogChannel parent;
 
@@ -53,6 +55,8 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
         this.add(this.and);
         this.add(this.errorValue);
         this.add(this.value);
+        TitledBorder border = BorderFactory.createTitledBorder(ALLOWABLE_ERROR_OF_CHANNEL);
+        this.setBorder(border);
     }
 
     public void updateRange(double range) {

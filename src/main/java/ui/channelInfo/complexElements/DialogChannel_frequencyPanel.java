@@ -4,6 +4,7 @@ import converters.VariableConverter;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ public class DialogChannel_frequencyPanel extends JPanel {
     private static final String DEFAULT_FREQUENCY_VALUE = "2.00";
     private static final String NEXT_DATE = " Дата наступної перевірки: ";
     private static final String ZERO = "0.00";
+    private static final String FREQUENCY_CONTROL = "Міжконтрольний інтервал";
 
     private final DialogChannel parent;
 
@@ -45,6 +47,8 @@ public class DialogChannel_frequencyPanel extends JPanel {
         this.add(this.frequency);
         this.add(this.nextDateLabel);
         this.add(this.nextDate);
+        TitledBorder border = BorderFactory.createTitledBorder(FREQUENCY_CONTROL);
+        this.setBorder(border);
     }
 
     public void updateFrequency(double frequency, Calendar date) {

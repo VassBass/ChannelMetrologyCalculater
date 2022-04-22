@@ -5,6 +5,7 @@ import model.Measurement;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
@@ -20,6 +21,8 @@ public class DialogChannel_rangePanel extends JPanel {
     private JLabel dath;
     private JTextField maxRange;
     private JLabel value;
+
+    private final TitledBorder border = BorderFactory.createTitledBorder(DASH);
 
     public final double OLD = -999999999D;
 
@@ -49,6 +52,11 @@ public class DialogChannel_rangePanel extends JPanel {
         this.add(this.dath);
         this.add(this.maxRange);
         this.add(this.value);
+        this.setBorder(this.border);
+    }
+
+    public void setTitle(String title){
+        this.border.setTitle(title);
     }
 
     public void updateValue(String value) {

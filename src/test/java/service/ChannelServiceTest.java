@@ -272,6 +272,20 @@ class ChannelServiceTest {
     }
 
     @Test
+    void get() {
+        Date start = new Date();
+
+        String notExistsTestCode = "N";
+        Channel testChannel = channelTemperature();
+
+        assertEquals(testChannel, service.get(testChannel.getCode()));
+        assertNull(service.get(notExistsTestCode));
+        assertNull(service.get(null));
+
+        System.out.println("get() duration = " + howLong(start, new Date()) + " mills");
+    }
+
+    @Test
     void add() {
         Date start = new Date();
 

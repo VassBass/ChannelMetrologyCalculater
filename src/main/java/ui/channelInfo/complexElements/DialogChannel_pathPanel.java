@@ -3,10 +3,12 @@ package ui.channelInfo.complexElements;
 import application.Application;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.Objects;
 
 public class DialogChannel_pathPanel extends JPanel {
+    private static final String PATH = "Розташування";
 
     private JComboBox<String>departments;
     private JComboBox<String>areas;
@@ -45,6 +47,8 @@ public class DialogChannel_pathPanel extends JPanel {
         this.add(this.installations);
 
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        TitledBorder border = BorderFactory.createTitledBorder(PATH);
+        this.setBorder(border);
     }
 
     public void update(String department, String area, String process, String installation){

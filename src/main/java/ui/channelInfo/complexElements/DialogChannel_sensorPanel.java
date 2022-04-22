@@ -8,6 +8,7 @@ import ui.channelInfo.DialogChannel;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -19,6 +20,7 @@ import java.util.Objects;
 public class DialogChannel_sensorPanel extends JPanel {
     private static final String NO = "NO.";
     private static final String ADD_NEW_SENSOR = "<-Додати новий->";
+    private static final String SENSOR = "Первинний вимірювальний пристрій";
 
     private final DialogChannel parent;
 
@@ -53,6 +55,8 @@ public class DialogChannel_sensorPanel extends JPanel {
 
     private void build() {
         this.add(this.sensorsList);
+        TitledBorder border = BorderFactory.createTitledBorder(SENSOR);
+        this.setBorder(border);
     }
 
     private final ItemListener changeSensorName = new ItemListener() {

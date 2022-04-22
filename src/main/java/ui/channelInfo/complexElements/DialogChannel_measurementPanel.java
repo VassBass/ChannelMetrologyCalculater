@@ -5,6 +5,7 @@ import model.Measurement;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class DialogChannel_measurementPanel extends JPanel {
+    private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
 
     private final DialogChannel parent;
     private final DialogChannel_measurementPanel currentPanel;
@@ -50,6 +52,8 @@ public class DialogChannel_measurementPanel extends JPanel {
     }
 
     private void build(){
+        TitledBorder border = BorderFactory.createTitledBorder(TYPE_OF_MEASUREMENT);
+        this.setBorder(border);
         this.add(this.measurementName);
         this.add(this.measurementValue);
     }

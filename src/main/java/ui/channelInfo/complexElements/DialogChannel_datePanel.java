@@ -5,6 +5,7 @@ import converters.VariableConverter;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Calendar;
@@ -12,6 +13,7 @@ import java.util.GregorianCalendar;
 
 public class DialogChannel_datePanel extends JPanel {
     private static final String DOT = ".";
+    private static final String THIS_DATE = "Дата останньої перевірки";
 
     private final DialogChannel parent;
 
@@ -55,6 +57,8 @@ public class DialogChannel_datePanel extends JPanel {
         this.add(this.month);
         this.add(this.dot2);
         this.add(this.year);
+        TitledBorder border = BorderFactory.createTitledBorder(THIS_DATE);
+        this.setBorder(border);
     }
 
     public void setDate(Calendar date) {
