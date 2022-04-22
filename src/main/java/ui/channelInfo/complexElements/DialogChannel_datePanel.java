@@ -6,6 +6,7 @@ import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Calendar;
@@ -51,6 +52,7 @@ public class DialogChannel_datePanel extends JPanel {
     }
 
     private void build(){
+        this.setBackground(Color.WHITE);
         this.setDate(Calendar.getInstance());
         this.add(this.day);
         this.add(this.dot1);
@@ -99,6 +101,7 @@ public class DialogChannel_datePanel extends JPanel {
         @Override
         public void focusGained(FocusEvent e) {
             day.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
 
         @Override
@@ -140,6 +143,7 @@ public class DialogChannel_datePanel extends JPanel {
         @Override
         public void focusGained(FocusEvent e) {
             month.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
 
         @Override
@@ -176,6 +180,7 @@ public class DialogChannel_datePanel extends JPanel {
         @Override
         public void focusGained(FocusEvent e) {
             year.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
 
         @Override

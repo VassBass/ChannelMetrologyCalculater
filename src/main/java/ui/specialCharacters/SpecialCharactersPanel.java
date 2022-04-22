@@ -1,7 +1,6 @@
 package ui.specialCharacters;
 
 import converters.VariableConverter;
-import model.Measurement;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -9,8 +8,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class SpecialCharactersPanel extends JPanel {
     private static final String DEGREE_CELSIUS = "\u2103";
@@ -28,6 +26,7 @@ public class SpecialCharactersPanel extends JPanel {
     private static final String PI = "\u03C0";
     private static final String FI = "\u03C6";
 
+    private boolean crutch = false;
 
     private static final String SPECIAL_CHARACTERS = "Спеціальні символи";
     private static final String INSERT = "Вставити";
@@ -98,9 +97,13 @@ public class SpecialCharactersPanel extends JPanel {
         this.fi.addActionListener(clickPaste);
 
         this.degreeOfText.getDocument().addDocumentListener(changeDegree);
+
+        this.degreeOfText.addFocusListener(degreeFocus);
     }
 
     private void build(int mode){
+        this.setBackground(Color.WHITE);
+
         this.removeAll();
         if (mode == MODE_DEGREE) {
             this.buffer = fieldForInsert;
@@ -132,19 +135,26 @@ public class SpecialCharactersPanel extends JPanel {
     }
 
     public void setFieldForInsert(JTextField textField){
-        this.fieldForInsert = textField;
+        if (this.buffer == null){
+            this.fieldForInsert = textField;
+        }else {
+            if (textField == null){
+                build(MODE_MAIN);
+            }
+            this.fieldForInsert = textField;
+            if (crutch) {
+                this.buffer = textField;
+            }else {
+                this.crutch = true;
+            }
+        }
     }
 
     private final ActionListener clickDegree = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    build(MODE_DEGREE);
-                    degreeOfText.requestFocus();
-                }
-            });
+            build(MODE_DEGREE);
+            degreeOfText.requestFocus();
         }
     };
 
@@ -152,7 +162,9 @@ public class SpecialCharactersPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             build(MODE_MAIN);
-            buffer.requestFocus();
+            if (buffer != null) buffer.requestFocus();
+            buffer = null;
+            crutch = false;
         }
     };
 
@@ -160,19 +172,25 @@ public class SpecialCharactersPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             final JButton button = (JButton) e.getSource();
-            fieldForInsert.setCaretPosition(fieldForInsert.getDocument().getLength());
-            fieldForInsert.replaceSelection(button.getText());
-            fieldForInsert.requestFocus();
+            if (fieldForInsert != null) {
+                fieldForInsert.setCaretPosition(fieldForInsert.getDocument().getLength());
+                fieldForInsert.replaceSelection(button.getText());
+                fieldForInsert.requestFocus();
+            }
         }
     };
 
     private final ActionListener clickInsert = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            buffer.setCaretPosition(buffer.getDocument().getLength());
-            buffer.replaceSelection(VariableConverter.superscript(degreeOfText.getText()));
-            build(MODE_MAIN);
-            buffer.requestFocus();
+            if (buffer != null) {
+                buffer.setCaretPosition(buffer.getDocument().getLength());
+                buffer.replaceSelection(VariableConverter.superscript(degreeOfText.getText()));
+                build(MODE_MAIN);
+                buffer.requestFocus();
+                buffer = null;
+                crutch = false;
+            }
         }
     };
 
@@ -188,6 +206,13 @@ public class SpecialCharactersPanel extends JPanel {
         }
 
         @Override public void changedUpdate(DocumentEvent e) {}
+    };
+
+    private final FocusListener degreeFocus = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            degreeOfText.selectAll();
+        }
     };
 
     private static class Cell extends GridBagConstraints {

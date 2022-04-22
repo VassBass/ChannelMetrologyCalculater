@@ -14,6 +14,7 @@ import ui.model.ButtonCell;
 import ui.model.DefaultButton;
 import ui.sensorsList.SensorsListDialog;
 import ui.sensorsList.sensorInfo.complexElements.SensorRangePanel;
+import ui.specialCharacters.SpecialCharactersPanel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -66,6 +67,7 @@ public class SensorInfoDialog extends JDialog {
     private JTextField nameText;
     private SensorRangePanel rangePanel;
     private JTextField errorFormulaText;
+    public SpecialCharactersPanel specialCharactersPanel;
 
     private JPopupMenu namePopupMenu, errorPopupMenu;
 
@@ -129,19 +131,21 @@ public class SensorInfoDialog extends JDialog {
         this.labelErrorFormula = new ButtonCell(true, ERROR_FORMULA);
 
         this.measurementsList = new JComboBox<>(Application.context.measurementService.getAllNames());
+        this.measurementsList.setBackground(Color.WHITE);
 
         String[]consumptionTypes = new String[]{"",Sensor.YOKOGAWA, Sensor.ROSEMOUNT};
         this.typeText = new JTextField(10);
         this.typesList = new JComboBox<>(consumptionTypes);
         this.typeText.setToolTipText(TYPE_HINT);
         this.typesList.setToolTipText(TYPE_HINT);
+        this.typesList.setBackground(Color.WHITE);
 
         this.nameText = new JTextField(10);
         this.nameText.setToolTipText(NAME_HINT);
         this.namePopupMenu = new JPopupMenu(INSERT);
         this.nameText.setComponentPopupMenu(this.namePopupMenu);
 
-        this.rangePanel = new SensorRangePanel();
+        this.rangePanel = new SensorRangePanel(this);
 
         this.errorFormulaText = new JTextField(10);
         this.errorPopupMenu = new JPopupMenu(INSERT);
@@ -228,6 +232,8 @@ public class SensorInfoDialog extends JDialog {
         this.buttonCancel = new DefaultButton(CANCEL);
         this.buttonSave = new DefaultButton(SAVE);
 
+        this.specialCharactersPanel = new SpecialCharactersPanel();
+
         LOGGER.fine("SensorInfoDialog: create elements SUCCESS");
     }
 
@@ -272,6 +278,11 @@ public class SensorInfoDialog extends JDialog {
 
         this.typeText.getDocument().addDocumentListener(this.typeChange);
         this.errorFormulaText.getDocument().addDocumentListener(this.errorUpdate);
+
+        this.typeText.addFocusListener(focusListener);
+        this.nameText.addFocusListener(focusListener);
+        this.errorFormulaText.addFocusListener(focusForResetSpecialCharactersPanel);
+        this.measurementsList.addFocusListener(focusForResetSpecialCharactersPanel);
     }
 
     private void build() {
@@ -326,6 +337,7 @@ public class SensorInfoDialog extends JDialog {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            specialCharactersPanel.setFieldForInsert(null);
             if (Application.isBusy(SensorInfoDialog.this)) return;
             if (checkSensor()) {
                 Sensor sensor = new Sensor();
@@ -461,6 +473,21 @@ public class SensorInfoDialog extends JDialog {
         }
     };
 
+    private final FocusListener focusListener = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            JTextField source = (JTextField) e.getSource();
+            specialCharactersPanel.setFieldForInsert(source);
+        }
+    };
+
+    private final FocusListener focusForResetSpecialCharactersPanel = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            specialCharactersPanel.setFieldForInsert(null);
+        }
+    };
+
     private boolean checkSensor(){
         if (this.typeText.getText().length() == 0 &&
                 !Objects.requireNonNull(this.measurementsList.getSelectedItem()).toString().equals(Measurement.CONSUMPTION)){
@@ -493,9 +520,11 @@ public class SensorInfoDialog extends JDialog {
     private class MainPanel extends JPanel {
         protected MainPanel(){
             super(new GridBagLayout());
+            this.setBackground(Color.WHITE);
 
             this.add(labelMeasurement, new Cell(0, 0,1));
             this.add(measurementsList, new Cell(1, 0,2));
+            this.add(specialCharactersPanel, new Cell(3,0,1, 5));
             this.add(labelType, new Cell(0, 1,1));
             if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(Measurement.CONSUMPTION)){
                 this.add(typesList, new Cell(1,1,1));
@@ -510,27 +539,28 @@ public class SensorInfoDialog extends JDialog {
             this.add(labelErrorFormula, new Cell(0, 4,1));
             this.add(errorFormulaText, new Cell(1, 4,2));
 
-            this.add(helpFormula1, new Cell(0,5,3));
-            this.add(helpFormula2, new Cell(0,6,3));
-            this.add(helpFormula3, new Cell(0,7,3));
-            this.add(helpFormula4, new Cell(0,8,3));
-            this.add(helpFormula5, new Cell(0,9,3));
-            this.add(helpFormula6, new Cell(0,10,3));
-            this.add(helpFormula7, new Cell(0,11,3));
-            this.add(helpFormula8, new Cell(0,12,3));
-            this.add(helpFormula9, new Cell(0,13,3));
-            this.add(helpFormula10, new Cell(0,14,3));
-            this.add(helpFormula11, new Cell(0,15,3));
-            this.add(helpFormula12, new Cell(0,16,3));
+            this.add(helpFormula1, new Cell(0,5,4));
+            this.add(helpFormula2, new Cell(0,6,4));
+            this.add(helpFormula3, new Cell(0,7,4));
+            this.add(helpFormula4, new Cell(0,8,4));
+            this.add(helpFormula5, new Cell(0,9,4));
+            this.add(helpFormula6, new Cell(0,10,4));
+            this.add(helpFormula7, new Cell(0,11,4));
+            this.add(helpFormula8, new Cell(0,12,4));
+            this.add(helpFormula9, new Cell(0,13,4));
+            this.add(helpFormula10, new Cell(0,14,4));
+            this.add(helpFormula11, new Cell(0,15,4));
+            this.add(helpFormula12, new Cell(0,16,4));
 
             JPanel buttonsPanel = new JPanel();
+            buttonsPanel.setBackground(Color.WHITE);
             buttonsPanel.add(buttonCancel);
             buttonsPanel.add(buttonSave);
-            this.add(buttonsPanel, new Cell(0,17,3));
+            this.add(buttonsPanel, new Cell(0,17,4));
         }
 
         private class Cell extends GridBagConstraints {
-            protected Cell(int x, int y, int width){
+            Cell(int x, int y, int width){
                 super();
 
                 this.weightx = 1D;
@@ -541,6 +571,21 @@ public class SensorInfoDialog extends JDialog {
                 this.gridy = y;
                 this.gridwidth = width;
             }
+
+            Cell(int x, int y, int width, int height){
+                super();
+
+                this.weightx = 1D;
+                this.weighty = 1D;
+                this.fill = BOTH;
+
+                this.gridx = x;
+                this.gridy = y;
+                this.gridwidth = width;
+                this.gridheight = height;
+            }
         }
+
+
     }
 }

@@ -74,6 +74,7 @@ public class ChannelExistsDialog extends JDialog {
     private class MainPanel extends JPanel {
         MainPanel(){
             super(new GridBagLayout());
+            this.setBackground(Color.WHITE);
 
             this.add(message, new Cell(0,0,2));
             this.add(channelName, new Cell(0,1,2));

@@ -6,6 +6,7 @@ import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
@@ -48,6 +49,8 @@ public class DialogChannel_rangePanel extends JPanel {
     }
 
     private void build() {
+        this.setBackground(Color.WHITE);
+
         this.add(this.minRange);
         this.add(this.dath);
         this.add(this.maxRange);
@@ -79,6 +82,7 @@ public class DialogChannel_rangePanel extends JPanel {
         @Override
         public void focusGained(FocusEvent e) {
             minRange.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
         @Override
         public void focusLost(FocusEvent e) {
@@ -103,6 +107,7 @@ public class DialogChannel_rangePanel extends JPanel {
         @Override
         public void focusGained(FocusEvent e) {
             maxRange.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
         @Override
         public void focusLost(FocusEvent e) {

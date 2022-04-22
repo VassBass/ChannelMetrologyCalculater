@@ -1,24 +1,32 @@
 package ui.channelInfo.complexElements;
 
 import application.Application;
+import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Objects;
 
 public class DialogChannel_pathPanel extends JPanel {
     private static final String PATH = "Розташування";
+
+    private final DialogChannel parent;
 
     private JComboBox<String>departments;
     private JComboBox<String>areas;
     private JComboBox<String>processes;
     private JComboBox<String>installations;
 
-    public DialogChannel_pathPanel(){
+    public DialogChannel_pathPanel(DialogChannel parent){
         super();
+        this.parent = parent;
 
         this.createElements();
+        this.setReactions();
         this.build();
     }
 
@@ -40,7 +48,16 @@ public class DialogChannel_pathPanel extends JPanel {
         this.installations.setBackground(Color.WHITE);
     }
 
+    private void setReactions(){
+        this.departments.addFocusListener(focus);
+        this.areas.addFocusListener(focus);
+        this.processes.addFocusListener(focus);
+        this.installations.addFocusListener(focus);
+    }
+
     private void build() {
+        this.setBackground(Color.WHITE);
+
         this.add(this.departments);
         this.add(this.areas);
         this.add(this.processes);
@@ -78,4 +95,11 @@ public class DialogChannel_pathPanel extends JPanel {
     public String getInstallation(){
         return Objects.requireNonNull(this.installations.getSelectedItem()).toString();
     }
+
+    private final FocusListener focus = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            parent.resetSpecialCharactersPanel();
+        }
+    };
 }

@@ -5,6 +5,7 @@ import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Calendar;
@@ -43,6 +44,7 @@ public class DialogChannel_frequencyPanel extends JPanel {
     }
 
     private void build() {
+        this.setBackground(Color.WHITE);
         this.setNextDate(Calendar.getInstance());
         this.add(this.frequency);
         this.add(this.nextDateLabel);
@@ -65,6 +67,7 @@ public class DialogChannel_frequencyPanel extends JPanel {
         @Override
         public void focusGained(FocusEvent e) {
             frequency.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
         @Override
         public void focusLost(FocusEvent e) {

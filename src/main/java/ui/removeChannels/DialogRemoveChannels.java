@@ -7,6 +7,7 @@ import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,14 +40,15 @@ public class DialogRemoveChannels extends JDialog {
     private void createElements() {
         int selectedIndex = this.mainScreen.mainTable.getSelectedRow();
         if (selectedIndex == -1){
-            this.text = new JLabel(CHOOSE_CHANNEL_TO_REMOVE);
-
             String[]channelsList = new String[this.mainScreen.channelsList.size()];
             for (int x=0;x<channelsList.length;x++) {
                 channelsList[x] = this.mainScreen.channelsList.get(x).getName();
             }
             this.channelsList = new JComboBox<>(channelsList);
             this.channelsList.setBackground(Color.white);
+            TitledBorder border = BorderFactory.createTitledBorder(CHOOSE_CHANNEL_TO_REMOVE);
+            border.setTitleJustification(TitledBorder.CENTER);
+            this.channelsList.setBorder(border);
         }else {
             String channelName = this.mainScreen.channelsList.get(selectedIndex).getName();
             this.text = new JLabel(REMOVE_CHANNEL + " \"" + channelName + "\"?");
@@ -138,18 +140,20 @@ public class DialogRemoveChannels extends JDialog {
 
         protected MainPanel() {
             super(new GridBagLayout());
+            this.setBackground(Color.WHITE);
+
             JPanel buttonsPanel = new JPanel();
+            buttonsPanel.setBackground(Color.WHITE);
             buttonsPanel.add(removeAll);
             buttonsPanel.add(negativeButton);
             buttonsPanel.add(positiveButton);
 
-            this.add(text, new Cell(0,0));
             if (channelsList != null) {
-                this.add(channelsList, new Cell(1,0));
-                this.add(buttonsPanel, new Cell(1,1));
+                this.add(channelsList, new Cell(0,0));
             }else {
-                this.add(buttonsPanel, new Cell(0,1));
+                this.add(text, new Cell(0,0));
             }
+            this.add(buttonsPanel, new Cell(0,1));
 
         }
 
@@ -159,6 +163,7 @@ public class DialogRemoveChannels extends JDialog {
                 super();
 
                 this.fill = HORIZONTAL;
+                this.insets = new Insets(5,0,5,0);
 
                 this.gridx = x;
                 this.gridy = y;

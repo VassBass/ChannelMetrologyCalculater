@@ -7,6 +7,7 @@ import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
@@ -50,6 +51,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
     }
 
     private void build() {
+        this.setBackground(Color.WHITE);
         this.add(this.errorPercent);
         this.add(this.labelPercent);
         this.add(this.and);
@@ -109,6 +111,7 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
         public void focusGained(FocusEvent e) {
             JTextField item = (JTextField) e.getSource();
             item.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
 
         @Override

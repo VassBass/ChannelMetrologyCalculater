@@ -2,9 +2,11 @@ package ui.sensorsList.sensorInfo.complexElements;
 
 import application.Application;
 import converters.VariableConverter;
+import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -12,13 +14,16 @@ public class SensorRangePanel extends JPanel {
     private static final String DEFAULT_VALUE = "0.00";
     private static final String DASH = " - ";
 
+    private final SensorInfoDialog parent;
+
     private JTextField rangeMin, rangeMax;
     private JLabel t;
     private JComboBox<String>values;
     private String rMin, rMax;
 
-    public SensorRangePanel(){
+    public SensorRangePanel(SensorInfoDialog parent){
         super(new GridBagLayout());
+        this.parent = parent;
 
         this.createElements();
         this.setReactions();
@@ -36,14 +41,18 @@ public class SensorRangePanel extends JPanel {
         this.t.setHorizontalAlignment(SwingConstants.CENTER);
 
         this.values = new JComboBox<>();
+        this.values.setBackground(Color.WHITE);
     }
 
     private void setReactions() {
         this.rangeMin.addFocusListener(rangeFocus);
         this.rangeMax.addFocusListener(rangeFocus);
+        this.values.addFocusListener(focusValue);
     }
 
     private void build() {
+        this.setBackground(Color.WHITE);
+
         this.add(this.rangeMin, new Cell(0));
         this.add(this.t, new Cell(1));
         this.add(this.rangeMax, new Cell(2));
@@ -128,6 +137,7 @@ public class SensorRangePanel extends JPanel {
         public void focusGained(FocusEvent e) {
             JTextField field = (JTextField) e.getSource();
             field.selectAll();
+            parent.specialCharactersPanel.setFieldForInsert(null);
         }
 
         @Override
@@ -145,6 +155,13 @@ public class SensorRangePanel extends JPanel {
                 r2 = Double.parseDouble(VariableConverter.doubleString(rangeMax.getText()));
             }catch (Exception ignored){}
             setRange(r1, r2);
+        }
+    };
+
+    private final FocusListener focusValue = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            parent.specialCharactersPanel.setFieldForInsert(null);
         }
     };
 

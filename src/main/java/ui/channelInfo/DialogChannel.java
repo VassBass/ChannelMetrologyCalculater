@@ -105,6 +105,7 @@ public class DialogChannel extends JDialog {
         this.userProtocolNumber.setBorder(protocolNumberBorder);
 
         this.rangeLikeChannel = new JCheckBox(SET_RANGE_LIKE_CHANNEL);
+        this.rangeLikeChannel.setBackground(Color.WHITE);
 
         this.negativeButton = new DefaultButton(CLOSE);
         this.positiveButton = new DefaultButton(SAVE);
@@ -116,7 +117,7 @@ public class DialogChannel extends JDialog {
         this.measurementPanel = new DialogChannel_measurementPanel(this);
         this.datePanel = new DialogChannel_datePanel(this);
         this.frequencyPanel = new DialogChannel_frequencyPanel(this);
-        this.pathPanel = new DialogChannel_pathPanel();
+        this.pathPanel = new DialogChannel_pathPanel(this);
         this.sensorPanel = new DialogChannel_sensorPanel(this);
         this.rangePanel = new DialogChannel_rangePanel(this);
         this.allowableErrorPanel = new DialogChannel_allowableErrorPanel(this);
@@ -130,6 +131,7 @@ public class DialogChannel extends JDialog {
         this.userName.addFocusListener(focusOnText);
         this.userProtocolNumber.addFocusListener(focusOnText);
         this.userTechnologyNumber.addFocusListener(focusOnText);
+        this.rangeLikeChannel.addFocusListener(focus);
 
         this.rangeLikeChannel.addItemListener(this.clickRangeLikeChannel);
         this.negativeButton.addActionListener(this.clickNegativeButton);
@@ -269,7 +271,7 @@ public class DialogChannel extends JDialog {
         this.sensorPanel.update(measurementName);
         if (measurementName.equals(Measurement.TEMPERATURE)
             || measurementName.equals(Measurement.PRESSURE)){
-            this.sensorRangePanel = new DialogChannel_sensorRangePanel(measurement);
+            this.sensorRangePanel = new DialogChannel_sensorRangePanel(this, measurement);
             this.sensorRangePanel.update(Application.context.sensorService.get(this.sensorPanel.getSensor().getName()));
             this.rangePanel.setTitle(RANGE_OF_CHANNEL);
             this.allowableErrorPanel.setEnabled(true);
@@ -322,6 +324,7 @@ public class DialogChannel extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            resetSpecialCharactersPanel();
             if (!allFieldsAreFilled() || Application.isBusy(DialogChannel.this)) return;
 
             Application.putHint(userName.getText());
@@ -359,12 +362,14 @@ public class DialogChannel extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             build();
+            resetSpecialCharactersPanel();
         }
     };
 
     private final ActionListener clickSaveAndCalculate = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
+            resetSpecialCharactersPanel();
             if (!allFieldsAreFilled() || Application.isBusy(DialogChannel.this)) return;
 
             Application.putHint(userName.getText());
@@ -418,10 +423,22 @@ public class DialogChannel extends JDialog {
         }
     };
 
+    private final FocusListener focus = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            resetSpecialCharactersPanel();
+        }
+    };
+
+    public void resetSpecialCharactersPanel(){
+        this.specialCharactersPanel.setFieldForInsert(null);
+    }
+
     private class MainPanel extends JPanel {
 
         protected MainPanel() {
             super(new GridBagLayout());
+            this.setBackground(Color.WHITE);
 
             this.add(userCode, new Cell(0,0));
             this.add(specialCharactersPanel, new Cell(2,0,5));
@@ -436,6 +453,7 @@ public class DialogChannel extends JDialog {
 
             if (sensorRangePanel != null){
                 JPanel srp = new JPanel();
+                srp.setBackground(Color.WHITE);
                 srp.setLayout(new BoxLayout(srp, BoxLayout.Y_AXIS));
                 srp.add(sensorRangePanel);
                 srp.add(rangeLikeChannel);
@@ -455,6 +473,7 @@ public class DialogChannel extends JDialog {
             this.add(saveAndCalculateButton, buttonCell);
 
             JPanel buttonsPanel = new JPanel();
+            buttonsPanel.setBackground(Color.WHITE);
             buttonsPanel.add(negativeButton);
             if (oldChannel != null) buttonsPanel.add(resetButton);
             buttonsPanel.add(positiveButton);

@@ -7,10 +7,7 @@ import ui.channelInfo.DialogChannel;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -49,9 +46,11 @@ public class DialogChannel_measurementPanel extends JPanel {
         this.measurementValue.addItemListener(this.changeValue);
 
         this.measurementValue.addFocusListener(this.changeFocusFromValue);
+        this.measurementName.addFocusListener(focusOnName);
     }
 
     private void build(){
+        this.setBackground(Color.WHITE);
         TitledBorder border = BorderFactory.createTitledBorder(TYPE_OF_MEASUREMENT);
         this.setBorder(border);
         this.add(this.measurementName);
@@ -131,17 +130,26 @@ public class DialogChannel_measurementPanel extends JPanel {
         }
     };
 
-    @SuppressWarnings("unchecked")
     private final FocusListener changeFocusFromValue = new FocusListener() {
-        @Override public void focusGained(FocusEvent e) {}
+        @Override public void focusGained(FocusEvent e) {
+            parent.resetSpecialCharactersPanel();
+        }
 
         @Override
         public void focusLost(FocusEvent e) {
-            JComboBox<String> item = (JComboBox<String>) e.getSource();
-            String measurementVal = Objects.requireNonNull(item.getSelectedItem()).toString();
+            if (measurementValue.getSelectedItem() != null) {
+                String measurementVal = measurementValue.getSelectedItem().toString();
 
-            parent.allowableErrorPanel.updateValue(measurementVal);
-            parent.rangePanel.updateValue(measurementVal);
+                parent.allowableErrorPanel.updateValue(measurementVal);
+                parent.rangePanel.updateValue(measurementVal);
+            }
+        }
+    };
+
+    private final FocusListener focusOnName = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            parent.resetSpecialCharactersPanel();
         }
     };
 }

@@ -4,9 +4,11 @@ import application.Application;
 import converters.VariableConverter;
 import model.Measurement;
 import model.Sensor;
+import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Locale;
@@ -27,9 +29,11 @@ public class DialogChannel_sensorRangePanel extends JPanel {
     private JComboBox<String>value;
 
     private final Measurement measurement;
+    private final DialogChannel parent;
 
-    public DialogChannel_sensorRangePanel(Measurement measurement){
+    public DialogChannel_sensorRangePanel(DialogChannel parent, Measurement measurement){
         super();
+        this.parent = parent;
         this.measurement = measurement;
 
         this.createElements();
@@ -52,9 +56,12 @@ public class DialogChannel_sensorRangePanel extends JPanel {
     private void setReactions() {
         this.min.addFocusListener(focus);
         this.max.addFocusListener(focus);
+        this.value.addFocusListener(focus_);
     }
 
     private void build() {
+        this.setBackground(Color.WHITE);
+
         this.add(this.minLabel);
         this.add(this.min);
         this.add(this.maxLabel);
@@ -97,6 +104,7 @@ public class DialogChannel_sensorRangePanel extends JPanel {
         public void focusGained(FocusEvent e) {
             JTextField source = (JTextField)e.getSource();
             source.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
 
         @Override
@@ -117,6 +125,13 @@ public class DialogChannel_sensorRangePanel extends JPanel {
                     max.setText(String.valueOf(minD));
                 }
             }
+        }
+    };
+
+    private final FocusListener focus_ = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            parent.resetSpecialCharactersPanel();
         }
     };
 

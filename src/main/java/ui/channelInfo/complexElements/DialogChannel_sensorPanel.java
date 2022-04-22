@@ -12,8 +12,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -51,10 +50,16 @@ public class DialogChannel_sensorPanel extends JPanel {
         this.sensorsList.addItemListener(this.changeSensorName);
 
         this.serialNumber.getDocument().addDocumentListener(this.serialNumberUpdate);
+
+        this.sensorsList.addFocusListener(focusOn);
+        this.serialNumber.addFocusListener(focusOn);
     }
 
     private void build() {
+        this.setBackground(Color.WHITE);
+
         this.add(this.sensorsList);
+
         TitledBorder border = BorderFactory.createTitledBorder(SENSOR);
         this.setBorder(border);
     }
@@ -108,6 +113,13 @@ public class DialogChannel_sensorPanel extends JPanel {
         }
 
         @Override public void changedUpdate(DocumentEvent e) {}
+    };
+
+    private final FocusListener focusOn = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            parent.resetSpecialCharactersPanel();
+        }
     };
 
     public void update(String measurementName) throws NullPointerException {
