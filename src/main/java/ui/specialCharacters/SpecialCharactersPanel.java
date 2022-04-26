@@ -52,13 +52,20 @@ public class SpecialCharactersPanel extends JPanel {
 
     private void createElements(){
         this.degreeCelsius = new DefaultButton(DEGREE_CELSIUS);
+        this.degreeCelsius.setFocusable(false);
 
         this.alpha = new DefaultButton(ALPHA);
+        this.alpha.setFocusable(false);
         this.beta = new DefaultButton(BETA);
+        this.beta.setFocusable(false);
         this.gamma = new DefaultButton(GAMMA);
+        this.gamma.setFocusable(false);
         this.deltaUp = new DefaultButton(DELTA_UP);
+        this.deltaUp.setFocusable(false);
         this.deltaDown = new DefaultButton(DELTA_DOWN);
+        this.deltaDown.setFocusable(false);
         this.omegaUp = new DefaultButton(OMEGA_UP);
+        this.omegaUp.setFocusable(false);
         this.omegaDown = new DefaultButton(OMEGA_DOWN);
         this.theta = new DefaultButton(THETA);
         this.lambda = new DefaultButton(LAMBDA);
@@ -127,6 +134,10 @@ public class SpecialCharactersPanel extends JPanel {
             this.add(fi, new Cell(3,3));
 
             this.add(degreeOf, new Cell(0, 4));
+
+            for (Component component : this.getComponents()){
+                component.setFocusable(false);
+            }
         }
         TitledBorder border = BorderFactory.createTitledBorder(SPECIAL_CHARACTERS);
         border.setTitleJustification(TitledBorder.CENTER);

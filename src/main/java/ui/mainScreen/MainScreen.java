@@ -31,7 +31,7 @@ public class MainScreen extends JFrame {
     }
 
     public void init(ArrayList<Channel>channelsList){
-        LOGGER.info("MainScreen: initialization start ...");
+        LOGGER.fine("MainScreen: initialization start ...");
         this.channelsList = channelsList;
         this.setTitle(windowHeader(channelsList.size()));
 
