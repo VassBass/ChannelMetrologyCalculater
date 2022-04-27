@@ -100,15 +100,16 @@ public class DialogChannel_measurementPanel extends JPanel {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 JComboBox<String> item = (JComboBox<String>) e.getSource();
 
-                String measurementName = Objects.requireNonNull(item.getSelectedItem()).toString();
-                currentPanel.update(measurementName);
+                String measurementNameStr = Objects.requireNonNull(item.getSelectedItem()).toString();
+                currentPanel.update(measurementNameStr);
                 String measurementVal = Objects.requireNonNull(measurementValue.getSelectedItem()).toString();
                 parent.allowableErrorPanel.updateValue(measurementVal);
                 parent.rangePanel.updateValue(measurementVal);
-                parent.sensorPanel.update(measurementName);
+                parent.sensorPanel.update(measurementNameStr);
 
-                Measurement measurement = new Measurement(measurementName, measurementVal);
+                Measurement measurement = new Measurement(measurementNameStr, measurementVal);
                 parent.update(measurement);
+                measurementName.requestFocus();
             }
         }
     };
