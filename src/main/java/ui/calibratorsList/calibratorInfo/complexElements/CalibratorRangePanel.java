@@ -3,9 +3,11 @@ package ui.calibratorsList.calibratorInfo.complexElements;
 import application.Application;
 import converters.VariableConverter;
 import model.Measurement;
+import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ public class CalibratorRangePanel extends JPanel {
     private static final String DEFAULT_VALUE = "0.00";
     private static final String DASH = " - ";
 
+    private final CalibratorInfoDialog parent;
+
     private JTextField rangeMin, rangeMax;
     private JComboBox<String>value;
     private JLabel t;
@@ -23,8 +27,9 @@ public class CalibratorRangePanel extends JPanel {
     private String measurement;
     private ValueModel valuesModel;
 
-    public CalibratorRangePanel(){
+    public CalibratorRangePanel(CalibratorInfoDialog parent){
         super(new GridBagLayout());
+        this.parent = parent;
 
         this.createElements();
         this.setReactions();
@@ -44,6 +49,7 @@ public class CalibratorRangePanel extends JPanel {
         this.valuesModel = new ValueModel();
         this.valuesModel.setList(this.measurement);
         this.value = new JComboBox<>(this.valuesModel);
+        this.value.setBackground(Color.WHITE);
     }
 
     private static class ValueModel extends AbstractListModel<String> implements ComboBoxModel<String>{
@@ -104,9 +110,13 @@ public class CalibratorRangePanel extends JPanel {
     private void setReactions() {
         this.rangeMin.addFocusListener(this.rangeFocus);
         this.rangeMax.addFocusListener(this.rangeFocus);
+
+        this.value.addFocusListener(focusListener);
     }
 
     private void build() {
+        this.setBackground(Color.WHITE);
+
         this.add(this.rangeMin, new Cell(0));
         this.add(this.t, new Cell(1));
         this.add(this.rangeMax, new Cell(2));
@@ -183,6 +193,7 @@ public class CalibratorRangePanel extends JPanel {
         public void focusGained(FocusEvent e) {
             JTextField field = (JTextField) e.getSource();
             field.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
 
         @Override
@@ -196,6 +207,13 @@ public class CalibratorRangePanel extends JPanel {
             double r1 = Double.parseDouble(VariableConverter.doubleString(rangeMin.getText()));
             double r2 = Double.parseDouble(VariableConverter.doubleString(rangeMax.getText()));
             setRange(r1, r2);
+        }
+    };
+
+    private final FocusListener focusListener = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            parent.resetSpecialCharactersPanel();
         }
     };
 

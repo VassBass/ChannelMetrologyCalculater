@@ -143,7 +143,7 @@ public class DialogChannel extends JDialog {
     }
 
     private void build() {
-        this.setSize(800, 850);
+        this.setSize(850, 850);
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         if (this.oldChannel == null){
             this.setMeasurement(null);

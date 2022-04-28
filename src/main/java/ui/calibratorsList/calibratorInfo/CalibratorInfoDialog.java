@@ -15,6 +15,7 @@ import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
 import ui.calibratorsList.calibratorInfo.complexElements.CertificateDatePanel;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
+import ui.specialCharacters.SpecialCharactersPanel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -53,6 +54,8 @@ public class CalibratorInfoDialog extends JDialog {
     private final CalibratorsListDialog parent;
     private final Calibrator oldCalibrator;
     private final CalculateStartDialog calculateDialog;
+
+    private final SpecialCharactersPanel specialCharactersPanel = new SpecialCharactersPanel();
 
     private ButtonCell labelCalibrator;
     private ButtonCell labelMeasurement;
@@ -126,6 +129,7 @@ public class CalibratorInfoDialog extends JDialog {
         this.labelCertificateDate = new ButtonCell(true, FROM);
 
         this.measurementsList = new JComboBox<>(Application.context.measurementService.getAllNames());
+        this.measurementsList.setBackground(Color.WHITE);
 
         this.typeText = new JTextField(10);
         this.typeText.setToolTipText(TYPE_HINT);
@@ -136,14 +140,14 @@ public class CalibratorInfoDialog extends JDialog {
         this.nameText.setComponentPopupMenu(this.namePopupMenu);
 
         this.numberText = new JTextField(10);
-        this.rangePanel = new CalibratorRangePanel();
+        this.rangePanel = new CalibratorRangePanel(this);
 
         this.errorFormulaText = new JTextField(10);
         this.errorPopupMenu = new JPopupMenu(INSERT);
         this.errorFormulaText.setComponentPopupMenu(this.errorPopupMenu);
 
         this.certificateNameText = new JTextField(10);
-        this.certificateDatePanel = new CertificateDatePanel();
+        this.certificateDatePanel = new CertificateDatePanel(this);
         this.certificateCompanyText = new JTextField(10);
 
         String toolTipText = "Приклад існує лише для ознайомлення з формою запису і не є реальною формулою.";
@@ -268,10 +272,18 @@ public class CalibratorInfoDialog extends JDialog {
 
         this.typeText.getDocument().addDocumentListener(this.typeChange);
         this.errorFormulaText.getDocument().addDocumentListener(this.errorUpdate);
+
+        this.measurementsList.addFocusListener(focusForResetSpecialCharactersPanel);
+        this.typeText.addFocusListener(focusListener);
+        this.nameText.addFocusListener(focusListener);
+        this.numberText.addFocusListener(focusListener);
+        this.errorFormulaText.addFocusListener(focusForResetSpecialCharactersPanel);
+        this.certificateNameText.addFocusListener(focusListener);
+        this.certificateCompanyText.addFocusListener(focusListener);
     }
 
     private void build() {
-        this.setSize(1050,550);
+        this.setSize(1050,600);
         if (calculateDialog == null) {
             this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         }else {
@@ -435,6 +447,25 @@ public class CalibratorInfoDialog extends JDialog {
         }
     };
 
+    private final FocusListener focusListener = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            JTextField source = (JTextField) e.getSource();
+            specialCharactersPanel.setFieldForInsert(source);
+        }
+    };
+
+    private final FocusListener focusForResetSpecialCharactersPanel = new FocusAdapter() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            resetSpecialCharactersPanel();
+        }
+    };
+
+    public void resetSpecialCharactersPanel(){
+        specialCharactersPanel.setFieldForInsert(null);
+    }
+
     private boolean checkCalibrator(){
         if (this.typeText.getText().length() == 0 &&
                 !Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(Measurement.CONSUMPTION)){
@@ -467,29 +498,31 @@ public class CalibratorInfoDialog extends JDialog {
     private class MainPanel extends JPanel {
         protected MainPanel(){
             super(new GridBagLayout());
+            this.setBackground(Color.WHITE);
 
             this.add(labelCalibrator, new Cell(0,0,2));
-            this.add(labelCertificate, new Cell(2,0,2));
+            this.add(specialCharactersPanel, new Cell(2,0,2,4));
             this.add(labelMeasurement, new Cell(0, 1,1));
             this.add(measurementsList, new Cell(1, 1,1));
-            this.add(labelCertificateName, new Cell(2,1,1));
-            this.add(certificateNameText, new Cell(3,1,1));
             this.add(labelType, new Cell(0, 2, 1));
             this.add(typeText, new Cell(1, 2, 1));
-            this.add(labelCertificateCompany, new Cell(2, 2, 1));
-            this.add(certificateCompanyText, new Cell(3, 2, 1));
             this.add(labelName, new Cell(0, 3,1));
             this.add(nameText, new Cell(1, 3,1));
-            this.add(labelCertificateDate, new Cell(2,3,1));
-            this.add(certificateDatePanel, new Cell(3,3,1));
             this.add(labelNumber, new Cell(0,4,1));
             this.add(numberText, new Cell(1,4,1));
+            this.add(labelCertificate, new Cell(2,4,2));
             this.add(labelRange, new Cell(0, 5,1));
             this.add(rangePanel, new Cell(1, 5,1));
+            this.add(labelCertificateName, new Cell(2,5,1));
+            this.add(certificateNameText, new Cell(3,5,1));
             this.add(labelErrorFormula, new Cell(0, 6,1));
             this.add(errorFormulaText, new Cell(1, 6,1));
+            this.add(labelCertificateCompany, new Cell(2, 6, 1));
+            this.add(certificateCompanyText, new Cell(3, 6, 1));
+            this.add(labelCertificateDate, new Cell(2,7,1));
+            this.add(certificateDatePanel, new Cell(3,7,1));
 
-            this.add(helpFormula1, new Cell(0,7,4));
+            this.add(helpFormula1, new Cell(0,7,2));
             this.add(helpFormula2, new Cell(0,8,4));
             this.add(helpFormula3, new Cell(0,9,4));
             this.add(helpFormula4, new Cell(0,10,4));
@@ -502,8 +535,11 @@ public class CalibratorInfoDialog extends JDialog {
             this.add(helpFormula11, new Cell(0,17,4));
             this.add(helpFormula12, new Cell(0,18,4));
 
-            this.add(buttonCancel, new Cell(2,19,1));
-            this.add(buttonSave, new Cell(3,19,1));
+            JPanel buttonsPanel = new JPanel();
+            buttonsPanel.add(buttonCancel);
+            buttonsPanel.add(buttonSave);
+            buttonsPanel.setBackground(Color.WHITE);
+            this.add(buttonsPanel, new Cell(0,19,4));
         }
 
         private class Cell extends GridBagConstraints {
@@ -517,6 +553,19 @@ public class CalibratorInfoDialog extends JDialog {
                 this.gridx = x;
                 this.gridy = y;
                 this.gridwidth = width;
+            }
+
+            Cell(int x, int y, int width, int height){
+                super();
+
+                this.weightx = 1D;
+                this.weighty = 1D;
+                this.fill = BOTH;
+
+                this.gridx = x;
+                this.gridy = y;
+                this.gridwidth = width;
+                this.gridheight = height;
             }
         }
     }

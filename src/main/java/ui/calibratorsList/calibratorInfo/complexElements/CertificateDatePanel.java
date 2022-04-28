@@ -1,6 +1,7 @@
 package ui.calibratorsList.calibratorInfo.complexElements;
 
 import constants.CalendarConstants;
+import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,14 +13,17 @@ import java.util.GregorianCalendar;
 public class CertificateDatePanel extends JPanel {
     private static final String DOTH = ".";
 
+    private final CalibratorInfoDialog parent;
+
     private JTextField day;
     private JTextField month;
     private JTextField year;
     private JLabel dot1;
     private JLabel dot2;
 
-    public CertificateDatePanel(){
+    public CertificateDatePanel(CalibratorInfoDialog parent){
         super();
+        this.parent = parent;
 
         this.createElements();
         this.setReactions();
@@ -89,6 +93,7 @@ public class CertificateDatePanel extends JPanel {
         @Override
         public void focusGained(FocusEvent e) {
             day.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
 
         @Override
@@ -128,6 +133,7 @@ public class CertificateDatePanel extends JPanel {
         @Override
         public void focusGained(FocusEvent e) {
             month.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
 
         @Override
@@ -162,6 +168,7 @@ public class CertificateDatePanel extends JPanel {
         @Override
         public void focusGained(FocusEvent e) {
             year.selectAll();
+            parent.resetSpecialCharactersPanel();
         }
 
         @Override
