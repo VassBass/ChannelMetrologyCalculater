@@ -71,6 +71,17 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
     }
 
     @Override
+    public ArrayList<Sensor> getAll(String measurement) {
+        ArrayList<Sensor>sensors = new ArrayList<>();
+        if (measurement != null) {
+            for (Sensor sensor : this.mainList) {
+                if (sensor.getMeasurement().equals(measurement)) sensors.add(sensor);
+            }
+        }
+        return sensors;
+    }
+
+    @Override
     public String[] getAllTypes() {
         ArrayList<String>types = new ArrayList<>();
         for (Sensor sensor : this.mainList){

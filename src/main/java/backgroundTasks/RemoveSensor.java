@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RemoveSensor extends SwingWorker<Boolean, Void> {
+    private static final String ALL = "Всі";
     private String lastSensorMessageGenerator(String measurement){
         return "Неможливо видалити останній ПВП для вимірювання параметру \"" + measurement + "\"";
     }
@@ -54,7 +55,8 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
         this.loadDialog.dispose();
         try {
             if (this.get()){
-                this.dialog.update();
+                String measurement = dialog.getMeasurement().equals(ALL) ? null : dialog.getMeasurement();
+                this.dialog.update(measurement);
                 if (Application.context.channelSorter.isOn()){
                     this.dialog.updateMain(Application.context.channelSorter.getCurrent());
                 }else {

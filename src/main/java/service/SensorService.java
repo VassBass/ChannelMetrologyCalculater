@@ -9,6 +9,7 @@ public interface SensorService {
     String[]getAllTypes();
     String[]getAllTypesWithoutROSEMOUNT();
     ArrayList<Sensor> getAll();
+    ArrayList<Sensor>getAll(String measurement);
     String getMeasurement(String sensorType);
     String[] getAllSensorsName(String measurementName);
 

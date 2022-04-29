@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public interface SensorRepository {
     ArrayList<Sensor>getAll();
+    ArrayList<Sensor>getAll(String measurement);
     String[]getAllTypes();
     String[]getAllTypesWithoutROSEMOUNT();
     String getMeasurement(String sensorType);

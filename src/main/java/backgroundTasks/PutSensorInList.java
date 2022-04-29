@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutionException;
 
 public class PutSensorInList extends SwingWorker<Boolean, Void> {
     private static final String SUCCESS = "Успіх";
+    private static final String ALL = "Всі";
 
     private final SensorsListDialog mainDialog;
     private final SensorInfoDialog dialog;
@@ -66,6 +67,7 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
             e.printStackTrace();
         }
         Application.setBusy(false);
-        mainDialog.update();
+        String measurement = mainDialog.getMeasurement().equals(ALL) ? null : mainDialog.getMeasurement();
+        this.mainDialog.update(measurement);
     }
 }

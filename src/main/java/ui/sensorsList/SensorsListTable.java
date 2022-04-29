@@ -14,12 +14,12 @@ public class SensorsListTable extends JTable {
     private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
 
     public SensorsListTable(){
-        super(tableModel());
+        super(tableModel(null));
 
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
-    private static DefaultTableModel tableModel(){
+    private static DefaultTableModel tableModel(String measurement){
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){
@@ -30,7 +30,8 @@ public class SensorsListTable extends JTable {
         String[]columnsHeader = new String[] {NAME, TYPE, TYPE_OF_MEASUREMENT};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Sensor>sensors = Application.context.sensorService.getAll();
+        ArrayList<Sensor>sensors = measurement == null ?
+                Application.context.sensorService.getAll() : Application.context.sensorService.getAll(measurement);
         for (Sensor sensor : Objects.requireNonNull(sensors)) {
             String[] data = new String[3];
             data[0] = sensor.getName();
@@ -43,7 +44,7 @@ public class SensorsListTable extends JTable {
         return model;
     }
 
-    public void update(){
-        this.setModel(tableModel());
+    public void update(String measurement){
+        this.setModel(tableModel(measurement));
     }
 }

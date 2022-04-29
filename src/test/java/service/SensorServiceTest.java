@@ -184,6 +184,17 @@ class SensorServiceTest {
         assertIterableEquals(testList, service.getAll());
 
         System.out.println("getAll() duration = " + howLong(start, new Date()) + " mills");
+
+        start = new Date();
+
+        testList.clear();
+        testList.add(sensorTemperatureTCM_50M());
+
+        assertIterableEquals(testList, service.getAll(Measurement.TEMPERATURE));
+        assertIterableEquals(new ArrayList<Sensor>(), service.getAll(null));
+        assertIterableEquals(new ArrayList<Sensor>(), service.getAll(Measurement.PRESSURE));
+
+        System.out.println("getAll(String) duration = " + howLong(start, new Date()) + " mills");
     }
 
     @Test

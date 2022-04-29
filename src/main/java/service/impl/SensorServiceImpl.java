@@ -45,6 +45,11 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
+    public ArrayList<Sensor> getAll(String measurement) {
+        return this.repository.getAll(measurement);
+    }
+
+    @Override
     public String getMeasurement(String sensorType) {
         return this.repository.getMeasurement(sensorType);
     }
