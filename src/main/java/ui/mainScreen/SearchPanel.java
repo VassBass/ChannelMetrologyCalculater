@@ -1,6 +1,7 @@
 package ui.mainScreen;
 
 import application.Application;
+import backgroundTasks.CheckChannel;
 import backgroundTasks.SearchChannels;
 import constants.Sort;
 import converters.VariableConverter;
@@ -10,9 +11,9 @@ import ui.model.DefaultButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Objects;
 
 public class SearchPanel extends JPanel {
+    private static final String CODE = "Код каналу";
     private static final String NAME = "Назва каналу";
     private static final String MEASUREMENT_NAME = "Вид вимірювання";
     private static final String MEASUREMENT_VALUE = "Одиниці вимірювання";
@@ -57,7 +58,7 @@ public class SearchPanel extends JPanel {
         this.buttonSearch = new DefaultButton(START_SEARCH);
 
         this.field = new JComboBox<>(new String[]{
-                NAME, MEASUREMENT_NAME, MEASUREMENT_VALUE,
+                CODE, NAME, MEASUREMENT_NAME, MEASUREMENT_VALUE,
                 DEPARTMENT,AREA, PROCESS, INSTALLATION,
                 DATE, FREQUENCY, TECHNOLOGY_NUMBER,
                 SENSOR_NAME, SENSOR_TYPE, PROTOCOL_NUMBER,
@@ -73,7 +74,6 @@ public class SearchPanel extends JPanel {
 
         this.valueComboBox = new JComboBox<>();
         ((JLabel)this.valueComboBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
-        this.valueComboBox.setFocusable(false);
         this.valueComboBox.setBackground(Color.WHITE);
         this.valueComboBox.setForeground(Color.BLACK);
 
@@ -104,20 +104,57 @@ public class SearchPanel extends JPanel {
                 this.add(this.valueSuitability, new Cell(1));
                 break;
         }
+        if (this.field.getSelectedItem() != null){
+            if (this.field.getSelectedItem().toString().equals(CODE)){
+                this.buttonSearch.removeActionListener(clickSearch);
+                this.buttonSearch.addActionListener(codeSearchPositiveClick);
+            }else {
+                this.buttonSearch.removeActionListener(codeSearchPositiveClick);
+                this.buttonSearch.addActionListener(clickSearch);
+            }
+        }
         this.add(this.buttonSearch, new Cell(2));
     }
 
     private void setModelToComboBox(){
-        switch (this.field.getSelectedIndex()){
-            case 1:
-                this.valueComboBox.setModel(this.model_measurementsNames());
-                break;
-            case 2:
-                this.valueComboBox.setModel(this.model_measurementsValues());
-                break;
-            case 11:
-                this.valueComboBox.setModel(this.model_sensorsTypes());
-                break;
+        if (this.field.getSelectedItem() != null){
+            switch (this.field.getSelectedItem().toString()){
+                case MEASUREMENT_NAME:
+                    this.valueComboBox.setModel(this.model_measurementsNames());
+                    this.valueComboBox.setFocusable(false);
+                    this.valueComboBox.setEditable(false);
+                    break;
+                case MEASUREMENT_VALUE:
+                    this.valueComboBox.setModel(this.model_measurementsValues());
+                    this.valueComboBox.setFocusable(false);
+                    this.valueComboBox.setEditable(false);
+                    break;
+                case DEPARTMENT:
+                    this.valueComboBox.setModel(this.model_departments());
+                    this.valueComboBox.setFocusable(true);
+                    this.valueComboBox.setEditable(true);
+                    break;
+                case AREA:
+                    this.valueComboBox.setModel(this.model_areas());
+                    this.valueComboBox.setFocusable(true);
+                    this.valueComboBox.setEditable(true);
+                    break;
+                case PROCESS:
+                    this.valueComboBox.setModel(this.model_processes());
+                    this.valueComboBox.setFocusable(true);
+                    this.valueComboBox.setEditable(true);
+                    break;
+                case INSTALLATION:
+                    this.valueComboBox.setModel(this.model_installations());
+                    this.valueComboBox.setFocusable(true);
+                    this.valueComboBox.setEditable(true);
+                    break;
+                case SENSOR_TYPE:
+                    this.valueComboBox.setModel(this.model_sensorsTypes());
+                    this.valueComboBox.setFocusable(false);
+                    this.valueComboBox.setEditable(false);
+                    break;
+            }
         }
     }
 
@@ -129,42 +166,102 @@ public class SearchPanel extends JPanel {
         return new DefaultComboBoxModel<>(Application.context.measurementService.getAllValues());
     }
 
+    private ComboBoxModel<String>model_departments(){
+        return new DefaultComboBoxModel<>(Application.context.departmentService.getAllInStrings());
+    }
+
+    private ComboBoxModel<String>model_areas(){
+        return new DefaultComboBoxModel<>(Application.context.areaService.getAllInStrings());
+    }
+
+    private ComboBoxModel<String>model_processes(){
+        return new DefaultComboBoxModel<>(Application.context.processService.getAllInStrings());
+    }
+
+    private ComboBoxModel<String>model_installations(){
+        return new DefaultComboBoxModel<>(Application.context.installationService.getAllInStrings());
+    }
+
     private ComboBoxModel<String>model_sensorsTypes(){
         return new DefaultComboBoxModel<>(Application.context.sensorService.getAllTypes());
     }
 
+    private final ActionListener codeSearchPositiveClick = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new CheckChannel(Application.context.mainScreen, valueText.getText()).start();
+        }
+    };
+
     private final ActionListener clickSearch = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (buttonSearch.getText().equals(START_SEARCH)){
-                if (field != null) field.setEnabled(false);
-                if (valueText != null) valueText.setEnabled(false);
-                if (valueComboBox != null) valueComboBox.setEnabled(false);
-                if (valueSuitability != null) valueSuitability.setEnabled(false);
+            if (field.getSelectedItem() != null) {
+                if (buttonSearch.getText().equals(START_SEARCH)) {
+                    if (field != null) field.setEnabled(false);
+                    if (valueText != null) valueText.setEnabled(false);
+                    if (valueComboBox != null) valueComboBox.setEnabled(false);
+                    if (valueSuitability != null) valueSuitability.setEnabled(false);
 
-                buttonSearch.setText(FINISH_SEARCH);
-                int index = field.getSelectedIndex();
-                switch (index){
-                    default:
-                        new SearchChannels().startSearch(index, valueText.getText());
-                        break;
-                    case 1:
-                    case 2:
-                    case 11:
-                        new SearchChannels().startSearch(index, Objects.requireNonNull(valueComboBox.getSelectedItem()).toString());
-                        break;
-                    case 14:
-                        new SearchChannels().startSearch(index, valueSuitability.isSelected());
-                        break;
+                    buttonSearch.setText(FINISH_SEARCH);
+                    String f = field.getSelectedItem().toString();
+                    String value = valueComboBox.getSelectedItem() == null ? null : valueComboBox.getSelectedItem().toString();
+                    switch (f) {
+                        case NAME:
+                            new SearchChannels().startSearch(Sort.NAME, valueText.getText());
+                            break;
+                        case MEASUREMENT_NAME:
+                            new SearchChannels().startSearch(Sort.MEASUREMENT_NAME, value);
+                            break;
+                        case MEASUREMENT_VALUE:
+                            new SearchChannels().startSearch(Sort.MEASUREMENT_VALUE, value);
+                            break;
+                        case DEPARTMENT:
+                            new SearchChannels().startSearch(Sort.DEPARTMENT, value);
+                            break;
+                        case AREA:
+                            new SearchChannels().startSearch(Sort.AREA, value);
+                            break;
+                        case PROCESS:
+                            new SearchChannels().startSearch(Sort.PROCESS, value);
+                            break;
+                        case INSTALLATION:
+                            new SearchChannels().startSearch(Sort.INSTALLATION, value);
+                            break;
+                        case DATE:
+                            new SearchChannels().startSearch(Sort.DATE, valueText.getText());
+                            break;
+                        case FREQUENCY:
+                            new SearchChannels().startSearch(Sort.FREQUENCY, valueText.getText());
+                            break;
+                        case TECHNOLOGY_NUMBER:
+                            new SearchChannels().startSearch(Sort.TECHNOLOGY_NUMBER, valueText.getText());
+                            break;
+                        case SENSOR_NAME:
+                            new SearchChannels().startSearch(Sort.SENSOR_NAME, valueText.getText());
+                            break;
+                        case SENSOR_TYPE:
+                            new SearchChannels().startSearch(Sort.SENSOR_TYPE, value);
+                            break;
+                        case PROTOCOL_NUMBER:
+                            new SearchChannels().startSearch(Sort.PROTOCOL_NUMBER, valueText.getText());
+                            break;
+                        case REFERENCE:
+                            new SearchChannels().startSearch(Sort.REFERENCE, valueText.getText());
+                            break;
+                        case SUITABILITY:
+                            new SearchChannels().startSearch(Sort.SUITABILITY, valueSuitability.isSelected());
+                            break;
+                    }
+                } else {
+                    Application.context.channelSorter.setOff();
+                    Application.context.mainScreen.setChannelsList(Application.context.channelService.getAll());
+                    if (field != null) field.setEnabled(true);
+                    if (valueText != null) valueText.setEnabled(true);
+                    if (valueComboBox != null) valueComboBox.setEnabled(true);
+                    if (valueSuitability != null) valueSuitability.setEnabled(true);
+                    buttonSearch.setText(START_SEARCH);
                 }
-            }else{
-                Application.context.channelSorter.setOff();
-                Application.context.mainScreen.setChannelsList(Application.context.channelService.getAll());
-                if (field != null) field.setEnabled(true);
-                if (valueText != null) valueText.setEnabled(true);
-                if (valueComboBox != null) valueComboBox.setEnabled(true);
-                if (valueSuitability != null) valueSuitability.setEnabled(true);
-                buttonSearch.setText(START_SEARCH);
             }
         }
     };
@@ -195,25 +292,29 @@ public class SearchPanel extends JPanel {
     private final ItemListener changeField = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED){
+            if (e.getStateChange() == ItemEvent.SELECTED && field.getSelectedItem() != null){
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        switch (field.getSelectedIndex()){
+                        switch (field.getSelectedItem().toString()){
                             default:
                                 build(TEXT);
                                 valueText.setToolTipText(DEFAULT_TOOLTIP_TEXT);
                                 break;
-                            case Sort.MEASUREMENT_NAME:
-                            case Sort.MEASUREMENT_VALUE:
-                            case Sort.SENSOR_TYPE:
+                            case MEASUREMENT_NAME:
+                            case MEASUREMENT_VALUE:
+                            case SENSOR_TYPE:
+                            case DEPARTMENT:
+                            case AREA:
+                            case PROCESS:
+                            case INSTALLATION:
                                 build(LIST);
                                 break;
-                            case Sort.DATE:
+                            case DATE:
                                 build(TEXT);
                                 valueText.setToolTipText(DATE_TOOLTIP_TEXT);
                                 break;
-                            case Sort.SUITABILITY:
+                            case SUITABILITY:
                                 build(CHECK);
                                 break;
                         }

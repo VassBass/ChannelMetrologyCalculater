@@ -9,13 +9,29 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CheckChannel extends SwingWorker<Channel, Void> {
-    private final JDialog parent;
+    private final JDialog parentDialog;
+    private final JFrame parentFrame;
     private final String code;
     private final LoadDialog loadWindow;
 
     public CheckChannel(JDialog parent, String code){
         super();
-        this.parent = parent;
+        this.parentDialog = parent;
+        this.parentFrame = null;
+        this.code = code;
+        this.loadWindow = new LoadDialog(parent);
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                loadWindow.setVisible(true);
+            }
+        });
+    }
+
+    public CheckChannel(JFrame parent, String code){
+        super();
+        this.parentFrame = parent;
+        this.parentDialog = null;
         this.code = code;
         this.loadWindow = new LoadDialog(parent);
         EventQueue.invokeLater(new Runnable() {
@@ -27,6 +43,7 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
     }
 
     public void start(){
+        Window parent = this.parentDialog == null ? this.parentFrame : this.parentDialog;
         if (!Application.isBusy(parent)){
             Application.setBusy(true);
             this.execute();
@@ -42,13 +59,18 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
     protected void done() {
         Application.setBusy(false);
         this.loadWindow.dispose();
+        Component parent = parentDialog == null ? parentFrame : parentDialog;
         try {
             final Channel channel = this.get();
             if (channel != null){
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new ChannelExistsDialog(parent, channel).setVisible(true);
+                        if (parentDialog == null) {
+                            new ChannelExistsDialog(parentFrame, channel).setVisible(true);
+                        }else {
+                            new ChannelExistsDialog(parentDialog, channel).setVisible(true);
+                        }
                     }
                 });
             }else {
@@ -58,7 +80,7 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
             }
         }catch (Exception ex){
             String m = "Виникла помилка, спробуйте будь-ласка ще раз";
-            JOptionPane.showMessageDialog(this.parent, m, "Пошук",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, m, "Пошук",JOptionPane.ERROR_MESSAGE);
         }
     }
 }

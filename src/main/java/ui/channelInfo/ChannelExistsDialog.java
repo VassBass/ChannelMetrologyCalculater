@@ -11,7 +11,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ChannelExistsDialog extends JDialog {
-    private final JDialog parent;
+    private final JDialog parentDialog;
+    private final JFrame parentFrame;
     private final Channel channel;
 
     private JLabel message, channelName;
@@ -20,7 +21,20 @@ public class ChannelExistsDialog extends JDialog {
     public ChannelExistsDialog(JDialog parent, Channel channel){
         super(parent, "Пошук", true);
 
-        this.parent = parent;
+        this.parentDialog = parent;
+        this.parentFrame = null;
+        this.channel = channel;
+
+        this.createElements();
+        this.setReactions();
+        this.build();
+    }
+
+    public ChannelExistsDialog(JFrame parent, Channel channel){
+        super(parent, "Пошук", true);
+
+        this.parentFrame = parent;
+        this.parentDialog = null;
         this.channel = channel;
 
         this.createElements();
@@ -44,7 +58,8 @@ public class ChannelExistsDialog extends JDialog {
 
     private void build(){
         this.setSize(500,120);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        Component parent = this.parentDialog == null ? this.parentFrame : this.parentDialog;
+        this.setLocation(ConverterUI.POINT_CENTER(parent, this));
         this.setResizable(false);
 
         this.setContentPane(new MainPanel());
@@ -61,7 +76,7 @@ public class ChannelExistsDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            parent.dispose();
+            if (parentDialog != null) parentDialog.dispose();
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {

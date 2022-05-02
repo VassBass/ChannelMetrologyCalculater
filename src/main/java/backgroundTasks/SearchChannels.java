@@ -25,13 +25,15 @@ public class SearchChannels extends SwingWorker<Void, Void> {
     public void startSearch(int field, String value){
         this.field = field;
         this.valueString = value;
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.setVisible(true);
-            }
-        });
-        this.execute();
+        if (value != null) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    loadDialog.setVisible(true);
+                }
+            });
+            this.execute();
+        }
     }
 
     public void startSearch(int field, boolean value){
