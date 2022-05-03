@@ -61,6 +61,7 @@ public class DialogChannel_rangePanel extends JPanel {
     public void setTitle(String title){
         this.border.setTitle(title);
     }
+    public TitledBorder getBorder(){return this.border;}
 
     public void updateValue(String value) {
         if (value != null){
@@ -150,4 +151,6 @@ public class DialogChannel_rangePanel extends JPanel {
     public double getRangeMax(){
         return Double.parseDouble(this.maxRange.getText());
     }
+    public JTextField getRangeMinField(){return this.minRange;}
+    public JTextField getRangeMaxField(){return this.maxRange;}
 }

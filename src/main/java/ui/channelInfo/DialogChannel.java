@@ -36,6 +36,7 @@ public class DialogChannel extends JDialog {
     private static final String SEARCH = "Пошук";
     private static final String SAVE_AND_CALCULATE = "Зберегти та розрахувати";
     private static final String RESET = "Скинути";
+    private static final String REMOVE = "Видалити";
 
     private final MainScreen parent;
     private MainPanel mainPanel;
@@ -49,6 +50,7 @@ public class DialogChannel extends JDialog {
     private final TitledBorder nameBorder = BorderFactory.createTitledBorder(NAME);
     private final TitledBorder technologyNumberBorder = BorderFactory.createTitledBorder(TECHNOLOGY_NUMBER);
     private final TitledBorder protocolNumberBorder = BorderFactory.createTitledBorder(PROTOCOL_NUMBER);
+    private final TitledBorder sensorRangeBorder = BorderFactory.createTitledBorder(RANGE_OF_SENSOR);
 
     public DialogChannel_measurementPanel measurementPanel;
     public DialogChannel_datePanel datePanel;
@@ -62,7 +64,7 @@ public class DialogChannel extends JDialog {
 
     public JCheckBox rangeLikeChannel;
 
-    private JButton negativeButton, positiveButton, saveAndCalculateButton, resetButton;
+    private JButton negativeButton, positiveButton, saveAndCalculateButton, resetButton, removeButton;
 
     public final Channel oldChannel;
 
@@ -111,6 +113,7 @@ public class DialogChannel extends JDialog {
         this.positiveButton = new DefaultButton(SAVE);
         this.saveAndCalculateButton = new DefaultButton(SAVE_AND_CALCULATE);
         this.resetButton = new DefaultButton(RESET);
+        this.removeButton = new DefaultButton(REMOVE);
     }
 
     private void createComplexElements(){
@@ -138,7 +141,9 @@ public class DialogChannel extends JDialog {
         this.positiveButton.addActionListener(this.clickPositiveButton);
         this.resetButton.addActionListener(this.clickReset);
         this.saveAndCalculateButton.addActionListener(this.clickSaveAndCalculate);
+        this.removeButton.addActionListener(this.clickRemove);
 
+        this.userCode.getDocument().addDocumentListener(this.codeUpdate);
         this.userName.getDocument().addDocumentListener(this.nameUpdate);
     }
 
@@ -181,40 +186,70 @@ public class DialogChannel extends JDialog {
         }
     }
 
-    private boolean allFieldsAreFilled(){
+    private boolean allFieldsAreNotFilled(){
         boolean good;
         if (this.userCode.getText().length()==0) {
             this.codeBorder.setTitleColor(Color.RED);
-            good = false;
+            good = true;
         }else if (this.oldChannel == null &&
                 Application.context.channelService.isExist(this.userCode.getText())) {
             this.codeBorder.setTitleColor(Color.RED);
             Application.context.channelService.showExistMessage(DialogChannel.this);
-            good = false;
+            good = true;
         }else if (this.oldChannel != null &&
                 Application.context.channelService.isExist(this.oldChannel.getCode(), this.userCode.getText())){
             this.codeBorder.setTitleColor(Color.RED);
             Application.context.channelService.showExistMessage(DialogChannel.this);
-            good = false;
+            good = true;
         }else {
             this.codeBorder.setTitleColor(Color.BLACK);
-            good = true;
+            good = false;
         }
 
         if (this.userName.getText().length()==0) {
             this.nameBorder.setTitleColor(Color.RED);
-            good = false;
+            good = true;
         }else {
             this.nameBorder.setTitleColor(Color.BLACK);
         }
 
         if (this.userTechnologyNumber.getText().length()==0) {
             this.technologyNumberBorder.setTitleColor(Color.RED);
-            good = false;
+            good = true;
         }else {
             this.technologyNumberBorder.setTitleColor(Color.BLACK);
         }
-        if (!good) this.refresh();
+
+        if (this.rangePanel != null && this.sensorRangePanel != null){
+            if (this.rangePanel.getRangeMin() < this.sensorRangePanel.getRangeMin()
+                    || this.rangePanel.getRangeMax() > this.sensorRangePanel.getRangeMax()){
+                this.rangePanel.getBorder().setTitleColor(Color.RED);
+                this.sensorRangeBorder.setTitleColor(Color.RED);
+                if (this.rangePanel.getRangeMin() < this.sensorRangePanel.getRangeMin()){
+                    this.rangePanel.getRangeMinField().setForeground(Color.RED);
+                    this.sensorRangePanel.getRangeMinField().setForeground(Color.RED);
+                }else {
+                    this.rangePanel.getRangeMinField().setForeground(Color.BLACK);
+                    this.sensorRangePanel.getRangeMinField().setForeground(Color.BLACK);
+                }
+                if (this.rangePanel.getRangeMax() > this.sensorRangePanel.getRangeMax()){
+                    this.rangePanel.getRangeMaxField().setForeground(Color.RED);
+                    this.sensorRangePanel.getRangeMaxField().setForeground(Color.RED);
+                }else {
+                    this.rangePanel.getRangeMaxField().setForeground(Color.BLACK);
+                    this.sensorRangePanel.getRangeMaxField().setForeground(Color.BLACK);
+                }
+                good = true;
+            }else {
+                this.rangePanel.getBorder().setTitleColor(Color.BLACK);
+                this.sensorRangeBorder.setTitleColor(Color.BLACK);
+                this.rangePanel.getRangeMinField().setForeground(Color.BLACK);
+                this.rangePanel.getRangeMaxField().setForeground(Color.BLACK);
+                this.sensorRangePanel.getRangeMinField().setForeground(Color.BLACK);
+                this.sensorRangePanel.getRangeMaxField().setForeground(Color.BLACK);
+            }
+        }
+        if (good) this.refresh();
         return good;
     }
 
@@ -325,7 +360,7 @@ public class DialogChannel extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             resetSpecialCharactersPanel();
-            if (!allFieldsAreFilled() || Application.isBusy(DialogChannel.this)) return;
+            if (allFieldsAreNotFilled() || Application.isBusy(DialogChannel.this)) return;
 
             Application.putHint(userName.getText());
             dispose();
@@ -366,11 +401,35 @@ public class DialogChannel extends JDialog {
         }
     };
 
+    private final ActionListener clickRemove = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (oldChannel != null){
+                EventQueue.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        int result = JOptionPane.showConfirmDialog(DialogChannel.this,
+                                oldChannel.getName(), "Видалити канал?", JOptionPane.OK_CANCEL_OPTION);
+                        if (result == 0){
+                            ArrayList<Channel> channels = Application.context.channelService.remove(oldChannel);
+                            DialogChannel.this.dispose();
+                            if (Application.context.channelSorter.isOn()){
+                                parent.setChannelsList(Application.context.channelSorter.getCurrent());
+                            }else {
+                                parent.setChannelsList(channels);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    };
+
     private final ActionListener clickSaveAndCalculate = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             resetSpecialCharactersPanel();
-            if (!allFieldsAreFilled() || Application.isBusy(DialogChannel.this)) return;
+            if (allFieldsAreNotFilled() || Application.isBusy(DialogChannel.this)) return;
 
             Application.putHint(userName.getText());
             dispose();
@@ -400,12 +459,40 @@ public class DialogChannel extends JDialog {
         @Override
         public void insertUpdate(DocumentEvent e) {
             userName.setToolTipText(userName.getText());
+            if (oldChannel != null){
+                removeButton.setEnabled(oldChannel.getCode().equals(userCode.getText())
+                        && oldChannel.getName().equals(userName.getText()));
+            }
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
             if (userName.getText().length() > 0) {
                 userName.setToolTipText(userName.getText());
+            }
+            if (oldChannel != null){
+                removeButton.setEnabled(oldChannel.getCode().equals(userCode.getText())
+                        && oldChannel.getName().equals(userName.getText()));
+            }
+        }
+
+        @Override public void changedUpdate(DocumentEvent e) {}
+    };
+
+    private final DocumentListener codeUpdate = new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+            if (oldChannel != null){
+                removeButton.setEnabled(oldChannel.getCode().equals(userCode.getText())
+                        && oldChannel.getName().equals(userName.getText()));
+            }
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+            if (oldChannel != null){
+                removeButton.setEnabled(oldChannel.getCode().equals(userCode.getText())
+                        && oldChannel.getName().equals(userName.getText()));
             }
         }
 
@@ -457,9 +544,8 @@ public class DialogChannel extends JDialog {
                 srp.setLayout(new BoxLayout(srp, BoxLayout.Y_AXIS));
                 srp.add(sensorRangePanel);
                 srp.add(rangeLikeChannel);
-                TitledBorder border = BorderFactory.createTitledBorder(RANGE_OF_SENSOR);
-                border.setTitleJustification(TitledBorder.CENTER);
-                srp.setBorder(border);
+                sensorRangeBorder.setTitleJustification(TitledBorder.CENTER);
+                srp.setBorder(sensorRangeBorder);
                 this.add(srp, new Cell(2,8,2));
             }else {
                 rangeLikeChannel.setSelected(false);
@@ -475,7 +561,10 @@ public class DialogChannel extends JDialog {
             JPanel buttonsPanel = new JPanel();
             buttonsPanel.setBackground(Color.WHITE);
             buttonsPanel.add(negativeButton);
-            if (oldChannel != null) buttonsPanel.add(resetButton);
+            if (oldChannel != null){
+                buttonsPanel.add(removeButton);
+                buttonsPanel.add(resetButton);
+            }
             buttonsPanel.add(positiveButton);
             this.add(buttonsPanel, new Cell(0, 12, new Insets(10, 0, 20, 0), 3));
         }

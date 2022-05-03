@@ -138,10 +138,11 @@ public class DialogChannel_sensorRangePanel extends JPanel {
     public double getRangeMin(){
         return Double.parseDouble(this.min.getText());
     }
-
     public double getRangeMax(){
         return Double.parseDouble(this.max.getText());
     }
+    public JTextField getRangeMinField(){return this.min;}
+    public JTextField getRangeMaxField(){return this.max;}
 
     public String getValue(){
         return Objects.requireNonNull(this.value.getSelectedItem()).toString();
