@@ -29,6 +29,14 @@ public class FileBrowser {
     private static final String FILE_NAME_CONSUMPTION_GOOD = "form_consumption_good.xls";
     private static final String FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD = "form_consumption_rosemount_bad.xls";
     private static final String FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD = "form_consumption_rosemount_good.xls";
+    private static final String LINUX_FILE_NAME_PRESSURE_BAD = "linuxForm_pressure_bad.xls";
+    private static final String LINUX_FILE_NAME_PRESSURE_GOOD = "linuxForm_pressure_good.xls";
+    private static final String LINUX_FILE_NAME_TEMPERATURE_BAD = "linuxForm_temperature_bad.xls";
+    private static final String LINUX_FILE_NAME_TEMPERATURE_GOOD = "linuxForm_temperature_good.xls";
+    private static final String LINUX_FILE_NAME_CONSUMPTION_BAD = "linuxForm_consumption_bad.xls";
+    private static final String LINUX_FILE_NAME_CONSUMPTION_GOOD = "linuxForm_consumption_good.xls";
+    private static final String LINUX_FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD = "linuxForm_consumption_rosemount_bad.xls";
+    private static final String LINUX_FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD = "linuxForm_consumption_rosemount_good.xls";
     private static final String FILE_NAME_IMAGE_ANIM_LOAD = "anim_load.gif";
     private static final String FILE_NAME_IMAGE_NAME_LOGO = "name_logo.png";
 
@@ -47,6 +55,14 @@ public class FileBrowser {
     public static final File FILE_CONSUMPTION_GOOD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_GOOD);
     public static final File FILE_CONSUMPTION_ROSEMOUNT_BAD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD);
     public static final File FILE_CONSUMPTION_ROSEMOUNT_GOOD = new File(DIR_FORMS, FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD);
+    public static final File LINUX_FILE_PRESSURE_BAD = new File(DIR_FORMS, LINUX_FILE_NAME_PRESSURE_BAD);
+    public static final File LINUX_FILE_PRESSURE_GOOD = new File(DIR_FORMS, LINUX_FILE_NAME_PRESSURE_GOOD);
+    public static final File LINUX_FILE_TEMPERATURE_BAD = new File(DIR_FORMS, LINUX_FILE_NAME_TEMPERATURE_BAD);
+    public static final File LINUX_FILE_TEMPERATURE_GOOD = new File(DIR_FORMS, LINUX_FILE_NAME_TEMPERATURE_GOOD);
+    public static final File LINUX_FILE_CONSUMPTION_BAD = new File(DIR_FORMS, LINUX_FILE_NAME_CONSUMPTION_BAD);
+    public static final File LINUX_FILE_CONSUMPTION_GOOD = new File(DIR_FORMS, LINUX_FILE_NAME_CONSUMPTION_GOOD);
+    public static final File LINUX_FILE_CONSUMPTION_ROSEMOUNT_BAD = new File(DIR_FORMS, LINUX_FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD);
+    public static final File LINUX_FILE_CONSUMPTION_ROSEMOUNT_GOOD = new File(DIR_FORMS, LINUX_FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD);
     public static final File FILE_IMAGE_ANIM_LOAD = new File(DIR_IMAGES, FILE_NAME_IMAGE_ANIM_LOAD);
     public static final File FILE_IMAGE_NAME_LOGO = new File(DIR_IMAGES, FILE_NAME_IMAGE_NAME_LOGO);
 
@@ -188,13 +204,93 @@ public class FileBrowser {
                 Files.copy(in, unpackingPath, REPLACE_EXISTING);
                 in.close();
             }
+
+            packedPath = DIR_NAME_FORMS + "/" + LINUX_FILE_NAME_TEMPERATURE_BAD;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(LINUX_FILE_TEMPERATURE_BAD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+
+            packedPath = DIR_NAME_FORMS + "/" + LINUX_FILE_NAME_TEMPERATURE_GOOD;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(LINUX_FILE_TEMPERATURE_GOOD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+
+            packedPath = DIR_NAME_FORMS + "/" + LINUX_FILE_NAME_PRESSURE_GOOD;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(LINUX_FILE_PRESSURE_GOOD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+
+            packedPath = DIR_NAME_FORMS + "/" + LINUX_FILE_NAME_PRESSURE_BAD;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(LINUX_FILE_PRESSURE_BAD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+
+            packedPath = DIR_NAME_FORMS + "/" + LINUX_FILE_NAME_CONSUMPTION_BAD;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(LINUX_FILE_CONSUMPTION_BAD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+
+            packedPath = DIR_NAME_FORMS + "/" + LINUX_FILE_NAME_CONSUMPTION_GOOD;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(LINUX_FILE_CONSUMPTION_GOOD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+
+            packedPath = DIR_NAME_FORMS + "/" + LINUX_FILE_NAME_CONSUMPTION_ROSEMOUNT_BAD;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(LINUX_FILE_CONSUMPTION_ROSEMOUNT_BAD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+
+            packedPath = DIR_NAME_FORMS + "/" + LINUX_FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(LINUX_FILE_CONSUMPTION_ROSEMOUNT_GOOD.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
         }catch (Exception ex){
             LOGGER.log(Level.WARNING, "FileBrowser: Exception while unpack forms!", ex);
         }
     }
 
     private static void unpackImages(){
-        LOGGER.fine("FileBrowser: Uunpack images from resources");
+        LOGGER.fine("FileBrowser: Unpack images from resources");
         try {
             String packedPath = DIR_NAME_IMAGES + "/" + FILE_NAME_IMAGE_ANIM_LOAD;
             InputStream in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);

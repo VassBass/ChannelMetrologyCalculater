@@ -11,8 +11,10 @@ import model.Sensor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import service.FileBrowser;
+import service.SystemData;
 import settings.Settings;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -26,22 +28,28 @@ public class PressureCertificate extends Certificate {
     @Override
     public void init(Calculation result, HashMap<Integer, Object> values, Channel channel) {
         super.init(result, values, channel);
+        SystemData os = SystemData.osName();
+        File formFile;
 
         if (this.result.goodChannel()){
-            try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(FileBrowser.FILE_PRESSURE_GOOD));
-                this.book = new HSSFWorkbook(fs);
-            }catch (Exception ex){
-                ex.printStackTrace();
+            if (os == SystemData.SYS_UNIX){
+                formFile = FileBrowser.LINUX_FILE_PRESSURE_GOOD;
+            }else {
+                formFile = FileBrowser.FILE_PRESSURE_GOOD;
             }
         }else{
             this.numberOfReference = (String) values.get(Key.CHANNEL_REFERENCE);
-            try{
-                POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(FileBrowser.FILE_PRESSURE_BAD));
-                this.book = new HSSFWorkbook(fs);
-            }catch (Exception ex){
-                ex.printStackTrace();
+            if (os == SystemData.SYS_UNIX){
+                formFile = FileBrowser.LINUX_FILE_PRESSURE_BAD;
+            }else {
+                formFile = FileBrowser.FILE_PRESSURE_BAD;
             }
+        }
+        try{
+            POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream(formFile));
+            this.book = new HSSFWorkbook(fs);
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
     }
 

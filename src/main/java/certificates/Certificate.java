@@ -1,5 +1,6 @@
 package certificates;
 
+import application.Application;
 import calculation.Calculation;
 import model.Channel;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -8,6 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import service.FileBrowser;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -103,7 +105,20 @@ public abstract class Certificate {
         if (Desktop.isDesktopSupported()){
             desktop = Desktop.getDesktop();
             try {
-                desktop.print(this.certificateFile);
+                if (desktop.isSupported(Desktop.Action.PRINT)) {
+                    desktop.print(this.certificateFile);
+                }else {
+                    EventQueue.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            int result = JOptionPane.showConfirmDialog(Application.context.mainScreen,
+                                    "Команда \"Друк\" за замовчуванням не зарегестрована в системі.\nВідкрити у программі за замовчуванням?", "Помилка", JOptionPane.OK_CANCEL_OPTION);
+                            if (result == 0){
+                                show();
+                            }
+                        }
+                    });
+                }
             }catch (Exception ex){
                 ex.printStackTrace();
             }
