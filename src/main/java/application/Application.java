@@ -128,6 +128,8 @@ public class Application extends SwingWorker<Void, String> {
         if (firstStart) context.controlPointsValuesService.resetToDefaultInCurrentThread();
         publish("Завантаження списку каналів");
         context.channelService.init();
+        publish("Архівування сертифікатів/протоколів");
+        FileBrowser.createArchive();
         publish("Завантаження головного вікна");
         context.mainScreen.init(context.channelService.getAll());
         return null;
