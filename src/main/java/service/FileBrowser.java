@@ -1,11 +1,15 @@
 package service;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import application.Application;
+import converters.VariableConverter;
+import model.Channel;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +23,7 @@ public class FileBrowser {
     private static final String DIR_NAME_EXPORT = "Export";
     private static final String DIR_NAME_FORMS = "forms";
     private static final String DIR_NAME_IMAGES = "images";
+    private static final String DIR_NAME_ARCHIVE = "archive";
 
     private static final String FILE_NAME_SETTINGS = "settings.dat";
     private static final String FILE_NAME_PRESSURE_BAD = "form_pressure_bad.xls";
@@ -65,6 +70,14 @@ public class FileBrowser {
     public static final File LINUX_FILE_CONSUMPTION_ROSEMOUNT_GOOD = new File(DIR_FORMS, LINUX_FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD);
     public static final File FILE_IMAGE_ANIM_LOAD = new File(DIR_IMAGES, FILE_NAME_IMAGE_ANIM_LOAD);
     public static final File FILE_IMAGE_NAME_LOGO = new File(DIR_IMAGES, FILE_NAME_IMAGE_NAME_LOGO);
+
+    private static File createArchiveFolderIfNotExists(String year){
+        File DIR_ARCHIVE = new File(DIR_CERTIFICATES, DIR_NAME_ARCHIVE);
+        if (!DIR_ARCHIVE.exists()) DIR_ARCHIVE.mkdirs();
+        File archiveFolder = new File(DIR_ARCHIVE, year);
+        if (!archiveFolder.exists()) archiveFolder.mkdirs();
+        return archiveFolder;
+    }
 
     public static File certificateFile(String fileName){
         File file = new File(DIR_CERTIFICATES, fileName);
@@ -313,6 +326,34 @@ public class FileBrowser {
             }
         }catch (Exception ex){
             LOGGER.log(Level.WARNING, "FileBrowser: Exception while unpack images!", ex);
+        }
+    }
+
+    public static void createArchive() throws IOException {
+        Calendar currentDate = Calendar.getInstance();
+        ArrayList<String>certificateToArchive = new ArrayList<>();
+        ArrayList<Channel>channels = Application.context.channelService.getAll();
+        for (Channel channel : channels){
+            Calendar checkDate = VariableConverter.stringToDate(channel.getDate());
+            if (currentDate.get(Calendar.YEAR) > checkDate.get(Calendar.YEAR)){
+                String certificateName = "№" + channel.getNumberOfProtocol() + " (" + channel.getDate() + ").xls";
+                certificateToArchive.add(certificateName);
+            }
+        }
+        if (!certificateToArchive.isEmpty()){
+            File[]certificatesList = DIR_CERTIFICATES.listFiles();
+            for (String certificateNumber : certificateToArchive){
+                String year = certificateNumber.substring(certificateNumber.length() - 9, certificateNumber.length() - 5);
+                File archiveFolder = createArchiveFolderIfNotExists(year);
+                if (certificatesList != null && certificatesList.length >= 1) {
+                    for (File certificate : certificatesList) {
+                        if (certificate.getName().equals(certificateNumber)){
+                            File out = new File(archiveFolder, certificateNumber);
+                            Files.move(certificate.toPath(), out.toPath(), REPLACE_EXISTING);
+                        }
+                    }
+                }
+            }
         }
     }
 }
