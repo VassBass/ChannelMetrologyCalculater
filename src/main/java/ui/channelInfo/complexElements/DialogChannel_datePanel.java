@@ -9,6 +9,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -61,6 +62,13 @@ public class DialogChannel_datePanel extends JPanel {
         this.add(this.year);
         TitledBorder border = BorderFactory.createTitledBorder(THIS_DATE);
         this.setBorder(border);
+    }
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        for (Component component : this.getComponents()){
+            if (component != null) component.addKeyListener(l);
+        }
     }
 
     public void setDate(Calendar date) {

@@ -14,10 +14,7 @@ import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -28,8 +25,8 @@ public class CalculatePerformersDialog extends JDialog {
     private static final String CALCULATER = "Працівник який виконував розрахунки:";
     private static final String HEADS = "Керівники";
     private static final String EMPTY_ARRAY = "<Порожньо>";
-    private static final String BACK = "Назад";
-    private static final String SAVE = "Зберегти";
+    private static final String BACK = "Назад (Alt + Backspace)";
+    private static final String SAVE = "Зберегти (Alt + Enter)";
 
     private final MainScreen mainScreen;
     private final Channel channel;
@@ -61,8 +58,8 @@ public class CalculatePerformersDialog extends JDialog {
 
         this.createElements();
         this.setValues(values);
-        this.setReactions();
         this.build();
+        this.setReactions();
     }
 
     private void createElements() {
@@ -120,10 +117,22 @@ public class CalculatePerformersDialog extends JDialog {
 
         this.buttonBack.addActionListener(this.clickBack);
         this.buttonSave.addActionListener(this.clickSave);
+
+        this.performer1Position.addKeyListener(this.keyListener);
+        this.performer2Position.addKeyListener(this.keyListener);
+        this.calculaterPosition.addKeyListener(this.keyListener);
+        this.performer1Name.getEditor().getEditorComponent().addKeyListener(this.keyListener);
+        this.performer2Name.getEditor().getEditorComponent().addKeyListener(this.keyListener);
+        this.calculaterName.getEditor().getEditorComponent().addKeyListener(this.keyListener);
+        this.headOfMetrology.getEditor().getEditorComponent().addKeyListener(this.keyListener);
+        this.headOfArea.getEditor().getEditorComponent().addKeyListener(this.keyListener);
+        this.headOfDepartment.getEditor().getEditorComponent().addKeyListener(this.keyListener);
+        this.buttonBack.addKeyListener(this.keyListener);
+        this.buttonSave.addKeyListener(this.keyListener);
     }
 
     private void build() {
-        this.setSize(600,350);
+        this.setSize(500,300);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
@@ -289,6 +298,23 @@ public class CalculatePerformersDialog extends JDialog {
             new CertificateFormation(mainScreen, channel, getValues(), calculation).execute();
         }
     };
+
+    private final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.isAltDown()){
+                switch (e.getKeyCode()){
+                    case KeyEvent.VK_ENTER:
+                        buttonSave.doClick();
+                        break;
+                    case KeyEvent.VK_BACK_SPACE:
+                        buttonBack.doClick();
+                        break;
+                }
+            }
+        }
+    };
+
     private class MainPanel extends JPanel{
 
         protected MainPanel(){
@@ -315,11 +341,11 @@ public class CalculatePerformersDialog extends JDialog {
             buttonsPanel.add(buttonSave);
 
             if (calculation.goodChannel()){
-                this.add(buttonsPanel, new Cell(1,8,true));
+                this.add(buttonsPanel, new Cell(0,8, 2,true));
             }else {
                 this.add(headOfDepartmentLabel, new Cell(0,8, false));
                 this.add(headOfDepartment, new Cell(1,8, false));
-                this.add(buttonsPanel, new Cell(1,9, true));
+                this.add(buttonsPanel, new Cell(0,9,2, true));
             }
         }
 
@@ -335,6 +361,19 @@ public class CalculatePerformersDialog extends JDialog {
 
                 this.gridx = x;
                 this.gridy = y;
+            }
+
+            protected Cell(int x, int y,int width, boolean withInsets){
+                super();
+
+                this.fill = BOTH;
+                if (withInsets) {
+                    this.insets = new Insets(10, 0, 10, 0);
+                }
+
+                this.gridx = x;
+                this.gridy = y;
+                this.gridwidth = width;
             }
         }
     }

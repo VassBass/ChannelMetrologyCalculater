@@ -10,6 +10,7 @@ import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -276,9 +277,20 @@ public class ConsumptionPanel extends JPanel {
         }
     }
 
+    /**
+     * I did override this method to use at {@link ui.calculate.verification.CalculateVerificationDialog#clickNext}
+     * @see ui.calculate.verification.CalculateVerificationDialog#clickNext
+     *
+     * @return selected item on advice ComboBox
+     */
     @Override
     public String getName() {
         return Objects.requireNonNull(this.advice.getSelectedItem()).toString();
+    }
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        if (advice != null) advice.addKeyListener(l);
     }
 
     private void build() {

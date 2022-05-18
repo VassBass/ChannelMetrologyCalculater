@@ -6,6 +6,7 @@ import converters.VariableConverter;
 import javax.swing.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -84,6 +85,13 @@ public class CalculateStartDialog_datePanel extends JPanel {
             case YEAR:
                 year.setText(String.valueOf(value));
         }
+    }
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        this.day.addKeyListener(l);
+        this.month.addKeyListener(l);
+        this.year.addKeyListener(l);
     }
 
     public String getDate() {

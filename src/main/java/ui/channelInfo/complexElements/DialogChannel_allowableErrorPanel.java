@@ -10,6 +10,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 import java.util.Locale;
 
 public class DialogChannel_allowableErrorPanel extends JPanel {
@@ -83,6 +84,13 @@ public class DialogChannel_allowableErrorPanel extends JPanel {
     public void setEnabled(boolean enabled) {
         this.errorPercent.setEnabled(enabled);
         this.errorValue.setEnabled(enabled);
+    }
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        for (Component component : this.getComponents()){
+            if (component != null) component.addKeyListener(l);
+        }
     }
 
     public void updateError(double error, boolean inPercent, double range){

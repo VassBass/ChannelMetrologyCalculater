@@ -57,6 +57,13 @@ public class DialogChannel_measurementPanel extends JPanel {
         this.add(this.measurementValue);
     }
 
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        for (Component component : this.getComponents()){
+            if (component != null) component.addKeyListener(l);
+        }
+    }
+
     public void setSelectedValue(String value){
         this.measurementValue.setSelectedItem(value);
     }

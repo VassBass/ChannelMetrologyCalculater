@@ -8,6 +8,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -51,6 +52,13 @@ public class DialogChannel_frequencyPanel extends JPanel {
         this.add(this.nextDate);
         TitledBorder border = BorderFactory.createTitledBorder(FREQUENCY_CONTROL);
         this.setBorder(border);
+    }
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        for (Component component : this.getComponents()){
+            if (component != null) component.addKeyListener(l);
+        }
     }
 
     public void updateFrequency(double frequency, Calendar date) {

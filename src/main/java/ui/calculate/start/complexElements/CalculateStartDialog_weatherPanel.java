@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 
 public class CalculateStartDialog_weatherPanel extends JPanel {
     private static final String CONDITIONS_FOR_CONTROL = "Умови проведення контролю";
@@ -78,6 +79,13 @@ public class CalculateStartDialog_weatherPanel extends JPanel {
         this.add(this.labelPressure, new Cell(0, 3));
         this.add(this.pressure, new Cell(1, 3));
         this.add(this.pressureValue, new Cell(2, 3));
+    }
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        this.temperature.addKeyListener(l);
+        this.humidity.addKeyListener(l);
+        this.pressure.addKeyListener(l);
     }
 
     private final FocusListener focusTemperature = new FocusListener(){

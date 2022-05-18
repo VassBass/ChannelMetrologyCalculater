@@ -11,19 +11,18 @@ import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 import java.util.HashMap;
 
 public class CalculateEndDialog extends JDialog {
     public static final String SUCCESS_SAVE_CERTIFICATE = "Сертифікат та протокол успішно сформовані";
-    public static final String PRINT = "Друкувати";
-    public static final String OPEN = "Відкрити";
-    public static final String OPEN_IN_EXPLORER = "Відкрити папку";
+    public static final String PRINT = "Друкувати (P)";
+    public static final String OPEN = "Відкрити (O)";
+    public static final String OPEN_IN_EXPLORER = "Відкрити папку (F)";
     public static final String ERROR_SAVE_CERTIFICATE = "Сертифікат не вдалося сформувати";
-    public static final String TRY_AGAIN = "Повторити";
-    public static final String FINISH = "Завершити";
+    public static final String TRY_AGAIN = "Повторити (Backspace)";
+    public static final String FINISH = "Завершити (Enter)";
     public static final String SUCCESS = "Успіх";
     public static final String ERROR = "Помилка";
 
@@ -45,8 +44,8 @@ public class CalculateEndDialog extends JDialog {
         this.certificate = certificate;
 
         this.createElements();
-        this.setReactions();
         this.build();
+        this.setReactions();
     }
 
     private void createElements() {
@@ -73,6 +72,12 @@ public class CalculateEndDialog extends JDialog {
             this.buttonTryAgain.addActionListener(this.clickTryAgain);
         }
         this.buttonFinish.addActionListener(this.clickFinish);
+
+        if (buttonFinish != null) buttonFinish.addKeyListener(keyListener);
+        if (buttonPrint != null) buttonPrint.addKeyListener(keyListener);
+        if (buttonOpen != null) buttonOpen.addKeyListener(keyListener);
+        if (buttonOpenInExplorer != null) buttonOpenInExplorer.addKeyListener(keyListener);
+        if (buttonTryAgain != null) buttonTryAgain.addKeyListener(keyListener);
     }
 
     private void build() {
@@ -129,6 +134,29 @@ public class CalculateEndDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             new CertificateFormation(mainScreen, channel, values, calculation).execute();
+        }
+    };
+
+    private final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()){
+                case KeyEvent.VK_P:
+                    buttonPrint.doClick();
+                    break;
+                case KeyEvent.VK_O:
+                    buttonOpen.doClick();
+                    break;
+                case KeyEvent.VK_F:
+                    buttonOpenInExplorer.doClick();
+                    break;
+                case KeyEvent.VK_ENTER:
+                    buttonFinish.doClick();
+                    break;
+                case KeyEvent.VK_BACK_SPACE:
+                    buttonTryAgain.doClick();
+                    break;
+            }
         }
     };
 

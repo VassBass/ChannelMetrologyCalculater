@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 import java.util.Objects;
 
 public class DialogChannel_pathPanel extends JPanel {
@@ -68,19 +69,19 @@ public class DialogChannel_pathPanel extends JPanel {
         this.setBorder(border);
     }
 
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        departments.getEditor().getEditorComponent().addKeyListener(l);
+        areas.getEditor().getEditorComponent().addKeyListener(l);
+        processes.getEditor().getEditorComponent().addKeyListener(l);
+        installations.getEditor().getEditorComponent().addKeyListener(l);
+    }
+
     public void update(String department, String area, String process, String installation){
-        if (department != null){
-            this.departments.setSelectedItem(department);
-        }
-        if (area != null){
-            this.areas.setSelectedItem(area);
-        }
-        if (process != null){
-            this.processes.setSelectedItem(process);
-        }
-        if (installation != null){
-            this.installations.setSelectedItem(installation);
-        }
+        if (department != null) this.departments.setSelectedItem(department);
+        if (area != null) this.areas.setSelectedItem(area);
+        if (process != null) this.processes.setSelectedItem(process);
+        if (installation != null) this.installations.setSelectedItem(installation);
     }
 
     public String getDepartment(){

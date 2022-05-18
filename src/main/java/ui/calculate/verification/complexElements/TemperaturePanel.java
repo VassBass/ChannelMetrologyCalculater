@@ -10,6 +10,7 @@ import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -245,11 +246,13 @@ public class TemperaturePanel extends JPanel {
 
         double errorCalibrator = calibrator.getError(this.channel);
         double ePC = errorCalibrator / (this.channel._getRange() / 100);
+        String errorCP = ePC < 0.1 ? VariableConverter.roundingDouble2(ePC, Locale.GERMAN) : VariableConverter.roundingDouble(ePC, Locale.GERMAN);
+        String errorC = errorCalibrator < 0.1 ? VariableConverter.roundingDouble2(errorCalibrator, Locale.GERMAN) : VariableConverter.roundingDouble(errorCalibrator, Locale.GERMAN);
         String allowableErrorCalibrator = PLUS_MINUS
-                + VariableConverter.roundingDouble(ePC, Locale.GERMAN)
+                + errorCP
                 + "% або "
                 + PLUS_MINUS
-                + VariableConverter.roundingDouble(errorCalibrator, Locale.GERMAN)
+                + errorC
                 + this.channel.getMeasurement().getValue();
         this.allowableErrorCalibrator.setText(allowableErrorCalibrator);
 
@@ -283,9 +286,20 @@ public class TemperaturePanel extends JPanel {
         }
     }
 
+    /**
+     * I did override this method to use at {@link ui.calculate.verification.CalculateVerificationDialog#clickNext}
+     * @see ui.calculate.verification.CalculateVerificationDialog#clickNext
+     *
+     * @return selected item on advice ComboBox
+     */
     @Override
     public String getName() {
         return Objects.requireNonNull(this.advice.getSelectedItem()).toString();
+    }
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        if (advice != null) advice.addKeyListener(l);
     }
 
     private void build() {

@@ -11,6 +11,7 @@ import ui.model.ButtonCell;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
@@ -208,7 +209,7 @@ public class PressurePanel extends JPanel {
         double errorSensor = this.channel.getSensor().getError(this.channel);
         double ePS = errorSensor / (this.channel._getRange() / 100);
         String errorSensorPercent;
-        errorSensorPercent = VariableConverter.roundingDouble3(ePS, Locale.GERMAN);
+        errorSensorPercent = ePS < 0.01 ? VariableConverter.roundingDouble3(ePS, Locale.GERMAN) : VariableConverter.roundingDouble2(ePS, Locale.GERMAN);
 
         String errorSensorValue;
         if (errorSensor < 0.01){
@@ -305,9 +306,20 @@ public class PressurePanel extends JPanel {
         }
     }
 
+    /**
+     * I did override this method to use at {@link ui.calculate.verification.CalculateVerificationDialog#clickNext}
+     * @see ui.calculate.verification.CalculateVerificationDialog#clickNext
+     *
+     * @return selected item on advice ComboBox
+     */
     @Override
     public String getName() {
         return Objects.requireNonNull(this.advice.getSelectedItem()).toString();
+    }
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        if (advice != null) advice.addKeyListener(l);
     }
 
     private void build() {

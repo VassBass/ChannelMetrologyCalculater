@@ -35,4 +35,5 @@ public class Key {
 
     public static final int CONTROL_POINTS = 26;
 
+    public static final int SYS = 27;
 }

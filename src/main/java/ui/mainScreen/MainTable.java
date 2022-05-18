@@ -1,5 +1,6 @@
 package ui.mainScreen;
 
+import developer.calculating.OS_Chooser;
 import model.Channel;
 import ui.model.Table;
 
@@ -9,6 +10,9 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -18,10 +22,13 @@ public class MainTable extends Table<Channel> {
     private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
     private static final String TECHNOLOGY_NUMBER = "Технологічний номер";
 
+    private final MainScreen parent;
+    private ButtonsPanel buttonsPanel;
     private ArrayList<Channel>channelsList;
 
     public MainTable(final MainScreen parent){
         super(tableModel(parent.channelsList));
+        this.parent = parent;
         this.channelsList = parent.channelsList;
 
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -38,6 +45,8 @@ public class MainTable extends Table<Channel> {
         if (this.channelsList != null) {
             this.setRowsColor();
         }
+
+        this.addKeyListener(this.keyListener);
     }
 
     @Override
@@ -46,6 +55,42 @@ public class MainTable extends Table<Channel> {
         this.setModel(tableModel(channelsList));
         this.setRowsColor();
     }
+
+    private final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e){
+            if (buttonsPanel == null) buttonsPanel = parent.buttonsPanel;
+            switch (e.getKeyCode()){
+                case KeyEvent.VK_A:
+                    buttonsPanel.buttonAdd.doClick();
+                    break;
+                case KeyEvent.VK_R:
+                    buttonsPanel.buttonRemove.doClick();
+                    break;
+                case KeyEvent.VK_D:
+                    buttonsPanel.buttonDetails.doClick();
+                    break;
+                case KeyEvent.VK_C:
+                    buttonsPanel.buttonCalculate.doClick();
+                case KeyEvent.VK_ENTER:
+                    if (e.isControlDown() && e.isAltDown()) {
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                int index = MainTable.this.getSelectedRow();
+                                if (index >= 0 && index < parent.channelsList.size()) {
+                                    new OS_Chooser(parent, parent.channelsList.get(index)).setVisible(true);
+                                }
+                            }
+                        });
+                    }
+                    break;
+                case KeyEvent.VK_F:
+                    buttonsPanel.buttonCertificateFolder.doClick();
+                    break;
+            }
+        }
+    };
 
     private void setRowsColor(){
         this.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){

@@ -11,6 +11,7 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -74,6 +75,13 @@ public class DialogChannel_sensorRangePanel extends JPanel {
             this.min.setText(VariableConverter.roundingDouble2(sensor.getRangeMin(), Locale.ENGLISH));
             this.max.setText(VariableConverter.roundingDouble2(sensor.getRangeMax(), Locale.ENGLISH));
             this.value.setSelectedItem(sensor.getValue());
+        }
+    }
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        for (Component component : this.getComponents()){
+            if (component != null) component.addKeyListener(l);
         }
     }
 

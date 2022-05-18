@@ -4,6 +4,7 @@ import model.Channel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyListener;
 
 public abstract class MeasurementPanel extends JPanel {
     protected final Channel channel;
@@ -34,6 +35,13 @@ public abstract class MeasurementPanel extends JPanel {
 
     protected abstract void createElements();
     protected abstract void build();
+
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        for (JTextField field : userMeasurements){
+            field.addKeyListener(l);
+        }
+    }
 
     public abstract double[] getValues();
 

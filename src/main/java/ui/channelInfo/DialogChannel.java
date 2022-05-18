@@ -3,7 +3,9 @@ package ui.channelInfo;
 import application.Application;
 import backgroundTasks.CheckChannel;
 import converters.ConverterUI;
+import converters.ValueConverter;
 import converters.VariableConverter;
+import developer.calculating.OS_Chooser;
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
@@ -27,14 +29,14 @@ public class DialogChannel extends JDialog {
     private static final String NAME = "*Назва";
     private static final String TECHNOLOGY_NUMBER = "*Технологічний номер";
     private static final String PROTOCOL_NUMBER = "Номер протоколу";
-    private static final String CLOSE = "Закрити";
-    private static final String SAVE = "Зберегти";
+    private static final String CLOSE = "Закрити (Alt + Esc)";
+    private static final String SAVE = "Зберегти (Alt + Enter)";
     private static final String RANGE_OF_CHANNEL = "Діапазон вимірювального каналу";
     private static final String RANGE_OF_SENSOR = "Діапазон вимірювання ПВП";
     private static final String SET_RANGE_LIKE_CHANNEL = "Однакові діапазони";
     private static final String INSERT = "Вставка";
     private static final String SEARCH = "Пошук";
-    private static final String SAVE_AND_CALCULATE = "Зберегти та розрахувати";
+    private static final String SAVE_AND_CALCULATE = "Зберегти та розрахувати (Ctrl + Enter)";
     private static final String RESET = "Скинути";
     private static final String REMOVE = "Видалити";
 
@@ -75,8 +77,8 @@ public class DialogChannel extends JDialog {
 
         this.createPrimitiveElements();
         this.createComplexElements();
-        this.setReactions();
         this.build();
+        this.setReactions();
     }
 
     private void createPrimitiveElements(){
@@ -130,21 +132,41 @@ public class DialogChannel extends JDialog {
     private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        this.userCode.addFocusListener(focusOnText);
-        this.userName.addFocusListener(focusOnText);
-        this.userProtocolNumber.addFocusListener(focusOnText);
-        this.userTechnologyNumber.addFocusListener(focusOnText);
-        this.rangeLikeChannel.addFocusListener(focus);
+        if (this.userCode != null) this.userCode.addFocusListener(focusOnText);
+        if (this.userName != null) this.userName.addFocusListener(focusOnText);
+        if (this.userProtocolNumber != null) this.userProtocolNumber.addFocusListener(focusOnText);
+        if (this.userTechnologyNumber != null) this.userTechnologyNumber.addFocusListener(focusOnText);
+        if (this.rangeLikeChannel != null) this.rangeLikeChannel.addFocusListener(focus);
 
-        this.rangeLikeChannel.addItemListener(this.clickRangeLikeChannel);
-        this.negativeButton.addActionListener(this.clickNegativeButton);
-        this.positiveButton.addActionListener(this.clickPositiveButton);
-        this.resetButton.addActionListener(this.clickReset);
-        this.saveAndCalculateButton.addActionListener(this.clickSaveAndCalculate);
-        this.removeButton.addActionListener(this.clickRemove);
+        if (this.rangeLikeChannel != null) this.rangeLikeChannel.addItemListener(this.clickRangeLikeChannel);
+        if (this.negativeButton != null) this.negativeButton.addActionListener(this.clickNegativeButton);
+        if (this.positiveButton != null) this.positiveButton.addActionListener(this.clickPositiveButton);
+        if (this.removeButton != null) this.resetButton.addActionListener(this.clickReset);
+        if (this.saveAndCalculateButton != null) this.saveAndCalculateButton.addActionListener(this.clickSaveAndCalculate);
+        if (this.removeButton != null) this.removeButton.addActionListener(this.clickRemove);
 
-        this.userCode.getDocument().addDocumentListener(this.codeUpdate);
-        this.userName.getDocument().addDocumentListener(this.nameUpdate);
+        if (this.userCode != null) this.userCode.getDocument().addDocumentListener(this.codeUpdate);
+        if (this.userName != null) this.userName.getDocument().addDocumentListener(this.nameUpdate);
+
+        if (this.userCode != null) this.userCode.addKeyListener(this.keyListener);
+        if (this.userName != null) this.userName.addKeyListener(this.keyListener);
+        if (this.userProtocolNumber != null) this.userProtocolNumber.addKeyListener(this.keyListener);
+        if (this.userTechnologyNumber != null) this.userTechnologyNumber.addKeyListener(this.keyListener);
+        if (this.measurementPanel != null) this.measurementPanel.addKeyListener(this.keyListener);
+        if (this.datePanel != null) this.datePanel.addKeyListener(this.keyListener);
+        if (this.frequencyPanel != null) this.frequencyPanel.addKeyListener(this.keyListener);
+        if (this.pathPanel != null) this.pathPanel.addKeyListener(this.keyListener);
+        if (this.sensorPanel != null) this.sensorPanel.addKeyListener(this.keyListener);
+        if (this.rangePanel != null) this.rangePanel.addKeyListener(this.keyListener);
+        if (this.allowableErrorPanel != null) this.allowableErrorPanel.addKeyListener(this.keyListener);
+        if (this.sensorRangePanel != null) this.sensorRangePanel.addKeyListener(this.keyListener);
+        if (this.specialCharactersPanel != null) this.specialCharactersPanel.addKeyListener(this.keyListener);
+        if (this.rangeLikeChannel != null) this.rangeLikeChannel.addKeyListener(this.keyListener);
+        if (this.negativeButton != null) this.negativeButton.addKeyListener(this.keyListener);
+        if (this.positiveButton != null) this.positiveButton.addKeyListener(this.keyListener);
+        if (this.saveAndCalculateButton != null) this.saveAndCalculateButton.addKeyListener(this.keyListener);
+        if (this.resetButton != null) this.resetButton.addKeyListener(this.keyListener);
+        if (this.removeButton != null) this.removeButton.addKeyListener(this.keyListener);
     }
 
     private void build() {
@@ -221,18 +243,19 @@ public class DialogChannel extends JDialog {
         }
 
         if (this.rangePanel != null && this.sensorRangePanel != null){
-            if (this.rangePanel.getRangeMin() < this.sensorRangePanel.getRangeMin()
-                    || this.rangePanel.getRangeMax() > this.sensorRangePanel.getRangeMax()){
+            double sensorRangeMin = new ValueConverter(this.sensorRangePanel.getValue(), this.measurementPanel.getMeasurement().getValue()).get(this.sensorRangePanel.getRangeMin());
+            double sensorRangeMax = new ValueConverter(this.sensorRangePanel.getValue(), this.measurementPanel.getMeasurement().getValue()).get(this.sensorRangePanel.getRangeMax());
+            if (this.rangePanel.getRangeMin() < sensorRangeMin || this.rangePanel.getRangeMax() > sensorRangeMax){
                 this.rangePanel.getBorder().setTitleColor(Color.RED);
                 this.sensorRangeBorder.setTitleColor(Color.RED);
-                if (this.rangePanel.getRangeMin() < this.sensorRangePanel.getRangeMin()){
+                if (this.rangePanel.getRangeMin() < sensorRangeMin){
                     this.rangePanel.getRangeMinField().setForeground(Color.RED);
                     this.sensorRangePanel.getRangeMinField().setForeground(Color.RED);
                 }else {
                     this.rangePanel.getRangeMinField().setForeground(Color.BLACK);
                     this.sensorRangePanel.getRangeMinField().setForeground(Color.BLACK);
                 }
-                if (this.rangePanel.getRangeMax() > this.sensorRangePanel.getRangeMax()){
+                if (this.rangePanel.getRangeMax() > sensorRangeMax){
                     this.rangePanel.getRangeMaxField().setForeground(Color.RED);
                     this.sensorRangePanel.getRangeMaxField().setForeground(Color.RED);
                 }else {
@@ -326,6 +349,45 @@ public class DialogChannel extends JDialog {
         this.mainPanel = new MainPanel();
         this.setContentPane(this.mainPanel);
     }
+
+    public final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()){
+                case KeyEvent.VK_ESCAPE:
+                    if (e.isAltDown()) negativeButton.doClick();
+                    break;
+                case KeyEvent.VK_ENTER:
+                    if (e.isAltDown() && !e.isControlDown()) positiveButton.doClick();
+                    if (e.isControlDown() && !e.isAltDown()) saveAndCalculateButton.doClick();
+                    if (e.isAltDown() && e.isControlDown()) {
+                        resetSpecialCharactersPanel();
+                        if (allFieldsAreNotFilled() || Application.isBusy(DialogChannel.this)) return;
+
+                        Application.putHint(userName.getText());
+                        dispose();
+                        ArrayList<Channel>channels;
+                        if (oldChannel == null) {
+                            channels = Application.context.channelService.add(getChannel());
+                        }else {
+                            channels = Application.context.channelService.set(oldChannel, getChannel());
+                        }
+                        if (Application.context.channelSorter.isOn()){
+                            parent.setChannelsList(Application.context.channelSorter.getCurrent());
+                        }else {
+                            parent.setChannelsList(channels);
+                        }
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                new OS_Chooser(parent, getChannel()).setVisible(true);
+                            }
+                        });
+                    }
+                    break;
+            }
+        }
+    };
 
     private final ItemListener clickRangeLikeChannel = new ItemListener() {
         @Override

@@ -7,6 +7,7 @@ import model.Calibrator;
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
+import service.SystemData;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.start.complexElements.CalculateStartDialog_alarmPanel;
 import ui.calculate.start.complexElements.CalculateStartDialog_datePanel;
@@ -29,8 +30,8 @@ public class CalculateStartDialog extends JDialog {
     private static final String NUMBER = "№ ";
     private static final String CALIBRATOR = "Калібратор: ";
     private static final String DEFAULT_NUMBER_OF_PROTOCOL = "0";
-    private static final String START = "Почати";
-    private static final String CANCEL = "Відміна";
+    private static final String START = "Почати (Alt + Enter)";
+    private static final String CANCEL = "Відміна (Alt + Esc)";
     private static final String ALARM_CHECK = "Перевірка сигналізації";
     private static final String ADD_NEW = "<-Додати новий->";
 
@@ -57,18 +58,32 @@ public class CalculateStartDialog extends JDialog {
 
     private CalculateStartDialog_alarmPanel alarmPanel;
 
+    private SystemData os;
+
     public CalculateStartDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values){
         super(mainScreen, title(channel), true);
         this.mainScreen = mainScreen;
         this.channel = channel;
         this.values = values;
 
-        this.createElements();
-        this.setReactions();
-        this.build();
+        this.createModels();
+        this.createView();
+        this.addControllers();
     }
 
-   private void createElements() {
+    public CalculateStartDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values, SystemData os){
+        super(mainScreen, title(channel), true);
+        this.mainScreen = mainScreen;
+        this.channel = channel;
+        this.values = values;
+        this.os = os;
+
+        this.createModels();
+        this.createView();
+        this.addControllers();
+    }
+
+   private void createModels() {
         this.labelDate = new JLabel(DATE);
         this.labelNumber = new JLabel(NUMBER);
         this.calibratorLabel = new JLabel(CALIBRATOR);
@@ -105,7 +120,7 @@ public class CalculateStartDialog extends JDialog {
         }
     }
 
-    private void setReactions() {
+    private void addControllers() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         this.numberOfProtocol.addFocusListener(this.numberFocus);
@@ -115,9 +130,17 @@ public class CalculateStartDialog extends JDialog {
 
         this.alarmCheck.addItemListener(this.clickAlarm);
         this.calibrator.addItemListener(this.changeCalibrator);
+
+        this.datePanel.addKeyListener(this.keyListener);
+        this.numberOfProtocol.addKeyListener(this.keyListener);
+        this.calibrator.addKeyListener(this.keyListener);
+        this.alarmCheck.addKeyListener(this.keyListener);
+        this.weatherPanel.addKeyListener(this.keyListener);
+        this.positiveButton.addKeyListener(this.keyListener);
+        this.negativeButton.addKeyListener(this.keyListener);
     }
 
-    private void build() {
+    private void createView() {
         this.setValues(this.values);
     }
 
@@ -159,7 +182,7 @@ public class CalculateStartDialog extends JDialog {
             }
             this.setContentPane(new MainPanel(false));
         }
-
+        if (values != null && values.get(Key.SYS) == null) values.put(Key.SYS, this.os);
     }
 
     public HashMap<Integer, Object> getValues(HashMap<Integer, Object> values){
@@ -175,6 +198,7 @@ public class CalculateStartDialog extends JDialog {
         values.put(Key.CALCULATION_EXTERNAL_HUMIDITY, this.weatherPanel.humidity.getText());
         values.put(Key.CALCULATION_ALARM_PANEL, this.withAlarm);
         values.put(Key.CALCULATION_ALARM_VALUE, this.alarmPanel.getValue());
+        if (values.get(Key.SYS) == null) values.put(Key.SYS, this.os);
 
         return values;
     }
@@ -228,6 +252,20 @@ public class CalculateStartDialog extends JDialog {
                         }
                     });
                 }
+            }
+        }
+    };
+
+    private final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()){
+                case KeyEvent.VK_ENTER:
+                    if (e.isAltDown()) positiveButton.doClick();
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    if (e.isAltDown()) negativeButton.doClick();
+                    break;
             }
         }
     };

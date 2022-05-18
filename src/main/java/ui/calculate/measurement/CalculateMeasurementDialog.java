@@ -13,8 +13,7 @@ import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.HashMap;
 
 public class CalculateMeasurementDialog extends JDialog {
@@ -28,10 +27,10 @@ public class CalculateMeasurementDialog extends JDialog {
     private String removeMessage(int removedMeasurementNumber){
         return "Розрахунок №" + removedMeasurementNumber + " був видалений.";
     }
-    private static final String BACK = "Назад";
-    private static final String NEXT = "Далі";
-    private static final String CLEAR = "Очистити";
-    private static final String CALCULATE = "Розрахувати";
+    private static final String BACK = "Назад (Alt + Left Arrow)";
+    private static final String NEXT = "Далі (Alt + Right Arrow)";
+    private static final String CLEAR = "Очистити (Alt + Backspace)";
+    private static final String CALCULATE = "Розрахувати (Alt + Enter)";
     private static final String CANCEL = "Відміна";
 
     private final MainScreen mainScreen;
@@ -57,8 +56,8 @@ public class CalculateMeasurementDialog extends JDialog {
 
         this.createElements();
         this.setValues();
-        this.setReactions();
         this.build();
+        this.setReactions();
     }
 
     private void createElements() {
@@ -79,6 +78,11 @@ public class CalculateMeasurementDialog extends JDialog {
         this.buttonNext.addActionListener(this.clickNext);
         this.buttonClear.addActionListener(this.clickClear);
         this.buttonCalculate.addActionListener(this.clickCalculate);
+
+        this.buttonBack.addKeyListener(this.keyListener);
+        this.buttonNext.addKeyListener(this.keyListener);
+        this.buttonClear.addKeyListener(this.keyListener);
+        this.buttonCalculate.addKeyListener(this.keyListener);
     }
 
     private void build() {
@@ -154,6 +158,8 @@ public class CalculateMeasurementDialog extends JDialog {
         if (values != null){
             this.measurementsPanels[index].setValues(values);
         }
+
+        this.measurementsPanels[index].addKeyListener(keyListener);
     }
 
     private void update(){
@@ -234,6 +240,28 @@ public class CalculateMeasurementDialog extends JDialog {
         }
     };
 
+    private final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.isAltDown()) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_BACK_SPACE:
+                        buttonClear.doClick();
+                        break;
+                    case KeyEvent.VK_ENTER:
+                        buttonCalculate.doClick();
+                        break;
+                    case KeyEvent.VK_LEFT:
+                        buttonBack.doClick();
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        if (buttonNext.isEnabled()) buttonNext.doClick();
+                        break;
+                }
+            }
+        }
+    };
+
     private class MainPanel extends JPanel {
 
         protected MainPanel(){
@@ -242,10 +270,15 @@ public class CalculateMeasurementDialog extends JDialog {
             this.add(labelMeasurement, new Cell(0,0,new Insets(10,10,10,10)));
             this.add(measurementsPanels[measurementNumber], new Cell(0,1));
             JPanel buttonsPanel = new JPanel();
-            buttonsPanel.add(buttonClear);
-            buttonsPanel.add(buttonBack);
-            buttonsPanel.add(buttonNext);
-            buttonsPanel.add(buttonCalculate);
+            buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
+            JPanel topPanel = new JPanel();
+            JPanel bottomPanel = new JPanel();
+            topPanel.add(buttonBack);
+            topPanel.add(buttonNext);
+            bottomPanel.add(buttonClear);
+            bottomPanel.add(buttonCalculate);
+            buttonsPanel.add(topPanel);
+            buttonsPanel.add(bottomPanel);
             this.add(buttonsPanel, new Cell(0,2, new Insets(20,0,0,0)));
         }
 

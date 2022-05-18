@@ -16,14 +16,13 @@ import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.HashMap;
 
 public class CalculateVerificationDialog extends JDialog {
     private static final String TITLE = "Результати розрахунку";
-    private static final String BACK = "Назад";
-    private static final String NEXT = "Далі";
+    private static final String BACK = "Назад (Alt + Backspace)";
+    private static final String NEXT = "Далі (Alt + Enter)";
 
     private final MainScreen mainScreen;
     private final Channel channel;
@@ -31,6 +30,7 @@ public class CalculateVerificationDialog extends JDialog {
     private final Calculation calculation;
 
     private JPanel resultPanel;
+    private MainPanel mainPanel;
 
     private JButton buttonBack, buttonNext;
 
@@ -42,8 +42,8 @@ public class CalculateVerificationDialog extends JDialog {
         this.calculation = calculation;
 
         this.createElements();
-        this.setReactions();
         this.build();
+        this.setReactions();
     }
 
     private void createElements() {
@@ -65,6 +65,10 @@ public class CalculateVerificationDialog extends JDialog {
 
         this.buttonBack.addActionListener(clickBack);
         this.buttonNext.addActionListener(clickNext);
+
+        this.buttonBack.addKeyListener(keyListener);
+        this.buttonNext.addKeyListener(keyListener);
+        this.resultPanel.addKeyListener(keyListener);
     }
 
     private void build() {
@@ -72,7 +76,8 @@ public class CalculateVerificationDialog extends JDialog {
         this.setResizable(false);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
-        this.setContentPane(new MainPanel());
+        this.mainPanel = new MainPanel();
+        this.setContentPane(this.mainPanel);
     }
 
     private final ActionListener clickBack = new ActionListener(){
@@ -112,12 +117,46 @@ public class CalculateVerificationDialog extends JDialog {
         }
     };
 
+    private final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()){
+                case KeyEvent.VK_DOWN:
+                    if (e.isAltDown()){
+                        mainPanel.scrollTo(MainPanel.DOWN_FULL);
+                    }else {
+                        mainPanel.scrollTo(MainPanel.DOWN);
+                    }
+                    break;
+                case KeyEvent.VK_UP:
+                    if (e.isAltDown()){
+                        mainPanel.scrollTo(MainPanel.UP_FULL);
+                    }else {
+                        mainPanel.scrollTo(MainPanel.UP);
+                    }
+                    break;
+                case KeyEvent.VK_ENTER:
+                    if (e.isAltDown()) buttonNext.doClick();
+                    break;
+                case KeyEvent.VK_BACK_SPACE:
+                    if (e.isAltDown()) buttonBack.doClick();
+                    break;
+            }
+        }
+    };
+
     private class MainPanel extends JPanel {
+        private final JScrollPane scroll;
+
+        public static final int DOWN = 0;
+        public static final int UP = 1;
+        public static final int DOWN_FULL = 2;
+        public static final int UP_FULL = 3;
 
         public MainPanel(){
             super(new GridBagLayout());
 
-            JScrollPane scroll = new JScrollPane(resultPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scroll = new JScrollPane(resultPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             scroll.setPreferredSize(new Dimension(800,500));
             scroll.getVerticalScrollBar().setUnitIncrement(16);
 
@@ -126,6 +165,26 @@ public class CalculateVerificationDialog extends JDialog {
             buttonsPanel.add(buttonBack);
             buttonsPanel.add(buttonNext);
             this.add(buttonsPanel, new Cell(0,1));
+        }
+
+        public void scrollTo(int to){
+            Point point = scroll.getViewport().getViewPosition();
+            int maxExtent = scroll.getViewport().getView().getHeight() - scroll.getViewport().getHeight();
+            switch (to){
+                case DOWN:
+                    if (point.y < maxExtent) point.y += 16;
+                    break;
+                case UP:
+                    if (point.y > 0) point.y -= 16;
+                    break;
+                case DOWN_FULL:
+                    point.y = maxExtent;
+                    break;
+                case UP_FULL:
+                    point.y = 0;
+                    break;
+            }
+            scroll.getViewport().setViewPosition(point);
         }
 
         private class Cell extends GridBagConstraints {

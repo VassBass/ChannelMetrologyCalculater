@@ -27,7 +27,8 @@ public class TemperatureCertificate extends Certificate {
     @Override
     public void init(Calculation result, HashMap<Integer, Object> values, Channel channel) {
         super.init(result, values, channel);
-        SystemData os = SystemData.osName();
+        SystemData systemData = (SystemData) values.get(Key.SYS);
+        SystemData os = systemData == null ? SystemData.osName() : systemData;
         File formFile;
 
         if (this.result.goodChannel()){

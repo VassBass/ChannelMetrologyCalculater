@@ -7,8 +7,7 @@ import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class ChannelExistsDialog extends JDialog {
     private final JDialog parentDialog;
@@ -26,8 +25,8 @@ public class ChannelExistsDialog extends JDialog {
         this.channel = channel;
 
         this.createElements();
-        this.setReactions();
         this.build();
+        this.setReactions();
     }
 
     public ChannelExistsDialog(JFrame parent, Channel channel){
@@ -45,8 +44,8 @@ public class ChannelExistsDialog extends JDialog {
     private void createElements(){
         this.message = new JLabel("Канал з кодом \"" + this.channel.getCode() + "\" знайдено:", SwingConstants.CENTER);
         this.channelName = new JLabel("\"" + this.channel.getName() + "\"", SwingConstants.CENTER);
-        this.buttonClose = new DefaultButton("Закрити");
-        this.buttonOpen = new DefaultButton("Відкрити");
+        this.buttonClose = new DefaultButton("Закрити (Esc)");
+        this.buttonOpen = new DefaultButton("Відкрити (Enter)");
     }
 
     private void setReactions(){
@@ -54,6 +53,9 @@ public class ChannelExistsDialog extends JDialog {
 
         this.buttonClose.addActionListener(clickClose);
         this.buttonOpen.addActionListener(clickOpen);
+
+        this.buttonOpen.addKeyListener(keyListener);
+        this.buttonClose.addKeyListener(keyListener);
     }
 
     private void build(){
@@ -83,6 +85,20 @@ public class ChannelExistsDialog extends JDialog {
                     new DialogChannel(Application.context.mainScreen, channel).setVisible(true);
                 }
             });
+        }
+    };
+
+    private final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()){
+                case KeyEvent.VK_ENTER:
+                    buttonOpen.doClick();
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    buttonClose.doClick();
+                    break;
+            }
         }
     };
 

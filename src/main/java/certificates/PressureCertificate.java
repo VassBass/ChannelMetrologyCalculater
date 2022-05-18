@@ -28,7 +28,8 @@ public class PressureCertificate extends Certificate {
     @Override
     public void init(Calculation result, HashMap<Integer, Object> values, Channel channel) {
         super.init(result, values, channel);
-        SystemData os = SystemData.osName();
+        SystemData systemData = (SystemData) values.get(Key.SYS);
+        SystemData os = systemData == null ? SystemData.osName() : systemData;
         File formFile;
 
         if (this.result.goodChannel()){
@@ -172,10 +173,10 @@ public class PressureCertificate extends Certificate {
 
         double errorSensor = sensor.getError(this.channel);
         double eP = errorSensor / (this.channel._getRange() / 100);
-        String errorPercent = VariableConverter.roundingDouble3(eP, Locale.GERMAN);
+        String errorPercent = eP < 0.01 ? VariableConverter.roundingDouble3(eP, Locale.GERMAN) : VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(21,5).setCellValue(errorPercent);
 
-        String error = VariableConverter.roundingDouble3(errorSensor, Locale.GERMAN);
+        String error = errorSensor < 0.02 ? VariableConverter.roundingDouble3(errorSensor, Locale.GERMAN) : VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN);
         cell(21,7).setCellValue(error);
 
         double min = new ValueConverter(sensor.getValue(), this.channel.getMeasurement().getValue()).get(sensor.getRangeMin());

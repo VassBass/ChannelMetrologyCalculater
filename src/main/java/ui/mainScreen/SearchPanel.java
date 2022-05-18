@@ -30,7 +30,7 @@ public class SearchPanel extends JPanel {
     private static final String REFERENCE = "Номер довідки";
     private static final String SUITABILITY = "Придатність";
     private static final String SUITABLE = "Придатний";
-    private static final String START_SEARCH = "Шукати";
+    private static final String START_SEARCH = "Шукати (Alt + Enter)";
     private static final String FINISH_SEARCH = "Відмінити";
     private static final String DEFAULT_DATE = "01.01.2020";
     private static final String DATE_TOOLTIP_TEXT = "Введіть дату у форматі \"день.місяць.рік\"";
@@ -50,8 +50,8 @@ public class SearchPanel extends JPanel {
         super(new GridBagLayout());
 
         this.createElements();
-        this.setReactions();
         this.build(TEXT);
+        this.setReactions();
     }
 
     private void createElements() {
@@ -87,6 +87,12 @@ public class SearchPanel extends JPanel {
 
         this.field.addItemListener(this.changeField);
         this.valueText.addFocusListener(this.textFocus);
+
+        this.field.addKeyListener(keyListener);
+        this.valueText.addKeyListener(keyListener);
+        this.valueComboBox.addKeyListener(keyListener);
+        this.valueSuitability.addKeyListener(keyListener);
+        this.buttonSearch.addKeyListener(keyListener);
     }
 
     private void build(int element) {
@@ -104,15 +110,7 @@ public class SearchPanel extends JPanel {
                 this.add(this.valueSuitability, new Cell(1));
                 break;
         }
-        if (this.field.getSelectedItem() != null){
-            if (this.field.getSelectedItem().toString().equals(CODE)){
-                this.buttonSearch.removeActionListener(clickSearch);
-                this.buttonSearch.addActionListener(codeSearchPositiveClick);
-            }else {
-                this.buttonSearch.removeActionListener(codeSearchPositiveClick);
-                this.buttonSearch.addActionListener(clickSearch);
-            }
-        }
+
         this.add(this.buttonSearch, new Cell(2));
     }
 
@@ -158,6 +156,15 @@ public class SearchPanel extends JPanel {
         }
     }
 
+    private final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.isAltDown() && e.getKeyCode() == KeyEvent.VK_ENTER){
+                buttonSearch.doClick();
+            }
+        }
+    };
+
     private ComboBoxModel<String>model_measurementsNames(){
         return new DefaultComboBoxModel<>(Application.context.measurementService.getAllNames());
     }
@@ -186,27 +193,25 @@ public class SearchPanel extends JPanel {
         return new DefaultComboBoxModel<>(Application.context.sensorService.getAllTypes());
     }
 
-    private final ActionListener codeSearchPositiveClick = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            new CheckChannel(Application.context.mainScreen, valueText.getText()).start();
-        }
-    };
-
     private final ActionListener clickSearch = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (field.getSelectedItem() != null) {
                 if (buttonSearch.getText().equals(START_SEARCH)) {
-                    if (field != null) field.setEnabled(false);
-                    if (valueText != null) valueText.setEnabled(false);
-                    if (valueComboBox != null) valueComboBox.setEnabled(false);
-                    if (valueSuitability != null) valueSuitability.setEnabled(false);
-
-                    buttonSearch.setText(FINISH_SEARCH);
                     String f = field.getSelectedItem().toString();
+                    if (!f.equals(CODE)) {
+                        if (field != null) field.setEnabled(false);
+                        if (valueText != null) valueText.setEnabled(false);
+                        if (valueComboBox != null) valueComboBox.setEnabled(false);
+                        if (valueSuitability != null) valueSuitability.setEnabled(false);
+
+                        buttonSearch.setText(FINISH_SEARCH);
+                    }
                     String value = valueComboBox.getSelectedItem() == null ? null : valueComboBox.getSelectedItem().toString();
                     switch (f) {
+                        case CODE:
+                            new CheckChannel(Application.context.mainScreen, valueText.getText()).start();
+                            break;
                         case NAME:
                             new SearchChannels().startSearch(Sort.NAME, valueText.getText());
                             break;

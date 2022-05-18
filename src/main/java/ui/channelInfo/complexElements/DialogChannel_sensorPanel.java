@@ -64,6 +64,13 @@ public class DialogChannel_sensorPanel extends JPanel {
         this.setBorder(border);
     }
 
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        for (Component component : this.getComponents()){
+            if (component != null) component.addKeyListener(l);
+        }
+    }
+
     private final ItemListener changeSensorName = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {

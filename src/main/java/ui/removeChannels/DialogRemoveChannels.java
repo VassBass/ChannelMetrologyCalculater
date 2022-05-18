@@ -9,16 +9,15 @@ import ui.model.DefaultButton;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class DialogRemoveChannels extends JDialog {
     private static final String REMOVE_CHANNEL = "Видалити канал";
     private static final String CHOOSE_CHANNEL_TO_REMOVE = "Виберіть канал для видалення: ";
-    private static final String REMOVE_ALL = "Видалити всі";
-    private static final String REMOVE = "Видалити";
-    private static final String CANCEL = "Відміна";
+    private static final String REMOVE_ALL = "Видалити всі (Shift + R)";
+    private static final String REMOVE = "Видалити (R)";
+    private static final String CANCEL = "Відміна (Q)";
 
     private final MainScreen mainScreen;
 
@@ -62,9 +61,21 @@ public class DialogRemoveChannels extends JDialog {
     private void setReactions() {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        this.removeAll.addActionListener(clickRemoveAll);
-        this.positiveButton.addActionListener(clickPositiveButton);
-        this.negativeButton.addActionListener(clickNegativeButton);
+        if (removeAll != null) {
+            removeAll.addActionListener(clickRemoveAll);
+            removeAll.addKeyListener(keyListener);
+        }
+
+        if (positiveButton != null) {
+            positiveButton.addActionListener(clickPositiveButton);
+            positiveButton.addKeyListener(keyListener);
+        }
+        if (negativeButton != null) {
+            negativeButton.addActionListener(clickNegativeButton);
+            negativeButton.addKeyListener(keyListener);
+        }
+
+        if (channelsList != null) channelsList.addKeyListener(keyListener);
     }
 
     private void build() {
@@ -74,6 +85,24 @@ public class DialogRemoveChannels extends JDialog {
 
         this.setContentPane(new MainPanel());
     }
+
+    private final KeyListener keyListener = new KeyAdapter() {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch (e.getKeyCode()){
+                case KeyEvent.VK_Q:
+                    negativeButton.doClick();
+                    break;
+                case KeyEvent.VK_R:
+                    if (e.isShiftDown()){
+                        removeAll.doClick();
+                    }else {
+                        positiveButton.doClick();
+                    }
+                    break;
+            }
+        }
+    };
 
     private final ActionListener clickRemoveAll = new ActionListener() {
         @Override
@@ -154,7 +183,6 @@ public class DialogRemoveChannels extends JDialog {
                 this.add(text, new Cell(0,0));
             }
             this.add(buttonsPanel, new Cell(0,1));
-
         }
 
         private class Cell extends GridBagConstraints {

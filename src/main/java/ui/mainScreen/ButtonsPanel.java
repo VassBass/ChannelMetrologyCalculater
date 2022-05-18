@@ -12,15 +12,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ButtonsPanel extends JPanel {
-    private static final String DETAILS = "Детальніше";
-    private static final String REMOVE = "Видалити";
-    private static final String ADD = "Додати";
-    private static final String CALCULATE = "Розрахувати";
-    private static final String CERTIFICATES_PROTOCOLS = "Сертифікати/Протоколи";
+    private static final String DETAILS = "Детальніше (D)";
+    private static final String REMOVE = "Видалити (R)";
+    private static final String ADD = "Додати (A)";
+    private static final String CALCULATE = "Розрахувати (C)";
+    private static final String CERTIFICATES_PROTOCOLS = "Сертифікати/Протоколи (F)";
 
     private final MainScreen mainScreen;
 
-    private JButton buttonDetails, buttonRemove, buttonAdd, buttonCalculate, buttonCertificateFolder;
+    public JButton buttonDetails, buttonRemove, buttonAdd, buttonCalculate, buttonCertificateFolder;
 
     public ButtonsPanel(MainScreen mainScreen){
         super(new GridBagLayout());

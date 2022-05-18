@@ -161,6 +161,11 @@ public class SpecialCharactersPanel extends JPanel {
         }
     }
 
+    @Override
+    public synchronized void addKeyListener(KeyListener l) {
+        this.degreeOfText.addKeyListener(l);
+    }
+
     private final ActionListener clickDegree = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
