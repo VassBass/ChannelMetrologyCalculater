@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
@@ -55,6 +56,17 @@ public class Measurement implements Serializable {
      */
     @Nonnull protected String value = "value";
 
+    /**
+     * DB field = factors [TEXT{Json}]
+     * values for converting
+     * Use for keys Measurement constants like:
+     * @see #DEGREE_CELSIUS
+     * @see #M3_HOUR
+     * @see #KPA
+     * and other
+     */
+    @Nonnull protected HashMap<String, Double>factors = new HashMap<>();
+
     public Measurement(){}
 
     public Measurement(@Nonnull String name, @Nonnull String value){
@@ -64,9 +76,24 @@ public class Measurement implements Serializable {
 
     @Nonnull public String getName() {return this.name;}
     @Nonnull public String getValue() {return this.value;}
+    @Nonnull public HashMap<String,Double>getFactors(){return this.factors;}
 
     public void setName(@Nonnull String name) {this.name = name;}
     public void setValue(@Nonnull String value){this.value = value;}
+    public void setFactors(@Nonnull HashMap<String, Double>factors){this.factors = factors;}
+
+    public void addFactor(@Nonnull String measurementValue, @Nonnull Double factor){
+        if (!measurementValue.equals(this.value)) this.factors.put(measurementValue, factor);
+    }
+
+    public void removeFactor(@Nonnull String measurementValue){
+        this.factors.remove(measurementValue);
+    }
+
+    public Double convertTo(@Nonnull String measurementValue, double quantity){
+        double factor = measurementValue.equals(this.value) ? 1D : this.factors.get(measurementValue);
+        return quantity * factor;
+    }
 
     @Override
     public int hashCode() {
