@@ -3,7 +3,6 @@ package ui.channelInfo;
 import application.Application;
 import backgroundTasks.CheckChannel;
 import converters.ConverterUI;
-import converters.ValueConverter;
 import converters.VariableConverter;
 import developer.calculating.OS_Chooser;
 import model.Channel;
@@ -243,8 +242,8 @@ public class DialogChannel extends JDialog {
         }
 
         if (this.rangePanel != null && this.sensorRangePanel != null){
-            double sensorRangeMin = new ValueConverter(this.sensorRangePanel.getValue(), this.measurementPanel.getMeasurement().getValue()).get(this.sensorRangePanel.getRangeMin());
-            double sensorRangeMax = new ValueConverter(this.sensorRangePanel.getValue(), this.measurementPanel.getMeasurement().getValue()).get(this.sensorRangePanel.getRangeMax());
+            double sensorRangeMin = this.measurementPanel.getMeasurement().convertFrom(this.sensorRangePanel.getValue(), this.sensorRangePanel.getRangeMin());
+            double sensorRangeMax = this.measurementPanel.getMeasurement().convertFrom(this.sensorRangePanel.getValue(), this.sensorRangePanel.getRangeMax());
             if (this.rangePanel.getRangeMin() < sensorRangeMin || this.rangePanel.getRangeMax() > sensorRangeMax){
                 this.rangePanel.getBorder().setTitleColor(Color.RED);
                 this.sensorRangeBorder.setTitleColor(Color.RED);

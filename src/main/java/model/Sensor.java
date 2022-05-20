@@ -3,7 +3,6 @@ package model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import converters.ValueConverter;
 import converters.VariableConverter;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
@@ -86,7 +85,8 @@ public class Sensor implements Serializable {
      *
      * convR - Measurement range of sensor converted by measurement channel value
      * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
-     * @see ValueConverter#get(double)
+     * @see Measurement#convertTo(String, double)
+     * @see Measurement#convertFrom(String, double)
      */
     private String errorFormula = "";
 
@@ -125,7 +125,8 @@ public class Sensor implements Serializable {
      *
      * convR - Measurement range of sensor converted by measurement channel value
      * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
-     * @see ValueConverter#get(double)
+     * @see Measurement#convertTo(String, double)
+     * @see Measurement#convertFrom(String, double) 
      */
     public double getError(Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
@@ -137,7 +138,7 @@ public class Sensor implements Serializable {
             cR = 0D;
         }else {
             R = new Argument("R = " + channel._getRange());
-            cR = new ValueConverter(this.value, channel.getMeasurement().getValue()).get(this._getRange());
+            cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
         }
         Argument r = new Argument("r = " + this._getRange());
         Argument convR = new Argument("convR = " + cR);

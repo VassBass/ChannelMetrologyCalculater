@@ -90,9 +90,26 @@ public class Measurement implements Serializable {
         this.factors.remove(measurementValue);
     }
 
+    /**
+     * Convert from current measurement value to given
+     * @param measurementValue the value to which is converted
+     * @param quantity of measurement value
+     * @return transformed value
+     */
     public Double convertTo(@Nonnull String measurementValue, double quantity){
         double factor = measurementValue.equals(this.value) ? 1D : this.factors.get(measurementValue);
         return quantity * factor;
+    }
+
+    /**
+     * Convert from given measurement value to current
+     * @param measurementValue the value from which is converted
+     * @param quantity of measurement value
+     * @return transformed value
+     */
+    public Double convertFrom(@Nonnull String measurementValue, double quantity){
+        double factor = measurementValue.equals(this.value) ? 1D : this.factors.get(measurementValue);
+        return quantity / factor;
     }
 
     @Override

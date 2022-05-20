@@ -2,7 +2,6 @@ package ui.calculate.verification.complexElements;
 
 import calculation.Calculation;
 import constants.Key;
-import converters.ValueConverter;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
@@ -257,7 +256,7 @@ public class PressurePanel extends JPanel {
             ePC = errorCalibrator / (this.channel._getRange() / 100);
         }else {
             double calibratorRange = calibrator._getRange();
-            double convertedCalibratorRange = new ValueConverter(calibrator.getValue(), this.channel.getMeasurement().getValue()).get(calibratorRange);
+            double convertedCalibratorRange = this.channel.getMeasurement().convertFrom(calibrator.getValue(), calibratorRange);
             ePC = errorCalibrator / (convertedCalibratorRange/100);
         }
         String error;
@@ -429,7 +428,7 @@ public class PressurePanel extends JPanel {
                     Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
                     double value5 = calculation.getControlPointsValues()[1];
                     if (calibrator.getType().equals(Calibrator.FLUKE718_30G)) {
-                        double maxCalibratorPower = new ValueConverter(Measurement.KGS_SM2, channel.getMeasurement().getValue()).get(-0.8);
+                        double maxCalibratorPower = channel.getMeasurement().convertFrom(Measurement.KGS_SM2, -0.8);
                         if (value5 < maxCalibratorPower){
                             cells[x] = new ButtonCell(false, VariableConverter.roundingDouble2(maxCalibratorPower, Locale.GERMAN));
                         }else {

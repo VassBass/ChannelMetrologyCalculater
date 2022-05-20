@@ -254,7 +254,7 @@ public class Channel implements Serializable {
     }
 
     /**
-     * @param json {@link Calibrator} in JsonString
+     * @param json {@link Channel} in JsonString
      *
      * @see com.fasterxml.jackson.core
      *

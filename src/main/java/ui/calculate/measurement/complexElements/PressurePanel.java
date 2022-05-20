@@ -1,7 +1,6 @@
 package ui.calculate.measurement.complexElements;
 
 import application.Application;
-import converters.ValueConverter;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
@@ -48,7 +47,7 @@ public class PressurePanel extends MeasurementPanel {
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double maxCalibratorPower = new ValueConverter(Measurement.KGS_SM2, this.channel.getMeasurement().getValue()).get(-0.8);
+        double maxCalibratorPower = this.channel.getMeasurement().convertFrom(Measurement.KGS_SM2, -0.8);
 
         this.values = Application.context.controlPointsValuesService.getValues(
                 this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
