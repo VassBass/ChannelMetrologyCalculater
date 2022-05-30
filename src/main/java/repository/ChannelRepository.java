@@ -14,12 +14,14 @@ public interface ChannelRepository {
 
     void remove(Channel channel);
     void removeBySensorInCurrentThread(Sensor sensor);
+    void removeByMeasurementValueInCurrentThread(String measurementValue);
 
     void importDataInCurrentThread(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
     void rewriteInCurrentThread(ArrayList<Channel>channels);
 
     void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored);
     void changeSensorsInCurrentThread(ArrayList<Sensor>sensors);
+    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
 
     void set(Channel oldChannel, Channel newChannel);
     void setInCurrentThread(Channel oldChannel, Channel newChannel);

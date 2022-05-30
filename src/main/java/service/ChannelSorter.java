@@ -102,7 +102,7 @@ public class ChannelSorter {
         ArrayList<Channel>channels = Application.context.channelService.getAll();
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
-            String channelMeasurementValue = VariableConverter.kirillToLatinLetters(channel.getMeasurement().getValue());
+            String channelMeasurementValue = VariableConverter.kirillToLatinLetters(channel._getMeasurementValue());
             if (channelMeasurementValue.equals(this.sortString)){
                 sortedList.add(channel);
             }

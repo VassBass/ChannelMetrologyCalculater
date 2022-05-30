@@ -15,9 +15,11 @@ public interface CalibratorService {
 
     ArrayList<Calibrator> remove(Calibrator calibrator);
     ArrayList<Calibrator> remove(int index);
+    void removeByMeasurementValueInCurrentThread(String measurementValue);
 
     ArrayList<Calibrator> set(Calibrator oldCalibrator, Calibrator newCalibrator);
     void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator);
+    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
 
     Calibrator get(String name);
     Calibrator get(int index);

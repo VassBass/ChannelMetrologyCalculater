@@ -192,7 +192,7 @@ public class PressurePanel extends JPanel {
                 + " до "
                 + VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN)
                 + " "
-                + this.channel.getMeasurement().getValue();
+                + this.channel._getMeasurementValue();
         this.rangeChannel.setText(rangeChannel);
 
         String allowableErrorChannel = PLUS_MINUS
@@ -200,7 +200,7 @@ public class PressurePanel extends JPanel {
                 + "% або "
                 + PLUS_MINUS
                 + VariableConverter.roundingDouble3(this.channel.getAllowableError(), Locale.GERMAN)
-                + this.channel.getMeasurement().getValue();
+                + this.channel._getMeasurementValue();
         this.allowableErrorChannel.setText(allowableErrorChannel);
 
         this.sensor.setText(this.channel.getSensor().getType());
@@ -221,7 +221,7 @@ public class PressurePanel extends JPanel {
                 + "% або "
                 + PLUS_MINUS
                 + errorSensorValue
-                + this.channel.getMeasurement().getValue();
+                + this.channel._getMeasurementValue();
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
         String rangeSensor = "Від "
@@ -252,7 +252,7 @@ public class PressurePanel extends JPanel {
 
         double errorCalibrator = calibrator.getError(this.channel);
         double ePC;
-        if (calibrator.getValue().equals(this.channel.getMeasurement().getValue())) {
+        if (calibrator.getValue().equals(this.channel._getMeasurementValue())) {
             ePC = errorCalibrator / (this.channel._getRange() / 100);
         }else {
             double calibratorRange = calibrator._getRange();
@@ -271,7 +271,7 @@ public class PressurePanel extends JPanel {
                 + "% або "
                 + PLUS_MINUS
                 + error
-                + this.channel.getMeasurement().getValue();
+                + this.channel._getMeasurementValue();
         this.allowableErrorCalibrator.setText(allowableErrorCalibrator);
 
         this.resultOfCheck = new ButtonCell(true);
@@ -422,7 +422,7 @@ public class PressurePanel extends JPanel {
                     cells[x] = new ButtonCell(false, "95");
                     this.add(cells[x], new Cell(1, 6, 1, 2));
                 }else if (x == 8) {
-                    cells[x] = new ButtonCell(false, "Xет,".concat(channel.getMeasurement().getValue()));
+                    cells[x] = new ButtonCell(false, "Xет,".concat(channel._getMeasurementValue()));
                     this.add(cells[x], new Cell(3, 0, 1, 2));
                 }else if (x == 9) {
                     Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
@@ -505,7 +505,7 @@ public class PressurePanel extends JPanel {
             cells[6].setText("U = "
                     + PLUS_MINUS
                     + u
-                    + channel.getMeasurement().getValue());
+                    + channel._getMeasurementValue());
 
             String gamma;
             if (calculation.getErrorInRangeWidthSensorError() < 0.01 && calculation.getErrorInRangeWidthSensorError() > -0.01){
@@ -529,7 +529,7 @@ public class PressurePanel extends JPanel {
                     + " вк = "
                     + PLUS_MINUS
                     + delta
-                    + channel.getMeasurement().getValue());
+                    + channel._getMeasurementValue());
 
             String s5;
             String s50;
@@ -540,39 +540,39 @@ public class PressurePanel extends JPanel {
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble3(calculation.getSystematicErrors()[0], Locale.GERMAN)
-                        + channel.getMeasurement().getValue();
+                        + channel._getMeasurementValue();
             }else {
                 s5 = "5% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[0], Locale.GERMAN)
-                        + channel.getMeasurement().getValue();
+                        + channel._getMeasurementValue();
             }
             if (calculation.getSystematicErrors()[1] < 0.01 && calculation.getSystematicErrors()[1] > -0.01){
                 s50 = "50% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble3(calculation.getSystematicErrors()[1], Locale.GERMAN)
-                        + channel.getMeasurement().getValue();
+                        + channel._getMeasurementValue();
             }else {
                 s50 = "50% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[1], Locale.GERMAN)
-                        + channel.getMeasurement().getValue();
+                        + channel._getMeasurementValue();
             }
             if (calculation.getSystematicErrors()[2] < 0.01 && calculation.getSystematicErrors()[2] > -0.01){
                 s95 = "95% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble3(calculation.getSystematicErrors()[2], Locale.GERMAN)
-                        + channel.getMeasurement().getValue();
+                        + channel._getMeasurementValue();
             }else {
                 s95 = "95% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[2], Locale.GERMAN)
-                        + channel.getMeasurement().getValue();
+                        + channel._getMeasurementValue();
             }
             cells[9].setText(s5);
             cells[10].setText(s50);

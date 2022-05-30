@@ -17,9 +17,11 @@ public interface CalibratorRepository {
 
     void remove(Calibrator calibrator);
     void remove(int index);
+    void removeByMeasurementInCurrentThread(String measurementValue);
 
     void set(Calibrator oldCalibrator, Calibrator newCalibrator);
     void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator);
+    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
 
     void clear();
 

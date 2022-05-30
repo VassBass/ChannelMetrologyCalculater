@@ -59,6 +59,11 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
+    public void changeSensorTypeInCurrentThread(String oldSensorType, String newSensorType) {
+        this.repository.changeSensorTypeInCurrentThread(oldSensorType, newSensorType);
+    }
+
+    @Override
     public void remove(ControlPointsValues controlPointsValues) {
         this.repository.remove(controlPointsValues);
     }

@@ -76,8 +76,18 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
+    public void removeMeasurementValueInCurrentThread(String measurementValue) {
+        this.repository.removeMeasurementValueInCurrentThread(measurementValue);
+    }
+
+    @Override
     public void setInCurrentThread(Sensor oldSensor, Sensor newSensor) {
         this.repository.setInCurrentThread(oldSensor, newSensor);
+    }
+
+    @Override
+    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
+        this.repository.changeMeasurementValueInCurrentThread(oldValue, newValue);
     }
 
     @Override

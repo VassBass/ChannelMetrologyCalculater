@@ -7,6 +7,7 @@ import repository.impl.MeasurementRepositoryImpl;
 import service.MeasurementService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class MeasurementServiceImpl implements MeasurementService {
@@ -30,8 +31,8 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public void add(Measurement measurement) {
-        this.repository.add(measurement);
+    public void addInCurrentThread(Measurement measurement) {
+        this.repository.addInCurrentThread(measurement);
     }
 
     @Override
@@ -65,13 +66,18 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public Measurement get(int index) {
-        return this.repository.get(index);
+    public void delete(Measurement measurement) {
+        this.repository.delete(measurement);
     }
 
     @Override
-    public void delete(Measurement measurement) {
-        this.repository.delete(measurement);
+    public void changeFactors(String measurementValue, HashMap<String, Double> factors) {
+        this.repository.changeFactors(measurementValue, factors);
+    }
+
+    @Override
+    public void changeInCurrentThread(Measurement oldMeasurement, Measurement newMeasurement) {
+        this.repository.changeInCurrentThread(oldMeasurement, newMeasurement);
     }
 
     @Override
@@ -88,4 +94,20 @@ public class MeasurementServiceImpl implements MeasurementService {
     public void resetToDefaultInCurrentThread() {
         this.repository.rewriteInCurrentThread(DefaultMeasurements.get());
     }
+
+    @Override
+    public boolean isLastInMeasurement(String measurementValue) {
+        return this.repository.isLastInMeasurement(measurementValue);
+    }
+
+    @Override
+    public boolean exists(String measurementValue) {
+        return this.repository.exists(measurementValue);
+    }
+
+    @Override
+    public boolean exists(String oldValue, String newValue) {
+        return this.repository.exists(oldValue, newValue);
+    }
+
 }

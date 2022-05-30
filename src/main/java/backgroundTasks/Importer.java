@@ -420,7 +420,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
             channel.setReference(resultSet.getString("reference"));
             channel.setDate(resultSet.getString("date"));
             channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
-            channel.setMeasurement(Measurement.fromString(resultSet.getString("measurement")));
+            channel.setMeasurementValue(resultSet.getString("measurement_value"));
             channel.setSensor(Sensor.fromString(resultSet.getString("sensor")));
             channel.setFrequency(resultSet.getDouble("frequency"));
             channel.setRangeMin(resultSet.getDouble("range_min"));

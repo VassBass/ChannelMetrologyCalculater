@@ -20,6 +20,7 @@ public interface ControlPointsValuesService {
     ControlPointsValues getControlPointsValues(String sensorType, int index);
     void put(ControlPointsValues controlPointsValues);
     void putInCurrentThread(ControlPointsValues cpv);
+    void changeSensorTypeInCurrentThread(String oldSensorType, String newSensorType);
     void remove(ControlPointsValues controlPointsValues);
     void removeAllInCurrentThread(String sensorType);
     void clear(String sensorType);

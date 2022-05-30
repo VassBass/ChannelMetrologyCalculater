@@ -19,6 +19,7 @@ public interface ControlPointsValuesRepository {
     ControlPointsValues getControlPointsValues(String sensorType, int index);
     void put(ControlPointsValues cpv);
     void putInCurrentThread(ControlPointsValues cpv);
+    void changeSensorTypeInCurrentThread(String oldSensorType, String newSensorType);
     void remove(ControlPointsValues cpv);
     void removeAllInCurrentThread(String sensorType);
     void clear(String sensorType);

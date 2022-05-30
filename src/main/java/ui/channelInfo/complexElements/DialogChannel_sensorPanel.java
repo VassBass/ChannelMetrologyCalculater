@@ -85,11 +85,11 @@ public class DialogChannel_sensorPanel extends JPanel {
                 } else {
                     if (parent.measurementPanel.getMeasurement().getName().equals(Measurement.CONSUMPTION)) {
                         Channel channel = new Channel();
-                        channel.setMeasurement(parent.measurementPanel.getMeasurement());
+                        channel.setMeasurementValue(parent.measurementPanel.getMeasurement().getValue());
                         channel.setRangeMin(parent.rangePanel.getRangeMin());
                         channel.setRangeMax(parent.rangePanel.getRangeMax());
                         Sensor sensor = getSensor();
-                        sensor.setValue(channel.getMeasurement().getValue());
+                        sensor.setValue(channel._getMeasurementValue());
                         double errorSensor = sensor.getError(channel);
                         parent.allowableErrorPanel.updateError(errorSensor, false, channel._getRange());
                         if (sensor.getType().toUpperCase(Locale.ROOT).contains(Sensor.ROSEMOUNT)) {

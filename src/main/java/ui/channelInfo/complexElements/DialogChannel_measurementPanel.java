@@ -95,9 +95,9 @@ public class DialogChannel_measurementPanel extends JPanel {
     }
 
     public Measurement getMeasurement(){
-        return new Measurement(
-                Objects.requireNonNull(this.measurementName.getSelectedItem()).toString(),
-                Objects.requireNonNull(this.measurementValue.getSelectedItem()).toString());
+        if (measurementValue.getSelectedItem() == null) return null;
+
+        return Application.context.measurementService.get(measurementValue.getSelectedItem().toString());
     }
 
     @SuppressWarnings("unchecked")

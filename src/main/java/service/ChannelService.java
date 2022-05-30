@@ -17,12 +17,14 @@ public interface ChannelService {
 
     ArrayList<Channel> remove(Channel channel);
     void removeBySensorInCurrentThread(Sensor sensor);
+    void removeByMeasurementValueInCurrentThread(String measurementValue);
 
     void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored);
     void changeSensorsInCurrentThread(ArrayList<Sensor>sensors);
 
     ArrayList<Channel> set(Channel oldChannel, Channel newChannel);
     void setInCurrentThread(Channel oldChannel, Channel newChannel);
+    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
 
     boolean isExist(String code);
     boolean isExist(String oldChannelCode, String newChannelCode);

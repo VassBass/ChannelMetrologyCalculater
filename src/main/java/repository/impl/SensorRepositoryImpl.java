@@ -196,6 +196,44 @@ public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRe
     }
 
     @Override
+    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
+        if (oldValue != null && newValue != null){
+            for (Sensor sensor : this.mainList){
+                if (sensor.getMeasurement().equals(oldValue)){
+                    sensor.setMeasurement(newValue);
+                }
+            }
+
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection();
+                 Statement statement = connection.createStatement()){
+                String sql = "UPDATE sensors SET measurement = '" + newValue + "' WHERE measurement = '" + oldValue + "';";
+                LOGGER.fine("Send requests to update");
+                statement.execute(sql);
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+    }
+
+    @Override
+    public void removeMeasurementValueInCurrentThread(String measurementValue) {
+        for (Sensor sensor : this.mainList){
+            if (sensor.getMeasurement().equals(measurementValue)) sensor.setMeasurement("");
+        }
+
+        LOGGER.fine("Get connection with DB");
+        try (Connection connection = getConnection();
+            Statement statement = connection.createStatement()){
+            String sql = "UPDATE sensors SET measurement = '' WHERE measurement = '" + measurementValue + "';";
+            LOGGER.fine("Send requests to update");
+            statement.execute(sql);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+        }
+    }
+
+    @Override
     public void rewriteInCurrentThread(ArrayList<Sensor> sensors) {
         if (sensors != null && !sensors.isEmpty()) {
             this.mainList.clear();

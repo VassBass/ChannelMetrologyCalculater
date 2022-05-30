@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -134,6 +135,31 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
     }
 
     @Override
+    public void removeByMeasurementInCurrentThread(String measurementValue) {
+        if (measurementValue != null) {
+            ArrayList<Integer> indexes = new ArrayList<>();
+            for (int index = 0; index < this.mainList.size(); index++) {
+                String value = this.mainList.get(index).getValue();
+                if (value.equals(measurementValue)) indexes.add(index);
+            }
+            Collections.reverse(indexes);
+            for (int index : indexes) {
+                this.mainList.remove(index);
+            }
+
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection();
+                 Statement statement = connection.createStatement()) {
+                String sql = "DELETE FROM calibrators WHERE value = '" + measurementValue + "';";
+                LOGGER.fine("Send request to delete");
+                statement.execute(sql);
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+    }
+
+    @Override
     public void set(Calibrator oldCalibrator, Calibrator newCalibrator) {
         if (oldCalibrator != null && newCalibrator != null
                 && this.mainList.contains(oldCalibrator)){
@@ -153,6 +179,27 @@ public class CalibratorRepositoryImpl extends Repository<Calibrator> implements 
             int index = this.mainList.indexOf(oldCalibrator);
             this.mainList.set(index, newCalibrator);
             new BackgroundAction().setCalibrator(oldCalibrator, newCalibrator);
+        }
+    }
+
+    @Override
+    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
+        if (oldValue != null && newValue != null){
+            for (Calibrator calibrator : this.mainList){
+                if (calibrator.getValue().equals(oldValue)){
+                    calibrator.setValue(newValue);
+                }
+            }
+
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection();
+                 Statement statement = connection.createStatement()) {
+                String sql = "UPDATE calibrators SET value = '" + newValue + "' WHERE value = '" + oldValue + "';";
+                LOGGER.fine("Send request to update");
+                statement.execute(sql);
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
         }
     }
 

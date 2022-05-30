@@ -67,6 +67,11 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
+    public void removeByMeasurementValueInCurrentThread(String measurementValue) {
+        this.repository.removeByMeasurementValueInCurrentThread(measurementValue);
+    }
+
+    @Override
     public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored){
         this.repository.changeSensorInCurrentThread(oldSensor, newSensor, ignored);
     }
@@ -85,6 +90,11 @@ public class ChannelServiceImpl implements ChannelService {
     @Override
     public void setInCurrentThread(Channel oldChannel, Channel newChannel) {
         this.repository.setInCurrentThread(oldChannel, newChannel);
+    }
+
+    @Override
+    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
+        this.repository.changeMeasurementValueInCurrentThread(oldValue, newValue);
     }
 
     @Override

@@ -6,6 +6,7 @@ import settings.Settings;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.controlPointsValues.ControlPointsListDialog;
 import ui.mainScreen.MainScreen;
+import ui.measurementsList.MeasurementsListDialog;
 import ui.methodInfo.MethodInfoDialog;
 import ui.pathLists.PathListsDialog;
 import ui.personsList.PersonsListDialog;
@@ -27,14 +28,16 @@ public class MenuLists extends JMenu {
     private static final String CALIBRATORS_LIST = "Список калібраторів";
     private static final String METHODS = "Методи розрахунку";
     private static final String CONTROL_POINTS = "Контрольні точки";
+    private static final String MEASUREMENTS_LIST = "Список вимірювальних величин";
 
     private final MainScreen mainScreen;
 
-    private JMenuItem buttonPersons;
-    private JMenuItem buttonDepartments, buttonAreas, buttonProcesses, buttonInstallations;
-    private JMenuItem buttonSensors, buttonControlPoints;
-    private JMenuItem buttonTemperature, buttonPressure, buttonConsumption;
-    private JMenuItem buttonCalibrators;
+    private JMenuItem btn_persons;
+    private JMenuItem btn_departments, btn_areas, btn_processes, btn_installations;
+    private JMenuItem btn_sensors, btn_controlPoints;
+    private JMenuItem btn_measurements, btn_temperature, btn_pressure, btn_consumption;
+    private JMenuItem btn_calibrators;
+
 
     public MenuLists(MainScreen mainScreen){
         super(LISTS);
@@ -46,58 +49,61 @@ public class MenuLists extends JMenu {
     }
 
     private void createElements() {
-        this.buttonDepartments = new JMenuItem(DEPARTMENTS_LIST);
-        this.buttonAreas = new JMenuItem(AREAS_LIST);
-        this.buttonProcesses = new JMenuItem(PROCESSES_LIST);
-        this.buttonInstallations = new JMenuItem(INSTALLATIONS_LIST);
-        this.buttonPersons = new JMenuItem(WORKERS);
-        this.buttonSensors = new JMenuItem(SENSORS_LIST);
-        this.buttonControlPoints = new JMenuItem(CONTROL_POINTS);
-        this.buttonCalibrators = new JMenuItem(CALIBRATORS_LIST);
+        this.btn_departments = new JMenuItem(DEPARTMENTS_LIST);
+        this.btn_areas = new JMenuItem(AREAS_LIST);
+        this.btn_processes = new JMenuItem(PROCESSES_LIST);
+        this.btn_installations = new JMenuItem(INSTALLATIONS_LIST);
+        this.btn_persons = new JMenuItem(WORKERS);
+        this.btn_sensors = new JMenuItem(SENSORS_LIST);
+        this.btn_controlPoints = new JMenuItem(CONTROL_POINTS);
+        this.btn_calibrators = new JMenuItem(CALIBRATORS_LIST);
+        this.btn_measurements = new JMenuItem(MEASUREMENTS_LIST);
 
-        this.buttonTemperature = new JMenuItem(Measurement.TEMPERATURE);
-        this.buttonTemperature.setToolTipText(Settings.getSettingValue(Measurement.TEMPERATURE));
-        this.buttonPressure = new JMenuItem(Measurement.PRESSURE);
-        this.buttonPressure.setToolTipText(Settings.getSettingValue(Measurement.PRESSURE));
-        this.buttonConsumption = new JMenuItem(Measurement.CONSUMPTION);
-        this.buttonConsumption.setToolTipText(Settings.getSettingValue(Measurement.CONSUMPTION));
+        this.btn_temperature = new JMenuItem(Measurement.TEMPERATURE);
+        this.btn_temperature.setToolTipText(Settings.getSettingValue(Measurement.TEMPERATURE));
+        this.btn_pressure = new JMenuItem(Measurement.PRESSURE);
+        this.btn_pressure.setToolTipText(Settings.getSettingValue(Measurement.PRESSURE));
+        this.btn_consumption = new JMenuItem(Measurement.CONSUMPTION);
+        this.btn_consumption.setToolTipText(Settings.getSettingValue(Measurement.CONSUMPTION));
     }
 
     private void setReactions() {
-        this.buttonDepartments.addActionListener(this.clickDepartments);
-        this.buttonAreas.addActionListener(this.clickAreas);
-        this.buttonProcesses.addActionListener(this.clickProcesses);
-        this.buttonInstallations.addActionListener(this.clickInstallations);
-        this.buttonPersons.addActionListener(this.clickButtonPersons);
-        this.buttonSensors.addActionListener(this.clickSensors);
-        this.buttonControlPoints.addActionListener(this.clickControlPoints);
-        this.buttonTemperature.addActionListener(this.clickTemperature);
-        this.buttonPressure.addActionListener(this.clickPressure);
-        this.buttonConsumption.addActionListener(this.clickConsumption);
-        this.buttonCalibrators.addActionListener(this.clickCalibrators);
+        this.btn_departments.addActionListener(this.clickDepartments);
+        this.btn_areas.addActionListener(this.clickAreas);
+        this.btn_processes.addActionListener(this.clickProcesses);
+        this.btn_installations.addActionListener(this.clickInstallations);
+        this.btn_persons.addActionListener(this.clickPersons);
+        this.btn_sensors.addActionListener(this.clickSensors);
+        this.btn_controlPoints.addActionListener(this.clickControlPoints);
+        this.btn_temperature.addActionListener(this.clickTemperature);
+        this.btn_pressure.addActionListener(this.clickPressure);
+        this.btn_consumption.addActionListener(this.clickConsumption);
+        this.btn_calibrators.addActionListener(this.clickCalibrators);
+        this.btn_measurements.addActionListener(this.clickMeasurements);
     }
 
     private void build() {
-        this.add(this.buttonSensors);
-        this.add(this.buttonControlPoints);
+        this.add(this.btn_sensors);
+        this.add(this.btn_controlPoints);
         this.addSeparator();
-        this.add(this.buttonCalibrators);
+        this.add(this.btn_calibrators);
         this.addSeparator();
-        this.add(this.buttonDepartments);
-        this.add(this.buttonAreas);
-        this.add(this.buttonProcesses);
-        this.add(this.buttonInstallations);
+        this.add(this.btn_departments);
+        this.add(this.btn_areas);
+        this.add(this.btn_processes);
+        this.add(this.btn_installations);
         this.addSeparator();
-        this.add(this.buttonPersons);
+        this.add(this.btn_persons);
         this.addSeparator();
+        this.add(this.btn_measurements);
         JMenu methods = new JMenu(METHODS);
-        methods.add(this.buttonTemperature);
-        methods.add(this.buttonPressure);
-        methods.add(this.buttonConsumption);
+        methods.add(this.btn_temperature);
+        methods.add(this.btn_pressure);
+        methods.add(this.btn_consumption);
         this.add(methods);
     }
 
-    private final ActionListener clickButtonPersons = new ActionListener() {
+    private final ActionListener clickPersons = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             EventQueue.invokeLater(new Runnable() {
@@ -224,6 +230,18 @@ public class MenuLists extends JMenu {
                 @Override
                 public void run() {
                     new CalibratorsListDialog(mainScreen).setVisible(true);
+                }
+            });
+        }
+    };
+
+    private final ActionListener clickMeasurements = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    new MeasurementsListDialog(mainScreen).setVisible(true);
                 }
             });
         }

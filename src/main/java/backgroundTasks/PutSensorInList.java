@@ -50,6 +50,9 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
             if (!this.oldSensor.isMatch(this.newSensor, Sensor.RANGE, Sensor.VALUE)) {
                 Application.context.channelService.changeSensorInCurrentThread(this.oldSensor, this.newSensor, Sensor.MEASUREMENT, Sensor.RANGE, Sensor.VALUE);
             }
+            if (!this.oldSensor.getType().equals(this.newSensor.getType())){
+                Application.context.controlPointsValuesService.changeSensorTypeInCurrentThread(this.oldSensor.getType(), this.newSensor.getType());
+            }
             return true;
         }
     }

@@ -22,7 +22,7 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
 
     @Override
     protected void createElements() {
-        String value = this.channel.getMeasurement().getValue();
+        String value = this.channel._getMeasurementValue();
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
         String columnMotion = "Хід";
@@ -129,7 +129,7 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
 
         @Override
         public void focusLost(FocusEvent e){
-            String value = channel.getMeasurement().getValue();
+            String value = channel._getMeasurementValue();
             JTextField cell = (JTextField) e.getSource();
             if (cell.getText().length()==0 || cell.getText().equals("-")){
                 double value0 = 0D;

@@ -5,7 +5,6 @@ import application.ApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import constants.Action;
 import model.Channel;
-import model.Measurement;
 import model.Sensor;
 import repository.ChannelRepository;
 import repository.Repository;
@@ -46,7 +45,7 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                     + ", reference text"
                     + ", date text"
                     + ", suitability text NOT NULL"
-                    + ", measurement text NOT NULL"
+                    + ", measurement_value text NOT NULL"
                     + ", sensor text NOT NULL"
                     + ", frequency real NOT NULL"
                     + ", range_min real NOT NULL"
@@ -74,7 +73,7 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                     channel.setReference(resultSet.getString("reference"));
                     channel.setDate(resultSet.getString("date"));
                     channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
-                    channel.setMeasurement(Measurement.fromString(resultSet.getString("measurement")));
+                    channel.setMeasurementValue(resultSet.getString("measurement_value"));
                     channel.setSensor(Sensor.fromString(resultSet.getString("sensor")));
                     channel.setFrequency(resultSet.getDouble("frequency"));
                     channel.setRangeMin(resultSet.getDouble("range_min"));
@@ -147,6 +146,31 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
     }
 
     @Override
+    public void removeByMeasurementValueInCurrentThread(String measurementValue) {
+        if (measurementValue != null) {
+            ArrayList<Integer>indexes = new ArrayList<>();
+            for (int index = 0;index<this.mainList.size();index++){
+                String measurement = this.mainList.get(index)._getMeasurementValue();
+                if (measurement.equals(measurementValue)) indexes.add(index);
+            }
+            Collections.reverse(indexes);
+            for (int index : indexes){
+                this.mainList.remove(index);
+            }
+
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection();
+                Statement statement = connection.createStatement()){
+                String sql = "DELETE FROM channels WHERE measurement_value = '" + measurementValue + "';";
+                LOGGER.fine("Send request to delete");
+                statement.execute(sql);
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
+    }
+
+    @Override
     public void rewriteInCurrentThread(ArrayList<Channel> channels) {
         if (channels != null && !channels.isEmpty()) {
             this.mainList.clear();
@@ -211,6 +235,39 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
             }
         }
         new BackgroundAction().rewriteChannels(this.mainList);
+    }
+
+    @Override
+    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
+        ArrayList<Integer>needChangeSensor = new ArrayList<>();
+        if (oldValue != null && newValue != null){
+            for (int index = 0;index<this.mainList.size();index++){
+                Channel channel = this.mainList.get(index);
+                if (channel._getMeasurementValue().equals(oldValue)){
+                    channel.setMeasurementValue(newValue);
+                }
+                if (channel.getSensor().getMeasurement().equals(oldValue)){
+                    channel.getSensor().setMeasurement(newValue);
+                    needChangeSensor.add(index);
+                }
+            }
+
+            LOGGER.fine("Get connection with DB");
+            try (Connection connection = getConnection();
+                 Statement statement = connection.createStatement()){
+                LOGGER.fine("Send requests to update");
+                String sql = "UPDATE channels SET measurement_value = '" + newValue + "' WHERE measurement_value = '" + oldValue + "';";
+                statement.execute(sql);
+                for (int index : needChangeSensor){
+                    Sensor sensor = this.mainList.get(index).getSensor();
+                    String code = this.mainList.get(index).getCode();
+                    sql = "UPDATE channels SET sensor = '" + sensor + "' WHERE code = '" + code + "';";
+                    statement.execute(sql);
+                }
+            }catch (SQLException ex){
+                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+            }
+        }
     }
 
     @Override
@@ -374,7 +431,7 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
 
         boolean addChannel(Channel channel){
             String sql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
-                    ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'" +
+                    ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement_value', 'sensor', 'frequency', 'range_min', 'range_max'" +
                     ", 'allowable_error_percent', 'allowable_error_value') "
                     + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
@@ -392,7 +449,7 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                 statement.setString(9,channel.getReference());
                 statement.setString(10, channel.getDate());
                 statement.setString(11, String.valueOf(channel.isSuitability()));
-                statement.setString(12, channel.getMeasurement().toString());
+                statement.setString(12, channel._getMeasurementValue());
                 statement.setString(13, channel.getSensor().toString());
                 statement.setDouble(14, channel.getFrequency());
                 statement.setDouble(15, channel.getRangeMin());
@@ -452,7 +509,7 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                         + "reference = '" + newChannel.getReference() + "', "
                         + "date = '" + newChannel.getDate() + "', "
                         + "suitability = '" + newChannel.isSuitability() + "', "
-                        + "measurement = '" + newChannel.getMeasurement() + "', "
+                        + "measurement_value = '" + newChannel._getMeasurementValue() + "', "
                         + "sensor = '" + newChannel.getSensor() + "', "
                         + "frequency = " + newChannel.getFrequency() + ", "
                         + "range_min = " + newChannel.getRangeMin() + ", "
@@ -471,7 +528,7 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
         public void rewriteChannels(ArrayList<Channel>channels){
             String clearSql = "DELETE FROM channels;";
             String insertSql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
-                    ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement', 'sensor', 'frequency', 'range_min', 'range_max'" +
+                    ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement_value', 'sensor', 'frequency', 'range_min', 'range_max'" +
                     ", 'allowable_error_percent', 'allowable_error_value') "
                     + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             LOGGER.fine("Get connection with DB");
@@ -495,7 +552,7 @@ public class ChannelRepositoryImpl extends Repository<Channel> implements Channe
                         statement.setString(9,channel.getReference());
                         statement.setString(10, channel.getDate());
                         statement.setString(11, String.valueOf(channel.isSuitability()));
-                        statement.setString(12, channel.getMeasurement().toString());
+                        statement.setString(12, channel._getMeasurementValue());
                         statement.setString(13, channel.getSensor().toString());
                         statement.setDouble(14, channel.getFrequency());
                         statement.setDouble(15, channel.getRangeMin());

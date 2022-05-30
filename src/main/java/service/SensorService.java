@@ -17,8 +17,10 @@ public interface SensorService {
     void addInCurrentThread(Sensor sensor);
 
     void removeInCurrentThread(Sensor sensor);
+    void removeMeasurementValueInCurrentThread(String measurementValue);
 
     void setInCurrentThread(Sensor oldSensor, Sensor newSensor);
+    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
 
     void rewriteInCurrentThread(ArrayList<Sensor>sensors);
     void importDataInCurrentThread(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange);

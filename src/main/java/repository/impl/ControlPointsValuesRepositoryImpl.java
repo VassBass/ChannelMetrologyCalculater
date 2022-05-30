@@ -143,6 +143,28 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
     }
 
     @Override
+    public void changeSensorTypeInCurrentThread(String oldSensorType, String newSensorType) {
+        for (ControlPointsValues cpv : this.mainList){
+            if (cpv.getSensorType().equals(oldSensorType)){
+                cpv.setSensorType(newSensorType);
+            }
+        }
+        LOGGER.fine("Get connection with DB");
+        try (Connection connection = getConnection();
+            Statement statement = connection.createStatement()){
+            String sql = "UPDATE control_points SET "
+                    + "sensor_type = '" + newSensorType + "' "
+                    + "WHERE sensor_type = '" + oldSensorType + "';";
+
+            LOGGER.fine("Send requests to update");
+            statement.execute(sql);
+
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+        }
+    }
+
+    @Override
     public void remove(ControlPointsValues cpv) {
         if (cpv != null && this.mainList.remove(cpv)){
             new BackgroundAction().remove(cpv);
@@ -345,7 +367,6 @@ public class ControlPointsValuesRepositoryImpl extends Repository<ControlPointsV
             LOGGER.fine("Get connection with DB");
             try (Connection connection = getConnection();
                 Statement statement = connection.createStatement()){
-                LOGGER.fine("Send request to delete");
                 LOGGER.fine("Send requests to update");
                 String sql = "UPDATE control_points SET "
                         + "sensor_type = '" + newControlPoints.getSensorType() + "', "

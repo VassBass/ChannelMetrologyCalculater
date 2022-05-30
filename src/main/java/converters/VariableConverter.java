@@ -113,6 +113,10 @@ public class VariableConverter {
     }
 
     public static String doubleString(String string) {
+        try {
+            double d = Double.parseDouble(string);
+            return String.valueOf(d);
+        }catch (Exception ignored){}
         StringBuilder checkedString = new StringBuilder();
         boolean dot = false;
         for (int x=0;x<string.length();x++) {

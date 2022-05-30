@@ -31,7 +31,9 @@ public class MainTable extends Table<Channel> {
         this.parent = parent;
         this.channelsList = parent.channelsList;
 
+        this.getTableHeader().setReorderingAllowed(false);
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         ListSelectionListener select = new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {

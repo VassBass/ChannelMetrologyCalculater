@@ -185,7 +185,7 @@ public class DialogChannel extends JDialog {
             this.pathPanel.update(this.oldChannel.getDepartment(), this.oldChannel.getArea(), this.oldChannel.getProcess(), this.oldChannel.getInstallation());
             this.sensorPanel.update(this.oldChannel.getMeasurement().getName());
             this.sensorPanel.update(this.oldChannel.getSensor());
-            this.rangePanel.updateValue(this.oldChannel.getMeasurement().getValue());
+            this.rangePanel.updateValue(this.oldChannel._getMeasurementValue());
             this.rangePanel.updateRange(this.oldChannel.getRangeMin(), this.oldChannel.getRangeMax());
             double range = this.oldChannel.getRangeMax() - this.oldChannel.getRangeMin();
             this.allowableErrorPanel.updateError(this.oldChannel.getAllowableError(), false, range);
@@ -193,7 +193,7 @@ public class DialogChannel extends JDialog {
             if (this.sensorRangePanel != null){
                 this.sensorRangePanel.update(this.oldChannel.getSensor());
             }
-            this.measurementPanel.setSelectedValue(this.oldChannel.getMeasurement().getValue());
+            this.measurementPanel.setSelectedValue(this.oldChannel._getMeasurementValue());
         }
 
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
@@ -279,7 +279,7 @@ public class DialogChannel extends JDialog {
         Channel channel = new Channel();
         channel.setCode(this.userCode.getText());
         channel.setName(this.userName.getText());
-        channel.setMeasurement(this.measurementPanel.getMeasurement());
+        channel.setMeasurementValue(this.measurementPanel.getMeasurement().getValue());
         channel.setDepartment(this.pathPanel.getDepartment());
         channel.setArea(this.pathPanel.getArea());
         channel.setProcess(this.pathPanel.getProcess());
@@ -336,11 +336,11 @@ public class DialogChannel extends JDialog {
             this.sensorRangePanel = null;
             this.rangePanel.setTitle(RANGE_OF_SENSOR);
             Channel channel = new Channel();
-            channel.setMeasurement(measurement);
+            channel.setMeasurementValue(measurement.getValue());
             channel.setRangeMin(this.rangePanel.getRangeMin());
             channel.setRangeMax(this.rangePanel.getRangeMax());
             Sensor sensor = this.sensorPanel.getSensor();
-            sensor.setValue(channel.getMeasurement().getValue());
+            sensor.setValue(channel._getMeasurementValue());
             double errorSensor = sensor.getError(channel);
             this.allowableErrorPanel.updateError(errorSensor, false, channel._getRange());
             this.allowableErrorPanel.setEnabled(false);

@@ -21,7 +21,7 @@ public class TemperaturePanel extends MeasurementPanel {
 
     @Override
     protected void createElements() {
-        String value = this.channel.getMeasurement().getValue();
+        String value = this.channel._getMeasurementValue();
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
         String columnPercent = "% від шкали";

@@ -64,6 +64,11 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
+    public void removeByMeasurementValueInCurrentThread(String measurementValue) {
+        this.repository.removeByMeasurementInCurrentThread(measurementValue);
+    }
+
+    @Override
     public ArrayList<Calibrator> set(Calibrator oldCalibrator, Calibrator newCalibrator) {
         this.repository.set(oldCalibrator, newCalibrator);
         return this.repository.getAll();
@@ -72,6 +77,11 @@ public class CalibratorServiceImpl implements CalibratorService {
     @Override
     public void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator) {
         this.repository.setInCurrentThread(oldCalibrator, newCalibrator);
+    }
+
+    @Override
+    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
+        this.repository.changeMeasurementValueInCurrentThread(oldValue, newValue);
     }
 
     @Override

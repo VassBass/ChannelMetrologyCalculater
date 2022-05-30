@@ -3,6 +3,7 @@ package repository;
 import model.Measurement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface MeasurementRepository {
     ArrayList<Measurement>getAll();
@@ -11,10 +12,19 @@ public interface MeasurementRepository {
     String[]getValues(Measurement measurement);
     String[]getValues(String name);
     Measurement get(String value);
-    Measurement get(int index);
-    void add(Measurement measurement);
+    ArrayList<Measurement>getMeasurements(String name);
+
+    ArrayList<Measurement> addInCurrentThread(Measurement measurement);
+
+    void rewriteInCurrentThread(ArrayList<Measurement>measurements);
+    void changeFactors(String measurementValue, HashMap<String, Double>factors);
+    void changeInCurrentThread(Measurement oldMeasurement, Measurement newMeasurement);
+
     void delete(Measurement measurement);
     void clear();
-    ArrayList<Measurement>getMeasurements(String name);
-    void rewriteInCurrentThread(ArrayList<Measurement>measurements);
+
+    boolean backgroundTaskIsRun();
+    boolean isLastInMeasurement(String measurementValue);
+    boolean exists(String measurementValue);
+    boolean exists(String oldValue, String newValue);
 }

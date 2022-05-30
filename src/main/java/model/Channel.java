@@ -1,5 +1,6 @@
 package model;
 
+import application.Application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -28,11 +29,11 @@ public class Channel implements Serializable {
     @Nonnull private String name = "";
 
     /**
-     * DB field = measurement [TEXT{Json}]
+     * DB field = measurement_value [TEXT{Json}]
      *
      * @see Measurement
      */
-    @Nonnull private Measurement measurement = new Measurement();
+    @Nonnull private String measurementValue = "";
 
     /**
      * DB field department [TEXT]
@@ -118,7 +119,14 @@ public class Channel implements Serializable {
 
     @Nonnull public String getCode() {return this.code;}
     @Nonnull public String getName() {return this.name;}
-    @Nonnull public Measurement getMeasurement() {return this.measurement;}
+    @Nonnull public Measurement getMeasurement() {
+        if (this.measurementValue.equals(Measurement.M_S) || this.measurementValue.equals(Measurement.CM_S)){
+            return new Measurement(Measurement.CONSUMPTION, this.measurementValue);
+        }else {
+            return Application.context.measurementService.get(this.measurementValue);
+        }
+    }
+    public String _getMeasurementValue(){return this.measurementValue;}
     public String getDepartment() {return this.department;}
     public String getArea() {return this.area;}
     public String getProcess() {return this.process;}
@@ -184,7 +192,7 @@ public class Channel implements Serializable {
 
     public void setCode(@Nonnull String code) {this.code = code;}
     public void setName(@Nonnull String name) {this.name = name;}
-    public void setMeasurement(@Nonnull Measurement measurement) {this.measurement = measurement;}
+    public void setMeasurementValue(@Nonnull String measurementValue) {this.measurementValue = measurementValue;}
     public void setDepartment(String department) {this.department = department;}
     public void setArea(String area) {this.area = area;}
     public void setProcess(String process) {this.process = process;}
@@ -275,7 +283,7 @@ public class Channel implements Serializable {
         Channel c = new Channel();
         c.setCode(channel.getCode());
         c.setName(channel.getName());
-        c.setMeasurement(channel.getMeasurement());
+        c.setMeasurementValue(channel._getMeasurementValue());
         c.setDepartment(channel.getDepartment());
         c.setArea(channel.getArea());
         c.setProcess(channel.getProcess());
@@ -300,7 +308,7 @@ public class Channel implements Serializable {
     public boolean isMatch(Channel channel){
         return this.code.equals(channel.getCode())
                 && this.name.equals(channel.getName())
-                && this.measurement.equals(channel.getMeasurement())
+                && this.measurementValue.equals(channel._getMeasurementValue())
                 && this.department.equals(channel.getDepartment())
                 && this.area.equals(channel.getArea())
                 && this.process.equals(channel.getProcess())

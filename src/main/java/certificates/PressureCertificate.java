@@ -125,7 +125,7 @@ public class PressureCertificate extends Certificate {
         String rangeMax = VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN);
         cell(17,7).setCellValue(rangeMax);
 
-        this.measurementValue = this.channel.getMeasurement().getValue();
+        this.measurementValue = this.channel._getMeasurementValue();
         cell(17,8).setCellValue(this.measurementValue);
         cell(18,8).setCellValue(this.measurementValue);
         cell(21,8).setCellValue(this.measurementValue);
@@ -171,7 +171,7 @@ public class PressureCertificate extends Certificate {
         cell(20,4).setCellValue(type);
 
         double errorSensor = sensor.getError(this.channel);
-        double eP = errorSensor / (this.channel._getRange() / 100);
+        double eP = errorSensor / (sensor._getRange() / 100);
         String errorPercent = eP < 0.01 ? VariableConverter.roundingDouble3(eP, Locale.GERMAN) : VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(21,5).setCellValue(errorPercent);
 
@@ -201,7 +201,7 @@ public class PressureCertificate extends Certificate {
 
         double errorCalibrator = calibrator.getError(this.channel);
         double eP;
-        if (calibrator.getValue().equals(this.channel.getMeasurement().getValue())) {
+        if (calibrator.getValue().equals(this.channel._getMeasurementValue())) {
             eP = errorCalibrator / (this.channel._getRange() / 100);
         }else {
             double calibratorRange = calibrator._getRange();

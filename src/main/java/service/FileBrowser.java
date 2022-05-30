@@ -44,6 +44,7 @@ public class FileBrowser {
     private static final String LINUX_FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD = "linuxForm_consumption_rosemount_good.xls";
     private static final String FILE_NAME_IMAGE_ANIM_LOAD = "anim_load.gif";
     private static final String FILE_NAME_IMAGE_NAME_LOGO = "name_logo.png";
+    private static final String FILE_NAME_IMAGE_METROLOGY_ICON = "metrology_icon.jpg";
 
     public static final File DIR_MAIN = new File(DIR_NAME_MAIN);
     public static final File DIR_CERTIFICATES = new File(DIR_MAIN, DIR_NAME_CERTIFICATES);
@@ -70,6 +71,7 @@ public class FileBrowser {
     public static final File LINUX_FILE_CONSUMPTION_ROSEMOUNT_GOOD = new File(DIR_FORMS, LINUX_FILE_NAME_CONSUMPTION_ROSEMOUNT_GOOD);
     public static final File FILE_IMAGE_ANIM_LOAD = new File(DIR_IMAGES, FILE_NAME_IMAGE_ANIM_LOAD);
     public static final File FILE_IMAGE_NAME_LOGO = new File(DIR_IMAGES, FILE_NAME_IMAGE_NAME_LOGO);
+    public static final File FILE_IMAGE_METROLOGY_ICON = new File(DIR_IMAGES, FILE_NAME_IMAGE_METROLOGY_ICON);
 
     private static File createArchiveFolderIfNotExists(String year){
         File DIR_ARCHIVE = new File(DIR_CERTIFICATES, DIR_NAME_ARCHIVE);
@@ -321,6 +323,16 @@ public class FileBrowser {
                 LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
             }else {
                 Path unpackingPath = Paths.get(FILE_IMAGE_NAME_LOGO.getAbsolutePath());
+                Files.copy(in, unpackingPath, REPLACE_EXISTING);
+                in.close();
+            }
+
+            packedPath = DIR_NAME_IMAGES + "/" + FILE_NAME_IMAGE_METROLOGY_ICON;
+            in = FileBrowser.class.getClassLoader().getResourceAsStream(packedPath);
+            if (in == null){
+                LOGGER.log(Level.WARNING, "FileBrowser: file not found: " + packedPath);
+            }else {
+                Path unpackingPath = Paths.get(FILE_IMAGE_METROLOGY_ICON.getAbsolutePath());
                 Files.copy(in, unpackingPath, REPLACE_EXISTING);
                 in.close();
             }

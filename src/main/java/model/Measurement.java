@@ -77,6 +77,10 @@ public class Measurement implements Serializable {
     @Nonnull public String getName() {return this.name;}
     @Nonnull public String getValue() {return this.value;}
     @Nonnull public HashMap<String,Double>getFactors(){return this.factors;}
+    @Nonnull public String _getFactorsJson() throws JsonProcessingException {
+        ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        return writer.writeValueAsString(this.factors);
+    }
 
     public void setName(@Nonnull String name) {this.name = name;}
     public void setValue(@Nonnull String value){this.value = value;}
@@ -123,6 +127,12 @@ public class Measurement implements Serializable {
         if (obj == this) return true;
         Measurement measurement = (Measurement) obj;
         return this.value.equals(measurement.getValue());
+    }
+
+    public Measurement copy(){
+        Measurement m = new Measurement(this.name, this.value);
+        m.setFactors(this.factors);
+        return m;
     }
 
     /**

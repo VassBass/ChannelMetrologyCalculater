@@ -18,8 +18,10 @@ public interface SensorRepository {
     void addInCurrentThread(Sensor sensor);
 
     void removeInCurrentThread(Sensor sensor);
+    void removeMeasurementValueInCurrentThread(String measurementValue);
 
     void setInCurrentThread(Sensor oldSensor, Sensor newSensor);
+    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
 
     void clear();
 
