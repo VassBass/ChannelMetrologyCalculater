@@ -143,14 +143,21 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
                      Statement statement = connection.createStatement()){
 
                     LOGGER.fine("Send requests to add");
+                    String sql = "INSERT INTO measurements('name', 'value', 'factors') "
+                            + "VALUES ('" + measurement.getName() + "', "
+                            + "'" + measurement.getValue() + "', "
+                            + "'" + measurement._getFactorsJson() + "');";
+                    statement.execute(sql);
                     for (Measurement m : this.mainList) {
-                        Double factor = 1 / factors.get(m.getValue());
-                        m.getFactors().put(measurement.getValue(), factor);
+                        if (measurement.getName().equals(m.getName())) {
+                            Double factor = 1 / factors.get(m.getValue());
+                            m.getFactors().put(measurement.getValue(), factor);
 
-                        String sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' "
-                                + "WHERE value = '" + m.getValue() + "';";
+                            sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' "
+                                    + "WHERE value = '" + m.getValue() + "';";
 
-                        statement.execute(sql);
+                            statement.execute(sql);
+                        }
                     }
                 }catch (SQLException | JsonProcessingException ex){
                     LOGGER.log(Level.SEVERE, "ERROR: ", ex);
