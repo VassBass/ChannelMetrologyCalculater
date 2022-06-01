@@ -58,8 +58,8 @@ public class SensorInfoDialog extends JDialog {
     private ButtonCell labelName;
     private ButtonCell labelRange;
     private ButtonCell labelErrorFormula;
-    private ButtonCell helpFormula1, helpFormula2, helpFormula3, helpFormula4, helpFormula5,
-            helpFormula6, helpFormula7, helpFormula8, helpFormula9, helpFormula10, helpFormula11, helpFormula12;
+    private ButtonCell helpFormula1, helpFormula2, helpFormula3, helpFormula4, helpFormula5, helpFormula6, helpFormula7, helpFormula8,
+            helpFormula9, helpFormula10, helpFormula11, helpFormula12, helpFormula13, helpFormula14, helpFormula15;
 
     private JComboBox<String>measurementsList;
     private JTextField typeText;
@@ -195,39 +195,59 @@ public class SensorInfoDialog extends JDialog {
         this.helpFormula7.setHorizontalAlignment(SwingConstants.LEFT);
         this.helpFormula7.setBorderPainted(false);
 
-        String help8 = "Приклад: ((0.005 * R) / r) + convR";
+        String help8 = "conv(...) - Число переконвертоване з вимірювальної величини ПВП до вимірювальної величини каналу";
         this.helpFormula8 = new ButtonCell(false, help8);
         this.helpFormula8.setVerticalAlignment(SwingConstants.CENTER);
-        this.helpFormula8.setHorizontalAlignment(SwingConstants.CENTER);
-        this.helpFormula8.setToolTipText(toolTipText);
+        this.helpFormula8.setHorizontalAlignment(SwingConstants.LEFT);
+        this.helpFormula8.setBorderPainted(false);
 
-        String help9 = "Дія №1 - 0.005 помножено на діапазон вимірювання вимірювального каналу(R)";
+        String help9 = "Приклад: ((0.005 * R) / r) + convR - conv(10)";
         this.helpFormula9 = new ButtonCell(false, help9);
         this.helpFormula9.setVerticalAlignment(SwingConstants.CENTER);
-        this.helpFormula9.setHorizontalAlignment(SwingConstants.LEFT);
-        this.helpFormula9.setBorderPainted(false);
+        this.helpFormula9.setHorizontalAlignment(SwingConstants.CENTER);
         this.helpFormula9.setToolTipText(toolTipText);
 
-        String help10 = "Дія №2 - Результат першої дії поділено на діапазон вимірювання ПВП(r)";
+        String help10 = "Дія №1 - 0.005 помножено на діапазон вимірювання вимірювального каналу(R)";
         this.helpFormula10 = new ButtonCell(false, help10);
         this.helpFormula10.setVerticalAlignment(SwingConstants.CENTER);
         this.helpFormula10.setHorizontalAlignment(SwingConstants.LEFT);
         this.helpFormula10.setBorderPainted(false);
         this.helpFormula10.setToolTipText(toolTipText);
 
-        String help11 = "Дія №3 - До результату другої дії додати діапазон вимірювання ПВП переконвертований під вимірювальну";
+        String help11 = "Дія №2 - Результат першої дії поділено на діапазон вимірювання ПВП(r)";
         this.helpFormula11 = new ButtonCell(false, help11);
         this.helpFormula11.setVerticalAlignment(SwingConstants.CENTER);
         this.helpFormula11.setHorizontalAlignment(SwingConstants.LEFT);
         this.helpFormula11.setBorderPainted(false);
         this.helpFormula11.setToolTipText(toolTipText);
 
-        String help12 = "величину вимірювального каналу(convR)";
+        String help12 = "Дія №3 - До результату другої дії додати діапазон вимірювання ПВП переконвертований під вимірювальну";
         this.helpFormula12 = new ButtonCell(false, help12);
         this.helpFormula12.setVerticalAlignment(SwingConstants.CENTER);
         this.helpFormula12.setHorizontalAlignment(SwingConstants.LEFT);
         this.helpFormula12.setBorderPainted(false);
         this.helpFormula12.setToolTipText(toolTipText);
+
+        String help13 = "величину вимірювального каналу(convR)";
+        this.helpFormula13 = new ButtonCell(false, help13);
+        this.helpFormula13.setVerticalAlignment(SwingConstants.CENTER);
+        this.helpFormula13.setHorizontalAlignment(SwingConstants.LEFT);
+        this.helpFormula13.setBorderPainted(false);
+        this.helpFormula13.setToolTipText(toolTipText);
+
+        String help14 = "Дія №4 - Від результату третьої дії відняти число 10 переконвертоване з вимірювальної величини ПВП";
+        this.helpFormula14 = new ButtonCell(false, help14);
+        this.helpFormula14.setVerticalAlignment(SwingConstants.CENTER);
+        this.helpFormula14.setHorizontalAlignment(SwingConstants.LEFT);
+        this.helpFormula14.setBorderPainted(false);
+        this.helpFormula14.setToolTipText(toolTipText);
+
+        String help15 = "до вимірювальної величини вимірювального каналу (conv(10))";
+        this.helpFormula15 = new ButtonCell(false, help15);
+        this.helpFormula15.setVerticalAlignment(SwingConstants.CENTER);
+        this.helpFormula15.setHorizontalAlignment(SwingConstants.LEFT);
+        this.helpFormula15.setBorderPainted(false);
+        this.helpFormula15.setToolTipText(toolTipText);
 
         this.buttonCancel = new DefaultButton(CANCEL);
         this.buttonSave = new DefaultButton(SAVE);
@@ -286,7 +306,7 @@ public class SensorInfoDialog extends JDialog {
     }
 
     private void build() {
-        this.setSize(850,550);
+        this.setSize(850,700);
         if (this.dialogChannel == null) {
             this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         }else {
@@ -551,12 +571,15 @@ public class SensorInfoDialog extends JDialog {
             this.add(helpFormula10, new Cell(0,14,4));
             this.add(helpFormula11, new Cell(0,15,4));
             this.add(helpFormula12, new Cell(0,16,4));
+            this.add(helpFormula13, new Cell(0,17,4));
+            this.add(helpFormula14, new Cell(0,18,4));
+            this.add(helpFormula15, new Cell(0,19,4));
 
             JPanel buttonsPanel = new JPanel();
             buttonsPanel.setBackground(Color.WHITE);
             buttonsPanel.add(buttonCancel);
             buttonsPanel.add(buttonSave);
-            this.add(buttonsPanel, new Cell(0,17,4));
+            this.add(buttonsPanel, new Cell(0,20,4));
         }
 
         private class Cell extends GridBagConstraints {

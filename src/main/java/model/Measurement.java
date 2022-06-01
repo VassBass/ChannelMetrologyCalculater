@@ -81,6 +81,7 @@ public class Measurement implements Serializable {
         ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
         return writer.writeValueAsString(this.factors);
     }
+    public Double _getFactor(String value){return this.factors.get(value);}
 
     public void setName(@Nonnull String name) {this.name = name;}
     public void setValue(@Nonnull String value){this.value = value;}
@@ -114,6 +115,50 @@ public class Measurement implements Serializable {
     public Double convertFrom(@Nonnull String measurementValue, double quantity){
         double factor = measurementValue.equals(this.value) ? 1D : this.factors.get(measurementValue);
         return quantity / factor;
+    }
+
+    /**
+     * Convert all numbers in brackets after "conv" chars from input measurementValue to output measurementValue
+     * @param errorString to convert
+     * @param input value to be converted
+     * @param output value to which the conversion takes place
+     * @return converted String
+     * example:
+     * {@code
+     *      String errorString = "conv(50) * 10 / convR + conv(10)";
+     *      String afterConv = Measurement.getErrorStringAfterConvertNumbers(errorString, Measurement.kPa, Measurement.pa);
+     *      result: afterConv == "50000.0 * 10 / convR + 10000";
+     *  }
+     */
+    public static String getErrorStringAfterConvertNumbers(String errorString, Measurement input, Measurement output){
+            if (errorString != null && input != null && output != null) {
+                char[] chars = errorString.toCharArray();
+                int index;
+
+                for (int i = 0; i < chars.length; ) {
+                    if (chars[i] == 'c') {
+                        index = i;
+
+                        if (chars[++i] == 'o' && chars[++i] == 'n' && chars[++i] == 'v' && chars[++i] == '(') {
+                            char c = chars[++i];
+                            StringBuilder b = new StringBuilder();
+
+                            while (c != ')') {
+                                b.append(c);
+                                c = chars[++i];
+                            }
+                            double d = Double.parseDouble(b.toString());
+                            double converted = input.convertTo(output.getValue(), d);
+
+                            String f = errorString.substring(0, index);
+                            return getErrorStringAfterConvertNumbers(f + converted + errorString.substring(++i), input, output);
+                        }
+
+                    } else ++i;
+                }
+            }
+
+            return errorString;
     }
 
     @Override

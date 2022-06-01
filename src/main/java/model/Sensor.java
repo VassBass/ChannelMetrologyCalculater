@@ -1,5 +1,6 @@
 package model;
 
+import application.Application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -126,20 +127,18 @@ public class Sensor implements Serializable {
      * convR - Measurement range of sensor converted by measurement channel value
      * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
      * @see Measurement#convertTo(String, double)
-     * @see Measurement#convertFrom(String, double) 
+     * @see Measurement#convertFrom(String, double)
+     * conv(...) - number converted by measurement channel value
+     * (Число переконвертированное под измерительную величину канала)
+     * @see Measurement#getErrorStringAfterConvertNumbers(String, Measurement, Measurement)
      */
-    public double getError(Channel channel){
+    public double getError(@Nonnull Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
+        Measurement input = Application.context.measurementService.get(this.measurement);
+        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
         Function f = new Function("At(R,r,convR) = " + formula);
-        Argument R;
-        double cR;
-        if (channel == null){
-            R = new Argument("R = 0");
-            cR = 0D;
-        }else {
-            R = new Argument("R = " + channel._getRange());
-            cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
-        }
+        Argument R = new Argument("R = " + channel._getRange());
+        double cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
         Argument r = new Argument("r = " + this._getRange());
         Argument convR = new Argument("convR = " + cR);
         Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);

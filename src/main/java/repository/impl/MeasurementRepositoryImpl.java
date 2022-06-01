@@ -136,8 +136,6 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
     public ArrayList<Measurement> addInCurrentThread(Measurement measurement) {
         if (measurement != null && !this.mainList.contains(measurement)){
             if (this.mainList.add(measurement)){
-                HashMap<String, Double>factors = measurement.getFactors();
-
                 LOGGER.fine("Get connection with DB");
                 try (Connection connection = getConnection();
                      Statement statement = connection.createStatement()){
@@ -150,8 +148,8 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
                     statement.execute(sql);
                     for (Measurement m : this.mainList) {
                         if (measurement.getName().equals(m.getName())) {
-                            Double factor = 1 / factors.get(m.getValue());
-                            m.getFactors().put(measurement.getValue(), factor);
+                            Double factor = 1 / measurement._getFactor(m.getValue());
+                            m.addFactor(measurement.getValue(), factor);
 
                             sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' "
                                     + "WHERE value = '" + m.getValue() + "';";
@@ -195,9 +193,9 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
 
                 for (Measurement m : this.mainList){
                     if (!m.getValue().equals(newMeasurement.getValue())) {
-                        Double val = m.getFactors().get(oldMeasurement.getValue());
-                        m.getFactors().remove(oldMeasurement.getValue());
-                        m.getFactors().put(newMeasurement.getValue(), val);
+                        Double val = m._getFactor(oldMeasurement.getValue());
+                        m.removeFactor(oldMeasurement.getValue());
+                        m.addFactor(newMeasurement.getValue(), val);
                         sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' WHERE value = '" + m.getValue() + "';";
                         statement.execute(sql);
                     }
@@ -220,7 +218,7 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
                 this.mainList.remove(measurement);
 
                 for (Measurement m : this.mainList){
-                    m.getFactors().remove(measurement.getValue());
+                    m.removeFactor(measurement.getValue());
                     sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' WHERE value = '" + m.getValue() + "';";
                     statement.execute(sql);
                 }
