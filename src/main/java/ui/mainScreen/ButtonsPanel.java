@@ -126,7 +126,6 @@ public class ButtonsPanel extends JPanel {
         }
     };
 
-
     private static class Cell extends GridBagConstraints{
 
         protected Cell(int x, int y, int width){

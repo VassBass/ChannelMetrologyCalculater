@@ -1,5 +1,6 @@
 package ui.mainScreen.menu;
 
+import service.FileBrowser;
 import ui.calculate.start.CalculateStartDialog;
 import ui.channelInfo.DialogChannel;
 import ui.mainScreen.MainScreen;
@@ -16,43 +17,45 @@ public class MenuChannel extends JMenu {
     private static final String CALCULATE = "Розрахувати";
     private static final String DETAILS = "Детальніше";
     private static final String REMOVE = "Видалити";
+    private static final String CERTIFICATES_PROTOCOLS = "Сертифікати/Протоколи";
 
     private final MainScreen mainScreen;
 
-    private JMenuItem buttonCalculate = null;
-    private JMenuItem buttonAdd = null;
-    private JMenuItem buttonDetails = null;
-    private JMenuItem buttonRemove = null;
+    private JMenuItem btn_calculate, btn_add, btn_details, btn_remove, btn_certificateProtocols = null;
 
     public MenuChannel(MainScreen mainScreen){
         super(CHANNEL);
         this.mainScreen = mainScreen;
 
-        this.createElements();
-        this.setReactions();
-        this.build();
+        createElements();
+        setReactions();
+        build();
     }
 
     private void createElements() {
-        this.buttonAdd = new JMenuItem(ADD);
-        this.buttonCalculate = new JMenuItem(CALCULATE);
-        this.buttonDetails = new JMenuItem(DETAILS);
-        this.buttonRemove = new JMenuItem(REMOVE);
+        btn_add = new JMenuItem(ADD);
+        btn_calculate = new JMenuItem(CALCULATE);
+        btn_details = new JMenuItem(DETAILS);
+        btn_remove = new JMenuItem(REMOVE);
+        btn_certificateProtocols = new JMenuItem(CERTIFICATES_PROTOCOLS);
     }
 
     private void setReactions() {
-        this.buttonDetails.addActionListener(this.clickDetails);
-        this.buttonAdd.addActionListener(this.clickAdd);
-        this.buttonRemove.addActionListener(this.clickRemove);
-        this.buttonCalculate.addActionListener(this.clickCalculate);
+        btn_details.addActionListener(clickDetails);
+        btn_add.addActionListener(clickAdd);
+        btn_remove.addActionListener(clickRemove);
+        btn_calculate.addActionListener(clickCalculate);
+        btn_certificateProtocols.addActionListener(clickCertificateFolder);
     }
 
     private void build() {
-        this.add(this.buttonAdd);
-        this.add(this.buttonRemove);
+        this.add(btn_add);
+        this.add(btn_remove);
         this.addSeparator();
-        this.add(this.buttonDetails);
-        this.add(this.buttonCalculate);
+        this.add(btn_details);
+        this.add(btn_calculate);
+        this.addSeparator();
+        this.add(btn_certificateProtocols);
     }
 
     private final ActionListener clickDetails = new ActionListener() {
@@ -107,6 +110,21 @@ public class MenuChannel extends JMenu {
                         new DialogRemoveChannels(mainScreen).setVisible(true);
                     }
                 });
+            }
+        }
+    };
+
+    private final ActionListener clickCertificateFolder = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            Desktop desktop;
+            if (Desktop.isDesktopSupported()){
+                desktop = Desktop.getDesktop();
+                try {
+                    desktop.open(FileBrowser.DIR_CERTIFICATES);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
             }
         }
     };
