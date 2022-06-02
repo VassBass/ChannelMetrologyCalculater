@@ -7,6 +7,7 @@ import converters.VariableConverter;
 import model.Measurement;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
+import ui.specialCharacters.SpecialCharactersPanel;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -31,6 +32,7 @@ public class AddMeasurementDialog extends JDialog {
     private JButton[] values;
     private JPanel valuesPanel;
     private JButton btn_positive, btn_negative;
+    private SpecialCharactersPanel specialCharactersPanel;
 
     public AddMeasurementDialog(MeasurementsListDialog parentDialog){
         super(parentDialog, ADD, true);
@@ -66,10 +68,13 @@ public class AddMeasurementDialog extends JDialog {
 
         btn_positive = new DefaultButton(ADD);
         btn_negative = new DefaultButton(CANCEL);
+
+        specialCharactersPanel = new SpecialCharactersPanel();
+        specialCharactersPanel.setFieldForInsert(measurementValue);
     }
 
     private void build(){
-        this.setSize(400,250);
+        this.setSize(650,300);
         this.setLocation(ConverterUI.POINT_CENTER(parentDialog, this));
 
         JScrollPane scroll = new JScrollPane(valuesPanel);
@@ -80,12 +85,16 @@ public class AddMeasurementDialog extends JDialog {
         buttonsPanel.add(btn_negative);
         buttonsPanel.add(btn_positive);
 
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 
-        mainPanel.add(measurementValue);
-        mainPanel.add(scroll);
-        mainPanel.add(buttonsPanel);
+        leftPanel.add(measurementValue);
+        leftPanel.add(scroll);
+        leftPanel.add(buttonsPanel);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.add(leftPanel);
+        mainPanel.add(specialCharactersPanel);
 
         this.setContentPane(mainPanel);
     }

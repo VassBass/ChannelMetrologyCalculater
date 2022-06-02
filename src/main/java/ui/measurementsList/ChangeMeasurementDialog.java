@@ -5,8 +5,10 @@ import backgroundTasks.ChangeMeasurementValue;
 import converters.ConverterUI;
 import model.Measurement;
 import ui.model.DefaultButton;
+import ui.specialCharacters.SpecialCharactersPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -22,6 +24,7 @@ public class ChangeMeasurementDialog extends JDialog {
 
     private JTextField txt_value;
     private JButton btn_positive, btn_negative;
+    private SpecialCharactersPanel specialCharactersPanel;
 
     public ChangeMeasurementDialog(MeasurementsListDialog parentDialog){
         super(parentDialog, TITLE, true);
@@ -42,20 +45,28 @@ public class ChangeMeasurementDialog extends JDialog {
 
         btn_negative = new DefaultButton(CLOSE);
         btn_positive = new DefaultButton(CHANGE);
+
+        specialCharactersPanel = new SpecialCharactersPanel();
+        specialCharactersPanel.setFieldForInsert(txt_value);
     }
 
     private void build(){
-        this.setSize(400,80);
+        this.setSize(450,200);
         this.setLocation(ConverterUI.POINT_CENTER(parentDialog, this));
 
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.add(btn_negative);
         buttonsPanel.add(btn_positive);
 
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.add(txt_value);
+        leftPanel.add(buttonsPanel);
+
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
-        mainPanel.add(txt_value);
-        mainPanel.add(buttonsPanel);
+        mainPanel.setBackground(Color.WHITE);
+        mainPanel.add(leftPanel);
+        mainPanel.add(specialCharactersPanel);
 
         this.setContentPane(mainPanel);
     }
