@@ -22,7 +22,7 @@ public class CalculateMeasurementDialog extends JDialog {
     }
     private String measurementString(){
         int mNum = this.measurementNumber + 1;
-        return "Измерение №" + mNum;
+        return "Розрахунок №" + mNum;
     }
     private String removeMessage(int removedMeasurementNumber){
         return "Розрахунок №" + removedMeasurementNumber + " був видалений.";
