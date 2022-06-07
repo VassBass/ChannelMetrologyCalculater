@@ -60,7 +60,7 @@ public class SensorRemoveDialog extends JDialog {
     }
 
     private void build() {
-        this.setSize(800,100);
+        this.setSize(800,150);
         this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());

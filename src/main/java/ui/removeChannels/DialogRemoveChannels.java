@@ -79,7 +79,7 @@ public class DialogRemoveChannels extends JDialog {
     }
 
     private void build() {
-        this.setSize(800, 120);
+        this.setSize(800, 150);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
         this.setResizable(true);
 

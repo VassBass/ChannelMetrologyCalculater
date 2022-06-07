@@ -132,7 +132,7 @@ public class CalculatePerformersDialog extends JDialog {
     }
 
     private void build() {
-        this.setSize(500,300);
+        this.setSize(500,320);
         this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
