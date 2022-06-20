@@ -105,9 +105,10 @@ public class Calibrator implements Serializable {
     public double _getRange(){return this.rangeMax - this.rangeMin;}
     @Nonnull public String getValue(){return this.value;}
     @Nonnull public String getMeasurement(){return this.measurement;}
-    @Nonnull public String getCertificateName(){return this.certificate.getName();}
-    @Nonnull public String getCertificateDate(){return this.certificate.getDate();}
-    @Nonnull public String getCertificateCompany(){return this.certificate.getCompany();}
+    @Nonnull public String _getCertificateType(){return this.certificate.getType();}
+    @Nonnull public String _getCertificateName(){return this.certificate.getName();}
+    @Nonnull public String _getCertificateDate(){return this.certificate.getDate();}
+    @Nonnull public String _getCertificateCompany(){return this.certificate.getCompany();}
     @Nonnull public String getErrorFormula(){return this.errorFormula;}
 
     public void setType(@Nonnull String type) {this.type = type;}
@@ -116,9 +117,10 @@ public class Calibrator implements Serializable {
     public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
     public void setValue(@Nonnull String value){this.value = value;}
-    public void setCertificateName(@Nonnull String name){this.certificate.setName(name);}
-    public void setCertificateDate(@Nonnull String date){this.certificate.setDate(date);}
-    public void setCertificateCompany(@Nonnull String company){this.certificate.setCompany(company);}
+    public void _setCertificateType(@Nonnull String type){this.certificate.setType(type);}
+    public void _setCertificateName(@Nonnull String name){this.certificate.setName(name);}
+    public void _setCertificateDate(@Nonnull String date){this.certificate.setDate(date);}
+    public void _setCertificateCompany(@Nonnull String company){this.certificate.setCompany(company);}
     public void setErrorFormula(@Nonnull String errorFormula){this.errorFormula = errorFormula;}
     public void setMeasurement(@Nonnull String measurement){this.measurement = measurement;}
     public void setCertificate(@Nonnull Certificate certificate){this.certificate = certificate;}
@@ -167,9 +169,12 @@ public class Calibrator implements Serializable {
     }
 
     public static class Certificate implements Serializable {
+        public static final String defaultType = "Сертифікат калібрування";
+
         @Nonnull private String name = "";
         @Nonnull private String date = "23.03.2022";
         @Nonnull private String company = "";
+        @Nonnull private String type = defaultType;
 
         @Nonnull public String getName(){return this.name;}
 
@@ -182,14 +187,16 @@ public class Calibrator implements Serializable {
          */
         @Nonnull public String getDate(){return this.date;}
         @Nonnull public String getCompany(){return this.company;}
+        @Nonnull public String getType(){return this.type;}
 
         public void setName(@Nonnull String name){this.name = name;}
         public void setDate(@Nonnull String date){this.date = date;}
         public void setCompany(@Nonnull String company){this.company = company;}
+        public void setType(@Nonnull String type){this.type = type;}
 
         @Override
         public int hashCode() {
-            return Objects.hash(this.name, this.date, this.company);
+            return Objects.hash(this.name, this.date, this.company, this.type);
         }
 
         @Override
@@ -198,9 +205,10 @@ public class Calibrator implements Serializable {
                 return false;
             }
             Certificate c = (Certificate) object;
-            return this.name.equals(c.name) &&
-                    this.company.equals(c.company) &&
-                    this.date.equals(c.getDate());
+            return this.name.equals(c.name)
+                    && this.company.equals(c.company)
+                    && this.date.equals(c.getDate())
+                    && this.type.equals(c.getType());
         }
 
         /**

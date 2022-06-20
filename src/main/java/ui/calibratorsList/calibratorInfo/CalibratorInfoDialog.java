@@ -40,6 +40,7 @@ public class CalibratorInfoDialog extends JDialog {
     private static final String INSERT = "Вставка";
     private static final String CANCEL = "Відміна";
     private static final String SAVE = "Зберегти";
+    private static final String DOCUMENT_OF_CHECK = "Свідоцтво про перевірку МХ";
 
     private String from_R(double percent){
         return percent + "% від діапазону вимірювального каналу";
@@ -65,7 +66,6 @@ public class CalibratorInfoDialog extends JDialog {
     private ButtonCell labelRange;
     private ButtonCell labelErrorFormula;
 
-    private ButtonCell labelCertificate;
     private ButtonCell labelCertificateName;
     private ButtonCell labelCertificateDate;
     private ButtonCell labelCertificateCompany;
@@ -79,6 +79,7 @@ public class CalibratorInfoDialog extends JDialog {
     private JTextField numberText;
     private CalibratorRangePanel rangePanel;
     private JTextField errorFormulaText;
+    private JComboBox<String>certificateType;
 
     private JTextField certificateNameText;
     private CertificateDatePanel certificateDatePanel;
@@ -123,7 +124,6 @@ public class CalibratorInfoDialog extends JDialog {
         this.labelRange = new ButtonCell(true, RANGE_OF_CALIBRATOR);
         this.labelErrorFormula = new ButtonCell(true, ERROR_FORMULA);
 
-        this.labelCertificate = new ButtonCell(true, CERTIFICATE_OF_CALIBRATION);
         this.labelCertificateName = new ButtonCell(true, NAME);
         this.labelCertificateCompany = new ButtonCell(true, PERFORMERS);
         this.labelCertificateDate = new ButtonCell(true, FROM);
@@ -145,6 +145,10 @@ public class CalibratorInfoDialog extends JDialog {
         this.errorFormulaText = new JTextField(10);
         this.errorPopupMenu = new JPopupMenu(INSERT);
         this.errorFormulaText.setComponentPopupMenu(this.errorPopupMenu);
+
+        String[] certificateTypes = new String[]{CERTIFICATE_OF_CALIBRATION, DOCUMENT_OF_CHECK};
+        this.certificateType = new JComboBox<>(certificateTypes);
+        this.certificateType.setBackground(Color.WHITE);
 
         this.certificateNameText = new JTextField(10);
         this.certificateDatePanel = new CertificateDatePanel(this);
@@ -271,9 +275,10 @@ public class CalibratorInfoDialog extends JDialog {
             this.numberText.setText(this.oldCalibrator.getNumber());
             this.errorFormulaText.setText(this.oldCalibrator.getErrorFormula());
             this.showErrorHintsIfNeed();
-            this.certificateNameText.setText(this.oldCalibrator.getCertificateName());
-            this.certificateDatePanel.setDate(VariableConverter.stringToDate(this.oldCalibrator.getCertificateDate()));
-            this.certificateCompanyText.setText(this.oldCalibrator.getCertificateCompany());
+            this.certificateType.setSelectedItem(this.oldCalibrator.getCertificate().getType());
+            this.certificateNameText.setText(this.oldCalibrator._getCertificateName());
+            this.certificateDatePanel.setDate(VariableConverter.stringToDate(this.oldCalibrator._getCertificateDate()));
+            this.certificateCompanyText.setText(this.oldCalibrator._getCertificateCompany());
 
             this.measurementsList.setEnabled(false);
         }else {
@@ -364,9 +369,11 @@ public class CalibratorInfoDialog extends JDialog {
                 }
                 calibrator.setValue(rangePanel.getValue());
                 calibrator.setErrorFormula(errorFormulaText.getText());
-                calibrator.setCertificateName(certificateNameText.getText());
-                calibrator.setCertificateDate(certificateDatePanel.getDate());
-                calibrator.setCertificateCompany(certificateCompanyText.getText());
+                String cType = certificateType.getSelectedItem() == null ? Calibrator.Certificate.defaultType : certificateType.getSelectedItem().toString();
+                calibrator._setCertificateType(cType);
+                calibrator._setCertificateName(certificateNameText.getText());
+                calibrator._setCertificateDate(certificateDatePanel.getDate());
+                calibrator._setCertificateCompany(certificateCompanyText.getText());
 
                 if (Application.isBusy(CalibratorInfoDialog.this)) return;
                 if (oldCalibrator == null){
@@ -532,7 +539,7 @@ public class CalibratorInfoDialog extends JDialog {
             this.add(nameText, new Cell(1, 3,1));
             this.add(labelNumber, new Cell(0,4,1));
             this.add(numberText, new Cell(1,4,1));
-            this.add(labelCertificate, new Cell(2,4,2));
+            this.add(certificateType, new Cell(2,4,2));
             this.add(labelRange, new Cell(0, 5,1));
             this.add(rangePanel, new Cell(1, 5,1));
             this.add(labelCertificateName, new Cell(2,5,1));

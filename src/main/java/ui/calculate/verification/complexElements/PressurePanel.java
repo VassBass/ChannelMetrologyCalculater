@@ -243,11 +243,11 @@ public class PressurePanel extends JPanel {
         this.calibratorName.setText(calibrator.getType());
         this.calibratorNumber.setText(calibrator.getNumber());
 
-        String certificateCalibrator = calibrator.getCertificateName()
+        String certificateCalibrator = calibrator._getCertificateName()
                 + " від "
-                + calibrator.getCertificateDate()
+                + calibrator._getCertificateDate()
                 + "р. "
-                + calibrator.getCertificateCompany();
+                + calibrator._getCertificateCompany();
         this.calibratorCertificate.setText(certificateCalibrator);
 
         double errorCalibrator = calibrator.getError(this.channel);
