@@ -6,26 +6,17 @@ import repository.impl.AreaRepositoryImpl;
 import service.AreaService;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class AreaServiceImpl implements AreaService {
-    private static final Logger LOGGER = Logger.getLogger(AreaService.class.getName());
 
-    private final String dbUrl;
-    private AreaRepository repository;
+    private final AreaRepository repository;
 
     public AreaServiceImpl(){
-        this.dbUrl = null;
+        repository = new AreaRepositoryImpl();
     }
 
-    public AreaServiceImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-    }
-
-    @Override
-    public void init(){
-        this.repository = this.dbUrl == null ? new AreaRepositoryImpl() : new AreaRepositoryImpl(this.dbUrl);
-        LOGGER.info("Initialization SUCCESS");
+    public AreaServiceImpl(AreaRepository repository){
+        this.repository = repository;
     }
 
     @Override
@@ -45,11 +36,6 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public void addInCurrentThread(ArrayList<String> areas) {
-        this.repository.addInCurrentThread(areas);
-    }
-
-    @Override
     public ArrayList<String> remove(String object) {
         this.repository.remove(object);
         return this.repository.getAll();
@@ -62,27 +48,17 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public String get(int index) {
-        return this.repository.get(index);
+    public boolean clear() {
+        return this.repository.clear();
     }
 
     @Override
-    public void clear() {
-        this.repository.clear();
+    public boolean rewrite(ArrayList<String>areas){
+        return this.repository.rewrite(areas);
     }
 
     @Override
-    public void rewriteInCurrentThread(ArrayList<String>areas){
-        this.repository.rewriteInCurrentThread(areas);
-    }
-
-    @Override
-    public void resetToDefaultInCurrentThread() {
-        this.repository.rewriteInCurrentThread(DefaultAreas.get());
-    }
-
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.repository.backgroundTaskIsRun();
+    public boolean resetToDefault() {
+        return this.repository.rewrite(DefaultAreas.get());
     }
 }
