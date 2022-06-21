@@ -8,26 +8,16 @@ import repository.impl.CalibratorRepositoryImpl;
 import service.CalibratorService;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class CalibratorServiceImpl implements CalibratorService {
-    private static final Logger LOGGER = Logger.getLogger(CalibratorService.class.getName());
-
-    private final String dbUrl;
-    private CalibratorRepository repository;
+    private final CalibratorRepository repository;
 
     public CalibratorServiceImpl(){
-        this.dbUrl = null;
+        repository = new CalibratorRepositoryImpl();
     }
 
-    public CalibratorServiceImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-    }
-
-    @Override
-    public void init(){
-        this.repository = this.dbUrl == null ? new CalibratorRepositoryImpl() : new CalibratorRepositoryImpl(this.dbUrl);
-        LOGGER.info("Initialization SUCCESS");
+    public CalibratorServiceImpl(CalibratorRepository repository){
+        this.repository = repository;
     }
 
     @Override
@@ -41,47 +31,28 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public ArrayList<Calibrator> add(Calibrator calibrator) {
-        this.repository.add(calibrator);
-        return this.repository.getAll();
+    public boolean add(Calibrator calibrator) {
+        return this.repository.add(calibrator);
     }
 
     @Override
-    public void addInCurrentThread(Calibrator calibrator) {
-        this.repository.addInCurrentThread(calibrator);
+    public boolean remove(String name) {
+        return this.repository.remove(name);
     }
 
     @Override
-    public ArrayList<Calibrator> remove(Calibrator calibrator) {
-        this.repository.remove(calibrator);
-        return this.repository.getAll();
+    public boolean removeByMeasurementValue(String measurementValue) {
+        return this.repository.removeByMeasurementValue(measurementValue);
     }
 
     @Override
-    public ArrayList<Calibrator> remove(int index){
-        this.repository.remove(index);
-        return this.repository.getAll();
+    public boolean set(Calibrator oldCalibrator, Calibrator newCalibrator) {
+        return this.repository.set(oldCalibrator, newCalibrator);
     }
 
     @Override
-    public void removeByMeasurementValueInCurrentThread(String measurementValue) {
-        this.repository.removeByMeasurementInCurrentThread(measurementValue);
-    }
-
-    @Override
-    public ArrayList<Calibrator> set(Calibrator oldCalibrator, Calibrator newCalibrator) {
-        this.repository.set(oldCalibrator, newCalibrator);
-        return this.repository.getAll();
-    }
-
-    @Override
-    public void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator) {
-        this.repository.setInCurrentThread(oldCalibrator, newCalibrator);
-    }
-
-    @Override
-    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
-        this.repository.changeMeasurementValueInCurrentThread(oldValue, newValue);
+    public boolean changeMeasurementValue(String oldValue, String newValue) {
+        return this.repository.changeMeasurementValue(oldValue, newValue);
     }
 
     @Override
@@ -90,37 +61,27 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public Calibrator get(int index) {
-        return this.repository.get(index);
+    public boolean clear() {
+        return this.repository.clear();
     }
 
     @Override
-    public void clear() {
-        this.repository.clear();
+    public boolean importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange){
+        return this.repository.importData(newCalibrators, calibratorsForChange);
     }
 
     @Override
-    public void importDataInCurrentThread(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange){
-        this.repository.importDataInCurrentThread(newCalibrators, calibratorsForChange);
+    public boolean rewrite(ArrayList<Calibrator>calibrators){
+        return this.repository.rewrite(calibrators);
     }
 
     @Override
-    public void rewriteInCurrentThread(ArrayList<Calibrator>calibrators){
-        this.repository.rewriteInCurrentThread(calibrators);
-    }
-
-    @Override
-    public void resetToDefaultInCurrentThread() {
-        this.repository.rewriteInCurrentThread(DefaultCalibrators.get());
+    public boolean resetToDefault() {
+        return this.repository.rewrite(DefaultCalibrators.get());
     }
 
     @Override
     public boolean isExists(Calibrator calibrator) {
         return this.repository.isExists(calibrator);
-    }
-
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.repository.backgroundTaskIsRun();
     }
 }

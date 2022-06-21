@@ -72,6 +72,10 @@ public class Repository {
         return getStatement().executeQuery(sql);
     }
 
+    public PreparedStatement getPreparedStatement(String sql) throws SQLException {
+        return getConnection().prepareStatement(sql);
+    }
+
     public void setProperties(String dbUrl, String dbUser, String dbPassword){
         this.dbUrl = dbUrl;
         this.dbUser = dbUser;

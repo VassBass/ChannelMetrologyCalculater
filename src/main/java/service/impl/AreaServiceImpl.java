@@ -30,21 +30,18 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public ArrayList<String> add(String object) {
-        this.repository.add(object);
-        return this.repository.getAll();
+    public boolean add(String object) {
+        return this.repository.add(object);
     }
 
     @Override
-    public ArrayList<String> remove(String object) {
-        this.repository.remove(object);
-        return this.repository.getAll();
+    public boolean remove(String object) {
+        return this.repository.remove(object);
     }
 
     @Override
-    public ArrayList<String> set(String oldObject, String newObject) {
-        this.repository.set(oldObject, newObject);
-        return this.repository.getAll();
+    public boolean set(String oldObject, String newObject) {
+        return this.repository.set(oldObject, newObject);
     }
 
     @Override

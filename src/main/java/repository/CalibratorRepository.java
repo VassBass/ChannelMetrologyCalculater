@@ -6,30 +6,25 @@ import model.Measurement;
 import java.util.ArrayList;
 
 public interface CalibratorRepository {
+    void createTable();
+
     ArrayList<Calibrator> getAll();
     String[]getAllNames(Measurement measurement);
 
     Calibrator get(String name);
-    Calibrator get(int index);
 
-    void add(Calibrator calibrator);
-    void addInCurrentThread(Calibrator calibrator);
+    boolean add(Calibrator calibrator);
 
-    void remove(Calibrator calibrator);
-    void remove(int index);
-    void removeByMeasurementInCurrentThread(String measurementValue);
+    boolean remove(String name);
+    boolean removeByMeasurementValue(String measurementValue);
 
-    void set(Calibrator oldCalibrator, Calibrator newCalibrator);
-    void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator);
-    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
+    boolean set(Calibrator oldCalibrator, Calibrator newCalibrator);
+    boolean changeMeasurementValue(String oldValue, String newValue);
 
-    void clear();
+    boolean clear();
 
-    void rewriteInCurrentThread(ArrayList<Calibrator>calibrators);
-    void rewrite(ArrayList<Calibrator>calibrators);
-    void importDataInCurrentThread(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange);
+    boolean rewrite(ArrayList<Calibrator>calibrators);
+    boolean importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange);
 
     boolean isExists(Calibrator calibrator);
-
-    boolean backgroundTaskIsRun();
 }

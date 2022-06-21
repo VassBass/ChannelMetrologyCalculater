@@ -43,7 +43,7 @@ public class Calibrator implements Serializable {
      * 
      * @see Certificate
      */
-    @Nonnull private Certificate certificate;
+    @Nonnull private Certificate certificate = new Certificate();
 
     /**
      * DB field = number [TEXT]
@@ -92,8 +92,10 @@ public class Calibrator implements Serializable {
      */
     @Nonnull private String errorFormula = "";
 
-    public Calibrator(){
-        this.certificate = new Certificate();
+    public Calibrator(){}
+
+    public Calibrator(@Nonnull String name){
+        this.name = name;
     }
 
     @Nonnull public String getType() {return this.type;}

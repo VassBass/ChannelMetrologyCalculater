@@ -1,465 +1,348 @@
 package repository.impl;
 
-import application.Application;
-import application.ApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import constants.Action;
 import model.Calibrator;
 import model.Measurement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.CalibratorRepository;
 import repository.Repository;
-import ui.model.SaveMessage;
 
-import javax.swing.*;
-import java.awt.*;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class CalibratorRepositoryImpl extends Repository<Calibrator> implements CalibratorRepository {
-    private static final Logger LOGGER = Logger.getLogger(CalibratorRepository.class.getName());
+public class CalibratorRepositoryImpl extends Repository implements CalibratorRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CalibratorRepository.class);
 
-    private boolean backgroundTaskRunning = false;
-
-    public CalibratorRepositoryImpl(){super();}
-    public CalibratorRepositoryImpl(String dbUrl){super(dbUrl);}
+    public CalibratorRepositoryImpl(){
+        setPropertiesFromFile();
+        createTable();
+    }
+    public CalibratorRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+        setProperties(dbUrl, dbUser, dbPassword);
+        createTable();
+    }
 
     @Override
-    protected void init() {
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection();
-            Statement statement = connection.createStatement()){
-            String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
-                    + "name text NOT NULL UNIQUE"
-                    + ", type text NOT NULL"
-                    + ", number text NOT NULL"
-                    + ", measurement text NOT NULL"
-                    + ", value text NOT NULL"
-                    + ", error_formula text NOT NULL"
-                    + ", certificate text NOT NULL"
-                    + ", range_min real NOT NULL"
-                    + ", range_max real NOT NULL"
-                    + ", PRIMARY KEY (\"name\")"
-                    + ");";
-            LOGGER.fine("Send request to create table");
+    public void createTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
+                + "name text NOT NULL UNIQUE"
+                + ", type text NOT NULL"
+                + ", number text NOT NULL"
+                + ", measurement text NOT NULL"
+                + ", value text NOT NULL"
+                + ", error_formula text NOT NULL"
+                + ", certificate text NOT NULL"
+                + ", range_min real NOT NULL"
+                + ", range_max real NOT NULL"
+                + ", PRIMARY KEY (\"name\")"
+                + ");";
+        try (Statement statement = getStatement()){
             statement.execute(sql);
-
-            LOGGER.fine("Send request to read calibrators from DB");
-            sql = "SELECT * FROM calibrators";
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
-                while (resultSet.next()) {
-                    Calibrator calibrator = new Calibrator();
-                    calibrator.setName(resultSet.getString("name"));
-                    calibrator.setType(resultSet.getString("type"));
-                    calibrator.setNumber(resultSet.getString("number"));
-                    calibrator.setMeasurement(resultSet.getString("measurement"));
-                    calibrator.setValue(resultSet.getString("value"));
-                    calibrator.setErrorFormula(resultSet.getString("error_formula"));
-                    String certificateString = resultSet.getString("certificate");
-                    calibrator.setCertificate(Calibrator.Certificate.fromString(certificateString));
-                    calibrator.setRangeMin(resultSet.getDouble("range_min"));
-                    calibrator.setRangeMax(resultSet.getDouble("range_max"));
-                    this.mainList.add(calibrator);
-                }
-            }
-        } catch (SQLException | JsonProcessingException ex) {
-            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
-        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
     public ArrayList<Calibrator> getAll() {
-        return this.mainList;
+        ArrayList<Calibrator>calibrators = new ArrayList<>();
+        String sql = "SELECT * FROM calibrators;";
+
+        LOGGER.info("Reading all calibrators from DB");
+        try (ResultSet resultSet = getResultSet(sql)){
+
+            while (resultSet.next()){
+                Calibrator calibrator = new Calibrator();
+                calibrator.setType(resultSet.getString("type"));
+                calibrator.setName(resultSet.getString("name"));
+                calibrator.setNumber(resultSet.getString("number"));
+                calibrator.setRangeMin(resultSet.getDouble("range_min"));
+                calibrator.setRangeMax(resultSet.getDouble("range_max"));
+                calibrator.setValue(resultSet.getString("value"));
+                calibrator.setMeasurement(resultSet.getString("measurement"));
+                calibrator.setErrorFormula(resultSet.getString("error_formula"));
+                calibrator.setCertificate(Calibrator.Certificate.fromString(resultSet.getString("certificate")));
+
+                calibrators.add(calibrator);
+            }
+
+        }catch (SQLException | JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
+        }
+
+        return calibrators;
     }
 
     @Override
     public String[] getAllNames(Measurement measurement) {
         if (measurement == null) return null;
 
-        ArrayList<String>cal = new ArrayList<>();
-        for (Calibrator c : this.mainList){
-            if (c.getMeasurement().equals(measurement.getName())){
-                cal.add(c.getName());
-            }
+        ArrayList<String>calibrators = new ArrayList<>();
+
+        LOGGER.info("Reading all calibrators names from DB");
+        String sql = "SELECT * FROM calibrators WHERE measurement = '" + measurement + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            calibrators.add(resultSet.getString("name"));
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
-        return cal.toArray(new String[0]);
+
+        return calibrators.toArray(new String[0]);
     }
 
     @Override
     public Calibrator get(String name) {
-        if (name == null || name.length() == 0) return null;
-        Calibrator calibrator = new Calibrator();
-        calibrator.setName(name);
-        int index = this.mainList.indexOf(calibrator);
-        return index >= 0 ? this.mainList.get(index) : null;
-    }
+        if (name == null) return null;
 
-    @Override
-    public Calibrator get(int index) {
-        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
-    }
+        LOGGER.info("Reading calibrator with name = {} from DB", name);
+        String sql = "SELECT * FROM calibrators WHERE name = '" + name + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            if (resultSet.next()){
+                Calibrator calibrator = new Calibrator();
+                calibrator.setType(resultSet.getString("type"));
+                calibrator.setName(resultSet.getString("name"));
+                calibrator.setNumber(resultSet.getString("number"));
+                calibrator.setRangeMin(resultSet.getDouble("range_min"));
+                calibrator.setRangeMax(resultSet.getDouble("range_max"));
+                calibrator.setValue(resultSet.getString("value"));
+                calibrator.setMeasurement(resultSet.getString("measurement"));
+                calibrator.setErrorFormula(resultSet.getString("error_formula"));
+                calibrator.setCertificate(Calibrator.Certificate.fromString(resultSet.getString("certificate")));
 
-    @Override
-    public void add(Calibrator calibrator) {
-        if (calibrator != null && !this.mainList.contains(calibrator)) {
-            this.mainList.add(calibrator);
-            new BackgroundAction().add(calibrator);
-        }
-    }
-
-    @Override
-    public void addInCurrentThread(Calibrator calibrator) {
-        if (calibrator != null && !this.mainList.contains(calibrator)) {
-            this.mainList.add(calibrator);
-            new BackgroundAction().addCalibrator(calibrator);
-        }
-    }
-
-    @Override
-    public void remove(Calibrator calibrator) {
-        if (calibrator != null && this.mainList.remove(calibrator)){
-            new BackgroundAction().remove(calibrator);
-        }
-    }
-
-    @Override
-    public void remove(int index) {
-        if (index >= 0 && index < this.mainList.size()){
-            new BackgroundAction().remove(this.mainList.get(index));
-            this.mainList.remove(index);
-        }
-    }
-
-    @Override
-    public void removeByMeasurementInCurrentThread(String measurementValue) {
-        if (measurementValue != null) {
-            ArrayList<Integer> indexes = new ArrayList<>();
-            for (int index = 0; index < this.mainList.size(); index++) {
-                String value = this.mainList.get(index).getValue();
-                if (value.equals(measurementValue)) indexes.add(index);
+                return calibrator;
+            }else {
+                LOGGER.info("Calibrator with name = {} not found", name);
+                return null;
             }
-            Collections.reverse(indexes);
-            for (int index : indexes) {
-                this.mainList.remove(index);
-            }
-
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                 Statement statement = connection.createStatement()) {
-                String sql = "DELETE FROM calibrators WHERE value = '" + measurementValue + "';";
-                LOGGER.fine("Send request to delete");
-                statement.execute(sql);
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-            }
+        }catch (SQLException | JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return null;
         }
     }
 
     @Override
-    public void set(Calibrator oldCalibrator, Calibrator newCalibrator) {
-        if (oldCalibrator != null && newCalibrator != null
-                && this.mainList.contains(oldCalibrator)){
-            int oldIndex = this.mainList.indexOf(oldCalibrator);
-            int newIndex = this.mainList.indexOf(newCalibrator);
-            if (newIndex == -1 || oldIndex == newIndex) {
-                this.mainList.set(oldIndex, newCalibrator);
-                new BackgroundAction().set(oldCalibrator, newCalibrator);
+    public boolean add(Calibrator calibrator) {
+        if (calibrator == null) return false;
+
+        String sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        try (PreparedStatement statement = getPreparedStatement(sql)){
+            statement.setString(1, calibrator.getName());
+            statement.setString(2, calibrator.getType());
+            statement.setString(3, calibrator.getNumber());
+            statement.setString(4, calibrator.getMeasurement());
+            statement.setString(5, calibrator.getValue());
+            statement.setString(6, calibrator.getErrorFormula());
+            statement.setString(7, calibrator.getCertificate().toString());
+            statement.setDouble(8, calibrator.getRangeMin());
+            statement.setDouble(9, calibrator.getRangeMax());
+            int result = statement.executeUpdate();
+
+            if (result > 0) LOGGER.info("Calibrator = {} was added successfully", calibrator.getName());
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean remove(String name) {
+        if (name == null) return false;
+
+        String sql = "DELETE FROM calibrators WHERE name = '" + name + "';";
+        try (Statement statement = getStatement()){
+            int result = statement.executeUpdate(sql);
+            if (result > 0){
+                LOGGER.info("Calibrator = {} was removed successfully", name);
+            }else {
+                LOGGER.info("Calibrator with name = {} not found", name);
             }
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 
     @Override
-    public void setInCurrentThread(Calibrator oldCalibrator, Calibrator newCalibrator) {
-        if (oldCalibrator != null && newCalibrator != null
-                && this.mainList.contains(oldCalibrator) && !this.mainList.contains(newCalibrator)){
-            int index = this.mainList.indexOf(oldCalibrator);
-            this.mainList.set(index, newCalibrator);
-            new BackgroundAction().setCalibrator(oldCalibrator, newCalibrator);
+    public boolean removeByMeasurementValue(String measurementValue) {
+        if (measurementValue == null) return false;
+
+        String sql = "DELETE FROM calibrators WHERE value = '" + measurementValue + "';";
+        try (Statement statement = getStatement()) {
+            int result = statement.executeUpdate(sql);
+            LOGGER.info("Removed {} calibrators with measurementValue = {}", result, measurementValue);
+            return true;
+        } catch (SQLException e) {
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 
     @Override
-    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
-        if (oldValue != null && newValue != null){
-            for (Calibrator calibrator : this.mainList){
-                if (calibrator.getValue().equals(oldValue)){
-                    calibrator.setValue(newValue);
+    public boolean set(Calibrator oldCalibrator, Calibrator newCalibrator) {
+        if (oldCalibrator == null || newCalibrator == null) return false;
+        if (oldCalibrator.isMatch(newCalibrator)) return true;
+
+        String sql = "UPDATE calibrators SET "
+                + "name = '" + newCalibrator.getName() + "', "
+                + "type = '" + newCalibrator.getType() + "', "
+                + "number = '" + newCalibrator.getNumber() + "', "
+                + "measurement = '" + newCalibrator.getMeasurement() + "', "
+                + "value = '" + newCalibrator.getValue() + "', "
+                + "error_formula = '" + newCalibrator.getErrorFormula() + "', "
+                + "certificate = '" + newCalibrator.getCertificate() + "', "
+                + "range_min = " + newCalibrator.getRangeMin() + ", "
+                + "range_max = " + newCalibrator.getRangeMax() + " "
+                + "WHERE name = '" + oldCalibrator.getName() + "';";
+        try (Statement statement = getStatement()){
+            int result = statement.executeUpdate(sql);
+            if (result > 0) LOGGER.info("Calibrator:\n{}\nwas replaced by calibrator:\n{}\nsuccessfully", oldCalibrator, newCalibrator);
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean changeMeasurementValue(String oldValue, String newValue) {
+        if (oldValue == null || newValue == null) return false;
+        if (oldValue.equals(newValue)) return true;
+
+        String sql = "UPDATE calibrators SET value = '" + newValue + "' WHERE value = '" + oldValue + "';";
+        try (Statement statement = getStatement()) {
+            int result = statement.executeUpdate(sql);
+            LOGGER.info("Changed measurementValue of {} calibrators from {} to {}", result, oldValue, newValue);
+            return true;
+        } catch (SQLException e) {
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean clear() {
+        String sql = "DELETE FROM calibrators;";
+        try (Statement statement = getStatement()) {
+            statement.execute(sql);
+            LOGGER.info("Calibrators list in DB was cleared successfully");
+            return true;
+        } catch (SQLException e) {
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean rewrite(ArrayList<Calibrator> calibrators) {
+        if (calibrators == null) return false;
+
+        String sql = "DELETE FROM calibrators;";
+        try (Statement statement = getStatement()) {
+            statement.execute(sql);
+            LOGGER.info("Calibrators list in DB was cleared successfully");
+
+            if (!calibrators.isEmpty()) {
+                String insertSql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+                        + "VALUES ";
+                StringBuilder sqlBuilder = new StringBuilder(insertSql);
+
+                for (Calibrator calibrator : calibrators) {
+                    sqlBuilder.append("('").append(calibrator.getName()).append("', ")
+                            .append("'").append(calibrator.getType()).append("', ")
+                            .append("'").append(calibrator.getNumber()).append("', ")
+                            .append("'").append(calibrator.getMeasurement()).append("', ")
+                            .append("'").append(calibrator.getValue()).append("', ")
+                            .append("'").append(calibrator.getErrorFormula()).append("', ")
+                            .append("'").append(calibrator.getCertificate()).append("', ")
+                            .append(calibrator.getRangeMin()).append(", ")
+                            .append(calibrator.getRangeMax()).append("),");
+                }
+                sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
+                statement.execute(sqlBuilder.toString());
+            }
+
+            LOGGER.info("The list of old calibrators has been rewritten to the new one:\n{}", calibrators);
+            return true;
+        } catch (SQLException e) {
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean importData(ArrayList<Calibrator> newCalibrators, ArrayList<Calibrator> calibratorsForChange) {
+        int changeResult = 0;
+        int addResult;
+        if (calibratorsForChange != null && !calibratorsForChange.isEmpty()){
+            for (Calibrator c : calibratorsForChange){
+                String sql = "UPDATE calibrators SET "
+                        + "type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, certificate = ?, range_min = ?, range_max = ? "
+                        + "WHERE name = ?;";
+                try (PreparedStatement statement = getPreparedStatement(sql)){
+                    statement.setString(1, c.getType());
+                    statement.setString(2, c.getNumber());
+                    statement.setString(3, c.getMeasurement());
+                    statement.setString(4, c.getValue());
+                    statement.setString(5, c.getErrorFormula());
+                    statement.setString(6, c.getCertificate().toString());
+                    statement.setDouble(7, c.getRangeMin());
+                    statement.setDouble(8, c.getRangeMax());
+
+                    statement.setString(9, c.getName());
+
+                    statement.execute();
+                    changeResult++;
+                } catch (SQLException e) {
+                    LOGGER.warn("Exception was thrown!", e);
+                    return false;
                 }
             }
+        }
 
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                 Statement statement = connection.createStatement()) {
-                String sql = "UPDATE calibrators SET value = '" + newValue + "' WHERE value = '" + oldValue + "';";
-                LOGGER.fine("Send request to update");
-                statement.execute(sql);
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+        if (newCalibrators != null && !newCalibrators.isEmpty()){
+            String sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+                    + "VALUES ";
+            StringBuilder sqlBuilder = new StringBuilder(sql);
+            try (Statement statement = getStatement()) {
+                for (Calibrator calibrator : newCalibrators) {
+                    sqlBuilder.append("('").append(calibrator.getName()).append("', ")
+                            .append("'").append(calibrator.getType()).append("', ")
+                            .append("'").append(calibrator.getNumber()).append("', ")
+                            .append("'").append(calibrator.getMeasurement()).append("', ")
+                            .append("'").append(calibrator.getValue()).append("', ")
+                            .append("'").append(calibrator.getErrorFormula()).append("', ")
+                            .append("'").append(calibrator.getCertificate()).append("', ")
+                            .append(calibrator.getRangeMin()).append(", ")
+                            .append(calibrator.getRangeMax()).append("),");
+                }
+                sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
+                addResult = statement.executeUpdate(sqlBuilder.toString());
+
+                LOGGER.info("Calibrators import was successful");
+                LOGGER.info("Changed = {} | Added = {}", changeResult, addResult);
+            } catch (SQLException e) {
+                LOGGER.warn("Exception was thrown!", e);
+                return false;
             }
         }
-    }
 
-    @Override
-    public void clear() {
-        this.mainList.clear();
-        new BackgroundAction().clear();
-    }
-
-    @Override
-    public void rewriteInCurrentThread(ArrayList<Calibrator> calibrators) {
-        if (calibrators != null && !calibrators.isEmpty()) {
-            this.mainList.clear();
-            this.mainList.addAll(calibrators);
-            new BackgroundAction().rewriteCalibrators(calibrators);
-        }
-    }
-
-
-
-    @Override
-    public void rewrite(ArrayList<Calibrator> calibrators) {
-        if (calibrators != null && !calibrators.isEmpty()) {
-            this.mainList.clear();
-            this.mainList.addAll(calibrators);
-            new BackgroundAction().rewrite(calibrators);
-        }
-    }
-
-    @Override
-    public void importDataInCurrentThread(ArrayList<Calibrator> newCalibrators, ArrayList<Calibrator> calibratorsForChange) {
-        if (calibratorsForChange != null && !calibratorsForChange.isEmpty()) {
-            for (Calibrator calibrator : calibratorsForChange) {
-                int index = this.mainList.indexOf(calibrator);
-                if (index >= 0) this.mainList.set(index, calibrator);
-            }
-        }
-        if (newCalibrators != null && !newCalibrators.isEmpty()) this.mainList.addAll(newCalibrators);
-        new BackgroundAction().rewriteCalibrators(this.mainList);
+        return true;
     }
 
     @Override
     public boolean isExists(Calibrator calibrator) {
-        if (calibrator == null){
-            return true;
-        }else{
-            return this.mainList.contains(calibrator);
-        }
-    }
-
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.backgroundTaskRunning;
-    }
-
-    private class BackgroundAction extends SwingWorker<Boolean, Void> {
-        private Calibrator calibrator, old;
-        private ArrayList<Calibrator>list;
-        private Action action;
-        private final SaveMessage saveMessage;
-
-        public BackgroundAction(){
-            ApplicationContext context = Application.context;
-            Window mainScreen = context == null ? null : Application.context.mainScreen;
-            this.saveMessage = mainScreen == null ? null : new SaveMessage(mainScreen);
-        }
-
-        void add(Calibrator calibrator){
-            this.calibrator = calibrator;
-            this.action = Action.ADD;
-            this.start();
-        }
-
-        void remove(Calibrator calibrator){
-            this.calibrator = calibrator;
-            this.action = Action.REMOVE;
-            this.start();
-        }
-
-        void clear(){
-            this.action = Action.CLEAR;
-            this.start();
-        }
-
-        void rewrite(ArrayList<Calibrator>list){
-            this.list = list;
-            this.action = list == null ? Action.CLEAR : Action.REWRITE;
-            this.start();
-        }
-
-        void set(Calibrator oldCalibrator, Calibrator newCalibrator){
-            this.old = oldCalibrator;
-            this.calibrator = newCalibrator;
-            this.action = Action.SET;
-            this.start();
-        }
-
-        private void start(){
-            Application.setBusy(true);
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (saveMessage != null) saveMessage.setVisible(true);
-                }
-            });
-            backgroundTaskRunning = true;
-            this.execute();
-        }
-
-        @Override
-        protected Boolean doInBackground() throws Exception {
-            switch (this.action){
-                case ADD:
-                    return this.addCalibrator(this.calibrator);
-                case REMOVE:
-                    return this.removeCalibrator(this.calibrator);
-                case CLEAR:
-                    return this.clearCalibrators();
-                case SET:
-                    return this.setCalibrator(this.old, this.calibrator);
-                case REWRITE:
-                    return this.rewriteCalibrators(this.list);
-            }
-            return true;
-        }
-
-        @Override
-        protected void done() {
-            try {
-                if (!this.get()){
-                    switch (this.action){
-                        case ADD:
-                            mainList.remove(this.calibrator);
-                            break;
-                        case REMOVE:
-                            if (!mainList.contains(this.calibrator)) mainList.add(this.calibrator);
-                            break;
-                        case SET:
-                            mainList.remove(this.calibrator);
-                            if (!mainList.contains(this.old)) mainList.add(this.old);
-                            break;
-                    }
-                    String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
-                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", e);
-            }
-            Application.setBusy(false);
-            backgroundTaskRunning = false;
-            if (this.saveMessage != null) this.saveMessage.dispose();
-        }
-
-        boolean addCalibrator(Calibrator calibrator){
-            String sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
-                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)){
-
-                LOGGER.fine("Send requests to add");
-                statement.setString(1, calibrator.getName());
-                statement.setString(2, calibrator.getType());
-                statement.setString(3, calibrator.getNumber());
-                statement.setString(4, calibrator.getMeasurement());
-                statement.setString(5, calibrator.getValue());
-                statement.setString(6, calibrator.getErrorFormula());
-                statement.setString(7, calibrator.getCertificate().toString());
-                statement.setDouble(8, calibrator.getRangeMin());
-                statement.setDouble(9, calibrator.getRangeMax());
-                statement.execute();
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        private boolean removeCalibrator(Calibrator calibrator){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statement = connection.createStatement()){
-                LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM calibrators WHERE name = '" + calibrator.getName() + "';";
-                statement.execute(sql);
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        private boolean clearCalibrators(){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statement = connection.createStatement()) {
-                LOGGER.fine("Send request");
-                String sql = "DELETE FROM calibrators;";
-                statement.execute(sql);
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        boolean setCalibrator(Calibrator oldCalibrator, Calibrator newCalibrator){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statement = connection.createStatement()){
-                LOGGER.fine("Send requests to update");
-                String sql = "UPDATE calibrators SET "
-                        + "name = '" + newCalibrator.getName() + "', "
-                        + "type = '" + newCalibrator.getType() + "', "
-                        + "number = '" + newCalibrator.getNumber() + "', "
-                        + "measurement = '" + newCalibrator.getMeasurement() + "', "
-                        + "value = '" + newCalibrator.getValue() + "', "
-                        + "error_formula = '" + newCalibrator.getErrorFormula() + "', "
-                        + "certificate = '" + newCalibrator.getCertificate() + "', "
-                        + "range_min = " + newCalibrator.getRangeMin() + ", "
-                        + "range_max = " + newCalibrator.getRangeMax() + " "
-                        + "WHERE name = '" + oldCalibrator.getName() + "';";
-                statement.execute(sql);
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        public boolean rewriteCalibrators(ArrayList<Calibrator>calibrators){
-            String clearSql = "DELETE FROM calibrators;";
-            String insertSql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
-                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statementClear = connection.createStatement();
-                PreparedStatement statement = connection.prepareStatement(insertSql)) {
-                LOGGER.fine("Send request to clear");
-                statementClear.execute(clearSql);
-
-                if (!calibrators.isEmpty()) {
-                    LOGGER.fine("Send requests to add");
-                    for (Calibrator calibrator : calibrators) {
-                        statement.setString(1, calibrator.getName());
-                        statement.setString(2, calibrator.getType());
-                        statement.setString(3, calibrator.getNumber());
-                        statement.setString(4, calibrator.getMeasurement());
-                        statement.setString(5, calibrator.getValue());
-                        statement.setString(6, calibrator.getErrorFormula());
-                        statement.setString(7, calibrator.getCertificate().toString());
-                        statement.setDouble(8, calibrator.getRangeMin());
-                        statement.setDouble(9, calibrator.getRangeMax());
-                        statement.execute();
-                    }
-                }
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
+        String sql = "SELECT * FROM calibrators WHERE name = '" + calibrator.getName() + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            return resultSet.next();
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
             return true;
         }
     }

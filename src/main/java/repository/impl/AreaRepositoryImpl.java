@@ -15,13 +15,19 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
 
     public AreaRepositoryImpl(){
         setPropertiesFromFile();
+        createTable();
     }
 
     public AreaRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
+        createTable();
     }
 
-    private void createTable(){
+    /**
+     * Creates table "areas" if it not exists
+     */
+    @Override
+    public void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS areas (area text NOT NULL UNIQUE, PRIMARY KEY (\"area\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);
@@ -59,9 +65,12 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
      */
     @Override
     public boolean add(String object) {
+        if (object == null) return false;
+
         String sql = "INSERT INTO areas (area) VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
-            statement.execute(sql);
+            int result = statement.executeUpdate(sql);
+            if (result > 0) LOGGER.info("Area = {} was added successfully", object);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -76,9 +85,13 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
      */
     @Override
     public boolean set(String oldObject, String newObject) {
+        if (oldObject == null || newObject == null) return false;
+        if (oldObject.equals(newObject)) return true;
+
         String sql = "UPDATE areas SET area = '" + newObject + "' WHERE area = '" + oldObject + "';";
         try (Statement statement = getStatement()){
-            statement.execute(sql);
+            int result = statement.executeUpdate(sql);
+            if (result > 0) LOGGER.info("Area = {} was replaced by area = {} successfully", oldObject, newObject);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -92,9 +105,12 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
      */
     @Override
     public boolean remove(String object) {
+        if (object == null) return false;
+
         String sql = "DELETE FROM areas WHERE area = '" + object + "';";
         try (Statement statement = getStatement()){
-            statement.execute(sql);
+            int result = statement.executeUpdate(sql);
+            if (result > 0) LOGGER.info("Area = {} was removed successfully", object);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -111,6 +127,7 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
         String sql = "DELETE FROM areas;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            LOGGER.info("Areas list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -125,18 +142,25 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
      */
     @Override
     public boolean rewrite(ArrayList<String> newList) {
+        if (newList == null) return false;
+
         String sql = "DELETE FROM areas;";
-        StringBuilder sqlBuilder = new StringBuilder();
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            LOGGER.info("Areas list in DB was cleared successfully");
 
-            sqlBuilder.append("INSERT INTO areas(area) VALUES ");
-            for (String a : newList){
-                sqlBuilder.append("('").append(a).append("'),");
+            if (!newList.isEmpty()) {
+                StringBuilder sqlBuilder = new StringBuilder();
+                sqlBuilder.append("INSERT INTO areas(area) VALUES ");
+                for (String a : newList) {
+                    sqlBuilder.append("('").append(a).append("'),");
+                }
+                sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');
+
+                statement.execute(sqlBuilder.toString());
             }
-            sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
 
-            statement.execute(sqlBuilder.toString());
+            LOGGER.info("The list of old areas has been rewritten to the new one:\n{}", newList);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
