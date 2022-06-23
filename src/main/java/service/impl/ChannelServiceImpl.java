@@ -6,32 +6,17 @@ import repository.ChannelRepository;
 import repository.impl.ChannelRepositoryImpl;
 import service.ChannelService;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class ChannelServiceImpl implements ChannelService {
-    private static final Logger LOGGER = Logger.getLogger(ChannelService.class.getName());
-
-    private static final String ERROR = "Помилка";
-
-    private final String dbUrl;
-
-    private ChannelRepository repository;
+    private final ChannelRepository repository;
 
     public ChannelServiceImpl(){
-        this.dbUrl = null;
+        this.repository = new ChannelRepositoryImpl();
     }
 
-    public ChannelServiceImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-    }
-
-    @Override
-    public void init(){
-        this.repository = this.dbUrl == null ? new ChannelRepositoryImpl() : new ChannelRepositoryImpl(this.dbUrl);
-        LOGGER.info("Initialization SUCCESS");
+    public ChannelServiceImpl(ChannelRepository repository){
+        this.repository = repository;
     }
 
     @Override
@@ -45,56 +30,43 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public ArrayList<Channel> add(Channel channel) {
-        this.repository.add(channel);
-        return this.repository.getAll();
+    public boolean add(Channel channel) {
+        return this.repository.add(channel);
     }
 
     @Override
-    public void addInCurrentThread(Channel channel) {
-        this.repository.addInCurrentThread(channel);
+    public boolean remove(Channel channel) {
+        return this.repository.remove(channel);
     }
 
     @Override
-    public ArrayList<Channel> remove(Channel channel) {
-        this.repository.remove(channel);
-        return this.repository.getAll();
+    public boolean removeBySensor(Sensor sensor){
+        return this.repository.removeBySensor(sensor);
     }
 
     @Override
-    public void removeBySensorInCurrentThread(Sensor sensor){
-        this.repository.removeBySensorInCurrentThread(sensor);
+    public boolean removeByMeasurementValue(String measurementValue) {
+        return this.repository.removeByMeasurementValue(measurementValue);
     }
 
     @Override
-    public void removeByMeasurementValueInCurrentThread(String measurementValue) {
-        this.repository.removeByMeasurementValueInCurrentThread(measurementValue);
+    public boolean changeSensor(Sensor oldSensor, Sensor newSensor, int ... ignored){
+        return this.repository.changeSensor(oldSensor, newSensor, ignored);
     }
 
     @Override
-    public void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored){
-        this.repository.changeSensorInCurrentThread(oldSensor, newSensor, ignored);
+    public boolean changeSensors(ArrayList<Sensor>sensors){
+        return this.repository.changeSensors(sensors);
     }
 
     @Override
-    public void changeSensorsInCurrentThread(ArrayList<Sensor>sensors){
-        this.repository.changeSensorsInCurrentThread(sensors);
+    public boolean set(Channel oldChannel, Channel newChannel) {
+        return this.repository.set(oldChannel, newChannel);
     }
 
     @Override
-    public ArrayList<Channel> set(Channel oldChannel, Channel newChannel) {
-        this.repository.set(oldChannel, newChannel);
-        return this.repository.getAll();
-    }
-
-    @Override
-    public void setInCurrentThread(Channel oldChannel, Channel newChannel) {
-        this.repository.setInCurrentThread(oldChannel, newChannel);
-    }
-
-    @Override
-    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
-        this.repository.changeMeasurementValueInCurrentThread(oldValue, newValue);
+    public boolean changeMeasurementValue(String oldValue, String newValue) {
+        return this.repository.changeMeasurementValue(oldValue, newValue);
     }
 
     @Override
@@ -108,28 +80,17 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public void clear() {
-        this.repository.clear();
+    public boolean clear() {
+        return this.repository.clear();
     }
 
     @Override
-    public void importDataInCurrentThread(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
-        this.repository.importDataInCurrentThread(newChannels, channelsForChange);
+    public boolean importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
+        return this.repository.importData(newChannels, channelsForChange);
     }
 
     @Override
-    public void rewriteInCurrentThread(ArrayList<Channel>channels){
-        this.repository.rewriteInCurrentThread(channels);
-    }
-
-    @Override
-    public void showExistMessage(Window window) {
-        String message = "Канал з данним кодом вже існує в списку каналів. Змініть будь ласка код каналу.";
-        JOptionPane.showMessageDialog(window, message, ERROR, JOptionPane.ERROR_MESSAGE);
-    }
-
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.repository.backgroundTaskIsRun();
+    public boolean rewrite(ArrayList<Channel>channels){
+        return this.repository.rewrite(channels);
     }
 }

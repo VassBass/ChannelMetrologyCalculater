@@ -279,7 +279,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     @Override
     public boolean importData(ArrayList<Calibrator> newCalibrators, ArrayList<Calibrator> calibratorsForChange) {
         int changeResult = 0;
-        int addResult;
+        int addResult = 0;
         if (calibratorsForChange != null && !calibratorsForChange.isEmpty()){
             for (Calibrator c : calibratorsForChange){
                 String sql = "UPDATE calibrators SET "
@@ -324,20 +324,21 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
                 addResult = statement.executeUpdate(sqlBuilder.toString());
-
-                LOGGER.info("Calibrators import was successful");
-                LOGGER.info("Changed = {} | Added = {}", changeResult, addResult);
             } catch (SQLException e) {
                 LOGGER.warn("Exception was thrown!", e);
                 return false;
             }
         }
 
+        LOGGER.info("Calibrators import was successful");
+        LOGGER.info("Changed = {} | Added = {}", changeResult, addResult);
         return true;
     }
 
     @Override
     public boolean isExists(Calibrator calibrator) {
+        if (calibrator == null) return true;
+
         String sql = "SELECT * FROM calibrators WHERE name = '" + calibrator.getName() + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             return resultSet.next();

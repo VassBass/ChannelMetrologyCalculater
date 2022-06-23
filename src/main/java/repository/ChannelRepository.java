@@ -6,30 +6,28 @@ import model.Sensor;
 import java.util.ArrayList;
 
 public interface ChannelRepository {
+    void createTable();
+
     Channel get(String code);
     ArrayList<Channel> getAll();
 
-    void add(Channel channel);
-    void addInCurrentThread(Channel channel);
+    boolean add(Channel channel);
 
-    void remove(Channel channel);
-    void removeBySensorInCurrentThread(Sensor sensor);
-    void removeByMeasurementValueInCurrentThread(String measurementValue);
+    boolean remove(Channel channel);
+    boolean removeBySensor(Sensor sensor);
+    boolean removeByMeasurementValue(String measurementValue);
 
-    void importDataInCurrentThread(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
-    void rewriteInCurrentThread(ArrayList<Channel>channels);
+    boolean importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
+    boolean rewrite(ArrayList<Channel>channels);
 
-    void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored);
-    void changeSensorsInCurrentThread(ArrayList<Sensor>sensors);
-    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
+    boolean changeSensor(Sensor oldSensor, Sensor newSensor, int ... ignored);
+    boolean changeSensors(ArrayList<Sensor>sensors);
+    boolean changeMeasurementValue(String oldValue, String newValue);
 
-    void set(Channel oldChannel, Channel newChannel);
-    void setInCurrentThread(Channel oldChannel, Channel newChannel);
+    boolean set(Channel oldChannel, Channel newChannel);
 
-    void clear();
+    boolean clear();
 
     boolean isExist(String code);
     boolean isExist(String oldChannelCode, String newChannelCode);
-
-    boolean backgroundTaskIsRun();
 }

@@ -3,38 +3,29 @@ package service;
 import model.Channel;
 import model.Sensor;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public interface ChannelService {
-    void init();
-
     Channel get(String code);
     ArrayList<Channel> getAll();
 
-    ArrayList<Channel> add(Channel channel);
-    void addInCurrentThread(Channel channel);
+    boolean add(Channel channel);
 
-    ArrayList<Channel> remove(Channel channel);
-    void removeBySensorInCurrentThread(Sensor sensor);
-    void removeByMeasurementValueInCurrentThread(String measurementValue);
+    boolean remove(Channel channel);
+    boolean removeBySensor(Sensor sensor);
+    boolean removeByMeasurementValue(String measurementValue);
 
-    void changeSensorInCurrentThread(Sensor oldSensor, Sensor newSensor, int ... ignored);
-    void changeSensorsInCurrentThread(ArrayList<Sensor>sensors);
+    boolean changeSensor(Sensor oldSensor, Sensor newSensor, int ... ignored);
+    boolean changeSensors(ArrayList<Sensor>sensors);
 
-    ArrayList<Channel> set(Channel oldChannel, Channel newChannel);
-    void setInCurrentThread(Channel oldChannel, Channel newChannel);
-    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
+    boolean set(Channel oldChannel, Channel newChannel);
+    boolean changeMeasurementValue(String oldValue, String newValue);
 
     boolean isExist(String code);
     boolean isExist(String oldChannelCode, String newChannelCode);
 
-    void clear();
+    boolean clear();
 
-    void importDataInCurrentThread(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
-    void rewriteInCurrentThread(ArrayList<Channel>channels);
-
-    void showExistMessage(Window window);
-
-    boolean backgroundTaskIsRun();
+    boolean importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
+    boolean rewrite(ArrayList<Channel>channels);
 }

@@ -18,6 +18,10 @@ import java.util.Objects;
  */
 public class Channel implements Serializable {
 
+    public Channel(){}
+
+    public Channel(@Nonnull String code){this.code = code;}
+
     /**
      * DB field = code (primary key)[TEXT]
      */
@@ -119,14 +123,14 @@ public class Channel implements Serializable {
 
     @Nonnull public String getCode() {return this.code;}
     @Nonnull public String getName() {return this.name;}
-    @Nonnull public Measurement getMeasurement() {
+    @Nonnull public Measurement _getMeasurement() {
         if (this.measurementValue.equals(Measurement.M_S) || this.measurementValue.equals(Measurement.CM_S)){
             return new Measurement(Measurement.CONSUMPTION, this.measurementValue);
         }else {
             return Application.context.measurementService.get(this.measurementValue);
         }
     }
-    public String _getMeasurementValue(){return this.measurementValue;}
+    @Nonnull public String getMeasurementValue(){return this.measurementValue;}
     public String getDepartment() {return this.department;}
     public String getArea() {return this.area;}
     public String getProcess() {return this.process;}
@@ -283,7 +287,7 @@ public class Channel implements Serializable {
         Channel c = new Channel();
         c.setCode(channel.getCode());
         c.setName(channel.getName());
-        c.setMeasurementValue(channel._getMeasurementValue());
+        c.setMeasurementValue(channel.getMeasurementValue());
         c.setDepartment(channel.getDepartment());
         c.setArea(channel.getArea());
         c.setProcess(channel.getProcess());
@@ -308,7 +312,7 @@ public class Channel implements Serializable {
     public boolean isMatch(Channel channel){
         return this.code.equals(channel.getCode())
                 && this.name.equals(channel.getName())
-                && this.measurementValue.equals(channel._getMeasurementValue())
+                && this.measurementValue.equals(channel.getMeasurementValue())
                 && this.department.equals(channel.getDepartment())
                 && this.area.equals(channel.getArea())
                 && this.process.equals(channel.getProcess())
