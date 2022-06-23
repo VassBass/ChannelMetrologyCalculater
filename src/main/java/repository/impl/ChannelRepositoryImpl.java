@@ -61,6 +61,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     public Channel get(String code) {
         if (code == null) return null;
 
+        LOGGER.info("Reading channel with code = {} from DB", code);
         String sql = "SELECT * FROM channels WHERE code = '" + code + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
@@ -83,7 +84,10 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                         resultSet.getDouble("allowable_error_value"));
 
                 return channel;
-            }else return null;
+            }else {
+                LOGGER.info("Channel with code = {} not found", code);
+                return null;
+            }
         }catch (SQLException | JsonProcessingException e){
             LOGGER.warn("Exception was thrown!", e);
             return null;
@@ -95,6 +99,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
         ArrayList<Channel>channels = new ArrayList<>();
 
         String sql = "SELECT * FROM channels;";
+        LOGGER.info("Reading all channels from DB");
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()){
                 Channel channel = new Channel(resultSet.getString("code"));
@@ -152,7 +157,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
             statement.setDouble(17, channel.getAllowableErrorPercent());
             statement.setDouble(18, channel.getAllowableError());
 
-            statement.execute();
+            int result = statement.executeUpdate();
+            if (result > 0) LOGGER.info("Channel = {} was added successfully", channel.getName());
             return true;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -166,7 +172,12 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
 
         String sql = "DELETE FROM channels WHERE code = '" + channel.getCode() + "';";
         try (Statement statement = getStatement()){
-            statement.execute(sql);
+            int result = statement.executeUpdate(sql);
+            if (result > 0){
+                LOGGER.info("Channel = {} was removed successfully", channel.getName());
+            }else {
+                LOGGER.info("Channel with code = {} not found", channel.getCode());
+            }
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -189,16 +200,19 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
         }
 
         String sql = "DELETE FROM channels WHERE code = ?;";
+        int result = 0;
         for (String code : codes){
             try (PreparedStatement statement = getPreparedStatement(sql)){
                 statement.setString(1, code);
                 statement.execute();
+                result++;
             }catch (SQLException e){
                 LOGGER.warn("Exception was thrown!", e);
                 return false;
             }
         }
 
+        LOGGER.info("Removed {} channels with sensor = {}", result, sensor.getName());
         return true;
     }
 
@@ -208,7 +222,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
 
         String sql = "DELETE FROM channels WHERE measurement_value = '" + measurementValue + "';";
         try (Statement statement = getStatement()){
-            statement.execute(sql);
+            int result = statement.executeUpdate(sql);
+            LOGGER.info("Removed {} channels with measurementValue = {}", result, measurementValue);
             return true;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -296,17 +311,20 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
             }
         }
 
+        int result = 0;
         try (Statement statement = getStatement()){
             for (Channel channel : changedChannels) {
                 String sql = "UPDATE channels SET sensor = '" + sensor + "' "
                         + "WHERE code = '" + channel.getCode() + "';";
                 statement.execute(sql);
+                result++;
             }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
         }
 
+        LOGGER.info("Changed sensor of {} channels from {} to {}", result, oldSensor, newSensor);
         return true;
     }
 
@@ -343,6 +361,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
             }
         }
 
+        int result = 0;
         try (Statement statement = getStatement()){
             String sql = "UPDATE channels SET measurement_value = '" + newValue + "' WHERE measurement_value = '" + oldValue + "';";
             statement.execute(sql);
@@ -351,12 +370,14 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 Sensor sensor = sensors.get(c);
                 sql = "UPDATE channels SET sensor = '" + sensor + "' WHERE code = '" + code + "';";
                 statement.execute(sql);
+                result++;
             }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
         }
 
+        LOGGER.info("Changed measurementValue of {} channels from {} to {}", result, oldValue, newValue);
         return true;
     }
 
@@ -386,7 +407,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
                 + "allowable_error_value = " + newChannel.getAllowableError() + " "
                 + "WHERE code = '" + oldChannel.getCode() + "';";
         try (Statement statement = getStatement()){
-            statement.execute(sql);
+            int result = statement.executeUpdate(sql);
+            if (result > 0) LOGGER.info("Channel:\n{}\nwas replaced by channel:\n{}\nsuccessfully", oldChannel, newChannel);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -399,6 +421,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
         String sql = "DELETE FROM channels;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            LOGGER.info("Channels list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
