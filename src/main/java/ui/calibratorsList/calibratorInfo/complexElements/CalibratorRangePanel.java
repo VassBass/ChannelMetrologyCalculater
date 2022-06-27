@@ -62,15 +62,13 @@ public class CalibratorRangePanel extends JPanel {
 
         public void setList(String measurement){
             this.list.clear();
-            if (measurement != null && measurement.equals(Measurement.PRESSURE)) {
+            if (measurement != null) {
                 ArrayList<Measurement> measurements = Application.context.measurementService.getAll();
                 for (Measurement m : Objects.requireNonNull(measurements)) {
                     if (m.getName().equals(measurement)) {
                         this.list.add(m.getValue());
                     }
                 }
-            }else {
-                this.list.add(DASH);
             }
         }
 
@@ -164,15 +162,10 @@ public class CalibratorRangePanel extends JPanel {
     public void setValues(String measurement, String selected){
         this.measurement = measurement;
         this.valuesModel.setList(measurement);
-        if (measurement.equals(Measurement.PRESSURE)) {
-            setDisabledAndEmpty(false);
-            if (selected == null) {
-                this.valuesModel.setSelectedIndex(0);
-            } else {
-                this.valuesModel.setSelectedItem(selected);
-            }
+        if (selected == null) {
+            this.valuesModel.setSelectedIndex(0);
         } else {
-            this.setDisabledAndEmpty(true);
+            this.valuesModel.setSelectedItem(selected);
         }
     }
 

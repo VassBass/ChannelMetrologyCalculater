@@ -113,8 +113,12 @@ public class Measurement implements Serializable {
      * @return transformed value
      */
     public Double convertFrom(@Nonnull String measurementValue, double quantity){
-        double factor = measurementValue.equals(this.value) ? 1D : this.factors.get(measurementValue);
-        return quantity / factor;
+        if (measurementValue.equals("-") || this.value.equals("-") || measurementValue.equals(this.value)){
+            return quantity;
+        }else {
+            double factor = this.factors.get(measurementValue);
+            return quantity / factor;
+        }
     }
 
     /**
