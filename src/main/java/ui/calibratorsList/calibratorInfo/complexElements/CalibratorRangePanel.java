@@ -148,17 +148,6 @@ public class CalibratorRangePanel extends JPanel {
         this.rangeMax.setEnabled(enabled);
     }
 
-    private void setDisabledAndEmpty(boolean disabledAndEmpty){
-        if (disabledAndEmpty){
-            this.setEnabled(false);
-            this.value.setModel(new DefaultComboBoxModel<>(new String[]{DASH}));
-            this.rangeMin.setText(DEFAULT_VALUE);
-            this.rangeMax.setText(DEFAULT_VALUE);
-        }else {
-            this.setEnabled(true);
-        }
-    }
-
     public void setValues(String measurement, String selected){
         this.measurement = measurement;
         this.valuesModel.setList(measurement);
