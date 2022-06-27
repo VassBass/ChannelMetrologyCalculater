@@ -197,7 +197,7 @@ public class ConsumptionCertificate extends Certificate {
         cell(18,12).setCellValue(number);
 
         String certificate = calibrator.getCertificateInfo();
-        cell(18,9).setCellValue(calibrator._getCertificateType());
+        cell(18,9).setCellValue(calibrator._getCertificateType() + ":");
         cell(18,12).setCellValue(certificate);
 
         double errorCalibrator = calibrator.getError(this.channel);
