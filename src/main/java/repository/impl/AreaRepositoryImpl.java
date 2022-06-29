@@ -36,7 +36,6 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
         }
     }
 
-
     /**
      * @return List of areas or empty list if something go wrong
      */
