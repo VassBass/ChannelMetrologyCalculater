@@ -6,27 +6,16 @@ import repository.impl.DepartmentRepositoryImpl;
 import service.DepartmentService;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class DepartmentServiceImpl implements DepartmentService {
-    private static final Logger LOGGER = Logger.getLogger(DepartmentService.class.getName());
-
-    private DepartmentRepository repository;
-
-    private final String dbUrl;
+    private final DepartmentRepository repository;
 
     public DepartmentServiceImpl(){
-        this.dbUrl = null;
+        this.repository = new DepartmentRepositoryImpl();
     }
 
-    public DepartmentServiceImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-    }
-
-    @Override
-    public void init(){
-        this.repository = this.dbUrl == null ? new DepartmentRepositoryImpl() : new DepartmentRepositoryImpl(this.dbUrl);
-        LOGGER.info("Initialization SUCCESS");
+    public DepartmentServiceImpl(DepartmentRepository repository){
+        this.repository = repository;
     }
 
     @Override
@@ -40,50 +29,32 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ArrayList<String> add(String object) {
-        this.repository.add(object);
-        return this.repository.getAll();
+    public boolean add(String object) {
+        return this.repository.add(object);
     }
 
     @Override
-    public void addInCurrentThread(ArrayList<String> departments) {
-        this.repository.addInCurrentThread(departments);
+    public boolean remove(String object) {
+        return this.repository.remove(object);
     }
 
     @Override
-    public ArrayList<String> remove(String object) {
-        this.repository.remove(object);
-        return this.repository.getAll();
+    public boolean set(String oldObject, String newObject) {
+        return this.repository.set(oldObject, newObject);
     }
 
     @Override
-    public ArrayList<String> set(String oldObject, String newObject) {
-        this.repository.set(oldObject, newObject);
-        return this.repository.getAll();
+    public boolean clear() {
+        return this.repository.clear();
     }
 
     @Override
-    public String get(int index) {
-        return this.repository.get(index);
+    public boolean rewrite(ArrayList<String>departments){
+        return this.repository.rewrite(departments);
     }
 
     @Override
-    public void clear() {
-        this.repository.clear();
-    }
-
-    @Override
-    public void rewriteInCurrentThread(ArrayList<String>departments){
-        this.repository.rewriteInCurrentThread(departments);
-    }
-
-    @Override
-    public void resetToDefaultInCurrentThread() {
-        this.repository.rewriteInCurrentThread(DefaultDepartments.get());
-    }
-
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.repository.backgroundTaskIsRun();
+    public boolean resetToDefault() {
+        return this.repository.rewrite(DefaultDepartments.get());
     }
 }
