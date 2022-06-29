@@ -6,26 +6,16 @@ import repository.impl.ProcessRepositoryImpl;
 import service.ProcessService;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class ProcessServiceImpl implements ProcessService {
-    private static final Logger LOGGER = Logger.getLogger(ProcessService.class.getName());
-
-    private final String dbUrl;
-    private ProcessRepository repository;
+    private final ProcessRepository repository;
 
     public ProcessServiceImpl(){
-        this.dbUrl = null;
+        this.repository = new ProcessRepositoryImpl();
     }
 
-    public ProcessServiceImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-    }
-
-    @Override
-    public void init(){
-        this.repository = dbUrl == null ? new ProcessRepositoryImpl() : new ProcessRepositoryImpl(this.dbUrl);
-        LOGGER.info("ProcessService: initialization SUCCESS");
+    public ProcessServiceImpl(ProcessRepository repository){
+        this.repository = repository;
     }
 
     @Override
@@ -39,50 +29,32 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public ArrayList<String> add(String object) {
-        this.repository.add(object);
-        return this.repository.getAll();
+    public boolean add(String object) {
+        return this.repository.add(object);
     }
 
     @Override
-    public void addInCurrentThread(ArrayList<String> processes) {
-        this.repository.addInCurrentThread(processes);
+    public boolean remove(String object) {
+        return this.repository.remove(object);
     }
 
     @Override
-    public ArrayList<String> remove(String object) {
-        this.repository.remove(object);
-        return this.repository.getAll();
+    public boolean set(String oldObject, String newObject) {
+        return this.repository.set(oldObject, newObject);
     }
 
     @Override
-    public ArrayList<String> set(String oldObject, String newObject) {
-        this.repository.set(oldObject, newObject);
-        return this.repository.getAll();
+    public boolean clear() {
+        return this.repository.clear();
     }
 
     @Override
-    public String get(int index) {
-        return this.repository.get(index);
+    public boolean rewrite(ArrayList<String>processes){
+        return this.repository.rewrite(processes);
     }
 
     @Override
-    public void clear() {
-        this.repository.clear();
-    }
-
-    @Override
-    public void rewriteInCurrentThread(ArrayList<String>processes){
-        this.repository.rewriteInCurrentThread(processes);
-    }
-
-    @Override
-    public void resetToDefaultInCurrentThread() {
-        this.repository.rewriteInCurrentThread(DefaultProcesses.get());
-    }
-
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.repository.backgroundTaskIsRun();
+    public boolean resetToDefault() {
+        return this.repository.rewrite(DefaultProcesses.get());
     }
 }
