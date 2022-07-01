@@ -128,7 +128,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     public boolean add(Calibrator calibrator) {
         if (calibrator == null) return false;
 
-        String sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+        String sql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setString(1, calibrator.getName());
@@ -249,7 +249,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
             LOGGER.info("Calibrators list in DB was cleared successfully");
 
             if (!calibrators.isEmpty()) {
-                String insertSql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+                String insertSql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
                         + "VALUES ";
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
@@ -307,7 +307,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
         }
 
         if (newCalibrators != null && !newCalibrators.isEmpty()){
-            String sql = "INSERT INTO calibrators ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'certificate', 'range_min', 'range_max') "
+            String sql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
                     + "VALUES ";
             StringBuilder sqlBuilder = new StringBuilder(sql);
             try (Statement statement = getStatement()) {

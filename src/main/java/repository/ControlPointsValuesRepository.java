@@ -6,23 +6,15 @@ import model.Sensor;
 import java.util.ArrayList;
 
 public interface ControlPointsValuesRepository {
+    void createTable();
     ArrayList<ControlPointsValues> getAll();
     ArrayList<ControlPointsValues>getBySensorType(String sensorType);
-    double[] getValues(String sensorType, double rangeMin, double rangeMax);
-
-    /**
-     *
-     * @param sensorType type of Sensor {@link Sensor#getType()}
-     * @param index sequence number among control points with {@link Sensor#getType()}
-     * @return null if ControlPointsValues not finds or if sensorType equals null
-     */
-    ControlPointsValues getControlPointsValues(String sensorType, int index);
-    void put(ControlPointsValues cpv);
-    void putInCurrentThread(ControlPointsValues cpv);
-    void changeSensorTypeInCurrentThread(String oldSensorType, String newSensorType);
-    void remove(ControlPointsValues cpv);
-    void removeAllInCurrentThread(String sensorType);
-    void clear(String sensorType);
-    void resetToDefaultInCurrentThread();
-    boolean backgroundTaskIsRun();
+    ControlPointsValues getControlPointsValues(int id);
+    int add(ControlPointsValues cpv);
+    boolean set(ControlPointsValues cpv);
+    boolean changeSensorType(String oldSensorType, String newSensorType);
+    boolean remove(ControlPointsValues cpv);
+    boolean removeAll(String sensorType);
+    boolean clear();
+    boolean resetToDefault();
 }

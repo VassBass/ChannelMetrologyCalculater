@@ -6,26 +6,16 @@ import repository.impl.ControlPointsValuesRepositoryImpl;
 import service.ControlPointsValuesService;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class ControlPointsValuesServiceImpl implements ControlPointsValuesService {
-    private static final Logger LOGGER = Logger.getLogger(ControlPointsValuesService.class.getName());
-
-    private final String dbUrl;
-    private ControlPointsValuesRepository repository;
+    private final ControlPointsValuesRepository repository;
 
     public ControlPointsValuesServiceImpl(){
-        this.dbUrl = null;
+        this.repository = new ControlPointsValuesRepositoryImpl();
     }
 
-    public ControlPointsValuesServiceImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-    }
-
-    @Override
-    public void init() {
-        this.repository = this.dbUrl == null ? new ControlPointsValuesRepositoryImpl() : new ControlPointsValuesRepositoryImpl(this.dbUrl);
-        LOGGER.info("Initialization SUCCESS");
+    public ControlPointsValuesServiceImpl(ControlPointsValuesRepository repository){
+        this.repository = repository;
     }
 
     @Override
@@ -39,52 +29,42 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public double[] getValues(String sensorType, double rangeMin, double rangeMax) {
-        return this.repository.getValues(sensorType, rangeMin, rangeMax);
+    public ControlPointsValues getControlPointsValues(int id) {
+        return this.repository.getControlPointsValues(id);
     }
 
     @Override
-    public ControlPointsValues getControlPointsValues(String sensorType, int index) {
-        return this.repository.getControlPointsValues(sensorType, index);
+    public int add(ControlPointsValues controlPointsValues) {
+        return this.repository.add(controlPointsValues);
     }
 
     @Override
-    public void put(ControlPointsValues controlPointsValues) {
-        this.repository.put(controlPointsValues);
+    public boolean set(ControlPointsValues cpv) {
+        return this.repository.set(cpv);
     }
 
     @Override
-    public void putInCurrentThread(ControlPointsValues cpv) {
-        this.repository.putInCurrentThread(cpv);
+    public boolean changeSensorType(String oldSensorType, String newSensorType) {
+        return this.repository.changeSensorType(oldSensorType, newSensorType);
     }
 
     @Override
-    public void changeSensorTypeInCurrentThread(String oldSensorType, String newSensorType) {
-        this.repository.changeSensorTypeInCurrentThread(oldSensorType, newSensorType);
+    public boolean remove(ControlPointsValues controlPointsValues) {
+        return this.repository.remove(controlPointsValues);
     }
 
     @Override
-    public void remove(ControlPointsValues controlPointsValues) {
-        this.repository.remove(controlPointsValues);
+    public boolean removeAll(String sensorType) {
+        return this.repository.removeAll(sensorType);
     }
 
     @Override
-    public void removeAllInCurrentThread(String sensorType) {
-        this.repository.removeAllInCurrentThread(sensorType);
+    public boolean clear() {
+        return this.repository.clear();
     }
 
     @Override
-    public void clear(String sensorType) {
-        this.repository.clear(sensorType);
-    }
-
-    @Override
-    public void resetToDefaultInCurrentThread() {
-        this.repository.resetToDefaultInCurrentThread();
-    }
-
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.repository.backgroundTaskIsRun();
+    public boolean resetToDefault() {
+        return this.repository.resetToDefault();
     }
 }

@@ -133,9 +133,9 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     public boolean add(Channel channel) {
         if (channel == null) return false;
 
-        String sql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
-                ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement_value', 'sensor', 'frequency', 'range_min', 'range_max'" +
-                ", 'allowable_error_percent', 'allowable_error_value') "
+        String sql = "INSERT INTO channels (code, name, department, area, process, installation, technology_number" +
+                ", protocol_number, reference, date, suitability, measurement_value, sensor, frequency, range_min, range_max" +
+                ", allowable_error_percent, allowable_error_value) "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setString(1, channel.getCode());
@@ -241,9 +241,9 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
             LOGGER.info("Channels list in DB was cleared successfully");
 
             if (!channels.isEmpty()) {
-                String insertSql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'"
-                        + ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement_value', 'sensor', 'frequency', 'range_min', 'range_max'"
-                        + ", 'allowable_error_percent', 'allowable_error_value') "
+                String insertSql = "INSERT INTO channels (code, name, department, area, process, installation, technology_number"
+                        + ", protocol_number, reference, date, suitability, measurement_value, sensor, frequency, range_min, range_max"
+                        + ", allowable_error_percent, allowable_error_value) "
                         + "VALUES ";
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
