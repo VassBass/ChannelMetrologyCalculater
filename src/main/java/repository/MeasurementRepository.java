@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface MeasurementRepository {
+    void createTable();
     ArrayList<Measurement>getAll();
     String[]getAllNames();
     String[]getAllValues();
@@ -14,16 +15,15 @@ public interface MeasurementRepository {
     Measurement get(String value);
     ArrayList<Measurement>getMeasurements(String name);
 
-    ArrayList<Measurement> addInCurrentThread(Measurement measurement);
+    boolean add(Measurement measurement);
 
-    void rewriteInCurrentThread(ArrayList<Measurement>measurements);
-    void changeFactors(String measurementValue, HashMap<String, Double>factors);
-    void changeInCurrentThread(Measurement oldMeasurement, Measurement newMeasurement);
+    boolean rewrite(ArrayList<Measurement>measurements);
+    boolean changeFactors(String measurementValue, HashMap<String, Double>factors);
+    boolean change(Measurement oldMeasurement, Measurement newMeasurement);
 
-    void delete(Measurement measurement);
-    void clear();
+    boolean delete(Measurement measurement);
+    boolean clear();
 
-    boolean backgroundTaskIsRun();
     boolean isLastInMeasurement(String measurementValue);
     boolean exists(String measurementValue);
     boolean exists(String oldValue, String newValue);

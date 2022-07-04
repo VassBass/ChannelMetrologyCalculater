@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface MeasurementService {
-    void init();
-    void addInCurrentThread(Measurement measurement);
+    boolean add(Measurement measurement);
     String[]getAllNames();
     String[]getAllValues();
 
@@ -45,12 +44,12 @@ public interface MeasurementService {
      * if measurement == null or measurement not exists in measurements list the method does nothing
      * @param measurement to delete
      */
-    void delete(Measurement measurement);
+    boolean delete(Measurement measurement);
 
-    void changeFactors(String measurementValue, HashMap<String,Double>factors);
-    void changeInCurrentThread(Measurement oldMeasurement, Measurement newMeasurement);
+    boolean changeFactors(String measurementValue, HashMap<String,Double>factors);
+    boolean change(Measurement oldMeasurement, Measurement newMeasurement);
 
-    void clear();
+    boolean clear();
 
     /**
      *
@@ -59,7 +58,7 @@ public interface MeasurementService {
      */
     ArrayList<Measurement>getMeasurements(String name);
 
-    void resetToDefaultInCurrentThread();
+    boolean resetToDefault();
 
     boolean isLastInMeasurement(String measurementValue);
     boolean exists(String measurementValue);

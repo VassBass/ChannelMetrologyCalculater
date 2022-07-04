@@ -8,31 +8,21 @@ import service.MeasurementService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 public class MeasurementServiceImpl implements MeasurementService {
-    private static final Logger LOGGER = Logger.getLogger(MeasurementService.class.getName());
-
-    private final String dbUrl;
-    private  MeasurementRepository repository;
+    private final MeasurementRepository repository;
 
     public MeasurementServiceImpl(){
-        this.dbUrl = null;
+        this.repository = new MeasurementRepositoryImpl();
     }
 
-    public MeasurementServiceImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-    }
-
-    @Override
-    public void init(){
-        this.repository = this.dbUrl == null ? new MeasurementRepositoryImpl() : new MeasurementRepositoryImpl(dbUrl);
-        LOGGER.info("Initialization SUCCESS");
+    public MeasurementServiceImpl(MeasurementRepository repository){
+        this.repository = repository;
     }
 
     @Override
-    public void addInCurrentThread(Measurement measurement) {
-        this.repository.addInCurrentThread(measurement);
+    public boolean add(Measurement measurement) {
+        return this.repository.add(measurement);
     }
 
     @Override
@@ -66,23 +56,23 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public void delete(Measurement measurement) {
-        this.repository.delete(measurement);
+    public boolean delete(Measurement measurement) {
+        return this.repository.delete(measurement);
     }
 
     @Override
-    public void changeFactors(String measurementValue, HashMap<String, Double> factors) {
-        this.repository.changeFactors(measurementValue, factors);
+    public boolean changeFactors(String measurementValue, HashMap<String, Double> factors) {
+        return this.repository.changeFactors(measurementValue, factors);
     }
 
     @Override
-    public void changeInCurrentThread(Measurement oldMeasurement, Measurement newMeasurement) {
-        this.repository.changeInCurrentThread(oldMeasurement, newMeasurement);
+    public boolean change(Measurement oldMeasurement, Measurement newMeasurement) {
+        return this.repository.change(oldMeasurement, newMeasurement);
     }
 
     @Override
-    public void clear() {
-        this.repository.clear();
+    public boolean clear() {
+        return this.repository.clear();
     }
 
     @Override
@@ -91,8 +81,8 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public void resetToDefaultInCurrentThread() {
-        this.repository.rewriteInCurrentThread(DefaultMeasurements.get());
+    public boolean resetToDefault() {
+        return this.repository.rewrite(DefaultMeasurements.get());
     }
 
     @Override
