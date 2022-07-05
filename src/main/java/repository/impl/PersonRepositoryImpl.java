@@ -1,85 +1,85 @@
 package repository.impl;
 
-import application.Application;
-import application.ApplicationContext;
-import constants.Action;
 import model.Person;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.PersonRepository;
 import repository.Repository;
-import ui.model.SaveMessage;
 
-import javax.swing.*;
-import java.awt.*;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class PersonRepositoryImpl extends Repository<Person> implements PersonRepository {
-    private static final Logger LOGGER = Logger.getLogger(PersonRepository.class.getName());
+public class PersonRepositoryImpl extends Repository implements PersonRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonRepository.class);
 
     private static final String EMPTY_ARRAY = "<Порожньо>";
 
-    private boolean backgroundTaskRunning = false;
-
-    public PersonRepositoryImpl(){super();}
-    public PersonRepositoryImpl(String dbUrl){super(dbUrl);}
+    public PersonRepositoryImpl(){
+        setPropertiesFromFile();
+        createTable();
+    }
+    public PersonRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+        setProperties(dbUrl, dbUser, dbPassword);
+        createTable();
+    }
 
     @Override
-    protected void init() {
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection();
-            Statement statement = connection.createStatement()){
-            String sql = "CREATE TABLE IF NOT EXISTS persons ("
-                    + "name text NOT NULL"
-                    + ", surname text NOT NULL"
-                    + ", patronymic text"
-                    + ", position text NOT NULL"
-                    + ");";
-            LOGGER.fine("Send request to create table");
+    public void createTable(){
+        String sql = "CREATE TABLE IF NOT EXISTS persons ("
+                + "id integer NOT NULL UNIQUE"
+                + ", name text NOT NULL"
+                + ", surname text NOT NULL"
+                + ", patronymic text"
+                + ", position text NOT NULL"
+                + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
+                + ");";
+        try (Statement statement = getStatement()){
             statement.execute(sql);
-
-            LOGGER.fine("Send request");
-            sql = "SELECT * FROM persons";
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
-                while (resultSet.next()) {
-                    Person person = new Person();
-                    person.setName(resultSet.getString("name"));
-                    person.setSurname(resultSet.getString("surname"));
-                    person.setPatronymic(resultSet.getString("patronymic"));
-                    person.setPosition(resultSet.getString("position"));
-                    this.mainList.add(person);
-                }
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
-        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
     public ArrayList<Person> getAll() {
-        return this.mainList;
+        LOGGER.info("Reading all persons from DB");
+        ArrayList<Person>persons = new ArrayList<>();
+        String sql = "SELECT * FROM persons;";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                Person person = new Person(resultSet.getInt("id"));
+                person.setName(resultSet.getString("name"));
+                person.setSurname(resultSet.getString("surname"));
+                person.setPatronymic(resultSet.getString("patronymic"));
+                person.setPosition(resultSet.getString("position"));
+
+                persons.add(person);
+            }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+        }
+
+        return persons;
     }
 
     @Override
     public String[] getAllNamesWithFirstEmptyString() {
-        int length = this.mainList.size() + 1;
-        String[] persons = new String[length];
-        persons[0] = EMPTY_ARRAY;
-        for (int x = 0; x< this.mainList.size(); x++){
-            int y = x+1;
-            persons[y] = this.mainList.get(x)._getFullName();
+        ArrayList<String>names = new ArrayList<>();
+        names.add(EMPTY_ARRAY);
+        for (Person person : getAll()){
+            names.add(person._getFullName());
         }
-        return persons;
+        return names.toArray(new String[0]);
     }
 
     @Override
     public String[] getNamesOfHeadsWithFirstEmptyString() {
         ArrayList<String>heads = new ArrayList<>();
         heads.add(EMPTY_ARRAY);
-        for (Person worker : this.mainList){
+        for (Person worker : getAll()){
             if (worker.getPosition().equals(Person.HEAD_OF_DEPARTMENT_ASUTP)){
                 heads.add(worker._getFullName());
             }
@@ -88,323 +88,157 @@ public class PersonRepositoryImpl extends Repository<Person> implements PersonRe
     }
 
     @Override
-    public Person get(int index) {
-        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
-    }
+    public Person get(int id) {
+        if (id < 0) return null;
+        LOGGER.info("Reading person with id = {} from DB", id);
+        String sql = "SELECT * FROM persons WHERE id = " + id + ";";
+        try (ResultSet resultSet = getResultSet(sql)){
+            if (resultSet.next()){
+                Person person = new Person(resultSet.getInt("id"));
+                person.setName(resultSet.getString("name"));
+                person.setSurname(resultSet.getString("surname"));
+                person.setPatronymic(resultSet.getString("patronymic"));
+                person.setPosition(resultSet.getString("position"));
 
-    @Override
-    public void add(Person person) {
-        if (person != null && !this.mainList.contains(person)) {
-            this.mainList.add(person);
-            new BackgroundAction().add(person);
+                return person;
+            }else {
+                LOGGER.info("Person with id = {} not found", id);
+                return null;
+            }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return null;
         }
     }
 
     @Override
-    public void addInCurrentThread(ArrayList<Person> persons) {
-        if (persons != null && !persons.isEmpty()) {
-            for (Person person : persons) {
-                if (person != null && !this.mainList.contains(person)){
-                    this.mainList.add(person);
+    public boolean add(Person person) {
+        if (person == null) return false;
+
+        String sql = "INSERT INTO persons (name, surname, patronymic, position) VALUES (?, ?, ?, ?);";
+        try (PreparedStatement statement = getPreparedStatement(sql)){
+            statement.setString(1, person.getName());
+            statement.setString(2, person.getSurname());
+            statement.setString(3, person.getPatronymic());
+            statement.setString(4, person.getPosition());
+
+            int result = statement.executeUpdate();
+            if (result > 0) LOGGER.info("Person = {} was added successfully", person._getFullName());
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean add(ArrayList<Person> persons) {
+        if (persons == null) return false;
+        if (persons.isEmpty()) return true;
+
+        String sql = "INSERT INTO persons (name, surname, patronymic, position) "
+                + "VALUES ";
+        StringBuilder sqlBuilder = new StringBuilder(sql);
+
+        for (Person person : persons) {
+            sqlBuilder.append("('").append(person.getName()).append("', ")
+                    .append("'").append(person.getSurname()).append("', ")
+                    .append("'").append(person.getPatronymic()).append("', ")
+                    .append("'").append(person.getPosition()).append("'),");
+        }
+        sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');
+
+        try (Statement statement = getStatement()) {
+            int result = statement.executeUpdate(sqlBuilder.toString());
+            if (result > 0) LOGGER.info("Persons list:\n{}\nwas added successfully", persons);
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean remove(Person person) {
+        if (person == null) return false;
+
+        String sql = "DELETE FROM persons WHERE id = " + person.getId();
+        try (Statement statement = getStatement()){
+            int result = statement.executeUpdate(sql);
+            if (result > 0){
+                LOGGER.info("Person = {} was removed successfully", person._getFullName());
+            }else {
+                LOGGER.info("Person with id = {} not found", person.getId());
+            }
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean set(Person person) {
+        if (person == null) return false;
+
+        String sql = "UPDATE persons SET name = ?, surname = ?, patronymic = ?, position = ? WHERE id = ?;";
+        try (PreparedStatement statement = getPreparedStatement(sql)){
+            statement.setString(1, person.getName());
+            statement.setString(2, person.getSurname());
+            statement.setString(3, person.getPatronymic());
+            statement.setString(4, person.getPosition());
+            statement.setInt(5, person.getId());
+
+            int result = statement.executeUpdate();
+            if (result > 0) LOGGER.info("Person was replaced by:\n{}\nsuccessfully", person);
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean clear() {
+        String sql = "DELETE FROM persons;";
+        try (Statement statement = getStatement()){
+            statement.execute(sql);
+            LOGGER.info("Persons list in DB was cleared successfully");
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean rewrite(ArrayList<Person> persons) {
+        if (persons == null) return false;
+
+        String sql = "DELETE FROM persons;";
+        try (Statement statement = getStatement()) {
+            statement.execute(sql);
+            LOGGER.info("Persons list in DB was cleared successfully");
+
+            if (!persons.isEmpty()) {
+                sql = "INSERT INTO persons (name, surname, patronymic, position) VALUES ";
+                StringBuilder sqlBuilder = new StringBuilder(sql);
+
+                for (Person person : persons) {
+                    sqlBuilder.append("('").append(person.getName()).append("', ")
+                            .append("'").append(person.getSurname()).append("', ")
+                            .append("'").append(person.getPatronymic()).append("', ")
+                            .append("'").append(person.getPosition()).append("'),");
                 }
+                sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
+                statement.execute(sqlBuilder.toString());
             }
-            new BackgroundAction().addPersons(persons);
-        }
-    }
 
-    @Override
-    public void addInCurrentThread(Person person) {
-        if (person != null && !this.mainList.contains(person)) {
-            this.mainList.add(person);
-            new BackgroundAction().addPerson(person);
-        }
-    }
-
-    @Override
-    public void remove(Person person) {
-        if (person != null && this.mainList.remove(person)) {
-            new BackgroundAction().remove(person);
-        }
-    }
-
-    @Override
-    public void set(Person oldPerson, Person newPerson) {
-        if (oldPerson != null && newPerson != null
-                && this.mainList.contains(oldPerson)) {
-            int oldIndex = this.mainList.indexOf(oldPerson);
-            int newIndex = this.mainList.indexOf(newPerson);
-            if (newIndex == -1 || oldIndex == newIndex) {
-                this.mainList.set(oldIndex, newPerson);
-                new BackgroundAction().set(oldPerson, newPerson);
-            }
-        }
-    }
-
-    @Override
-    public void setInCurrentThread(Person oldPerson, Person newPerson) {
-        if (oldPerson != null && newPerson != null
-                && this.mainList.contains(oldPerson) && !this.mainList.contains(newPerson)) {
-            int index = this.mainList.indexOf(oldPerson);
-            this.mainList.set(index, newPerson);
-            new BackgroundAction().setPerson(oldPerson, newPerson);
-        }
-    }
-
-    @Override
-    public void clear() {
-        this.mainList.clear();
-        new BackgroundAction().clear();
-    }
-
-    @Override
-    public void rewriteInCurrentThread(ArrayList<Person> persons) {
-        if (persons != null && !persons.isEmpty()) {
-            this.mainList.clear();
-            this.mainList.addAll(persons);
-            new BackgroundAction().rewritePersons(persons);
-        }
-    }
-
-    @Override
-    public void rewrite(ArrayList<Person> persons) {
-        if (persons != null && !persons.isEmpty()) {
-            this.mainList.clear();
-            this.mainList.addAll(persons);
-            new BackgroundAction().rewrite(persons);
-        }
-    }
-
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.backgroundTaskRunning;
-    }
-
-    private class BackgroundAction extends SwingWorker<Boolean, Void> {
-        private Person person, old;
-        private ArrayList<Person>list;
-        private Action action;
-        private final SaveMessage saveMessage;
-
-        public BackgroundAction(){
-            ApplicationContext context = Application.context;
-            Window mainScreen = context == null ? null : Application.context.mainScreen;
-            this.saveMessage = mainScreen == null ? null : new SaveMessage(mainScreen);
-        }
-
-        void add(Person person){
-            this.person = person;
-            this.action = Action.ADD;
-            this.start();
-        }
-
-        void remove(Person person){
-            this.person = person;
-            this.action = Action.REMOVE;
-            this.start();
-        }
-
-        void clear(){
-            this.action = Action.CLEAR;
-            this.start();
-        }
-
-        void rewrite(ArrayList<Person>list){
-            this.list = list;
-            this.action = list == null ? Action.CLEAR : Action.REWRITE;
-            this.start();
-        }
-
-        void set(Person oldPerson, Person newPerson){
-            this.old = oldPerson;
-            this.person = newPerson;
-            this.action = Action.SET;
-            this.start();
-        }
-
-        private void start(){
-            Application.setBusy(true);
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (saveMessage != null) saveMessage.setVisible(true);
-                }
-            });
-            backgroundTaskRunning = true;
-            this.execute();
-        }
-
-        @Override
-        protected Boolean doInBackground() throws Exception {
-            switch (this.action){
-                case ADD:
-                    return this.addPerson(this.person);
-                case REMOVE:
-                    return this.removePerson(this.person);
-                case CLEAR:
-                    return this.clearPersons();
-                case SET:
-                    return this.setPerson(this.old, this.person);
-                case REWRITE:
-                    return this.rewritePersons(this.list);
-            }
+            LOGGER.info("The list of old persons has been rewritten to the new one:\n{}", persons);
             return true;
-        }
-
-        @Override
-        protected void done() {
-            try {
-                if (!this.get()){
-                    switch (this.action){
-                        case ADD:
-                            mainList.remove(this.person);
-                            break;
-                        case REMOVE:
-                            if (!mainList.contains(this.person)) mainList.add(this.person);
-                            break;
-                        case SET:
-                            mainList.remove(this.person);
-                            if (!mainList.contains(this.old)) mainList.add(this.old);
-                            break;
-                    }
-                    String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
-                    if (Application.context != null) JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", e);
-            }
-            Application.setBusy(false);
-            backgroundTaskRunning = false;
-            if (this.saveMessage != null) this.saveMessage.dispose();
-        }
-
-        boolean addPerson(Person person){
-            String sql = "INSERT INTO persons ('surname', 'name', 'patronymic', 'position') "
-                        + "VALUES(?, ?, ?, ?);";
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)){
-                LOGGER.fine("Send request");
-                statement.setString(1, person.getSurname());
-                statement.setString(2, person.getName());
-                statement.setString(3, person.getPatronymic());
-                statement.setString(4, person.getPosition());
-                statement.execute();
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        void addPersons(ArrayList<Person>persons){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                 Statement statement = connection.createStatement()){
-                LOGGER.fine("Send request to add");
-                for (Person person : persons){
-                    if (person != null) {
-                        String sql = "INSERT INTO persons (name, surname, patronymic, position)"
-                                + "SELECT "
-                                + "'" + person.getName() + "', "
-                                + "'" + person.getSurname() + "', "
-                                + "'" + person.getPatronymic() + "', "
-                                + "'" + person.getPosition() + "' "
-                                + "WHERE NOT EXISTS(SELECT 1 FROM persons " +
-                                "WHERE name = '" + person.getName() + "' "
-                                + "AND surname = '" + person.getSurname() + "' "
-                                + "AND patronymic = '" + person.getPatronymic() + "' "
-                                + "AND position = '" + person.getPosition() + "'"
-                                + ");";
-                        statement.execute(sql);
-                    }
-                }
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Error: ", ex);
-            }
-        }
-
-        private boolean removePerson(Person person){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statement = connection.createStatement()){
-                LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM persons " +
-                        "WHERE name = '" + person.getName() + "' "
-                        + "AND surname = '" + person.getSurname() + "' "
-                        + "AND patronymic = '" + person.getPatronymic() + "' "
-                        + "AND position = '" + person.getPosition() + "'"
-                        + ";";
-                statement.execute(sql);
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        private boolean clearPersons(){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statement = connection.createStatement()) {
-                LOGGER.fine("Send request");
-                String sql = "DELETE FROM persons;";
-                statement.execute(sql);
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        boolean setPerson(Person oldPerson, Person newPerson){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                 Statement statement = connection.createStatement()){
-                LOGGER.fine("Send requests to update");
-                String sql = "UPDATE persons SET "
-                        + "name = '" + newPerson.getName() + "', "
-                        + "surname = '" + newPerson.getSurname() + "', "
-                        + "patronymic = '" + newPerson.getPatronymic() + "', "
-                        + "position = '" + newPerson.getPosition() + "' "
-                        + "WHERE name = '" + oldPerson.getName() + "' "
-                        + "AND surname = '" + oldPerson.getSurname() + "' "
-                        + "AND patronymic = '" + oldPerson.getPatronymic() + "' "
-                        + "AND position = '" + oldPerson.getPosition() + "'"
-                        + ";";
-                statement.execute(sql);
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        public boolean rewritePersons(ArrayList<Person>persons){
-            String clearSql = "DELETE FROM persons;";
-            String insertSql = "INSERT INTO persons ('name', 'surname', 'patronymic', 'position')" +
-                    " VALUES (?, ?, ?, ?);";
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statementClear = connection.createStatement();
-                PreparedStatement statement = connection.prepareStatement(insertSql)) {
-                LOGGER.fine("Send request to clear");
-                statementClear.execute(clearSql);
-
-                if (!persons.isEmpty()) {
-                    LOGGER.fine("Send requests to add");
-                    for (Person person : persons) {
-                        statement.setString(1, person.getName());
-                        statement.setString(2, person.getSurname());
-                        statement.setString(3, person.getPatronymic());
-                        statement.setString(4, person.getPosition());
-                        statement.execute();
-                    }
-                }
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
+        } catch (SQLException e) {
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 }

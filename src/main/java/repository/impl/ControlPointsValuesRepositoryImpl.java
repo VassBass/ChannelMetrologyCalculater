@@ -28,10 +28,12 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     @Override
     public void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS control_points ("
-                + "sensor_type text NOT NULL"
+                + "id integer NOT NULL UNIQUE"
+                + ", sensor_type text NOT NULL"
                 + ", points text NOT NULL"
                 + ", range_min real NOT NULL"
                 + ", range_max real NOT NULL"
+                + ", PRIMARY KEY (\"id\" AUTOINCREMENT)"
                 + ");";
         try (Statement statement = getStatement()){
             statement.execute(sql);
@@ -145,7 +147,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     public boolean set(ControlPointsValues cpv) {
         if (cpv == null) return false;
 
-        String sql = "UPDATE control_points SET range_min = ?, range_max = ?, points = ? WHERE id = ?";
+        String sql = "UPDATE control_points SET range_min = ?, range_max = ?, points = ? WHERE id = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setDouble(1, cpv.getRangeMin());
             statement.setDouble(2, cpv.getRangeMax());

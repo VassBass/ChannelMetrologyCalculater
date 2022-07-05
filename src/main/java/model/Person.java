@@ -18,10 +18,21 @@ public class Person {
     public static final String HEAD_OF_DEPARTMENT_ASUTP = "Начальник ЦАСУ ТП";
 
     /**
+     * DB field = id (primary key)[INTEGER]
+     */
+    private int id;
+
+    /**
      * DB fields = surname, name, patronymic, position [TEXT]
      */
     private String surname, name, patronymic, position;
 
+    public Person(){}
+    public Person(int id){
+        this.id = id;
+    }
+
+    public int getId(){return this.id;}
     public String getSurname(){return this.surname;}
     public String getName(){return this.name;}
     public String getPatronymic(){return this.patronymic;}
@@ -35,6 +46,7 @@ public class Person {
         return this.name + " " + this.surname.toUpperCase(Locale.ROOT);
     }
 
+    public void setId(int id){this.id = id;}
     public void setSurname(String surname){this.surname = surname;}
     public void setName(String name){this.name = name;}
     public void setPatronymic(String patronymic){this.patronymic = patronymic;}
@@ -42,7 +54,7 @@ public class Person {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.surname, this.name, this.patronymic, this.position);
+        return Objects.hash(this.id, this.surname, this.name, this.patronymic, this.position);
     }
 
     @Override
@@ -50,10 +62,11 @@ public class Person {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         if (obj == this) return true;
         Person person = (Person) obj;
-        return person.getName().equals(this.name)
-                && person.getSurname().equals(this.surname)
-                && person.getPatronymic().equals(this.patronymic)
-                && person.getPosition().equals(this.position);
+        return person.getId() == this.id;
+    }
+
+    public boolean isMatch(Person person){
+        return this.name.equals(person.getName()) && this.surname.equals(person.getSurname()) && this.patronymic.equals(person.patronymic) && this.position.equals(person.getPosition());
     }
 
     /**
