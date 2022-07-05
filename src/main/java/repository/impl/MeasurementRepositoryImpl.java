@@ -1,79 +1,76 @@
 package repository.impl;
 
-import application.Application;
-import application.ApplicationContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import constants.Action;
 import model.Measurement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.MeasurementRepository;
 import repository.Repository;
-import ui.model.SaveMessage;
 
-import javax.swing.*;
-import java.awt.*;
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class MeasurementRepositoryImpl extends Repository<Measurement> implements MeasurementRepository {
-    private static final Logger LOGGER = Logger.getLogger(MeasurementRepository.class.getName());
+public class MeasurementRepositoryImpl extends Repository implements MeasurementRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementRepository.class);
 
-    private boolean backgroundTaskRunning = false;
+    public MeasurementRepositoryImpl(){
+        setPropertiesFromFile();
+        createTable();
+    }
+    public MeasurementRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+        setProperties(dbUrl, dbUser, dbPassword);
+        createTable();
+    }
 
-    public MeasurementRepositoryImpl(){super();}
-    public MeasurementRepositoryImpl(String dbUrl){super(dbUrl);}
-
-    @SuppressWarnings("unchecked")
     @Override
-    protected void init(){
+    public void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS measurements ("
                 + "name text NOT NULL"
                 + ", value text NOT NULL UNIQUE"
                 + ", factors text NOT NULL, "
                 + "PRIMARY KEY(\"value\")"
                 + ");";
-
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection();
-            Statement statement = connection.createStatement()){
-            LOGGER.fine("Send request to create table");
+        try (Statement statement = getStatement()){
             statement.execute(sql);
-
-            LOGGER.fine("Send request to read measurements from DB");
-            sql = "SELECT * FROM measurements";
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
-                while (resultSet.next()) {
-                    String name = resultSet.getString("name");
-                    String value = resultSet.getString("value");
-                    String factorsJson = resultSet.getString("factors");
-                    HashMap<String, Double>factors = new ObjectMapper().readValue(factorsJson, HashMap.class);
-                    Measurement measurement = new Measurement(name, value);
-                    measurement.setFactors(factors);
-                    this.mainList.add(measurement);
-                }
-            }
-        } catch (SQLException | JsonProcessingException ex) {
-            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
-        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
     public ArrayList<Measurement> getAll() {
-        return this.mainList;
+        ArrayList<Measurement>measurements = new ArrayList<>();
+
+        LOGGER.info("Reading all measurements from DB");
+        String sql = "SELECT * FROM measurements;";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                Measurement measurement = new Measurement();
+                measurement.setName(resultSet.getString("name"));
+                measurement.setValue(resultSet.getString("value"));
+                measurement._setFactors(resultSet.getString("factors"));
+
+                measurements.add(measurement);
+            }
+        }catch (SQLException | JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
+        }
+
+        return measurements;
     }
 
     @Override
     public String[] getAllNames() {
         ArrayList<String>names = new ArrayList<>();
-        for (Measurement measurement : this.mainList){
+
+        LOGGER.info("Reading all measurements names from DB");
+        for (Measurement measurement : getAll()){
             String name = measurement.getName();
             boolean exist = false;
             for (String n : names){
@@ -91,18 +88,21 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
 
     @Override
     public String[] getAllValues() {
-        String[]values = new String[this.mainList.size()];
-        for (int m=0;m<this.mainList.size();m++){
-            values[m] = this.mainList.get(m).getValue();
+        ArrayList<Measurement>measurements = getAll();
+        LOGGER.info("Reading all measurements values from DB");
+        String[]values = new String[measurements.size()];
+        for (int m=0;m<measurements.size();m++){
+            values[m] = measurements.get(m).getValue();
         }
         return values;
     }
 
     @Override
     public String[] getValues(Measurement measurement) {
+        LOGGER.info("Reading values of measurement = {}", measurement);
         if (measurement != null) {
             ArrayList<String> values = new ArrayList<>();
-            for (Measurement m : this.mainList) {
+            for (Measurement m : getAll()) {
                 if (m.getName().equals(measurement.getName())) {
                     values.add(m.getValue());
                 }
@@ -113,9 +113,10 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
 
     @Override
     public String[] getValues(String name) {
+        LOGGER.info("Reading values of measurement with name = {}", name);
         if (name != null && name.length() > 0) {
             ArrayList<String> values = new ArrayList<>();
-            for (Measurement measurement : this.mainList) {
+            for (Measurement measurement : getAll()) {
                 if (measurement.getName().equals(name)) {
                     values.add(measurement.getValue());
                 }
@@ -126,167 +127,198 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
 
     @Override
     public Measurement get(String value) {
-        if (value != null && value.length() > 0){
-            int index = this.mainList.indexOf(new Measurement("", value));
-            return index < 0 ? null : this.mainList.get(index);
-        }else return null;
-    }
+        LOGGER.info("Reading measurement with value = {} from DB", value);
+        String sql = "SELECT * FROM measurements WHERE value = '" + value + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            if (resultSet.next()){
+                Measurement measurement = new Measurement();
+                measurement.setName(resultSet.getString("name"));
+                measurement.setValue(resultSet.getString("value"));
+                measurement._setFactors(resultSet.getString("factors"));
 
-    @Override
-    public ArrayList<Measurement> addInCurrentThread(Measurement measurement) {
-        if (measurement != null && !this.mainList.contains(measurement)){
-            if (this.mainList.add(measurement)){
-                LOGGER.fine("Get connection with DB");
-                try (Connection connection = getConnection();
-                     Statement statement = connection.createStatement()){
-
-                    LOGGER.fine("Send requests to add");
-                    String sql = "INSERT INTO measurements('name', 'value', 'factors') "
-                            + "VALUES ('" + measurement.getName() + "', "
-                            + "'" + measurement.getValue() + "', "
-                            + "'" + measurement._getFactorsJson() + "');";
-                    statement.execute(sql);
-                    for (Measurement m : this.mainList) {
-                        if (measurement.getName().equals(m.getName())) {
-                            Double factor = 1 / measurement._getFactor(m.getValue());
-                            m.addFactor(measurement.getValue(), factor);
-
-                            sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' "
-                                    + "WHERE value = '" + m.getValue() + "';";
-
-                            statement.execute(sql);
-                        }
-                    }
-                }catch (SQLException | JsonProcessingException ex){
-                    LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                }
-            }
-        }
-        return this.mainList;
-    }
-
-    @Override
-    public void changeFactors(String measurementValue, HashMap<String, Double> factors) {
-        Measurement measurement = get(measurementValue);
-        if (measurement != null && factors != null){
-            measurement.setFactors(factors);
-            new BackgroundAction().changeFactors(measurementValue, factors);
+                return measurement;
+            }else return null;
+        }catch (SQLException |JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return null;
         }
     }
 
     @Override
-    public void changeInCurrentThread(Measurement oldMeasurement, Measurement newMeasurement) {
-        int index = this.mainList.indexOf(oldMeasurement);
-        if (oldMeasurement != null && newMeasurement != null
-                && index >= 0 && !this.mainList.contains(newMeasurement)){
-            this.mainList.set(index, newMeasurement);
+    public boolean add(Measurement measurement) {
+        if (measurement == null) return false;
 
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                 Statement statement = connection.createStatement()){
+        String sql = "INSERT INTO measurements(name, value, factors) VALUES (?, ?, ?);";
+        try (PreparedStatement statement = getPreparedStatement(sql)){
+            statement.setString(1, measurement.getName());
+            statement.setString(2, measurement.getValue());
+            statement.setString(3, measurement._getFactorsJson());
+            int result = statement.executeUpdate();
 
-                LOGGER.fine("Send request");
-                String sql = "UPDATE measurements SET value = '" + newMeasurement.getValue() + "' "
-                        + "WHERE value = '" + oldMeasurement.getValue() + "';";
+            ArrayList<Measurement>measurements = getAll();
+            for (Measurement m : measurements) {
+                if (measurement.getName().equals(m.getName())) {
+                    Double factor = 1 / measurement._getFactor(m.getValue());
+                    m.addFactor(measurement.getValue(), factor);
 
-                statement.execute(sql);
-
-                for (Measurement m : this.mainList){
-                    if (!m.getValue().equals(newMeasurement.getValue())) {
-                        Double val = m._getFactor(oldMeasurement.getValue());
-                        m.removeFactor(oldMeasurement.getValue());
-                        m.addFactor(newMeasurement.getValue(), val);
-                        sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' WHERE value = '" + m.getValue() + "';";
-                        statement.execute(sql);
+                    sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' WHERE value = '" + m.getValue() + "';";
+                    try (Statement st = getStatement()) {
+                        st.execute(sql);
                     }
                 }
-            }catch (SQLException | JsonProcessingException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
             }
+
+            if (result > 0) LOGGER.info("Measurement = \n{}\nwas added successfully", measurement);
+            return true;
+        }catch (SQLException | JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 
     @Override
-    public void delete(Measurement measurement) {
-        if (measurement != null && this.mainList.contains(measurement)){
-            try (Connection connection = this.getConnection();
-                Statement statement = connection.createStatement()){
-                String sql = "DELETE FROM measurements "
-                        + "WHERE value = '" + measurement.getValue() + "';";
-                statement.execute(sql);
+    public boolean changeFactors(String measurementValue, HashMap<String, Double> factors) {
+        if (measurementValue == null || factors == null) return false;
 
-                this.mainList.remove(measurement);
+        try (Statement statement = getStatement()) {
+            ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String factorsJson = writer.writeValueAsString(factors);
+            String sql = "UPDATE measurements SET factors = '" + factorsJson + "' WHERE value = '" + measurementValue + "';";
+            int result = statement.executeUpdate(sql);
 
-                for (Measurement m : this.mainList){
-                    m.removeFactor(measurement.getValue());
+            if (result > 0) LOGGER.info("Factors of measurement with value: {} was replaced by:\n{}\nsuccessfully", measurementValue, factors);
+            return true;
+        }catch (SQLException | JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean change(Measurement oldMeasurement, Measurement newMeasurement) {
+        if (oldMeasurement == null || newMeasurement == null) return false;
+        if (oldMeasurement.isMatch(newMeasurement)) return true;
+
+        String sql = "UPDATE measurements SET name = ?, value = ?, factors = ? WHERE value = ?;";
+        try (PreparedStatement statement = getPreparedStatement(sql)){
+            statement.setString(1, newMeasurement.getName());
+            statement.setString(2, newMeasurement.getValue());
+            statement.setString(3, newMeasurement._getFactorsJson());
+            statement.setString(4, oldMeasurement.getValue());
+
+            int result = statement.executeUpdate();
+
+            for (Measurement measurement : getAll()){
+                Double f = measurement.getFactors().get(oldMeasurement.getValue());
+                if (f != null){
+                    measurement.getFactors().remove(oldMeasurement.getValue());
+                    measurement.getFactors().put(newMeasurement.getValue(), f);
+
+                    sql = "UPDATE measurement SET factors = '" + measurement._getFactorsJson() + "' WHERE value = '" + measurement.getValue() + "';";
+                    try (Statement st = getStatement()){
+                        st.execute(sql);
+                    }
+                }
+            }
+
+            if (result > 0) LOGGER.info("Measurement:\n{}\nwas replaced by:\n{}\nsuccessfully", oldMeasurement, newMeasurement);
+            return true;
+        }catch (SQLException | JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(Measurement measurement) {
+        if (measurement == null) return false;
+
+        String sql = "DELETE FROM measurements WHERE value = '" + measurement.getValue() + "';";
+        try (Statement statement = getStatement()){
+            int result = statement.executeUpdate(sql);
+
+            if (result > 0) {
+                for (Measurement m : getAll()) {
+                    m.getFactors().remove(measurement.getValue());
                     sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' WHERE value = '" + m.getValue() + "';";
                     statement.execute(sql);
                 }
-            }catch (SQLException | JsonProcessingException ex){
-                LOGGER.log(Level.SEVERE, "Error: ", ex);
-            }
+
+                LOGGER.info("Measurement = {} was removed successfully", measurement);
+            }else LOGGER.info("Measurement = {} not found", measurement);
+
+            return true;
+        }catch (SQLException | JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 
     @Override
-    public void clear() {
-        try (Connection connection = this.getConnection();
-             Statement statement = connection.createStatement()){
-            String sql = "DELETE FROM measurements;";
+    public boolean clear() {
+        String sql = "DELETE FROM measurements;";
+        try (Statement statement = getStatement()){
             statement.execute(sql);
-
-            this.mainList.clear();
-        }catch (SQLException ex){
-            LOGGER.log(Level.SEVERE, "Error: ", ex);
+            LOGGER.info("Measurements list in DB was cleared successfully");
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 
     @Override
     public ArrayList<Measurement> getMeasurements(String name) {
-        if (name != null && name.length() > 0) {
-            ArrayList<Measurement> measurements = new ArrayList<>();
-            for (Measurement measurement : this.mainList) {
-                if (measurement.getName().equals(name)) {
-                    measurements.add(measurement);
-                }
+        if (name == null) return new ArrayList<>();
+
+        LOGGER.info("Reading all measurements with name = {} from DB", name);
+        ArrayList<Measurement>measurements = new ArrayList<>();
+        String sql = "SELECT * FROM measurements WHERE name = '" + name + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                Measurement measurement = new Measurement();
+                measurement.setName(resultSet.getString("name"));
+                measurement.setValue(resultSet.getString("value"));
+                measurement._setFactors(resultSet.getString("factors"));
+
+                measurements.add(measurement);
             }
-            return measurements;
-        }else return null;
-    }
-
-    @Override
-    public void rewriteInCurrentThread(ArrayList<Measurement> measurements) {
-        this.mainList.clear();
-        this.mainList.addAll(measurements);
-
-        if (measurements != null && !measurements.isEmpty()) {
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                 Statement statement = connection.createStatement()) {
-                LOGGER.fine("Send request to clear");
-                String sql = "DELETE FROM measurements;";
-                statement.execute(sql);
-
-                if (!measurements.isEmpty()) {
-                    LOGGER.fine("Send requests to add");
-                    for (Measurement measurement : measurements) {
-                        sql = "INSERT INTO measurements ('name', 'value', 'factors') "
-                                + "VALUES ('" + measurement.getName() + "', "
-                                + "'" + measurement.getValue() + "', "
-                                + "'" + measurement._getFactorsJson() + "'"
-                                + ");";
-                        statement.execute(sql);
-                    }
-                }
-            } catch (SQLException | JsonProcessingException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-            }
+        }catch (SQLException | JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
+
+        return measurements;
     }
 
     @Override
-    public boolean backgroundTaskIsRun() {
-        return this.backgroundTaskRunning;
+    public boolean rewrite(ArrayList<Measurement> measurements) {
+        if (measurements == null) return false;
+
+        String sql = "DELETE FROM measurements;";
+        try (Statement statement = getStatement()) {
+            statement.execute(sql);
+            LOGGER.info("Measurements list in DB was cleared successfully");
+
+            if (!measurements.isEmpty()) {
+                String insertSql = "INSERT INTO measurements (name, value, factors) "
+                        + "VALUES ";
+                StringBuilder sqlBuilder = new StringBuilder(insertSql);
+
+                for (Measurement measurement : measurements) {
+                    sqlBuilder.append("('").append(measurement.getName()).append("', ")
+                            .append("'").append(measurement.getValue()).append("', ")
+                            .append("'").append(measurement._getFactorsJson()).append("'),");
+                }
+                sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
+                statement.execute(sqlBuilder.toString());
+            }
+
+            LOGGER.info("The list of old measurements has been rewritten to the new one:\n{}", measurements);
+            return true;
+        } catch (SQLException | JsonProcessingException e) {
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
     }
 
     @Override
@@ -294,7 +326,7 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
         if (measurementValue != null) {
             String measurementName = get(measurementValue).getName();
             int number = 0;
-            for (Measurement measurement : this.mainList) {
+            for (Measurement measurement : getAll()) {
                 if (measurement.getName().equals(measurementName)) number++;
             }
             return number == 1;
@@ -303,83 +335,21 @@ public class MeasurementRepositoryImpl extends Repository<Measurement> implement
 
     @Override
     public boolean exists(String measurementValue) {
-        Measurement measurement = new Measurement("",measurementValue);
-        return this.mainList.contains(measurement);
+        if (measurementValue == null) return false;
+
+        String sql = "SELECT * FROM measurements WHERE value = '" + measurementValue + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            return resultSet.next();
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
     }
 
     @Override
     public boolean exists(String oldValue, String newValue) {
-        int oldIndex = this.mainList.indexOf(new Measurement("", oldValue));
-        int newIndex = this.mainList.indexOf(new Measurement("", newValue));
-        return newIndex >= 0 && newIndex != oldIndex;
-    }
+        if (oldValue == null || newValue == null || oldValue.equals(newValue)) return false;
 
-    private class BackgroundAction extends SwingWorker<Boolean, Void> {
-        private HashMap<String, Double>factors;
-        private String value;
-        private Action action;
-        private final SaveMessage saveMessage;
-
-        public BackgroundAction(){
-            ApplicationContext context = Application.context;
-            Window mainScreen = context == null ? null : Application.context.mainScreen;
-            this.saveMessage = mainScreen == null ? null : new SaveMessage(mainScreen);
-        }
-
-        void changeFactors(String measurementValue, HashMap<String, Double>factors){
-            this.value = measurementValue;
-            this.factors = factors;
-            this.action = Action.SET;
-            this.start();
-        }
-
-        private void start(){
-            Application.setBusy(true);
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (saveMessage != null) saveMessage.setVisible(true);
-                }
-            });
-            backgroundTaskRunning = true;
-            this.execute();
-        }
-
-        @Override
-        protected Boolean doInBackground() throws Exception {
-            if (this.action == Action.SET) {
-                return changeMeasurementFactors(value, factors);
-            }
-            return true;
-        }
-
-        @Override
-        protected void done() {
-            Application.setBusy(false);
-            backgroundTaskRunning = false;
-            if (this.saveMessage != null) this.saveMessage.dispose();
-        }
-
-        boolean changeMeasurementFactors(String measurementValue, HashMap<String, Double>factors){
-            Connection connection = null;
-            Statement statement = null;
-            try {
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                String json = writer.writeValueAsString(factors);
-                String sql = "UPDATE measurements SET factors = '" + json + "'"
-                + "WHERE value = '" + measurementValue + "';";
-                connection = getConnection();
-                statement = connection.createStatement();
-                statement.execute(sql);
-                return true;
-            } catch (JsonProcessingException | SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                try {
-                    if (statement != null) statement.close();
-                    if (connection != null) connection.close();
-                } catch (SQLException ignored) {}
-                return false;
-            }
-        }
+        return exists(newValue);
     }
 }

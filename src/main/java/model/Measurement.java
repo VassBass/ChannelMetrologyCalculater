@@ -69,6 +69,10 @@ public class Measurement implements Serializable {
 
     public Measurement(){}
 
+    public Measurement(@Nonnull String value){
+        this.value = value;
+    }
+
     public Measurement(@Nonnull String name, @Nonnull String value){
             this.name = name;
             this.value = value;
@@ -86,6 +90,11 @@ public class Measurement implements Serializable {
     public void setName(@Nonnull String name) {this.name = name;}
     public void setValue(@Nonnull String value){this.value = value;}
     public void setFactors(@Nonnull HashMap<String, Double>factors){this.factors = factors;}
+
+    @SuppressWarnings("unchecked")
+    public void _setFactors(@Nonnull String json) throws JsonProcessingException {
+        this.factors = new ObjectMapper().readValue(json, HashMap.class);
+    }
 
     public void addFactor(@Nonnull String measurementValue, @Nonnull Double factor){
         if (!measurementValue.equals(this.value)) this.factors.put(measurementValue, factor);
@@ -172,6 +181,18 @@ public class Measurement implements Serializable {
         if (obj == this) return true;
         Measurement measurement = (Measurement) obj;
         return this.value.equals(measurement.getValue());
+    }
+
+    public boolean isMatch(Measurement measurement){
+        if (measurement.getValue().equals(this.value) && measurement.getName().equals(this.name)){
+            if (measurement.getFactors().size() == this.factors.size()){
+                for (String key : this.factors.keySet()){
+                    if (measurement._getFactor(key) == null || !measurement._getFactor(key).equals(this.factors.get(key))) return false;
+                }
+
+                return true;
+            }else return false;
+        }else return false;
     }
 
     public Measurement copy(){
