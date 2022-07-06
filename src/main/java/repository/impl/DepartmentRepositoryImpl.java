@@ -27,7 +27,7 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
      * Creates table "departments" if it not exists
      */
     @Override
-    public void createTable(){
+    protected void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS departments (department text NOT NULL UNIQUE, PRIMARY KEY (\"department\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);

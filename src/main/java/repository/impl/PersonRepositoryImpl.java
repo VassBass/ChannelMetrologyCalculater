@@ -27,7 +27,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     }
 
     @Override
-    public void createTable(){
+    protected void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS persons ("
                 + "id integer NOT NULL UNIQUE"
                 + ", name text NOT NULL"

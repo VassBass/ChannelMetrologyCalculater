@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 public class Sensor implements Serializable {
     /**
-     * @see repository.impl.ChannelRepositoryImpl#changeSensorInCurrentThread(Sensor, Sensor, int...)
+     * @see repository.impl.ChannelRepositoryImpl#changeSensor(Sensor, Sensor, int...)
      */
     public static int TYPE = 0;
     public static int NAME = 1;
@@ -37,6 +37,11 @@ public class Sensor implements Serializable {
     public static final String ROSEMOUNT = "ROSEMOUNT";
     public static final String TCM_50M = "ТСМ-50М";
     public static final String Pt100 = "ТОП  Pt 100";
+
+    public Sensor(){}
+    public Sensor(String name){
+        this.name = name;
+    }
 
     /**
      * DB field = type [TEXT]
@@ -135,10 +140,10 @@ public class Sensor implements Serializable {
     public double getError(@Nonnull Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
         Measurement input = Application.context.measurementService.get(this.measurement);
-        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
+        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel._getMeasurement());
         Function f = new Function("At(R,r,convR) = " + formula);
         Argument R = new Argument("R = " + channel._getRange());
-        double cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
+        double cR = channel._getMeasurement().convertFrom(this.value, this._getRange());
         Argument r = new Argument("r = " + this._getRange());
         Argument convR = new Argument("convR = " + cR);
         Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);

@@ -6,8 +6,6 @@ import model.Measurement;
 import java.util.ArrayList;
 
 public interface CalibratorRepository {
-    void createTable();
-
     ArrayList<Calibrator> getAll();
     String[]getAllNames(Measurement measurement);
 

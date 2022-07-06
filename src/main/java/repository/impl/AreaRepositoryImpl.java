@@ -27,7 +27,7 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
      * Creates table "areas" if it not exists
      */
     @Override
-    public void createTable(){
+    protected void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS areas (area text NOT NULL UNIQUE, PRIMARY KEY (\"area\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);

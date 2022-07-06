@@ -28,7 +28,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     }
 
     @Override
-    public void createTable(){
+    protected void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS channels ("
                 + "code text NOT NULL UNIQUE"
                 + ", name text NOT NULL"

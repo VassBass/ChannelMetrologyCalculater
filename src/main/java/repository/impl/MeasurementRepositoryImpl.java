@@ -29,7 +29,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     }
 
     @Override
-    public void createTable(){
+    protected void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS measurements ("
                 + "name text NOT NULL"
                 + ", value text NOT NULL UNIQUE"

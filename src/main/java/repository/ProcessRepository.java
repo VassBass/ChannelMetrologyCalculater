@@ -3,7 +3,6 @@ package repository;
 import java.util.ArrayList;
 
 public interface ProcessRepository {
-    void createTable();
     ArrayList<String> getAll();
     boolean add(String object);
     boolean set(String oldObject, String newObject);

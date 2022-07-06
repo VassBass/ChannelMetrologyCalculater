@@ -12,25 +12,20 @@ public interface SensorRepository {
     String getMeasurement(String sensorType);
     String[] getAllSensorsName(String measurementName);
     Sensor get(String sensorName);
-    Sensor get(int index);
 
-    void add(Sensor sensor);
-    void addInCurrentThread(Sensor sensor);
+    boolean add(Sensor sensor);
 
-    void removeInCurrentThread(Sensor sensor);
-    void removeMeasurementValueInCurrentThread(String measurementValue);
+    boolean remove(Sensor sensor);
+    boolean removeMeasurementValue(String measurementValue);
 
-    void setInCurrentThread(Sensor oldSensor, Sensor newSensor);
-    void changeMeasurementValueInCurrentThread(String oldValue, String newValue);
+    boolean set(Sensor oldSensor, Sensor newSensor);
+    boolean changeMeasurementValue(String oldValue, String newValue);
 
-    void clear();
+    boolean clear();
 
-    void importDataInCurrentThread(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange);
-    void rewrite(ArrayList<Sensor>sensors);
-    void rewriteInCurrentThread(ArrayList<Sensor>sensors);
+    boolean importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange);
+    boolean rewrite(ArrayList<Sensor>sensors);
 
     boolean isLastInMeasurement(Sensor sensor);
     boolean isExists(String sensorName);
-
-    boolean backgroundTaskIsRun();
 }

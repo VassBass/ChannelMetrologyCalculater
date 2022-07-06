@@ -1,471 +1,430 @@
 package repository.impl;
 
-import application.Application;
-import application.ApplicationContext;
-import constants.Action;
 import model.Sensor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.Repository;
 import repository.SensorRepository;
-import ui.model.SaveMessage;
 
-import javax.swing.*;
-import java.awt.*;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class SensorRepositoryImpl extends Repository<Sensor> implements SensorRepository {
-    private static final Logger LOGGER = Logger.getLogger(SensorRepository.class.getName());
+public class SensorRepositoryImpl extends Repository implements SensorRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SensorRepository.class);
 
-    private boolean backgroundTaskRunning = false;
-
-    public SensorRepositoryImpl(){super();}
-    public SensorRepositoryImpl(String dbUrl){super(dbUrl);}
+    public SensorRepositoryImpl(){
+        setPropertiesFromFile();
+        createTable();
+    }
+    public SensorRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+        setProperties(dbUrl, dbUser, dbPassword);
+        createTable();
+    }
 
     @Override
-    protected void init() {
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = this.getConnection();
-            Statement statement = connection.createStatement()){
-            String sql = "CREATE TABLE IF NOT EXISTS sensors ("
-                    + "name text NOT NULL UNIQUE"
-                    + ", type text NOT NULL"
-                    + ", number text"
-                    + ", measurement text NOT NULL"
-                    + ", value text"
-                    + ", error_formula text NOT NULL"
-                    + ", range_min real NOT NULL"
-                    + ", range_max real NOT NULL"
-                    + ", PRIMARY KEY (\"name\")"
-                    + ");";
-            LOGGER.fine("Send request to create table");
+    protected void createTable(){
+        String sql = "CREATE TABLE IF NOT EXISTS sensors ("
+                + "name text NOT NULL UNIQUE"
+                + ", type text NOT NULL"
+                + ", number text"
+                + ", measurement text NOT NULL"
+                + ", value text"
+                + ", error_formula text NOT NULL"
+                + ", range_min real NOT NULL"
+                + ", range_max real NOT NULL"
+                + ", PRIMARY KEY (\"name\")"
+                + ");";
+        try (Statement statement = getStatement()){
             statement.execute(sql);
-
-            LOGGER.fine("Send request to read sensors from DB");
-            sql = "SELECT * FROM sensors";
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
-                while (resultSet.next()) {
-                    Sensor sensor = new Sensor();
-                    sensor.setName(resultSet.getString("name"));
-                    sensor.setType(resultSet.getString("type"));
-                    sensor.setNumber(resultSet.getString("number"));
-                    sensor.setMeasurement(resultSet.getString("measurement"));
-                    sensor.setValue(resultSet.getString("value"));
-                    sensor.setErrorFormula(resultSet.getString("error_formula"));
-                    sensor.setRangeMin(resultSet.getDouble("range_min"));
-                    sensor.setRangeMax(resultSet.getDouble("range_max"));
-                    this.mainList.add(sensor);
-                }
-            }
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "Initialization ERROR", ex);
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
-        LOGGER.info("Initialization SUCCESS");
     }
 
     @Override
     public ArrayList<Sensor> getAll() {
-        return this.mainList;
+        ArrayList<Sensor>sensors = new ArrayList<>();
+
+        LOGGER.info("Reading all sensors from DB");
+        String sql = "SELECT * FROM sensors;";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                Sensor sensor = new Sensor();
+                sensor.setName(resultSet.getString("name"));
+                sensor.setType(resultSet.getString("type"));
+                sensor.setNumber(resultSet.getString("number"));
+                sensor.setMeasurement(resultSet.getString("measurement"));
+                sensor.setValue(resultSet.getString("value"));
+                sensor.setErrorFormula(resultSet.getString("error_formula"));
+                sensor.setRangeMin(resultSet.getDouble("range_min"));
+                sensor.setRangeMax(resultSet.getDouble("range_max"));
+                sensors.add(sensor);
+            }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+        }
+
+        return sensors;
     }
 
     @Override
     public ArrayList<Sensor> getAll(String measurement) {
         ArrayList<Sensor>sensors = new ArrayList<>();
-        if (measurement != null) {
-            for (Sensor sensor : this.mainList) {
-                if (sensor.getMeasurement().equals(measurement)) sensors.add(sensor);
+        if (measurement == null) return sensors;
+
+        LOGGER.info("Reading all sensors with measurement = {} from DB", measurement);
+        String sql = "SELECT * FROM sensors WHERE measurement = '" + measurement + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                Sensor sensor = new Sensor();
+                sensor.setName(resultSet.getString("name"));
+                sensor.setType(resultSet.getString("type"));
+                sensor.setNumber(resultSet.getString("number"));
+                sensor.setMeasurement(resultSet.getString("measurement"));
+                sensor.setValue(resultSet.getString("value"));
+                sensor.setErrorFormula(resultSet.getString("error_formula"));
+                sensor.setRangeMin(resultSet.getDouble("range_min"));
+                sensor.setRangeMax(resultSet.getDouble("range_max"));
+                sensors.add(sensor);
             }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
+
         return sensors;
     }
 
     @Override
     public String[] getAllTypes() {
         ArrayList<String>types = new ArrayList<>();
-        for (Sensor sensor : this.mainList){
-            String type = sensor.getType();
-            boolean exist = false;
-            for (String t : types){
-                if (t.equals(type)){
-                    exist = true;
-                    break;
-                }
+        LOGGER.info("Reading all sensors types from DB");
+        String sql = "SELECT DISTINCT type FROM sensors";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                types.add(resultSet.getString("type"));
             }
-            if (!exist){
-                types.add(type);
-            }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
+
         return types.toArray(new String[0]);
     }
 
     @Override
     public String[] getAllTypesWithoutROSEMOUNT() {
         ArrayList<String>types = new ArrayList<>();
-        for (Sensor sensor : this.mainList){
-            String type = sensor.getType();
-            if (!type.contains(Sensor.ROSEMOUNT)) {
-                boolean exist = false;
-                for (String t : types) {
-                    if (t.equals(type)) {
-                        exist = true;
-                        break;
-                    }
-                }
-                if (!exist) {
-                    types.add(type);
-                }
+        LOGGER.info("Reading all sensors types without ROSEMOUNT from DB");
+        String sql = "SELECT DISTINCT type FROM sensors WHERE type NOT LIKE '%" + Sensor.ROSEMOUNT + "%';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                types.add(resultSet.getString("type"));
             }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
+
         return types.toArray(new String[0]);
     }
 
     @Override
     public String getMeasurement(String sensorType) {
-        if (sensorType != null && sensorType.length() > 0) {
-            for (Sensor sensor : this.mainList) {
-                if (sensor.getType().equals(sensorType)) {
-                    return sensor.getMeasurement();
-                }
+        if (sensorType == null) return null;
+
+        LOGGER.info("Reading sensor measurement by type = {} from DB", sensorType);
+        String sql = "SELECT measurement FROM sensors WHERE type = '" + sensorType + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            if (resultSet.next()){
+                return resultSet.getString("measurement");
             }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
+
         return null;
     }
 
     @Override
     public String[] getAllSensorsName(String measurementName) {
         ArrayList<String> names = new ArrayList<>();
-        for (Sensor sensor : this.mainList) {
-            if (sensor.getMeasurement().equals(measurementName)) {
-                names.add(sensor.getName());
-            }
+        if (measurementName == null) return new String[0];
+
+        LOGGER.info("Reading all sensors names by measurement = {} from DB", measurementName);
+        String sql = "SELECT name FROM sensors WHERE measurement = '" + measurementName + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            names.add(resultSet.getString("name"));
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
+
         return names.toArray(new String[0]);
     }
 
     @Override
     public Sensor get(String sensorName) {
-        if (sensorName != null && sensorName.length() > 0) {
-            Sensor sensor = new Sensor();
-            sensor.setName(sensorName);
-            int index = this.mainList.indexOf(sensor);
-            return index < 0 ? null : this.mainList.get(index);
-        }else return null;
-    }
+        if (sensorName == null) return null;
 
-    @Override
-    public Sensor get(int index) {
-        return index < 0 | index >= this.mainList.size() ? null : this.mainList.get(index);
-    }
+        LOGGER.info("Reading sensor with name = {} from DB", sensorName);
+        String sql = "SELECT * FROM sensors WHERE name = '" + sensorName + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            if (resultSet.next()){
+                Sensor sensor = new Sensor();
+                sensor.setName(resultSet.getString("name"));
+                sensor.setType(resultSet.getString("type"));
+                sensor.setNumber(resultSet.getString("number"));
+                sensor.setMeasurement(resultSet.getString("measurement"));
+                sensor.setValue(resultSet.getString("value"));
+                sensor.setErrorFormula(resultSet.getString("error_formula"));
+                sensor.setRangeMin(resultSet.getDouble("range_min"));
+                sensor.setRangeMax(resultSet.getDouble("range_max"));
 
-    @Override
-    public void add(Sensor sensor) {
-        if (sensor != null && !this.mainList.contains(sensor)) {
-            this.mainList.add(sensor);
-            new BackgroundAction().add(sensor);
-        }
-    }
-
-    @Override
-    public void addInCurrentThread(Sensor sensor) {
-        if (sensor != null && !this.mainList.contains(sensor)) {
-            this.mainList.add(sensor);
-            new BackgroundAction().addSensor(sensor);
-        }
-    }
-
-    @Override
-    public void removeInCurrentThread(Sensor sensor) {
-        if (sensor != null && this.mainList.remove(sensor)) {
-            new BackgroundAction().removeSensor(sensor);
-        }
-    }
-
-    @Override
-    public void setInCurrentThread(Sensor oldSensor, Sensor newSensor) {
-        if (oldSensor != null && newSensor != null
-                && this.mainList.contains(oldSensor)){
-            int oldIndex = this.mainList.indexOf(oldSensor);
-            int newIndex = this.mainList.indexOf(newSensor);
-            if (newIndex == -1 || oldIndex == newIndex) {
-                this.mainList.set(oldIndex, newSensor);
-                new BackgroundAction().setSensor(oldSensor, newSensor);
+                return sensor;
             }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+        }
+
+        LOGGER.info("Sensor with name = {} not found", sensorName);
+        return null;
+    }
+
+    @Override
+    public boolean add(Sensor sensor) {
+        if (sensor == null) return false;
+
+        String sql = "INSERT INTO sensors (name, type, number, measurement, value, error_formula, range_min, range_max) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        try (PreparedStatement statement = getPreparedStatement(sql)){
+            statement.setString(1, sensor.getName());
+            statement.setString(2, sensor.getType());
+            statement.setString(3, sensor.getNumber());
+            statement.setString(4, sensor.getMeasurement());
+            statement.setString(5, sensor.getValue());
+            statement.setString(6, sensor.getErrorFormula());
+            statement.setDouble(7, sensor.getRangeMin());
+            statement.setDouble(8, sensor.getRangeMax());
+
+            int result = statement.executeUpdate();
+            if (result > 0) LOGGER.info("Sensor = {} was added successfully", sensor.getName());
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 
     @Override
-    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
-        if (oldValue != null && newValue != null){
-            for (Sensor sensor : this.mainList){
-                if (sensor.getMeasurement().equals(oldValue)){
-                    sensor.setMeasurement(newValue);
-                }
-            }
+    public boolean remove(Sensor sensor) {
+        if (sensor == null) return false;
 
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                 Statement statement = connection.createStatement()){
-                String sql = "UPDATE sensors SET measurement = '" + newValue + "' WHERE measurement = '" + oldValue + "';";
-                LOGGER.fine("Send requests to update");
-                statement.execute(sql);
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
+        String sql = "DELETE FROM sensors WHERE name = '" + sensor.getName() + "';";
+        try (Statement statement = getStatement()){
+            int result = statement.executeUpdate(sql);
+            if (result > 0){
+                LOGGER.info("Sensor = {} was removed successfully", sensor.getName());
+            }else {
+                LOGGER.info("Sensor with name = {} not found", sensor.getName());
             }
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 
     @Override
-    public void removeMeasurementValueInCurrentThread(String measurementValue) {
-        for (Sensor sensor : this.mainList){
-            if (sensor.getMeasurement().equals(measurementValue)) sensor.setMeasurement("");
-        }
+    public boolean set(Sensor oldSensor, Sensor newSensor) {
+        if (oldSensor == null || newSensor == null) return false;
+        if (oldSensor.isMatch(newSensor)) return true;
 
-        LOGGER.fine("Get connection with DB");
-        try (Connection connection = getConnection();
-            Statement statement = connection.createStatement()){
-            String sql = "UPDATE sensors SET measurement = '' WHERE measurement = '" + measurementValue + "';";
-            LOGGER.fine("Send requests to update");
+        String sql = "UPDATE sensors SET name = ?, type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, "
+                + "range_min = ?, range_max = ? WHERE name = ?;";
+        try (PreparedStatement statement = getPreparedStatement(sql)){
+            statement.setString(1, newSensor.getName());
+            statement.setString(2, newSensor.getType());
+            statement.setString(3, newSensor.getNumber());
+            statement.setString(4, newSensor.getMeasurement());
+            statement.setString(5, newSensor.getValue());
+            statement.setString(6, newSensor.getErrorFormula());
+            statement.setDouble(7, newSensor.getRangeMin());
+            statement.setDouble(8, newSensor.getRangeMax());
+            statement.setString(9, oldSensor.getName());
+
+            int result = statement.executeUpdate();
+            if (result > 0) LOGGER.info("Sensor:\n{}\nwas replaced by:\n{}\nsuccessfully", oldSensor, newSensor);
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean changeMeasurementValue(String oldValue, String newValue) {
+        if (oldValue == null || newValue == null) return false;
+        if (oldValue.equals(newValue)) return true;
+
+        String sql = "UPDATE sensors SET measurement = '" + newValue + "' WHERE measurement = '" + oldValue + "';";
+        try (Statement statement = getStatement()){
+            int result = statement.executeUpdate(sql);
+            LOGGER.info("Changed measurementValue of {} sensors from {} to {}", result, oldValue, newValue);
+            return true;
+        } catch (SQLException e) {
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean removeMeasurementValue(String measurementValue) {
+        if (measurementValue == null) return false;
+
+        String sql = "UPDATE sensors SET measurement = '' WHERE measurement = '" + measurementValue + "';";
+        try (Statement statement = getStatement()){
+            int result = statement.executeUpdate(sql);
+            LOGGER.info("Measurement value = {} was removed from {} sensors",measurementValue, result);
+            return true;
+        } catch (SQLException e) {
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean rewrite(ArrayList<Sensor> sensors) {
+        if (sensors == null) return false;
+
+        String sql = "DELETE FROM sensors;";
+        try (Statement statement = getStatement()) {
             statement.execute(sql);
-        } catch (SQLException ex) {
-            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-        }
-    }
+            LOGGER.info("Sensors list in DB was cleared successfully");
 
-    @Override
-    public void rewriteInCurrentThread(ArrayList<Sensor> sensors) {
-        if (sensors != null && !sensors.isEmpty()) {
-            this.mainList.clear();
-            this.mainList.addAll(sensors);
-            new BackgroundAction().rewriteSensors(sensors);
-        }
-    }
+            if (!sensors.isEmpty()) {
+                String insertSql = "INSERT INTO sensors (name, type, number, measurement, value, error_formula, range_min, range_max) "
+                        + "VALUES ";
+                StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
-    @Override
-    public void clear() {
-        this.mainList.clear();
-        new BackgroundAction().clear();
-    }
-
-    @Override
-    public void importDataInCurrentThread(ArrayList<Sensor> newSensors, ArrayList<Sensor> sensorsForChange) {
-        if (sensorsForChange != null) {
-            for (Sensor sensor : sensorsForChange) {
-                int index = this.mainList.indexOf(sensor);
-                if (index >= 0) this.mainList.set(index, sensor);
+                for (Sensor sensor : sensors) {
+                    sqlBuilder.append("('").append(sensor.getName()).append("', ")
+                            .append("'").append(sensor.getType()).append("', ")
+                            .append("'").append(sensor.getNumber()).append("', ")
+                            .append("'").append(sensor.getMeasurement()).append("', ")
+                            .append("'").append(sensor.getValue()).append("', ")
+                            .append("'").append(sensor.getErrorFormula()).append("', ")
+                            .append(sensor.getRangeMin()).append(", ")
+                            .append(sensor.getRangeMax()).append("),");
+                }
+                sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
+                statement.execute(sqlBuilder.toString());
             }
-        }
-        if (newSensors != null) this.mainList.addAll(newSensors);
-        new BackgroundAction().rewriteSensors(this.mainList);
-    }
 
-    @Override
-    public void rewrite(ArrayList<Sensor> sensors) {
-        this.mainList.clear();
-        this.mainList.addAll(sensors);
-        new BackgroundAction().rewrite(sensors);
+            LOGGER.info("The list of old sensors has been rewritten to the new one:\n{}", sensors);
+            return true;
+        } catch (SQLException e) {
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
     }
 
     @Override
     public boolean isLastInMeasurement(Sensor sensor) {
-        if (sensor != null) {
-            String measurement = sensor.getMeasurement();
-            int numberOfSensors = 0;
-            for (Sensor s : this.mainList) {
-                if (s.getMeasurement().equals(measurement)) {
-                    numberOfSensors++;
+        if (sensor == null) return true;
+
+        String sql = "SELECT * FROM sensors WHERE measurement = '" + sensor.getMeasurement() + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            int n = 0;
+            while (resultSet.next()) {
+                if (++n > 1) {
+                    return false;
                 }
             }
-            return numberOfSensors == 1;
-        }else return false;
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean clear() {
+        String sql = "DELETE FROM sensors;";
+        try (Statement statement = getStatement()){
+            statement.execute(sql);
+            LOGGER.info("Sensors list in DB was cleared successfully");
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean importData(ArrayList<Sensor> newSensors, ArrayList<Sensor> sensorsForChange) {
+        int changeResult = 0;
+        int addResult = 0;
+        if (sensorsForChange != null && !sensorsForChange.isEmpty()){
+            for (Sensor s : sensorsForChange){
+                String sql = "UPDATE sensors SET "
+                        + "type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, range_min = ?, range_max = ? "
+                        + "WHERE name = ?;";
+                try (PreparedStatement statement = getPreparedStatement(sql)){
+                    statement.setString(1, s.getType());
+                    statement.setString(2, s.getNumber());
+                    statement.setString(3, s.getMeasurement());
+                    statement.setString(4, s.getValue());
+                    statement.setString(5, s.getErrorFormula());
+                    statement.setDouble(6, s.getRangeMin());
+                    statement.setDouble(7, s.getRangeMax());
+
+                    statement.setString(8, s.getName());
+
+                    statement.execute();
+                    changeResult++;
+                } catch (SQLException e) {
+                    LOGGER.warn("Exception was thrown!", e);
+                    return false;
+                }
+            }
+        }
+
+        if (newSensors != null && !newSensors.isEmpty()){
+            String sql = "INSERT INTO sensors (name, type, number, measurement, value, error_formula, range_min, range_max) "
+                    + "VALUES ";
+            StringBuilder sqlBuilder = new StringBuilder(sql);
+            try (Statement statement = getStatement()) {
+                for (Sensor sensor : newSensors) {
+                    sqlBuilder.append("('").append(sensor.getName()).append("', ")
+                            .append("'").append(sensor.getType()).append("', ")
+                            .append("'").append(sensor.getNumber()).append("', ")
+                            .append("'").append(sensor.getMeasurement()).append("', ")
+                            .append("'").append(sensor.getValue()).append("', ")
+                            .append("'").append(sensor.getErrorFormula()).append("', ")
+                            .append(sensor.getRangeMin()).append(", ")
+                            .append(sensor.getRangeMax()).append("),");
+                }
+                sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
+                addResult = statement.executeUpdate(sqlBuilder.toString());
+            } catch (SQLException e) {
+                LOGGER.warn("Exception was thrown!", e);
+                return false;
+            }
+        }
+
+        LOGGER.info("Sensors import was successful");
+        LOGGER.info("Changed = {} | Added = {}", changeResult, addResult);
+        return true;
     }
 
     @Override
     public boolean isExists(String sensorName) {
-        if (sensorName == null || sensorName.length() == 0) return true;
+        if (sensorName == null) return true;
 
-        Sensor sensor = new Sensor();
-        sensor.setName(sensorName);
-        return this.mainList.contains(sensor);
-    }
-
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.backgroundTaskRunning;
-    }
-
-    private class BackgroundAction extends SwingWorker<Boolean, Void> {
-        private Sensor sensor;
-        private ArrayList<Sensor>list;
-        private Action action;
-        private final SaveMessage saveMessage;
-
-        public BackgroundAction(){
-            ApplicationContext context = Application.context;
-            Window mainScreen = context == null ? null : Application.context.mainScreen;
-            this.saveMessage = mainScreen == null ? null : new SaveMessage(mainScreen);
-        }
-
-        void add(Sensor sensor){
-            this.sensor = sensor;
-            this.action = Action.ADD;
-            this.start();
-        }
-
-        void clear(){
-            this.action = Action.CLEAR;
-            this.start();
-        }
-
-        void rewrite(ArrayList<Sensor>list){
-            this.list = list;
-            this.action = list == null ? constants.Action.CLEAR : constants.Action.REWRITE;
-            this.start();
-        }
-
-        private void start(){
-            Application.setBusy(true);
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (saveMessage != null) saveMessage.setVisible(true);
-                }
-            });
-            backgroundTaskRunning = true;
-            this.execute();
-        }
-
-        @Override
-        protected Boolean doInBackground() throws Exception {
-            switch (this.action){
-                case ADD:
-                    return this.addSensor(this.sensor);
-                case CLEAR:
-                    return this.clearSensors();
-                case REWRITE:
-                    return this.rewriteSensors(this.list);
-            }
-            return true;
-        }
-
-        @Override
-        protected void done() {
-            try {
-                if (!this.get()){
-                    if (this.action == Action.ADD) {
-                        mainList.remove(this.sensor);
-                    }
-                    String message = "Виникла помилка! Данні не збереглися! Спробуйте будь-ласка ще раз!";
-                    JOptionPane.showMessageDialog(Application.context.mainScreen, message, "Помилка!", JOptionPane.ERROR_MESSAGE);
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", e);
-            }
-            Application.setBusy(false);
-            backgroundTaskRunning = false;
-            if (this.saveMessage != null) this.saveMessage.dispose();
-        }
-
-        boolean addSensor(Sensor sensor){
-            String sql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
-                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                PreparedStatement statement = connection.prepareStatement(sql)){
-                LOGGER.fine("Send requests to add");
-                statement.setString(1, sensor.getName());
-                statement.setString(2, sensor.getType());
-                statement.setString(3, sensor.getNumber());
-                statement.setString(4, sensor.getMeasurement());
-                statement.setString(5, sensor.getValue());
-                statement.setString(6, sensor.getErrorFormula());
-                statement.setDouble(7, sensor.getRangeMin());
-                statement.setDouble(8, sensor.getRangeMax());
-                statement.execute();
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        void removeSensor(Sensor sensor){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statement = connection.createStatement()){
-                LOGGER.fine("Send request to delete");
-                String sql = "DELETE FROM sensors WHERE name = '" + sensor.getName() + "';";
-                statement.execute(sql);
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-            }
-        }
-
-        private boolean clearSensors(){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statement = connection.createStatement()) {
-                LOGGER.fine("Send request");
-                String sql = "DELETE FROM sensors;";
-                statement.execute(sql);
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        void setSensor(Sensor oldSensor, Sensor newSensor){
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statement = connection.createStatement()){
-                LOGGER.fine("Send requests to update");
-                String sql = "UPDATE sensors SET "
-                        + "name = '" + newSensor.getName() + "', "
-                        + "type = '" + newSensor.getType() + "', "
-                        + "number = '" + newSensor.getNumber() + "', "
-                        + "measurement = '" + newSensor.getMeasurement() + "', "
-                        + "value = '" + newSensor.getValue() + "', "
-                        + "error_formula = '" + newSensor.getErrorFormula() + "', "
-                        + "range_min = " + newSensor.getRangeMin() + ", "
-                        + "range_max = " + newSensor.getRangeMax() + " "
-                        + "WHERE name = '" + oldSensor.getName() + "';";
-                statement.execute(sql);
-            }catch (SQLException ex){
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-            }
-        }
-
-        boolean rewriteSensors(ArrayList<Sensor>sensors){
-            String clearSql = "DELETE FROM sensors;";
-            String insertSql = "INSERT INTO sensors ('name', 'type', 'number', 'measurement', 'value', 'error_formula', 'range_min', 'range_max') "
-                    + "VALUES(?, ?, ?, ?, ?, ?, ?, ?);";
-            LOGGER.fine("Get connection with DB");
-            try (Connection connection = getConnection();
-                Statement statementClear = connection.createStatement();
-                PreparedStatement statement = connection.prepareStatement(insertSql)) {
-                LOGGER.fine("Send request to clear");
-                statementClear.execute(clearSql);
-
-                if (!sensors.isEmpty()) {
-                    LOGGER.fine("Send requests to add");
-                    for (Sensor sensor : sensors) {
-                        statement.setString(1, sensor.getName());
-                        statement.setString(2, sensor.getType());
-                        statement.setString(3, sensor.getNumber());
-                        statement.setString(4, sensor.getMeasurement());
-                        statement.setString(5, sensor.getValue());
-                        statement.setString(6, sensor.getErrorFormula());
-                        statement.setDouble(7, sensor.getRangeMin());
-                        statement.setDouble(8, sensor.getRangeMax());
-                        statement.execute();
-                    }
-                }
-            } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                return false;
-            }
+        String sql = "SELECT * FROM sensors WHERE name = '" + sensorName + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            return resultSet.next();
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
             return true;
         }
     }

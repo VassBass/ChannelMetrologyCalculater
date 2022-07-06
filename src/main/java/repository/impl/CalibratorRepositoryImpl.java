@@ -27,7 +27,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     }
 
     @Override
-    public void createTable() {
+    protected void createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
                 + "name text NOT NULL UNIQUE"
                 + ", type text NOT NULL"

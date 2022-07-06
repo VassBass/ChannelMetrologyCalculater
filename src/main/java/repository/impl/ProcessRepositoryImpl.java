@@ -27,7 +27,7 @@ public class ProcessRepositoryImpl extends Repository implements ProcessReposito
      * Creates table "processes" if it not exists
      */
     @Override
-    public void createTable(){
+    protected void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS processes (process text NOT NULL UNIQUE, PRIMARY KEY (\"process\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);

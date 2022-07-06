@@ -6,7 +6,6 @@ import model.Sensor;
 import java.util.ArrayList;
 
 public interface ControlPointsValuesRepository {
-    void createTable();
     ArrayList<ControlPointsValues> getAll();
     ArrayList<ControlPointsValues>getBySensorType(String sensorType);
     ControlPointsValues getControlPointsValues(int id);

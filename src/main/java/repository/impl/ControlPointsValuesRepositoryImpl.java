@@ -26,7 +26,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     }
 
     @Override
-    public void createTable(){
+    protected void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS control_points ("
                 + "id integer NOT NULL UNIQUE"
                 + ", sensor_type text NOT NULL"

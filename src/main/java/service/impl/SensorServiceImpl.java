@@ -7,26 +7,16 @@ import repository.impl.SensorRepositoryImpl;
 import service.SensorService;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 public class SensorServiceImpl implements SensorService {
-    private static final Logger LOGGER = Logger.getLogger(SensorService.class.getName());
-
-    private final String dbUrl;
-    private SensorRepository repository;
+    private final SensorRepository repository;
 
     public SensorServiceImpl(){
-        this.dbUrl = null;
+        this.repository = new SensorRepositoryImpl();
     }
 
-    public SensorServiceImpl(String dbUrl){
-        this.dbUrl = dbUrl;
-    }
-
-    @Override
-    public void init(){
-        this.repository = this.dbUrl == null ? new SensorRepositoryImpl() : new SensorRepositoryImpl(this.dbUrl);
-        LOGGER.info("Initialization SUCCESS");
+    public SensorServiceImpl(SensorRepository repository){
+        this.repository = repository;
     }
 
     @Override
@@ -60,39 +50,33 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public ArrayList<Sensor> add(Sensor sensor) {
-        this.repository.add(sensor);
-        return this.repository.getAll();
+    public boolean add(Sensor sensor) {
+        return this.repository.add(sensor);
     }
 
     @Override
-    public void addInCurrentThread(Sensor sensor) {
-        this.repository.addInCurrentThread(sensor);
+    public boolean remove(Sensor sensor) {
+        return this.repository.remove(sensor);
     }
 
     @Override
-    public void removeInCurrentThread(Sensor sensor) {
-        this.repository.removeInCurrentThread(sensor);
+    public boolean removeMeasurementValue(String measurementValue) {
+        return this.repository.removeMeasurementValue(measurementValue);
     }
 
     @Override
-    public void removeMeasurementValueInCurrentThread(String measurementValue) {
-        this.repository.removeMeasurementValueInCurrentThread(measurementValue);
+    public boolean set(Sensor oldSensor, Sensor newSensor) {
+        return this.repository.set(oldSensor, newSensor);
     }
 
     @Override
-    public void setInCurrentThread(Sensor oldSensor, Sensor newSensor) {
-        this.repository.setInCurrentThread(oldSensor, newSensor);
+    public boolean changeMeasurementValue(String oldValue, String newValue) {
+        return this.repository.changeMeasurementValue(oldValue, newValue);
     }
 
     @Override
-    public void changeMeasurementValueInCurrentThread(String oldValue, String newValue) {
-        this.repository.changeMeasurementValueInCurrentThread(oldValue, newValue);
-    }
-
-    @Override
-    public void importDataInCurrentThread(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange){
-        this.repository.importDataInCurrentThread(newSensors, sensorsForChange);
+    public boolean importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange){
+        return this.repository.importData(newSensors, sensorsForChange);
     }
 
     @Override
@@ -101,13 +85,8 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public Sensor get(int index) {
-        return this.repository.get(index);
-    }
-
-    @Override
-    public void clear() {
-        this.repository.clear();
+    public boolean clear() {
+        return this.repository.clear();
     }
 
     @Override
@@ -121,17 +100,13 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public void rewriteInCurrentThread(ArrayList<Sensor>sensors){
-        this.repository.rewriteInCurrentThread(sensors);
+    public boolean rewrite(ArrayList<Sensor>sensors){
+        return this.repository.rewrite(sensors);
     }
 
     @Override
-    public void resetToDefaultInCurrentThread() {
-        this.repository.rewriteInCurrentThread(DefaultSensors.get());
+    public boolean resetToDefault() {
+        return this.repository.rewrite(DefaultSensors.get());
     }
 
-    @Override
-    public boolean backgroundTaskIsRun() {
-        return this.repository.backgroundTaskIsRun();
-    }
 }

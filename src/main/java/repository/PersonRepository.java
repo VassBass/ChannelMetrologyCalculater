@@ -5,7 +5,6 @@ import model.Person;
 import java.util.ArrayList;
 
 public interface PersonRepository {
-    void createTable();
     ArrayList<Person>getAll();
 
     String[] getAllNamesWithFirstEmptyString();

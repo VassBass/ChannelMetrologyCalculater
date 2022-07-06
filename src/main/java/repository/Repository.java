@@ -9,12 +9,14 @@ import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
 
-public class Repository {
+public abstract class Repository {
     private static final Logger LOGGER = LoggerFactory.getLogger(Repository.class);
 
     private static final String ERROR = "Помилка";
 
     private String dbUrl, dbUser, dbPassword;
+
+    protected abstract void createTable();
 
     /**
      * Gets url of db from jdbc.properties file

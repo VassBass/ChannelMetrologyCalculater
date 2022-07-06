@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface MeasurementRepository {
-    void createTable();
     ArrayList<Measurement>getAll();
     String[]getAllNames();
     String[]getAllValues();

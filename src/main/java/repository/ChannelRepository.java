@@ -6,8 +6,6 @@ import model.Sensor;
 import java.util.ArrayList;
 
 public interface ChannelRepository {
-    void createTable();
-
     Channel get(String code);
     ArrayList<Channel> getAll();
 

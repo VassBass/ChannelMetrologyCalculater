@@ -27,7 +27,7 @@ public class InstallationRepositoryImpl extends Repository implements Installati
      * Creates table "installations" if it not exists
      */
     @Override
-    public void createTable(){
+    protected void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS installations (installation text NOT NULL UNIQUE, PRIMARY KEY (\"installation\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);
