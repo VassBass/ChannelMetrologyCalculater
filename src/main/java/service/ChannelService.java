@@ -3,11 +3,11 @@ package service;
 import model.Channel;
 import model.Sensor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface ChannelService {
     Channel get(String code);
-    ArrayList<Channel> getAll();
+    List<Channel> getAll();
 
     boolean add(Channel channel);
 
@@ -16,7 +16,7 @@ public interface ChannelService {
     boolean removeByMeasurementValue(String measurementValue);
 
     boolean changeSensor(Sensor oldSensor, Sensor newSensor, int ... ignored);
-    boolean changeSensors(ArrayList<Sensor>sensors);
+    boolean changeSensors(List<Sensor>sensors);
 
     boolean set(Channel oldChannel, Channel newChannel);
     boolean changeMeasurementValue(String oldValue, String newValue);
@@ -26,6 +26,6 @@ public interface ChannelService {
 
     boolean clear();
 
-    boolean importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
-    boolean rewrite(ArrayList<Channel>channels);
+    boolean importData(List<Channel>newChannels, List<Channel>channelsForChange);
+    boolean rewrite(List<Channel>channels);
 }

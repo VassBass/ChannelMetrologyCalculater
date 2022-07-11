@@ -3,11 +3,11 @@ package repository;
 import model.Channel;
 import model.Sensor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface ChannelRepository {
     Channel get(String code);
-    ArrayList<Channel> getAll();
+    List<Channel> getAll();
 
     boolean add(Channel channel);
 
@@ -15,11 +15,11 @@ public interface ChannelRepository {
     boolean removeBySensor(Sensor sensor);
     boolean removeByMeasurementValue(String measurementValue);
 
-    boolean importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange);
-    boolean rewrite(ArrayList<Channel>channels);
+    boolean importData(List<Channel>newChannels, List<Channel>channelsForChange);
+    boolean rewrite(List<Channel>channels);
 
     boolean changeSensor(Sensor oldSensor, Sensor newSensor, int ... ignored);
-    boolean changeSensors(ArrayList<Sensor>sensors);
+    boolean changeSensors(List<Sensor>sensors);
     boolean changeMeasurementValue(String oldValue, String newValue);
 
     boolean set(Channel oldChannel, Channel newChannel);

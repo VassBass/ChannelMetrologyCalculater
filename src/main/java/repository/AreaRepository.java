@@ -1,12 +1,12 @@
 package repository;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface AreaRepository {
-    ArrayList<String> getAll();
+    List<String> getAll();
     boolean add(String object);
     boolean set(String oldObject, String newObject);
     boolean remove(String object);
     boolean clear();
-    boolean rewrite(ArrayList<String>newList);
+    boolean rewrite(List<String>newList);
 }

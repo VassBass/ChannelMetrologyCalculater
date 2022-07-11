@@ -5,7 +5,7 @@ import repository.AreaRepository;
 import repository.impl.AreaRepositoryImpl;
 import service.AreaService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class AreaServiceImpl implements AreaService {
 
@@ -20,7 +20,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public ArrayList<String> getAll() {
+    public List<String> getAll() {
         return this.repository.getAll();
     }
 
@@ -50,7 +50,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public boolean rewrite(ArrayList<String>areas){
+    public boolean rewrite(List<String>areas){
         return this.repository.rewrite(areas);
     }
 

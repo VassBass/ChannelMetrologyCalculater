@@ -6,7 +6,7 @@ import repository.PersonRepository;
 import repository.impl.PersonRepositoryImpl;
 import service.PersonService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class PersonServiceImpl implements PersonService {
     private final PersonRepository repository;
@@ -20,7 +20,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public ArrayList<Person> getAll() {
+    public List<Person> getAll() {
         return this.repository.getAll();
     }
 
@@ -40,7 +40,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public boolean add(ArrayList<Person> persons) {
+    public boolean add(List<Person> persons) {
         return this.repository.add(persons);
     }
 
@@ -65,7 +65,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public boolean rewrite(ArrayList<Person>persons){
+    public boolean rewrite(List<Person>persons){
         return this.repository.rewrite(persons);
     }
 

@@ -5,7 +5,7 @@ import repository.ControlPointsValuesRepository;
 import repository.impl.ControlPointsValuesRepositoryImpl;
 import service.ControlPointsValuesService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ControlPointsValuesServiceImpl implements ControlPointsValuesService {
     private final ControlPointsValuesRepository repository;
@@ -19,12 +19,12 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public ArrayList<ControlPointsValues> getAll() {
+    public List<ControlPointsValues> getAll() {
         return this.repository.getAll();
     }
 
     @Override
-    public ArrayList<ControlPointsValues> getBySensorType(String sensorType) {
+    public List<ControlPointsValues> getBySensorType(String sensorType) {
         return this.repository.getBySensorType(sensorType);
     }
 

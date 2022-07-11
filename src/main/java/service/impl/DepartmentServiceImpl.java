@@ -5,7 +5,7 @@ import repository.DepartmentRepository;
 import repository.impl.DepartmentRepositoryImpl;
 import service.DepartmentService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository repository;
@@ -19,7 +19,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public ArrayList<String> getAll() {
+    public List<String> getAll() {
         return this.repository.getAll();
     }
 
@@ -49,7 +49,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public boolean rewrite(ArrayList<String>departments){
+    public boolean rewrite(List<String>departments){
         return this.repository.rewrite(departments);
     }
 

@@ -5,7 +5,7 @@ import repository.InstallationRepository;
 import repository.impl.InstallationRepositoryImpl;
 import service.InstallationService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class InstallationServiceImpl implements InstallationService {
     private final InstallationRepository repository;
@@ -19,7 +19,7 @@ public class InstallationServiceImpl implements InstallationService {
     }
 
     @Override
-    public ArrayList<String> getAll() {
+    public List<String> getAll() {
         return this.repository.getAll();
     }
 
@@ -49,7 +49,7 @@ public class InstallationServiceImpl implements InstallationService {
     }
 
     @Override
-    public boolean rewrite(ArrayList<String>installations){
+    public boolean rewrite(List<String>installations){
         return this.repository.rewrite(installations);
     }
 

@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SensorRepositoryImpl extends Repository implements SensorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(SensorRepository.class);
@@ -45,8 +46,8 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     }
 
     @Override
-    public ArrayList<Sensor> getAll() {
-        ArrayList<Sensor>sensors = new ArrayList<>();
+    public List<Sensor> getAll() {
+        List<Sensor>sensors = new ArrayList<>();
 
         LOGGER.info("Reading all sensors from DB");
         String sql = "SELECT * FROM sensors;";
@@ -71,8 +72,8 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     }
 
     @Override
-    public ArrayList<Sensor> getAll(String measurement) {
-        ArrayList<Sensor>sensors = new ArrayList<>();
+    public List<Sensor> getAll(String measurement) {
+        List<Sensor>sensors = new ArrayList<>();
         if (measurement == null) return sensors;
 
         LOGGER.info("Reading all sensors with measurement = {} from DB", measurement);
@@ -99,7 +100,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
 
     @Override
     public String[] getAllTypes() {
-        ArrayList<String>types = new ArrayList<>();
+        List<String>types = new ArrayList<>();
         LOGGER.info("Reading all sensors types from DB");
         String sql = "SELECT DISTINCT type FROM sensors";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -115,7 +116,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
 
     @Override
     public String[] getAllTypesWithoutROSEMOUNT() {
-        ArrayList<String>types = new ArrayList<>();
+        List<String>types = new ArrayList<>();
         LOGGER.info("Reading all sensors types without ROSEMOUNT from DB");
         String sql = "SELECT DISTINCT type FROM sensors WHERE type NOT LIKE '%" + Sensor.ROSEMOUNT + "%';";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -148,7 +149,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
 
     @Override
     public String[] getAllSensorsName(String measurementName) {
-        ArrayList<String> names = new ArrayList<>();
+        List<String> names = new ArrayList<>();
         if (measurementName == null) return new String[0];
 
         LOGGER.info("Reading all sensors names by measurement = {} from DB", measurementName);
@@ -292,7 +293,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     }
 
     @Override
-    public boolean rewrite(ArrayList<Sensor> sensors) {
+    public boolean rewrite(List<Sensor> sensors) {
         if (sensors == null) return false;
 
         String sql = "DELETE FROM sensors;";
@@ -360,7 +361,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     }
 
     @Override
-    public boolean importData(ArrayList<Sensor> newSensors, ArrayList<Sensor> sensorsForChange) {
+    public boolean importData(List<Sensor> newSensors, List<Sensor> sensorsForChange) {
         int changeResult = 0;
         int addResult = 0;
         if (sensorsForChange != null && !sensorsForChange.isEmpty()){

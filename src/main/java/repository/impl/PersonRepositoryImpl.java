@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PersonRepositoryImpl extends Repository implements PersonRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonRepository.class);
@@ -44,9 +45,9 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     }
 
     @Override
-    public ArrayList<Person> getAll() {
+    public List<Person> getAll() {
         LOGGER.info("Reading all persons from DB");
-        ArrayList<Person>persons = new ArrayList<>();
+        List<Person>persons = new ArrayList<>();
         String sql = "SELECT * FROM persons;";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()){
@@ -67,7 +68,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
 
     @Override
     public String[] getAllNamesWithFirstEmptyString() {
-        ArrayList<String>names = new ArrayList<>();
+        List<String>names = new ArrayList<>();
         names.add(EMPTY_ARRAY);
         for (Person person : getAll()){
             names.add(person._getFullName());
@@ -77,7 +78,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
 
     @Override
     public String[] getNamesOfHeadsWithFirstEmptyString() {
-        ArrayList<String>heads = new ArrayList<>();
+        List<String>heads = new ArrayList<>();
         heads.add(EMPTY_ARRAY);
         for (Person worker : getAll()){
             if (worker.getPosition().equals(Person.HEAD_OF_DEPARTMENT_ASUTP)){
@@ -132,7 +133,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     }
 
     @Override
-    public boolean add(ArrayList<Person> persons) {
+    public boolean add(List<Person> persons) {
         if (persons == null) return false;
         if (persons.isEmpty()) return true;
 
@@ -212,7 +213,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     }
 
     @Override
-    public boolean rewrite(ArrayList<Person> persons) {
+    public boolean rewrite(List<Person> persons) {
         if (persons == null) return false;
 
         String sql = "DELETE FROM persons;";

@@ -6,8 +6,8 @@ import repository.MeasurementRepository;
 import repository.impl.MeasurementRepositoryImpl;
 import service.MeasurementService;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MeasurementServiceImpl implements MeasurementService {
     private final MeasurementRepository repository;
@@ -46,7 +46,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public ArrayList<Measurement> getAll() {
+    public List<Measurement> getAll() {
         return this.repository.getAll();
     }
 
@@ -61,7 +61,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public boolean changeFactors(String measurementValue, HashMap<String, Double> factors) {
+    public boolean changeFactors(String measurementValue, Map<String, Double> factors) {
         return this.repository.changeFactors(measurementValue, factors);
     }
 
@@ -76,7 +76,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public ArrayList<Measurement>getMeasurements(String name){
+    public List<Measurement>getMeasurements(String name){
         return this.repository.getMeasurements(name);
     }
 

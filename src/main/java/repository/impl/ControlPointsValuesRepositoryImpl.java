@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ControlPointsValuesRepositoryImpl extends Repository implements ControlPointsValuesRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ControlPointsValuesRepository.class);
@@ -43,8 +44,8 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     }
 
     @Override
-    public ArrayList<ControlPointsValues> getAll() {
-        ArrayList<ControlPointsValues>values = new ArrayList<>();
+    public List<ControlPointsValues> getAll() {
+        List<ControlPointsValues>values = new ArrayList<>();
         LOGGER.info("Reading all control_points from DB");
         String sql = "SELECT * FROM control_points;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -66,10 +67,10 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     }
 
     @Override
-    public ArrayList<ControlPointsValues> getBySensorType(String sensorType) {
+    public List<ControlPointsValues> getBySensorType(String sensorType) {
         if (sensorType == null) return null;
 
-        ArrayList<ControlPointsValues>values = new ArrayList<>();
+        List<ControlPointsValues>values = new ArrayList<>();
         LOGGER.info("Reading from DB all control_points with sensor_type = {}", sensorType);
         String sql = "SELECT * FROM control_points WHERE sensor_type = '" + sensorType + "';";
         try (ResultSet resultSet = getResultSet(sql)){

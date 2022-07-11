@@ -3,10 +3,10 @@ package service;
 import model.Calibrator;
 import model.Measurement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface CalibratorService {
-    ArrayList<Calibrator> getAll();
+    List<Calibrator> getAll();
     String[] getAllNames(Measurement measurement);
 
     boolean add(Calibrator calibrator);
@@ -21,8 +21,8 @@ public interface CalibratorService {
 
     boolean clear();
 
-    boolean importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange);
-    boolean rewrite(ArrayList<Calibrator>calibrators);
+    boolean importData(List<Calibrator>newCalibrators, List<Calibrator>calibratorsForChange);
+    boolean rewrite(List<Calibrator>calibrators);
     boolean resetToDefault();
 
     boolean isExists(Calibrator calibrator);

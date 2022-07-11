@@ -2,8 +2,8 @@ package service;
 
 import model.Measurement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface MeasurementService {
     boolean add(Measurement measurement);
@@ -30,7 +30,7 @@ public interface MeasurementService {
      */
     String[]getValues(String name);
 
-    ArrayList<Measurement> getAll();
+    List<Measurement> getAll();
 
     /**
      *
@@ -46,7 +46,7 @@ public interface MeasurementService {
      */
     boolean delete(Measurement measurement);
 
-    boolean changeFactors(String measurementValue, HashMap<String,Double>factors);
+    boolean changeFactors(String measurementValue, Map<String,Double> factors);
     boolean change(Measurement oldMeasurement, Measurement newMeasurement);
 
     boolean clear();
@@ -56,7 +56,7 @@ public interface MeasurementService {
      * @param name of measurement
      * @return measurements values with input name or null if @name == null | @name.length == 0
      */
-    ArrayList<Measurement>getMeasurements(String name);
+    List<Measurement>getMeasurements(String name);
 
     boolean resetToDefault();
 

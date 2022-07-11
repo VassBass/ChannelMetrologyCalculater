@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DepartmentRepositoryImpl extends Repository implements DepartmentRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentRepository.class);
@@ -40,8 +41,8 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
      * @return List of departments or empty list if something go wrong
      */
     @Override
-    public ArrayList<String> getAll() {
-        ArrayList<String>departments = new ArrayList<>();
+    public List<String> getAll() {
+        List<String>departments = new ArrayList<>();
         String sql = "SELECT * FROM departments;";
 
         LOGGER.info("Reading all departments from DB");
@@ -135,7 +136,7 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
     }
 
     @Override
-    public boolean rewrite(ArrayList<String> newList) {
+    public boolean rewrite(List<String> newList) {
         if (newList == null) return false;
 
         String sql = "DELETE FROM departments;";

@@ -1,13 +1,12 @@
 package repository;
 
 import model.ControlPointsValues;
-import model.Sensor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface ControlPointsValuesRepository {
-    ArrayList<ControlPointsValues> getAll();
-    ArrayList<ControlPointsValues>getBySensorType(String sensorType);
+    List<ControlPointsValues> getAll();
+    List<ControlPointsValues>getBySensorType(String sensorType);
     ControlPointsValues getControlPointsValues(int id);
     int add(ControlPointsValues cpv);
     boolean set(ControlPointsValues cpv);

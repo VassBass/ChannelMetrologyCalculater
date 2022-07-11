@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AreaRepositoryImpl extends Repository implements AreaRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(AreaRepository.class);
@@ -40,8 +41,8 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
      * @return List of areas or empty list if something go wrong
      */
     @Override
-    public ArrayList<String> getAll() {
-        ArrayList<String>areas = new ArrayList<>();
+    public List<String> getAll() {
+        List<String>areas = new ArrayList<>();
         String sql = "SELECT * FROM areas;";
 
         LOGGER.info("Reading all areas from DB");
@@ -140,7 +141,7 @@ public class AreaRepositoryImpl extends Repository implements AreaRepository {
      * @return true if rewrite was successful or false if not
      */
     @Override
-    public boolean rewrite(ArrayList<String> newList) {
+    public boolean rewrite(List<String> newList) {
         if (newList == null) return false;
 
         String sql = "DELETE FROM areas;";

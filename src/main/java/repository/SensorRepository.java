@@ -2,11 +2,11 @@ package repository;
 
 import model.Sensor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface SensorRepository {
-    ArrayList<Sensor>getAll();
-    ArrayList<Sensor>getAll(String measurement);
+    List<Sensor> getAll();
+    List<Sensor>getAll(String measurement);
     String[]getAllTypes();
     String[]getAllTypesWithoutROSEMOUNT();
     String getMeasurement(String sensorType);
@@ -23,8 +23,8 @@ public interface SensorRepository {
 
     boolean clear();
 
-    boolean importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange);
-    boolean rewrite(ArrayList<Sensor>sensors);
+    boolean importData(List<Sensor>newSensors, List<Sensor>sensorsForChange);
+    boolean rewrite(List<Sensor>sensors);
 
     boolean isLastInMeasurement(Sensor sensor);
     boolean isExists(String sensorName);

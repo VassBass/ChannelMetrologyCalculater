@@ -6,7 +6,7 @@ import repository.ChannelRepository;
 import repository.impl.ChannelRepositoryImpl;
 import service.ChannelService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ChannelServiceImpl implements ChannelService {
     private final ChannelRepository repository;
@@ -25,7 +25,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public ArrayList<Channel> getAll() {
+    public List<Channel> getAll() {
         return this.repository.getAll();
     }
 
@@ -55,7 +55,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public boolean changeSensors(ArrayList<Sensor>sensors){
+    public boolean changeSensors(List<Sensor>sensors){
         return this.repository.changeSensors(sensors);
     }
 
@@ -85,12 +85,12 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public boolean importData(ArrayList<Channel>newChannels, ArrayList<Channel>channelsForChange){
+    public boolean importData(List<Channel>newChannels, List<Channel>channelsForChange){
         return this.repository.importData(newChannels, channelsForChange);
     }
 
     @Override
-    public boolean rewrite(ArrayList<Channel>channels){
+    public boolean rewrite(List<Channel>channels){
         return this.repository.rewrite(channels);
     }
 }

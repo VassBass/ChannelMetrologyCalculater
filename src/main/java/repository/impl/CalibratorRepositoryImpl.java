@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CalibratorRepositoryImpl extends Repository implements CalibratorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CalibratorRepository.class);
@@ -48,8 +49,8 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     }
 
     @Override
-    public ArrayList<Calibrator> getAll() {
-        ArrayList<Calibrator>calibrators = new ArrayList<>();
+    public List<Calibrator> getAll() {
+        List<Calibrator>calibrators = new ArrayList<>();
         String sql = "SELECT * FROM calibrators;";
 
         LOGGER.info("Reading all calibrators from DB");
@@ -81,7 +82,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     public String[] getAllNames(Measurement measurement) {
         if (measurement == null) return null;
 
-        ArrayList<String>calibrators = new ArrayList<>();
+        List<String>calibrators = new ArrayList<>();
 
         LOGGER.info("Reading all calibrators names from DB");
         String sql = "SELECT * FROM calibrators WHERE measurement = '" + measurement + "';";
@@ -240,7 +241,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     }
 
     @Override
-    public boolean rewrite(ArrayList<Calibrator> calibrators) {
+    public boolean rewrite(List<Calibrator> calibrators) {
         if (calibrators == null) return false;
 
         String sql = "DELETE FROM calibrators;";
@@ -277,7 +278,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     }
 
     @Override
-    public boolean importData(ArrayList<Calibrator> newCalibrators, ArrayList<Calibrator> calibratorsForChange) {
+    public boolean importData(List<Calibrator> newCalibrators, List<Calibrator> calibratorsForChange) {
         int changeResult = 0;
         int addResult = 0;
         if (calibratorsForChange != null && !calibratorsForChange.isEmpty()){

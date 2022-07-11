@@ -3,10 +3,10 @@ package repository;
 import model.Calibrator;
 import model.Measurement;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface CalibratorRepository {
-    ArrayList<Calibrator> getAll();
+    List<Calibrator> getAll();
     String[]getAllNames(Measurement measurement);
 
     Calibrator get(String name);
@@ -21,8 +21,8 @@ public interface CalibratorRepository {
 
     boolean clear();
 
-    boolean rewrite(ArrayList<Calibrator>calibrators);
-    boolean importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange);
+    boolean rewrite(List<Calibrator>calibrators);
+    boolean importData(List<Calibrator>newCalibrators, List<Calibrator>calibratorsForChange);
 
     boolean isExists(Calibrator calibrator);
 }

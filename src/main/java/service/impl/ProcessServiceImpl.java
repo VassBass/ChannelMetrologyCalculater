@@ -5,7 +5,7 @@ import repository.ProcessRepository;
 import repository.impl.ProcessRepositoryImpl;
 import service.ProcessService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ProcessServiceImpl implements ProcessService {
     private final ProcessRepository repository;
@@ -19,7 +19,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public ArrayList<String> getAll() {
+    public List<String> getAll() {
         return this.repository.getAll();
     }
 
@@ -49,7 +49,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public boolean rewrite(ArrayList<String>processes){
+    public boolean rewrite(List<String>processes){
         return this.repository.rewrite(processes);
     }
 

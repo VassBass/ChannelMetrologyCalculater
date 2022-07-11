@@ -6,7 +6,7 @@ import repository.SensorRepository;
 import repository.impl.SensorRepositoryImpl;
 import service.SensorService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class SensorServiceImpl implements SensorService {
     private final SensorRepository repository;
@@ -30,12 +30,12 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public ArrayList<Sensor> getAll() {
+    public List<Sensor> getAll() {
         return this.repository.getAll();
     }
 
     @Override
-    public ArrayList<Sensor> getAll(String measurement) {
+    public List<Sensor> getAll(String measurement) {
         return this.repository.getAll(measurement);
     }
 
@@ -75,7 +75,7 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public boolean importData(ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsForChange){
+    public boolean importData(List<Sensor>newSensors, List<Sensor>sensorsForChange){
         return this.repository.importData(newSensors, sensorsForChange);
     }
 
@@ -100,7 +100,7 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public boolean rewrite(ArrayList<Sensor>sensors){
+    public boolean rewrite(List<Sensor>sensors){
         return this.repository.rewrite(sensors);
     }
 

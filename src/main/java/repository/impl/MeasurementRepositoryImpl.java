@@ -14,7 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MeasurementRepositoryImpl extends Repository implements MeasurementRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementRepository.class);
@@ -44,8 +45,8 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     }
 
     @Override
-    public ArrayList<Measurement> getAll() {
-        ArrayList<Measurement>measurements = new ArrayList<>();
+    public List<Measurement> getAll() {
+        List<Measurement>measurements = new ArrayList<>();
 
         LOGGER.info("Reading all measurements from DB");
         String sql = "SELECT * FROM measurements;";
@@ -67,7 +68,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
 
     @Override
     public String[] getAllNames() {
-        ArrayList<String>names = new ArrayList<>();
+        List<String>names = new ArrayList<>();
 
         LOGGER.info("Reading all measurements names from DB");
         for (Measurement measurement : getAll()){
@@ -88,7 +89,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
 
     @Override
     public String[] getAllValues() {
-        ArrayList<Measurement>measurements = getAll();
+        List<Measurement>measurements = getAll();
         LOGGER.info("Reading all measurements values from DB");
         String[]values = new String[measurements.size()];
         for (int m=0;m<measurements.size();m++){
@@ -101,7 +102,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     public String[] getValues(Measurement measurement) {
         LOGGER.info("Reading values of measurement = {}", measurement);
         if (measurement != null) {
-            ArrayList<String> values = new ArrayList<>();
+            List<String> values = new ArrayList<>();
             for (Measurement m : getAll()) {
                 if (m.getName().equals(measurement.getName())) {
                     values.add(m.getValue());
@@ -115,7 +116,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     public String[] getValues(String name) {
         LOGGER.info("Reading values of measurement with name = {}", name);
         if (name != null && name.length() > 0) {
-            ArrayList<String> values = new ArrayList<>();
+            List<String> values = new ArrayList<>();
             for (Measurement measurement : getAll()) {
                 if (measurement.getName().equals(name)) {
                     values.add(measurement.getValue());
@@ -155,7 +156,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
             statement.setString(3, measurement._getFactorsJson());
             int result = statement.executeUpdate();
 
-            ArrayList<Measurement>measurements = getAll();
+            List<Measurement>measurements = getAll();
             for (Measurement m : measurements) {
                 if (measurement.getName().equals(m.getName())) {
                     Double factor = 1 / measurement._getFactor(m.getValue());
@@ -177,7 +178,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     }
 
     @Override
-    public boolean changeFactors(String measurementValue, HashMap<String, Double> factors) {
+    public boolean changeFactors(String measurementValue, Map<String, Double> factors) {
         if (measurementValue == null || factors == null) return false;
 
         try (Statement statement = getStatement()) {
@@ -268,11 +269,11 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     }
 
     @Override
-    public ArrayList<Measurement> getMeasurements(String name) {
+    public List<Measurement> getMeasurements(String name) {
         if (name == null) return new ArrayList<>();
 
         LOGGER.info("Reading all measurements with name = {} from DB", name);
-        ArrayList<Measurement>measurements = new ArrayList<>();
+        List<Measurement>measurements = new ArrayList<>();
         String sql = "SELECT * FROM measurements WHERE name = '" + name + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()){
@@ -291,7 +292,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     }
 
     @Override
-    public boolean rewrite(ArrayList<Measurement> measurements) {
+    public boolean rewrite(List<Measurement> measurements) {
         if (measurements == null) return false;
 
         String sql = "DELETE FROM measurements;";

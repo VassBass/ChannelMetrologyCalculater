@@ -7,7 +7,7 @@ import repository.CalibratorRepository;
 import repository.impl.CalibratorRepositoryImpl;
 import service.CalibratorService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class CalibratorServiceImpl implements CalibratorService {
     private final CalibratorRepository repository;
@@ -21,7 +21,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public ArrayList<Calibrator> getAll() {
+    public List<Calibrator> getAll() {
         return this.repository.getAll();
     }
 
@@ -66,12 +66,12 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public boolean importData(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator>calibratorsForChange){
+    public boolean importData(List<Calibrator>newCalibrators, List<Calibrator>calibratorsForChange){
         return this.repository.importData(newCalibrators, calibratorsForChange);
     }
 
     @Override
-    public boolean rewrite(ArrayList<Calibrator>calibrators){
+    public boolean rewrite(List<Calibrator>calibrators){
         return this.repository.rewrite(calibrators);
     }
 

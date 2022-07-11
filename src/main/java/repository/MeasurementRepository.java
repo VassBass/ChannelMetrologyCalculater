@@ -2,22 +2,22 @@ package repository;
 
 import model.Measurement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface MeasurementRepository {
-    ArrayList<Measurement>getAll();
+    List<Measurement>getAll();
     String[]getAllNames();
     String[]getAllValues();
     String[]getValues(Measurement measurement);
     String[]getValues(String name);
     Measurement get(String value);
-    ArrayList<Measurement>getMeasurements(String name);
+    List<Measurement>getMeasurements(String name);
 
     boolean add(Measurement measurement);
 
-    boolean rewrite(ArrayList<Measurement>measurements);
-    boolean changeFactors(String measurementValue, HashMap<String, Double>factors);
+    boolean rewrite(List<Measurement>measurements);
+    boolean changeFactors(String measurementValue, Map<String, Double> factors);
     boolean change(Measurement oldMeasurement, Measurement newMeasurement);
 
     boolean delete(Measurement measurement);

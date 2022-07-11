@@ -2,10 +2,10 @@ package service;
 
 import model.Person;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface PersonService {
-    ArrayList<Person> getAll();
+    List<Person> getAll();
 
     /**
      * @return array with first String equals "<Порожньо>"
@@ -18,13 +18,13 @@ public interface PersonService {
     String[] getNamesOfHeadsWithFirstEmptyString();
 
     boolean add(Person person);
-    boolean add(ArrayList<Person>persons);
+    boolean add(List<Person>persons);
     boolean remove(Person person);
     boolean set(Person person);
 
     Person get(int id);
 
     boolean clear();
-    boolean rewrite(ArrayList<Person>persons);
+    boolean rewrite(List<Person>persons);
     boolean resetToDefault();
 }

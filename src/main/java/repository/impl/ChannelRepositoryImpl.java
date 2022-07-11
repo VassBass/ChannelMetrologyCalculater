@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChannelRepositoryImpl extends Repository implements ChannelRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChannelRepository.class);
@@ -95,8 +96,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     }
 
     @Override
-    public ArrayList<Channel> getAll() {
-        ArrayList<Channel>channels = new ArrayList<>();
+    public List<Channel> getAll() {
+        List<Channel>channels = new ArrayList<>();
 
         String sql = "SELECT * FROM channels;";
         LOGGER.info("Reading all channels from DB");
@@ -189,8 +190,8 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     public boolean removeBySensor(Sensor sensor) {
         if (sensor == null) return false;
 
-        ArrayList<Channel>channels = getAll();
-        ArrayList<String> codes = new ArrayList<>();
+        List<Channel>channels = getAll();
+        List<String> codes = new ArrayList<>();
         String sensorName = sensor.getName();
         for (Channel c : channels) {
             String channelSensorName = c.getSensor().getName();
@@ -232,7 +233,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     }
 
     @Override
-    public boolean rewrite(ArrayList<Channel> channels) {
+    public boolean rewrite(List<Channel> channels) {
         if (channels == null) return false;
 
         String sql = "DELETE FROM channels;";
@@ -291,7 +292,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
         if (oldSensor == null || newSensor == null) return false;
         if (oldSensor.isMatch(newSensor)) return true;
 
-        ArrayList<Channel>changedChannels = new ArrayList<>();
+        List<Channel>changedChannels = new ArrayList<>();
 
         Sensor sensor = new Sensor();
         sensor.setType(contains(ignored, Sensor.TYPE) ? oldSensor.getType() : newSensor.getType());
@@ -304,7 +305,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
         sensor.setMeasurement(contains(ignored, Sensor.MEASUREMENT) ? oldSensor.getMeasurement() : newSensor.getMeasurement());
         sensor.setErrorFormula(contains(ignored, Sensor.ERROR_FORMULA) ? oldSensor.getErrorFormula() : newSensor.getErrorFormula());
 
-        ArrayList<Channel>channels = getAll();
+        List<Channel>channels = getAll();
         for (Channel channel : channels) {
             if (channel.getSensor().equals(oldSensor)) {
                 changedChannels.add(channel);
@@ -329,10 +330,10 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     }
 
     @Override
-    public boolean changeSensors(ArrayList<Sensor> sensors) {
+    public boolean changeSensors(List<Sensor> sensors) {
         if (sensors == null) return false;
 
-        ArrayList<Channel>channels = getAll();
+        List<Channel>channels = getAll();
         for (Sensor sensor : sensors){
             for (Channel channel : channels){
                 if (channel.getSensor().equals(sensor)){
@@ -349,9 +350,9 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
         if (oldValue == null || newValue == null) return false;
         if (oldValue.equals(newValue)) return true;
 
-        ArrayList<String>needChangeSensorCodes = new ArrayList<>();
-        ArrayList<Sensor>sensors = new ArrayList<>();
-        ArrayList<Channel>channels = getAll();
+        List<String>needChangeSensorCodes = new ArrayList<>();
+        List<Sensor>sensors = new ArrayList<>();
+        List<Channel>channels = getAll();
         for (Channel c : channels){
             Sensor s = c.getSensor();
             if (s.getMeasurement().equals(oldValue)){
@@ -430,7 +431,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
     }
 
     @Override
-    public boolean importData(ArrayList<Channel> newChannels, ArrayList<Channel> channelsForChange) {
+    public boolean importData(List<Channel> newChannels, List<Channel> channelsForChange) {
         int changeResult = 0;
         int addResult = 0;
         if (channelsForChange != null && !channelsForChange.isEmpty()){

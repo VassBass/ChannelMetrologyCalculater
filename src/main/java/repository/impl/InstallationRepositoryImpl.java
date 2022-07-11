@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class InstallationRepositoryImpl extends Repository implements InstallationRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(InstallationRepository.class);
@@ -40,8 +41,8 @@ public class InstallationRepositoryImpl extends Repository implements Installati
      * @return List of installations or empty list if something go wrong
      */
     @Override
-    public ArrayList<String> getAll() {
-        ArrayList<String>installations = new ArrayList<>();
+    public List<String> getAll() {
+        List<String>installations = new ArrayList<>();
         String sql = "SELECT * FROM installations;";
 
         LOGGER.info("Reading all installations from DB");
@@ -140,7 +141,7 @@ public class InstallationRepositoryImpl extends Repository implements Installati
      * @return true if rewrite was successful or false if not
      */
     @Override
-    public boolean rewrite(ArrayList<String> newList) {
+    public boolean rewrite(List<String> newList) {
         if (newList == null) return false;
 
         String sql = "DELETE FROM installations;";
