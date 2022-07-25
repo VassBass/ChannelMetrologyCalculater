@@ -3,7 +3,7 @@ package service.impl;
 import def.DefaultPersons;
 import model.Person;
 import repository.PersonRepository;
-import repository.impl.PersonRepositoryImpl;
+import repository.impl.PersonRepositorySQLite;
 import service.PersonService;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public class PersonServiceImpl implements PersonService {
     private final PersonRepository repository;
 
     public PersonServiceImpl(){
-        this.repository = new PersonRepositoryImpl();
+        this.repository = new PersonRepositorySQLite();
     }
 
     public PersonServiceImpl(PersonRepository repository){
@@ -47,6 +47,11 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public boolean remove(Person person) {
         return this.repository.remove(person);
+    }
+
+    @Override
+    public boolean set(Person person, Person ignored) {
+        return repository.set(person, ignored);
     }
 
     @Override

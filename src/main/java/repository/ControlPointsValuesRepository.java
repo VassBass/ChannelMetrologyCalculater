@@ -4,15 +4,12 @@ import model.ControlPointsValues;
 
 import java.util.List;
 
-public interface ControlPointsValuesRepository {
-    List<ControlPointsValues> getAll();
+public interface ControlPointsValuesRepository extends Repository<ControlPointsValues>{
     List<ControlPointsValues>getBySensorType(String sensorType);
     ControlPointsValues getControlPointsValues(int id);
-    int add(ControlPointsValues cpv);
+    int addReturnId(ControlPointsValues cpv);
     boolean set(ControlPointsValues cpv);
     boolean changeSensorType(String oldSensorType, String newSensorType);
-    boolean remove(ControlPointsValues cpv);
     boolean removeAll(String sensorType);
-    boolean clear();
     boolean resetToDefault();
 }

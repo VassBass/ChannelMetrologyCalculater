@@ -4,7 +4,7 @@ import def.DefaultCalibrators;
 import model.Calibrator;
 import model.Measurement;
 import repository.CalibratorRepository;
-import repository.impl.CalibratorRepositoryImpl;
+import repository.impl.CalibratorRepositorySQLite;
 import service.CalibratorService;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     private final CalibratorRepository repository;
 
     public CalibratorServiceImpl(){
-        repository = new CalibratorRepositoryImpl();
+        repository = new CalibratorRepositorySQLite();
     }
 
     public CalibratorServiceImpl(CalibratorRepository repository){
@@ -36,8 +36,8 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public boolean remove(String name) {
-        return this.repository.remove(name);
+    public boolean remove(Calibrator calibrator) {
+        return this.repository.remove(calibrator);
     }
 
     @Override

@@ -8,6 +8,7 @@ import converters.VariableConverter;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
+import repository.impl.ChannelRepositorySQLite;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -18,7 +19,7 @@ import java.util.Objects;
  */
 public class Sensor implements Serializable {
     /**
-     * @see repository.impl.ChannelRepositoryImpl#changeSensor(Sensor, Sensor, int...)
+     * @see ChannelRepositorySQLite#changeSensor(Sensor, Sensor, int...)
      */
     public static int TYPE = 0;
     public static int NAME = 1;

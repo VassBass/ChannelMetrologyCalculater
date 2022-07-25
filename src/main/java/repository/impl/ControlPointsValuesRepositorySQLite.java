@@ -5,7 +5,7 @@ import model.ControlPointsValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.ControlPointsValuesRepository;
-import repository.Repository;
+import repository.RepositoryJDBC;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,20 +14,20 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ControlPointsValuesRepositoryImpl extends Repository implements ControlPointsValuesRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ControlPointsValuesRepository.class);
+public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implements ControlPointsValuesRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ControlPointsValuesRepositorySQLite.class);
 
-    public ControlPointsValuesRepositoryImpl(){
+    public ControlPointsValuesRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
-    public ControlPointsValuesRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+    public ControlPointsValuesRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
     }
 
     @Override
-    protected void createTable(){
+    public void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS control_points ("
                 + "id integer NOT NULL UNIQUE"
                 + ", sensor_type text NOT NULL"
@@ -67,6 +67,53 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     }
 
     @Override
+    public boolean add(ControlPointsValues cpv) {
+        if (cpv == null) return false;
+
+        String sql = "INSERT INTO control_points (sensor_type, range_min, range_max, points) VALUES (?, ?, ?, ?);";
+        try (PreparedStatement statement = getPreparedStatementWithKey(sql)){
+            statement.setString(1, cpv.getSensorType());
+            statement.setDouble(2, cpv.getRangeMin());
+            statement.setDouble(3, cpv.getRangeMax());
+            statement.setString(4, cpv._getValuesString());
+
+            if (statement.executeUpdate() > 0){
+                ResultSet key = statement.getGeneratedKeys();
+                int id = key.next() ? key.getInt("id") : -1;
+                if (id > 0) LOGGER.info("Control_points = {} was added successfully", cpv);
+                return id > 0;
+            }else {
+                LOGGER.info("Control_points = {} not added", cpv);
+                return false;
+            }
+
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean set(ControlPointsValues cpv, ControlPointsValues ignored) {
+        if (cpv == null) return false;
+
+        String sql = "UPDATE control_points SET range_min = ?, range_max = ?, points = ? WHERE id = ?;";
+        try (PreparedStatement statement = getPreparedStatement(sql)){
+            statement.setDouble(1, cpv.getRangeMin());
+            statement.setDouble(2, cpv.getRangeMax());
+            statement.setString(3, cpv._getValuesString());
+            statement.setInt(4, cpv.getId());
+
+            int result = statement.executeUpdate();
+            if (result > 0) LOGGER.info("Control_points with id = {} was updated by : {}", cpv.getId(), cpv);
+            return result > 0;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
     public List<ControlPointsValues> getBySensorType(String sensorType) {
         if (sensorType == null) return null;
 
@@ -95,7 +142,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     public ControlPointsValues getControlPointsValues(int id) {
         if (id <= 0) return null;
 
-        String sql = "SELECT * FROM control_points WHERE id = " + id + ";";
+        String sql = "SELECT * FROM control_points WHERE id = " + id + " LIMIT 1;";
         LOGGER.info("Reading control_points from DB with id = {}", id);
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
@@ -118,7 +165,7 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
     }
 
     @Override
-    public int add(ControlPointsValues cpv) {
+    public int addReturnId(ControlPointsValues cpv) {
         if (cpv == null) return -1;
 
         String sql = "INSERT INTO control_points (sensor_type, range_min, range_max, points) VALUES (?, ?, ?, ?);";
@@ -228,6 +275,11 @@ public class ControlPointsValuesRepositoryImpl extends Repository implements Con
             LOGGER.warn("Exception was thrown!", e);
             return false;
         }
+    }
+
+    @Override
+    public boolean rewrite(List<ControlPointsValues> list) {
+        return false;
     }
 
     @Override

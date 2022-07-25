@@ -1,20 +1,20 @@
 package service.impl;
 
 import def.DefaultProcesses;
-import repository.ProcessRepository;
-import repository.impl.ProcessRepositoryImpl;
+import repository.Repository;
+import repository.impl.ProcessRepositorySQLite;
 import service.ProcessService;
 
 import java.util.List;
 
 public class ProcessServiceImpl implements ProcessService {
-    private final ProcessRepository repository;
+    private final Repository<String> repository;
 
     public ProcessServiceImpl(){
-        this.repository = new ProcessRepositoryImpl();
+        this.repository = new ProcessRepositorySQLite();
     }
 
-    public ProcessServiceImpl(ProcessRepository repository){
+    public ProcessServiceImpl(Repository<String> repository){
         this.repository = repository;
     }
 

@@ -1,14 +1,6 @@
 package service;
 
-import java.util.List;
-
-public interface InstallationService {
-    List<String> getAll();
+public interface InstallationService extends Service<String> {
     String[] getAllInStrings();
-    boolean add(String object);
-    boolean remove(String object);
-    boolean set(String oldObject, String newObject);
-    boolean clear();
-    boolean rewrite(List<String>installations);
     boolean resetToDefault();
 }

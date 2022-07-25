@@ -1,20 +1,20 @@
 package service.impl;
 
 import def.DefaultInstallations;
-import repository.InstallationRepository;
-import repository.impl.InstallationRepositoryImpl;
+import repository.Repository;
+import repository.impl.InstallationRepositorySQLite;
 import service.InstallationService;
 
 import java.util.List;
 
 public class InstallationServiceImpl implements InstallationService {
-    private final InstallationRepository repository;
+    private final Repository<String> repository;
 
     public InstallationServiceImpl(){
-        this.repository = new InstallationRepositoryImpl();
+        this.repository = new InstallationRepositorySQLite();
     }
 
-    public InstallationServiceImpl(InstallationRepository repository){
+    public InstallationServiceImpl(Repository<String> repository){
         this.repository = repository;
     }
 

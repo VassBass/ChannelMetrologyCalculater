@@ -2,7 +2,7 @@ package service.impl;
 
 import model.ControlPointsValues;
 import repository.ControlPointsValuesRepository;
-import repository.impl.ControlPointsValuesRepositoryImpl;
+import repository.impl.ControlPointsValuesRepositorySQLite;
 import service.ControlPointsValuesService;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     private final ControlPointsValuesRepository repository;
 
     public ControlPointsValuesServiceImpl(){
-        this.repository = new ControlPointsValuesRepositoryImpl();
+        this.repository = new ControlPointsValuesRepositorySQLite();
     }
 
     public ControlPointsValuesServiceImpl(ControlPointsValuesRepository repository){
@@ -21,6 +21,11 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     @Override
     public List<ControlPointsValues> getAll() {
         return this.repository.getAll();
+    }
+
+    @Override
+    public boolean add(ControlPointsValues cpv) {
+        return repository.add(cpv);
     }
 
     @Override
@@ -34,8 +39,8 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public int add(ControlPointsValues controlPointsValues) {
-        return this.repository.add(controlPointsValues);
+    public int addReturnId(ControlPointsValues controlPointsValues) {
+        return this.repository.addReturnId(controlPointsValues);
     }
 
     @Override
@@ -54,6 +59,11 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
+    public boolean set(ControlPointsValues cpv, ControlPointsValues ignored) {
+        return repository.set(cpv, ignored);
+    }
+
+    @Override
     public boolean removeAll(String sensorType) {
         return this.repository.removeAll(sensorType);
     }
@@ -61,6 +71,11 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     @Override
     public boolean clear() {
         return this.repository.clear();
+    }
+
+    @Override
+    public boolean rewrite(List<ControlPointsValues> cpvList) {
+        return repository.rewrite(cpvList);
     }
 
     @Override

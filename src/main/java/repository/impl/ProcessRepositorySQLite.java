@@ -2,8 +2,8 @@ package repository.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.InstallationRepository;
 import repository.Repository;
+import repository.RepositoryJDBC;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,25 +11,25 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InstallationRepositoryImpl extends Repository implements InstallationRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(InstallationRepository.class);
+public class ProcessRepositorySQLite extends RepositoryJDBC implements Repository<String> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessRepositorySQLite.class);
 
-    public InstallationRepositoryImpl(){
+    public ProcessRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
 
-    public InstallationRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+    public ProcessRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
     }
 
     /**
-     * Creates table "installations" if it not exists
+     * Creates table "processes" if it not exists
      */
     @Override
-    protected void createTable(){
-        String sql = "CREATE TABLE IF NOT EXISTS installations (installation text NOT NULL UNIQUE, PRIMARY KEY (\"installation\"));";
+    public void createTable(){
+        String sql = "CREATE TABLE IF NOT EXISTS processes (process text NOT NULL UNIQUE, PRIMARY KEY (\"process\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);
         } catch (SQLException e) {
@@ -38,39 +38,39 @@ public class InstallationRepositoryImpl extends Repository implements Installati
     }
 
     /**
-     * @return List of installations or empty list if something go wrong
+     * @return List of processes or empty list if something go wrong
      */
     @Override
     public List<String> getAll() {
-        List<String>installations = new ArrayList<>();
-        String sql = "SELECT * FROM installations;";
+        List<String>areas = new ArrayList<>();
+        String sql = "SELECT * FROM processes;";
 
-        LOGGER.info("Reading all installations from DB");
+        LOGGER.info("Reading all processes from DB");
         try (ResultSet resultSet = getResultSet(sql)){
 
             while (resultSet.next()){
-                installations.add(resultSet.getString("installation"));
+                areas.add(resultSet.getString("process"));
             }
 
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
         }
 
-        return installations;
+        return areas;
     }
 
     /**
-     * @param object installation for adding
-     * @return true if installation was added or false if not
+     * @param object process for adding
+     * @return true if process was added or false if not
      */
     @Override
     public boolean add(String object) {
         if (object == null) return false;
 
-        String sql = "INSERT INTO installations (installation) VALUES ('" + object + "');";
+        String sql = "INSERT INTO processes VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Installation = {} was added successfully", object);
+            if (result > 0) LOGGER.info("Process = {} was added successfully", object);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -88,10 +88,10 @@ public class InstallationRepositoryImpl extends Repository implements Installati
         if (oldObject == null || newObject == null) return false;
         if (oldObject.equals(newObject)) return true;
 
-        String sql = "UPDATE installations SET installation = '" + newObject + "' WHERE installation = '" + oldObject + "';";
+        String sql = "UPDATE processes SET process = '" + newObject + "' WHERE process = '" + oldObject + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Installation = {} was replaced by installation = {} successfully", oldObject, newObject);
+            if (result > 0) LOGGER.info("Process = {} was replaced by process = {} successfully", oldObject, newObject);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -107,10 +107,10 @@ public class InstallationRepositoryImpl extends Repository implements Installati
     public boolean remove(String object) {
         if (object == null) return false;
 
-        String sql = "DELETE FROM installations WHERE installation = '" + object + "';";
+        String sql = "DELETE FROM processes WHERE process = '" + object + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Installation = {} was removed successfully", object);
+            if (result > 0) LOGGER.info("Process = {} was removed successfully", object);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -119,15 +119,15 @@ public class InstallationRepositoryImpl extends Repository implements Installati
     }
 
     /**
-     * Deletes all installations from DB
+     * Deletes all processes from DB
      * @return true if delete was successful or false if not
      */
     @Override
     public boolean clear() {
-        String sql = "DELETE FROM installations;";
+        String sql = "DELETE FROM processes;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Installations list in DB was cleared successfully");
+            LOGGER.info("Processes list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -136,7 +136,7 @@ public class InstallationRepositoryImpl extends Repository implements Installati
     }
 
     /**
-     * Rewrites all installations in DB
+     * Rewrites all processes in DB
      * @param newList for rewriting
      * @return true if rewrite was successful or false if not
      */
@@ -144,14 +144,14 @@ public class InstallationRepositoryImpl extends Repository implements Installati
     public boolean rewrite(List<String> newList) {
         if (newList == null) return false;
 
-        String sql = "DELETE FROM installations;";
+        String sql = "DELETE FROM processes;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Installations list in DB was cleared successfully");
+            LOGGER.info("Processes list in DB was cleared successfully");
 
             if (!newList.isEmpty()) {
                 StringBuilder sqlBuilder = new StringBuilder();
-                sqlBuilder.append("INSERT INTO installations(installation) VALUES ");
+                sqlBuilder.append("INSERT INTO processes VALUES ");
                 for (String a : newList) {
                     sqlBuilder.append("('").append(a).append("'),");
                 }
@@ -160,7 +160,7 @@ public class InstallationRepositoryImpl extends Repository implements Installati
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old installations has been rewritten to the new one:\n{}", newList);
+            LOGGER.info("The list of old processes has been rewritten to the new one:\n{}", newList);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);

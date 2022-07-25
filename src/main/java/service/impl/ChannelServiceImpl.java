@@ -3,7 +3,7 @@ package service.impl;
 import model.Channel;
 import model.Sensor;
 import repository.ChannelRepository;
-import repository.impl.ChannelRepositoryImpl;
+import repository.impl.ChannelRepositorySQLite;
 import service.ChannelService;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public class ChannelServiceImpl implements ChannelService {
     private final ChannelRepository repository;
 
     public ChannelServiceImpl(){
-        this.repository = new ChannelRepositoryImpl();
+        this.repository = new ChannelRepositorySQLite();
     }
 
     public ChannelServiceImpl(ChannelRepository repository){

@@ -3,7 +3,7 @@ package service.impl;
 import def.DefaultMeasurements;
 import model.Measurement;
 import repository.MeasurementRepository;
-import repository.impl.MeasurementRepositoryImpl;
+import repository.impl.MeasurementRepositorySQLite;
 import service.MeasurementService;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     private final MeasurementRepository repository;
 
     public MeasurementServiceImpl(){
-        this.repository = new MeasurementRepositoryImpl();
+        this.repository = new MeasurementRepositorySQLite();
     }
 
     public MeasurementServiceImpl(MeasurementRepository repository){
@@ -56,8 +56,8 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public boolean delete(Measurement measurement) {
-        return this.repository.delete(measurement);
+    public boolean remove(Measurement measurement) {
+        return this.repository.remove(measurement);
     }
 
     @Override
@@ -66,13 +66,18 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public boolean change(Measurement oldMeasurement, Measurement newMeasurement) {
-        return this.repository.change(oldMeasurement, newMeasurement);
+    public boolean set(Measurement oldMeasurement, Measurement newMeasurement) {
+        return this.repository.set(oldMeasurement, newMeasurement);
     }
 
     @Override
     public boolean clear() {
         return this.repository.clear();
+    }
+
+    @Override
+    public boolean rewrite(List<Measurement> measurements) {
+        return repository.rewrite(measurements);
     }
 
     @Override

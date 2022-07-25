@@ -1,12 +1,12 @@
 package service;
 
 import model.Measurement;
+import repository.impl.MeasurementRepositorySQLite;
 
 import java.util.List;
 import java.util.Map;
 
-public interface MeasurementService {
-    boolean add(Measurement measurement);
+public interface MeasurementService extends Service<Measurement> {
     String[]getAllNames();
     String[]getAllValues();
 
@@ -16,7 +16,7 @@ public interface MeasurementService {
      *
      * @see service.impl.MeasurementServiceImpl#getValues(Measurement)
      * @see repository.MeasurementRepository#getValues(Measurement)
-     * @see repository.impl.MeasurementRepositoryImpl#getValues(Measurement)
+     * @see MeasurementRepositorySQLite#getValues(Measurement)
      */
     String[]getValues(Measurement measurement);
 
@@ -26,11 +26,9 @@ public interface MeasurementService {
      *
      * @see service.impl.MeasurementServiceImpl#getValues(String)
      * @see repository.MeasurementRepository#getValues(String)
-     * @see repository.impl.MeasurementRepositoryImpl#getValues(String)
+     * @see MeasurementRepositorySQLite#getValues(String)
      */
     String[]getValues(String name);
-
-    List<Measurement> getAll();
 
     /**
      *
@@ -39,17 +37,7 @@ public interface MeasurementService {
      */
     Measurement get(String value);
 
-    /**
-     * Remove measurement from list and DB
-     * if measurement == null or measurement not exists in measurements list the method does nothing
-     * @param measurement to delete
-     */
-    boolean delete(Measurement measurement);
-
     boolean changeFactors(String measurementValue, Map<String,Double> factors);
-    boolean change(Measurement oldMeasurement, Measurement newMeasurement);
-
-    boolean clear();
 
     /**
      *

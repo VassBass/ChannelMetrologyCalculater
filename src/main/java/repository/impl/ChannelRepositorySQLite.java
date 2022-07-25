@@ -6,7 +6,7 @@ import model.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.ChannelRepository;
-import repository.Repository;
+import repository.RepositoryJDBC;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -16,20 +16,20 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChannelRepositoryImpl extends Repository implements ChannelRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ChannelRepository.class);
+public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ChannelRepositorySQLite.class);
 
-    public ChannelRepositoryImpl(){
+    public ChannelRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
-    public ChannelRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+    public ChannelRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
     }
 
     @Override
-    protected void createTable(){
+    public void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS channels ("
                 + "code text NOT NULL UNIQUE"
                 + ", name text NOT NULL"
@@ -63,7 +63,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
         if (code == null) return null;
 
         LOGGER.info("Reading channel with code = {} from DB", code);
-        String sql = "SELECT * FROM channels WHERE code = '" + code + "';";
+        String sql = "SELECT * FROM channels WHERE code = '" + code + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
                 Channel channel = new Channel(code);
@@ -513,7 +513,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
 
     @Override
     public boolean isExist(@Nonnull String code) {
-        String sql = "SELECT * FROM channels WHERE code = '" + code + "';";
+        String sql = "SELECT code FROM channels WHERE code = '" + code + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){
@@ -527,7 +527,7 @@ public class ChannelRepositoryImpl extends Repository implements ChannelReposito
         if (oldChannelCode == null || newChannelCode == null) return true;
         if (oldChannelCode.equals(newChannelCode)) return false;
 
-        String sql = "SELECT * FROM channels WHERE code = '" + newChannelCode + "';";
+        String sql = "SELECT code FROM channels WHERE code = '" + newChannelCode + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){

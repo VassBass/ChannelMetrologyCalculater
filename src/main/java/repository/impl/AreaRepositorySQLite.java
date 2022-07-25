@@ -2,8 +2,8 @@ package repository.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.DepartmentRepository;
 import repository.Repository;
+import repository.RepositoryJDBC;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,25 +11,25 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DepartmentRepositoryImpl extends Repository implements DepartmentRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentRepository.class);
+public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<String> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AreaRepositorySQLite.class);
 
-    public DepartmentRepositoryImpl(){
+    public AreaRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
 
-    public DepartmentRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+    public AreaRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
     }
 
     /**
-     * Creates table "departments" if it not exists
+     * Creates table "areas" if it not exists
      */
     @Override
-    protected void createTable(){
-        String sql = "CREATE TABLE IF NOT EXISTS departments (department text NOT NULL UNIQUE, PRIMARY KEY (\"department\"));";
+    public void createTable(){
+        String sql = "CREATE TABLE IF NOT EXISTS areas (area text NOT NULL UNIQUE, PRIMARY KEY (\"area\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);
         } catch (SQLException e) {
@@ -38,39 +38,39 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
     }
 
     /**
-     * @return List of departments or empty list if something go wrong
+     * @return List of areas or empty list if something go wrong
      */
     @Override
     public List<String> getAll() {
-        List<String>departments = new ArrayList<>();
-        String sql = "SELECT * FROM departments;";
+        List<String>areas = new ArrayList<>();
+        String sql = "SELECT * FROM areas;";
 
-        LOGGER.info("Reading all departments from DB");
+        LOGGER.info("Reading all areas from DB");
         try (ResultSet resultSet = getResultSet(sql)){
 
             while (resultSet.next()){
-                departments.add(resultSet.getString("department"));
+                areas.add(resultSet.getString("area"));
             }
 
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
         }
 
-        return departments;
+        return areas;
     }
 
     /**
-     * @param object department for adding
-     * @return true if department was added or false if not
+     * @param object area for adding
+     * @return true if area was added or false if not
      */
     @Override
     public boolean add(String object) {
         if (object == null) return false;
 
-        String sql = "INSERT INTO departments (department) VALUES ('" + object + "');";
+        String sql = "INSERT INTO areas VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Department = {} was added successfully", object);
+            if (result > 0) LOGGER.info("Area = {} was added successfully", object);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -88,10 +88,10 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
         if (oldObject == null || newObject == null) return false;
         if (oldObject.equals(newObject)) return true;
 
-        String sql = "UPDATE departments SET department = '" + newObject + "' WHERE department = '" + oldObject + "';";
+        String sql = "UPDATE areas SET area = '" + newObject + "' WHERE area = '" + oldObject + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Department = {} was replaced by department = {} successfully", oldObject, newObject);
+            if (result > 0) LOGGER.info("Area = {} was replaced by area = {} successfully", oldObject, newObject);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -107,10 +107,10 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
     public boolean remove(String object) {
         if (object == null) return false;
 
-        String sql = "DELETE FROM departments WHERE department = '" + object + "';";
+        String sql = "DELETE FROM areas WHERE area = '" + object + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Department = {} was removed successfully", object);
+            if (result > 0) LOGGER.info("Area = {} was removed successfully", object);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -119,15 +119,15 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
     }
 
     /**
-     * Deletes all departments from DB
+     * Deletes all areas from DB
      * @return true if delete was successful or false if not
      */
     @Override
     public boolean clear() {
-        String sql = "DELETE FROM departments;";
+        String sql = "DELETE FROM areas;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Departments list in DB was cleared successfully");
+            LOGGER.info("Areas list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -135,18 +135,23 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
         }
     }
 
+    /**
+     * Rewrites all areas in DB
+     * @param newList for rewriting
+     * @return true if rewrite was successful or false if not
+     */
     @Override
     public boolean rewrite(List<String> newList) {
         if (newList == null) return false;
 
-        String sql = "DELETE FROM departments;";
+        String sql = "DELETE FROM areas;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Departments list in DB was cleared successfully");
+            LOGGER.info("Areas list in DB was cleared successfully");
 
             if (!newList.isEmpty()) {
                 StringBuilder sqlBuilder = new StringBuilder();
-                sqlBuilder.append("INSERT INTO departments(department) VALUES ");
+                sqlBuilder.append("INSERT INTO areas VALUES ");
                 for (String a : newList) {
                     sqlBuilder.append("('").append(a).append("'),");
                 }
@@ -155,7 +160,7 @@ public class DepartmentRepositoryImpl extends Repository implements DepartmentRe
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old departments has been rewritten to the new one:\n{}", newList);
+            LOGGER.info("The list of old areas has been rewritten to the new one:\n{}", newList);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);

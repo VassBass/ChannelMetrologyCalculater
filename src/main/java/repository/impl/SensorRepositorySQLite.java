@@ -3,7 +3,7 @@ package repository.impl;
 import model.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.Repository;
+import repository.RepositoryJDBC;
 import repository.SensorRepository;
 
 import java.sql.PreparedStatement;
@@ -13,20 +13,20 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SensorRepositoryImpl extends Repository implements SensorRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SensorRepository.class);
+public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SensorRepositorySQLite.class);
 
-    public SensorRepositoryImpl(){
+    public SensorRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
-    public SensorRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+    public SensorRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
     }
 
     @Override
-    protected void createTable(){
+    public void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS sensors ("
                 + "name text NOT NULL UNIQUE"
                 + ", type text NOT NULL"
@@ -168,7 +168,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
         if (sensorName == null) return null;
 
         LOGGER.info("Reading sensor with name = {} from DB", sensorName);
-        String sql = "SELECT * FROM sensors WHERE name = '" + sensorName + "';";
+        String sql = "SELECT * FROM sensors WHERE name = '" + sensorName + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
                 Sensor sensor = new Sensor();
@@ -332,7 +332,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     public boolean isLastInMeasurement(Sensor sensor) {
         if (sensor == null) return true;
 
-        String sql = "SELECT * FROM sensors WHERE measurement = '" + sensor.getMeasurement() + "';";
+        String sql = "SELECT name FROM sensors WHERE measurement = '" + sensor.getMeasurement() + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             int n = 0;
             while (resultSet.next()) {
@@ -421,7 +421,7 @@ public class SensorRepositoryImpl extends Repository implements SensorRepository
     public boolean isExists(String sensorName) {
         if (sensorName == null) return true;
 
-        String sql = "SELECT * FROM sensors WHERE name = '" + sensorName + "';";
+        String sql = "SELECT name FROM sensors WHERE name = '" + sensorName + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){

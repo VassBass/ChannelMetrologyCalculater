@@ -4,7 +4,7 @@ import model.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.PersonRepository;
-import repository.Repository;
+import repository.RepositoryJDBC;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,22 +13,22 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonRepositoryImpl extends Repository implements PersonRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersonRepository.class);
+public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersonRepositorySQLite.class);
 
     private static final String EMPTY_ARRAY = "<Порожньо>";
 
-    public PersonRepositoryImpl(){
+    public PersonRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
-    public PersonRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+    public PersonRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
     }
 
     @Override
-    protected void createTable(){
+    public void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS persons ("
                 + "id integer NOT NULL UNIQUE"
                 + ", name text NOT NULL"
@@ -70,9 +70,20 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     public String[] getAllNamesWithFirstEmptyString() {
         List<String>names = new ArrayList<>();
         names.add(EMPTY_ARRAY);
-        for (Person person : getAll()){
-            names.add(person._getFullName());
+        String sql = "SELECT name, surname, patronymic FROM persons;";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                Person person = new Person();
+                person.setName(resultSet.getString("name"));
+                person.setSurname(resultSet.getString("surname"));
+                person.setPatronymic(resultSet.getString("patronymic"));
+
+                names.add(person._getFullName());
+            }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
+
         return names.toArray(new String[0]);
     }
 
@@ -80,11 +91,20 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     public String[] getNamesOfHeadsWithFirstEmptyString() {
         List<String>heads = new ArrayList<>();
         heads.add(EMPTY_ARRAY);
-        for (Person worker : getAll()){
-            if (worker.getPosition().equals(Person.HEAD_OF_DEPARTMENT_ASUTP)){
-                heads.add(worker._getFullName());
+        String sql = "SELECT name, surname. patronymic FROM persons WHERE position = '" + Person.HEAD_OF_DEPARTMENT_ASUTP + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                Person person = new Person();
+                person.setName(resultSet.getString("name"));
+                person.setSurname(resultSet.getString("surname"));
+                person.setPatronymic(resultSet.getString("patronymic"));
+
+                heads.add(person._getFullName());
             }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
+
         return heads.toArray(new String[0]);
     }
 
@@ -92,7 +112,7 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
     public Person get(int id) {
         if (id < 0) return null;
         LOGGER.info("Reading person with id = {} from DB", id);
-        String sql = "SELECT * FROM persons WHERE id = " + id + ";";
+        String sql = "SELECT * FROM persons WHERE id = " + id + " LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
                 Person person = new Person(resultSet.getInt("id"));
@@ -125,6 +145,27 @@ public class PersonRepositoryImpl extends Repository implements PersonRepository
 
             int result = statement.executeUpdate();
             if (result > 0) LOGGER.info("Person = {} was added successfully", person._getFullName());
+            return true;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean set(Person person, Person ignored) {
+        if (person == null) return false;
+
+        String sql = "UPDATE persons SET name = ?, surname = ?, patronymic = ?, position = ? WHERE id = ?;";
+        try (PreparedStatement statement = getPreparedStatement(sql)){
+            statement.setString(1, person.getName());
+            statement.setString(2, person.getSurname());
+            statement.setString(3, person.getPatronymic());
+            statement.setString(4, person.getPosition());
+            statement.setInt(5, person.getId());
+
+            int result = statement.executeUpdate();
+            if (result > 0) LOGGER.info("Person was replaced by:\n{}\nsuccessfully", person);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);

@@ -1,21 +1,21 @@
 package service.impl;
 
 import def.DefaultAreas;
-import repository.AreaRepository;
-import repository.impl.AreaRepositoryImpl;
+import repository.Repository;
+import repository.impl.AreaRepositorySQLite;
 import service.AreaService;
 
 import java.util.List;
 
 public class AreaServiceImpl implements AreaService {
 
-    private final AreaRepository repository;
+    private final Repository<String> repository;
 
     public AreaServiceImpl(){
-        repository = new AreaRepositoryImpl();
+        repository = new AreaRepositorySQLite();
     }
 
-    public AreaServiceImpl(AreaRepository repository){
+    public AreaServiceImpl(Repository<String> repository){
         this.repository = repository;
     }
 

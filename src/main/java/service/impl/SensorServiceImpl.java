@@ -3,7 +3,7 @@ package service.impl;
 import def.DefaultSensors;
 import model.Sensor;
 import repository.SensorRepository;
-import repository.impl.SensorRepositoryImpl;
+import repository.impl.SensorRepositorySQLite;
 import service.SensorService;
 
 import java.util.List;
@@ -12,7 +12,7 @@ public class SensorServiceImpl implements SensorService {
     private final SensorRepository repository;
 
     public SensorServiceImpl(){
-        this.repository = new SensorRepositoryImpl();
+        this.repository = new SensorRepositorySQLite();
     }
 
     public SensorServiceImpl(SensorRepository repository){

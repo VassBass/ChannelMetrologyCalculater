@@ -6,7 +6,7 @@ import model.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.CalibratorRepository;
-import repository.Repository;
+import repository.RepositoryJDBC;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,20 +15,20 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CalibratorRepositoryImpl extends Repository implements CalibratorRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CalibratorRepository.class);
+public class CalibratorRepositorySQLite extends RepositoryJDBC implements CalibratorRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CalibratorRepositorySQLite.class);
 
-    public CalibratorRepositoryImpl(){
+    public CalibratorRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
-    public CalibratorRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+    public CalibratorRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
     }
 
     @Override
-    protected void createTable() {
+    public void createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
                 + "name text NOT NULL UNIQUE"
                 + ", type text NOT NULL"
@@ -85,7 +85,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
         List<String>calibrators = new ArrayList<>();
 
         LOGGER.info("Reading all calibrators names from DB");
-        String sql = "SELECT * FROM calibrators WHERE measurement = '" + measurement + "';";
+        String sql = "SELECT name FROM calibrators WHERE measurement = '" + measurement + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             calibrators.add(resultSet.getString("name"));
         }catch (SQLException e){
@@ -100,7 +100,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
         if (name == null) return null;
 
         LOGGER.info("Reading calibrator with name = {} from DB", name);
-        String sql = "SELECT * FROM calibrators WHERE name = '" + name + "';";
+        String sql = "SELECT * FROM calibrators WHERE name = '" + name + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
                 Calibrator calibrator = new Calibrator();
@@ -152,16 +152,16 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     }
 
     @Override
-    public boolean remove(String name) {
-        if (name == null) return false;
+    public boolean remove(Calibrator calibrator) {
+        if (calibrator == null) return false;
 
-        String sql = "DELETE FROM calibrators WHERE name = '" + name + "';";
+        String sql = "DELETE FROM calibrators WHERE name = '" + calibrator.getName() + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
             if (result > 0){
-                LOGGER.info("Calibrator = {} was removed successfully", name);
+                LOGGER.info("Calibrator = {} was removed successfully", calibrator.getName());
             }else {
-                LOGGER.info("Calibrator with name = {} not found", name);
+                LOGGER.info("Calibrator with name = {} not found", calibrator.getName());
             }
             return true;
         }catch (SQLException e){
@@ -340,7 +340,7 @@ public class CalibratorRepositoryImpl extends Repository implements CalibratorRe
     public boolean isExists(Calibrator calibrator) {
         if (calibrator == null) return true;
 
-        String sql = "SELECT * FROM calibrators WHERE name = '" + calibrator.getName() + "';";
+        String sql = "SELECT name FROM calibrators WHERE name = '" + calibrator.getName() + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){

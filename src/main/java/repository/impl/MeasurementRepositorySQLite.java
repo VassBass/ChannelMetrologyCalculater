@@ -7,7 +7,7 @@ import model.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.MeasurementRepository;
-import repository.Repository;
+import repository.RepositoryJDBC;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,20 +17,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class MeasurementRepositoryImpl extends Repository implements MeasurementRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementRepository.class);
+public class MeasurementRepositorySQLite extends RepositoryJDBC implements MeasurementRepository {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementRepositorySQLite.class);
 
-    public MeasurementRepositoryImpl(){
+    public MeasurementRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
-    public MeasurementRepositoryImpl(String dbUrl, String dbUser, String dbPassword){
+    public MeasurementRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
     }
 
     @Override
-    protected void createTable(){
+    public void createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS measurements ("
                 + "name text NOT NULL"
                 + ", value text NOT NULL UNIQUE"
@@ -70,66 +70,80 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     public String[] getAllNames() {
         List<String>names = new ArrayList<>();
 
-        LOGGER.info("Reading all measurements names from DB");
-        for (Measurement measurement : getAll()){
-            String name = measurement.getName();
-            boolean exist = false;
-            for (String n : names){
-                if (n.equals(name)) {
-                    exist = true;
-                    break;
-                }
-            }
-            if (!exist){
+        LOGGER.info("Reading all measurements from DB");
+        String sql = "SELECT DISTINCT name FROM measurements;";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                String name = resultSet.getString("name");
                 names.add(name);
             }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
+
         return names.toArray(new String[0]);
     }
 
     @Override
     public String[] getAllValues() {
-        List<Measurement>measurements = getAll();
-        LOGGER.info("Reading all measurements values from DB");
-        String[]values = new String[measurements.size()];
-        for (int m=0;m<measurements.size();m++){
-            values[m] = measurements.get(m).getValue();
+        List<String>values = new ArrayList<>();
+
+        LOGGER.info("Reading all measurements from DB");
+        String sql = "SELECT value FROM measurements;";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                String val = resultSet.getString("value");
+                values.add(val);
+            }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
         }
-        return values;
+
+        return values.toArray(new String[0]);
     }
 
     @Override
     public String[] getValues(Measurement measurement) {
-        LOGGER.info("Reading values of measurement = {}", measurement);
-        if (measurement != null) {
-            List<String> values = new ArrayList<>();
-            for (Measurement m : getAll()) {
-                if (m.getName().equals(measurement.getName())) {
-                    values.add(m.getValue());
-                }
+        List<String>values = new ArrayList<>();
+        if (measurement == null) return values.toArray(new String[0]);
+
+        LOGGER.info("Reading all measurements from DB");
+        String sql = "SELECT value FROM measurements WHERE name = '" + measurement.getName() + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                String val = resultSet.getString("value");
+                values.add(val);
             }
-            return values.toArray(new String[0]);
-        } else return null;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+        }
+
+        return values.toArray(new String[0]);
     }
 
     @Override
     public String[] getValues(String name) {
-        LOGGER.info("Reading values of measurement with name = {}", name);
-        if (name != null && name.length() > 0) {
-            List<String> values = new ArrayList<>();
-            for (Measurement measurement : getAll()) {
-                if (measurement.getName().equals(name)) {
-                    values.add(measurement.getValue());
-                }
+        List<String>values = new ArrayList<>();
+        if (name == null || name.isEmpty()) return values.toArray(new String[0]);
+
+        LOGGER.info("Reading all measurements from DB");
+        String sql = "SELECT value FROM measurements WHERE name = '" + name + "';";
+        try (ResultSet resultSet = getResultSet(sql)){
+            while (resultSet.next()){
+                String val = resultSet.getString("value");
+                values.add(val);
             }
-            return values.toArray(new String[0]);
-        }else return null;
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+        }
+
+        return values.toArray(new String[0]);
     }
 
     @Override
     public Measurement get(String value) {
         LOGGER.info("Reading measurement with value = {} from DB", value);
-        String sql = "SELECT * FROM measurements WHERE value = '" + value + "';";
+        String sql = "SELECT * FROM measurements WHERE value = '" + value + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
                 Measurement measurement = new Measurement();
@@ -196,7 +210,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     }
 
     @Override
-    public boolean change(Measurement oldMeasurement, Measurement newMeasurement) {
+    public boolean set(Measurement oldMeasurement, Measurement newMeasurement) {
         if (oldMeasurement == null || newMeasurement == null) return false;
         if (oldMeasurement.isMatch(newMeasurement)) return true;
 
@@ -231,7 +245,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     }
 
     @Override
-    public boolean delete(Measurement measurement) {
+    public boolean remove(Measurement measurement) {
         if (measurement == null) return false;
 
         String sql = "DELETE FROM measurements WHERE value = '" + measurement.getValue() + "';";
@@ -329,8 +343,9 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
             int number = 0;
             for (Measurement measurement : getAll()) {
                 if (measurement.getName().equals(measurementName)) number++;
+                if (number > 1) return false;
             }
-            return number == 1;
+            return true;
         }else return false;
     }
 
@@ -338,7 +353,7 @@ public class MeasurementRepositoryImpl extends Repository implements Measurement
     public boolean exists(String measurementValue) {
         if (measurementValue == null) return false;
 
-        String sql = "SELECT * FROM measurements WHERE value = '" + measurementValue + "';";
+        String sql = "SELECT * FROM measurements WHERE value = '" + measurementValue + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){

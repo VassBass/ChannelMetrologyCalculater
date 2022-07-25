@@ -1,20 +1,20 @@
 package service.impl;
 
 import def.DefaultDepartments;
-import repository.DepartmentRepository;
-import repository.impl.DepartmentRepositoryImpl;
+import repository.Repository;
+import repository.impl.DepartmentRepositorySQLite;
 import service.DepartmentService;
 
 import java.util.List;
 
 public class DepartmentServiceImpl implements DepartmentService {
-    private final DepartmentRepository repository;
+    private final Repository<String> repository;
 
     public DepartmentServiceImpl(){
-        this.repository = new DepartmentRepositoryImpl();
+        this.repository = new DepartmentRepositorySQLite();
     }
 
-    public DepartmentServiceImpl(DepartmentRepository repository){
+    public DepartmentServiceImpl(Repository<String> repository){
         this.repository = repository;
     }
 
