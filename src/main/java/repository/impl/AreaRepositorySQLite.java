@@ -28,12 +28,14 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<S
      * Creates table "areas" if it not exists
      */
     @Override
-    public void createTable(){
+    public boolean createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS areas (area text NOT NULL UNIQUE, PRIMARY KEY (\"area\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("areas");
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 

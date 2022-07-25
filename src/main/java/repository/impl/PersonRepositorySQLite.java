@@ -28,7 +28,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public void createTable(){
+    public boolean createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS persons ("
                 + "id integer NOT NULL UNIQUE"
                 + ", name text NOT NULL"
@@ -39,8 +39,10 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
                 + ");";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("persons");
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 

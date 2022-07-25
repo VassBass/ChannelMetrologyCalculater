@@ -27,7 +27,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public void createTable(){
+    public boolean createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS control_points ("
                 + "id integer NOT NULL UNIQUE"
                 + ", sensor_type text NOT NULL"
@@ -38,8 +38,10 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
                 + ");";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("control_points");
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 

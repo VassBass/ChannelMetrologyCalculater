@@ -28,7 +28,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public void createTable() {
+    public boolean createTable() {
         String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
                 + "name text NOT NULL UNIQUE"
                 + ", type text NOT NULL"
@@ -43,8 +43,10 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                 + ");";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("calibrators");
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 

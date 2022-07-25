@@ -29,7 +29,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public void createTable(){
+    public boolean createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS channels ("
                 + "code text NOT NULL UNIQUE"
                 + ", name text NOT NULL"
@@ -53,8 +53,10 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                 + ");";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("channels");
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 

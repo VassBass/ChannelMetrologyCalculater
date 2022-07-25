@@ -26,7 +26,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public void createTable(){
+    public boolean createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS sensors ("
                 + "name text NOT NULL UNIQUE"
                 + ", type text NOT NULL"
@@ -40,8 +40,10 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
                 + ");";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("sensors");
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 

@@ -3,7 +3,7 @@ package repository;
 import java.util.List;
 
 public interface Repository<O> {
-    void createTable();
+    boolean createTable();
     List<O>getAll();
     boolean add(O o);
     boolean set(O oldO, O newO);

@@ -30,7 +30,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public void createTable(){
+    public boolean createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS measurements ("
                 + "name text NOT NULL"
                 + ", value text NOT NULL UNIQUE"
@@ -39,8 +39,10 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
                 + ");";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("measurements");
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 

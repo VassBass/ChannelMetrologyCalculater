@@ -28,12 +28,14 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Repo
      * Creates table "installations" if it not exists
      */
     @Override
-    public void createTable(){
+    public boolean createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS installations (installation text NOT NULL UNIQUE, PRIMARY KEY (\"installation\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("installations");
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 

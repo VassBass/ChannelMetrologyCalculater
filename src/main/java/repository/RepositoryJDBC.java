@@ -85,4 +85,13 @@ public abstract class RepositoryJDBC {
         this.dbUser = dbUser;
         this.dbPassword = dbPassword;
     }
+
+    public boolean isTableExists(String tableName) throws SQLException {
+        try (Connection connection = getConnection()) {
+            DatabaseMetaData dbm = connection.getMetaData();
+            try (ResultSet result = dbm.getTables(null, null, tableName, null)) {
+                return result.next();
+            }
+        }
+    }
 }

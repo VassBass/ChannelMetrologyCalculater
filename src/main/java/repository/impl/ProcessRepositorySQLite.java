@@ -28,12 +28,14 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements Repositor
      * Creates table "processes" if it not exists
      */
     @Override
-    public void createTable(){
+    public boolean createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS processes (process text NOT NULL UNIQUE, PRIMARY KEY (\"process\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("processes");
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 
