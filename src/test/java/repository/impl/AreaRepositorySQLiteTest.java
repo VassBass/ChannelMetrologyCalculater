@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -38,7 +40,7 @@ public class AreaRepositorySQLiteTest {
     }
 
     @Before
-    public void setUp() throws SQLException {
+    public void fuelingTestDB() throws SQLException {
         String sql = "INSERT INTO areas VALUES "
                 + "('" + AREA_1 + "')"
                 + ", ('" + AREA_2 + "')"
@@ -55,7 +57,7 @@ public class AreaRepositorySQLiteTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void clearTestDB() throws Exception {
         String sql = "DELETE FROM areas;";
         DriverManager.registerDriver(new JDBC());
         try (Connection connection = DriverManager.getConnection(DB_URL);
@@ -65,15 +67,57 @@ public class AreaRepositorySQLiteTest {
     }
 
     @Test
-    public void createTable() {
+    public void testGetAll() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
-    public void getAll() {
+    public void testAddNewArea() {
+        String area6 = "Area6";
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+        expected.add(area6);
+
+        assertTrue(repository.add(area6));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
-    public void add() {
+    public void testAddNull(){
+        String area6 = "Area6";
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.add(null));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void testAddContainedArea(){
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.add(AREA_1));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
