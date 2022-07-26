@@ -95,7 +95,6 @@ public class AreaRepositorySQLiteTest {
 
     @Test
     public void testAddNull(){
-        String area6 = "Area6";
         List<String>expected = new ArrayList<>();
         expected.add(AREA_1);
         expected.add(AREA_2);
