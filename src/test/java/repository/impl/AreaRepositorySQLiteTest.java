@@ -23,6 +23,8 @@ public class AreaRepositorySQLiteTest {
     private static final String AREA_3 = "area3";
     private static final String AREA_4 = "area4";
     private static final String AREA_5 = "area5";
+    private static final String AREA_6 = "area6";
+    private static final String AREA_7 = "area7";
 
     @BeforeClass
     public static void testCreateTable(){
@@ -80,16 +82,15 @@ public class AreaRepositorySQLiteTest {
 
     @Test
     public void testAddNewArea() {
-        String area6 = "Area6";
         List<String>expected = new ArrayList<>();
         expected.add(AREA_1);
         expected.add(AREA_2);
         expected.add(AREA_3);
         expected.add(AREA_4);
         expected.add(AREA_5);
-        expected.add(area6);
+        expected.add(AREA_6);
 
-        assertTrue(repository.add(area6));
+        assertTrue(repository.add(AREA_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
@@ -107,7 +108,7 @@ public class AreaRepositorySQLiteTest {
     }
 
     @Test
-    public void testAddContainedArea(){
+    public void testAddExistingArea(){
         List<String>expected = new ArrayList<>();
         expected.add(AREA_1);
         expected.add(AREA_2);
@@ -120,18 +121,194 @@ public class AreaRepositorySQLiteTest {
     }
 
     @Test
-    public void set() {
+    public void testSet_replaceExistingAreaWithExistingArea() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.set(AREA_2, AREA_5));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
-    public void remove() {
+    public void testSet_replaceExistingAreaWithTheSameArea() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertTrue(repository.set(AREA_2, AREA_2));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
-    public void clear() {
+    public void testSet_replaceExistingAreaWithNewArea() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_6);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertTrue(repository.set(AREA_2, AREA_6));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
-    public void rewrite() {
+    public void testSet_replaceExistingAreaWithNull() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.set(AREA_2, null));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void testSet_replaceNotExistingAreaWithExistingArea() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.set(AREA_6, AREA_5));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void testSet_replaceNotExistingAreaWithTheSameArea() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.set(AREA_6, AREA_6));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void testSet_replaceNotExistingAreaWithNewArea() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.set(AREA_6, AREA_7));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void testSet_replaceNotExistingAreaWithNull() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.set(AREA_6, null));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void testRemoveExistingArea() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertTrue(repository.remove(AREA_2));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void testRemoveNotExistingArea() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.remove(AREA_6));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void testRemoveNull() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.remove(null));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void testClear() {
+        assertTrue(repository.clear());
+        assertArrayEquals(new String[0], repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void rewriteNewList() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_6);
+        expected.add(AREA_7);
+
+        assertTrue(repository.rewrite(expected));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void rewriteSameList() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertTrue(repository.rewrite(expected));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void rewriteEmptyList() {
+        List<String>expected = new ArrayList<>();
+
+        assertTrue(repository.rewrite(expected));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+    }
+
+    @Test
+    public void rewriteNull() {
+        List<String>expected = new ArrayList<>();
+        expected.add(AREA_1);
+        expected.add(AREA_2);
+        expected.add(AREA_3);
+        expected.add(AREA_4);
+        expected.add(AREA_5);
+
+        assertFalse(repository.rewrite(null));
+        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 }
