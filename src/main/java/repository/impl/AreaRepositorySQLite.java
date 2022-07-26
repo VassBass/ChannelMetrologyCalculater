@@ -72,10 +72,12 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<S
         String sql = "INSERT INTO areas VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Area = {} was added successfully", object);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Area = {} was added successfully", object);
+                return true;
+            } else return false;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.info("Area = {} is already exists", object);
             return false;
         }
     }
@@ -88,15 +90,19 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<S
     @Override
     public boolean set(String oldObject, String newObject) {
         if (oldObject == null || newObject == null) return false;
-        if (oldObject.equals(newObject)) return true;
 
         String sql = "UPDATE areas SET area = '" + newObject + "' WHERE area = '" + oldObject + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Area = {} was replaced by area = {} successfully", oldObject, newObject);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Area = {} was replaced by area = {} successfully", oldObject, newObject);
+                return true;
+            }else {
+                LOGGER.info("Area = {} was not found", oldObject);
+                return false;
+            }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.info("Area = {} is already exists", newObject);
             return false;
         }
     }
@@ -112,8 +118,13 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<S
         String sql = "DELETE FROM areas WHERE area = '" + object + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Area = {} was removed successfully", object);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Area = {} was removed successfully", object);
+                return true;
+            } else {
+                LOGGER.info("Area = {} was not found", object);
+                return false;
+            }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;

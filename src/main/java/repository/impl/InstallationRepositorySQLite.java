@@ -72,10 +72,12 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Repo
         String sql = "INSERT INTO installations VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Installation = {} was added successfully", object);
-            return true;
+            if (result > 0){
+                LOGGER.info("Installation = {} was added successfully", object);
+                return true;
+            } else return false;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.info("Installation = {} is already exists", object);
             return false;
         }
     }
@@ -88,15 +90,19 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Repo
     @Override
     public boolean set(String oldObject, String newObject) {
         if (oldObject == null || newObject == null) return false;
-        if (oldObject.equals(newObject)) return true;
 
         String sql = "UPDATE installations SET installation = '" + newObject + "' WHERE installation = '" + oldObject + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Installation = {} was replaced by installation = {} successfully", oldObject, newObject);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Installation = {} was replaced by department = {} successfully", oldObject, newObject);
+                return true;
+            }else {
+                LOGGER.info("Installation = {} was not found", oldObject);
+                return false;
+            }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.info("Installation = {} is already exists", newObject);
             return false;
         }
     }
@@ -112,8 +118,13 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Repo
         String sql = "DELETE FROM installations WHERE installation = '" + object + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Installation = {} was removed successfully", object);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Installation = {} was removed successfully", object);
+                return true;
+            } else {
+                LOGGER.info("Installation = {} was not found", object);
+                return false;
+            }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;

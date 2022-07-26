@@ -72,10 +72,12 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements Repositor
         String sql = "INSERT INTO processes VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Process = {} was added successfully", object);
-            return true;
+            if (result > 0){
+                LOGGER.info("Process = {} was added successfully", object);
+                return true;
+            } else return false;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.info("Process = {} is already exists", object);
             return false;
         }
     }
@@ -88,15 +90,19 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements Repositor
     @Override
     public boolean set(String oldObject, String newObject) {
         if (oldObject == null || newObject == null) return false;
-        if (oldObject.equals(newObject)) return true;
 
         String sql = "UPDATE processes SET process = '" + newObject + "' WHERE process = '" + oldObject + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Process = {} was replaced by process = {} successfully", oldObject, newObject);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Process = {} was replaced by department = {} successfully", oldObject, newObject);
+                return true;
+            }else {
+                LOGGER.info("Process = {} was not found", oldObject);
+                return false;
+            }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.info("Process = {} is already exists", newObject);
             return false;
         }
     }
@@ -112,8 +118,13 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements Repositor
         String sql = "DELETE FROM processes WHERE process = '" + object + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Process = {} was removed successfully", object);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Process = {} was removed successfully", object);
+                return true;
+            } else {
+                LOGGER.info("Process = {} was not found", object);
+                return false;
+            }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
