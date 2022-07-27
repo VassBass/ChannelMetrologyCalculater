@@ -1,7 +1,17 @@
 # ChannelMetrologyCalculater
 
-<b>This app was created for Ferrexpo PLC.</b>
+<b>This software was developed for Ferrexpo PLC.</b>
 
-To run this app:
-- On Linux (Tested on Linux Mint Xfce 20.2 Uma): run "target/startApp.sh"
-- On Windows (Tested on Windows 7): run "target/startApp.bat"
+Software for calculating the metrological characteristics of measuring channels.
+Used in ASUTP department.
+
+         Out : target/ChannelMetrologyCalculater-5.4-jar-with-dependencies.jar
+    Platform : desktop (Windows 7,10 / Linux Mint Xfce 20.2 Uma)
+    Language : Java 1.7
+    DataBase : SQLIte
+          UI : Swing
+       Tests : JUnit4
+     Logging : slf4j-log4j12
+       Other : Apache POI
+               org.mariuszgromada.math.mxparser
+               Jackson API
