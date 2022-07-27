@@ -5,13 +5,13 @@
 Software for calculating the metrological characteristics of measuring channels.
 Used in ASUTP department.
 
-         Out : target/ChannelMetrologyCalculater-5.4-jar-with-dependencies.jar
-    Platform : desktop (Windows 7,10 / Linux Mint Xfce 20.2 Uma)
-    Language : Java 1.7
-    DataBase : SQLIte
-          UI : Swing
-       Tests : JUnit4
-     Logging : slf4j-log4j12
-       Other : Apache POI
-               org.mariuszgromada.math.mxparser
-               Jackson API
+    Application : target/ChannelMetrologyCalculater-5.4-jar-with-dependencies.jar
+       Platform : desktop (Windows 7,10 / Linux Mint Xfce 20.2 Uma)
+       Language : Java 1.7
+       DataBase : SQLIte
+             UI : Swing
+          Tests : JUnit4
+        Logging : slf4j-log4j12
+          Other : Apache POI
+                  org.mariuszgromada.math.mxparser
+                  Jackson API
