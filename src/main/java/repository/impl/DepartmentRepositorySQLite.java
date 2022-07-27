@@ -28,12 +28,14 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
      * Creates table "departments" if it not exists
      */
     @Override
-    public void createTable(){
+    public boolean createTable(){
         String sql = "CREATE TABLE IF NOT EXISTS departments (department text NOT NULL UNIQUE, PRIMARY KEY (\"department\"));";
         try (Statement statement = getStatement()){
             statement.execute(sql);
+            return isTableExists("departments");
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
+            return false;
         }
     }
 
@@ -70,10 +72,12 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
         String sql = "INSERT INTO departments VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Department = {} was added successfully", object);
-            return true;
+            if (result > 0){
+                LOGGER.info("Department = {} was added successfully", object);
+                return true;
+            } else return false;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.info("Department = {} is already exists", object);
             return false;
         }
     }
@@ -86,15 +90,19 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
     @Override
     public boolean set(String oldObject, String newObject) {
         if (oldObject == null || newObject == null) return false;
-        if (oldObject.equals(newObject)) return true;
 
         String sql = "UPDATE departments SET department = '" + newObject + "' WHERE department = '" + oldObject + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Department = {} was replaced by department = {} successfully", oldObject, newObject);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Department = {} was replaced by department = {} successfully", oldObject, newObject);
+                return true;
+            }else {
+                LOGGER.info("Department = {} was not found", oldObject);
+                return false;
+            }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.info("Department = {} is already exists", newObject);
             return false;
         }
     }
@@ -110,8 +118,13 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
         String sql = "DELETE FROM departments WHERE department = '" + object + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Department = {} was removed successfully", object);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Department = {} was removed successfully", object);
+                return true;
+            } else {
+                LOGGER.info("Department = {} was not found", object);
+                return false;
+            }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
