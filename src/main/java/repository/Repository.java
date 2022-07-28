@@ -1,13 +1,13 @@
 package repository;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface Repository<O> {
     boolean createTable();
-    List<O>getAll();
+    Collection<O> getAll();
     boolean add(O o);
     boolean set(O oldO, O newO);
     boolean remove(O o);
     boolean clear();
-    boolean rewrite(List<O>list);
+    boolean rewrite(Collection<O>list);
 }

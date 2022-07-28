@@ -1,12 +1,12 @@
 package service;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface Service<O> {
-    List<O> getAll();
+    Collection<O> getAll();
     boolean add(O object);
     boolean remove(O object);
     boolean set(O oldObject, O newObject);
     boolean clear();
-    boolean rewrite(List<O>objects);
+    boolean rewrite(Collection<O>objects);
 }
