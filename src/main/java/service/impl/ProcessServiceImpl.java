@@ -5,56 +5,87 @@ import repository.Repository;
 import repository.impl.ProcessRepositorySQLite;
 import service.ProcessService;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class ProcessServiceImpl implements ProcessService {
     private final Repository<String> repository;
+    private final Set<String>mainSet;
 
     public ProcessServiceImpl(){
         this.repository = new ProcessRepositorySQLite();
+        mainSet = new LinkedHashSet<>(repository.getAll());
     }
 
     public ProcessServiceImpl(Repository<String> repository){
         this.repository = repository;
+        mainSet = new LinkedHashSet<>(this.repository.getAll());
     }
 
     @Override
     public Collection<String> getAll() {
-        return this.repository.getAll();
+        return mainSet;
     }
 
     @Override
     public String[] getAllInStrings(){
-        return this.repository.getAll().toArray(new String[0]);
+        return mainSet.toArray(new String[0]);
     }
 
     @Override
     public boolean add(String object) {
-        return this.repository.add(object);
+        if (object == null) return false;
+
+        if (mainSet.add(object)) {
+            return repository.add(object);
+        } else return false;
     }
 
     @Override
     public boolean remove(String object) {
-        return this.repository.remove(object);
+        if (object == null) return false;
+
+        if (mainSet.remove(object)) {
+            return repository.remove(object);
+        } else return false;
     }
 
     @Override
     public boolean set(String oldObject, String newObject) {
-        return this.repository.set(oldObject, newObject);
+        if (oldObject == null || newObject == null) return false;
+        if (oldObject.equals(newObject)) return true;
+
+        ArrayList<String> list = new ArrayList<>(mainSet);
+        int indexOfOld = list.indexOf(oldObject);
+        int indexOfNew = list.indexOf(newObject);
+        if (indexOfOld >= 0 && indexOfNew < 0){
+            list.set(indexOfOld, newObject);
+            mainSet.clear();
+            mainSet.addAll(list);
+            return true;
+        }else return false;
     }
 
     @Override
     public boolean clear() {
-        return this.repository.clear();
+        if (repository.clear()){
+            mainSet.clear();
+            return true;
+        }else return false;
     }
 
     @Override
     public boolean rewrite(Collection<String>processes){
-        return this.repository.rewrite(processes);
+        if (repository.rewrite(processes)){
+            mainSet.clear();
+            return mainSet.addAll(processes);
+        }else return false;
     }
 
     @Override
     public boolean resetToDefault() {
-        return this.repository.rewrite(DefaultProcesses.get());
+        return rewrite(DefaultProcesses.get());
     }
 }

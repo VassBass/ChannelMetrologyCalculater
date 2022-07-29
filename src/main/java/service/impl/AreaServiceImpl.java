@@ -41,9 +41,7 @@ public class AreaServiceImpl implements AreaService {
 
         if (mainSet.add(object)) {
             return repository.add(object);
-        } else {
-            return false;
-        }
+        } else return false;
     }
 
     @Override
@@ -52,9 +50,7 @@ public class AreaServiceImpl implements AreaService {
 
         if (mainSet.remove(object)) {
             return repository.remove(object);
-        } else {
-            return false;
-        }
+        } else return false;
     }
 
     @Override
@@ -78,9 +74,7 @@ public class AreaServiceImpl implements AreaService {
         if (repository.clear()){
             mainSet.clear();
             return true;
-        }else {
-            return false;
-        }
+        }else return false;
     }
 
     @Override
@@ -88,9 +82,7 @@ public class AreaServiceImpl implements AreaService {
         if (repository.rewrite(areas)){
             mainSet.clear();
             return mainSet.addAll(areas);
-        }else {
-            return false;
-        }
+        }else return false;
     }
 
     @Override
