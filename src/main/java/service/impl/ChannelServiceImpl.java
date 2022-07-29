@@ -6,6 +6,7 @@ import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import service.ChannelService;
 
+import java.util.Collection;
 import java.util.List;
 
 public class ChannelServiceImpl implements ChannelService {
@@ -25,7 +26,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public List<Channel> getAll() {
+    public Collection<Channel> getAll() {
         return this.repository.getAll();
     }
 
@@ -85,12 +86,12 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public boolean importData(List<Channel>newChannels, List<Channel>channelsForChange){
+    public boolean importData(Collection<Channel>newChannels, Collection<Channel>channelsForChange){
         return this.repository.importData(newChannels, channelsForChange);
     }
 
     @Override
-    public boolean rewrite(List<Channel>channels){
+    public boolean rewrite(Collection<Channel>channels){
         return this.repository.rewrite(channels);
     }
 }

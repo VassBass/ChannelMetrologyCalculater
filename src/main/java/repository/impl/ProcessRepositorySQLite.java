@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ProcessRepositorySQLite extends RepositoryJDBC implements Repository<String> {
@@ -43,7 +44,7 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements Repositor
      * @return List of processes or empty list if something go wrong
      */
     @Override
-    public List<String> getAll() {
+    public Collection<String> getAll() {
         List<String>areas = new ArrayList<>();
         String sql = "SELECT * FROM processes;";
 
@@ -154,7 +155,7 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements Repositor
      * @return true if rewrite was successful or false if not
      */
     @Override
-    public boolean rewrite(List<String> newList) {
+    public boolean rewrite(Collection<String> newList) {
         if (newList == null) return false;
 
         String sql = "DELETE FROM processes;";

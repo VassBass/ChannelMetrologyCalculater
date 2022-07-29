@@ -5,7 +5,7 @@ import repository.Repository;
 import repository.impl.ProcessRepositorySQLite;
 import service.ProcessService;
 
-import java.util.List;
+import java.util.Collection;
 
 public class ProcessServiceImpl implements ProcessService {
     private final Repository<String> repository;
@@ -19,7 +19,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public List<String> getAll() {
+    public Collection<String> getAll() {
         return this.repository.getAll();
     }
 
@@ -49,7 +49,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public boolean rewrite(List<String>processes){
+    public boolean rewrite(Collection<String>processes){
         return this.repository.rewrite(processes);
     }
 

@@ -5,6 +5,7 @@ import repository.Repository;
 import repository.impl.AreaRepositorySQLite;
 import service.AreaService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -61,15 +62,15 @@ public class AreaServiceImpl implements AreaService {
         if (oldObject == null || newObject == null) return false;
         if (oldObject.equals(newObject)) return true;
 
-        if (mainSet.add(newObject)){
-            if (mainSet.remove(oldObject)){
-                return repository.set(oldObject, newObject);
-            }else {
-                return mainSet.remove(newObject);
-            }
-        }else {
-            return false;
-        }
+        ArrayList<String> list = new ArrayList<>(mainSet);
+        int indexOfOld = list.indexOf(oldObject);
+        int indexOfNew = list.indexOf(newObject);
+        if (indexOfOld >= 0 && indexOfNew < 0){
+            list.set(indexOfOld, newObject);
+            mainSet.clear();
+            mainSet.addAll(list);
+            return true;
+        }else return false;
     }
 
     @Override

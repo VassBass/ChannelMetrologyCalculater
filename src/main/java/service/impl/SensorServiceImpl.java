@@ -6,7 +6,7 @@ import repository.SensorRepository;
 import repository.impl.SensorRepositorySQLite;
 import service.SensorService;
 
-import java.util.List;
+import java.util.Collection;
 
 public class SensorServiceImpl implements SensorService {
     private final SensorRepository repository;
@@ -30,12 +30,12 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public List<Sensor> getAll() {
+    public Collection<Sensor> getAll() {
         return this.repository.getAll();
     }
 
     @Override
-    public List<Sensor> getAll(String measurement) {
+    public Collection<Sensor> getAll(String measurement) {
         return this.repository.getAll(measurement);
     }
 
@@ -75,7 +75,7 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public boolean importData(List<Sensor>newSensors, List<Sensor>sensorsForChange){
+    public boolean importData(Collection<Sensor>newSensors, Collection<Sensor>sensorsForChange){
         return this.repository.importData(newSensors, sensorsForChange);
     }
 
@@ -100,7 +100,7 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public boolean rewrite(List<Sensor>sensors){
+    public boolean rewrite(Collection<Sensor>sensors){
         return this.repository.rewrite(sensors);
     }
 

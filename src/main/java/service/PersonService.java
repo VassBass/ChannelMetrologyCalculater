@@ -2,7 +2,7 @@ package service;
 
 import model.Person;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface PersonService extends Service<Person> {
     /**
@@ -15,7 +15,7 @@ public interface PersonService extends Service<Person> {
      */
     String[] getNamesOfHeadsWithFirstEmptyString();
 
-    boolean add(List<Person>persons);
+    boolean add(Collection<Person> persons);
     boolean set(Person person);
 
     Person get(int id);

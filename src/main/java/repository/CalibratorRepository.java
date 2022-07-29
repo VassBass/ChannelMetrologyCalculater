@@ -3,7 +3,7 @@ package repository;
 import model.Calibrator;
 import model.Measurement;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface CalibratorRepository extends Repository<Calibrator>{
     String[]getAllNames(Measurement measurement);
@@ -14,7 +14,7 @@ public interface CalibratorRepository extends Repository<Calibrator>{
 
     boolean changeMeasurementValue(String oldValue, String newValue);
 
-    boolean importData(List<Calibrator>newCalibrators, List<Calibrator>calibratorsForChange);
+    boolean importData(Collection<Calibrator> newCalibrators, Collection<Calibrator>calibratorsForChange);
 
     boolean isExists(Calibrator calibrator);
 }

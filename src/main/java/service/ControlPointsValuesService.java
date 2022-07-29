@@ -2,10 +2,10 @@ package service;
 
 import model.ControlPointsValues;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface ControlPointsValuesService extends Service<ControlPointsValues> {
-    List<ControlPointsValues>getBySensorType(String sensorType);
+    Collection<ControlPointsValues> getBySensorType(String sensorType);
     ControlPointsValues getControlPointsValues(int id);
 
     int addReturnId(ControlPointsValues controlPointsValues);

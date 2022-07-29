@@ -5,7 +5,7 @@ import repository.Repository;
 import repository.impl.DepartmentRepositorySQLite;
 import service.DepartmentService;
 
-import java.util.List;
+import java.util.Collection;
 
 public class DepartmentServiceImpl implements DepartmentService {
     private final Repository<String> repository;
@@ -19,7 +19,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<String> getAll() {
+    public Collection<String> getAll() {
         return this.repository.getAll();
     }
 
@@ -49,7 +49,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public boolean rewrite(List<String>departments){
+    public boolean rewrite(Collection<String>departments){
         return this.repository.rewrite(departments);
     }
 

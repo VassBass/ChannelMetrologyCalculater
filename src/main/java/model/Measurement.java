@@ -4,11 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Objects;
-
-import javax.annotation.Nonnull;
 
 /**
  * DB table = measurements

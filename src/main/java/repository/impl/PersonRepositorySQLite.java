@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepository {
@@ -47,7 +48,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public List<Person> getAll() {
+    public Collection<Person> getAll() {
         LOGGER.info("Reading all persons from DB");
         List<Person>persons = new ArrayList<>();
         String sql = "SELECT * FROM persons;";
@@ -176,7 +177,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public boolean add(List<Person> persons) {
+    public boolean add(Collection<Person> persons) {
         if (persons == null) return false;
         if (persons.isEmpty()) return true;
 
@@ -256,7 +257,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public boolean rewrite(List<Person> persons) {
+    public boolean rewrite(Collection<Person> persons) {
         if (persons == null) return false;
 
         String sql = "DELETE FROM persons;";

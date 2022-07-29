@@ -3,7 +3,7 @@ package service;
 import model.Measurement;
 import repository.impl.MeasurementRepositorySQLite;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 public interface MeasurementService extends Service<Measurement> {
@@ -44,7 +44,7 @@ public interface MeasurementService extends Service<Measurement> {
      * @param name of measurement
      * @return measurements values with input name or null if @name == null | @name.length == 0
      */
-    List<Measurement>getMeasurements(String name);
+    Collection<Measurement> getMeasurements(String name);
 
     boolean resetToDefault();
 

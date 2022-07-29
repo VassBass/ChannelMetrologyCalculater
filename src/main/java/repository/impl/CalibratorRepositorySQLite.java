@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class CalibratorRepositorySQLite extends RepositoryJDBC implements CalibratorRepository {
@@ -51,7 +52,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public List<Calibrator> getAll() {
+    public Collection<Calibrator> getAll() {
         List<Calibrator>calibrators = new ArrayList<>();
         String sql = "SELECT * FROM calibrators;";
 
@@ -243,7 +244,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean rewrite(List<Calibrator> calibrators) {
+    public boolean rewrite(Collection<Calibrator> calibrators) {
         if (calibrators == null) return false;
 
         String sql = "DELETE FROM calibrators;";
@@ -280,7 +281,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean importData(List<Calibrator> newCalibrators, List<Calibrator> calibratorsForChange) {
+    public boolean importData(Collection<Calibrator> newCalibrators, Collection<Calibrator> calibratorsForChange) {
         int changeResult = 0;
         int addResult = 0;
         if (calibratorsForChange != null && !calibratorsForChange.isEmpty()){

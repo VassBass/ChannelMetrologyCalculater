@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class InstallationRepositorySQLite extends RepositoryJDBC implements Repository<String> {
@@ -43,7 +44,7 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Repo
      * @return List of installations or empty list if something go wrong
      */
     @Override
-    public List<String> getAll() {
+    public Collection<String> getAll() {
         List<String>installations = new ArrayList<>();
         String sql = "SELECT * FROM installations;";
 
@@ -154,7 +155,7 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Repo
      * @return true if rewrite was successful or false if not
      */
     @Override
-    public boolean rewrite(List<String> newList) {
+    public boolean rewrite(Collection<String> newList) {
         if (newList == null) return false;
 
         String sql = "DELETE FROM installations;";

@@ -2,12 +2,12 @@ package service;
 
 import model.Sensor;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface SensorService extends Service<Sensor> {
     String[]getAllTypes();
     String[]getAllTypesWithoutROSEMOUNT();
-    List<Sensor>getAll(String measurement);
+    Collection<Sensor>getAll(String measurement);
     String getMeasurement(String sensorType);
     String[] getAllSensorsName(String measurementName);
 
@@ -15,7 +15,7 @@ public interface SensorService extends Service<Sensor> {
 
     boolean changeMeasurementValue(String oldValue, String newValue);
 
-    boolean importData(List<Sensor>newSensors, List<Sensor>sensorsForChange);
+    boolean importData(Collection<Sensor> newSensors, Collection<Sensor>sensorsForChange);
 
     Sensor get(String sensorName);
 

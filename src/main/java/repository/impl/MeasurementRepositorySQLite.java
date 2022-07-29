@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public List<Measurement> getAll() {
+    public Collection<Measurement> getAll() {
         List<Measurement>measurements = new ArrayList<>();
 
         LOGGER.info("Reading all measurements from DB");
@@ -172,7 +173,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
             statement.setString(3, measurement._getFactorsJson());
             int result = statement.executeUpdate();
 
-            List<Measurement>measurements = getAll();
+            Collection<Measurement>measurements = getAll();
             for (Measurement m : measurements) {
                 if (measurement.getName().equals(m.getName())) {
                     Double factor = 1 / measurement._getFactor(m.getValue());
@@ -285,7 +286,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public List<Measurement> getMeasurements(String name) {
+    public Collection<Measurement> getMeasurements(String name) {
         if (name == null) return new ArrayList<>();
 
         LOGGER.info("Reading all measurements with name = {} from DB", name);
@@ -308,7 +309,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean rewrite(List<Measurement> measurements) {
+    public boolean rewrite(Collection<Measurement> measurements) {
         if (measurements == null) return false;
 
         String sql = "DELETE FROM measurements;";

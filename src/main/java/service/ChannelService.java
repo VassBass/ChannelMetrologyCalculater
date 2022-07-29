@@ -3,6 +3,7 @@ package service;
 import model.Channel;
 import model.Sensor;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ChannelService extends Service<Channel> {
@@ -20,5 +21,5 @@ public interface ChannelService extends Service<Channel> {
     boolean isExist(String oldChannelCode, String newChannelCode);
 
 
-    boolean importData(List<Channel>newChannels, List<Channel>channelsForChange);
+    boolean importData(Collection<Channel> newChannels, Collection<Channel>channelsForChange);
 }

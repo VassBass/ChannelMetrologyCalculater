@@ -5,7 +5,7 @@ import repository.ControlPointsValuesRepository;
 import repository.impl.ControlPointsValuesRepositorySQLite;
 import service.ControlPointsValuesService;
 
-import java.util.List;
+import java.util.Collection;
 
 public class ControlPointsValuesServiceImpl implements ControlPointsValuesService {
     private final ControlPointsValuesRepository repository;
@@ -19,7 +19,7 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public List<ControlPointsValues> getAll() {
+    public Collection<ControlPointsValues> getAll() {
         return this.repository.getAll();
     }
 
@@ -29,7 +29,7 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public List<ControlPointsValues> getBySensorType(String sensorType) {
+    public Collection<ControlPointsValues> getBySensorType(String sensorType) {
         return this.repository.getBySensorType(sensorType);
     }
 
@@ -74,7 +74,7 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public boolean rewrite(List<ControlPointsValues> cpvList) {
+    public boolean rewrite(Collection<ControlPointsValues> cpvList) {
         return repository.rewrite(cpvList);
     }
 

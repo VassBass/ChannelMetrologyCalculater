@@ -33,7 +33,7 @@ public class Channel implements Serializable {
     @Nonnull private String name = "";
 
     /**
-     * DB field = measurement_value [TEXT{Json}]
+     * DB field = measurement_value [TEXT]
      *
      * @see Measurement
      */

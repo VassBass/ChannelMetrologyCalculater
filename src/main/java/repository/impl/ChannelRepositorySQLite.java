@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRepository {
@@ -98,7 +99,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public List<Channel> getAll() {
+    public Collection<Channel> getAll() {
         List<Channel>channels = new ArrayList<>();
 
         String sql = "SELECT * FROM channels;";
@@ -192,7 +193,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     public boolean removeBySensor(Sensor sensor) {
         if (sensor == null) return false;
 
-        List<Channel>channels = getAll();
+        Collection<Channel>channels = getAll();
         List<String> codes = new ArrayList<>();
         String sensorName = sensor.getName();
         for (Channel c : channels) {
@@ -235,7 +236,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean rewrite(List<Channel> channels) {
+    public boolean rewrite(Collection<Channel> channels) {
         if (channels == null) return false;
 
         String sql = "DELETE FROM channels;";
@@ -307,7 +308,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
         sensor.setMeasurement(contains(ignored, Sensor.MEASUREMENT) ? oldSensor.getMeasurement() : newSensor.getMeasurement());
         sensor.setErrorFormula(contains(ignored, Sensor.ERROR_FORMULA) ? oldSensor.getErrorFormula() : newSensor.getErrorFormula());
 
-        List<Channel>channels = getAll();
+        Collection<Channel>channels = getAll();
         for (Channel channel : channels) {
             if (channel.getSensor().equals(oldSensor)) {
                 changedChannels.add(channel);
@@ -335,7 +336,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     public boolean changeSensors(List<Sensor> sensors) {
         if (sensors == null) return false;
 
-        List<Channel>channels = getAll();
+        Collection<Channel>channels = getAll();
         for (Sensor sensor : sensors){
             for (Channel channel : channels){
                 if (channel.getSensor().equals(sensor)){
@@ -354,7 +355,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
 
         List<String>needChangeSensorCodes = new ArrayList<>();
         List<Sensor>sensors = new ArrayList<>();
-        List<Channel>channels = getAll();
+        Collection<Channel>channels = getAll();
         for (Channel c : channels){
             Sensor s = c.getSensor();
             if (s.getMeasurement().equals(oldValue)){
@@ -433,7 +434,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean importData(List<Channel> newChannels, List<Channel> channelsForChange) {
+    public boolean importData(Collection<Channel> newChannels, Collection<Channel> channelsForChange) {
         int changeResult = 0;
         int addResult = 0;
         if (channelsForChange != null && !channelsForChange.isEmpty()){

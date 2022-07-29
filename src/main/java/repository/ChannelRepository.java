@@ -3,6 +3,7 @@ package repository;
 import model.Channel;
 import model.Sensor;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ChannelRepository extends Repository<Channel>{
@@ -11,7 +12,7 @@ public interface ChannelRepository extends Repository<Channel>{
     boolean removeBySensor(Sensor sensor);
     boolean removeByMeasurementValue(String measurementValue);
 
-    boolean importData(List<Channel>newChannels, List<Channel>channelsForChange);
+    boolean importData(Collection<Channel> newChannels, Collection<Channel>channelsForChange);
 
     boolean changeSensor(Sensor oldSensor, Sensor newSensor, int ... ignored);
     boolean changeSensors(List<Sensor>sensors);

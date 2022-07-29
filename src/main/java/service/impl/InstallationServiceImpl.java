@@ -5,7 +5,7 @@ import repository.Repository;
 import repository.impl.InstallationRepositorySQLite;
 import service.InstallationService;
 
-import java.util.List;
+import java.util.Collection;
 
 public class InstallationServiceImpl implements InstallationService {
     private final Repository<String> repository;
@@ -19,7 +19,7 @@ public class InstallationServiceImpl implements InstallationService {
     }
 
     @Override
-    public List<String> getAll() {
+    public Collection<String> getAll() {
         return this.repository.getAll();
     }
 
@@ -49,7 +49,7 @@ public class InstallationServiceImpl implements InstallationService {
     }
 
     @Override
-    public boolean rewrite(List<String>installations){
+    public boolean rewrite(Collection<String>installations){
         return this.repository.rewrite(installations);
     }
 

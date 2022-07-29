@@ -2,7 +2,7 @@ package repository;
 
 import model.Measurement;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 public interface MeasurementRepository extends Repository<Measurement>{
@@ -11,7 +11,7 @@ public interface MeasurementRepository extends Repository<Measurement>{
     String[]getValues(Measurement measurement);
     String[]getValues(String name);
     Measurement get(String value);
-    List<Measurement>getMeasurements(String name);
+    Collection<Measurement> getMeasurements(String name);
 
     boolean changeFactors(String measurementValue, Map<String, Double> factors);
 

@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implements ControlPointsValuesRepository {
@@ -46,7 +47,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public List<ControlPointsValues> getAll() {
+    public Collection<ControlPointsValues> getAll() {
         List<ControlPointsValues>values = new ArrayList<>();
         LOGGER.info("Reading all control_points from DB");
         String sql = "SELECT * FROM control_points;";
@@ -280,7 +281,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public boolean rewrite(List<ControlPointsValues> list) {
+    public boolean rewrite(Collection<ControlPointsValues> list) {
         return false;
     }
 

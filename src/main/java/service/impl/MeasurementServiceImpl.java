@@ -6,7 +6,7 @@ import repository.MeasurementRepository;
 import repository.impl.MeasurementRepositorySQLite;
 import service.MeasurementService;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 public class MeasurementServiceImpl implements MeasurementService {
@@ -46,7 +46,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public List<Measurement> getAll() {
+    public Collection<Measurement> getAll() {
         return this.repository.getAll();
     }
 
@@ -76,12 +76,12 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public boolean rewrite(List<Measurement> measurements) {
+    public boolean rewrite(Collection<Measurement> measurements) {
         return repository.rewrite(measurements);
     }
 
     @Override
-    public List<Measurement>getMeasurements(String name){
+    public Collection<Measurement>getMeasurements(String name){
         return this.repository.getMeasurements(name);
     }
 

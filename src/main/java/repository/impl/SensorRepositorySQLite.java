@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepository {
@@ -48,7 +49,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public List<Sensor> getAll() {
+    public Collection<Sensor> getAll() {
         List<Sensor>sensors = new ArrayList<>();
 
         LOGGER.info("Reading all sensors from DB");
@@ -74,7 +75,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public List<Sensor> getAll(String measurement) {
+    public Collection<Sensor> getAll(String measurement) {
         List<Sensor>sensors = new ArrayList<>();
         if (measurement == null) return sensors;
 
@@ -295,7 +296,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean rewrite(List<Sensor> sensors) {
+    public boolean rewrite(Collection<Sensor> sensors) {
         if (sensors == null) return false;
 
         String sql = "DELETE FROM sensors;";
@@ -363,7 +364,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean importData(List<Sensor> newSensors, List<Sensor> sensorsForChange) {
+    public boolean importData(Collection<Sensor> newSensors, Collection<Sensor> sensorsForChange) {
         int changeResult = 0;
         int addResult = 0;
         if (sensorsForChange != null && !sensorsForChange.isEmpty()){
