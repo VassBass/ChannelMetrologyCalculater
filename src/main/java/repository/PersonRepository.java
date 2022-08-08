@@ -2,6 +2,7 @@ package repository;
 
 import model.Person;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public interface PersonRepository extends Repository<Person>{
@@ -9,7 +10,7 @@ public interface PersonRepository extends Repository<Person>{
     String[] getNamesOfHeadsWithFirstEmptyString();
     Person get(int id);
 
-    boolean add(Collection<Person> persons);
+    boolean add(@Nonnull Collection<Person> persons);
 
-    boolean set(Person person);
+    boolean set(@Nonnull Person person);
 }

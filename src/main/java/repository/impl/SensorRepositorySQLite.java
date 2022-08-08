@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import repository.RepositoryJDBC;
 import repository.SensorRepository;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -75,9 +76,8 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public Collection<Sensor> getAll(String measurement) {
+    public Collection<Sensor> getAll(@Nonnull String measurement) {
         List<Sensor>sensors = new ArrayList<>();
-        if (measurement == null) return sensors;
 
         LOGGER.info("Reading all sensors with measurement = {} from DB", measurement);
         String sql = "SELECT * FROM sensors WHERE measurement = '" + measurement + "';";
@@ -134,9 +134,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public String getMeasurement(String sensorType) {
-        if (sensorType == null) return null;
-
+    public String getMeasurement(@Nonnull String sensorType) {
         LOGGER.info("Reading sensor measurement by type = {} from DB", sensorType);
         String sql = "SELECT measurement FROM sensors WHERE type = '" + sensorType + "';";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -151,9 +149,8 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public String[] getAllSensorsName(String measurementName) {
+    public String[] getAllSensorsName(@Nonnull String measurementName) {
         List<String> names = new ArrayList<>();
-        if (measurementName == null) return new String[0];
 
         LOGGER.info("Reading all sensors names by measurement = {} from DB", measurementName);
         String sql = "SELECT name FROM sensors WHERE measurement = '" + measurementName + "';";
@@ -167,9 +164,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public Sensor get(String sensorName) {
-        if (sensorName == null) return null;
-
+    public Sensor get(@Nonnull String sensorName) {
         LOGGER.info("Reading sensor with name = {} from DB", sensorName);
         String sql = "SELECT * FROM sensors WHERE name = '" + sensorName + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -195,9 +190,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean add(Sensor sensor) {
-        if (sensor == null) return false;
-
+    public boolean add(@Nonnull Sensor sensor) {
         String sql = "INSERT INTO sensors (name, type, number, measurement, value, error_formula, range_min, range_max) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setString(1, sensor.getName());
@@ -219,9 +212,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean remove(Sensor sensor) {
-        if (sensor == null) return false;
-
+    public boolean remove(@Nonnull Sensor sensor) {
         String sql = "DELETE FROM sensors WHERE name = '" + sensor.getName() + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -238,8 +229,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean set(Sensor oldSensor, Sensor newSensor) {
-        if (oldSensor == null || newSensor == null) return false;
+    public boolean set(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor) {
         if (oldSensor.isMatch(newSensor)) return true;
 
         String sql = "UPDATE sensors SET name = ?, type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, "
@@ -265,8 +255,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean changeMeasurementValue(String oldValue, String newValue) {
-        if (oldValue == null || newValue == null) return false;
+    public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
         if (oldValue.equals(newValue)) return true;
 
         String sql = "UPDATE sensors SET measurement = '" + newValue + "' WHERE measurement = '" + oldValue + "';";
@@ -281,9 +270,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean removeMeasurementValue(String measurementValue) {
-        if (measurementValue == null) return false;
-
+    public boolean removeMeasurementValue(@Nonnull String measurementValue) {
         String sql = "UPDATE sensors SET measurement = '' WHERE measurement = '" + measurementValue + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -296,9 +283,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean rewrite(Collection<Sensor> sensors) {
-        if (sensors == null) return false;
-
+    public boolean rewrite(@Nonnull Collection<Sensor> sensors) {
         String sql = "DELETE FROM sensors;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);
@@ -332,9 +317,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean isLastInMeasurement(Sensor sensor) {
-        if (sensor == null) return true;
-
+    public boolean isLastInMeasurement(@Nonnull Sensor sensor) {
         String sql = "SELECT name FROM sensors WHERE measurement = '" + sensor.getMeasurement() + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             int n = 0;
@@ -364,10 +347,10 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean importData(Collection<Sensor> newSensors, Collection<Sensor> sensorsForChange) {
+    public boolean importData(@Nonnull Collection<Sensor> newSensors, @Nonnull Collection<Sensor> sensorsForChange) {
         int changeResult = 0;
         int addResult = 0;
-        if (sensorsForChange != null && !sensorsForChange.isEmpty()){
+        if (!sensorsForChange.isEmpty()){
             for (Sensor s : sensorsForChange){
                 String sql = "UPDATE sensors SET "
                         + "type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, range_min = ?, range_max = ? "
@@ -392,7 +375,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
             }
         }
 
-        if (newSensors != null && !newSensors.isEmpty()){
+        if (!newSensors.isEmpty()){
             String sql = "INSERT INTO sensors (name, type, number, measurement, value, error_formula, range_min, range_max) "
                     + "VALUES ";
             StringBuilder sqlBuilder = new StringBuilder(sql);
@@ -421,9 +404,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public boolean isExists(String sensorName) {
-        if (sensorName == null) return true;
-
+    public boolean isExists(@Nonnull String sensorName) {
         String sql = "SELECT name FROM sensors WHERE name = '" + sensorName + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             return resultSet.next();

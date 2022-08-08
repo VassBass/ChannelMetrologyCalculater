@@ -6,6 +6,7 @@ import repository.MeasurementRepository;
 import repository.impl.MeasurementRepositorySQLite;
 import service.MeasurementService;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public boolean add(Measurement measurement) {
+    public boolean add(@Nonnull Measurement measurement) {
         return this.repository.add(measurement);
     }
 
@@ -64,7 +65,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public boolean remove(Measurement measurement) {
+    public boolean remove(@Nonnull Measurement measurement) {
         return this.repository.remove(measurement);
     }
 
@@ -74,7 +75,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public boolean set(Measurement oldMeasurement, Measurement newMeasurement) {
+    public boolean set(@Nonnull Measurement oldMeasurement, @Nonnull Measurement newMeasurement) {
         return this.repository.set(oldMeasurement, newMeasurement);
     }
 
@@ -84,7 +85,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public boolean rewrite(Collection<Measurement> measurements) {
+    public boolean rewrite(@Nonnull Collection<Measurement> measurements) {
         return repository.rewrite(measurements);
     }
 

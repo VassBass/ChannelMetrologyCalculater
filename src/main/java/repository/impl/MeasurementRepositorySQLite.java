@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import repository.MeasurementRepository;
 import repository.RepositoryJDBC;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -106,9 +107,8 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public String[] getValues(Measurement measurement) {
+    public String[] getValues(@Nonnull Measurement measurement) {
         List<String>values = new ArrayList<>();
-        if (measurement == null) return values.toArray(new String[0]);
 
         LOGGER.info("Reading all measurements from DB");
         String sql = "SELECT value FROM measurements WHERE name = '" + measurement.getName() + "';";
@@ -125,9 +125,8 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public String[] getValues(String name) {
+    public String[] getValues(@Nonnull String name) {
         List<String>values = new ArrayList<>();
-        if (name == null || name.isEmpty()) return values.toArray(new String[0]);
 
         LOGGER.info("Reading all measurements from DB");
         String sql = "SELECT value FROM measurements WHERE name = '" + name + "';";
@@ -144,7 +143,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public Measurement get(String value) {
+    public Measurement get(@Nonnull String value) {
         LOGGER.info("Reading measurement with value = {} from DB", value);
         String sql = "SELECT * FROM measurements WHERE value = '" + value + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -163,9 +162,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean add(Measurement measurement) {
-        if (measurement == null) return false;
-
+    public boolean add(@Nonnull Measurement measurement) {
         String sql = "INSERT INTO measurements(name, value, factors) VALUES (?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setString(1, measurement.getName());
@@ -195,9 +192,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean changeFactors(String measurementValue, Map<String, Double> factors) {
-        if (measurementValue == null || factors == null) return false;
-
+    public boolean changeFactors(@Nonnull String measurementValue, @Nonnull Map<String, Double> factors) {
         try (Statement statement = getStatement()) {
             ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
             String factorsJson = writer.writeValueAsString(factors);
@@ -213,8 +208,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean set(Measurement oldMeasurement, Measurement newMeasurement) {
-        if (oldMeasurement == null || newMeasurement == null) return false;
+    public boolean set(@Nonnull Measurement oldMeasurement, @Nonnull Measurement newMeasurement) {
         if (oldMeasurement.isMatch(newMeasurement)) return true;
 
         String sql = "UPDATE measurements SET name = ?, value = ?, factors = ? WHERE value = ?;";
@@ -248,9 +242,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean remove(Measurement measurement) {
-        if (measurement == null) return false;
-
+    public boolean remove(@Nonnull Measurement measurement) {
         String sql = "DELETE FROM measurements WHERE value = '" + measurement.getValue() + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -286,9 +278,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public Collection<Measurement> getMeasurements(String name) {
-        if (name == null) return new ArrayList<>();
-
+    public Collection<Measurement> getMeasurements(@Nonnull String name) {
         LOGGER.info("Reading all measurements with name = {} from DB", name);
         List<Measurement>measurements = new ArrayList<>();
         String sql = "SELECT * FROM measurements WHERE name = '" + name + "';";
@@ -309,9 +299,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean rewrite(Collection<Measurement> measurements) {
-        if (measurements == null) return false;
-
+    public boolean rewrite(@Nonnull Collection<Measurement> measurements) {
         String sql = "DELETE FROM measurements;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);
@@ -340,22 +328,18 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean isLastInMeasurement(String measurementValue) {
-        if (measurementValue != null) {
-            String measurementName = get(measurementValue).getName();
-            int number = 0;
-            for (Measurement measurement : getAll()) {
-                if (measurement.getName().equals(measurementName)) number++;
-                if (number > 1) return false;
-            }
-            return true;
-        }else return false;
+    public boolean isLastInMeasurement(@Nonnull String measurementValue) {
+        String measurementName = get(measurementValue).getName();
+        int number = 0;
+        for (Measurement measurement : getAll()) {
+            if (measurement.getName().equals(measurementName)) number++;
+            if (number > 1) return false;
+        }
+        return true;
     }
 
     @Override
-    public boolean exists(String measurementValue) {
-        if (measurementValue == null) return false;
-
+    public boolean exists(@Nonnull String measurementValue) {
         String sql = "SELECT * FROM measurements WHERE value = '" + measurementValue + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             return resultSet.next();
@@ -366,8 +350,8 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean exists(String oldValue, String newValue) {
-        if (oldValue == null || newValue == null || oldValue.equals(newValue)) return false;
+    public boolean exists(@Nonnull String oldValue, @Nonnull String newValue) {
+        if (oldValue.equals(newValue)) return false;
 
         return exists(newValue);
     }

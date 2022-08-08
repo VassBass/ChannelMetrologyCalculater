@@ -6,6 +6,7 @@ import repository.SensorRepository;
 import repository.impl.SensorRepositorySQLite;
 import service.SensorService;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public class SensorServiceImpl implements SensorService {
@@ -58,12 +59,12 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public boolean add(Sensor sensor) {
+    public boolean add(@Nonnull Sensor sensor) {
         return this.repository.add(sensor);
     }
 
     @Override
-    public boolean remove(Sensor sensor) {
+    public boolean remove(@Nonnull Sensor sensor) {
         return this.repository.remove(sensor);
     }
 
@@ -73,7 +74,7 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public boolean set(Sensor oldSensor, Sensor newSensor) {
+    public boolean set(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor) {
         return this.repository.set(oldSensor, newSensor);
     }
 
@@ -108,7 +109,7 @@ public class SensorServiceImpl implements SensorService {
     }
 
     @Override
-    public boolean rewrite(Collection<Sensor>sensors){
+    public boolean rewrite(@Nonnull Collection<Sensor>sensors){
         return this.repository.rewrite(sensors);
     }
 

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import repository.PersonRepository;
 import repository.RepositoryJDBC;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -136,9 +137,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public boolean add(Person person) {
-        if (person == null) return false;
-
+    public boolean add(@Nonnull Person person) {
         String sql = "INSERT INTO persons (name, surname, patronymic, position) VALUES (?, ?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setString(1, person.getName());
@@ -156,9 +155,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public boolean set(Person person, Person ignored) {
-        if (person == null) return false;
-
+    public boolean set(@Nonnull Person person, @Nonnull Person ignored) {
         String sql = "UPDATE persons SET name = ?, surname = ?, patronymic = ?, position = ? WHERE id = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setString(1, person.getName());
@@ -177,8 +174,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public boolean add(Collection<Person> persons) {
-        if (persons == null) return false;
+    public boolean add(@Nonnull Collection<Person> persons) {
         if (persons.isEmpty()) return true;
 
         String sql = "INSERT INTO persons (name, surname, patronymic, position) "
@@ -204,9 +200,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public boolean remove(Person person) {
-        if (person == null) return false;
-
+    public boolean remove(@Nonnull Person person) {
         String sql = "DELETE FROM persons WHERE id = " + person.getId();
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -223,9 +217,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public boolean set(Person person) {
-        if (person == null) return false;
-
+    public boolean set(@Nonnull Person person) {
         String sql = "UPDATE persons SET name = ?, surname = ?, patronymic = ?, position = ? WHERE id = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setString(1, person.getName());
@@ -257,9 +249,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public boolean rewrite(Collection<Person> persons) {
-        if (persons == null) return false;
-
+    public boolean rewrite(@Nonnull Collection<Person> persons) {
         String sql = "DELETE FROM persons;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);

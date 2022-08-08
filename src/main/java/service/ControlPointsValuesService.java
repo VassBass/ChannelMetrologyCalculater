@@ -8,7 +8,7 @@ public interface ControlPointsValuesService extends Service<ControlPointsValues>
     Collection<ControlPointsValues> getBySensorType(String sensorType);
     ControlPointsValues getControlPointsValues(int id);
 
-    int addReturnId(ControlPointsValues controlPointsValues);
+    Integer addReturnId(ControlPointsValues controlPointsValues);
 
     boolean set(ControlPointsValues cpv);
     boolean changeSensorType(String oldSensorType, String newSensorType);

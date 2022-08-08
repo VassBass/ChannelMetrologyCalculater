@@ -43,26 +43,21 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public boolean add(String object) {
-        if (object == null) return false;
-
+    public boolean add(@Nonnull String object) {
         if (mainSet.add(object)) {
             return repository.add(object);
         } else return false;
     }
 
     @Override
-    public boolean remove(String object) {
-        if (object == null) return false;
-
+    public boolean remove(@Nonnull String object) {
         if (mainSet.remove(object)) {
             return repository.remove(object);
         } else return false;
     }
 
     @Override
-    public boolean set(String oldObject, String newObject) {
-        if (oldObject == null || newObject == null) return false;
+    public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         if (oldObject.equals(newObject)) return true;
 
         ArrayList<String> list = new ArrayList<>(mainSet);
@@ -85,7 +80,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public boolean rewrite(Collection<String>processes){
+    public boolean rewrite(@Nonnull Collection<String>processes){
         if (repository.rewrite(processes)){
             mainSet.clear();
             return mainSet.addAll(processes);
@@ -97,7 +92,8 @@ public class ProcessServiceImpl implements ProcessService {
         return rewrite(DefaultProcesses.get());
     }
 
-    public boolean add(ArrayList<String> processes) {
+    @Override
+    public boolean add(@Nonnull Collection<String> processes) {
         if (mainSet.addAll(processes)){
             return repository.rewrite(mainSet);
         }else return false;

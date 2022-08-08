@@ -1,12 +1,13 @@
 package service;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public interface Service<O> {
     Collection<O> getAll();
-    boolean add(O object);
-    boolean remove(O object);
-    boolean set(O oldObject, O newObject);
+    boolean add(@Nonnull O object);
+    boolean remove(@Nonnull O object);
+    boolean set(@Nonnull O oldObject, @Nonnull O newObject);
     boolean clear();
-    boolean rewrite(Collection<O>objects);
+    boolean rewrite(@Nonnull Collection<O>objects);
 }

@@ -44,32 +44,28 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public boolean add(String object) {
-        if (object == null) return false;
-
+    public boolean add(@Nonnull String object) {
         if (mainSet.add(object)) {
             return repository.add(object);
         } else return false;
     }
 
-    public boolean add(Collection<String>objects){
+    @Override
+    public boolean add(@Nonnull Collection<String>objects){
         if (mainSet.addAll(objects)){
             return repository.rewrite(mainSet);
         }else return false;
     }
 
     @Override
-    public boolean remove(String object) {
-        if (object == null) return false;
-
+    public boolean remove(@Nonnull String object) {
         if (mainSet.remove(object)) {
             return repository.remove(object);
         } else return false;
     }
 
     @Override
-    public boolean set(String oldObject, String newObject) {
-        if (oldObject == null || newObject == null) return false;
+    public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         if (oldObject.equals(newObject)) return true;
 
         ArrayList<String> list = new ArrayList<>(mainSet);
@@ -92,7 +88,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public boolean rewrite(Collection<String>departments){
+    public boolean rewrite(@Nonnull Collection<String>departments){
         if (repository.rewrite(departments)){
             mainSet.clear();
             return mainSet.addAll(departments);

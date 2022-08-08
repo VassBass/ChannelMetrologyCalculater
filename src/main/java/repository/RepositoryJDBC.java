@@ -3,6 +3,8 @@ package repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,25 +70,25 @@ public abstract class RepositoryJDBC {
         return getConnection().createStatement();
     }
 
-    public ResultSet getResultSet(String sql) throws SQLException {
+    public ResultSet getResultSet(@Nonnull String sql) throws SQLException {
         return getStatement().executeQuery(sql);
     }
 
-    public PreparedStatement getPreparedStatement(String sql) throws SQLException {
+    public PreparedStatement getPreparedStatement(@Nonnull String sql) throws SQLException {
         return getConnection().prepareStatement(sql);
     }
 
-    public PreparedStatement getPreparedStatementWithKey(String sql) throws SQLException {
+    public PreparedStatement getPreparedStatementWithKey(@Nonnull String sql) throws SQLException {
         return getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
-    public void setProperties(String dbUrl, String dbUser, String dbPassword){
+    public void setProperties(@Nonnull String dbUrl, @Nullable String dbUser, @Nullable String dbPassword){
         this.dbUrl = dbUrl;
         this.dbUser = dbUser;
         this.dbPassword = dbPassword;
     }
 
-    public boolean isTableExists(String tableName) throws SQLException {
+    public boolean isTableExists(@Nonnull String tableName) throws SQLException {
         try (Connection connection = getConnection()) {
             DatabaseMetaData dbm = connection.getMetaData();
             try (ResultSet result = dbm.getTables(null, null, tableName, null)) {

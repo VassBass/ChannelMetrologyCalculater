@@ -5,6 +5,7 @@ import repository.ControlPointsValuesRepository;
 import repository.impl.ControlPointsValuesRepositorySQLite;
 import service.ControlPointsValuesService;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public class ControlPointsValuesServiceImpl implements ControlPointsValuesService {
@@ -32,7 +33,7 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public boolean add(ControlPointsValues cpv) {
+    public boolean add(@Nonnull ControlPointsValues cpv) {
         return repository.add(cpv);
     }
 
@@ -47,7 +48,7 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public int addReturnId(ControlPointsValues controlPointsValues) {
+    public Integer addReturnId(ControlPointsValues controlPointsValues) {
         return this.repository.addReturnId(controlPointsValues);
     }
 
@@ -62,12 +63,12 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public boolean remove(ControlPointsValues controlPointsValues) {
+    public boolean remove(@Nonnull ControlPointsValues controlPointsValues) {
         return this.repository.remove(controlPointsValues);
     }
 
     @Override
-    public boolean set(ControlPointsValues cpv, ControlPointsValues ignored) {
+    public boolean set(@Nonnull ControlPointsValues cpv, @Nonnull ControlPointsValues ignored) {
         return repository.set(cpv, ignored);
     }
 
@@ -82,7 +83,7 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public boolean rewrite(Collection<ControlPointsValues> cpvList) {
+    public boolean rewrite(@Nonnull Collection<ControlPointsValues> cpvList) {
         return repository.rewrite(cpvList);
     }
 

@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import repository.ControlPointsValuesRepository;
 import repository.RepositoryJDBC;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -70,9 +72,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public boolean add(ControlPointsValues cpv) {
-        if (cpv == null) return false;
-
+    public boolean add(@Nonnull ControlPointsValues cpv) {
         String sql = "INSERT INTO control_points (sensor_type, range_min, range_max, points) VALUES (?, ?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatementWithKey(sql)){
             statement.setString(1, cpv.getSensorType());
@@ -97,9 +97,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public boolean set(ControlPointsValues cpv, ControlPointsValues ignored) {
-        if (cpv == null) return false;
-
+    public boolean set(@Nonnull ControlPointsValues cpv, @Nonnull ControlPointsValues ignored) {
         String sql = "UPDATE control_points SET range_min = ?, range_max = ?, points = ? WHERE id = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setDouble(1, cpv.getRangeMin());
@@ -117,9 +115,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public List<ControlPointsValues> getBySensorType(String sensorType) {
-        if (sensorType == null) return null;
-
+    public List<ControlPointsValues> getBySensorType(@Nonnull String sensorType) {
         List<ControlPointsValues>values = new ArrayList<>();
         LOGGER.info("Reading from DB all control_points with sensor_type = {}", sensorType);
         String sql = "SELECT * FROM control_points WHERE sensor_type = '" + sensorType + "';";
@@ -168,9 +164,8 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public int addReturnId(ControlPointsValues cpv) {
-        if (cpv == null) return -1;
-
+    @Nullable
+    public Integer addReturnId(@Nonnull ControlPointsValues cpv) {
         String sql = "INSERT INTO control_points (sensor_type, range_min, range_max, points) VALUES (?, ?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatementWithKey(sql)){
             statement.setString(1, cpv.getSensorType());
@@ -185,19 +180,17 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
                 return id;
             }else {
                 LOGGER.info("Control_points = {} not added", cpv);
-                return -1;
+                return null;
             }
 
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
-            return -1;
+            return null;
         }
     }
 
     @Override
-    public boolean set(ControlPointsValues cpv) {
-        if (cpv == null) return false;
-
+    public boolean set(@Nonnull ControlPointsValues cpv) {
         String sql = "UPDATE control_points SET range_min = ?, range_max = ?, points = ? WHERE id = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setDouble(1, cpv.getRangeMin());
@@ -215,8 +208,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public boolean changeSensorType(String oldSensorType, String newSensorType) {
-        if (oldSensorType == null || newSensorType == null) return false;
+    public boolean changeSensorType(@Nonnull String oldSensorType, @Nonnull String newSensorType) {
         if (oldSensorType.equals(newSensorType)) return true;
 
         String sql = "UPDATE control_points SET "
@@ -233,9 +225,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public boolean remove(ControlPointsValues cpv) {
-        if (cpv == null) return false;
-
+    public boolean remove(@Nonnull ControlPointsValues cpv) {
         String sql = "DELETE FROM control_points WHERE id = " + cpv.getId() + ";";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -252,9 +242,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public boolean removeAll(String sensorType) {
-        if (sensorType == null) return false;
-
+    public boolean removeAll(@Nonnull String sensorType) {
         String sql = "DELETE FROM control_points WHERE sensor_type = '" + sensorType + "';";
         try (Statement statement = getStatement()){
             statement.execute(sql);
@@ -281,7 +269,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public boolean rewrite(Collection<ControlPointsValues> list) {
+    public boolean rewrite(@Nonnull Collection<ControlPointsValues> list) {
         return false;
     }
 

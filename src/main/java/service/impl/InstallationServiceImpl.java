@@ -43,26 +43,21 @@ public class InstallationServiceImpl implements InstallationService {
     }
 
     @Override
-    public boolean add(String object) {
-        if (object == null) return false;
-
+    public boolean add(@Nonnull String object) {
         if (mainSet.add(object)) {
             return repository.add(object);
         } else return false;
     }
 
     @Override
-    public boolean remove(String object) {
-        if (object == null) return false;
-
+    public boolean remove(@Nonnull String object) {
         if (mainSet.remove(object)) {
             return repository.remove(object);
         } else return false;
     }
 
     @Override
-    public boolean set(String oldObject, String newObject) {
-        if (oldObject == null || newObject == null) return false;
+    public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         if (oldObject.equals(newObject)) return true;
 
         ArrayList<String> list = new ArrayList<>(mainSet);
@@ -85,7 +80,7 @@ public class InstallationServiceImpl implements InstallationService {
     }
 
     @Override
-    public boolean rewrite(Collection<String>installations){
+    public boolean rewrite(@Nonnull Collection<String>installations){
         if (repository.rewrite(installations)){
             mainSet.clear();
             return mainSet.addAll(installations);
@@ -97,7 +92,8 @@ public class InstallationServiceImpl implements InstallationService {
         return rewrite(DefaultInstallations.get());
     }
 
-    public boolean add(ArrayList<String> installations) {
+    @Override
+    public boolean add(@Nonnull Collection<String> installations) {
         if (mainSet.addAll(installations)){
             return repository.rewrite(mainSet);
         }else return false;

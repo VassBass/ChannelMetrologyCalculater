@@ -6,6 +6,7 @@ import repository.PersonRepository;
 import repository.impl.PersonRepositorySQLite;
 import service.PersonService;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public class PersonServiceImpl implements PersonService {
@@ -43,7 +44,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public boolean add(Person person) {
+    public boolean add(@Nonnull Person person) {
         return this.repository.add(person);
     }
 
@@ -53,12 +54,12 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public boolean remove(Person person) {
+    public boolean remove(@Nonnull Person person) {
         return this.repository.remove(person);
     }
 
     @Override
-    public boolean set(Person person, Person ignored) {
+    public boolean set(@Nonnull Person person, @Nonnull Person ignored) {
         return repository.set(person, ignored);
     }
 
@@ -78,7 +79,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public boolean rewrite(Collection<Person>persons){
+    public boolean rewrite(@Nonnull Collection<Person>persons){
         return this.repository.rewrite(persons);
     }
 

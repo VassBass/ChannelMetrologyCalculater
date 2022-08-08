@@ -7,6 +7,7 @@ import repository.CalibratorRepository;
 import repository.impl.CalibratorRepositorySQLite;
 import service.CalibratorService;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public class CalibratorServiceImpl implements CalibratorService {
@@ -39,12 +40,12 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public boolean add(Calibrator calibrator) {
+    public boolean add(@Nonnull Calibrator calibrator) {
         return this.repository.add(calibrator);
     }
 
     @Override
-    public boolean remove(Calibrator calibrator) {
+    public boolean remove(@Nonnull Calibrator calibrator) {
         return this.repository.remove(calibrator);
     }
 
@@ -54,7 +55,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public boolean set(Calibrator oldCalibrator, Calibrator newCalibrator) {
+    public boolean set(@Nonnull Calibrator oldCalibrator, @Nonnull Calibrator newCalibrator) {
         return this.repository.set(oldCalibrator, newCalibrator);
     }
 
@@ -79,7 +80,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public boolean rewrite(Collection<Calibrator>calibrators){
+    public boolean rewrite(@Nonnull Collection<Calibrator>calibrators){
         return this.repository.rewrite(calibrators);
     }
 

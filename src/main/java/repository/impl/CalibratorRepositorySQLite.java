@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import repository.CalibratorRepository;
 import repository.RepositoryJDBC;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,9 +83,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public String[] getAllNames(Measurement measurement) {
-        if (measurement == null) return null;
-
+    public String[] getAllNames(@Nonnull Measurement measurement) {
         List<String>calibrators = new ArrayList<>();
 
         LOGGER.info("Reading all calibrators names from DB");
@@ -129,9 +128,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean add(Calibrator calibrator) {
-        if (calibrator == null) return false;
-
+    public boolean add(@Nonnull Calibrator calibrator) {
         String sql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatement(sql)){
@@ -155,9 +152,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean remove(Calibrator calibrator) {
-        if (calibrator == null) return false;
-
+    public boolean remove(@Nonnull Calibrator calibrator) {
         String sql = "DELETE FROM calibrators WHERE name = '" + calibrator.getName() + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -174,9 +169,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean removeByMeasurementValue(String measurementValue) {
-        if (measurementValue == null) return false;
-
+    public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
         String sql = "DELETE FROM calibrators WHERE value = '" + measurementValue + "';";
         try (Statement statement = getStatement()) {
             int result = statement.executeUpdate(sql);
@@ -189,8 +182,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean set(Calibrator oldCalibrator, Calibrator newCalibrator) {
-        if (oldCalibrator == null || newCalibrator == null) return false;
+    public boolean set(@Nonnull Calibrator oldCalibrator, @Nonnull Calibrator newCalibrator) {
         if (oldCalibrator.isMatch(newCalibrator)) return true;
 
         String sql = "UPDATE calibrators SET "
@@ -215,8 +207,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean changeMeasurementValue(String oldValue, String newValue) {
-        if (oldValue == null || newValue == null) return false;
+    public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
         if (oldValue.equals(newValue)) return true;
 
         String sql = "UPDATE calibrators SET value = '" + newValue + "' WHERE value = '" + oldValue + "';";
@@ -244,9 +235,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean rewrite(Collection<Calibrator> calibrators) {
-        if (calibrators == null) return false;
-
+    public boolean rewrite(@Nonnull Collection<Calibrator> calibrators) {
         String sql = "DELETE FROM calibrators;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);
@@ -281,10 +270,10 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean importData(Collection<Calibrator> newCalibrators, Collection<Calibrator> calibratorsForChange) {
+    public boolean importData(@Nonnull Collection<Calibrator> newCalibrators, @Nonnull Collection<Calibrator> calibratorsForChange) {
         int changeResult = 0;
         int addResult = 0;
-        if (calibratorsForChange != null && !calibratorsForChange.isEmpty()){
+        if (!calibratorsForChange.isEmpty()){
             for (Calibrator c : calibratorsForChange){
                 String sql = "UPDATE calibrators SET "
                         + "type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, certificate = ?, range_min = ?, range_max = ? "
@@ -310,7 +299,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
             }
         }
 
-        if (newCalibrators != null && !newCalibrators.isEmpty()){
+        if (!newCalibrators.isEmpty()){
             String sql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
                     + "VALUES ";
             StringBuilder sqlBuilder = new StringBuilder(sql);
@@ -340,9 +329,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public boolean isExists(Calibrator calibrator) {
-        if (calibrator == null) return true;
-
+    public boolean isExists(@Nonnull Calibrator calibrator) {
         String sql = "SELECT name FROM calibrators WHERE name = '" + calibrator.getName() + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             return resultSet.next();

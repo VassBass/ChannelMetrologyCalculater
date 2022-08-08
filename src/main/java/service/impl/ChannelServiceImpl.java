@@ -6,6 +6,7 @@ import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import service.ChannelService;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,12 +40,12 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public boolean add(Channel channel) {
+    public boolean add(@Nonnull Channel channel) {
         return this.repository.add(channel);
     }
 
     @Override
-    public boolean remove(Channel channel) {
+    public boolean remove(@Nonnull Channel channel) {
         return this.repository.remove(channel);
     }
 
@@ -69,7 +70,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public boolean set(Channel oldChannel, Channel newChannel) {
+    public boolean set(@Nonnull Channel oldChannel, @Nonnull Channel newChannel) {
         return this.repository.set(oldChannel, newChannel);
     }
 
@@ -99,7 +100,7 @@ public class ChannelServiceImpl implements ChannelService {
     }
 
     @Override
-    public boolean rewrite(Collection<Channel>channels){
+    public boolean rewrite(@Nonnull Collection<Channel>channels){
         return this.repository.rewrite(channels);
     }
 }

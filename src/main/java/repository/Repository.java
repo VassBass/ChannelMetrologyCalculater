@@ -1,13 +1,14 @@
 package repository;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public interface Repository<O> {
     boolean createTable();
     Collection<O> getAll();
-    boolean add(O o);
-    boolean set(O oldO, O newO);
-    boolean remove(O o);
+    boolean add(@Nonnull O o);
+    boolean set(@Nonnull O oldO, @Nonnull O newO);
+    boolean remove(@Nonnull O o);
     boolean clear();
-    boolean rewrite(Collection<O>list);
+    boolean rewrite(@Nonnull Collection<O>list);
 }

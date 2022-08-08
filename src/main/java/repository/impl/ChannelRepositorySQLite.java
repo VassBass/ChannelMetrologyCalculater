@@ -62,9 +62,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public Channel get(String code) {
-        if (code == null) return null;
-
+    public Channel get(@Nonnull String code) {
         LOGGER.info("Reading channel with code = {} from DB", code);
         String sql = "SELECT * FROM channels WHERE code = '" + code + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -134,9 +132,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean add(Channel channel) {
-        if (channel == null) return false;
-
+    public boolean add(@Nonnull Channel channel) {
         String sql = "INSERT INTO channels (code, name, department, area, process, installation, technology_number" +
                 ", protocol_number, reference, date, suitability, measurement_value, sensor, frequency, range_min, range_max" +
                 ", allowable_error_percent, allowable_error_value) "
@@ -171,9 +167,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean remove(Channel channel) {
-        if (channel == null) return false;
-
+    public boolean remove(@Nonnull Channel channel) {
         String sql = "DELETE FROM channels WHERE code = '" + channel.getCode() + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -190,9 +184,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean removeBySensor(Sensor sensor) {
-        if (sensor == null) return false;
-
+    public boolean removeBySensor(@Nonnull Sensor sensor) {
         Collection<Channel>channels = getAll();
         List<String> codes = new ArrayList<>();
         String sensorName = sensor.getName();
@@ -221,9 +213,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean removeByMeasurementValue(String measurementValue) {
-        if (measurementValue == null) return false;
-
+    public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
         String sql = "DELETE FROM channels WHERE measurement_value = '" + measurementValue + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -236,9 +226,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean rewrite(Collection<Channel> channels) {
-        if (channels == null) return false;
-
+    public boolean rewrite(@Nonnull Collection<Channel> channels) {
         String sql = "DELETE FROM channels;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);
@@ -291,8 +279,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean changeSensor(Sensor oldSensor, Sensor newSensor, int ... ignored) {
-        if (oldSensor == null || newSensor == null) return false;
+    public boolean changeSensor(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor, int ... ignored) {
         if (oldSensor.isMatch(newSensor)) return true;
 
         List<Channel>changedChannels = new ArrayList<>();
@@ -333,9 +320,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean changeSensors(List<Sensor> sensors) {
-        if (sensors == null) return false;
-
+    public boolean changeSensors(@Nonnull List<Sensor> sensors) {
         Collection<Channel>channels = getAll();
         for (Sensor sensor : sensors){
             for (Channel channel : channels){
@@ -349,8 +334,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean changeMeasurementValue(String oldValue, String newValue) {
-        if (oldValue == null || newValue == null) return false;
+    public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
         if (oldValue.equals(newValue)) return true;
 
         List<String>needChangeSensorCodes = new ArrayList<>();
@@ -386,8 +370,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean set(Channel oldChannel, Channel newChannel) {
-        if (oldChannel == null || newChannel == null) return false;
+    public boolean set(@Nonnull Channel oldChannel, @Nonnull Channel newChannel) {
         if (oldChannel.isMatch(newChannel)) return true;
 
         String sql = "UPDATE channels SET "
@@ -434,10 +417,10 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean importData(Collection<Channel> newChannels, Collection<Channel> channelsForChange) {
+    public boolean importData(@Nonnull Collection<Channel> newChannels, @Nonnull Collection<Channel> channelsForChange) {
         int changeResult = 0;
         int addResult = 0;
-        if (channelsForChange != null && !channelsForChange.isEmpty()){
+        if (!channelsForChange.isEmpty()){
             for (Channel c : channelsForChange){
                 String sql = "UPDATE channels SET "
                         + "name = ?, department = ?, area = ?, process = ?, installation = ?, technology_number = ?, protocol_number = ?, "
@@ -474,7 +457,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
             }
         }
 
-        if (newChannels != null && !newChannels.isEmpty()){
+        if (!newChannels.isEmpty()){
             String insertSql = "INSERT INTO channels ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'"
                     + ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement_value', 'sensor', 'frequency', 'range_min', 'range_max'"
                     + ", 'allowable_error_percent', 'allowable_error_value') "
@@ -526,8 +509,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public boolean isExist(String oldChannelCode, String newChannelCode) {
-        if (oldChannelCode == null || newChannelCode == null) return true;
+    public boolean isExist(@Nonnull String oldChannelCode, @Nonnull String newChannelCode) {
         if (oldChannelCode.equals(newChannelCode)) return false;
 
         String sql = "SELECT code FROM channels WHERE code = '" + newChannelCode + "' LIMIT 1;";

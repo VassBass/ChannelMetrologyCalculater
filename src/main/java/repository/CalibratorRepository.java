@@ -3,18 +3,20 @@ package repository;
 import model.Calibrator;
 import model.Measurement;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public interface CalibratorRepository extends Repository<Calibrator>{
-    String[]getAllNames(Measurement measurement);
+    String[]getAllNames(@Nonnull Measurement measurement);
 
     Calibrator get(String name);
 
-    boolean removeByMeasurementValue(String measurementValue);
+    boolean removeByMeasurementValue(@Nonnull String measurementValue);
 
-    boolean changeMeasurementValue(String oldValue, String newValue);
+    boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue);
 
-    boolean importData(Collection<Calibrator> newCalibrators, Collection<Calibrator>calibratorsForChange);
+    boolean importData(@Nonnull Collection<Calibrator> newCalibrators,
+                       @Nonnull Collection<Calibrator>calibratorsForChange);
 
-    boolean isExists(Calibrator calibrator);
+    boolean isExists(@Nonnull Calibrator calibrator);
 }

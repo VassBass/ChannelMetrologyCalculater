@@ -2,22 +2,24 @@ package repository;
 
 import model.Sensor;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 
 public interface SensorRepository extends Repository<Sensor>{
-    Collection<Sensor> getAll(String measurement);
+    Collection<Sensor> getAll(@Nonnull String measurement);
     String[]getAllTypes();
     String[]getAllTypesWithoutROSEMOUNT();
-    String getMeasurement(String sensorType);
-    String[] getAllSensorsName(String measurementName);
-    Sensor get(String sensorName);
+    String getMeasurement(@Nonnull String sensorType);
+    String[] getAllSensorsName(@Nonnull String measurementName);
+    Sensor get(@Nonnull String sensorName);
 
-    boolean removeMeasurementValue(String measurementValue);
+    boolean removeMeasurementValue(@Nonnull String measurementValue);
 
-    boolean changeMeasurementValue(String oldValue, String newValue);
+    boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue);
 
-    boolean importData(Collection<Sensor>newSensors, Collection<Sensor>sensorsForChange);
+    boolean importData(@Nonnull Collection<Sensor>newSensors,
+                       @Nonnull Collection<Sensor>sensorsForChange);
 
-    boolean isLastInMeasurement(Sensor sensor);
-    boolean isExists(String sensorName);
+    boolean isLastInMeasurement(@Nonnull Sensor sensor);
+    boolean isExists(@Nonnull String sensorName);
 }

@@ -5,6 +5,7 @@ import repository.Repository;
 import repository.impl.AreaRepositorySQLite;
 import service.AreaService;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -43,26 +44,21 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public boolean add(String object) {
-        if (object == null) return false;
-
+    public boolean add(@Nonnull String object) {
         if (mainSet.add(object)) {
             return repository.add(object);
         } else return false;
     }
 
     @Override
-    public boolean remove(String object) {
-        if (object == null) return false;
-
+    public boolean remove(@Nonnull String object) {
         if (mainSet.remove(object)) {
             return repository.remove(object);
         } else return false;
     }
 
     @Override
-    public boolean set(String oldObject, String newObject) {
-        if (oldObject == null || newObject == null) return false;
+    public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         if (oldObject.equals(newObject)) return true;
 
         ArrayList<String> list = new ArrayList<>(mainSet);
@@ -85,7 +81,7 @@ public class AreaServiceImpl implements AreaService {
     }
 
     @Override
-    public boolean rewrite(Collection<String>areas){
+    public boolean rewrite(@Nonnull Collection<String>areas){
         if (repository.rewrite(areas)){
             mainSet.clear();
             return mainSet.addAll(areas);
@@ -97,7 +93,8 @@ public class AreaServiceImpl implements AreaService {
         return rewrite(DefaultAreas.get());
     }
 
-    public boolean add(ArrayList<String> areas) {
+    @Override
+    public boolean add(@Nonnull Collection<String> areas) {
         if (mainSet.addAll(areas)){
             return repository.rewrite(mainSet);
         }else return false;

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import repository.Repository;
 import repository.RepositoryJDBC;
 
+import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -67,9 +68,7 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
      * @return true if department was added or false if not
      */
     @Override
-    public boolean add(String object) {
-        if (object == null) return false;
-
+    public boolean add(@Nonnull String object) {
         String sql = "INSERT INTO departments VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -89,9 +88,7 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
      * @return true if replace was successful or false if not
      */
     @Override
-    public boolean set(String oldObject, String newObject) {
-        if (oldObject == null || newObject == null) return false;
-
+    public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         String sql = "UPDATE departments SET department = '" + newObject + "' WHERE department = '" + oldObject + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -113,9 +110,7 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
      * @return true if delete was successful or false if not
      */
     @Override
-    public boolean remove(String object) {
-        if (object == null) return false;
-
+    public boolean remove(@Nonnull String object) {
         String sql = "DELETE FROM departments WHERE department = '" + object + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
@@ -150,9 +145,7 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
     }
 
     @Override
-    public boolean rewrite(Collection<String> newList) {
-        if (newList == null) return false;
-
+    public boolean rewrite(@Nonnull Collection<String> newList) {
         String sql = "DELETE FROM departments;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
