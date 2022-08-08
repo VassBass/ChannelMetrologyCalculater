@@ -1,7 +1,7 @@
 package ui.model;
 
-import application.Application;
 import converters.ConverterUI;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 
@@ -10,7 +10,7 @@ public class LoadWindow extends JWindow {
     private JDialog parent;
 
     public LoadWindow(){
-        super(Application.context.mainScreen);
+        super(MainScreen.getInstance());
 
         this.createElements();
         this.build();
@@ -34,7 +34,7 @@ public class LoadWindow extends JWindow {
     private void build(){
         this.setSize(300,30);
         if (this.parent == null) {
-            this.setLocation(ConverterUI.POINT_CENTER(Application.context.mainScreen, this));
+            this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
         }else {
             this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         }

@@ -1,12 +1,17 @@
 package backgroundTasks;
 
-import application.Application;
 import model.Measurement;
+import service.ChannelSorter;
+import service.impl.CalibratorServiceImpl;
+import service.impl.ChannelServiceImpl;
+import service.impl.MeasurementServiceImpl;
+import service.impl.SensorServiceImpl;
 import ui.measurementsList.MeasurementsListDialog;
 import ui.model.LoadDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
     private String lastSensorMessageGenerator(String measurement){
@@ -40,15 +45,15 @@ public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
     @Override
     protected Boolean doInBackground() throws Exception {
         String measurementValue = this.dialog.getSelectedMeasurementValue();
-        measurement = Application.context.measurementService.get(measurementValue);
-        if (Application.context.measurementService.isLastInMeasurement(measurementValue)) {
+        measurement = MeasurementServiceImpl.getInstance().get(measurementValue);
+        if (MeasurementServiceImpl.getInstance().isLastInMeasurement(measurementValue)) {
             LAST_MEASUREMENT_MESSAGE = this.lastSensorMessageGenerator(measurement.getName());
             return false;
         }else {
-            Application.context.measurementService.delete(measurement);
-            Application.context.channelService.removeByMeasurementValueInCurrentThread(measurementValue);
-            Application.context.calibratorService.removeByMeasurementValueInCurrentThread(measurementValue);
-            Application.context.sensorService.removeMeasurementValueInCurrentThread(measurementValue);
+            MeasurementServiceImpl.getInstance().remove(measurement);
+            ChannelServiceImpl.getInstance().removeByMeasurementValue(measurementValue);
+            CalibratorServiceImpl.getInstance().removeByMeasurementValue(measurementValue);
+            SensorServiceImpl.getInstance().removeMeasurementValue(measurementValue);
             return true;
         }
     }
@@ -59,10 +64,10 @@ public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
         try {
             if (this.get()){
                 this.dialog.updateMeasurementsList(measurement.getName());
-                if (Application.context.channelSorter.isOn()){
-                    this.dialog.updateMain(Application.context.channelSorter.getCurrent());
+                if (ChannelSorter.getInstance().isOn()){
+                    this.dialog.updateMain(ChannelSorter.getInstance().getCurrent());
                 }else {
-                    this.dialog.updateMain(Application.context.channelService.getAll());
+                    this.dialog.updateMain(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
                 }
             }else {
                 JOptionPane.showMessageDialog(dialog, LAST_MEASUREMENT_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);

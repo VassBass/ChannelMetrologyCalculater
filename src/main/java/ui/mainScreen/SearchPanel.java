@@ -1,16 +1,18 @@
 package ui.mainScreen;
 
-import application.Application;
 import backgroundTasks.CheckChannel;
 import backgroundTasks.SearchChannels;
 import constants.Sort;
 import converters.VariableConverter;
 import org.apache.commons.validator.DateValidator;
+import service.ChannelSorter;
+import service.impl.*;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class SearchPanel extends JPanel {
     private static final String CODE = "Код каналу";
@@ -166,31 +168,31 @@ public class SearchPanel extends JPanel {
     };
 
     private ComboBoxModel<String>model_measurementsNames(){
-        return new DefaultComboBoxModel<>(Application.context.measurementService.getAllNames());
+        return new DefaultComboBoxModel<>(MeasurementServiceImpl.getInstance().getAllNames());
     }
 
     private ComboBoxModel<String>model_measurementsValues(){
-        return new DefaultComboBoxModel<>(Application.context.measurementService.getAllValues());
+        return new DefaultComboBoxModel<>(MeasurementServiceImpl.getInstance().getAllValues());
     }
 
     private ComboBoxModel<String>model_departments(){
-        return new DefaultComboBoxModel<>(Application.context.departmentService.getAllInStrings());
+        return new DefaultComboBoxModel<>(DepartmentServiceImpl.getInstance().getAllInStrings());
     }
 
     private ComboBoxModel<String>model_areas(){
-        return new DefaultComboBoxModel<>(Application.context.areaService.getAllInStrings());
+        return new DefaultComboBoxModel<>(AreaServiceImpl.getInstance().getAllInStrings());
     }
 
     private ComboBoxModel<String>model_processes(){
-        return new DefaultComboBoxModel<>(Application.context.processService.getAllInStrings());
+        return new DefaultComboBoxModel<>(ProcessServiceImpl.getInstance().getAllInStrings());
     }
 
     private ComboBoxModel<String>model_installations(){
-        return new DefaultComboBoxModel<>(Application.context.installationService.getAllInStrings());
+        return new DefaultComboBoxModel<>(InstallationServiceImpl.getInstance().getAllInStrings());
     }
 
     private ComboBoxModel<String>model_sensorsTypes(){
-        return new DefaultComboBoxModel<>(Application.context.sensorService.getAllTypes());
+        return new DefaultComboBoxModel<>(SensorServiceImpl.getInstance().getAllTypes());
     }
 
     private final ActionListener clickSearch = new ActionListener() {
@@ -210,7 +212,7 @@ public class SearchPanel extends JPanel {
                     String value = valueComboBox.getSelectedItem() == null ? null : valueComboBox.getSelectedItem().toString();
                     switch (f) {
                         case CODE:
-                            new CheckChannel(Application.context.mainScreen, valueText.getText()).start();
+                            new CheckChannel(MainScreen.getInstance(), valueText.getText()).start();
                             break;
                         case NAME:
                             new SearchChannels().startSearch(Sort.NAME, valueText.getText());
@@ -259,8 +261,8 @@ public class SearchPanel extends JPanel {
                             break;
                     }
                 } else {
-                    Application.context.channelSorter.setOff();
-                    Application.context.mainScreen.setChannelsList(Application.context.channelService.getAll());
+                    ChannelSorter.getInstance().setOff();
+                    MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
                     if (field != null) field.setEnabled(true);
                     if (valueText != null) valueText.setEnabled(true);
                     if (valueComboBox != null) valueComboBox.setEnabled(true);
@@ -323,7 +325,7 @@ public class SearchPanel extends JPanel {
                                 build(CHECK);
                                 break;
                         }
-                        Application.context.mainScreen.refresh();
+                        MainScreen.getInstance().refresh();
                     }
                 });
             }

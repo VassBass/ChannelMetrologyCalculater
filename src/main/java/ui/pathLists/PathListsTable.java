@@ -1,7 +1,10 @@
 package ui.pathLists;
 
-import application.Application;
 import model.Model;
+import service.impl.AreaServiceImpl;
+import service.impl.DepartmentServiceImpl;
+import service.impl.InstallationServiceImpl;
+import service.impl.ProcessServiceImpl;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -43,16 +46,16 @@ public class PathListsTable extends JTable {
         String[] elements;
         switch (model){
             case AREA:
-                elements = Application.context.areaService.getAllInStrings();
+                elements = AreaServiceImpl.getInstance().getAllInStrings();
                 break;
             case PROCESS:
-                elements = Application.context.processService.getAllInStrings();
+                elements = ProcessServiceImpl.getInstance().getAllInStrings();
                 break;
             case INSTALLATION:
-                elements = Application.context.installationService.getAllInStrings();
+                elements = InstallationServiceImpl.getInstance().getAllInStrings();
                 break;
             default:
-                elements = Application.context.departmentService.getAllInStrings();
+                elements = DepartmentServiceImpl.getInstance().getAllInStrings();
                 break;
         }
         for (String element : elements){

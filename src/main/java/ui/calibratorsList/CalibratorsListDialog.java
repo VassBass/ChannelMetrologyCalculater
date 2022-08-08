@@ -1,8 +1,6 @@
 package ui.calibratorsList;
 
-import application.Application;
 import converters.ConverterUI;
-import model.Calibrator;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
@@ -73,13 +71,13 @@ public class CalibratorsListDialog extends JDialog {
                 public void run() {
                     int index = mainTable.getSelectedRow();
                     if (index != -1) {
-                        Calibrator calibrator = Application.context.calibratorService.get(index);
-                        if (calibrator.getName().equals(Calibrator.FLUKE718_30G)
-                                || calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)) {
-                            JOptionPane.showMessageDialog(CalibratorsListDialog.this, NOT_REMOVED_CALIBRATOR_MESSAGE, ERROR, JOptionPane.WARNING_MESSAGE);
-                        } else {
-                            new CalibratorRemoveDialog(CalibratorsListDialog.this).setVisible(true);
-                        }
+//                        Calibrator calibrator = Application.context.calibratorService.get(index);
+//                        if (calibrator.getName().equals(Calibrator.FLUKE718_30G)
+//                                || calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)) {
+//                            JOptionPane.showMessageDialog(CalibratorsListDialog.this, NOT_REMOVED_CALIBRATOR_MESSAGE, ERROR, JOptionPane.WARNING_MESSAGE);
+//                        } else {
+//                            new CalibratorRemoveDialog(CalibratorsListDialog.this).setVisible(true);
+//                        }
                     }
                 }
             });
@@ -94,8 +92,8 @@ public class CalibratorsListDialog extends JDialog {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        Calibrator calibrator = Application.context.calibratorService.get(index);
-                        new CalibratorInfoDialog(CalibratorsListDialog.this, calibrator).setVisible(true);
+                        //Calibrator calibrator = Application.context.calibratorService.get(index);
+                        //new CalibratorInfoDialog(CalibratorsListDialog.this, calibrator).setVisible(true);
                     }
                 });
             }

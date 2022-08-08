@@ -1,6 +1,5 @@
 package ui.pathLists;
 
-import application.Application;
 import converters.ConverterUI;
 import model.Model;
 import ui.mainScreen.MainScreen;
@@ -190,27 +189,27 @@ public class PathListsDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (mainTable.getSelectedRow() != -1) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        String elementName = null;
-                        switch (model) {
-                            case DEPARTMENT:
-                                elementName = Application.context.departmentService.get(mainTable.getSelectedRow());
-                                break;
-                            case AREA:
-                                elementName = Application.context.areaService.get(mainTable.getSelectedRow());
-                                break;
-                            case PROCESS:
-                                elementName = Application.context.processService.get(mainTable.getSelectedRow());
-                                break;
-                            case INSTALLATION:
-                                elementName = Application.context.installationService.get(mainTable.getSelectedRow());
-                                break;
-                        }
-                        new PathElementName(PathListsDialog.this, model, elementName).setVisible(true);
-                    }
-                });
+//                EventQueue.invokeLater(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        String elementName = null;
+//                        switch (model) {
+//                            case DEPARTMENT:
+//                                elementName = Application.context.departmentService.get(mainTable.getSelectedRow());
+//                                break;
+//                            case AREA:
+//                                elementName = Application.context.areaService.get(mainTable.getSelectedRow());
+//                                break;
+//                            case PROCESS:
+//                                elementName = Application.context.processService.get(mainTable.getSelectedRow());
+//                                break;
+//                            case INSTALLATION:
+//                                elementName = Application.context.installationService.get(mainTable.getSelectedRow());
+//                                break;
+//                        }
+//                        new PathElementName(PathListsDialog.this, model, elementName).setVisible(true);
+//                    }
+//                });
             }
         }
     };
@@ -218,29 +217,29 @@ public class PathListsDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    String elementName = null;
-                    if (mainTable.getSelectedRow() != -1){
-                        switch (model) {
-                            case DEPARTMENT:
-                                elementName = Application.context.departmentService.get(mainTable.getSelectedRow());
-                                break;
-                            case AREA:
-                                elementName = Application.context.areaService.get(mainTable.getSelectedRow());
-                                break;
-                            case PROCESS:
-                                elementName = Application.context.processService.get(mainTable.getSelectedRow());
-                                break;
-                            case INSTALLATION:
-                                elementName = Application.context.installationService.get(mainTable.getSelectedRow());
-                                break;
-                        }
-                    }
-                    new PathElementsRemove(PathListsDialog.this, model, elementName).setVisible(true);
-                }
-            });
+//            EventQueue.invokeLater(new Runnable() {
+//                @Override
+//                public void run() {
+//                    String elementName = null;
+//                    if (mainTable.getSelectedRow() != -1){
+//                        switch (model) {
+//                            case DEPARTMENT:
+//                                elementName = Application.context.departmentService.get(mainTable.getSelectedRow());
+//                                break;
+//                            case AREA:
+//                                elementName = Application.context.areaService.get(mainTable.getSelectedRow());
+//                                break;
+//                            case PROCESS:
+//                                elementName = Application.context.processService.get(mainTable.getSelectedRow());
+//                                break;
+//                            case INSTALLATION:
+//                                elementName = Application.context.installationService.get(mainTable.getSelectedRow());
+//                                break;
+//                        }
+//                    }
+//                    new PathElementsRemove(PathListsDialog.this, model, elementName).setVisible(true);
+//                }
+//            });
         }
     };
 

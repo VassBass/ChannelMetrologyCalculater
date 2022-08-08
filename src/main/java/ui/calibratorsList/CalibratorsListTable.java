@@ -1,7 +1,7 @@
 package ui.calibratorsList;
 
-import application.Application;
 import model.Calibrator;
+import service.impl.CalibratorServiceImpl;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -30,7 +30,7 @@ public class CalibratorsListTable extends JTable {
         String[]columnsHeader = new String[] {NAME, TYPE, TYPE_OF_MEASUREMENT};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Calibrator> calibrators = Application.context.calibratorService.getAll();
+        ArrayList<Calibrator> calibrators = new ArrayList<>(CalibratorServiceImpl.getInstance().getAll());
         for (Calibrator calibrator : Objects.requireNonNull(calibrators)) {
             String[] data = new String[3];
             data[0] = calibrator.getName();

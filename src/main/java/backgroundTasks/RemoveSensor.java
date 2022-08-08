@@ -1,12 +1,16 @@
 package backgroundTasks;
 
-import application.Application;
 import model.Sensor;
+import service.ChannelSorter;
+import service.impl.ChannelServiceImpl;
+import service.impl.ControlPointsValuesServiceImpl;
+import service.impl.SensorServiceImpl;
 import ui.model.LoadDialog;
 import ui.sensorsList.SensorsListDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class RemoveSensor extends SwingWorker<Boolean, Void> {
     private static final String ALL = "Всі";
@@ -40,13 +44,13 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
     @Override
     protected Boolean doInBackground() throws Exception {
         Sensor sensor = this.dialog.getSensor();
-        if (Application.context.sensorService.isLastInMeasurement(sensor)) {
+        if (SensorServiceImpl.getInstance().isLastInMeasurement(sensor)) {
             LAST_SENSOR_MESSAGE = this.lastSensorMessageGenerator(sensor.getMeasurement());
             return false;
         }else {
-            Application.context.sensorService.removeInCurrentThread(sensor);
-            Application.context.channelService.removeBySensorInCurrentThread(sensor);
-            Application.context.controlPointsValuesService.removeAllInCurrentThread(sensor.getType());
+            SensorServiceImpl.getInstance().remove(sensor);
+            ChannelServiceImpl.getInstance().removeBySensor(sensor);
+            ControlPointsValuesServiceImpl.getInstance().removeAll(sensor.getType());
             return true;
         }
     }
@@ -58,10 +62,10 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
             if (this.get()){
                 String measurement = dialog.getMeasurement().equals(ALL) ? null : dialog.getMeasurement();
                 this.dialog.update(measurement);
-                if (Application.context.channelSorter.isOn()){
-                    this.dialog.updateMain(Application.context.channelSorter.getCurrent());
+                if (ChannelSorter.getInstance().isOn()){
+                    this.dialog.updateMain(ChannelSorter.getInstance().getCurrent());
                 }else {
-                    this.dialog.updateMain(Application.context.channelService.getAll());
+                    this.dialog.updateMain(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
                 }
             }else {
                 JOptionPane.showMessageDialog(dialog, LAST_SENSOR_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);

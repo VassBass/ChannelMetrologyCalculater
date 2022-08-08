@@ -1,6 +1,5 @@
 package ui.calculate.start;
 
-import application.Application;
 import constants.Key;
 import converters.ConverterUI;
 import model.Calibrator;
@@ -8,6 +7,7 @@ import model.Channel;
 import model.Measurement;
 import model.Sensor;
 import service.SystemData;
+import service.impl.CalibratorServiceImpl;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.start.complexElements.CalculateStartDialog_alarmPanel;
 import ui.calculate.start.complexElements.CalculateStartDialog_datePanel;
@@ -96,7 +96,7 @@ public class CalculateStartDialog extends JDialog {
         this.calibrator = new JComboBox<>();
         this.calibrator.setBackground(Color.WHITE);
         this.calibrator.setEditable(false);
-        this.updateCalibrators(this.channel.getMeasurement().getName());
+        this.updateCalibrators(this.channel._getMeasurement().getName());
 
         this.weatherPanel = new CalculateStartDialog_weatherPanel();
 
@@ -111,7 +111,7 @@ public class CalculateStartDialog extends JDialog {
         if (measurement == null){
             this.calibrator.setSelectedIndex(0);
         }else {
-            String[] cal = Application.context.calibratorService.getAllNames(new Measurement(measurement, ""));
+            String[] cal = CalibratorServiceImpl.getInstance().getAllNames(new Measurement(measurement, ""));
             String[] toModel = new String[cal.length + 1];
             System.arraycopy(cal,0,toModel,0,cal.length);
             toModel[toModel.length - 1] = ADD_NEW;
@@ -161,7 +161,7 @@ public class CalculateStartDialog extends JDialog {
         if (values != null){
             this.numberOfProtocol.setText((String) values.get(Key.CHANNEL_PROTOCOL_NUMBER));
             this.datePanel.update((String) values.get(Key.CHANNEL_DATE));
-            String[] calibrators = Application.context.calibratorService.getAllNames(this.channel.getMeasurement());
+            String[] calibrators = CalibratorServiceImpl.getInstance().getAllNames(this.channel._getMeasurement());
             Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
             for (int x=0;x<calibrators.length;x++){
                 if (calibrator != null && calibrator.getName().equals(calibrators[x])){
@@ -192,7 +192,7 @@ public class CalculateStartDialog extends JDialog {
         values.put(Key.CHANNEL_PROTOCOL_NUMBER, this.numberOfProtocol.getText());
         values.put(Key.CHANNEL_DATE, this.datePanel.getDate());
         String calibratorName = Objects.requireNonNull(this.calibrator.getSelectedItem()).toString();
-        values.put(Key.CALIBRATOR, Application.context.calibratorService.get(calibratorName));
+        values.put(Key.CALIBRATOR, CalibratorServiceImpl.getInstance().get(calibratorName));
         values.put(Key.CALCULATION_EXTERNAL_TEMPERATURE, this.weatherPanel.temperature.getText());
         values.put(Key.CALCULATION_EXTERNAL_PRESSURE, this.weatherPanel.pressure.getText());
         values.put(Key.CALCULATION_EXTERNAL_HUMIDITY, this.weatherPanel.humidity.getText());

@@ -1,8 +1,10 @@
 package ui.controlPointsValues;
 
-import application.Application;
 import converters.ConverterUI;
 import model.ControlPointsValues;
+import service.impl.ControlPointsValuesServiceImpl;
+import service.impl.SensorServiceImpl;
+import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -11,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class ControlPointsListDialog extends JDialog {
@@ -34,10 +37,10 @@ public class ControlPointsListDialog extends JDialog {
     }
 
     private void createElements(){
-        String[]sTypes = Application.context.sensorService.getAllTypesWithoutROSEMOUNT();
+        String[]sTypes = SensorServiceImpl.getInstance().getAllTypesWithoutROSEMOUNT();
         this.sensorsTypes = new JComboBox<>(sTypes);
         String sensorType = Objects.requireNonNull(this.sensorsTypes.getSelectedItem()).toString();
-        this.mainTable = new ControlPointsValuesTable(Application.context.controlPointsValuesService.getBySensorType(sensorType));
+        this.mainTable = new ControlPointsValuesTable(new ArrayList<>(ControlPointsValuesServiceImpl.getInstance().getBySensorType(sensorType)));
         this.btnCancel = new DefaultButton(CANCEL);
         this.btnChange = new DefaultButton(CHANGE);
         this.btnAdd = new DefaultButton(ADD);
@@ -57,13 +60,13 @@ public class ControlPointsListDialog extends JDialog {
 
     private void build(){
         this.setSize(300,300);
-        this.setLocation(ConverterUI.POINT_CENTER(Application.context.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
         this.setContentPane(new MainPanel());
     }
 
     public void setList(String sensorType){
         this.sensorsTypes.setSelectedItem(sensorType);
-        mainTable.setList(Application.context.controlPointsValuesService.getBySensorType(sensorType));
+        mainTable.setList(new ArrayList<>(ControlPointsValuesServiceImpl.getInstance().getBySensorType(sensorType)));
     }
 
     private final ItemListener changeSensorType = new ItemListener() {
@@ -71,7 +74,7 @@ public class ControlPointsListDialog extends JDialog {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED){
                 String sensorType = Objects.requireNonNull(sensorsTypes.getSelectedItem()).toString();
-                mainTable.setList(Application.context.controlPointsValuesService.getBySensorType(sensorType));
+                mainTable.setList(new ArrayList<>(ControlPointsValuesServiceImpl.getInstance().getBySensorType(sensorType)));
             }
         }
     };
@@ -104,8 +107,8 @@ public class ControlPointsListDialog extends JDialog {
             int index = mainTable.getSelectedRow();
             if (index >= 0){
                 String sensorType = Objects.requireNonNull(sensorsTypes.getSelectedItem()).toString();
-                ControlPointsValues cpv = Application.context.controlPointsValuesService.getControlPointsValues(sensorType, index);
-                new ControlPointsValuesDialog(ControlPointsListDialog.this, cpv).setVisible(true);
+                //ControlPointsValues cpv = Application.context.controlPointsValuesService.getControlPointsValues(sensorType, index);
+                //new ControlPointsValuesDialog(ControlPointsListDialog.this, cpv).setVisible(true);
             }
         }
     };
@@ -116,13 +119,13 @@ public class ControlPointsListDialog extends JDialog {
             int index = mainTable.getSelectedRow();
             if (index >= 0){
                 String sensorType = Objects.requireNonNull(sensorsTypes.getSelectedItem()).toString();
-                ControlPointsValues cpv = Application.context.controlPointsValuesService.getControlPointsValues(sensorType, index);
+                //ControlPointsValues cpv = Application.context.controlPointsValuesService.getControlPointsValues(sensorType, index);
                 String question = "Ви впевнені що хочете видалити контрольні точки в діапазоні "
-                        + "[" + cpv.getRangeMin() + "..." + cpv.getRangeMax() + "] "
+                //        + "[" + cpv.getRangeMin() + "..." + cpv.getRangeMax() + "] "
                         + "для ПВП типу \"" + sensorType + "\"?";
                 int answer = JOptionPane.showConfirmDialog(ControlPointsListDialog.this, question, REMOVE, JOptionPane.OK_CANCEL_OPTION);
                 if (answer == 0){
-                    Application.context.controlPointsValuesService.remove(cpv);
+                    //Application.context.controlPointsValuesService.remove(cpv);
                     setList(sensorType);
                 }
             }
@@ -136,7 +139,7 @@ public class ControlPointsListDialog extends JDialog {
             String question = "Ви впевнені що хочете видалити ВСІ контрольні точки для ПВП типу \"" + sensorType + "\"?";
             int answer = JOptionPane.showConfirmDialog(ControlPointsListDialog.this, question, CLEAR, JOptionPane.OK_CANCEL_OPTION);
             if (answer == 0) {
-                Application.context.controlPointsValuesService.clear(sensorType);
+                //Application.context.controlPointsValuesService.clear(sensorType);
                 setList(sensorType);
             }
         }

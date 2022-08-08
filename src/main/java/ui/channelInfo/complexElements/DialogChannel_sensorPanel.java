@@ -1,9 +1,9 @@
 package ui.channelInfo.complexElements;
 
-import application.Application;
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
+import service.impl.SensorServiceImpl;
 import ui.channelInfo.DialogChannel;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
@@ -89,7 +89,7 @@ public class DialogChannel_sensorPanel extends JPanel {
                         channel.setRangeMin(parent.rangePanel.getRangeMin());
                         channel.setRangeMax(parent.rangePanel.getRangeMax());
                         Sensor sensor = getSensor();
-                        sensor.setValue(channel._getMeasurementValue());
+                        sensor.setValue(channel.getMeasurementValue());
                         double errorSensor = sensor.getError(channel);
                         parent.allowableErrorPanel.updateError(errorSensor, false, channel._getRange());
                         if (sensor.getType().toUpperCase(Locale.ROOT).contains(Sensor.ROSEMOUNT)) {
@@ -99,7 +99,7 @@ public class DialogChannel_sensorPanel extends JPanel {
                         }
                     }
                     if (parent.sensorRangePanel != null && !parent.rangeLikeChannel.isSelected()){
-                        parent.sensorRangePanel.update(Application.context.sensorService.get(sensorsList.getSelectedItem().toString()));
+                        parent.sensorRangePanel.update(SensorServiceImpl.getInstance().get(sensorsList.getSelectedItem().toString()));
                     }
                 }
             }
@@ -134,7 +134,7 @@ public class DialogChannel_sensorPanel extends JPanel {
         this.removeAll();
 
         this.currentMeasurement = measurementName;
-        String[]s = Application.context.sensorService.getAllSensorsName(measurementName);
+        String[]s = SensorServiceImpl.getInstance().getAllSensorsName(measurementName);
         String[]sensors = new String[s.length + 1];
         System.arraycopy(s, 0, sensors, 0, s.length);
         sensors[sensors.length - 1] = ADD_NEW_SENSOR;
@@ -154,7 +154,7 @@ public class DialogChannel_sensorPanel extends JPanel {
     public void update(Sensor sensor){
         if (sensor != null){
             if (this.currentMeasurement.equals(sensor.getMeasurement())) {
-                String[] sensors = Application.context.sensorService.getAllSensorsName(sensor.getMeasurement());
+                String[] sensors = SensorServiceImpl.getInstance().getAllSensorsName(sensor.getMeasurement());
                 for (int x = 0; x < sensors.length; x++) {
                     if (sensor.getName().equals(sensors[x])) {
                         this.sensorsList.setSelectedIndex(x);
@@ -178,7 +178,7 @@ public class DialogChannel_sensorPanel extends JPanel {
 
     public Sensor getSensor(){
         String selectedSensor = Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString();
-        return Application.context.sensorService.get(selectedSensor);
+        return SensorServiceImpl.getInstance().get(selectedSensor);
     }
 
     public String getSerialNumber(){

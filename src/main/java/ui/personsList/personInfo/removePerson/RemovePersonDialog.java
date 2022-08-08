@@ -3,6 +3,7 @@ package ui.personsList.personInfo.removePerson;
 import application.Application;
 import converters.ConverterUI;
 import model.Person;
+import service.impl.PersonServiceImpl;
 import ui.model.DefaultButton;
 import ui.personsList.PersonsListDialog;
 
@@ -74,9 +75,8 @@ public class RemovePersonDialog extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(RemovePersonDialog.this)) return;
             dispose();
-            Application.context.personService.remove(person);
+            PersonServiceImpl.getInstance().remove(person);
             parent.update();
         }
     };

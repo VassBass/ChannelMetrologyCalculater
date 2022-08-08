@@ -1,10 +1,11 @@
 package ui.controlPointsValues;
 
-import application.Application;
 import converters.ConverterUI;
 import model.ControlPointsValues;
 import model.Measurement;
+import service.impl.SensorServiceImpl;
 import ui.controlPointsValues.complexElements.*;
+import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -34,7 +35,7 @@ public class ControlPointsValuesDialog extends JDialog {
     }
 
     private void createElements(){
-        String measurement = Application.context.sensorService.getMeasurement(this.values.getSensorType());
+        String measurement = SensorServiceImpl.getInstance().getMeasurement(this.values.getSensorType());
         if (measurement.equals(Measurement.TEMPERATURE)){
             this.controlPointsPanel = new TemperaturePanel(this.values.getRangeMin(), this.values.getRangeMax());
         }else if (measurement.equals(Measurement.PRESSURE)){
@@ -66,7 +67,7 @@ public class ControlPointsValuesDialog extends JDialog {
 
     private void build(){
         this.setSize(600,150);
-        this.setLocation(ConverterUI.POINT_CENTER(Application.context.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
 
         this.setContentPane(new MainPanel());
     }
@@ -85,7 +86,7 @@ public class ControlPointsValuesDialog extends JDialog {
             values.setValues(controlPointsPanel.getValues());
             values.setRangeMin(topPanel.getRangeMin());
             values.setRangeMax(topPanel.getRangeMax());
-            Application.context.controlPointsValuesService.put(values);
+            //Application.context.controlPointsValuesService.put(values);
             parent.setList(values.getSensorType());
             dispose();
             parent.setVisible(true);

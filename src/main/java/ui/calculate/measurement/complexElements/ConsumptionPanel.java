@@ -1,6 +1,5 @@
 package ui.calculate.measurement.complexElements;
 
-import application.Application;
 import converters.VariableConverter;
 import model.Channel;
 import ui.model.ButtonCell;
@@ -21,7 +20,7 @@ public class ConsumptionPanel extends MeasurementPanel {
 
     @Override
     protected void createElements() {
-        String value = this.channel._getMeasurementValue();
+        String value = this.channel.getMeasurementValue();
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
         String columnPercent = "% від шкали";
@@ -43,8 +42,8 @@ public class ConsumptionPanel extends MeasurementPanel {
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        this.values = Application.context.controlPointsValuesService.getValues(
-                this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
+        //this.values = Application.context.controlPointsValuesService.getValues(
+         //       this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
 
         if (this.values == null){
             double value0 = this.channel.getRangeMin();

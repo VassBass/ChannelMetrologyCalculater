@@ -1,6 +1,5 @@
 package ui.importData.compareChannels;
 
-import application.Application;
 import backgroundTasks.SaveImportedChannels;
 import converters.ConverterUI;
 import model.Channel;
@@ -34,7 +33,6 @@ public class CompareChannelsDialog extends JDialog {
     private final ArrayList<Channel>newChannels, channelsForChange, changedChannels;
     private final ArrayList<Sensor>newSensors, sensorsToChange;
 
-    private final MainScreen mainScreen;
     private JWindow newChannelInfo, oldChannelInfo;
 
     private ButtonCell titleNewChannels, titleChannelsForChange;
@@ -43,8 +41,7 @@ public class CompareChannelsDialog extends JDialog {
 
     public CompareChannelsDialog(ArrayList<Channel>newChannelsList,ArrayList<Channel>channelsForChange, ArrayList<Channel>changedChannelsList,
                                 ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsToChange){
-        super(Application.context.mainScreen, IMPORT, true);
-        this.mainScreen = Application.context.mainScreen;
+        super(MainScreen.getInstance(), IMPORT, true);
         this.newChannels = newChannelsList;
         this.channelsForChange = channelsForChange;
         this.changedChannels = changedChannelsList;
@@ -94,7 +91,7 @@ public class CompareChannelsDialog extends JDialog {
     private void build(){
         this.setSize(400,400);
         this.setResizable(false);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
         this.setContentPane(new MainPanel());
     }
 

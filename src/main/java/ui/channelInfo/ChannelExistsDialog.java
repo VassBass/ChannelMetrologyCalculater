@@ -1,8 +1,8 @@
 package ui.channelInfo;
 
-import application.Application;
 import converters.ConverterUI;
 import model.Channel;
+import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -82,7 +82,7 @@ public class ChannelExistsDialog extends JDialog {
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    new DialogChannel(Application.context.mainScreen, channel).setVisible(true);
+                    new DialogChannel(MainScreen.getInstance(), channel).setVisible(true);
                 }
             });
         }

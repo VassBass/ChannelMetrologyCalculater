@@ -1,7 +1,7 @@
 package ui.measurementsList;
 
-import application.Application;
 import backgroundTasks.RemoveMeasurement;
+import service.impl.MeasurementServiceImpl;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -32,7 +32,7 @@ public class ListPanel extends JPanel {
     }
 
     private void createElements(){
-        this.measurementsNames = new JComboBox<>(Application.context.measurementService.getAllNames());
+        this.measurementsNames = new JComboBox<>(MeasurementServiceImpl.getInstance().getAllNames());
         this.measurementsTable = new MeasurementsTable(this.parentDialog);
         this.btn_add = new DefaultButton(ADD);
         this.btn_remove = new DefaultButton(REMOVE);

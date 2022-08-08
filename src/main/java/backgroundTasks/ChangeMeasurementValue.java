@@ -1,6 +1,5 @@
 package backgroundTasks;
 
-import application.Application;
 import model.Measurement;
 import ui.measurementsList.MeasurementsListDialog;
 import ui.model.LoadDialog;
@@ -35,10 +34,10 @@ public class ChangeMeasurementValue extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Application.context.measurementService.changeInCurrentThread(oldMeasurement, newMeasurement);
-        Application.context.channelService.changeMeasurementValueInCurrentThread(oldMeasurement.getValue(), newMeasurement.getValue());
-        Application.context.calibratorService.changeMeasurementValueInCurrentThread(oldMeasurement.getValue(), newMeasurement.getValue());
-        Application.context.sensorService.changeMeasurementValueInCurrentThread(oldMeasurement.getValue(), newMeasurement.getValue());
+        //Application.context.measurementService.changeInCurrentThread(oldMeasurement, newMeasurement);
+        //Application.context.channelService.changeMeasurementValueInCurrentThread(oldMeasurement.getValue(), newMeasurement.getValue());
+        //Application.context.calibratorService.changeMeasurementValueInCurrentThread(oldMeasurement.getValue(), newMeasurement.getValue());
+        //Application.context.sensorService.changeMeasurementValueInCurrentThread(oldMeasurement.getValue(), newMeasurement.getValue());
         return null;
     }
 

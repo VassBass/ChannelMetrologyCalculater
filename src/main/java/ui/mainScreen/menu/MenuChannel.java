@@ -66,7 +66,7 @@ public class MenuChannel extends JMenu {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
+                        //new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
                     }
                 });
             }
@@ -93,7 +93,7 @@ public class MenuChannel extends JMenu {
                 public void run() {
                     int index = mainScreen.mainTable.getSelectedRow();
                     if (index != -1){
-                        new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
+                        //new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
                     }
                 }
             });
@@ -103,7 +103,7 @@ public class MenuChannel extends JMenu {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (mainScreen.channelsList.size() > 0) {
+            //if (mainScreen.channelsList.size() > 0) {
                 EventQueue.invokeLater(new Runnable() {
                     @Override
                     public void run() {
@@ -111,7 +111,7 @@ public class MenuChannel extends JMenu {
                     }
                 });
             }
-        }
+        //}
     };
 
     private final ActionListener clickCertificateFolder = new ActionListener() {

@@ -1,8 +1,11 @@
 package ui.pathLists;
 
-import application.Application;
 import converters.ConverterUI;
 import model.Model;
+import service.impl.AreaServiceImpl;
+import service.impl.DepartmentServiceImpl;
+import service.impl.InstallationServiceImpl;
+import service.impl.ProcessServiceImpl;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -77,20 +80,19 @@ public class ConfirmDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(ConfirmDialog.this)) return;
             dispose();
             switch (model){
                 case DEPARTMENT:
-                    Application.context.departmentService.clear();
+                    DepartmentServiceImpl.getInstance().clear();
                     break;
                 case AREA:
-                    Application.context.areaService.clear();
+                    AreaServiceImpl.getInstance().clear();
                     break;
                 case PROCESS:
-                    Application.context.processService.clear();
+                    ProcessServiceImpl.getInstance().clear();
                     break;
                 case INSTALLATION:
-                    Application.context.installationService.clear();
+                    InstallationServiceImpl.getInstance().clear();
                     break;
             }
             dialog.update(model);

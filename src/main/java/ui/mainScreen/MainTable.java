@@ -81,7 +81,7 @@ public class MainTable extends Table<Channel> {
                             public void run() {
                                 int index = MainTable.this.getSelectedRow();
                                 if (index >= 0 && index < parent.channelsList.size()) {
-                                    new OS_Chooser(parent, parent.channelsList.get(index)).setVisible(true);
+                                    new OS_Chooser(parent, MainScreen.getInstance().channelsList.get(index)).setVisible(true);
                                 }
                             }
                         });
@@ -149,7 +149,7 @@ public class MainTable extends Table<Channel> {
             String[] data = new String[4];
             data[0] = channel.getCode();
             data[1] = channel.getName();
-            data[2] = channel.getMeasurement().getName();
+            data[2] = channel._getMeasurement().getName();
             data[3] = channel.getTechnologyNumber();
 
             model.addRow(data);

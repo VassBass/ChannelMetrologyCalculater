@@ -1,8 +1,8 @@
 package ui.personsList.personInfo;
 
-import application.Application;
 import converters.ConverterUI;
 import model.Person;
+import service.impl.PersonServiceImpl;
 import ui.model.DefaultButton;
 import ui.personsList.PersonsListDialog;
 import ui.personsList.personInfo.complexElements.PersonInfoPanel;
@@ -77,14 +77,13 @@ public class PersonInfoDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (infoPanel.allTextsFull()){
-                if (Application.isBusy(PersonInfoDialog.this)) return;
                 dispose();
                 Person newPerson = infoPanel.getPerson();
                 if (worker == null){
-                    Application.context.personService.add(newPerson);
+                    PersonServiceImpl.getInstance().add(newPerson);
                 }else {
                     if (!worker.equals(newPerson)){
-                        Application.context.personService.set(worker, newPerson);
+                        PersonServiceImpl.getInstance().set(worker, newPerson);
                     }
                 }
                 parent.update();

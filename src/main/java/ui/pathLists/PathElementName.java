@@ -1,8 +1,11 @@
 package ui.pathLists;
 
-import application.Application;
 import converters.ConverterUI;
 import model.Model;
+import service.impl.AreaServiceImpl;
+import service.impl.DepartmentServiceImpl;
+import service.impl.InstallationServiceImpl;
+import service.impl.ProcessServiceImpl;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -85,35 +88,34 @@ public class PathElementName extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (elementName.getText().length() > 0) {
-                if (Application.isBusy(PathElementName.this)) return;
                 dispose();
                 switch (model) {
                     case DEPARTMENT:
                         if (oldNameOfElement == null){
-                            Application.context.departmentService.add(elementName.getText());
+                            DepartmentServiceImpl.getInstance().add(elementName.getText());
                         }else {
-                            Application.context.departmentService.set(oldNameOfElement, elementName.getText());
+                            DepartmentServiceImpl.getInstance().set(oldNameOfElement, elementName.getText());
                         }
                         break;
                     case AREA:
                         if (oldNameOfElement == null){
-                            Application.context.areaService.add(elementName.getText());
+                            AreaServiceImpl.getInstance().add(elementName.getText());
                         }else {
-                            Application.context.areaService.set(oldNameOfElement, elementName.getText());
+                            AreaServiceImpl.getInstance().set(oldNameOfElement, elementName.getText());
                         }
                         break;
                     case PROCESS:
                         if (oldNameOfElement == null){
-                            Application.context.processService.add(elementName.getText());
+                            ProcessServiceImpl.getInstance().add(elementName.getText());
                         }else {
-                            Application.context.processService.set(oldNameOfElement, elementName.getText());
+                            ProcessServiceImpl.getInstance().set(oldNameOfElement, elementName.getText());
                         }
                         break;
                     case INSTALLATION:
                         if (oldNameOfElement == null){
-                            Application.context.installationService.add(elementName.getText());
+                            InstallationServiceImpl.getInstance().add(elementName.getText());
                         }else {
-                            Application.context.installationService.set(oldNameOfElement, elementName.getText());
+                            InstallationServiceImpl.getInstance().set(oldNameOfElement, elementName.getText());
                         }
                         break;
                 }

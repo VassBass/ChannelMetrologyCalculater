@@ -1,6 +1,5 @@
 package ui.importData.compareCalibrators;
 
-import application.Application;
 import backgroundTasks.SaveImportedCalibrators;
 import converters.ConverterUI;
 import model.Calibrator;
@@ -33,7 +32,6 @@ public class CompareCalibratorsDialog extends JDialog {
     private final ArrayList<Calibrator>newCalibrators, calibratorsForChange, changedCalibrators;
     private File importFile = null;
 
-    private final MainScreen mainScreen;
     private JWindow newCalibratorInfo, oldCalibratorInfo;
 
     private ButtonCell titleNewCalibrators, titleCalibratorsForChange;
@@ -41,8 +39,7 @@ public class CompareCalibratorsDialog extends JDialog {
     private JButton removeFromNew, removeFromChanges, btnConfirmNew, btnConfirmChanges;
 
     public CompareCalibratorsDialog(ArrayList<Calibrator>newCalibratorsList,ArrayList<Calibrator>calibratorsForChange, ArrayList<Calibrator>changedCalibratorsList){
-        super(Application.context.mainScreen, IMPORT, true);
-        this.mainScreen = Application.context.mainScreen;
+        super(MainScreen.getInstance(), IMPORT, true);
         this.newCalibrators = newCalibratorsList;
         this.calibratorsForChange = calibratorsForChange;
         this.changedCalibrators = changedCalibratorsList;
@@ -53,8 +50,7 @@ public class CompareCalibratorsDialog extends JDialog {
     }
 
     public CompareCalibratorsDialog(ArrayList<Calibrator>newCalibratorsList,ArrayList<Calibrator>calibratorsForChange, ArrayList<Calibrator>changedCalibratorsList, File file){
-        super(Application.context.mainScreen, IMPORT, true);
-        this.mainScreen = Application.context.mainScreen;
+        super(MainScreen.getInstance(), IMPORT, true);
         this.newCalibrators = newCalibratorsList;
         this.calibratorsForChange = calibratorsForChange;
         this.changedCalibrators = changedCalibratorsList;
@@ -103,7 +99,7 @@ public class CompareCalibratorsDialog extends JDialog {
     private void build(){
         this.setSize(400,400);
         this.setResizable(false);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
         this.setContentPane(new CompareCalibratorsDialog.MainPanel());
     }
 

@@ -1,6 +1,5 @@
 package ui.exportData;
 
-import application.Application;
 import backgroundTasks.Exporter;
 import converters.ConverterUI;
 import ui.mainScreen.MainScreen;
@@ -58,7 +57,6 @@ public class ConfirmExportDialog extends JDialog {
     private final ActionListener clickExport = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(ConfirmExportDialog.this)) return;
             dispose();
             new Exporter().export();
         }

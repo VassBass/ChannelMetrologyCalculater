@@ -32,7 +32,7 @@ public class CalibratorRemoveDialog extends JDialog {
         try {
             return REMOVE
                     + " \""
-                    + Application.context.calibratorService.get(indexOfCalibrator).getName()
+                    //+ Application.context.calibratorService.get(indexOfCalibrator).getName()
                     + "\"?";
         }catch (Exception ex){
             return REMOVE;
@@ -69,10 +69,9 @@ public class CalibratorRemoveDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(CalibratorRemoveDialog.this)) return;
             dispose();
             int index = parent.mainTable.getSelectedRow();
-            Application.context.calibratorService.remove(index);
+            //Application.context.calibratorService.remove(index);
             parent.mainTable.update();
         }
     };

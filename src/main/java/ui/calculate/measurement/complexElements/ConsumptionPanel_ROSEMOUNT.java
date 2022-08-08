@@ -1,6 +1,5 @@
 package ui.calculate.measurement.complexElements;
 
-import application.Application;
 import converters.VariableConverter;
 import model.Channel;
 import model.Measurement;
@@ -22,7 +21,7 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
 
     @Override
     protected void createElements() {
-        String value = this.channel._getMeasurementValue();
+        String value = this.channel.getMeasurementValue();
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
         String columnMotion = "Хід";
@@ -34,8 +33,8 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
         this.columnsHeader[1] = new ButtonCell(true, columnMotion);
         this.columnsHeader[2] = new ButtonCell(true, columnMeasurement);
 
-        this.values = Application.context.controlPointsValuesService.getValues(
-                this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
+        //this.values = Application.context.controlPointsValuesService.getValues(
+           //     this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
 
         if (this.values == null){
             double value0 = 0D;
@@ -129,7 +128,7 @@ public class ConsumptionPanel_ROSEMOUNT extends MeasurementPanel {
 
         @Override
         public void focusLost(FocusEvent e){
-            String value = channel._getMeasurementValue();
+            String value = channel.getMeasurementValue();
             JTextField cell = (JTextField) e.getSource();
             if (cell.getText().length()==0 || cell.getText().equals("-")){
                 double value0 = 0D;

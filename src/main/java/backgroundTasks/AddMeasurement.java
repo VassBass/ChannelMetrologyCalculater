@@ -1,6 +1,5 @@
 package backgroundTasks;
 
-import application.Application;
 import model.Measurement;
 import ui.measurementsList.MeasurementsListDialog;
 import ui.model.LoadDialog;
@@ -34,7 +33,7 @@ public class AddMeasurement extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Application.context.measurementService.addInCurrentThread(measurement);
+        //Application.context.measurementService.addInCurrentThread(measurement);
         return null;
     }
 

@@ -9,14 +9,22 @@ import service.PersonService;
 import java.util.Collection;
 
 public class PersonServiceImpl implements PersonService {
+    private static PersonServiceImpl service;
+
     private final PersonRepository repository;
 
-    public PersonServiceImpl(){
+    private PersonServiceImpl(){
         this.repository = new PersonRepositorySQLite();
     }
 
     public PersonServiceImpl(PersonRepository repository){
         this.repository = repository;
+    }
+
+    public static PersonServiceImpl getInstance() {
+        if (service == null) service = new PersonServiceImpl();
+
+        return service;
     }
 
     @Override

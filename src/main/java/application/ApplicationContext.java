@@ -1,9 +1,5 @@
 package application;
 
-import service.*;
-import service.impl.*;
-import ui.mainScreen.MainScreen;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.logging.Logger;
@@ -33,25 +29,7 @@ public class ApplicationContext {
     public static final String UP_FOLDER = "На один рівень вверх";
     public static final String MODE_OF_VIEW = "Відображення";
 
-    public final MainScreen mainScreen = new MainScreen();
-
-    public final ChannelService channelService = new ChannelServiceImpl();
-    public final SensorService sensorService = new SensorServiceImpl();
-    public final CalibratorService calibratorService = new CalibratorServiceImpl();
-    public final PersonService personService = new PersonServiceImpl();
-    public final DepartmentService departmentService = new DepartmentServiceImpl();
-    public final AreaService areaService = new AreaServiceImpl();
-    public final ProcessService processService = new ProcessServiceImpl();
-    public final InstallationService installationService = new InstallationServiceImpl();
-    public final MeasurementService measurementService = new MeasurementServiceImpl();
-    public final ChannelSorter channelSorter = new ChannelSorter();
-    public final ControlPointsValuesService controlPointsValuesService = new ControlPointsValuesServiceImpl();
-
-    public ApplicationContext(){
-        this.localizationOfComponents();
-    }
-
-    private void localizationOfComponents(){
+    public static void setUkraineLocalization(){
         LOGGER.info("Set Ukrainian localization of \"FileChooser\" components");
         //File chooser
         UIManager.put("FileChooser.cancelButtonText", CANCEL);

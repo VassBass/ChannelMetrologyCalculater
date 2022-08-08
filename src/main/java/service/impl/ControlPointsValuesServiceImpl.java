@@ -8,14 +8,22 @@ import service.ControlPointsValuesService;
 import java.util.Collection;
 
 public class ControlPointsValuesServiceImpl implements ControlPointsValuesService {
+    private static ControlPointsValuesServiceImpl service;
+
     private final ControlPointsValuesRepository repository;
 
-    public ControlPointsValuesServiceImpl(){
+    private ControlPointsValuesServiceImpl(){
         this.repository = new ControlPointsValuesRepositorySQLite();
     }
 
     public ControlPointsValuesServiceImpl(ControlPointsValuesRepository repository){
         this.repository = repository;
+    }
+
+    public static ControlPointsValuesServiceImpl getInstance() {
+        if (service == null) service = new ControlPointsValuesServiceImpl();
+
+        return service;
     }
 
     @Override

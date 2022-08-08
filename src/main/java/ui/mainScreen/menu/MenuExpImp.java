@@ -1,6 +1,5 @@
 package ui.mainScreen.menu;
 
-import application.Application;
 import model.Model;
 import service.FileBrowser;
 import ui.exportData.ConfirmExportDialog;
@@ -40,7 +39,7 @@ public class MenuExpImp extends JMenu {
 
     public MenuExpImp(){
         super(EXPORT_IMPORT);
-        this.mainScreen = Application.context.mainScreen;
+        this.mainScreen = MainScreen.getInstance();
 
         this.createElements();
         this.setReactions();
@@ -103,7 +102,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImport = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -120,7 +118,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImportChannel = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -137,7 +134,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImportSensor = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -154,7 +150,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImportCalibrator = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -171,7 +166,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImportCPV = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -188,7 +182,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImportPerson = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -205,7 +198,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImportDepartment = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -222,7 +214,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImportArea = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -239,7 +230,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImportProcess = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {
@@ -256,7 +246,6 @@ public class MenuExpImp extends JMenu {
     private final ActionListener clickImportInstallation = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(mainScreen)) return;
             EventQueue.invokeLater(new Runnable() {
                 @Override
                 public void run() {

@@ -6,11 +6,15 @@ import ui.mainScreen.menu.MenuBar;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class MainScreen extends JFrame {
+    private static MainScreen mainScreen;
+
     private static final Logger LOGGER = Logger.getLogger(MainScreen.class.getName());
 
     private static String windowHeader(int listSize){
@@ -23,14 +27,13 @@ public class MainScreen extends JFrame {
     public ButtonsPanel buttonsPanel;
     public SearchPanel searchPanel;
 
-    public ArrayList<Channel>channelsList;
+    ArrayList<Channel>channelsList;
 
-
-    public MainScreen(){
+    private MainScreen(){
         super();
     }
 
-    public void init(ArrayList<Channel>channelsList){
+    public void init(ArrayList<Channel> channelsList){
         LOGGER.fine("MainScreen: initialization start ...");
         this.channelsList = channelsList;
         this.setTitle(windowHeader(channelsList.size()));
@@ -39,6 +42,12 @@ public class MainScreen extends JFrame {
         this.setReactions();
         this.build();
         LOGGER.info("MainScreen: initialization SUCCESS");
+    }
+
+    public static MainScreen getInstance() {
+        if (mainScreen == null) mainScreen = new MainScreen();
+
+        return mainScreen;
     }
 
     private void createElements() {
@@ -91,18 +100,16 @@ public class MainScreen extends JFrame {
     private final WindowListener windowListener = new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
-            if (!Application.isBusy(MainScreen.this)) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        int result = JOptionPane.showConfirmDialog(MainScreen.this,
-                                "Закрити програму?", "Вихід", JOptionPane.OK_CANCEL_OPTION);
-                        if (result == 0){
-                            System.exit(0);
-                        }
+            EventQueue.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    int result = JOptionPane.showConfirmDialog(MainScreen.this,
+                            "Закрити програму?", "Вихід", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == 0){
+                        System.exit(0);
                     }
-                });
-            }
+                }
+            });
         }
     };
 

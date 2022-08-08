@@ -5,23 +5,32 @@ import repository.Repository;
 import repository.impl.DepartmentRepositorySQLite;
 import service.DepartmentService;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class DepartmentServiceImpl implements DepartmentService {
+    private static DepartmentServiceImpl service;
+
     private final Repository<String> repository;
     private final Set<String> mainSet;
 
-    public DepartmentServiceImpl(){
+    private DepartmentServiceImpl(){
         repository = new DepartmentRepositorySQLite();
         mainSet = new LinkedHashSet<>(repository.getAll());
     }
 
-    public DepartmentServiceImpl(Repository<String> repository){
+    public DepartmentServiceImpl(@Nonnull Repository<String> repository){
         this.repository = repository;
         mainSet = new LinkedHashSet<>(this.repository.getAll());
+    }
+
+    public static DepartmentServiceImpl getInstance(){
+        if (service == null) service = new DepartmentServiceImpl();
+
+        return service;
     }
 
     @Override
@@ -41,6 +50,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         if (mainSet.add(object)) {
             return repository.add(object);
         } else return false;
+    }
+
+    public boolean add(Collection<String>objects){
+        if (mainSet.addAll(objects)){
+            return repository.rewrite(mainSet);
+        }else return false;
     }
 
     @Override

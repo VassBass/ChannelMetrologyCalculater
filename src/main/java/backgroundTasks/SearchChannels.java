@@ -1,15 +1,16 @@
 package backgroundTasks;
 
-import application.Application;
 import constants.Sort;
+import service.ChannelSorter;
+import service.impl.ChannelServiceImpl;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class SearchChannels extends SwingWorker<Void, Void> {
-    private final MainScreen mainScreen;
     private final LoadDialog loadDialog;
 
     private int field;
@@ -18,8 +19,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
 
     public SearchChannels(){
         super();
-        this.mainScreen = Application.context.mainScreen;
-        this.loadDialog = new LoadDialog(mainScreen);
+        this.loadDialog = new LoadDialog(MainScreen.getInstance());
     }
 
     public void startSearch(int field, String value){
@@ -52,52 +52,52 @@ public class SearchChannels extends SwingWorker<Void, Void> {
     protected Void doInBackground() throws Exception {
         switch (this.field){
             case Sort.NAME:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForName(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForName(this.valueString));
                 break;
             case Sort.DATE:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForDate(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForDate(this.valueString));
                 break;
             case Sort.FREQUENCY:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForFrequency(Double.parseDouble(this.valueString)));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForFrequency(Double.parseDouble(this.valueString)));
                 break;
             case Sort.TECHNOLOGY_NUMBER:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForTechnologyNumber(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForTechnologyNumber(this.valueString));
                 break;
             case Sort.PROTOCOL_NUMBER:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForProtocolNumber(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForProtocolNumber(this.valueString));
                 break;
             case Sort.REFERENCE:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForReference(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForReference(this.valueString));
                 break;
             case Sort.SUITABILITY:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForSuitability(this.valueBoolean));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForSuitability(this.valueBoolean));
                 break;
             case Sort.MEASUREMENT_NAME:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForMeasurementName(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForMeasurementName(this.valueString));
                 break;
             case Sort.MEASUREMENT_VALUE:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForMeasurementValue(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForMeasurementValue(this.valueString));
                 break;
             case Sort.DEPARTMENT:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForDepartment(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForDepartment(this.valueString));
                 break;
             case Sort.AREA:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForArea(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForArea(this.valueString));
                 break;
             case Sort.PROCESS:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForProcess(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForProcess(this.valueString));
                 break;
             case Sort.INSTALLATION:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForInstallation(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForInstallation(this.valueString));
                 break;
             case Sort.SENSOR_NAME:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForSensorName(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForSensorName(this.valueString));
                 break;
             case Sort.SENSOR_TYPE:
-                this.mainScreen.setChannelsList(Application.context.channelSorter.getAllForSensorType(this.valueString));
+                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForSensorType(this.valueString));
                 break;
              default:
-                 this.mainScreen.setChannelsList(Application.context.channelService.getAll());
+                 MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
                  break;
         }
         return null;

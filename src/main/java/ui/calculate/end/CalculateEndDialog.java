@@ -1,11 +1,12 @@
 package ui.calculate.end;
 
-import application.Application;
 import backgroundTasks.CertificateFormation;
 import calculation.Calculation;
 import certificates.Certificate;
 import converters.ConverterUI;
 import model.Channel;
+import service.ChannelSorter;
+import service.impl.ChannelServiceImpl;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
@@ -13,6 +14,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CalculateEndDialog extends JDialog {
@@ -161,10 +163,10 @@ public class CalculateEndDialog extends JDialog {
     };
 
     private void setChannelList(){
-        if (Application.context.channelSorter.isOn()){
-            mainScreen.setChannelsList(Application.context.channelSorter.getCurrent());
+        if (ChannelSorter.getInstance().isOn()){
+            mainScreen.setChannelsList(ChannelSorter.getInstance().getCurrent());
         }else {
-            mainScreen.setChannelsList(Application.context.channelService.getAll());
+            mainScreen.setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
         }
     }
 

@@ -10,14 +10,22 @@ import service.CalibratorService;
 import java.util.Collection;
 
 public class CalibratorServiceImpl implements CalibratorService {
+    private static CalibratorServiceImpl service;
+
     private final CalibratorRepository repository;
 
-    public CalibratorServiceImpl(){
+    private CalibratorServiceImpl(){
         repository = new CalibratorRepositorySQLite();
     }
 
     public CalibratorServiceImpl(CalibratorRepository repository){
         this.repository = repository;
+    }
+
+    public static CalibratorServiceImpl getInstance() {
+        if (service == null) service = new CalibratorServiceImpl();
+
+        return service;
     }
 
     @Override

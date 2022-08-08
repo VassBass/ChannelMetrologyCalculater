@@ -1,7 +1,7 @@
 package ui.measurementsList;
 
-import application.Application;
 import model.Measurement;
+import service.impl.MeasurementServiceImpl;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -65,7 +65,7 @@ public class MeasurementsTable extends JTable {
         String[]columnsHeader = new String[] {MEASUREMENT_VALUE};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Measurement>measurements = Application.context.measurementService.getMeasurements(measurementName);
+        ArrayList<Measurement>measurements = new ArrayList<>(MeasurementServiceImpl.getInstance().getMeasurements(measurementName));
         for (Measurement measurement : measurements) {
             String[] data = new String[1];
             data[0] = measurement.getValue();

@@ -1,6 +1,5 @@
 package ui.methodInfo;
 
-import application.Application;
 import converters.ConverterUI;
 import settings.Settings;
 import ui.mainScreen.MainScreen;
@@ -66,7 +65,6 @@ public class MethodInfoDialog extends JDialog {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(MethodInfoDialog.this)) return;
             Settings.setSettingValue(measurement, userName.getText());
             dispose();
             mainScreen.refreshMenu();

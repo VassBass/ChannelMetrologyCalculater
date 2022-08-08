@@ -1,12 +1,12 @@
 package backgroundTasks;
 
-import application.Application;
 import calculation.Calculation;
 import certificates.*;
 import constants.Key;
 import model.Calibrator;
 import model.Channel;
 import model.Measurement;
+import service.impl.ChannelServiceImpl;
 import ui.calculate.end.CalculateEndDialog;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
@@ -45,7 +45,7 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        String measurementName = this.channel.getMeasurement().getName();
+        String measurementName = this.channel._getMeasurement().getName();
         if (measurementName.equals(Measurement.TEMPERATURE)){
             this.certificate = new TemperatureCertificate();
         }else if (measurementName.equals(Measurement.PRESSURE)){
@@ -89,6 +89,6 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
         }else{
             newChannel.setReference((String) this.values.get(Key.CHANNEL_REFERENCE));
         }
-        Application.context.channelService.set(this.channel, newChannel);
+        ChannelServiceImpl.getInstance().set(this.channel, newChannel);
     }
 }

@@ -1,9 +1,9 @@
 package ui.channelInfo.complexElements;
 
-import application.Application;
 import converters.VariableConverter;
 import model.Measurement;
 import model.Sensor;
+import service.impl.MeasurementServiceImpl;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -49,7 +49,7 @@ public class DialogChannel_sensorRangePanel extends JPanel {
         this.min = new JTextField(DEFAULT_MIN_VALUE, 5);
         this.max = new JTextField(DEFAULT_MAX_VALUE, 5);
 
-        this.value = new JComboBox<>(Application.context.measurementService.getValues(this.measurement));
+        this.value = new JComboBox<>(MeasurementServiceImpl.getInstance().getValues(this.measurement));
         this.value.setEditable(false);
         this.value.setBackground(Color.WHITE);
     }

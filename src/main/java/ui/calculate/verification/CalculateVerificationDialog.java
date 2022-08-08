@@ -47,7 +47,7 @@ public class CalculateVerificationDialog extends JDialog {
     }
 
     private void createElements() {
-        String measurementName = this.channel.getMeasurement().getName();
+        String measurementName = this.channel._getMeasurement().getName();
         if (measurementName.equals(Measurement.TEMPERATURE)){
             this.resultPanel = new TemperaturePanel(this.channel, this.values, this.calculation);
         }else if (measurementName.equals(Measurement.PRESSURE)){

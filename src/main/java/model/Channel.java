@@ -1,10 +1,10 @@
 package model;
 
-import application.Application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import converters.VariableConverter;
+import service.impl.MeasurementServiceImpl;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -127,7 +127,7 @@ public class Channel implements Serializable {
         if (this.measurementValue.equals(Measurement.M_S) || this.measurementValue.equals(Measurement.CM_S)){
             return new Measurement(Measurement.CONSUMPTION, this.measurementValue);
         }else {
-            return Application.context.measurementService.get(this.measurementValue);
+            return MeasurementServiceImpl.getInstance().get(this.measurementValue);
         }
     }
     @Nonnull public String getMeasurementValue(){return this.measurementValue;}

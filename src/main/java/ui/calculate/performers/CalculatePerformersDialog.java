@@ -7,6 +7,7 @@ import constants.Key;
 import converters.ConverterUI;
 import model.Channel;
 import model.Person;
+import service.impl.PersonServiceImpl;
 import ui.calculate.reference.CalculateReferenceDialog;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.mainScreen.MainScreen;
@@ -139,11 +140,11 @@ public class CalculatePerformersDialog extends JDialog {
     }
 
     private String[]personsNames(){
-        return Application.context.personService.getAllNamesWithFirstEmptyString();
+        return PersonServiceImpl.getInstance().getAllNamesWithFirstEmptyString();
     }
 
     private String[]headsOfDepartment(){
-        return Application.context.personService.getNamesOfHeadsWithFirstEmptyString();
+        return PersonServiceImpl.getInstance().getNamesOfHeadsWithFirstEmptyString();
     }
 
     private void setValues(HashMap<Integer, Object> values){
@@ -233,8 +234,8 @@ public class CalculatePerformersDialog extends JDialog {
                 performer1Position.setText(EMPTY_ARRAY);
             }else {
                 try {
-                    String position = Application.context.personService.get(index - 1).getPosition();
-                    performer1Position.setText(position);
+                    //String position = PersonServiceImpl.getInstance().get(index - 1).getPosition();
+                    //performer1Position.setText(position);
                 }catch (IndexOutOfBoundsException ignored){}
             }
         }
@@ -249,8 +250,8 @@ public class CalculatePerformersDialog extends JDialog {
                 performer2Position.setText(EMPTY_ARRAY);
             }else {
                 try {
-                    String position = Application.context.personService.get(index - 1).getPosition();
-                    performer2Position.setText(position);
+                    //String position = Application.context.personService.get(index - 1).getPosition();
+                    //performer2Position.setText(position);
                 }catch (IndexOutOfBoundsException ignored){}
             }
         }
@@ -265,8 +266,8 @@ public class CalculatePerformersDialog extends JDialog {
                 calculaterPosition.setText(EMPTY_ARRAY);
             }else {
                 try {
-                    String position = Application.context.personService.get(index - 1).getPosition();
-                    calculaterPosition.setText(position);
+                    //String position = Application.context.personService.get(index - 1).getPosition();
+                    //calculaterPosition.setText(position);
                 }catch (IndexOutOfBoundsException ignored){}
             }
         }
@@ -293,7 +294,6 @@ public class CalculatePerformersDialog extends JDialog {
     private final ActionListener clickSave = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(CalculatePerformersDialog.this)) return;
             dispose();
             new CertificateFormation(mainScreen, channel, getValues(), calculation).execute();
         }

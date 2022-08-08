@@ -132,7 +132,7 @@ public class TemperatureCertificate extends Certificate {
         String error = VariableConverter.roundingDouble2(this.channel.getAllowableError(), Locale.GERMAN);
         cell(18,7).setCellValue(error);
 
-        this.measurementValue = this.channel._getMeasurementValue();
+        this.measurementValue = this.channel.getMeasurementValue();
         cell(17,8).setCellValue(this.measurementValue);
         cell(18,8).setCellValue(this.measurementValue);
         cell(21,8).setCellValue(this.measurementValue);

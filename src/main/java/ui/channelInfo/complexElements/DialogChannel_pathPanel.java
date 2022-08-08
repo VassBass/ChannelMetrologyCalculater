@@ -1,6 +1,9 @@
 package ui.channelInfo.complexElements;
 
-import application.Application;
+import service.impl.AreaServiceImpl;
+import service.impl.DepartmentServiceImpl;
+import service.impl.InstallationServiceImpl;
+import service.impl.ProcessServiceImpl;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -32,19 +35,19 @@ public class DialogChannel_pathPanel extends JPanel {
     }
 
     private void createElements() {
-        this.departments = new JComboBox<>(Application.context.departmentService.getAllInStrings());
+        this.departments = new JComboBox<>(DepartmentServiceImpl.getInstance().getAllInStrings());
         this.departments.setEditable(true);
         this.departments.setBackground(Color.WHITE);
 
-        this.areas = new JComboBox<>(Application.context.areaService.getAllInStrings());
+        this.areas = new JComboBox<>(AreaServiceImpl.getInstance().getAllInStrings());
         this.areas.setEditable(true);
         this.areas.setBackground(Color.WHITE);
 
-        this.processes = new JComboBox<>(Application.context.processService.getAllInStrings());
+        this.processes = new JComboBox<>(ProcessServiceImpl.getInstance().getAllInStrings());
         this.processes.setEditable(true);
         this.processes.setBackground(Color.WHITE);
 
-        this.installations = new JComboBox<>(Application.context.installationService.getAllInStrings());
+        this.installations = new JComboBox<>(InstallationServiceImpl.getInstance().getAllInStrings());
         this.installations.setEditable(true);
         this.installations.setBackground(Color.WHITE);
     }

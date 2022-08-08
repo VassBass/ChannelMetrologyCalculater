@@ -1,6 +1,5 @@
 package ui.sensorsList;
 
-import application.Application;
 import backgroundTasks.RemoveSensor;
 import converters.ConverterUI;
 import model.Sensor;
@@ -76,7 +75,6 @@ public class SensorRemoveDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(SensorRemoveDialog.this)) return;
             dispose();
             new RemoveSensor(parent).start();
         }

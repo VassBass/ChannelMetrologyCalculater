@@ -10,14 +10,22 @@ import java.util.Collection;
 import java.util.List;
 
 public class ChannelServiceImpl implements ChannelService {
+    private static ChannelServiceImpl service;
+
     private final ChannelRepository repository;
 
-    public ChannelServiceImpl(){
+    private ChannelServiceImpl(){
         this.repository = new ChannelRepositorySQLite();
     }
 
     public ChannelServiceImpl(ChannelRepository repository){
         this.repository = repository;
+    }
+
+    public static ChannelServiceImpl getInstance() {
+        if (service == null) service = new ChannelServiceImpl();
+
+        return service;
     }
 
     @Override

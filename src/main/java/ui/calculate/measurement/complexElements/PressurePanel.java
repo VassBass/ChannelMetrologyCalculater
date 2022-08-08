@@ -1,6 +1,5 @@
 package ui.calculate.measurement.complexElements;
 
-import application.Application;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
@@ -25,7 +24,7 @@ public class PressurePanel extends MeasurementPanel {
 
     @Override
     protected void createElements() {
-        String value = this.channel._getMeasurementValue();
+        String value = this.channel.getMeasurementValue();
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
         String columnPercent = "% від шкали";
@@ -47,10 +46,10 @@ public class PressurePanel extends MeasurementPanel {
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double maxCalibratorPower = this.channel.getMeasurement().convertFrom(Measurement.KGS_SM2, -0.8);
+        double maxCalibratorPower = this.channel._getMeasurement().convertFrom(Measurement.KGS_SM2, -0.8);
 
-        this.values = Application.context.controlPointsValuesService.getValues(
-                this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
+        //this.values = Application.context.controlPointsValuesService.getValues(
+             //   this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());
         if (this.values == null){
             double value0 = this.channel.getRangeMin();
             double value5 = ((this.channel._getRange() / 100) * 5) + this.channel.getRangeMin();

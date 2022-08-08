@@ -11,11 +11,12 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class AreaServiceImpl implements AreaService {
+    private static AreaServiceImpl service;
 
     private final Repository<String> repository;
     private final Set<String> mainSet;
 
-    public AreaServiceImpl(){
+    private AreaServiceImpl(){
         repository = new AreaRepositorySQLite();
         mainSet = new LinkedHashSet<>(repository.getAll());
     }
@@ -23,6 +24,12 @@ public class AreaServiceImpl implements AreaService {
     public AreaServiceImpl(Repository<String> repository){
         this.repository = repository == null ? new AreaRepositorySQLite() : repository;
         mainSet = new LinkedHashSet<>(this.repository.getAll());
+    }
+
+    public static AreaServiceImpl getInstance() {
+        if (service == null) service = new AreaServiceImpl();
+
+        return service;
     }
 
     @Override
@@ -88,5 +95,11 @@ public class AreaServiceImpl implements AreaService {
     @Override
     public boolean resetToDefault() {
         return rewrite(DefaultAreas.get());
+    }
+
+    public boolean add(ArrayList<String> areas) {
+        if (mainSet.addAll(areas)){
+            return repository.rewrite(mainSet);
+        }else return false;
     }
 }

@@ -1,7 +1,10 @@
 package backgroundTasks;
 
-import application.Application;
 import model.Sensor;
+import service.impl.ChannelServiceImpl;
+import service.impl.ControlPointsValuesServiceImpl;
+import service.impl.SensorServiceImpl;
+import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
 import ui.sensorsList.SensorsListDialog;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
@@ -37,21 +40,20 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
                 loadDialog.setVisible(true);
             }
         });
-        Application.setBusy(true);
         this.execute();
     }
 
     @Override
     protected Boolean doInBackground() throws Exception {
         if (this.oldSensor == null) {
-            return Application.context.sensorService.add(this.newSensor) != null;
+            return SensorServiceImpl.getInstance().add(this.newSensor);
         } else {
-            Application.context.sensorService.setInCurrentThread(this.oldSensor, this.newSensor);
+            SensorServiceImpl.getInstance().set(this.oldSensor, this.newSensor);
             if (!this.oldSensor.isMatch(this.newSensor, Sensor.RANGE, Sensor.VALUE)) {
-                Application.context.channelService.changeSensorInCurrentThread(this.oldSensor, this.newSensor, Sensor.MEASUREMENT, Sensor.RANGE, Sensor.VALUE);
+                ChannelServiceImpl.getInstance().changeSensor(this.oldSensor, this.newSensor, Sensor.MEASUREMENT, Sensor.RANGE, Sensor.VALUE);
             }
             if (!this.oldSensor.getType().equals(this.newSensor.getType())){
-                Application.context.controlPointsValuesService.changeSensorTypeInCurrentThread(this.oldSensor.getType(), this.newSensor.getType());
+                ControlPointsValuesServiceImpl.getInstance().changeSensorType(this.oldSensor.getType(), this.newSensor.getType());
             }
             return true;
         }
@@ -64,12 +66,11 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
         try {
             if (this.get()) {
                 String m = this.oldSensor == null ?  "ПВП успішно додано до списку!" : "ПВП успішно змінено!";
-                JOptionPane.showMessageDialog(Application.context.mainScreen, m, SUCCESS, JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(MainScreen.getInstance(), m, SUCCESS, JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        Application.setBusy(false);
         String measurement = mainDialog.getMeasurement().equals(ALL) ? null : mainDialog.getMeasurement();
         this.mainDialog.update(measurement);
     }

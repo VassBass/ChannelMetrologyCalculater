@@ -1,6 +1,5 @@
 package ui.importData.compareSensors;
 
-import application.Application;
 import backgroundTasks.SaveImportedSensors;
 import converters.ConverterUI;
 import model.Sensor;
@@ -33,7 +32,6 @@ public class CompareSensorsDialog extends JDialog {
 
     private final ArrayList<Sensor>newSensors, sensorsForChange, changedSensors;
 
-    private final MainScreen mainScreen;
     private JWindow newSensorInfo, oldSensorInfo;
 
     private ButtonCell titleNewSensors, titleSensorsForChange;
@@ -41,8 +39,7 @@ public class CompareSensorsDialog extends JDialog {
     private JButton removeFromNew, removeFromChanges, btnConfirmNew, btnConfirmChanges;
 
     public CompareSensorsDialog(ArrayList<Sensor>newSensorsList,ArrayList<Sensor>sensorsForChange, ArrayList<Sensor>changedSensorsList){
-        super(Application.context.mainScreen, IMPORT, true);
-        this.mainScreen = Application.context.mainScreen;
+        super(MainScreen.getInstance(), IMPORT, true);
         this.newSensors = newSensorsList;
         this.sensorsForChange = sensorsForChange;
         this.changedSensors = changedSensorsList;
@@ -53,8 +50,7 @@ public class CompareSensorsDialog extends JDialog {
     }
 
     public CompareSensorsDialog(ArrayList<Sensor>newSensorsList,ArrayList<Sensor>sensorsForChange, ArrayList<Sensor>changedSensorsList, File file){
-        super(Application.context.mainScreen, IMPORT, true);
-        this.mainScreen = Application.context.mainScreen;
+        super(MainScreen.getInstance(), IMPORT, true);
         this.newSensors = newSensorsList;
         this.sensorsForChange = sensorsForChange;
         this.changedSensors = changedSensorsList;
@@ -103,7 +99,7 @@ public class CompareSensorsDialog extends JDialog {
     private void build(){
         this.setSize(400,400);
         this.setResizable(false);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
         this.setContentPane(new MainPanel());
     }
 

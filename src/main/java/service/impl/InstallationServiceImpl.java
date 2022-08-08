@@ -5,23 +5,31 @@ import repository.Repository;
 import repository.impl.InstallationRepositorySQLite;
 import service.InstallationService;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class InstallationServiceImpl implements InstallationService {
+    private static InstallationServiceImpl service;
+
     private final Repository<String> repository;
     private final Set<String> mainSet;
 
-    public InstallationServiceImpl(){
+    private InstallationServiceImpl(){
         repository = new InstallationRepositorySQLite();
         mainSet = new LinkedHashSet<>(repository.getAll());
     }
 
-    public InstallationServiceImpl(Repository<String> repository){
+    public InstallationServiceImpl(@Nonnull Repository<String> repository){
         this.repository = repository;
         mainSet = new LinkedHashSet<>(this.repository.getAll());
+    }
+
+    public static InstallationServiceImpl getInstance() {
+        if (service == null) service = new InstallationServiceImpl();
+        return service;
     }
 
     @Override
@@ -87,5 +95,11 @@ public class InstallationServiceImpl implements InstallationService {
     @Override
     public boolean resetToDefault() {
         return rewrite(DefaultInstallations.get());
+    }
+
+    public boolean add(ArrayList<String> installations) {
+        if (mainSet.addAll(installations)){
+            return repository.rewrite(mainSet);
+        }else return false;
     }
 }

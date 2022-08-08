@@ -1,7 +1,7 @@
 package backgroundTasks;
 
-import application.Application;
 import service.FileBrowser;
+import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
 
 import javax.swing.*;
@@ -71,7 +71,7 @@ public class Exporter extends SwingWorker<Boolean, Void> {
         this.loadDialog.dispose();
         try {
             if (this.get()){
-                int result = JOptionPane.showConfirmDialog(Application.context.mainScreen,
+                int result = JOptionPane.showConfirmDialog(MainScreen.getInstance(),
                         "Експорт закінчено. Відкрити папку з файлами експорту?", "Експорт", JOptionPane.OK_CANCEL_OPTION);
                 if (result == 0){
                     Desktop desktop;

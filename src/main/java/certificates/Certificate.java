@@ -1,6 +1,5 @@
 package certificates;
 
-import application.Application;
 import calculation.Calculation;
 import model.Channel;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -8,6 +7,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import service.FileBrowser;
+import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -111,7 +111,7 @@ public abstract class Certificate {
                     EventQueue.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            int result = JOptionPane.showConfirmDialog(Application.context.mainScreen,
+                            int result = JOptionPane.showConfirmDialog(MainScreen.getInstance(),
                                     "Команда \"Друк\" за замовчуванням не зарегестрована в системі.\nВідкрити у программі за замовчуванням?", "Помилка", JOptionPane.OK_CANCEL_OPTION);
                             if (result == 0){
                                 show();

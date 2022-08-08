@@ -1,10 +1,10 @@
 package ui.measurementsList;
 
-import application.Application;
 import backgroundTasks.AddMeasurement;
 import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Measurement;
+import service.impl.MeasurementServiceImpl;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
 import ui.specialCharacters.SpecialCharactersPanel;
@@ -48,7 +48,7 @@ public class AddMeasurementDialog extends JDialog {
         measurementValue = new JTextField(10);
         measurementValue.setHorizontalAlignment(SwingConstants.CENTER);
 
-        String[] measurements = Application.context.measurementService.getValues(measurementName);
+        String[] measurements = MeasurementServiceImpl.getInstance().getValues(measurementName);
 
         factors = new JTextField[measurements.length];
 
@@ -145,7 +145,7 @@ public class AddMeasurementDialog extends JDialog {
             if (value.length() == 0){
                 JOptionPane.showMessageDialog(AddMeasurementDialog.this,
                         "Ви не ввели назву величини","Помилка", JOptionPane.ERROR_MESSAGE);
-            }else if (Application.context.measurementService.exists(value)){
+            }else if (MeasurementServiceImpl.getInstance().exists(value)){
                 JOptionPane.showMessageDialog(AddMeasurementDialog.this,
                         "Така вимірювальна величина вже існує в списку величин цього або іншого виду вимірюваннь.",
                         "Помилка", JOptionPane.ERROR_MESSAGE);

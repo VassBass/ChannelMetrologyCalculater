@@ -5,7 +5,6 @@ import model.Channel;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 
 public class MeasurementsListDialog extends JDialog {

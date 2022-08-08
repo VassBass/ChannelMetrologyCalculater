@@ -9,14 +9,22 @@ import service.SensorService;
 import java.util.Collection;
 
 public class SensorServiceImpl implements SensorService {
+    private static SensorServiceImpl service;
+
     private final SensorRepository repository;
 
-    public SensorServiceImpl(){
+    private SensorServiceImpl(){
         this.repository = new SensorRepositorySQLite();
     }
 
     public SensorServiceImpl(SensorRepository repository){
         this.repository = repository;
+    }
+
+    public static SensorServiceImpl getInstance() {
+        if (service == null) service = new SensorServiceImpl();
+
+        return service;
     }
 
     @Override

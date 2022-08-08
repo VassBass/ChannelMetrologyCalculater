@@ -1,6 +1,5 @@
 package model;
 
-import application.Application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -9,6 +8,7 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import repository.impl.ChannelRepositorySQLite;
+import service.impl.MeasurementServiceImpl;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -140,7 +140,7 @@ public class Sensor implements Serializable {
      */
     public double getError(@Nonnull Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
-        Measurement input = Application.context.measurementService.get(this.measurement);
+        Measurement input = MeasurementServiceImpl.getInstance().get(this.measurement);
         formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel._getMeasurement());
         Function f = new Function("At(R,r,convR) = " + formula);
         Argument R = new Argument("R = " + channel._getRange());

@@ -10,14 +10,22 @@ import java.util.Collection;
 import java.util.Map;
 
 public class MeasurementServiceImpl implements MeasurementService {
+    private static MeasurementServiceImpl service;
+
     private final MeasurementRepository repository;
 
-    public MeasurementServiceImpl(){
+    private MeasurementServiceImpl(){
         this.repository = new MeasurementRepositorySQLite();
     }
 
     public MeasurementServiceImpl(MeasurementRepository repository){
         this.repository = repository;
+    }
+
+    public static MeasurementServiceImpl getInstance() {
+        if (service == null) service = new MeasurementServiceImpl();
+
+        return service;
     }
 
     @Override

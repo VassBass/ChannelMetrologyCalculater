@@ -127,7 +127,7 @@ public class ConsumptionCertificate_ROSEMOUNT extends Certificate {
         String rangeMax = VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN);
         cell(19, 7).setCellValue(rangeMax);
 
-        this.measurementValue = this.channel._getMeasurementValue();
+        this.measurementValue = this.channel.getMeasurementValue();
         cell(19, 8).setCellValue(this.measurementValue);
         cell(20, 8).setCellValue(this.measurementValue);
         cell(30, 2).setCellValue(this.measurementValue);

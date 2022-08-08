@@ -1,6 +1,5 @@
 package ui.calibratorsList.calibratorInfo;
 
-import application.Application;
 import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Calibrator;
@@ -9,6 +8,8 @@ import model.Measurement;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
+import service.impl.CalibratorServiceImpl;
+import service.impl.MeasurementServiceImpl;
 import ui.calculate.start.CalculateStartDialog;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
@@ -108,9 +109,9 @@ public class CalibratorInfoDialog extends JDialog {
         this.oldCalibrator = null;
 
         this.createElements();
-        this.measurementsList.setSelectedItem(channel.getMeasurement().getName());
+        this.measurementsList.setSelectedItem(channel._getMeasurement().getName());
         this.measurementsList.setEnabled(false);
-        this.rangePanel.setValues(channel.getMeasurement().getName(), channel._getMeasurementValue());
+        this.rangePanel.setValues(channel._getMeasurement().getName(), channel.getMeasurementValue());
         this.setReactions();
         this.build();
     }
@@ -128,7 +129,7 @@ public class CalibratorInfoDialog extends JDialog {
         this.labelCertificateCompany = new ButtonCell(true, PERFORMERS);
         this.labelCertificateDate = new ButtonCell(true, FROM);
 
-        this.measurementsList = new JComboBox<>(Application.context.measurementService.getAllNames());
+        this.measurementsList = new JComboBox<>(MeasurementServiceImpl.getInstance().getAllNames());
         this.measurementsList.setBackground(Color.WHITE);
 
         this.typeText = new JTextField(10);
@@ -375,16 +376,15 @@ public class CalibratorInfoDialog extends JDialog {
                 calibrator._setCertificateDate(certificateDatePanel.getDate());
                 calibrator._setCertificateCompany(certificateCompanyText.getText());
 
-                if (Application.isBusy(CalibratorInfoDialog.this)) return;
                 if (oldCalibrator == null){
-                    if (Application.context.calibratorService.isExists(calibrator)) {
+                    if (CalibratorServiceImpl.getInstance().isExists(calibrator)) {
                         JOptionPane.showMessageDialog(CalibratorInfoDialog.this, "Калібратор з такою назвою вже існує в списку");
                         return;
                     }else {
-                        Application.context.calibratorService.add(calibrator);
+                        CalibratorServiceImpl.getInstance().add(calibrator);
                     }
                 }else {
-                    Application.context.calibratorService.set(oldCalibrator, calibrator);
+                    CalibratorServiceImpl.getInstance().set(oldCalibrator, calibrator);
                 }
                 dispose();
                 if (calculateDialog == null && parent != null){

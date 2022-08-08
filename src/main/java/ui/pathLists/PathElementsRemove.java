@@ -1,8 +1,11 @@
 package ui.pathLists;
 
-import application.Application;
 import converters.ConverterUI;
 import model.Model;
+import service.impl.AreaServiceImpl;
+import service.impl.DepartmentServiceImpl;
+import service.impl.InstallationServiceImpl;
+import service.impl.ProcessServiceImpl;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -59,16 +62,16 @@ public class PathElementsRemove extends JDialog {
     private void createElements() {
         switch (model){
             case DEPARTMENT:
-                this.elements = Application.context.departmentService.getAllInStrings();
+                this.elements = DepartmentServiceImpl.getInstance().getAllInStrings();
                 break;
             case AREA:
-                this.elements = Application.context.areaService.getAllInStrings();
+                this.elements = AreaServiceImpl.getInstance().getAllInStrings();
                 break;
             case PROCESS:
-                this.elements = Application.context.processService.getAllInStrings();
+                this.elements = ProcessServiceImpl.getInstance().getAllInStrings();
                 break;
             case INSTALLATION:
-                this.elements = Application.context.installationService.getAllInStrings();
+                this.elements = InstallationServiceImpl.getInstance().getAllInStrings();
                 break;
         }
         if (this.elementName == null){
@@ -122,7 +125,6 @@ public class PathElementsRemove extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(PathElementsRemove.this)) return;
             dispose();
             if (elementName == null){
                 try {
@@ -131,16 +133,16 @@ public class PathElementsRemove extends JDialog {
             }
             switch (model){
                 case DEPARTMENT:
-                    Application.context.departmentService.remove(elementName);
+                    DepartmentServiceImpl.getInstance().remove(elementName);
                     break;
                 case AREA:
-                    Application.context.areaService.remove(elementName);
+                    AreaServiceImpl.getInstance().remove(elementName);
                     break;
                 case PROCESS:
-                    Application.context.processService.remove(elementName);
+                    ProcessServiceImpl.getInstance().remove(elementName);
                     break;
                 case INSTALLATION:
-                    Application.context.installationService.remove(elementName);
+                    InstallationServiceImpl.getInstance().remove(elementName);
                     break;
             }
             parent.update(model);

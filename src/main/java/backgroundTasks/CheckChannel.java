@@ -1,7 +1,7 @@
 package backgroundTasks;
 
-import application.Application;
 import model.Channel;
+import service.impl.ChannelServiceImpl;
 import ui.channelInfo.ChannelExistsDialog;
 import ui.model.LoadDialog;
 
@@ -43,21 +43,16 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
     }
 
     public void start(){
-        Window parent = this.parentDialog == null ? this.parentFrame : this.parentDialog;
-        if (!Application.isBusy(parent)){
-            Application.setBusy(true);
-            this.execute();
-        }
+        this.execute();
     }
 
     @Override
     protected Channel doInBackground() throws Exception {
-        return Application.context.channelService.get(this.code);
+        return ChannelServiceImpl.getInstance().get(this.code);
     }
 
     @Override
     protected void done() {
-        Application.setBusy(false);
         this.loadWindow.dispose();
         Component parent = parentDialog == null ? parentFrame : parentDialog;
         try {

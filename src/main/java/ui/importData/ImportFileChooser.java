@@ -1,6 +1,5 @@
 package ui.importData;
 
-import application.Application;
 import backgroundTasks.Importer;
 import model.Model;
 import ui.mainScreen.MainScreen;
@@ -15,7 +14,6 @@ public class ImportFileChooser extends JFileChooser {
 
     public ImportFileChooser(Model model) throws SQLException {
         super();
-        final MainScreen mainScreen = Application.context.mainScreen;
 
         this.setDialogTitle(IMPORT_DATA);
         this.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -26,7 +24,7 @@ public class ImportFileChooser extends JFileChooser {
         this.setAcceptAllFileFilterUsed(false);
         this.setFileFilter(filter);
 
-        int result = this.showOpenDialog(mainScreen);
+        int result = this.showOpenDialog(MainScreen.getInstance());
         if (result == JFileChooser.APPROVE_OPTION){
             File file = this.getSelectedFile();
             if (file != null){

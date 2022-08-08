@@ -138,7 +138,7 @@ public class CalculateMeasurementDialog extends JDialog {
     }
 
     private void createMeasurementPanel(int index, double[] values){
-        String measurementName = this.channel.getMeasurement().getName();
+        String measurementName = this.channel._getMeasurement().getName();
         if (measurementName.equals(Measurement.TEMPERATURE)){
             TemperaturePanel temperaturePanel = new TemperaturePanel(this.channel);
             this.measurementsPanels[index] = temperaturePanel;

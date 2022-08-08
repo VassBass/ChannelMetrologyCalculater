@@ -1,6 +1,5 @@
 package ui.sensorsList.sensorInfo;
 
-import application.Application;
 import backgroundTasks.PutSensorInList;
 import converters.ConverterUI;
 import converters.VariableConverter;
@@ -9,6 +8,8 @@ import model.Sensor;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
+import service.impl.MeasurementServiceImpl;
+import service.impl.SensorServiceImpl;
 import ui.channelInfo.DialogChannel;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
@@ -130,7 +131,7 @@ public class SensorInfoDialog extends JDialog {
         this.labelRange = new ButtonCell(true, RANGE_OF_SENSOR);
         this.labelErrorFormula = new ButtonCell(true, ERROR_FORMULA);
 
-        this.measurementsList = new JComboBox<>(Application.context.measurementService.getAllNames());
+        this.measurementsList = new JComboBox<>(MeasurementServiceImpl.getInstance().getAllNames());
         this.measurementsList.setBackground(Color.WHITE);
 
         String[]consumptionTypes = new String[]{"",Sensor.YOKOGAWA, Sensor.ROSEMOUNT};
@@ -358,7 +359,6 @@ public class SensorInfoDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             specialCharactersPanel.setFieldForInsert(null);
-            if (Application.isBusy(SensorInfoDialog.this)) return;
             if (checkSensor()) {
                 Sensor sensor = new Sensor();
                 if (Objects.requireNonNull(measurementsList.getSelectedItem()).toString().equals(Measurement.CONSUMPTION)){
@@ -385,10 +385,10 @@ public class SensorInfoDialog extends JDialog {
                         PutSensorInList putSensorInList = new PutSensorInList(parent, SensorInfoDialog.this, sensor);
                         putSensorInList.start(oldSensor);
                     }
-                }else if (Application.context.sensorService.isExists(nameText.getText())) {
+                }else if (SensorServiceImpl.getInstance().isExists(nameText.getText())) {
                     JOptionPane.showMessageDialog(SensorInfoDialog.this, "ПВП с такою назвою вже існує в списку");
                 }else {
-                    Application.context.sensorService.add(sensor);
+                    SensorServiceImpl.getInstance().add(sensor);
                     dialogChannel.sensorPanel.update(dialogChannel.measurementPanel.getMeasurement().getName());
                     dialogChannel.sensorPanel.setSelectedSensor(sensor.getName());
                     dispose();

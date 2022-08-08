@@ -1,16 +1,13 @@
 package ui.removeChannels;
 
-import application.Application;
 import converters.ConverterUI;
 import model.Channel;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 
 public class DialogRemoveChannels extends JDialog {
     private static final String REMOVE_CHANNEL = "Видалити канал";
@@ -38,20 +35,20 @@ public class DialogRemoveChannels extends JDialog {
 
     private void createElements() {
         int selectedIndex = this.mainScreen.mainTable.getSelectedRow();
-        if (selectedIndex == -1){
-            String[]channelsList = new String[this.mainScreen.channelsList.size()];
-            for (int x=0;x<channelsList.length;x++) {
-                channelsList[x] = this.mainScreen.channelsList.get(x).getName();
-            }
-            this.channelsList = new JComboBox<>(channelsList);
-            this.channelsList.setBackground(Color.white);
-            TitledBorder border = BorderFactory.createTitledBorder(CHOOSE_CHANNEL_TO_REMOVE);
-            border.setTitleJustification(TitledBorder.CENTER);
-            this.channelsList.setBorder(border);
-        }else {
-            String channelName = this.mainScreen.channelsList.get(selectedIndex).getName();
-            this.text = new JLabel(REMOVE_CHANNEL + " \"" + channelName + "\"?");
-        }
+//        if (selectedIndex == -1){
+//            String[]channelsList = new String[this.mainScreen.channelsList.size()];
+//            for (int x=0;x<channelsList.length;x++) {
+//                channelsList[x] = this.mainScreen.channelsList.get(x).getName();
+//            }
+//            this.channelsList = new JComboBox<>(channelsList);
+//            this.channelsList.setBackground(Color.white);
+//            TitledBorder border = BorderFactory.createTitledBorder(CHOOSE_CHANNEL_TO_REMOVE);
+//            border.setTitleJustification(TitledBorder.CENTER);
+//            this.channelsList.setBorder(border);
+//        }else {
+//            String channelName = this.mainScreen.channelsList.get(selectedIndex).getName();
+//            this.text = new JLabel(REMOVE_CHANNEL + " \"" + channelName + "\"?");
+//        }
 
         this.removeAll = new DefaultButton(REMOVE_ALL);
         this.positiveButton = new DefaultButton(REMOVE);
@@ -107,54 +104,53 @@ public class DialogRemoveChannels extends JDialog {
     private final ActionListener clickRemoveAll = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    setVisible(false);
-                    String message = "Ви впевнені що хочете видалити всі канали? Загальна кількість: "
-                            + mainScreen.channelsList.size();
-                    int result = JOptionPane.showConfirmDialog(DialogRemoveChannels.this,
-                            message, REMOVE_ALL, JOptionPane.OK_CANCEL_OPTION);
-                    if (result == 0){
-                        if (Application.isBusy(DialogRemoveChannels.this)) return;
-                        dispose();
-                        mainScreen.setChannelsList(new ArrayList<Channel>());
-                        Application.context.channelService.clear();
-                        if (Application.context.channelSorter.isOn()) {
-                            Application.context.channelSorter.setOff();
-                            mainScreen.searchPanel.buttonSearch.doClick();
-                        }
-                    }else {
-                        setVisible(true);
-                    }
-                }
-            });
+//            EventQueue.invokeLater(new Runnable() {
+//                @Override
+//                public void run() {
+//                    setVisible(false);
+//                    String message = "Ви впевнені що хочете видалити всі канали? Загальна кількість: "
+//                            + mainScreen.channelsList.size();
+//                    int result = JOptionPane.showConfirmDialog(DialogRemoveChannels.this,
+//                            message, REMOVE_ALL, JOptionPane.OK_CANCEL_OPTION);
+//                    if (result == 0){
+//                        if (Application.isBusy(DialogRemoveChannels.this)) return;
+//                        dispose();
+//                        mainScreen.setChannelsList(new ArrayList<Channel>());
+//                        Application.context.channelService.clear();
+//                        if (Application.context.channelSorter.isOn()) {
+//                            Application.context.channelSorter.setOff();
+//                            mainScreen.searchPanel.buttonSearch.doClick();
+//                        }
+//                    }else {
+//                        setVisible(true);
+//                    }
+//                }
+//            });
         }
     };
 
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (Application.isBusy(DialogRemoveChannels.this)) return;
             int selectedIndex = mainScreen.mainTable.getSelectedRow();
             final Channel channel;
-            if (selectedIndex == -1){
-                channel = mainScreen.channelsList.get(channelsList.getSelectedIndex());
-            }else {
-                channel = mainScreen.channelsList.get(selectedIndex);
-            }
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    DialogRemoveChannels.this.dispose();
-                    ArrayList<Channel>channels = Application.context.channelService.remove(channel);
-                    if (Application.context.channelSorter.isOn()){
-                        mainScreen.setChannelsList(Application.context.channelSorter.getCurrent());
-                    }else {
-                        mainScreen.setChannelsList(channels);
-                    }
-                }
-            });
+//            if (selectedIndex == -1){
+//                channel = mainScreen.channelsList.get(channelsList.getSelectedIndex());
+//            }else {
+//                channel = mainScreen.channelsList.get(selectedIndex);
+//            }
+//            EventQueue.invokeLater(new Runnable() {
+//                @Override
+//                public void run() {
+//                    DialogRemoveChannels.this.dispose();
+//                    Application.context.channelService.remove(channel);
+//                    if (Application.context.channelSorter.isOn()){
+//                        mainScreen.setChannelsList(Application.context.channelSorter.getCurrent());
+//                    }else {
+//                        mainScreen.setChannelsList(new ArrayList<>(Application.context.channelService.getAll()));
+//                    }
+//                }
+//            });
         }
     };
 

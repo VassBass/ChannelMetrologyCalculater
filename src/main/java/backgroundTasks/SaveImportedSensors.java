@@ -1,7 +1,8 @@
 package backgroundTasks;
 
-import application.Application;
 import model.Sensor;
+import service.impl.ChannelServiceImpl;
+import service.impl.SensorServiceImpl;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
 
@@ -19,17 +20,15 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
     private static final String IMPORT = "Імпорт";
     private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
 
-    private final MainScreen mainScreen;
     private final ArrayList<Sensor>newSensors, sensorsForChange;
     private final LoadDialog loadDialog;
     private final File importFile;
 
     public SaveImportedSensors(ArrayList<Sensor>newSensors, ArrayList<Sensor> sensorsForChange, File file){
         super();
-        this.mainScreen = Application.context.mainScreen;
         this.newSensors = newSensors;
         this.sensorsForChange = sensorsForChange;
-        this.loadDialog = new LoadDialog(mainScreen);
+        this.loadDialog = new LoadDialog(MainScreen.getInstance());
         this.importFile = file;
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -41,8 +40,8 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        Application.context.sensorService.importDataInCurrentThread(this.newSensors, this.sensorsForChange);
-        Application.context.channelService.changeSensorsInCurrentThread(this.sensorsForChange);
+        SensorServiceImpl.getInstance().importData(this.newSensors, this.sensorsForChange);
+        ChannelServiceImpl.getInstance().changeSensors(this.sensorsForChange);
         return null;
     }
 
@@ -50,8 +49,8 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
     protected void done() {
         this.loadDialog.dispose();
         if (this.importFile == null) {
-            this.mainScreen.setChannelsList(Application.context.channelService.getAll());
-            JOptionPane.showMessageDialog(this.mainScreen, IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
+            MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+            JOptionPane.showMessageDialog(MainScreen.getInstance(), IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
         }else {
             try {
                 new Importer(this.importFile, 2).execute();

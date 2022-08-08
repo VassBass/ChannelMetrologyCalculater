@@ -1,7 +1,7 @@
 package ui.sensorsList.sensorInfo.complexElements;
 
-import application.Application;
 import converters.VariableConverter;
+import service.impl.MeasurementServiceImpl;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.swing.*;
@@ -89,7 +89,7 @@ public class SensorRangePanel extends JPanel {
 
     public void setValues(String measurementName){
         if (measurementName != null && measurementName.length() > 0){
-            String[]values = Application.context.measurementService.getValues(measurementName);
+            String[]values = MeasurementServiceImpl.getInstance().getValues(measurementName);
             DefaultComboBoxModel<String>model = new DefaultComboBoxModel<>(values);
             this.values.setModel(model);
             setEnabled(true);
