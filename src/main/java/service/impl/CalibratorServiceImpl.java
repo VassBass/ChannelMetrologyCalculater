@@ -19,8 +19,9 @@ public class CalibratorServiceImpl implements CalibratorService {
         repository = new CalibratorRepositorySQLite();
     }
 
-    public CalibratorServiceImpl(CalibratorRepository repository){
+    public CalibratorServiceImpl(@Nonnull CalibratorRepository repository){
         this.repository = repository;
+        service = this;
     }
 
     public static CalibratorServiceImpl getInstance() {
@@ -35,7 +36,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public String[] getAllNames(Measurement measurement){
+    public String[] getAllNames(@Nonnull Measurement measurement){
         return this.repository.getAllNames(measurement);
     }
 
@@ -50,7 +51,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public boolean removeByMeasurementValue(String measurementValue) {
+    public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
         return this.repository.removeByMeasurementValue(measurementValue);
     }
 
@@ -60,12 +61,12 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public boolean changeMeasurementValue(String oldValue, String newValue) {
+    public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
         return this.repository.changeMeasurementValue(oldValue, newValue);
     }
 
     @Override
-    public Calibrator get(String name) {
+    public Calibrator get(@Nonnull String name) {
         return this.repository.get(name);
     }
 
@@ -75,7 +76,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public boolean importData(Collection<Calibrator>newCalibrators, Collection<Calibrator>calibratorsForChange){
+    public boolean importData(@Nonnull Collection<Calibrator>newCalibrators, @Nonnull Collection<Calibrator>calibratorsForChange){
         return this.repository.importData(newCalibrators, calibratorsForChange);
     }
 
@@ -90,7 +91,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public boolean isExists(Calibrator calibrator) {
+    public boolean isExists(@Nonnull Calibrator calibrator) {
         return this.repository.isExists(calibrator);
     }
 }

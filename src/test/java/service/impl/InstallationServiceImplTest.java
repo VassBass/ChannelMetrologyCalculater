@@ -41,13 +41,19 @@ public class InstallationServiceImplTest {
     }
 
     @Test
+    public void testGetInstance() {
+        assertSame(service, InstallationServiceImpl.getInstance());
+    }
+
+    @Test
     public void testGetAll() {
-        Set<String> expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         assertArrayEquals(expected.toArray(new String[0]), service.getAll().toArray(new String[0]));
     }
@@ -61,13 +67,14 @@ public class InstallationServiceImplTest {
 
     @Test
     public void testAddNew() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
-        expected.add(INSTALLATION_6);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5,
+                INSTALLATION_6
+        ));
 
         assertTrue(service.add(INSTALLATION_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -75,12 +82,13 @@ public class InstallationServiceImplTest {
 
     @Test
     public void testAddExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         assertFalse(service.add(INSTALLATION_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -88,11 +96,12 @@ public class InstallationServiceImplTest {
 
     @Test
     public void testRemoveExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         assertTrue(service.remove(INSTALLATION_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -100,12 +109,13 @@ public class InstallationServiceImplTest {
 
     @Test
     public void testRemoveNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         assertFalse(service.remove(INSTALLATION_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -113,12 +123,13 @@ public class InstallationServiceImplTest {
 
     @Test
     public void testSetNewInsteadOfExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_6);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_6,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         assertTrue(service.set(INSTALLATION_2, INSTALLATION_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -126,12 +137,13 @@ public class InstallationServiceImplTest {
 
     @Test
     public void testSetNewInsteadOfNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         assertFalse(service.set(INSTALLATION_6, INSTALLATION_7));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -139,12 +151,13 @@ public class InstallationServiceImplTest {
 
     @Test
     public void testSetExistingInsteadOfExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         assertTrue(service.set(INSTALLATION_2, INSTALLATION_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -152,12 +165,13 @@ public class InstallationServiceImplTest {
 
     @Test
     public void testSetExistingInsteadOfNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         assertFalse(service.set(INSTALLATION_6, INSTALLATION_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -172,10 +186,11 @@ public class InstallationServiceImplTest {
 
     @Test
     public void testRewriteNew() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_6);
-        expected.add(INSTALLATION_7);
-        expected.add(INSTALLATION_2);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_6,
+                INSTALLATION_7,
+                INSTALLATION_2
+        ));
 
         assertTrue(service.rewrite(expected));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -193,12 +208,13 @@ public class InstallationServiceImplTest {
     public void testAddNewCollection(){
         List<String> toAdd = Arrays.asList(INSTALLATION_6, INSTALLATION_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         expected.addAll(toAdd);
 
@@ -210,12 +226,13 @@ public class InstallationServiceImplTest {
     public void testAddNewCollectionWithExisted(){
         List<String> toAdd = Arrays.asList(INSTALLATION_6, INSTALLATION_2, INSTALLATION_4, INSTALLATION_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5
+        ));
 
         expected.addAll(toAdd);
 
@@ -227,14 +244,15 @@ public class InstallationServiceImplTest {
     public void testAddNewCollectionWithNull(){
         List<String> toAdd = Arrays.asList(INSTALLATION_6, null, INSTALLATION_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
-
-        expected.addAll(toAdd);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                INSTALLATION_1,
+                INSTALLATION_2,
+                INSTALLATION_3,
+                INSTALLATION_4,
+                INSTALLATION_5,
+                INSTALLATION_6,
+                INSTALLATION_7
+        ));
 
         assertTrue(service.add(toAdd));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());

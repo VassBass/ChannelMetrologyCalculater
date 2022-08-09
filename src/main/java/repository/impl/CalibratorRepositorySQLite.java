@@ -253,6 +253,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
                 for (Calibrator calibrator : calibrators) {
+                    if (calibrator == null) continue;
+
                     sqlBuilder.append("('").append(calibrator.getName()).append("', ")
                             .append("'").append(calibrator.getType()).append("', ")
                             .append("'").append(calibrator.getNumber()).append("', ")

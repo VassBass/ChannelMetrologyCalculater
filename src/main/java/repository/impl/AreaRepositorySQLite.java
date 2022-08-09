@@ -160,6 +160,8 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<S
                 StringBuilder sqlBuilder = new StringBuilder();
                 sqlBuilder.append("INSERT INTO areas VALUES ");
                 for (String a : newList) {
+                    if (a == null) continue;
+
                     sqlBuilder.append("('").append(a).append("'),");
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');

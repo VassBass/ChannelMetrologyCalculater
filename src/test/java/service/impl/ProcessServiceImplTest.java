@@ -41,13 +41,19 @@ public class ProcessServiceImplTest {
     }
 
     @Test
+    public void testGetInstance() {
+        assertSame(service, ProcessServiceImpl.getInstance());
+    }
+
+    @Test
     public void testGetAll() {
-        Set<String> expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         assertArrayEquals(expected.toArray(new String[0]), service.getAll().toArray(new String[0]));
     }
@@ -61,13 +67,14 @@ public class ProcessServiceImplTest {
 
     @Test
     public void testAddNew() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
-        expected.add(PROCESS_6);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5,
+                PROCESS_6
+        ));
 
         assertTrue(service.add(PROCESS_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -75,12 +82,13 @@ public class ProcessServiceImplTest {
 
     @Test
     public void testAddExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         assertFalse(service.add(PROCESS_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -88,11 +96,12 @@ public class ProcessServiceImplTest {
 
     @Test
     public void testRemoveExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         assertTrue(service.remove(PROCESS_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -100,12 +109,13 @@ public class ProcessServiceImplTest {
 
     @Test
     public void testRemoveNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         assertFalse(service.remove(PROCESS_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -113,12 +123,13 @@ public class ProcessServiceImplTest {
 
     @Test
     public void testSetNewInsteadOfExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_6);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_6,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         assertTrue(service.set(PROCESS_2, PROCESS_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -126,12 +137,13 @@ public class ProcessServiceImplTest {
 
     @Test
     public void testSetNewInsteadOfNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         assertFalse(service.set(PROCESS_6, PROCESS_7));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -139,12 +151,13 @@ public class ProcessServiceImplTest {
 
     @Test
     public void testSetExistingInsteadOfExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         assertTrue(service.set(PROCESS_2, PROCESS_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -152,12 +165,13 @@ public class ProcessServiceImplTest {
 
     @Test
     public void testSetExistingInsteadOfNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         assertFalse(service.set(PROCESS_6, PROCESS_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -172,10 +186,11 @@ public class ProcessServiceImplTest {
 
     @Test
     public void testRewriteNew() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_6);
-        expected.add(PROCESS_7);
-        expected.add(PROCESS_2);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_6,
+                PROCESS_7,
+                PROCESS_2
+        ));
 
         assertTrue(service.rewrite(expected));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -193,12 +208,13 @@ public class ProcessServiceImplTest {
     public void testAddNewCollection(){
         List<String> toAdd = Arrays.asList(PROCESS_6, PROCESS_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         expected.addAll(toAdd);
 
@@ -210,12 +226,13 @@ public class ProcessServiceImplTest {
     public void testAddNewCollectionWithExisted(){
         List<String> toAdd = Arrays.asList(PROCESS_6, PROCESS_2, PROCESS_4, PROCESS_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        ));
 
         expected.addAll(toAdd);
 
@@ -227,14 +244,15 @@ public class ProcessServiceImplTest {
     public void testAddNewCollectionWithNull(){
         List<String> toAdd = Arrays.asList(PROCESS_6, null, PROCESS_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
-
-        expected.addAll(toAdd);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5,
+                PROCESS_6,
+                PROCESS_7
+        ));
 
         assertTrue(service.add(toAdd));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());

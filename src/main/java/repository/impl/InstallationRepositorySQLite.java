@@ -160,6 +160,8 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Repo
                 StringBuilder sqlBuilder = new StringBuilder();
                 sqlBuilder.append("INSERT INTO installations VALUES ");
                 for (String a : newList) {
+                    if (a == null) continue;
+
                     sqlBuilder.append("('").append(a).append("'),");
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');

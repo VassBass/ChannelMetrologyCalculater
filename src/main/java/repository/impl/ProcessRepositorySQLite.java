@@ -160,6 +160,8 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements Repositor
                 StringBuilder sqlBuilder = new StringBuilder();
                 sqlBuilder.append("INSERT INTO processes VALUES ");
                 for (String a : newList) {
+                    if (a == null) continue;
+
                     sqlBuilder.append("('").append(a).append("'),");
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');

@@ -155,6 +155,8 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
                 StringBuilder sqlBuilder = new StringBuilder();
                 sqlBuilder.append("INSERT INTO departments VALUES ");
                 for (String a : newList) {
+                    if (a == null) continue;
+
                     sqlBuilder.append("('").append(a).append("'),");
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');

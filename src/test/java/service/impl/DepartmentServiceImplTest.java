@@ -41,13 +41,19 @@ public class DepartmentServiceImplTest {
     }
 
     @Test
+    public void testGetInstance() {
+        assertSame(service, DepartmentServiceImpl.getInstance());
+    }
+
+    @Test
     public void testGetAll() {
-        Set<String> expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         assertArrayEquals(expected.toArray(new String[0]), service.getAll().toArray(new String[0]));
     }
@@ -61,13 +67,14 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void testAddNew() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
-        expected.add(DEPARTMENT_6);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5,
+                DEPARTMENT_6
+        ));
 
         assertTrue(service.add(DEPARTMENT_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -75,12 +82,13 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void testAddExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         assertFalse(service.add(DEPARTMENT_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -88,11 +96,12 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void testRemoveExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         assertTrue(service.remove(DEPARTMENT_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -100,12 +109,13 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void testRemoveNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         assertFalse(service.remove(DEPARTMENT_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -113,12 +123,13 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void testSetNewInsteadOfExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_6);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_6,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         assertTrue(service.set(DEPARTMENT_2, DEPARTMENT_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -126,12 +137,13 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void testSetNewInsteadOfNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         assertFalse(service.set(DEPARTMENT_6, DEPARTMENT_7));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -139,12 +151,13 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void testSetExistingInsteadOfExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         assertTrue(service.set(DEPARTMENT_2, DEPARTMENT_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -152,12 +165,13 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void testSetExistingInsteadOfNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         assertFalse(service.set(DEPARTMENT_6, DEPARTMENT_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -172,10 +186,11 @@ public class DepartmentServiceImplTest {
 
     @Test
     public void testRewriteNew() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_6);
-        expected.add(DEPARTMENT_7);
-        expected.add(DEPARTMENT_2);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_6,
+                DEPARTMENT_7,
+                DEPARTMENT_2
+        ));
 
         assertTrue(service.rewrite(expected));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -193,12 +208,13 @@ public class DepartmentServiceImplTest {
     public void testAddNewCollection(){
         List<String> toAdd = Arrays.asList(DEPARTMENT_6, DEPARTMENT_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         expected.addAll(toAdd);
 
@@ -210,12 +226,13 @@ public class DepartmentServiceImplTest {
     public void testAddNewCollectionWithExisted(){
         List<String> toAdd = Arrays.asList(DEPARTMENT_6, DEPARTMENT_2, DEPARTMENT_4, DEPARTMENT_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5
+        ));
 
         expected.addAll(toAdd);
 
@@ -227,14 +244,15 @@ public class DepartmentServiceImplTest {
     public void testAddNewCollectionWithNull(){
         List<String> toAdd = Arrays.asList(DEPARTMENT_6, null, DEPARTMENT_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
-
-        expected.addAll(toAdd);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                DEPARTMENT_1,
+                DEPARTMENT_2,
+                DEPARTMENT_3,
+                DEPARTMENT_4,
+                DEPARTMENT_5,
+                DEPARTMENT_6,
+                DEPARTMENT_7
+        ));
 
         assertTrue(service.add(toAdd));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());

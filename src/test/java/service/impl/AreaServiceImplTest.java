@@ -39,13 +39,19 @@ public class AreaServiceImplTest {
     }
 
     @Test
+    public void testGetInstance() {
+        assertSame(service, AreaServiceImpl.getInstance());
+    }
+
+    @Test
     public void testGetAll() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         assertArrayEquals(expected.toArray(new String[0]), service.getAll().toArray(new String[0]));
     }
@@ -59,13 +65,14 @@ public class AreaServiceImplTest {
 
     @Test
     public void testAddNew() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
-        expected.add(AREA_6);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5,
+                AREA_6
+        ));
 
         assertTrue(service.add(AREA_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -73,12 +80,13 @@ public class AreaServiceImplTest {
 
     @Test
     public void testAddExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         assertFalse(service.add(AREA_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -86,11 +94,12 @@ public class AreaServiceImplTest {
 
     @Test
     public void testRemoveExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         assertTrue(service.remove(AREA_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -98,12 +107,13 @@ public class AreaServiceImplTest {
 
     @Test
     public void testRemoveNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         assertFalse(service.remove(AREA_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -111,12 +121,13 @@ public class AreaServiceImplTest {
 
     @Test
     public void testSetNewInsteadOfExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_6);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_6,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         assertTrue(service.set(AREA_2, AREA_6));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -124,12 +135,13 @@ public class AreaServiceImplTest {
 
     @Test
     public void testSetNewInsteadOfNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         assertFalse(service.set(AREA_6, AREA_7));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -137,12 +149,13 @@ public class AreaServiceImplTest {
 
     @Test
     public void testSetExistingInsteadOfExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         assertTrue(service.set(AREA_2, AREA_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -150,12 +163,13 @@ public class AreaServiceImplTest {
 
     @Test
     public void testSetExistingInsteadOfNotExisting() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         assertFalse(service.set(AREA_6, AREA_2));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -170,10 +184,11 @@ public class AreaServiceImplTest {
 
     @Test
     public void testRewriteNew() {
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_6);
-        expected.add(AREA_7);
-        expected.add(AREA_2);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_6,
+                AREA_7,
+                AREA_2
+        ));
 
         assertTrue(service.rewrite(expected));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
@@ -191,12 +206,13 @@ public class AreaServiceImplTest {
     public void testAddNewCollection(){
         List<String> toAdd = Arrays.asList(AREA_6, AREA_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         expected.addAll(toAdd);
 
@@ -208,12 +224,13 @@ public class AreaServiceImplTest {
     public void testAddNewCollectionWithExisted(){
         List<String> toAdd = Arrays.asList(AREA_6, AREA_2, AREA_4, AREA_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5
+        ));
 
         expected.addAll(toAdd);
 
@@ -225,14 +242,14 @@ public class AreaServiceImplTest {
     public void testAddNewCollectionWithNull(){
         List<String> toAdd = Arrays.asList(AREA_6, null, AREA_7);
 
-        Set<String>expected = new LinkedHashSet<>();
-        expected.add(AREA_1);
-        expected.add(AREA_2);
-        expected.add(AREA_3);
-        expected.add(AREA_4);
-        expected.add(AREA_5);
-
-        expected.addAll(toAdd);
+        Set<String> expected = new LinkedHashSet<>(Arrays.asList(
+                AREA_1,
+                AREA_2,
+                AREA_3,
+                AREA_4,
+                AREA_5,
+                AREA_6,
+                AREA_7));
 
         assertTrue(service.add(toAdd));
         assertArrayEquals(expected.toArray(new String[0]), service.getAllInStrings());
