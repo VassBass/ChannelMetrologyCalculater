@@ -95,19 +95,6 @@ public class ProcessRepositorySQLiteTest {
     }
 
     @Test
-    public void testAddNull(){
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
-
-        assertFalse(repository.add(null));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
     public void testAddExistingProcess(){
         List<String>expected = new ArrayList<>();
         expected.add(PROCESS_1);
@@ -160,19 +147,6 @@ public class ProcessRepositorySQLiteTest {
     }
 
     @Test
-    public void testSet_replaceExistingProcessWithNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
-
-        assertFalse(repository.set(PROCESS_2, null));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
     public void testSet_replaceNotExistingProcessWithExistingProcess() {
         List<String>expected = new ArrayList<>();
         expected.add(PROCESS_1);
@@ -212,19 +186,6 @@ public class ProcessRepositorySQLiteTest {
     }
 
     @Test
-    public void testSet_replaceNotExistingProcessWithNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
-
-        assertFalse(repository.set(PROCESS_6, null));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
     public void testRemoveExistingProcess() {
         List<String>expected = new ArrayList<>();
         expected.add(PROCESS_1);
@@ -246,19 +207,6 @@ public class ProcessRepositorySQLiteTest {
         expected.add(PROCESS_5);
 
         assertFalse(repository.remove(PROCESS_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
-    public void testRemoveNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
-
-        assertFalse(repository.remove(null));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
@@ -296,19 +244,6 @@ public class ProcessRepositorySQLiteTest {
         List<String>expected = new ArrayList<>();
 
         assertTrue(repository.rewrite(expected));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
-    public void rewriteNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
-
-        assertFalse(repository.rewrite(null));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 }

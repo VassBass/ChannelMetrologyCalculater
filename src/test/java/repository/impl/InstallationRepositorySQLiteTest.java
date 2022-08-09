@@ -95,19 +95,6 @@ public class InstallationRepositorySQLiteTest {
     }
 
     @Test
-    public void testAddNull(){
-        List<String>expected = new ArrayList<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
-
-        assertFalse(repository.add(null));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
     public void testAddExistingInstallation(){
         List<String>expected = new ArrayList<>();
         expected.add(INSTALLATION_1);
@@ -160,19 +147,6 @@ public class InstallationRepositorySQLiteTest {
     }
 
     @Test
-    public void testSet_replaceExistingInstallationWithNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
-
-        assertFalse(repository.set(INSTALLATION_2, null));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
     public void testSet_replaceNotExistingInstallationWithExistingInstallation() {
         List<String>expected = new ArrayList<>();
         expected.add(INSTALLATION_1);
@@ -212,19 +186,6 @@ public class InstallationRepositorySQLiteTest {
     }
 
     @Test
-    public void testSet_replaceNotExistingInstallationWithNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
-
-        assertFalse(repository.set(INSTALLATION_6, null));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
     public void testRemoveExistingInstallation() {
         List<String>expected = new ArrayList<>();
         expected.add(INSTALLATION_1);
@@ -246,19 +207,6 @@ public class InstallationRepositorySQLiteTest {
         expected.add(INSTALLATION_5);
 
         assertFalse(repository.remove(INSTALLATION_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
-    public void testRemoveNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
-
-        assertFalse(repository.remove(null));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
@@ -296,19 +244,6 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = new ArrayList<>();
 
         assertTrue(repository.rewrite(expected));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
-    public void rewriteNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(INSTALLATION_1);
-        expected.add(INSTALLATION_2);
-        expected.add(INSTALLATION_3);
-        expected.add(INSTALLATION_4);
-        expected.add(INSTALLATION_5);
-
-        assertFalse(repository.rewrite(null));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 }

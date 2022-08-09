@@ -87,9 +87,11 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
         List<String>calibrators = new ArrayList<>();
 
         LOGGER.info("Reading all calibrators names from DB");
-        String sql = "SELECT name FROM calibrators WHERE measurement = '" + measurement + "';";
+        String sql = "SELECT name FROM calibrators WHERE measurement = '" + measurement.getName() + "';";
         try (ResultSet resultSet = getResultSet(sql)){
-            calibrators.add(resultSet.getString("name"));
+            while (resultSet.next()) {
+                calibrators.add(resultSet.getString("name"));
+            }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
         }
@@ -98,9 +100,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public Calibrator get(String name) {
-        if (name == null) return null;
-
+    public Calibrator get(@Nonnull String name) {
         LOGGER.info("Reading calibrator with name = {} from DB", name);
         String sql = "SELECT * FROM calibrators WHERE name = '" + name + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -158,10 +158,11 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
             int result = statement.executeUpdate(sql);
             if (result > 0){
                 LOGGER.info("Calibrator = {} was removed successfully", calibrator.getName());
+                return true;
             }else {
                 LOGGER.info("Calibrator with name = {} not found", calibrator.getName());
+                return false;
             }
-            return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -174,7 +175,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
         try (Statement statement = getStatement()) {
             int result = statement.executeUpdate(sql);
             LOGGER.info("Removed {} calibrators with measurementValue = {}", result, measurementValue);
-            return true;
+            return result > 0;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -198,8 +199,13 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                 + "WHERE name = '" + oldCalibrator.getName() + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Calibrator:\n{}\nwas replaced by calibrator:\n{}\nsuccessfully", oldCalibrator, newCalibrator);
-            return true;
+            if (result > 0){
+                LOGGER.info("Calibrator:\n{}\nwas replaced by calibrator:\n{}\nsuccessfully", oldCalibrator, newCalibrator);
+                return true;
+            }else {
+                LOGGER.info("Calibrator with name = '" + oldCalibrator.getName() + "' not found");
+                return false;
+            }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -214,7 +220,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
         try (Statement statement = getStatement()) {
             int result = statement.executeUpdate(sql);
             LOGGER.info("Changed measurementValue of {} calibrators from {} to {}", result, oldValue, newValue);
-            return true;
+            return result > 0;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
             return false;

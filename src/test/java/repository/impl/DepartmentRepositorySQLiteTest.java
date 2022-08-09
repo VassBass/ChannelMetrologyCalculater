@@ -95,19 +95,6 @@ public class DepartmentRepositorySQLiteTest {
     }
 
     @Test
-    public void testAddNull(){
-        List<String>expected = new ArrayList<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
-
-        assertFalse(repository.add(null));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
     public void testAddExistingDepartment(){
         List<String>expected = new ArrayList<>();
         expected.add(DEPARTMENT_1);
@@ -160,19 +147,6 @@ public class DepartmentRepositorySQLiteTest {
     }
 
     @Test
-    public void testSet_replaceExistingDepartmentWithNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
-
-        assertFalse(repository.set(DEPARTMENT_2, null));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
     public void testSet_replaceNotExistingDepartmentWithExistingDepartment() {
         List<String>expected = new ArrayList<>();
         expected.add(DEPARTMENT_1);
@@ -212,19 +186,6 @@ public class DepartmentRepositorySQLiteTest {
     }
 
     @Test
-    public void testSet_replaceNotExistingDepartmentWithNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
-
-        assertFalse(repository.set(DEPARTMENT_6, null));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
     public void testRemoveExistingDepartment() {
         List<String>expected = new ArrayList<>();
         expected.add(DEPARTMENT_1);
@@ -246,19 +207,6 @@ public class DepartmentRepositorySQLiteTest {
         expected.add(DEPARTMENT_5);
 
         assertFalse(repository.remove(DEPARTMENT_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
-    public void testRemoveNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
-
-        assertFalse(repository.remove(null));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
@@ -296,19 +244,6 @@ public class DepartmentRepositorySQLiteTest {
         List<String>expected = new ArrayList<>();
 
         assertTrue(repository.rewrite(expected));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
-    public void rewriteNull() {
-        List<String>expected = new ArrayList<>();
-        expected.add(DEPARTMENT_1);
-        expected.add(DEPARTMENT_2);
-        expected.add(DEPARTMENT_3);
-        expected.add(DEPARTMENT_4);
-        expected.add(DEPARTMENT_5);
-
-        assertFalse(repository.rewrite(null));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 }
