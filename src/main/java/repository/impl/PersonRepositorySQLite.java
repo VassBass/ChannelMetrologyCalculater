@@ -6,7 +6,9 @@ import org.slf4j.LoggerFactory;
 import repository.PersonRepository;
 import repository.RepositoryJDBC;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -95,7 +97,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     public String[] getNamesOfHeadsWithFirstEmptyString() {
         List<String>heads = new ArrayList<>();
         heads.add(EMPTY_ARRAY);
-        String sql = "SELECT name, surname. patronymic FROM persons WHERE position = '" + Person.HEAD_OF_DEPARTMENT_ASUTP + "';";
+        String sql = "SELECT name, surname, patronymic FROM persons WHERE position = '" + Person.HEAD_OF_DEPARTMENT_ASUTP + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()){
                 Person person = new Person();
@@ -113,8 +115,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public Person get(int id) {
-        if (id < 0) return null;
+    public Person get(@Nonnegative int id) {
         LOGGER.info("Reading person with id = {} from DB", id);
         String sql = "SELECT * FROM persons WHERE id = " + id + " LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -146,8 +147,10 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
             statement.setString(4, person.getPosition());
 
             int result = statement.executeUpdate();
-            if (result > 0) LOGGER.info("Person = {} was added successfully", person._getFullName());
-            return true;
+            if (result > 0){
+                LOGGER.info("Person = {} was added successfully", person._getFullName());
+                return true;
+            } else return false;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -155,7 +158,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public boolean set(@Nonnull Person person, @Nonnull Person ignored) {
+    public boolean set(@Nonnull Person person, @Nullable Person ignored) {
         String sql = "UPDATE persons SET name = ?, surname = ?, patronymic = ?, position = ? WHERE id = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setString(1, person.getName());
@@ -165,8 +168,10 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
             statement.setInt(5, person.getId());
 
             int result = statement.executeUpdate();
-            if (result > 0) LOGGER.info("Person was replaced by:\n{}\nsuccessfully", person);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Person was replaced by:\n{}\nsuccessfully", person);
+                return true;
+            }else return false;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -182,6 +187,8 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
         StringBuilder sqlBuilder = new StringBuilder(sql);
 
         for (Person person : persons) {
+            if (person == null) continue;
+
             sqlBuilder.append("('").append(person.getName()).append("', ")
                     .append("'").append(person.getSurname()).append("', ")
                     .append("'").append(person.getPatronymic()).append("', ")
@@ -191,8 +198,10 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
 
         try (Statement statement = getStatement()) {
             int result = statement.executeUpdate(sqlBuilder.toString());
-            if (result > 0) LOGGER.info("Persons list:\n{}\nwas added successfully", persons);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Persons list:\n{}\nwas added successfully", persons);
+                return true;
+            }return false;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -206,10 +215,11 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
             int result = statement.executeUpdate(sql);
             if (result > 0){
                 LOGGER.info("Person = {} was removed successfully", person._getFullName());
+                return true;
             }else {
                 LOGGER.info("Person with id = {} not found", person.getId());
+                return false;
             }
-            return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -227,8 +237,10 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
             statement.setInt(5, person.getId());
 
             int result = statement.executeUpdate();
-            if (result > 0) LOGGER.info("Person was replaced by:\n{}\nsuccessfully", person);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Person was replaced by:\n{}\nsuccessfully", person);
+                return true;
+            }else return false;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -260,6 +272,8 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
                 StringBuilder sqlBuilder = new StringBuilder(sql);
 
                 for (Person person : persons) {
+                    if (person == null) continue;
+
                     sqlBuilder.append("('").append(person.getName()).append("', ")
                             .append("'").append(person.getSurname()).append("', ")
                             .append("'").append(person.getPatronymic()).append("', ")

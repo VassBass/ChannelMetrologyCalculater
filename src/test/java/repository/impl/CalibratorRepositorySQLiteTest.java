@@ -40,8 +40,6 @@ public class CalibratorRepositorySQLiteTest {
         return calibrator;
     }
 
-
-
     @BeforeClass
     public static void testCreateTable(){
         assertTrue(repository.createTable());

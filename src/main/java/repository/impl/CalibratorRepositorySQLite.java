@@ -283,6 +283,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
         int addResult = 0;
         if (!calibratorsForChange.isEmpty()){
             for (Calibrator c : calibratorsForChange){
+                if (c == null) continue;
+
                 String sql = "UPDATE calibrators SET "
                         + "type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, certificate = ?, range_min = ?, range_max = ? "
                         + "WHERE name = ?;";
@@ -313,6 +315,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
             StringBuilder sqlBuilder = new StringBuilder(sql);
             try (Statement statement = getStatement()) {
                 for (Calibrator calibrator : newCalibrators) {
+                    if (calibrator == null) continue;
+
                     sqlBuilder.append("('").append(calibrator.getName()).append("', ")
                             .append("'").append(calibrator.getType()).append("', ")
                             .append("'").append(calibrator.getNumber()).append("', ")

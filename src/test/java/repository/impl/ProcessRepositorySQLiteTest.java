@@ -9,6 +9,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -70,25 +71,27 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testGetAll() {
-        List<String> expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testAddNewProcess() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
-        expected.add(PROCESS_6);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5,
+                PROCESS_6
+        );
 
         assertTrue(repository.add(PROCESS_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -96,12 +99,13 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testAddExistingProcess(){
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertFalse(repository.add(PROCESS_1));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -109,12 +113,13 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testSet_replaceExistingProcessWithExistingProcess() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertFalse(repository.set(PROCESS_2, PROCESS_5));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -122,12 +127,13 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testSet_replaceExistingProcessWithTheSameProcess() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertTrue(repository.set(PROCESS_2, PROCESS_2));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -135,12 +141,13 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testSet_replaceExistingProcessWithNewProcess() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_6);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_6,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertTrue(repository.set(PROCESS_2, PROCESS_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -148,12 +155,13 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testSet_replaceNotExistingProcessWithExistingProcess() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertFalse(repository.set(PROCESS_6, PROCESS_5));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -161,12 +169,13 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testSet_replaceNotExistingProcessWithTheSameProcess() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertFalse(repository.set(PROCESS_6, PROCESS_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -174,12 +183,13 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testSet_replaceNotExistingProcessWithNewProcess() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertFalse(repository.set(PROCESS_6, PROCESS_7));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -187,11 +197,12 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testRemoveExistingProcess() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertTrue(repository.remove(PROCESS_2));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -199,12 +210,13 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void testRemoveNotExistingProcess() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertFalse(repository.remove(PROCESS_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -218,9 +230,10 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void rewriteNewList() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_6);
-        expected.add(PROCESS_7);
+        List<String>expected = Arrays.asList(
+                PROCESS_6,
+                PROCESS_7
+        );
 
         assertTrue(repository.rewrite(expected));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
@@ -228,12 +241,13 @@ public class ProcessRepositorySQLiteTest {
 
     @Test
     public void rewriteSameList() {
-        List<String>expected = new ArrayList<>();
-        expected.add(PROCESS_1);
-        expected.add(PROCESS_2);
-        expected.add(PROCESS_3);
-        expected.add(PROCESS_4);
-        expected.add(PROCESS_5);
+        List<String>expected = Arrays.asList(
+                PROCESS_1,
+                PROCESS_2,
+                PROCESS_3,
+                PROCESS_4,
+                PROCESS_5
+        );
 
         assertTrue(repository.rewrite(expected));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
