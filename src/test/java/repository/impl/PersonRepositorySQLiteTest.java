@@ -83,10 +83,12 @@ public class PersonRepositorySQLiteTest {
     @After
     public void clearTestDB() throws Exception {
         String sql = "DELETE FROM persons;";
+        String clearId = "DELETE FROM sqlite_sequence;";
         DriverManager.registerDriver(new JDBC());
         try (Connection connection = DriverManager.getConnection(DB_URL);
              Statement statement = connection.createStatement()) {
             statement.execute(sql);
+            statement.execute(clearId);
         }
     }
 
@@ -125,7 +127,6 @@ public class PersonRepositorySQLiteTest {
 
     @Test
     public void testGetNotExisted() {
-        assertNull(repository.get(-1));
         assertNull(repository.get(50));
     }
 

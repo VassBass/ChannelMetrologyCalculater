@@ -6,7 +6,9 @@ import repository.PersonRepository;
 import repository.impl.PersonRepositorySQLite;
 import service.PersonService;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public class PersonServiceImpl implements PersonService {
@@ -49,7 +51,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public boolean add(Collection<Person> persons) {
+    public boolean add(@Nonnull Collection<Person> persons) {
         return this.repository.add(persons);
     }
 
@@ -59,17 +61,17 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public boolean set(@Nonnull Person person, @Nonnull Person ignored) {
+    public boolean set(@Nonnull Person person, @Nullable Person ignored) {
         return repository.set(person, ignored);
     }
 
     @Override
-    public boolean set(Person person) {
+    public boolean set(@Nonnull Person person) {
         return this.repository.set(person);
     }
 
     @Override
-    public Person get(int id) {
+    public Person get(@Nonnegative int id) {
         return this.repository.get(id);
     }
 
