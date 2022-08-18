@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNullableByDefault;
 import java.util.Collection;
+import java.util.Optional;
 
 public interface PersonService extends Service<Person> {
     /**
@@ -25,7 +26,7 @@ public interface PersonService extends Service<Person> {
     boolean set(@Nonnull Person person, @Nullable Person ignored);
     boolean set(@Nonnull Person person);
 
-    Person get(@Nonnegative int id);
+    Optional<Person> get(@Nonnegative int id);
 
     boolean resetToDefault();
 }

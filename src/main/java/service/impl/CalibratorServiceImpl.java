@@ -9,6 +9,7 @@ import service.CalibratorService;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Optional;
 
 public class CalibratorServiceImpl implements CalibratorService {
     private static CalibratorServiceImpl service;
@@ -66,7 +67,7 @@ public class CalibratorServiceImpl implements CalibratorService {
     }
 
     @Override
-    public Calibrator get(@Nonnull String name) {
+    public Optional<Calibrator> get(@Nonnull String name) {
         return this.repository.get(name);
     }
 

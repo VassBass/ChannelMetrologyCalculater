@@ -122,14 +122,15 @@ public class CalibratorRepositorySQLiteTest {
         assertArrayEquals(expectedConsumption, repository.getAllNames(new Measurement(Measurement.CONSUMPTION, Measurement.M3_HOUR)));
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testGetExisted() {
-        assertEquals(createCalibrator(1), repository.get("calibrator1"));
+        assertEquals(createCalibrator(1), repository.get("calibrator1").get());
     }
 
     @Test
     public void testGetNotExisted() {
-        assertNull(repository.get("Not Existed"));
+        assertFalse(repository.get("Not Existed").isPresent());
     }
 
     @Test
@@ -249,7 +250,7 @@ public class CalibratorRepositorySQLiteTest {
 
     @Test
     public void testRewriteEmpty() {
-        assertTrue(repository.rewrite(new ArrayList<Calibrator>()));
+        assertTrue(repository.rewrite(new ArrayList<>()));
         assertArrayEquals(new Calibrator[0], repository.getAll().toArray(new Calibrator[0]));
     }
 
@@ -283,7 +284,7 @@ public class CalibratorRepositorySQLiteTest {
         newCal.add(createCalibrator(8));
         newCal.add(createCalibrator(9));
 
-        assertTrue(repository.importData(newCal, new ArrayList<Calibrator>()));
+        assertTrue(repository.importData(newCal, new ArrayList<>()));
         assertArrayEquals(expected, repository.getAll().toArray(new Calibrator[0]));
     }
 
@@ -296,13 +297,13 @@ public class CalibratorRepositorySQLiteTest {
         forChange.add(testCalibrators[2]);
         forChange.add(testCalibrators[4]);
 
-        assertTrue(repository.importData(new ArrayList<Calibrator>(), forChange));
+        assertTrue(repository.importData(new ArrayList<>(), forChange));
         assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
     }
 
     @Test
     public void testImportDataWithoutNewAndChanging() {
-        assertTrue(repository.importData(new ArrayList<Calibrator>(), new ArrayList<Calibrator>()));
+        assertTrue(repository.importData(new ArrayList<>(), new ArrayList<>()));
         assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
     }
 

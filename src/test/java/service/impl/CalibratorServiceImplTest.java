@@ -184,14 +184,15 @@ public class CalibratorServiceImplTest {
         assertArrayEquals(testCalibrators, service.getAll().toArray(new Calibrator[0]));
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testGetExisted() {
-        assertEquals(createCalibrator(1), service.get("calibrator1"));
+        assertEquals(createCalibrator(1), service.get("calibrator1").get());
     }
 
     @Test
     public void testGetNotExisted() {
-        assertNull(service.get("Not Existed"));
+        assertFalse(service.get("Not Existed").isPresent());
     }
 
     @Test
@@ -230,7 +231,7 @@ public class CalibratorServiceImplTest {
         newCal.add(createCalibrator(8));
         newCal.add(createCalibrator(9));
 
-        assertTrue(service.importData(newCal, new ArrayList<Calibrator>()));
+        assertTrue(service.importData(newCal, new ArrayList<>()));
         assertArrayEquals(expected, service.getAll().toArray(new Calibrator[0]));
     }
 
@@ -243,13 +244,13 @@ public class CalibratorServiceImplTest {
         forChange.add(testCalibrators[2]);
         forChange.add(testCalibrators[4]);
 
-        assertTrue(service.importData(new ArrayList<Calibrator>(), forChange));
+        assertTrue(service.importData(new ArrayList<>(), forChange));
         assertArrayEquals(testCalibrators, service.getAll().toArray(new Calibrator[0]));
     }
 
     @Test
     public void testImportDataWithoutNewAndChanging() {
-        assertTrue(service.importData(new ArrayList<Calibrator>(), new ArrayList<Calibrator>()));
+        assertTrue(service.importData(new ArrayList<>(), new ArrayList<>()));
         assertArrayEquals(testCalibrators, service.getAll().toArray(new Calibrator[0]));
     }
 
@@ -263,7 +264,7 @@ public class CalibratorServiceImplTest {
 
     @Test
     public void testRewriteEmpty() {
-        assertTrue(service.rewrite(new ArrayList<Calibrator>()));
+        assertTrue(service.rewrite(new ArrayList<>()));
         assertArrayEquals(new Calibrator[0], service.getAll().toArray(new Calibrator[0]));
     }
 

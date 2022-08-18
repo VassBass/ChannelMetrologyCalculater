@@ -16,6 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class CalibratorRepositorySQLite extends RepositoryJDBC implements CalibratorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CalibratorRepositorySQLite.class);
@@ -100,7 +101,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public Calibrator get(@Nonnull String name) {
+    public Optional<Calibrator> get(@Nonnull String name) {
         LOGGER.info("Reading calibrator with name = {} from DB", name);
         String sql = "SELECT * FROM calibrators WHERE name = '" + name + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -116,14 +117,14 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                 calibrator.setErrorFormula(resultSet.getString("error_formula"));
                 calibrator.setCertificate(Calibrator.Certificate.fromString(resultSet.getString("certificate")));
 
-                return calibrator;
+                return Optional.of(calibrator);
             }else {
                 LOGGER.info("Calibrator with name = {} not found", name);
-                return null;
+                return Optional.empty();
             }
         }catch (SQLException | JsonProcessingException e){
             LOGGER.warn("Exception was thrown!", e);
-            return null;
+            return Optional.empty();
         }
     }
 

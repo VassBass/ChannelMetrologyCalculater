@@ -98,10 +98,11 @@ public class PersonServiceImplTest {
         assertArrayEquals(expected, service.getNamesOfHeadsWithFirstEmptyString());
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testGetExisted() {
-        assertEquals(createPerson(1,false), service.get(1));
-        assertEquals(createPerson(6, true), service.get(6));
+        assertEquals(createPerson(1,false), service.get(1).get());
+        assertEquals(createPerson(6, true), service.get(6).get());
     }
 
     @Test
@@ -165,6 +166,7 @@ public class PersonServiceImplTest {
         assertArrayEquals(expected, service.getAll().toArray(new Person[0]));
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testAllCollectionWithExists(){
         Person[]expected = Arrays.copyOf(testPersons, 10);
@@ -181,7 +183,7 @@ public class PersonServiceImplTest {
         testPerson.setId(10);
 
         assertTrue(service.add(toAdd));
-        assertEquals(testPerson, service.get(10));
+        assertEquals(testPerson, service.get(10).get());
         expected[expected.length - 1].setId(10);
         assertArrayEquals(expected, service.getAll().toArray(new Person[0]));
     }
@@ -235,7 +237,7 @@ public class PersonServiceImplTest {
 
     @Test
     public void testRewriteEmpty() {
-        assertTrue(service.rewrite(new ArrayList<Person>()));
+        assertTrue(service.rewrite(new ArrayList<>()));
         assertArrayEquals(new Person[0], service.getAll().toArray(new Person[0]));
     }
 

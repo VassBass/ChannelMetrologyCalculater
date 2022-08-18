@@ -5,11 +5,12 @@ import model.Measurement;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Optional;
 
 public interface CalibratorRepository extends Repository<Calibrator>{
     String[]getAllNames(@Nonnull Measurement measurement);
 
-    Calibrator get(String name);
+    Optional<Calibrator> get(String name);
 
     boolean removeByMeasurementValue(@Nonnull String measurementValue);
 

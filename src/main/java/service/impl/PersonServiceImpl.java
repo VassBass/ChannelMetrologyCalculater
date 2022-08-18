@@ -10,6 +10,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Optional;
 
 public class PersonServiceImpl implements PersonService {
     private static PersonServiceImpl service;
@@ -71,7 +72,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person get(@Nonnegative int id) {
+    public Optional<Person> get(@Nonnegative int id) {
         return this.repository.get(id);
     }
 

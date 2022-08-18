@@ -16,6 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonRepositorySQLite.class);
@@ -115,7 +116,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public Person get(@Nonnegative int id) {
+    public Optional<Person> get(@Nonnegative int id) {
         LOGGER.info("Reading person with id = {} from DB", id);
         String sql = "SELECT * FROM persons WHERE id = " + id + " LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -126,14 +127,14 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
                 person.setPatronymic(resultSet.getString("patronymic"));
                 person.setPosition(resultSet.getString("position"));
 
-                return person;
+                return Optional.of(person);
             }else {
                 LOGGER.info("Person with id = {} not found", id);
-                return null;
+                return Optional.empty();
             }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
-            return null;
+            return Optional.empty();
         }
     }
 

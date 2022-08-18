@@ -119,10 +119,11 @@ public class PersonRepositorySQLiteTest {
         assertArrayEquals(expected, repository.getNamesOfHeadsWithFirstEmptyString());
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testGetExisted() {
-        assertEquals(createPerson(0,false), repository.get(0));
-        assertEquals(createPerson(5, true), repository.get(5));
+        assertEquals(createPerson(0,false), repository.get(0).get());
+        assertEquals(createPerson(5, true), repository.get(5).get());
     }
 
     @Test
@@ -186,6 +187,7 @@ public class PersonRepositorySQLiteTest {
         assertArrayEquals(expected, repository.getAll().toArray(new Person[0]));
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testAllCollectionWithExists(){
         Person[]expected = Arrays.copyOf(testPersons, 10);
@@ -202,7 +204,7 @@ public class PersonRepositorySQLiteTest {
         testPerson.setId(9);
 
         assertTrue(repository.add(toAdd));
-        assertEquals(testPerson, repository.get(9));
+        assertEquals(testPerson, repository.get(9).get());
         expected[expected.length - 1].setId(9);
         assertArrayEquals(expected, repository.getAll().toArray(new Person[0]));
     }
@@ -256,7 +258,7 @@ public class PersonRepositorySQLiteTest {
 
     @Test
     public void testRewriteEmpty() {
-        assertTrue(repository.rewrite(new ArrayList<Person>()));
+        assertTrue(repository.rewrite(new ArrayList<>()));
         assertArrayEquals(new Person[0], repository.getAll().toArray(new Person[0]));
     }
 }
