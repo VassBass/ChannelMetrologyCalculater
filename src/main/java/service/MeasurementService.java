@@ -3,8 +3,10 @@ package service;
 import model.Measurement;
 import repository.impl.MeasurementRepositorySQLite;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 public interface MeasurementService extends Service<Measurement> {
     String[]getAllNames();
@@ -35,7 +37,7 @@ public interface MeasurementService extends Service<Measurement> {
      * @param value of measurement
      * @return null if Measurement with value not found or value == null
      */
-    Measurement get(String value);
+    Optional<Measurement> get(String value);
 
     boolean changeFactors(String measurementValue, Map<String,Double> factors);
 
@@ -48,7 +50,7 @@ public interface MeasurementService extends Service<Measurement> {
 
     boolean resetToDefault();
 
-    boolean isLastInMeasurement(String measurementValue);
+    boolean isLastInMeasurement(String measurementValue) throws SQLException;
     boolean exists(String measurementValue);
     boolean exists(String oldValue, String newValue);
 }

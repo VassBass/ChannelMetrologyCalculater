@@ -14,10 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MeasurementRepositorySQLite extends RepositoryJDBC implements MeasurementRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementRepositorySQLite.class);
@@ -143,7 +140,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public Measurement get(@Nonnull String value) {
+    public Optional<Measurement> get(@Nonnull String value) {
         LOGGER.info("Reading measurement with value = {} from DB", value);
         String sql = "SELECT * FROM measurements WHERE value = '" + value + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -153,11 +150,11 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
                 measurement.setValue(resultSet.getString("value"));
                 measurement._setFactors(resultSet.getString("factors"));
 
-                return measurement;
-            }else return null;
+                return Optional.of(measurement);
+            }else return Optional.empty();
         }catch (SQLException |JsonProcessingException e){
             LOGGER.warn("Exception was thrown!", e);
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -328,14 +325,20 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean isLastInMeasurement(@Nonnull String measurementValue) {
-        String measurementName = get(measurementValue).getName();
-        int number = 0;
-        for (Measurement measurement : getAll()) {
-            if (measurement.getName().equals(measurementName)) number++;
-            if (number > 1) return false;
-        }
-        return true;
+    public boolean isLastInMeasurement(@Nonnull String measurementValue) throws SQLException {
+        Optional<Measurement>m = get(measurementValue);
+        if (m.isPresent()){
+            Measurement measurement = m.get();
+            String sql = "SELECT count(*) AS n FROM measurements WHERE name = '" + measurement.getName() + "';";
+            try (ResultSet resultSet = getResultSet(sql)){
+                if (resultSet.next()){
+                    return resultSet.getInt("n") <= 1;
+                }else throw new SQLException();
+            } catch (SQLException e) {
+                LOGGER.warn("Exception was thrown!", e);
+                return false;
+            }
+        }else throw new SQLException("Measurement with value = '" + measurementValue + "' not found");
     }
 
     @Override

@@ -7,8 +7,10 @@ import repository.impl.MeasurementRepositorySQLite;
 import service.MeasurementService;
 
 import javax.annotation.Nonnull;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 public class MeasurementServiceImpl implements MeasurementService {
     private static MeasurementServiceImpl service;
@@ -60,7 +62,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public Measurement get(String value){
+    public Optional<Measurement> get(String value){
         return this.repository.get(value);
     }
 
@@ -100,7 +102,7 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public boolean isLastInMeasurement(String measurementValue) {
+    public boolean isLastInMeasurement(String measurementValue) throws SQLException {
         return this.repository.isLastInMeasurement(measurementValue);
     }
 
