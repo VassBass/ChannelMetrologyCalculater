@@ -234,22 +234,13 @@ public class AreaRepositorySQLiteTest {
                 AREA_6,
                 AREA_7
         );
-
-        assertTrue(repository.rewrite(expected));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
-    public void testRewriteSameList() {
-        List<String>expected = Arrays.asList(
-                AREA_1,
-                AREA_2,
-                AREA_3,
-                AREA_4,
-                AREA_5
+        List<String> toRewrite = Arrays.asList(
+                AREA_6,
+                null,
+                AREA_7
         );
 
-        assertTrue(repository.rewrite(expected));
+        assertTrue(repository.rewrite(toRewrite));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 

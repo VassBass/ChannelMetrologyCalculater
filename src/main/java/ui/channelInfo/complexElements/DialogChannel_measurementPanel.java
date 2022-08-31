@@ -95,7 +95,7 @@ public class DialogChannel_measurementPanel extends JPanel {
     public Measurement getMeasurement(){
         if (measurementValue.getSelectedItem() == null) return null;
 
-        return MeasurementServiceImpl.getInstance().get(measurementValue.getSelectedItem().toString());
+        return MeasurementServiceImpl.getInstance().get(measurementValue.getSelectedItem().toString()).get();
     }
 
     @SuppressWarnings("unchecked")

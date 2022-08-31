@@ -2,17 +2,20 @@ package service;
 
 import model.ControlPointsValues;
 
+import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Optional;
 
 public interface ControlPointsValuesService extends Service<ControlPointsValues> {
-    Collection<ControlPointsValues> getBySensorType(String sensorType);
-    ControlPointsValues getControlPointsValues(int id);
+    Collection<ControlPointsValues> getBySensorType(@Nonnull String sensorType);
+    Optional<ControlPointsValues> getById(@Nonnegative int id);
 
-    Integer addReturnId(ControlPointsValues controlPointsValues);
+    Optional<Integer> addReturnId(@Nonnull ControlPointsValues controlPointsValues);
 
-    boolean set(ControlPointsValues cpv);
-    boolean changeSensorType(String oldSensorType, String newSensorType);
+    boolean set(@Nonnull ControlPointsValues cpv);
+    boolean changeSensorType(@Nonnull String oldSensorType,@Nonnull String newSensorType);
 
-    boolean removeAll(String sensorType);
+    boolean removeAll(@Nonnull String sensorType);
     boolean resetToDefault();
 }

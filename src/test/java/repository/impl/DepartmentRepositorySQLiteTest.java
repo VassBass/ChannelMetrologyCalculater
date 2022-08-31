@@ -234,22 +234,13 @@ public class DepartmentRepositorySQLiteTest {
                 DEPARTMENT_6,
                 DEPARTMENT_7
         );
-
-        assertTrue(repository.rewrite(expected));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
-    public void rewriteSameList() {
-        List<String>expected = Arrays.asList(
-                DEPARTMENT_1,
-                DEPARTMENT_2,
-                DEPARTMENT_3,
-                DEPARTMENT_4,
-                DEPARTMENT_5
+        List<String> toRewrite = Arrays.asList(
+                DEPARTMENT_6,
+                null,
+                DEPARTMENT_7
         );
 
-        assertTrue(repository.rewrite(expected));
+        assertTrue(repository.rewrite(toRewrite));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 

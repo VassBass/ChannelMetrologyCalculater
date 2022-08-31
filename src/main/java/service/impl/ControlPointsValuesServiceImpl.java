@@ -1,12 +1,15 @@
 package service.impl;
 
+import def.DefaultControlPointsValues;
 import model.ControlPointsValues;
 import repository.ControlPointsValuesRepository;
 import repository.impl.ControlPointsValuesRepositorySQLite;
 import service.ControlPointsValuesService;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Optional;
 
 public class ControlPointsValuesServiceImpl implements ControlPointsValuesService {
     private static ControlPointsValuesServiceImpl service;
@@ -38,27 +41,27 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public Collection<ControlPointsValues> getBySensorType(String sensorType) {
+    public Collection<ControlPointsValues> getBySensorType(@Nonnull String sensorType) {
         return this.repository.getBySensorType(sensorType);
     }
 
     @Override
-    public ControlPointsValues getControlPointsValues(int id) {
-        return this.repository.getControlPointsValues(id);
+    public Optional<ControlPointsValues> getById(@Nonnegative int id) {
+        return this.repository.getById(id);
     }
 
     @Override
-    public Integer addReturnId(ControlPointsValues controlPointsValues) {
+    public Optional<Integer> addReturnId(@Nonnull ControlPointsValues controlPointsValues) {
         return this.repository.addReturnId(controlPointsValues);
     }
 
     @Override
-    public boolean set(ControlPointsValues cpv) {
+    public boolean set(@Nonnull ControlPointsValues cpv) {
         return this.repository.set(cpv);
     }
 
     @Override
-    public boolean changeSensorType(String oldSensorType, String newSensorType) {
+    public boolean changeSensorType(@Nonnull String oldSensorType, @Nonnull String newSensorType) {
         return this.repository.changeSensorType(oldSensorType, newSensorType);
     }
 
@@ -73,7 +76,7 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
     }
 
     @Override
-    public boolean removeAll(String sensorType) {
+    public boolean removeAll(@Nonnull String sensorType) {
         return this.repository.removeAll(sensorType);
     }
 
@@ -89,6 +92,6 @@ public class ControlPointsValuesServiceImpl implements ControlPointsValuesServic
 
     @Override
     public boolean resetToDefault() {
-        return this.repository.resetToDefault();
+        return this.repository.rewrite(DefaultControlPointsValues.get());
     }
 }

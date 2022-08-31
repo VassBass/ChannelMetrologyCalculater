@@ -45,7 +45,7 @@ public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
     @Override
     protected Boolean doInBackground() throws Exception {
         String measurementValue = this.dialog.getSelectedMeasurementValue();
-        measurement = MeasurementServiceImpl.getInstance().get(measurementValue);
+        measurement = MeasurementServiceImpl.getInstance().get(measurementValue).get();
         if (MeasurementServiceImpl.getInstance().isLastInMeasurement(measurementValue)) {
             LAST_MEASUREMENT_MESSAGE = this.lastSensorMessageGenerator(measurement.getName());
             return false;

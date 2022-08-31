@@ -75,7 +75,7 @@ public class ValuesPanel extends JPanel{
         this.setBorder(BorderFactory.createTitledBorder(this.currentMeasurementValue));
 
         if (measurementValue != null) {
-            Measurement measurement = MeasurementServiceImpl.getInstance().get(measurementValue);
+            Measurement measurement = MeasurementServiceImpl.getInstance().get(measurementValue).get();
 
             currentFactors = measurement.getFactors();
             String[] values = currentFactors.keySet().toArray(new String[0]);

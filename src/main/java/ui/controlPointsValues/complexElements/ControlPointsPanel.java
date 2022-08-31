@@ -7,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class ControlPointsPanel extends JPanel {
@@ -39,21 +41,20 @@ public class ControlPointsPanel extends JPanel {
         this.build();
     }
 
-    public double[]getValues(){
-        double[] values = new double[this.valuesCells.length];
-        for (int i=0;i<this.valuesCells.length;i++){
-            JTextField cell = this.valuesCells[i];
-            values[i] = Double.parseDouble(cell.getText());
+    public List<Double> getValues(){
+        List<Double> values = new ArrayList<>();
+        for (JTextField cell : this.valuesCells){
+            values.add(Double.parseDouble(cell.getText()));
         }
         return values;
     }
 
-    public void setValues(double[]values){
+    public void setValues(List<Double> values){
         if (values == null){
             clear();
         }else {
             for (int i = 0; i < this.valuesCells.length; i++) {
-                valuesCells[i].setText(VariableConverter.roundingDouble3(values[i], Locale.ENGLISH));
+                valuesCells[i].setText(VariableConverter.roundingDouble3(values.get(i), Locale.ENGLISH));
             }
         }
     }

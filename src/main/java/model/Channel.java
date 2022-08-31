@@ -127,7 +127,7 @@ public class Channel implements Serializable {
         if (this.measurementValue.equals(Measurement.M_S) || this.measurementValue.equals(Measurement.CM_S)){
             return new Measurement(Measurement.CONSUMPTION, this.measurementValue);
         }else {
-            return MeasurementServiceImpl.getInstance().get(this.measurementValue);
+            return MeasurementServiceImpl.getInstance().get(this.measurementValue).get();
         }
     }
     @Nonnull public String getMeasurementValue(){return this.measurementValue;}

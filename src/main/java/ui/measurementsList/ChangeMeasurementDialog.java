@@ -92,7 +92,7 @@ public class ChangeMeasurementDialog extends JDialog {
                 JOptionPane.showMessageDialog(ChangeMeasurementDialog.this,
                         EXIST_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);
             }else {
-                Measurement oldMeasurement = MeasurementServiceImpl.getInstance().get(oldValue);
+                Measurement oldMeasurement = MeasurementServiceImpl.getInstance().get(oldValue).get();
                 Measurement newMeasurement = oldMeasurement.copy();
                 newMeasurement.setValue(txt_value.getText());
                 new ChangeMeasurementValue(ChangeMeasurementDialog.this, parentDialog, oldMeasurement, newMeasurement).start();

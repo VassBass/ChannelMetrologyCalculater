@@ -243,8 +243,9 @@ public class CalibratorRepositorySQLiteTest {
     @Test
     public void testRewriteNotEmpty() {
         Calibrator[] expected = new Calibrator[]{createCalibrator(8), createCalibrator(9), createCalibrator(0)};
+        Calibrator[] toRewrite = new Calibrator[]{createCalibrator(8), null, createCalibrator(9), createCalibrator(0)};
 
-        assertTrue(repository.rewrite(Arrays.asList(expected)));
+        assertTrue(repository.rewrite(Arrays.asList(toRewrite)));
         assertArrayEquals(expected, repository.getAll().toArray(new Calibrator[0]));
     }
 
@@ -264,10 +265,12 @@ public class CalibratorRepositorySQLiteTest {
 
         ArrayList<Calibrator>forChange = new ArrayList<>();
         forChange.add(testCalibrators[2]);
+        forChange.add(null);
         forChange.add(testCalibrators[4]);
 
         ArrayList<Calibrator>newCal = new ArrayList<>();
         newCal.add(createCalibrator(8));
+        newCal.add(null);
         newCal.add(createCalibrator(9));
 
         assertTrue(repository.importData(newCal, forChange));

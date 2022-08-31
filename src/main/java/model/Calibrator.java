@@ -161,7 +161,7 @@ public class Calibrator implements Serializable {
      */
     public double getError(@Nonnull Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
-        Measurement input = MeasurementServiceImpl.getInstance().get(this.value);
+        Measurement input = MeasurementServiceImpl.getInstance().get(this.value).get();
         formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel._getMeasurement());
         Function f = new Function("At(R,r,convR) = " + formula);
         Argument R = new Argument("R = " + channel._getRange());

@@ -234,22 +234,13 @@ public class ProcessRepositorySQLiteTest {
                 PROCESS_6,
                 PROCESS_7
         );
-
-        assertTrue(repository.rewrite(expected));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
-    }
-
-    @Test
-    public void rewriteSameList() {
-        List<String>expected = Arrays.asList(
-                PROCESS_1,
-                PROCESS_2,
-                PROCESS_3,
-                PROCESS_4,
-                PROCESS_5
+        List<String> toRewrite = Arrays.asList(
+                PROCESS_6,
+                null,
+                PROCESS_7
         );
 
-        assertTrue(repository.rewrite(expected));
+        assertTrue(repository.rewrite(toRewrite));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 

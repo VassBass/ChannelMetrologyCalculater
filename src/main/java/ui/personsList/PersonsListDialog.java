@@ -90,7 +90,7 @@ public class PersonsListDialog extends JDialog {
                 @Override
                 public void run() {
                     int index = mainTable.getSelectedRow();
-                    new PersonInfoDialog(PersonsListDialog.this, PersonServiceImpl.getInstance().get(index)).setVisible(true);
+                    new PersonInfoDialog(PersonsListDialog.this, PersonServiceImpl.getInstance().get(index).get()).setVisible(true);
                 }
             });
         }

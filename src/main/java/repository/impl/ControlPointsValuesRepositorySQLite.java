@@ -1,12 +1,12 @@
 package repository.impl;
 
-import def.DefaultControlPointsValues;
 import model.ControlPointsValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.ControlPointsValuesRepository;
 import repository.RepositoryJDBC;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.sql.PreparedStatement;
@@ -16,6 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implements ControlPointsValuesRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ControlPointsValuesRepositorySQLite.class);
@@ -72,6 +73,30 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
+    public Optional<ControlPointsValues> getById(@Nonnegative int id) {
+        String sql = "SELECT * FROM control_points WHERE id = " + id + " LIMIT 1;";
+        LOGGER.info("Reading control_points from DB with id = {}", id);
+        try (ResultSet resultSet = getResultSet(sql)){
+            if (resultSet.next()){
+                ControlPointsValues cpv = new ControlPointsValues();
+                cpv.setId(resultSet.getInt("id"));
+                cpv.setSensorType(resultSet.getString("sensor_type"));
+                cpv.setRangeMin(resultSet.getDouble("range_min"));
+                cpv.setRangeMax(resultSet.getDouble("range_max"));
+                cpv._setValuesFromString(resultSet.getString("points"));
+
+                return Optional.of(cpv);
+            }else {
+                LOGGER.info("Control points with id = {} not found", id);
+                return Optional.empty();
+            }
+        }catch (SQLException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public boolean add(@Nonnull ControlPointsValues cpv) {
         String sql = "INSERT INTO control_points (sensor_type, range_min, range_max, points) VALUES (?, ?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatementWithKey(sql)){
@@ -82,8 +107,11 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
 
             if (statement.executeUpdate() > 0){
                 ResultSet key = statement.getGeneratedKeys();
-                int id = key.next() ? key.getInt("id") : -1;
-                if (id > 0) LOGGER.info("Control_points = {} was added successfully", cpv);
+                int id = key.next() ? key.getInt(1) : -1;
+                if (id > 0) {
+                    cpv.setId(id);
+                    LOGGER.info("Control_points = {} was added successfully", cpv);
+                }
                 return id > 0;
             }else {
                 LOGGER.info("Control_points = {} not added", cpv);
@@ -97,7 +125,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public boolean set(@Nonnull ControlPointsValues cpv, @Nonnull ControlPointsValues ignored) {
+    public boolean set(@Nonnull ControlPointsValues cpv, @Nullable ControlPointsValues ignored) {
         String sql = "UPDATE control_points SET range_min = ?, range_max = ?, points = ? WHERE id = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setDouble(1, cpv.getRangeMin());
@@ -138,34 +166,8 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     }
 
     @Override
-    public ControlPointsValues getControlPointsValues(int id) {
-        if (id <= 0) return null;
-
-        String sql = "SELECT * FROM control_points WHERE id = " + id + " LIMIT 1;";
-        LOGGER.info("Reading control_points from DB with id = {}", id);
-        try (ResultSet resultSet = getResultSet(sql)){
-            if (resultSet.next()){
-                ControlPointsValues cpv = new ControlPointsValues();
-                cpv.setId(resultSet.getInt("id"));
-                cpv.setSensorType(resultSet.getString("sensor_type"));
-                cpv.setRangeMin(resultSet.getDouble("range_min"));
-                cpv.setRangeMax(resultSet.getDouble("range_max"));
-                cpv._setValuesFromString(resultSet.getString("points"));
-
-                return cpv;
-            }else {
-                LOGGER.info("Control points with id = {} not found", id);
-                return null;
-            }
-        }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
-            return null;
-        }
-    }
-
-    @Override
     @Nullable
-    public Integer addReturnId(@Nonnull ControlPointsValues cpv) {
+    public Optional<Integer> addReturnId(@Nonnull ControlPointsValues cpv) {
         String sql = "INSERT INTO control_points (sensor_type, range_min, range_max, points) VALUES (?, ?, ?, ?);";
         try (PreparedStatement statement = getPreparedStatementWithKey(sql)){
             statement.setString(1, cpv.getSensorType());
@@ -175,17 +177,22 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
 
             if (statement.executeUpdate() > 0){
                 ResultSet key = statement.getGeneratedKeys();
-                int id = key.next() ? key.getInt("id") : -1;
-                if (id > 0) LOGGER.info("Control_points = {} was added successfully", cpv);
-                return id;
+                Integer id = key.next() ? key.getInt(1) : null;
+                if (id != null) {
+                    cpv.setId(id);
+                    LOGGER.info("Control_points = {} was added successfully", cpv);
+                    return Optional.of(id);
+                }else {
+                    return Optional.empty();
+                }
             }else {
                 LOGGER.info("Control_points = {} not added", cpv);
-                return null;
+                return Optional.empty();
             }
 
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -234,7 +241,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
             }else {
                 LOGGER.info("Control_points with id = {} not found", cpv.getId());
             }
-            return true;
+            return result > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -270,29 +277,28 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
 
     @Override
     public boolean rewrite(@Nonnull Collection<ControlPointsValues> list) {
-        return false;
-    }
-
-    @Override
-    public boolean resetToDefault() {
         String sql = "DELETE FROM control_points;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);
 
-            String insertSql = "INSERT INTO control_points (sensor_type, range_min, range_max, points) "
-                    + "VALUES ";
-            StringBuilder sqlBuilder = new StringBuilder(insertSql);
+            if (!list.isEmpty()) {
+                String insertSql = "INSERT INTO control_points (sensor_type, range_min, range_max, points) "
+                        + "VALUES ";
+                StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
-            for (ControlPointsValues cpv : DefaultControlPointsValues.get()) {
-                sqlBuilder.append("('").append(cpv.getSensorType()).append("', ")
-                        .append(cpv.getRangeMin()).append(", ")
-                        .append(cpv.getRangeMax()).append(", ")
-                        .append("'").append(cpv._getValuesString()).append("'),");
+                for (ControlPointsValues cpv : list) {
+                    if (cpv == null) continue;
+
+                    sqlBuilder.append("('").append(cpv.getSensorType()).append("', ")
+                            .append(cpv.getRangeMin()).append(", ")
+                            .append(cpv.getRangeMax()).append(", ")
+                            .append("'").append(cpv._getValuesString()).append("'),");
+                }
+                sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');
+                statement.execute(sqlBuilder.toString());
             }
-            sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');
-            statement.execute(sqlBuilder.toString());
 
-            LOGGER.info("Control_points list in DB was reset to default list successfully");
+            LOGGER.info("The list of old control_points has been rewritten to the new one:\n{}", list);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);

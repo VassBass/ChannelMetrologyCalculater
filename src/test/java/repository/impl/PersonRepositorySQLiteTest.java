@@ -65,7 +65,7 @@ public class PersonRepositorySQLiteTest {
         StringBuilder sql = new StringBuilder(insertSql);
 
         for (Person p : testPersons) {
-            sql.append("('").append(p.getId()).append("', ")
+            sql.append("(").append(p.getId()).append(", ")
                     .append("'").append(p.getName()).append("', ")
                     .append("'").append(p.getSurname()).append("', ")
                     .append("'").append(p.getPatronymic()).append("', ")
@@ -128,7 +128,7 @@ public class PersonRepositorySQLiteTest {
 
     @Test
     public void testGetNotExisted() {
-        assertNull(repository.get(50));
+        assertFalse(repository.get(50).isPresent());
     }
 
     @Test
@@ -251,8 +251,14 @@ public class PersonRepositorySQLiteTest {
                 createPerson(8,false),
                 createPerson(9, false)
         };
+        Person[] toRewrite = new Person[]{
+                createPerson(7, false),
+                createPerson(8,false),
+                null,
+                createPerson(9, false)
+        };
 
-        assertTrue(repository.rewrite(Arrays.asList(expected)));
+        assertTrue(repository.rewrite(Arrays.asList(toRewrite)));
         assertArrayEquals(expected, repository.getAll().toArray(new Person[0]));
     }
 

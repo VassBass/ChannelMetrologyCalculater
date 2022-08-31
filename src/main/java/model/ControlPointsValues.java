@@ -6,9 +6,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * DB table = control_points
@@ -33,7 +32,7 @@ public class ControlPointsValues implements Serializable {
     /**
      * DB field = points [TEXT]
      */
-    private double[] values;
+    private List<Double> values;
 
     public ControlPointsValues(){}
 
@@ -41,7 +40,7 @@ public class ControlPointsValues implements Serializable {
         this.id = id;
     }
 
-    public ControlPointsValues(String sensorType, double rangeMin, double rangeMax, double[]values){
+    public ControlPointsValues(String sensorType, double rangeMin, double rangeMax, List<Double>values){
         this.sensorType = sensorType;
         this.rangeMin = rangeMin;
         this.rangeMax = rangeMax;
@@ -52,7 +51,7 @@ public class ControlPointsValues implements Serializable {
     public String getSensorType(){return this.sensorType;}
     public double getRangeMin(){return this.rangeMin;}
     public double getRangeMax(){return this.rangeMax;}
-    public double[]getValues(){return this.values;}
+    public List<Double>getValues(){return this.values;}
 
     public String _getValuesString() {
         StringBuilder builder = new StringBuilder();
@@ -60,35 +59,25 @@ public class ControlPointsValues implements Serializable {
             builder.append(v);
             builder.append("|");
         }
+        builder.deleteCharAt(builder.length()-1);
         return builder.toString();
     }
 
     public void setId(int id){this.id = id;}
     public void setSensorType(String sensorType){this.sensorType = sensorType;}
-    public void setValues(double[]values){this.values = values;}
+    public void setValues(List<Double>values){this.values = values;}
     public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
 
     public void _setValuesFromString(String str) {
-        StringBuilder builder = new StringBuilder();
-        char[]chars = str.toCharArray();
-        ArrayList<Double> array = new ArrayList<>();
-        for (char ch : chars){
-            if (ch == '|'){
-                Double d = Double.parseDouble(builder.toString());
-                array.add(d);
-                builder.setLength(0);
-            }else {
-                builder.append(ch);
-            }
-        }
-        Double[]arrr = array.toArray(new Double[0]);
-        this.values = ArrayUtils.toPrimitive(arrr);
+        this.values = Arrays.stream(str.split("\\|"))
+                .map(Double::parseDouble)
+                .collect(Collectors.toList());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.sensorType, this.rangeMin, this.rangeMax, Arrays.hashCode(this.values));
+        return Objects.hash(id, sensorType, rangeMin, rangeMax, values);
     }
 
     @Override
