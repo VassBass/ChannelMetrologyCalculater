@@ -3,7 +3,8 @@ package backgroundTasks;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import model.*;
 import org.sqlite.JDBC;
-import service.impl.*;
+import repository.*;
+import repository.impl.*;
 import ui.importData.compareCalibrators.CompareCalibratorsDialog;
 import ui.importData.compareChannels.CompareChannelsDialog;
 import ui.importData.compareSensors.CompareSensorsDialog;
@@ -25,6 +26,16 @@ public class Importer extends SwingWorker<Boolean, Void> {
     private int stage = -1;
     private final File importFile;
 
+    private final PathElementRepository departmentRepository = DepartmentRepositorySQLite.getInstance();
+    private final PathElementRepository areaRepository = AreaRepositorySQLite.getInstance();
+    private final PathElementRepository processRepository = ProcessRepositorySQLite.getInstance();
+    private final PathElementRepository installationRepository = InstallationRepositorySQLite.getInstance();
+    private final PersonRepository personRepository = PersonRepositorySQLite.getInstance();
+    private final ControlPointsValuesRepository controlPointsValuesRepository = ControlPointsValuesRepositorySQLite.getInstance();
+    private final CalibratorRepository calibratorRepository = CalibratorRepositorySQLite.getInstance();
+    private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+
     private ArrayList<Calibrator>newCalibrators, calibratorsForChange, changedCalibrators;
     private ArrayList<Channel>newChannels, channelsForChange, changedChannels;
     private ArrayList<Sensor>newSensors, sensorsForChange, changedSensors;
@@ -37,12 +48,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
         if (model == Model.ALL) this.stage = 0;
         DriverManager.registerDriver(new JDBC());
         this.connection = DriverManager.getConnection(dbUrl);
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> loadDialog.setVisible(true));
     }
 
     /*
@@ -58,12 +64,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
         this.model = Model.ALL;
         DriverManager.registerDriver(new JDBC());
         this.connection = DriverManager.getConnection(dbUrl);
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> loadDialog.setVisible(true));
     }
 
     @Override
@@ -73,18 +74,18 @@ public class Importer extends SwingWorker<Boolean, Void> {
                 case ALL:
                     switch (stage){
                         case 0:
-                            DepartmentServiceImpl.getInstance().add(this.getDepartments());
-                            AreaServiceImpl.getInstance().add(this.getAreas());
-                            ProcessServiceImpl.getInstance().add(this.getProcesses());
-                            InstallationServiceImpl.getInstance().add(this.getInstallations());
+                            departmentRepository.add(this.getDepartments());
+                            areaRepository.add(this.getAreas());
+                            processRepository.add(this.getProcesses());
+                            installationRepository.add(this.getInstallations());
                             ArrayList<Person> p = this.getPersons();
                             for (Person person : p) {
-                                PersonServiceImpl.getInstance().set(person, person);
-                                PersonServiceImpl.getInstance().add(person);
+                                personRepository.set(person, person);
+                                personRepository.add(person);
                             }
                             ArrayList<ControlPointsValues>points = this.getControlPoints();
                             for (ControlPointsValues cpv : points){
-//                                Application.context.controlPointsValuesService.putInCurrentThread(cpv);
+                                controlPointsValuesRepository.add(cpv);
                             }
                             this.fuelingCalibratorsLists(this.getCalibrators());
                             break;
@@ -97,16 +98,16 @@ public class Importer extends SwingWorker<Boolean, Void> {
                     }
                     return true;
                 case DEPARTMENT:
-                    DepartmentServiceImpl.getInstance().add(this.getDepartments());
+                    departmentRepository.add(this.getDepartments());
                     return true;
                 case AREA:
-                    AreaServiceImpl.getInstance().add(this.getAreas());
+                    areaRepository.add(this.getAreas());
                     return true;
                 case PROCESS:
-                    ProcessServiceImpl.getInstance().add(this.getProcesses());
+                    processRepository.add(this.getProcesses());
                     return true;
                 case INSTALLATION:
-                    InstallationServiceImpl.getInstance().add(this.getInstallations());
+                    installationRepository.add(this.getInstallations());
                     return true;
                 case CALIBRATOR:
                     this.fuelingCalibratorsLists(this.getCalibrators());
@@ -117,8 +118,8 @@ public class Importer extends SwingWorker<Boolean, Void> {
                 case PERSON:
                     ArrayList<Person>persons = this.getPersons();
                     for (Person person : persons){
-                        PersonServiceImpl.getInstance().set(person, person);
-                        PersonServiceImpl.getInstance().add(person);
+                        personRepository.set(person, person);
+                        personRepository.add(person);
                     }
                     return true;
                 case SENSOR:
@@ -127,7 +128,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
                 case SENSOR_VALUE:
                     ArrayList<ControlPointsValues>points = this.getControlPoints();
                     for (ControlPointsValues cpv : points){
-                        //Application.context.controlPointsValuesService.putInCurrentThread(cpv);
+                        controlPointsValuesRepository.add(cpv);
                     }
                     return true;
             }
@@ -153,56 +154,26 @@ public class Importer extends SwingWorker<Boolean, Void> {
                         JOptionPane.showMessageDialog(MainScreen.getInstance(), "Імпорт виконано успішно","Успіх", JOptionPane.INFORMATION_MESSAGE);
                         break;
                     case CALIBRATOR:
-                        EventQueue.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                new CompareCalibratorsDialog(newCalibrators, calibratorsForChange, changedCalibrators).setVisible(true);
-                            }
-                        });
+                        EventQueue.invokeLater(() -> new CompareCalibratorsDialog(newCalibrators, calibratorsForChange, changedCalibrators).setVisible(true));
                         break;
                     case CHANNEL:
-                        EventQueue.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                new CompareChannelsDialog(newChannels, channelsForChange, changedChannels,
-                                        newSensors, sensorsForChange).setVisible(true);
-                            }
-                        });
+                        EventQueue.invokeLater(() -> new CompareChannelsDialog(newChannels, channelsForChange, changedChannels,
+                                newSensors, sensorsForChange).setVisible(true));
                         break;
                     case SENSOR:
-                        EventQueue.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                new CompareSensorsDialog(newSensors, sensorsForChange, changedSensors).setVisible(true);
-                            }
-                        });
+                        EventQueue.invokeLater(() -> new CompareSensorsDialog(newSensors, sensorsForChange, changedSensors).setVisible(true));
                         break;
                     case ALL:
                         switch (stage){
                             case 0:
-                                EventQueue.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        new CompareCalibratorsDialog(newCalibrators, calibratorsForChange, changedCalibrators, importFile).setVisible(true);
-                                    }
-                                });
+                                EventQueue.invokeLater(() -> new CompareCalibratorsDialog(newCalibrators, calibratorsForChange, changedCalibrators, importFile).setVisible(true));
                                 break;
                             case 1:
-                                EventQueue.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        new CompareSensorsDialog(newSensors, sensorsForChange, changedSensors, importFile).setVisible(true);
-                                    }
-                                });
+                                EventQueue.invokeLater(() -> new CompareSensorsDialog(newSensors, sensorsForChange, changedSensors, importFile).setVisible(true));
                                 break;
                             case 2:
-                                EventQueue.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        new CompareChannelsDialog(newChannels, channelsForChange, changedChannels,
-                                                newSensors, sensorsForChange).setVisible(true);
-                                    }
-                                });
+                                EventQueue.invokeLater(() -> new CompareChannelsDialog(newChannels, channelsForChange, changedChannels,
+                                        newSensors, sensorsForChange).setVisible(true));
                                 break;
                         }
                         break;
@@ -219,7 +190,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
     }
 
     private void fuelingCalibratorsLists(ArrayList<Calibrator>importedCalibrators){
-        ArrayList<Calibrator>oldList = new ArrayList<>(CalibratorServiceImpl.getInstance().getAll());
+        ArrayList<Calibrator>oldList = new ArrayList<>(calibratorRepository.getAll());
         if (oldList.isEmpty()) {
             this.newCalibrators = importedCalibrators;
         }else {
@@ -249,7 +220,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
     }
 
     private void fuelingChannelsLists(ArrayList<Channel>importedChannels, ArrayList<Sensor>importedSensors){
-        ArrayList<Sensor> oldSensors = new ArrayList<>(SensorServiceImpl.getInstance().getAll());
+        ArrayList<Sensor> oldSensors = new ArrayList<>(sensorRepository.getAll());
         if (oldSensors.isEmpty()) {
             this.newSensors = importedSensors;
         } else {
@@ -274,7 +245,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
             this.sensorsForChange = sensorsForChange;
         }
 
-        ArrayList<Channel> oldList = new ArrayList<>(ChannelServiceImpl.getInstance().getAll());
+        ArrayList<Channel> oldList = new ArrayList<>(channelRepository.getAll());
         if (oldList.isEmpty()) {
             this.newChannels = importedChannels;
             this.channelsForChange = new ArrayList<>();
@@ -305,7 +276,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
     }
 
     void fuelingSensorsLists(ArrayList<Sensor>importedSensors){
-        ArrayList<Sensor>oldList = new ArrayList<>(SensorServiceImpl.getInstance().getAll());
+        ArrayList<Sensor>oldList = new ArrayList<>(sensorRepository.getAll());
         if (oldList.isEmpty()) {
             this.newSensors = importedSensors;
         }else {

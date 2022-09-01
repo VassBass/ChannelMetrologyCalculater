@@ -3,7 +3,7 @@ package ui.sensorsList;
 import converters.ConverterUI;
 import model.Channel;
 import model.Sensor;
-import service.impl.MeasurementServiceImpl;
+import repository.impl.MeasurementRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
@@ -45,7 +45,7 @@ public class SensorsListDialog extends JDialog {
     private void createElements() {
         this.mainTable = new SensorsListTable();
 
-        String[]buffer = MeasurementServiceImpl.getInstance().getAllNames();
+        String[]buffer = MeasurementRepositorySQLite.getInstance().getAllNames();
         String[]m = new String[buffer.length + 1];
         int index = 0;
         m[index] = ALL;
@@ -106,23 +106,13 @@ public class SensorsListDialog extends JDialog {
         }
     }
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (mainTable.getSelectedRow() >= 0) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        new SensorRemoveDialog(SensorsListDialog.this).setVisible(true);
-                    }
-                });
+                EventQueue.invokeLater(() -> new SensorRemoveDialog(SensorsListDialog.this).setVisible(true));
             }
         }
     };
@@ -131,27 +121,14 @@ public class SensorsListDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (mainTable.getSelectedRow() != -1){
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        //new SensorInfoDialog(SensorsListDialog.this, Application.context.sensorService.get(mainTable.getSelectedRow())).setVisible(true);
-                    }
+                EventQueue.invokeLater(() -> {
+                    //new SensorInfoDialog(SensorsListDialog.this, Application.context.sensorService.get(mainTable.getSelectedRow())).setVisible(true);
                 });
             }
         }
     };
 
-    private final ActionListener clickAdd = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new SensorInfoDialog(SensorsListDialog.this, null).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickAdd = e -> EventQueue.invokeLater(() -> new SensorInfoDialog(SensorsListDialog.this, null).setVisible(true));
 
     private final ItemListener changeMeasurement = new ItemListener() {
         @Override

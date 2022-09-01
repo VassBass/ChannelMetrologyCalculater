@@ -1,7 +1,8 @@
 package backgroundTasks;
 
 import model.Channel;
-import service.impl.ChannelServiceImpl;
+import repository.ChannelRepository;
+import repository.impl.ChannelRepositorySQLite;
 import ui.channelInfo.ChannelExistsDialog;
 import ui.model.LoadDialog;
 
@@ -14,18 +15,15 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
     private final String code;
     private final LoadDialog loadWindow;
 
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+
     public CheckChannel(JDialog parent, String code){
         super();
         this.parentDialog = parent;
         this.parentFrame = null;
         this.code = code;
         this.loadWindow = new LoadDialog(parent);
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadWindow.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> loadWindow.setVisible(true));
     }
 
     public CheckChannel(JFrame parent, String code){
@@ -34,12 +32,7 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
         this.parentDialog = null;
         this.code = code;
         this.loadWindow = new LoadDialog(parent);
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadWindow.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> loadWindow.setVisible(true));
     }
 
     public void start(){
@@ -48,7 +41,7 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
 
     @Override
     protected Channel doInBackground() throws Exception {
-        return ChannelServiceImpl.getInstance().get(this.code);
+        return channelRepository.get(this.code);
     }
 
     @Override
@@ -58,14 +51,11 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
         try {
             final Channel channel = this.get();
             if (channel != null){
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (parentDialog == null) {
-                            new ChannelExistsDialog(parentFrame, channel).setVisible(true);
-                        }else {
-                            new ChannelExistsDialog(parentDialog, channel).setVisible(true);
-                        }
+                EventQueue.invokeLater(() -> {
+                    if (parentDialog == null) {
+                        new ChannelExistsDialog(parentFrame, channel).setVisible(true);
+                    }else {
+                        new ChannelExistsDialog(parentDialog, channel).setVisible(true);
                     }
                 });
             }else {

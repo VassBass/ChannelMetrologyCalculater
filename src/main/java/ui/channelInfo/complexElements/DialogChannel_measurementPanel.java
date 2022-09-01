@@ -1,7 +1,8 @@
 package ui.channelInfo.complexElements;
 
 import model.Measurement;
-import service.impl.MeasurementServiceImpl;
+import repository.MeasurementRepository;
+import repository.impl.MeasurementRepositorySQLite;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -20,6 +21,8 @@ public class DialogChannel_measurementPanel extends JPanel {
     private JComboBox<String> measurementName;
     private JComboBox<String> measurementValue;
 
+    private final MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
+
     public DialogChannel_measurementPanel(DialogChannel parent){
         super();
         this.parent = parent;
@@ -31,11 +34,11 @@ public class DialogChannel_measurementPanel extends JPanel {
     }
 
     private void createElements(){
-        this.measurementName = new JComboBox<>(MeasurementServiceImpl.getInstance().getAllNames());
+        this.measurementName = new JComboBox<>(measurementRepository.getAllNames());
         this.measurementName.setEditable(false);
         this.measurementName.setBackground(Color.WHITE);
 
-        this.measurementValue = new JComboBox<>(MeasurementServiceImpl.getInstance().getValues(Measurement.TEMPERATURE));
+        this.measurementValue = new JComboBox<>(measurementRepository.getValues(Measurement.TEMPERATURE));
         this.measurementValue.setBackground(Color.WHITE);
         this.measurementValue.setEditable(false);
     }
@@ -71,7 +74,7 @@ public class DialogChannel_measurementPanel extends JPanel {
         if (measurementName != null) {
             this.measurementName.setSelectedItem(measurementName);
             this.measurementValue.setModel(
-                    new DefaultComboBoxModel<>(MeasurementServiceImpl.getInstance().getValues(measurementName)));
+                    new DefaultComboBoxModel<>(measurementRepository.getValues(measurementName)));
         }
     }
 
@@ -81,7 +84,7 @@ public class DialogChannel_measurementPanel extends JPanel {
 
     private String[] rosemountValues(){
         ArrayList<String> values  = new ArrayList<>();
-        ArrayList<Measurement>measurements = new ArrayList<>(MeasurementServiceImpl.getInstance().getAll());
+        ArrayList<Measurement>measurements = new ArrayList<>(measurementRepository.getAll());
         for (Measurement measurement : measurements) {
             if (measurement.getName().equals(Measurement.CONSUMPTION)) {
                 values.add(measurement.getValue());
@@ -95,7 +98,7 @@ public class DialogChannel_measurementPanel extends JPanel {
     public Measurement getMeasurement(){
         if (measurementValue.getSelectedItem() == null) return null;
 
-        return MeasurementServiceImpl.getInstance().get(measurementValue.getSelectedItem().toString()).get();
+        return measurementRepository.get(measurementValue.getSelectedItem().toString()).get();
     }
 
     @SuppressWarnings("unchecked")

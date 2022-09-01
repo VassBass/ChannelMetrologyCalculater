@@ -20,8 +20,6 @@ public class PersonRepositorySQLiteTest {
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
     private static final PersonRepository repository = new PersonRepositorySQLite(DB_URL, null, null);
 
-    private static final String EMPTY_ARRAY = "<Порожньо>";
-
     private static Person[] testPersons;
 
     private static Person createPerson(int number, boolean boss){
@@ -97,38 +95,16 @@ public class PersonRepositorySQLiteTest {
         assertArrayEquals(testPersons, repository.getAll().toArray(new Person[0]));
     }
 
-    @Test
-    public void testGetAllNamesWithFirstEmptyString(){
-        String[]expected = new String[8];
-        int i = 0;
-        expected[i++] = EMPTY_ARRAY;
-        for (;i<8;i++){
-            expected[i] = testPersons[i-1]._getFullName();
-        }
-
-        assertArrayEquals(expected, repository.getAllNamesWithFirstEmptyString());
-    }
-
-    @Test
-    public void testGetNamesOfHeadsWithFirstEmptyString(){
-        String[] expected = new String[]{EMPTY_ARRAY,
-                testPersons[testPersons.length - 2]._getFullName(),
-                testPersons[testPersons.length - 1]._getFullName()
-        };
-
-        assertArrayEquals(expected, repository.getNamesOfHeadsWithFirstEmptyString());
-    }
-
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
-    public void testGetExisted() {
-        assertEquals(createPerson(0,false), repository.get(0).get());
-        assertEquals(createPerson(5, true), repository.get(5).get());
+    public void testGetByIdExisted() {
+        assertEquals(createPerson(0,false), repository.getById(0).get());
+        assertEquals(createPerson(5, true), repository.getById(5).get());
     }
 
     @Test
-    public void testGetNotExisted() {
-        assertFalse(repository.get(50).isPresent());
+    public void testGetByIdNotExisted() {
+        assertFalse(repository.getById(50).isPresent());
     }
 
     @Test
@@ -204,7 +180,7 @@ public class PersonRepositorySQLiteTest {
         testPerson.setId(9);
 
         assertTrue(repository.add(toAdd));
-        assertEquals(testPerson, repository.get(9).get());
+        assertEquals(testPerson, repository.getById(9).get());
         expected[expected.length - 1].setId(9);
         assertArrayEquals(expected, repository.getAll().toArray(new Person[0]));
     }

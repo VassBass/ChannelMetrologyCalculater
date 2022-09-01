@@ -5,8 +5,8 @@ import calculation.Calculation;
 import certificates.Certificate;
 import converters.ConverterUI;
 import model.Channel;
+import repository.impl.ChannelRepositorySQLite;
 import service.ChannelSorter;
-import service.impl.ChannelServiceImpl;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
@@ -124,12 +124,9 @@ public class CalculateEndDialog extends JDialog {
         }
     };
 
-    private final ActionListener clickFinish = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-            setChannelList();
-        }
+    private final ActionListener clickFinish = e -> {
+        dispose();
+        setChannelList();
     };
 
     private final ActionListener clickTryAgain = new ActionListener() {
@@ -166,7 +163,7 @@ public class CalculateEndDialog extends JDialog {
         if (ChannelSorter.getInstance().isOn()){
             mainScreen.setChannelsList(ChannelSorter.getInstance().getCurrent());
         }else {
-            mainScreen.setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+            mainScreen.setChannelsList(new ArrayList<>(ChannelRepositorySQLite.getInstance().getAll()));
         }
     }
 

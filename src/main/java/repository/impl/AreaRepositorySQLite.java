@@ -2,21 +2,20 @@ package repository.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.Repository;
+import repository.PathElementRepository;
 import repository.RepositoryJDBC;
 
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<String> {
+public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(AreaRepositorySQLite.class);
+    private static AreaRepositorySQLite instance;
 
-    public AreaRepositorySQLite(){
+    private AreaRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
@@ -24,6 +23,11 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<S
     public AreaRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+    }
+
+    public static AreaRepositorySQLite getInstance() {
+        if (instance == null) instance = new AreaRepositorySQLite();
+        return instance;
     }
 
     /**
@@ -82,6 +86,13 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<S
         }
     }
 
+    @Override
+    public boolean add(@Nonnull Collection<String> areas) {
+        Set<String> old = new LinkedHashSet<>(getAll());
+        old.addAll(areas);
+        return rewrite(old);
+    }
+
     /**
      * @param oldObject to be replaced
      * @param newObject for replace
@@ -89,6 +100,8 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements Repository<S
      */
     @Override
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
+        if (oldObject.equals(newObject)) return true;
+
         String sql = "UPDATE areas SET area = '" + newObject + "' WHERE area = '" + oldObject + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);

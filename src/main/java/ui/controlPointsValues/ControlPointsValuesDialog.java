@@ -3,7 +3,7 @@ package ui.controlPointsValues;
 import converters.ConverterUI;
 import model.ControlPointsValues;
 import model.Measurement;
-import service.impl.SensorServiceImpl;
+import repository.impl.SensorRepositorySQLite;
 import ui.controlPointsValues.complexElements.*;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
@@ -35,7 +35,7 @@ public class ControlPointsValuesDialog extends JDialog {
     }
 
     private void createElements(){
-        String measurement = SensorServiceImpl.getInstance().getMeasurement(this.values.getSensorType());
+        String measurement = SensorRepositorySQLite.getInstance().getMeasurement(this.values.getSensorType());
         if (measurement.equals(Measurement.TEMPERATURE)){
             this.controlPointsPanel = new TemperaturePanel(this.values.getRangeMin(), this.values.getRangeMax());
         }else if (measurement.equals(Measurement.PRESSURE)){

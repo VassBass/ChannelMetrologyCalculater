@@ -2,21 +2,20 @@ package repository.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.Repository;
+import repository.PathElementRepository;
 import repository.RepositoryJDBC;
 
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-public class DepartmentRepositorySQLite extends RepositoryJDBC implements Repository<String> {
+public class DepartmentRepositorySQLite extends RepositoryJDBC implements PathElementRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(DepartmentRepositorySQLite.class);
+    private static DepartmentRepositorySQLite instance;
 
-    public DepartmentRepositorySQLite(){
+    private DepartmentRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
@@ -24,6 +23,11 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
     public DepartmentRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+    }
+
+    public static DepartmentRepositorySQLite getInstance() {
+        if (instance == null) instance = new DepartmentRepositorySQLite();
+        return instance;
     }
 
     /**
@@ -80,6 +84,13 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements Reposi
             LOGGER.info("Department = {} is already exists", object);
             return false;
         }
+    }
+
+    @Override
+    public boolean add(@Nonnull Collection<String>objects){
+        Set<String> old = new LinkedHashSet<>(getAll());
+        old.addAll(objects);
+        return rewrite(old);
     }
 
     /**

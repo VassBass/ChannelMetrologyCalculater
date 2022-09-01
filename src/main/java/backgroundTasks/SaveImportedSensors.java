@@ -1,8 +1,10 @@
 package backgroundTasks;
 
 import model.Sensor;
-import service.impl.ChannelServiceImpl;
-import service.impl.SensorServiceImpl;
+import repository.ChannelRepository;
+import repository.SensorRepository;
+import repository.impl.ChannelRepositorySQLite;
+import repository.impl.SensorRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
 
@@ -24,24 +26,22 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
     private final LoadDialog loadDialog;
     private final File importFile;
 
+    private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+
     public SaveImportedSensors(ArrayList<Sensor>newSensors, ArrayList<Sensor> sensorsForChange, File file){
         super();
         this.newSensors = newSensors;
         this.sensorsForChange = sensorsForChange;
         this.loadDialog = new LoadDialog(MainScreen.getInstance());
         this.importFile = file;
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> loadDialog.setVisible(true));
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        SensorServiceImpl.getInstance().importData(this.newSensors, this.sensorsForChange);
-        ChannelServiceImpl.getInstance().changeSensors(this.sensorsForChange);
+        sensorRepository.importData(this.newSensors, this.sensorsForChange);
+        channelRepository.changeSensors(this.sensorsForChange);
         return null;
     }
 
@@ -49,7 +49,7 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
     protected void done() {
         this.loadDialog.dispose();
         if (this.importFile == null) {
-            MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+            MainScreen.getInstance().setChannelsList(new ArrayList<>(channelRepository.getAll()));
             JOptionPane.showMessageDialog(MainScreen.getInstance(), IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
         }else {
             try {

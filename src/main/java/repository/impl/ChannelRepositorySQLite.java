@@ -19,14 +19,20 @@ import java.util.List;
 
 public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChannelRepositorySQLite.class);
+    private static ChannelRepositorySQLite instance;
 
-    public ChannelRepositorySQLite(){
+    private ChannelRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
     public ChannelRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+    }
+
+    public static ChannelRepositorySQLite getInstance() {
+        if (instance == null) instance = new ChannelRepositorySQLite();
+        return instance;
     }
 
     @Override

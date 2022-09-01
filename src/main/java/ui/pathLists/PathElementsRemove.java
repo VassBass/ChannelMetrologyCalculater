@@ -2,10 +2,11 @@ package ui.pathLists;
 
 import converters.ConverterUI;
 import model.Model;
-import service.impl.AreaServiceImpl;
-import service.impl.DepartmentServiceImpl;
-import service.impl.InstallationServiceImpl;
-import service.impl.ProcessServiceImpl;
+import repository.PathElementRepository;
+import repository.impl.AreaRepositorySQLite;
+import repository.impl.DepartmentRepositorySQLite;
+import repository.impl.InstallationRepositorySQLite;
+import repository.impl.ProcessRepositorySQLite;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -48,6 +49,11 @@ public class PathElementsRemove extends JDialog {
     private JLabel removingElement;
     private JButton buttonCancel, buttonRemoveAll, buttonRemove;
 
+    private final PathElementRepository departmentRepository = DepartmentRepositorySQLite.getInstance();
+    private final PathElementRepository areaRepository = AreaRepositorySQLite.getInstance();
+    private final PathElementRepository processRepository = ProcessRepositorySQLite.getInstance();
+    private final PathElementRepository installationRepository = InstallationRepositorySQLite.getInstance();
+
     public PathElementsRemove(PathListsDialog parent, Model model, String elementName){
         super(parent, REMOVE + " \"" + elementType(model) + "\"", true);
         this.parent = parent;
@@ -62,16 +68,16 @@ public class PathElementsRemove extends JDialog {
     private void createElements() {
         switch (model){
             case DEPARTMENT:
-                this.elements = DepartmentServiceImpl.getInstance().getAllInStrings();
+                this.elements = departmentRepository.getAll().toArray(new String[0]);
                 break;
             case AREA:
-                this.elements = AreaServiceImpl.getInstance().getAllInStrings();
+                this.elements = areaRepository.getAll().toArray(new String[0]);
                 break;
             case PROCESS:
-                this.elements = ProcessServiceImpl.getInstance().getAllInStrings();
+                this.elements = processRepository.getAll().toArray(new String[0]);
                 break;
             case INSTALLATION:
-                this.elements = InstallationServiceImpl.getInstance().getAllInStrings();
+                this.elements = installationRepository.getAll().toArray(new String[0]);
                 break;
         }
         if (this.elementName == null){
@@ -102,23 +108,13 @@ public class PathElementsRemove extends JDialog {
         this.setContentPane(new MainPanel());
     }
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private final ActionListener clickRemoveAll = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ConfirmDialog(parent, model).setVisible(true);
-                }
-            });
+            EventQueue.invokeLater(() -> new ConfirmDialog(parent, model).setVisible(true));
         }
     };
 
@@ -133,16 +129,16 @@ public class PathElementsRemove extends JDialog {
             }
             switch (model){
                 case DEPARTMENT:
-                    DepartmentServiceImpl.getInstance().remove(elementName);
+                    departmentRepository.remove(elementName);
                     break;
                 case AREA:
-                    AreaServiceImpl.getInstance().remove(elementName);
+                    areaRepository.remove(elementName);
                     break;
                 case PROCESS:
-                    ProcessServiceImpl.getInstance().remove(elementName);
+                    processRepository.remove(elementName);
                     break;
                 case INSTALLATION:
-                    InstallationServiceImpl.getInstance().remove(elementName);
+                    installationRepository.remove(elementName);
                     break;
             }
             parent.update(model);

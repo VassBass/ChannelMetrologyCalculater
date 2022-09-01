@@ -20,16 +20,20 @@ import java.util.Optional;
 
 public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonRepositorySQLite.class);
+    private static PersonRepositorySQLite instance;
 
-    private static final String EMPTY_ARRAY = "<Порожньо>";
-
-    public PersonRepositorySQLite(){
+    private PersonRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
     public PersonRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+    }
+
+    public static PersonRepositorySQLite getInstance() {
+        if (instance == null) instance = new PersonRepositorySQLite();
+        return instance;
     }
 
     @Override
@@ -74,49 +78,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     }
 
     @Override
-    public String[] getAllNamesWithFirstEmptyString() {
-        List<String>names = new ArrayList<>();
-        names.add(EMPTY_ARRAY);
-        String sql = "SELECT name, surname, patronymic FROM persons;";
-        try (ResultSet resultSet = getResultSet(sql)){
-            while (resultSet.next()){
-                Person person = new Person();
-                person.setName(resultSet.getString("name"));
-                person.setSurname(resultSet.getString("surname"));
-                person.setPatronymic(resultSet.getString("patronymic"));
-
-                names.add(person._getFullName());
-            }
-        }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
-        }
-
-        return names.toArray(new String[0]);
-    }
-
-    @Override
-    public String[] getNamesOfHeadsWithFirstEmptyString() {
-        List<String>heads = new ArrayList<>();
-        heads.add(EMPTY_ARRAY);
-        String sql = "SELECT name, surname, patronymic FROM persons WHERE position = '" + Person.HEAD_OF_DEPARTMENT_ASUTP + "';";
-        try (ResultSet resultSet = getResultSet(sql)){
-            while (resultSet.next()){
-                Person person = new Person();
-                person.setName(resultSet.getString("name"));
-                person.setSurname(resultSet.getString("surname"));
-                person.setPatronymic(resultSet.getString("patronymic"));
-
-                heads.add(person._getFullName());
-            }
-        }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
-        }
-
-        return heads.toArray(new String[0]);
-    }
-
-    @Override
-    public Optional<Person> get(@Nonnegative int id) {
+    public Optional<Person> getById(@Nonnegative int id) {
         LOGGER.info("Reading person with id = {} from DB", id);
         String sql = "SELECT * FROM persons WHERE id = " + id + " LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){

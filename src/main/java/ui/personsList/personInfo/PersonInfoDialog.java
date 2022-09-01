@@ -2,7 +2,8 @@ package ui.personsList.personInfo;
 
 import converters.ConverterUI;
 import model.Person;
-import service.impl.PersonServiceImpl;
+import repository.PersonRepository;
+import repository.impl.PersonRepositorySQLite;
 import ui.model.DefaultButton;
 import ui.personsList.PersonsListDialog;
 import ui.personsList.personInfo.complexElements.PersonInfoPanel;
@@ -26,6 +27,8 @@ public class PersonInfoDialog extends JDialog {
     private PersonInfoPanel infoPanel;
 
     private JButton positiveButton, negativeButton;
+
+    private final PersonRepository personRepository = PersonRepositorySQLite.getInstance();
 
     public PersonInfoDialog(PersonsListDialog parent, Person worker){
         super(parent, title(worker), true);
@@ -66,12 +69,7 @@ public class PersonInfoDialog extends JDialog {
         }
     }
 
-    private final ActionListener clickNegativeButton = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickNegativeButton = e -> dispose();
 
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
@@ -80,10 +78,10 @@ public class PersonInfoDialog extends JDialog {
                 dispose();
                 Person newPerson = infoPanel.getPerson();
                 if (worker == null){
-                    PersonServiceImpl.getInstance().add(newPerson);
+                    personRepository.add(newPerson);
                 }else {
                     if (!worker.equals(newPerson)){
-                        PersonServiceImpl.getInstance().set(worker, newPerson);
+                        personRepository.set(newPerson);
                     }
                 }
                 parent.update();

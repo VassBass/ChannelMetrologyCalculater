@@ -17,14 +17,21 @@ import java.util.List;
 
 public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(SensorRepositorySQLite.class);
+    private static SensorRepositorySQLite instance;
 
-    public SensorRepositorySQLite(){
+    private SensorRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
+
     public SensorRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+    }
+
+    public static SensorRepositorySQLite getInstance() {
+        if (instance == null) instance = new SensorRepositorySQLite();
+        return instance;
     }
 
     @Override
@@ -102,7 +109,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public String[] getAllTypes() {
+    public List<String> getAllTypes() {
         List<String>types = new ArrayList<>();
         LOGGER.info("Reading all sensors types from DB");
         String sql = "SELECT DISTINCT type FROM sensors";
@@ -114,23 +121,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
             LOGGER.warn("Exception was thrown!", e);
         }
 
-        return types.toArray(new String[0]);
-    }
-
-    @Override
-    public String[] getAllTypesWithoutROSEMOUNT() {
-        List<String>types = new ArrayList<>();
-        LOGGER.info("Reading all sensors types without ROSEMOUNT from DB");
-        String sql = "SELECT DISTINCT type FROM sensors WHERE type NOT LIKE '%" + Sensor.ROSEMOUNT + "%';";
-        try (ResultSet resultSet = getResultSet(sql)){
-            while (resultSet.next()){
-                types.add(resultSet.getString("type"));
-            }
-        }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
-        }
-
-        return types.toArray(new String[0]);
+        return types;
     }
 
     @Override
@@ -149,7 +140,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public String[] getAllSensorsName(@Nonnull String measurementName) {
+    public List<String> getAllSensorsName(@Nonnull String measurementName) {
         List<String> names = new ArrayList<>();
 
         LOGGER.info("Reading all sensors names by measurement = {} from DB", measurementName);
@@ -160,7 +151,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
             LOGGER.warn("Exception was thrown!", e);
         }
 
-        return names.toArray(new String[0]);
+        return names;
     }
 
     @Override

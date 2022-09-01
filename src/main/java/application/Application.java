@@ -1,7 +1,8 @@
 package application;
 
+import def.*;
+import repository.impl.*;
 import service.FileBrowser;
-import service.impl.*;
 import settings.Settings;
 import ui.mainScreen.MainScreen;
 import ui.model.ApplicationLogo;
@@ -70,12 +71,7 @@ public class Application extends SwingWorker<Void, String> {
     public void start() throws IOException {
         FileBrowser.init();
         logo = new ApplicationLogo();
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                logo.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> logo.setVisible(true));
 
         this.execute();
     }
@@ -87,20 +83,20 @@ public class Application extends SwingWorker<Void, String> {
         ApplicationContext.setUkraineLocalization();
         publish("Завантаження списків");
         if (firstStart){
-            DepartmentServiceImpl.getInstance().resetToDefault();
-            AreaServiceImpl.getInstance().resetToDefault();
-            InstallationServiceImpl.getInstance().resetToDefault();
-            ProcessServiceImpl.getInstance().resetToDefault();
-            PersonServiceImpl.getInstance().resetToDefault();
-            MeasurementServiceImpl.getInstance().resetToDefault();
-            CalibratorServiceImpl.getInstance().resetToDefault();
-            SensorServiceImpl.getInstance().resetToDefault();
-            ControlPointsValuesServiceImpl.getInstance().resetToDefault();
+            DepartmentRepositorySQLite.getInstance().rewrite(DefaultDepartments.get());
+            AreaRepositorySQLite.getInstance().rewrite(DefaultAreas.get());
+            InstallationRepositorySQLite.getInstance().rewrite(DefaultInstallations.get());
+            ProcessRepositorySQLite.getInstance().rewrite(DefaultProcesses.get());
+            PersonRepositorySQLite.getInstance().rewrite(DefaultPersons.get());
+            MeasurementRepositorySQLite.getInstance().rewrite(DefaultMeasurements.get());
+            CalibratorRepositorySQLite.getInstance().rewrite(DefaultCalibrators.get());
+            SensorRepositorySQLite.getInstance().rewrite(DefaultSensors.get());
+            ControlPointsValuesRepositorySQLite.getInstance().rewrite(DefaultControlPointsValues.get());
         }
         publish("Архівування сертифікатів/протоколів");
         FileBrowser.createArchive();
         publish("Завантаження головного вікна");
-        MainScreen.getInstance().init(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+        MainScreen.getInstance().init(new ArrayList<>(ChannelRepositorySQLite.getInstance().getAll()));
         return null;
     }
 

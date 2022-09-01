@@ -18,14 +18,20 @@ import java.util.*;
 
 public class MeasurementRepositorySQLite extends RepositoryJDBC implements MeasurementRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementRepositorySQLite.class);
+    private static MeasurementRepositorySQLite instance;
 
-    public MeasurementRepositorySQLite(){
+    private MeasurementRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
     public MeasurementRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+    }
+
+    public static MeasurementRepositorySQLite getInstance() {
+        if (instance == null) instance = new MeasurementRepositorySQLite();
+        return instance;
     }
 
     @Override

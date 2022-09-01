@@ -1,10 +1,9 @@
 package ui.measurementsList;
 
 import model.Measurement;
-import service.impl.MeasurementServiceImpl;
+import repository.impl.MeasurementRepositorySQLite;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
@@ -23,23 +22,20 @@ public class MeasurementsTable extends JTable {
 
         this.getTableHeader().setReorderingAllowed(false);
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionListener select = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (crunch){
-                    crunch = false;
-                    return;
-                }
-                if (MeasurementsTable.this.getSelectedRow() != -1) {
-                    String field = (String) MeasurementsTable.this.getValueAt(MeasurementsTable.this.getSelectedRow(), 0);
-                    parentDialog.updateValuesPanel(field);
-                    parentDialog.setEnabledInListPanel_btnRemove(true);
-                }else {
-                    parentDialog.updateValuesPanel(null);
-                    parentDialog.setEnabledInListPanel_btnRemove(false);
-                }
-                crunch = true;
+        ListSelectionListener select = e -> {
+            if (crunch){
+                crunch = false;
+                return;
             }
+            if (MeasurementsTable.this.getSelectedRow() != -1) {
+                String field = (String) MeasurementsTable.this.getValueAt(MeasurementsTable.this.getSelectedRow(), 0);
+                parentDialog.updateValuesPanel(field);
+                parentDialog.setEnabledInListPanel_btnRemove(true);
+            }else {
+                parentDialog.updateValuesPanel(null);
+                parentDialog.setEnabledInListPanel_btnRemove(false);
+            }
+            crunch = true;
         };
         this.getSelectionModel().addListSelectionListener(select);
     }
@@ -65,7 +61,7 @@ public class MeasurementsTable extends JTable {
         String[]columnsHeader = new String[] {MEASUREMENT_VALUE};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Measurement>measurements = new ArrayList<>(MeasurementServiceImpl.getInstance().getMeasurements(measurementName));
+        ArrayList<Measurement>measurements = new ArrayList<>(MeasurementRepositorySQLite.getInstance().getMeasurements(measurementName));
         for (Measurement measurement : measurements) {
             String[] data = new String[1];
             data[0] = measurement.getValue();

@@ -1,11 +1,15 @@
 package backgroundTasks;
 
 import model.Measurement;
+import repository.CalibratorRepository;
+import repository.ChannelRepository;
+import repository.MeasurementRepository;
+import repository.SensorRepository;
+import repository.impl.CalibratorRepositorySQLite;
+import repository.impl.ChannelRepositorySQLite;
+import repository.impl.MeasurementRepositorySQLite;
+import repository.impl.SensorRepositorySQLite;
 import service.ChannelSorter;
-import service.impl.CalibratorServiceImpl;
-import service.impl.ChannelServiceImpl;
-import service.impl.MeasurementServiceImpl;
-import service.impl.SensorServiceImpl;
 import ui.measurementsList.MeasurementsListDialog;
 import ui.model.LoadDialog;
 
@@ -26,6 +30,11 @@ public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
     private final LoadDialog loadDialog;
     private Measurement measurement;
 
+    private final CalibratorRepository calibratorRepository = CalibratorRepositorySQLite.getInstance();
+    private final MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+    private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
+
     public RemoveMeasurement(MeasurementsListDialog dialog){
         super();
         this.dialog = dialog;
@@ -33,27 +42,22 @@ public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
     }
 
     public void start(){
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> loadDialog.setVisible(true));
         this.execute();
     }
 
     @Override
     protected Boolean doInBackground() throws Exception {
         String measurementValue = this.dialog.getSelectedMeasurementValue();
-        measurement = MeasurementServiceImpl.getInstance().get(measurementValue).get();
-        if (MeasurementServiceImpl.getInstance().isLastInMeasurement(measurementValue)) {
+        measurement = measurementRepository.get(measurementValue).get();
+        if (measurementRepository.isLastInMeasurement(measurementValue)) {
             LAST_MEASUREMENT_MESSAGE = this.lastSensorMessageGenerator(measurement.getName());
             return false;
         }else {
-            MeasurementServiceImpl.getInstance().remove(measurement);
-            ChannelServiceImpl.getInstance().removeByMeasurementValue(measurementValue);
-            CalibratorServiceImpl.getInstance().removeByMeasurementValue(measurementValue);
-            SensorServiceImpl.getInstance().removeMeasurementValue(measurementValue);
+            measurementRepository.remove(measurement);
+            channelRepository.removeByMeasurementValue(measurementValue);
+            calibratorRepository.removeByMeasurementValue(measurementValue);
+            sensorRepository.removeMeasurementValue(measurementValue);
             return true;
         }
     }
@@ -67,7 +71,7 @@ public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
                 if (ChannelSorter.getInstance().isOn()){
                     this.dialog.updateMain(ChannelSorter.getInstance().getCurrent());
                 }else {
-                    this.dialog.updateMain(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+                    this.dialog.updateMain(new ArrayList<>(channelRepository.getAll()));
                 }
             }else {
                 JOptionPane.showMessageDialog(dialog, LAST_MEASUREMENT_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);

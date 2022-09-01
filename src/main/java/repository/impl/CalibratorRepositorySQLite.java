@@ -20,14 +20,20 @@ import java.util.Optional;
 
 public class CalibratorRepositorySQLite extends RepositoryJDBC implements CalibratorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CalibratorRepositorySQLite.class);
+    private static CalibratorRepositorySQLite instance;
 
-    public CalibratorRepositorySQLite(){
+    private CalibratorRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
     public CalibratorRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+    }
+
+    public static CalibratorRepositorySQLite getInstance() {
+        if (instance == null) instance = new CalibratorRepositorySQLite();
+        return instance;
     }
 
     @Override

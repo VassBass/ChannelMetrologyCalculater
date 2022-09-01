@@ -20,14 +20,21 @@ import java.util.Optional;
 
 public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implements ControlPointsValuesRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ControlPointsValuesRepositorySQLite.class);
+    private static ControlPointsValuesRepositorySQLite instance;
 
-    public ControlPointsValuesRepositorySQLite(){
+    private ControlPointsValuesRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
+
     public ControlPointsValuesRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+    }
+
+    public static ControlPointsValuesRepositorySQLite getInstance() {
+        if (instance == null) instance = new ControlPointsValuesRepositorySQLite();
+        return instance;
     }
 
     @Override

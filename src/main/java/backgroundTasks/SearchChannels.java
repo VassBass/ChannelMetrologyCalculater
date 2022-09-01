@@ -1,8 +1,9 @@
 package backgroundTasks;
 
 import constants.Sort;
+import repository.ChannelRepository;
+import repository.impl.ChannelRepositorySQLite;
 import service.ChannelSorter;
-import service.impl.ChannelServiceImpl;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
 
@@ -17,6 +18,8 @@ public class SearchChannels extends SwingWorker<Void, Void> {
     private String valueString;
     private boolean valueBoolean;
 
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+
     public SearchChannels(){
         super();
         this.loadDialog = new LoadDialog(MainScreen.getInstance());
@@ -26,12 +29,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
         this.field = field;
         this.valueString = value;
         if (value != null) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    loadDialog.setVisible(true);
-                }
-            });
+            EventQueue.invokeLater(() -> loadDialog.setVisible(true));
             this.execute();
         }
     }
@@ -39,12 +37,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
     public void startSearch(int field, boolean value){
         this.field = field;
         this.valueBoolean = value;
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> loadDialog.setVisible(true));
         this.execute();
     }
 
@@ -97,7 +90,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
                 MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getAllForSensorType(this.valueString));
                 break;
              default:
-                 MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+                 MainScreen.getInstance().setChannelsList(new ArrayList<>(channelRepository.getAll()));
                  break;
         }
         return null;
@@ -105,11 +98,6 @@ public class SearchChannels extends SwingWorker<Void, Void> {
 
     @Override
     protected void done() {
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.dispose();
-            }
-        });
+        EventQueue.invokeLater(loadDialog::dispose);
     }
 }

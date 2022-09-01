@@ -2,10 +2,11 @@ package ui.pathLists;
 
 import converters.ConverterUI;
 import model.Model;
-import service.impl.AreaServiceImpl;
-import service.impl.DepartmentServiceImpl;
-import service.impl.InstallationServiceImpl;
-import service.impl.ProcessServiceImpl;
+import repository.PathElementRepository;
+import repository.impl.AreaRepositorySQLite;
+import repository.impl.DepartmentRepositorySQLite;
+import repository.impl.InstallationRepositorySQLite;
+import repository.impl.ProcessRepositorySQLite;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -25,6 +26,11 @@ public class PathElementName extends JDialog {
 
     private JButton buttonSave, buttonCancel;
     private JTextField elementName;
+
+    private final PathElementRepository departmentRepository = DepartmentRepositorySQLite.getInstance();
+    private final PathElementRepository areaRepository = AreaRepositorySQLite.getInstance();
+    private final PathElementRepository processRepository = ProcessRepositorySQLite.getInstance();
+    private final PathElementRepository installationRepository = InstallationRepositorySQLite.getInstance();
 
     private final Model model;
     private static String elementType(Model model){
@@ -77,12 +83,7 @@ public class PathElementName extends JDialog {
         this.setContentPane(new MainPanel());
     }
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private final ActionListener clickSave = new ActionListener() {
         @Override
@@ -92,30 +93,30 @@ public class PathElementName extends JDialog {
                 switch (model) {
                     case DEPARTMENT:
                         if (oldNameOfElement == null){
-                            DepartmentServiceImpl.getInstance().add(elementName.getText());
+                            departmentRepository.add(elementName.getText());
                         }else {
-                            DepartmentServiceImpl.getInstance().set(oldNameOfElement, elementName.getText());
+                            departmentRepository.set(oldNameOfElement, elementName.getText());
                         }
                         break;
                     case AREA:
                         if (oldNameOfElement == null){
-                            AreaServiceImpl.getInstance().add(elementName.getText());
+                            areaRepository.add(elementName.getText());
                         }else {
-                            AreaServiceImpl.getInstance().set(oldNameOfElement, elementName.getText());
+                            areaRepository.set(oldNameOfElement, elementName.getText());
                         }
                         break;
                     case PROCESS:
                         if (oldNameOfElement == null){
-                            ProcessServiceImpl.getInstance().add(elementName.getText());
+                            processRepository.add(elementName.getText());
                         }else {
-                            ProcessServiceImpl.getInstance().set(oldNameOfElement, elementName.getText());
+                            processRepository.set(oldNameOfElement, elementName.getText());
                         }
                         break;
                     case INSTALLATION:
                         if (oldNameOfElement == null){
-                            InstallationServiceImpl.getInstance().add(elementName.getText());
+                            installationRepository.add(elementName.getText());
                         }else {
-                            InstallationServiceImpl.getInstance().set(oldNameOfElement, elementName.getText());
+                            installationRepository.set(oldNameOfElement, elementName.getText());
                         }
                         break;
                 }

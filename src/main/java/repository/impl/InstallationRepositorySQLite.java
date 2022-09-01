@@ -2,19 +2,18 @@ package repository.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.Repository;
+import repository.PathElementRepository;
 import repository.RepositoryJDBC;
 
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-public class InstallationRepositorySQLite extends RepositoryJDBC implements Repository<String> {
+public class InstallationRepositorySQLite extends RepositoryJDBC implements PathElementRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(InstallationRepositorySQLite.class);
+    private static InstallationRepositorySQLite instance;
 
     public InstallationRepositorySQLite(){
         setPropertiesFromFile();
@@ -24,6 +23,11 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Repo
     public InstallationRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+    }
+
+    public static InstallationRepositorySQLite getInstance(){
+        if (instance == null) instance = new InstallationRepositorySQLite();
+        return instance;
     }
 
     /**
@@ -175,5 +179,12 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Repo
             LOGGER.warn("Exception was thrown!", e);
             return false;
         }
+    }
+
+    @Override
+    public boolean add(Collection<String> objects) {
+        Set<String> old = new LinkedHashSet<>(getAll());
+        old.addAll(objects);
+        return rewrite(old);
     }
 }

@@ -8,9 +8,11 @@ import developer.calculating.OS_Chooser;
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
+import repository.ChannelRepository;
+import repository.SensorRepository;
+import repository.impl.ChannelRepositorySQLite;
+import repository.impl.SensorRepositorySQLite;
 import service.ChannelSorter;
-import service.impl.ChannelServiceImpl;
-import service.impl.SensorServiceImpl;
 import ui.calculate.start.CalculateStartDialog;
 import ui.channelInfo.complexElements.*;
 import ui.mainScreen.MainScreen;
@@ -71,6 +73,9 @@ public class DialogChannel extends JDialog {
     private JButton negativeButton, positiveButton, saveAndCalculateButton, resetButton, removeButton;
 
     public final Channel oldChannel;
+
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+    private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
 
     public DialogChannel(MainScreen parent, Channel oldChannel){
         super(parent, INFORMATION_ABOUT_CHANNEL, true);
@@ -216,12 +221,12 @@ public class DialogChannel extends JDialog {
             this.codeBorder.setTitleColor(Color.RED);
             good = true;
         }else if (this.oldChannel == null &&
-                ChannelServiceImpl.getInstance().isExist(this.userCode.getText())) {
+                channelRepository.isExist(this.userCode.getText())) {
             this.codeBorder.setTitleColor(Color.RED);
             //Application.context.channelService.showExistMessage(DialogChannel.this);
             good = true;
         }else if (this.oldChannel != null &&
-                ChannelServiceImpl.getInstance().isExist(this.oldChannel.getCode(), this.userCode.getText())){
+                channelRepository.isExist(this.oldChannel.getCode(), this.userCode.getText())){
             this.codeBorder.setTitleColor(Color.RED);
             //Application.context.channelService.showExistMessage(DialogChannel.this);
             good = true;
@@ -332,7 +337,7 @@ public class DialogChannel extends JDialog {
         if (measurementName.equals(Measurement.TEMPERATURE)
             || measurementName.equals(Measurement.PRESSURE)){
             this.sensorRangePanel = new DialogChannel_sensorRangePanel(this, measurement);
-            this.sensorRangePanel.update(SensorServiceImpl.getInstance().get(this.sensorPanel.getSensor().getName()));
+            this.sensorRangePanel.update(sensorRepository.get(this.sensorPanel.getSensor().getName()));
             this.rangePanel.setTitle(RANGE_OF_CHANNEL);
             this.allowableErrorPanel.setEnabled(true);
         }else if (measurementName.equals(Measurement.CONSUMPTION)){
@@ -370,21 +375,16 @@ public class DialogChannel extends JDialog {
                         dispose();
 
                         if (oldChannel == null) {
-                            ChannelServiceImpl.getInstance().add(getChannel());
+                            channelRepository.add(getChannel());
                         }else {
-                            ChannelServiceImpl.getInstance().set(oldChannel, getChannel());
+                            channelRepository.set(oldChannel, getChannel());
                         }
                         if (ChannelSorter.getInstance().isOn()){
                             parent.setChannelsList(ChannelSorter.getInstance().getCurrent());
                         }else {
-                            parent.setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+                            parent.setChannelsList(new ArrayList<>(channelRepository.getAll()));
                         }
-                        EventQueue.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                new OS_Chooser(parent, getChannel()).setVisible(true);
-                            }
-                        });
+                        EventQueue.invokeLater(() -> new OS_Chooser(parent, getChannel()).setVisible(true));
                     }
                     break;
             }
@@ -402,7 +402,7 @@ public class DialogChannel extends JDialog {
                     sensorRangePanel.setEnabled(false);
                 } else {
                     sensorRangePanel.setEnabled(true);
-                    sensorRangePanel.update(SensorServiceImpl.getInstance().get(sensorPanel.getSensor().getName()));
+                    sensorRangePanel.update(sensorRepository.get(sensorPanel.getSensor().getName()));
                 }
             }
         }
@@ -413,12 +413,7 @@ public class DialogChannel extends JDialog {
         this.setVisible(true);
     }
 
-    private final ActionListener clickNegativeButton = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DialogChannel.this.dispose();
-        }
-    };
+    private final ActionListener clickNegativeButton = e -> DialogChannel.this.dispose();
 
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
@@ -429,14 +424,14 @@ public class DialogChannel extends JDialog {
             Application.putHint(userName.getText());
             dispose();
             if (oldChannel == null) {
-                ChannelServiceImpl.getInstance().add(getChannel());
+                channelRepository.add(getChannel());
             }else {
-                ChannelServiceImpl.getInstance().set(oldChannel, getChannel());
+                channelRepository.set(oldChannel, getChannel());
             }
             if (ChannelSorter.getInstance().isOn()){
                 parent.setChannelsList(ChannelSorter.getInstance().getCurrent());
             }else {
-                parent.setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+                parent.setChannelsList(new ArrayList<>(channelRepository.getAll()));
             }
         }
     };
@@ -456,31 +451,25 @@ public class DialogChannel extends JDialog {
         }
     };
 
-    private final ActionListener clickReset = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            build();
-            resetSpecialCharactersPanel();
-        }
+    private final ActionListener clickReset = e -> {
+        build();
+        resetSpecialCharactersPanel();
     };
 
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (oldChannel != null){
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        int result = JOptionPane.showConfirmDialog(DialogChannel.this,
-                                oldChannel.getName(), "Видалити канал?", JOptionPane.OK_CANCEL_OPTION);
-                        if (result == 0){
-                            ChannelServiceImpl.getInstance().remove(oldChannel);
-                            DialogChannel.this.dispose();
-                            if (ChannelSorter.getInstance().isOn()){
-                                parent.setChannelsList(ChannelSorter.getInstance().getCurrent());
-                            }else {
-                                parent.setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
-                            }
+                EventQueue.invokeLater(() -> {
+                    int result = JOptionPane.showConfirmDialog(DialogChannel.this,
+                            oldChannel.getName(), "Видалити канал?", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == 0){
+                        channelRepository.remove(oldChannel);
+                        DialogChannel.this.dispose();
+                        if (ChannelSorter.getInstance().isOn()){
+                            parent.setChannelsList(ChannelSorter.getInstance().getCurrent());
+                        }else {
+                            parent.setChannelsList(new ArrayList<>(channelRepository.getAll()));
                         }
                     }
                 });
@@ -498,22 +487,17 @@ public class DialogChannel extends JDialog {
             dispose();
             final Channel channel = getChannel();
             if (oldChannel == null) {
-                ChannelServiceImpl.getInstance().add(channel);
+                channelRepository.add(channel);
             }else {
-                ChannelServiceImpl.getInstance().set(oldChannel, channel);
+                channelRepository.set(oldChannel, channel);
             }
             if (ChannelSorter.getInstance().isOn()){
                 parent.setChannelsList(ChannelSorter.getInstance().getCurrent());
             }else {
-                parent.setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+                parent.setChannelsList(new ArrayList<>(channelRepository.getAll()));
             }
 
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new CalculateStartDialog(MainScreen.getInstance(), channel, null).setVisible(true);
-                }
-            });
+            EventQueue.invokeLater(() -> new CalculateStartDialog(MainScreen.getInstance(), channel, null).setVisible(true));
         }
     };
 

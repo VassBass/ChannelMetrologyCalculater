@@ -1,10 +1,13 @@
 package backgroundTasks;
 
 import model.Sensor;
+import repository.ChannelRepository;
+import repository.ControlPointsValuesRepository;
+import repository.SensorRepository;
+import repository.impl.ChannelRepositorySQLite;
+import repository.impl.ControlPointsValuesRepositorySQLite;
+import repository.impl.SensorRepositorySQLite;
 import service.ChannelSorter;
-import service.impl.ChannelServiceImpl;
-import service.impl.ControlPointsValuesServiceImpl;
-import service.impl.SensorServiceImpl;
 import ui.model.LoadDialog;
 import ui.sensorsList.SensorsListDialog;
 
@@ -25,6 +28,10 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
     private final SensorsListDialog dialog;
     private final LoadDialog loadDialog;
 
+    private final ControlPointsValuesRepository cpvRepository = ControlPointsValuesRepositorySQLite.getInstance();
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+    private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
+
     public RemoveSensor(SensorsListDialog dialog){
         super();
         this.dialog = dialog;
@@ -32,25 +39,20 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
     }
 
     public void start(){
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> loadDialog.setVisible(true));
         this.execute();
     }
 
     @Override
     protected Boolean doInBackground() throws Exception {
         Sensor sensor = this.dialog.getSensor();
-        if (SensorServiceImpl.getInstance().isLastInMeasurement(sensor)) {
+        if (sensorRepository.isLastInMeasurement(sensor)) {
             LAST_SENSOR_MESSAGE = this.lastSensorMessageGenerator(sensor.getMeasurement());
             return false;
         }else {
-            SensorServiceImpl.getInstance().remove(sensor);
-            ChannelServiceImpl.getInstance().removeBySensor(sensor);
-            ControlPointsValuesServiceImpl.getInstance().removeAll(sensor.getType());
+            sensorRepository.remove(sensor);
+            channelRepository.removeBySensor(sensor);
+            cpvRepository.removeAll(sensor.getType());
             return true;
         }
     }
@@ -65,7 +67,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
                 if (ChannelSorter.getInstance().isOn()){
                     this.dialog.updateMain(ChannelSorter.getInstance().getCurrent());
                 }else {
-                    this.dialog.updateMain(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+                    this.dialog.updateMain(new ArrayList<>(channelRepository.getAll()));
                 }
             }else {
                 JOptionPane.showMessageDialog(dialog, LAST_SENSOR_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);

@@ -6,8 +6,9 @@ import model.Calibrator;
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
+import repository.CalibratorRepository;
+import repository.impl.CalibratorRepositorySQLite;
 import service.SystemData;
-import service.impl.CalibratorServiceImpl;
 import ui.calculate.measurement.CalculateMeasurementDialog;
 import ui.calculate.start.complexElements.CalculateStartDialog_alarmPanel;
 import ui.calculate.start.complexElements.CalculateStartDialog_datePanel;
@@ -60,6 +61,8 @@ public class CalculateStartDialog extends JDialog {
 
     private SystemData os;
 
+    private final CalibratorRepository calibratorRepository = CalibratorRepositorySQLite.getInstance();
+
     public CalculateStartDialog(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values){
         super(mainScreen, title(channel), true);
         this.mainScreen = mainScreen;
@@ -111,7 +114,7 @@ public class CalculateStartDialog extends JDialog {
         if (measurement == null){
             this.calibrator.setSelectedIndex(0);
         }else {
-            String[] cal = CalibratorServiceImpl.getInstance().getAllNames(new Measurement(measurement, ""));
+            String[] cal = calibratorRepository.getAllNames(new Measurement(measurement, ""));
             String[] toModel = new String[cal.length + 1];
             System.arraycopy(cal,0,toModel,0,cal.length);
             toModel[toModel.length - 1] = ADD_NEW;
@@ -161,7 +164,7 @@ public class CalculateStartDialog extends JDialog {
         if (values != null){
             this.numberOfProtocol.setText((String) values.get(Key.CHANNEL_PROTOCOL_NUMBER));
             this.datePanel.update((String) values.get(Key.CHANNEL_DATE));
-            String[] calibrators = CalibratorServiceImpl.getInstance().getAllNames(this.channel._getMeasurement());
+            String[] calibrators = calibratorRepository.getAllNames(this.channel._getMeasurement());
             Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
             for (int x=0;x<calibrators.length;x++){
                 if (calibrator != null && calibrator.getName().equals(calibrators[x])){
@@ -192,13 +195,13 @@ public class CalculateStartDialog extends JDialog {
         values.put(Key.CHANNEL_PROTOCOL_NUMBER, this.numberOfProtocol.getText());
         values.put(Key.CHANNEL_DATE, this.datePanel.getDate());
         String calibratorName = Objects.requireNonNull(this.calibrator.getSelectedItem()).toString();
-        values.put(Key.CALIBRATOR, CalibratorServiceImpl.getInstance().get(calibratorName));
+        values.put(Key.CALIBRATOR, calibratorRepository.get(calibratorName));
         values.put(Key.CALCULATION_EXTERNAL_TEMPERATURE, this.weatherPanel.temperature.getText());
         values.put(Key.CALCULATION_EXTERNAL_PRESSURE, this.weatherPanel.pressure.getText());
         values.put(Key.CALCULATION_EXTERNAL_HUMIDITY, this.weatherPanel.humidity.getText());
         values.put(Key.CALCULATION_ALARM_PANEL, this.withAlarm);
         values.put(Key.CALCULATION_ALARM_VALUE, this.alarmPanel.getValue());
-        if (values.get(Key.SYS) == null) values.put(Key.SYS, this.os);
+        values.computeIfAbsent(Key.SYS, k -> this.os);
 
         return values;
     }
@@ -206,35 +209,24 @@ public class CalculateStartDialog extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e){
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    CalculateMeasurementDialog measurementDialog = new CalculateMeasurementDialog(mainScreen, channel, getValues(values));
-                    dispose();
-                    measurementDialog.setVisible(true);
-                }
+            EventQueue.invokeLater(() -> {
+                CalculateMeasurementDialog measurementDialog = new CalculateMeasurementDialog(mainScreen, channel, getValues(values));
+                dispose();
+                measurementDialog.setVisible(true);
             });
         }
     };
 
-    private final ActionListener clickNegativeButton = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickNegativeButton = e -> dispose();
 
     private final ItemListener clickAlarm = new ItemListener() {
         @Override
         public void itemStateChanged(ItemEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (alarmCheck.isSelected()) {
-                        setContentPane(new MainPanel(true));
-                    } else {
-                        setContentPane(new MainPanel(false));
-                    }
+            EventQueue.invokeLater(() -> {
+                if (alarmCheck.isSelected()) {
+                    setContentPane(new MainPanel(true));
+                } else {
+                    setContentPane(new MainPanel(false));
                 }
             });
         }
@@ -245,12 +237,7 @@ public class CalculateStartDialog extends JDialog {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED && calibrator.getSelectedItem() != null){
                 if (calibrator.getSelectedItem().toString().equals(ADD_NEW)){
-                    EventQueue.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            new CalibratorInfoDialog(CalculateStartDialog.this, channel).setVisible(true);
-                        }
-                    });
+                    EventQueue.invokeLater(() -> new CalibratorInfoDialog(CalculateStartDialog.this, channel).setVisible(true));
                 }
             }
         }

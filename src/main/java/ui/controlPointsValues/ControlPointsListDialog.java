@@ -2,7 +2,9 @@ package ui.controlPointsValues;
 
 import converters.ConverterUI;
 import model.ControlPointsValues;
-import service.impl.ControlPointsValuesServiceImpl;
+import repository.ControlPointsValuesRepository;
+import repository.impl.ControlPointsValuesRepositorySQLite;
+import service.SensorService;
 import service.impl.SensorServiceImpl;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
@@ -28,6 +30,9 @@ public class ControlPointsListDialog extends JDialog {
     public ControlPointsValuesTable mainTable;
     private JButton btnCancel, btnChange, btnAdd, btnRemove, btnClear;
 
+    private final ControlPointsValuesRepository cpvRepository = ControlPointsValuesRepositorySQLite.getInstance();
+    private final SensorService sensorService = SensorServiceImpl.getInstance();
+
     public ControlPointsListDialog(Frame parent){
         super(parent, TITLE, true);
 
@@ -37,10 +42,10 @@ public class ControlPointsListDialog extends JDialog {
     }
 
     private void createElements(){
-        String[]sTypes = SensorServiceImpl.getInstance().getAllTypesWithoutROSEMOUNT();
+        String[]sTypes = sensorService.getAllTypesWithoutROSEMOUNT().toArray(new String[0]);
         this.sensorsTypes = new JComboBox<>(sTypes);
         String sensorType = Objects.requireNonNull(this.sensorsTypes.getSelectedItem()).toString();
-        this.mainTable = new ControlPointsValuesTable(new ArrayList<>(ControlPointsValuesServiceImpl.getInstance().getBySensorType(sensorType)));
+        this.mainTable = new ControlPointsValuesTable(new ArrayList<>(cpvRepository.getBySensorType(sensorType)));
         this.btnCancel = new DefaultButton(CANCEL);
         this.btnChange = new DefaultButton(CHANGE);
         this.btnAdd = new DefaultButton(ADD);
@@ -66,7 +71,7 @@ public class ControlPointsListDialog extends JDialog {
 
     public void setList(String sensorType){
         this.sensorsTypes.setSelectedItem(sensorType);
-        mainTable.setList(new ArrayList<>(ControlPointsValuesServiceImpl.getInstance().getBySensorType(sensorType)));
+        mainTable.setList(new ArrayList<>(cpvRepository.getBySensorType(sensorType)));
     }
 
     private final ItemListener changeSensorType = new ItemListener() {
@@ -74,29 +79,21 @@ public class ControlPointsListDialog extends JDialog {
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED){
                 String sensorType = Objects.requireNonNull(sensorsTypes.getSelectedItem()).toString();
-                mainTable.setList(new ArrayList<>(ControlPointsValuesServiceImpl.getInstance().getBySensorType(sensorType)));
+                mainTable.setList(new ArrayList<>(cpvRepository.getBySensorType(sensorType)));
             }
         }
     };
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private final ActionListener clickAdd = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    setVisible(false);
-                    String sensorType = Objects.requireNonNull(sensorsTypes.getSelectedItem()).toString();
-                    ControlPointsValues cpv = new ControlPointsValues(sensorType,0D,100D,null);
-                    new ControlPointsValuesDialog(ControlPointsListDialog.this, cpv).setVisible(true);
-                }
+            EventQueue.invokeLater(() -> {
+                setVisible(false);
+                String sensorType = Objects.requireNonNull(sensorsTypes.getSelectedItem()).toString();
+                ControlPointsValues cpv = new ControlPointsValues(sensorType,0D,100D,null);
+                new ControlPointsValuesDialog(ControlPointsListDialog.this, cpv).setVisible(true);
             });
         }
     };

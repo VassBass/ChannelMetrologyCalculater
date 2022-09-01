@@ -3,7 +3,7 @@ package ui.measurementsList;
 import backgroundTasks.ChangeMeasurementValue;
 import converters.ConverterUI;
 import model.Measurement;
-import service.impl.MeasurementServiceImpl;
+import repository.impl.MeasurementRepositorySQLite;
 import ui.model.DefaultButton;
 import ui.specialCharacters.SpecialCharactersPanel;
 
@@ -78,21 +78,16 @@ public class ChangeMeasurementDialog extends JDialog {
         btn_positive.addActionListener(clickPositive);
     }
 
-    private final ActionListener clickNegative = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickNegative = e -> dispose();
 
     private final ActionListener clickPositive = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (MeasurementServiceImpl.getInstance().exists(oldValue, txt_value.getText())){
+            if (MeasurementRepositorySQLite.getInstance().exists(oldValue, txt_value.getText())){
                 JOptionPane.showMessageDialog(ChangeMeasurementDialog.this,
                         EXIST_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);
             }else {
-                Measurement oldMeasurement = MeasurementServiceImpl.getInstance().get(oldValue).get();
+                Measurement oldMeasurement = MeasurementRepositorySQLite.getInstance().get(oldValue).get();
                 Measurement newMeasurement = oldMeasurement.copy();
                 newMeasurement.setValue(txt_value.getText());
                 new ChangeMeasurementValue(ChangeMeasurementDialog.this, parentDialog, oldMeasurement, newMeasurement).start();

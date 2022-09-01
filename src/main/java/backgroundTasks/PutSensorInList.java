@@ -1,9 +1,12 @@
 package backgroundTasks;
 
 import model.Sensor;
-import service.impl.ChannelServiceImpl;
-import service.impl.ControlPointsValuesServiceImpl;
-import service.impl.SensorServiceImpl;
+import repository.ChannelRepository;
+import repository.ControlPointsValuesRepository;
+import repository.SensorRepository;
+import repository.impl.ChannelRepositorySQLite;
+import repository.impl.ControlPointsValuesRepositorySQLite;
+import repository.impl.SensorRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
 import ui.sensorsList.SensorsListDialog;
@@ -23,6 +26,10 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
     private Sensor oldSensor;
     private final LoadDialog loadDialog;
 
+    private final ControlPointsValuesRepository controlPointsValuesRepository = ControlPointsValuesRepositorySQLite.getInstance();
+    private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+
     public PutSensorInList(SensorsListDialog mainDialog, SensorInfoDialog dialog, Sensor sensor){
         super();
         this.mainDialog = mainDialog;
@@ -33,12 +40,9 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
 
     public void start(Sensor oldSensor){
         this.oldSensor = oldSensor;
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                dialog.dispose();
-                loadDialog.setVisible(true);
-            }
+        EventQueue.invokeLater(() -> {
+            dialog.dispose();
+            loadDialog.setVisible(true);
         });
         this.execute();
     }
@@ -46,14 +50,14 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
     @Override
     protected Boolean doInBackground() throws Exception {
         if (this.oldSensor == null) {
-            return SensorServiceImpl.getInstance().add(this.newSensor);
+            return sensorRepository.add(this.newSensor);
         } else {
-            SensorServiceImpl.getInstance().set(this.oldSensor, this.newSensor);
+            sensorRepository.set(this.oldSensor, this.newSensor);
             if (!this.oldSensor.isMatch(this.newSensor, Sensor.RANGE, Sensor.VALUE)) {
-                ChannelServiceImpl.getInstance().changeSensor(this.oldSensor, this.newSensor, Sensor.MEASUREMENT, Sensor.RANGE, Sensor.VALUE);
+                channelRepository.changeSensor(this.oldSensor, this.newSensor, Sensor.MEASUREMENT, Sensor.RANGE, Sensor.VALUE);
             }
             if (!this.oldSensor.getType().equals(this.newSensor.getType())){
-                ControlPointsValuesServiceImpl.getInstance().changeSensorType(this.oldSensor.getType(), this.newSensor.getType());
+                controlPointsValuesRepository.changeSensorType(this.oldSensor.getType(), this.newSensor.getType());
             }
             return true;
         }

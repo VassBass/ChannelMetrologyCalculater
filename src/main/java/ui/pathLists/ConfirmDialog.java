@@ -2,10 +2,11 @@ package ui.pathLists;
 
 import converters.ConverterUI;
 import model.Model;
-import service.impl.AreaServiceImpl;
-import service.impl.DepartmentServiceImpl;
-import service.impl.InstallationServiceImpl;
-import service.impl.ProcessServiceImpl;
+import repository.PathElementRepository;
+import repository.impl.AreaRepositorySQLite;
+import repository.impl.DepartmentRepositorySQLite;
+import repository.impl.InstallationRepositorySQLite;
+import repository.impl.ProcessRepositorySQLite;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -48,6 +49,11 @@ public class ConfirmDialog extends JDialog {
     private JLabel message;
     private JButton positiveButton, negativeButton;
 
+    private final PathElementRepository departmentRepository = DepartmentRepositorySQLite.getInstance();
+    private final PathElementRepository areaRepository = AreaRepositorySQLite.getInstance();
+    private final PathElementRepository processRepository = ProcessRepositorySQLite.getInstance();
+    private final PathElementRepository installationRepository = InstallationRepositorySQLite.getInstance();
+
     public ConfirmDialog(PathListsDialog dialog, Model model){
         super(dialog, REMOVE, true);
         this.dialog = dialog;
@@ -70,12 +76,7 @@ public class ConfirmDialog extends JDialog {
         this.positiveButton.addActionListener(this.clickRemove);
     }
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private final ActionListener clickRemove = new ActionListener() {
         @Override
@@ -83,16 +84,16 @@ public class ConfirmDialog extends JDialog {
             dispose();
             switch (model){
                 case DEPARTMENT:
-                    DepartmentServiceImpl.getInstance().clear();
+                    departmentRepository.clear();
                     break;
                 case AREA:
-                    AreaServiceImpl.getInstance().clear();
+                    areaRepository.clear();
                     break;
                 case PROCESS:
-                    ProcessServiceImpl.getInstance().clear();
+                    processRepository.clear();
                     break;
                 case INSTALLATION:
-                    InstallationServiceImpl.getInstance().clear();
+                    installationRepository.clear();
                     break;
             }
             dialog.update(model);

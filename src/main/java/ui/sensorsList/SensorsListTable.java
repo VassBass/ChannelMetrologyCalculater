@@ -1,7 +1,8 @@
 package ui.sensorsList;
 
 import model.Sensor;
-import service.impl.SensorServiceImpl;
+import repository.SensorRepository;
+import repository.impl.SensorRepositorySQLite;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,6 +13,8 @@ public class SensorsListTable extends JTable {
     private static final String NAME = "Назва";
     private static final String TYPE = "Тип";
     private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
+
+    private static final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
 
     public SensorsListTable(){
         super(tableModel(null));
@@ -31,8 +34,8 @@ public class SensorsListTable extends JTable {
         model.setColumnIdentifiers(columnsHeader);
 
         ArrayList<Sensor>sensors = measurement == null ?
-                new ArrayList<>(SensorServiceImpl.getInstance().getAll())
-                : new ArrayList<>(SensorServiceImpl.getInstance().getAll(measurement));
+                new ArrayList<>(sensorRepository.getAll())
+                : new ArrayList<>(sensorRepository.getAll(measurement));
         for (Sensor sensor : Objects.requireNonNull(sensors)) {
             String[] data = new String[3];
             data[0] = sensor.getName();

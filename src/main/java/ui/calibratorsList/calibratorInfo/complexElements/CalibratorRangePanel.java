@@ -2,7 +2,7 @@ package ui.calibratorsList.calibratorInfo.complexElements;
 
 import converters.VariableConverter;
 import model.Measurement;
-import service.impl.MeasurementServiceImpl;
+import repository.impl.MeasurementRepositorySQLite;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 
 import javax.swing.*;
@@ -63,7 +63,7 @@ public class CalibratorRangePanel extends JPanel {
         public void setList(String measurement){
             this.list.clear();
             if (measurement != null && measurement.equals(Measurement.PRESSURE)) {
-                ArrayList<Measurement> measurements = new ArrayList<>(MeasurementServiceImpl.getInstance().getAll());
+                ArrayList<Measurement> measurements = new ArrayList<>(MeasurementRepositorySQLite.getInstance().getAll());
                 for (Measurement m : Objects.requireNonNull(measurements)) {
                     if (m.getName().equals(measurement)) {
                         this.list.add(m.getValue());

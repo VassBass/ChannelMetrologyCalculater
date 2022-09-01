@@ -2,7 +2,7 @@ package service;
 
 import converters.VariableConverter;
 import model.Channel;
-import service.impl.ChannelServiceImpl;
+import repository.impl.ChannelRepositorySQLite;
 
 import java.io.File;
 import java.io.IOException;
@@ -346,7 +346,7 @@ public class FileBrowser {
     public static void createArchive() throws IOException {
         Calendar currentDate = Calendar.getInstance();
         ArrayList<String>certificateToArchive = new ArrayList<>();
-        ArrayList<Channel>channels = new ArrayList<>(ChannelServiceImpl.getInstance().getAll());
+        ArrayList<Channel>channels = new ArrayList<>(ChannelRepositorySQLite.getInstance().getAll());
         for (Channel channel : channels){
             Calendar checkDate = VariableConverter.stringToDate(channel.getDate());
             if (currentDate.get(Calendar.YEAR) > checkDate.get(Calendar.YEAR)){

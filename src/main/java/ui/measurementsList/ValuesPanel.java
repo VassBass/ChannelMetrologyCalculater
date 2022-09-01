@@ -2,7 +2,7 @@ package ui.measurementsList;
 
 import converters.VariableConverter;
 import model.Measurement;
-import service.impl.MeasurementServiceImpl;
+import repository.impl.MeasurementRepositorySQLite;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
 
@@ -75,7 +75,7 @@ public class ValuesPanel extends JPanel{
         this.setBorder(BorderFactory.createTitledBorder(this.currentMeasurementValue));
 
         if (measurementValue != null) {
-            Measurement measurement = MeasurementServiceImpl.getInstance().get(measurementValue).get();
+            Measurement measurement = MeasurementRepositorySQLite.getInstance().get(measurementValue).get();
 
             currentFactors = measurement.getFactors();
             String[] values = currentFactors.keySet().toArray(new String[0]);
@@ -147,7 +147,7 @@ public class ValuesPanel extends JPanel{
         @Override
         public void actionPerformed(ActionEvent e) {
             HashMap<String, Double> factors = getFactors();
-            MeasurementServiceImpl.getInstance().changeFactors(currentMeasurementValue, factors);
+            MeasurementRepositorySQLite.getInstance().changeFactors(currentMeasurementValue, factors);
             btn_clear.setEnabled(false);
             btn_saveValues.setEnabled(false);
             JOptionPane.showMessageDialog(parentDialog, "Збережено","Успіх",JOptionPane.INFORMATION_MESSAGE);

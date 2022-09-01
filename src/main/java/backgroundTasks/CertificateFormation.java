@@ -6,7 +6,8 @@ import constants.Key;
 import model.Calibrator;
 import model.Channel;
 import model.Measurement;
-import service.impl.ChannelServiceImpl;
+import repository.ChannelRepository;
+import repository.impl.ChannelRepositorySQLite;
 import ui.calculate.end.CalculateEndDialog;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
@@ -24,6 +25,8 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
     private final LoadDialog loadDialog;
     private Certificate certificate;
 
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+
     public CertificateFormation(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values, Calculation calculation){
         super();
         this.mainScreen = mainScreen;
@@ -32,13 +35,11 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
         this.calculation = calculation;
 
         this.loadDialog = new LoadDialog(mainScreen);
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    loadDialog.setVisible(true);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                loadDialog.setVisible(true);
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
     }
@@ -89,6 +90,6 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
         }else{
             newChannel.setReference((String) this.values.get(Key.CHANNEL_REFERENCE));
         }
-        ChannelServiceImpl.getInstance().set(this.channel, newChannel);
+        channelRepository.set(this.channel, newChannel);
     }
 }

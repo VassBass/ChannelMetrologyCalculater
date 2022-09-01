@@ -1,11 +1,10 @@
 package ui.personsList;
 
 import model.Person;
-import service.impl.PersonServiceImpl;
+import repository.PersonRepository;
+import repository.impl.PersonRepositorySQLite;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 
@@ -13,17 +12,14 @@ public class PersonsListTable extends JTable {
     private static final String FIO = "ПІБ";
     private static final String POSITION = "Посада";
 
+    private static final PersonRepository personRepository = PersonRepositorySQLite.getInstance();
+
     public PersonsListTable(final PersonsListDialog parent){
         super(tableModel());
 
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        this.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                parent.setEnabledButtons(true);
-            }
-        });
+        this.getSelectionModel().addListSelectionListener(e -> parent.setEnabledButtons(true));
     }
 
     private static DefaultTableModel tableModel(){
@@ -37,7 +33,7 @@ public class PersonsListTable extends JTable {
         String[]columnsHeader = new String[]{FIO, POSITION};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Person>workers = new ArrayList<>(PersonServiceImpl.getInstance().getAll());
+        ArrayList<Person>workers = new ArrayList<>(personRepository.getAll());
         String[][] list = new String[workers.size()][2];
         for (int x = 0; x < list.length; x++){
             Person worker = workers.get(x);

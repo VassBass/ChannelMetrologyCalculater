@@ -8,8 +8,9 @@ import model.Measurement;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
-import service.impl.CalibratorServiceImpl;
-import service.impl.MeasurementServiceImpl;
+import repository.CalibratorRepository;
+import repository.impl.CalibratorRepositorySQLite;
+import repository.impl.MeasurementRepositorySQLite;
 import ui.calculate.start.CalculateStartDialog;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
@@ -90,6 +91,8 @@ public class CalibratorInfoDialog extends JDialog {
 
     private JButton buttonCancel, buttonSave;
 
+    private final CalibratorRepository calibratorRepository = CalibratorRepositorySQLite.getInstance();
+
     public CalibratorInfoDialog(CalibratorsListDialog parent, Calibrator oldCalibrator){
         super(parent, CALIBRATOR, true);
         this.parent = parent;
@@ -129,7 +132,7 @@ public class CalibratorInfoDialog extends JDialog {
         this.labelCertificateCompany = new ButtonCell(true, PERFORMERS);
         this.labelCertificateDate = new ButtonCell(true, FROM);
 
-        this.measurementsList = new JComboBox<>(MeasurementServiceImpl.getInstance().getAllNames());
+        this.measurementsList = new JComboBox<>(MeasurementRepositorySQLite.getInstance().getAllNames());
         this.measurementsList.setBackground(Color.WHITE);
 
         this.typeText = new JTextField(10);
@@ -377,14 +380,14 @@ public class CalibratorInfoDialog extends JDialog {
                 calibrator._setCertificateCompany(certificateCompanyText.getText());
 
                 if (oldCalibrator == null){
-                    if (CalibratorServiceImpl.getInstance().isExists(calibrator)) {
+                    if (calibratorRepository.isExists(calibrator)) {
                         JOptionPane.showMessageDialog(CalibratorInfoDialog.this, "Калібратор з такою назвою вже існує в списку");
                         return;
                     }else {
-                        CalibratorServiceImpl.getInstance().add(calibrator);
+                        calibratorRepository.add(calibrator);
                     }
                 }else {
-                    CalibratorServiceImpl.getInstance().set(oldCalibrator, calibrator);
+                    calibratorRepository.set(oldCalibrator, calibrator);
                 }
                 dispose();
                 if (calculateDialog == null && parent != null){

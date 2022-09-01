@@ -1,9 +1,10 @@
 package ui.channelInfo.complexElements;
 
-import service.impl.AreaServiceImpl;
-import service.impl.DepartmentServiceImpl;
-import service.impl.InstallationServiceImpl;
-import service.impl.ProcessServiceImpl;
+import repository.PathElementRepository;
+import repository.impl.AreaRepositorySQLite;
+import repository.impl.DepartmentRepositorySQLite;
+import repository.impl.InstallationRepositorySQLite;
+import repository.impl.ProcessRepositorySQLite;
 import ui.channelInfo.DialogChannel;
 
 import javax.swing.*;
@@ -25,6 +26,11 @@ public class DialogChannel_pathPanel extends JPanel {
     private JComboBox<String>processes;
     private JComboBox<String>installations;
 
+    private final PathElementRepository departmentRepository = DepartmentRepositorySQLite.getInstance();
+    private final PathElementRepository areaRepository = AreaRepositorySQLite.getInstance();
+    private final PathElementRepository processRepository = ProcessRepositorySQLite.getInstance();
+    private final PathElementRepository installationRepository = InstallationRepositorySQLite.getInstance();
+
     public DialogChannel_pathPanel(DialogChannel parent){
         super();
         this.parent = parent;
@@ -35,19 +41,19 @@ public class DialogChannel_pathPanel extends JPanel {
     }
 
     private void createElements() {
-        this.departments = new JComboBox<>(DepartmentServiceImpl.getInstance().getAllInStrings());
+        this.departments = new JComboBox<>(departmentRepository.getAll().toArray(new String[0]));
         this.departments.setEditable(true);
         this.departments.setBackground(Color.WHITE);
 
-        this.areas = new JComboBox<>(AreaServiceImpl.getInstance().getAllInStrings());
+        this.areas = new JComboBox<>(areaRepository.getAll().toArray(new String[0]));
         this.areas.setEditable(true);
         this.areas.setBackground(Color.WHITE);
 
-        this.processes = new JComboBox<>(ProcessServiceImpl.getInstance().getAllInStrings());
+        this.processes = new JComboBox<>(processRepository.getAll().toArray(new String[0]));
         this.processes.setEditable(true);
         this.processes.setBackground(Color.WHITE);
 
-        this.installations = new JComboBox<>(InstallationServiceImpl.getInstance().getAllInStrings());
+        this.installations = new JComboBox<>(installationRepository.getAll().toArray(new String[0]));
         this.installations.setEditable(true);
         this.installations.setBackground(Color.WHITE);
     }

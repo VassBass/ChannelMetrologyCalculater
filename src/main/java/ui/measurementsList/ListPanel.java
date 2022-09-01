@@ -1,7 +1,7 @@
 package ui.measurementsList;
 
 import backgroundTasks.RemoveMeasurement;
-import service.impl.MeasurementServiceImpl;
+import repository.impl.MeasurementRepositorySQLite;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -32,7 +32,7 @@ public class ListPanel extends JPanel {
     }
 
     private void createElements(){
-        this.measurementsNames = new JComboBox<>(MeasurementServiceImpl.getInstance().getAllNames());
+        this.measurementsNames = new JComboBox<>(MeasurementRepositorySQLite.getInstance().getAllNames());
         this.measurementsTable = new MeasurementsTable(this.parentDialog);
         this.btn_add = new DefaultButton(ADD);
         this.btn_remove = new DefaultButton(REMOVE);
@@ -66,12 +66,7 @@ public class ListPanel extends JPanel {
     private final ActionListener clickAdd = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new AddMeasurementDialog(parentDialog).setVisible(true);
-                }
-            });
+            EventQueue.invokeLater(() -> new AddMeasurementDialog(parentDialog).setVisible(true));
         }
     };
 
@@ -80,15 +75,12 @@ public class ListPanel extends JPanel {
         public void actionPerformed(ActionEvent e) {
             final String measurementValue = measurementsTable.getMeasurementValue();
             if (measurementValue != null){
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        int result = JOptionPane.showConfirmDialog(parentDialog,
-                                "!*ВАЖЛИВО*! При видаленні величини будуть також видалені всі канали та калібратори які її використовують!",
-                                "Видалити \"" + measurementValue + "\"?", JOptionPane.OK_CANCEL_OPTION);
-                        if (result == 0){
-                            new RemoveMeasurement(parentDialog).start();
-                        }
+                EventQueue.invokeLater(() -> {
+                    int result = JOptionPane.showConfirmDialog(parentDialog,
+                            "!*ВАЖЛИВО*! При видаленні величини будуть також видалені всі канали та калібратори які її використовують!",
+                            "Видалити \"" + measurementValue + "\"?", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == 0){
+                        new RemoveMeasurement(parentDialog).start();
                     }
                 });
             }
@@ -98,12 +90,7 @@ public class ListPanel extends JPanel {
     private final ActionListener clickChange = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ChangeMeasurementDialog(parentDialog).setVisible(true);
-                }
-            });
+            EventQueue.invokeLater(() -> new ChangeMeasurementDialog(parentDialog).setVisible(true));
         }
     };
 

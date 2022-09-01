@@ -1,10 +1,11 @@
 package ui.pathLists;
 
 import model.Model;
-import service.impl.AreaServiceImpl;
-import service.impl.DepartmentServiceImpl;
-import service.impl.InstallationServiceImpl;
-import service.impl.ProcessServiceImpl;
+import repository.PathElementRepository;
+import repository.impl.AreaRepositorySQLite;
+import repository.impl.DepartmentRepositorySQLite;
+import repository.impl.InstallationRepositorySQLite;
+import repository.impl.ProcessRepositorySQLite;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -28,6 +29,12 @@ public class PathListsTable extends JTable {
             default: return null;
         }
     }
+
+    private static final PathElementRepository departmentRepository = DepartmentRepositorySQLite.getInstance();
+    private static final PathElementRepository areaRepository = AreaRepositorySQLite.getInstance();
+    private static final PathElementRepository processRepository = ProcessRepositorySQLite.getInstance();
+    private static final PathElementRepository installationRepository = InstallationRepositorySQLite.getInstance();
+
     public PathListsTable(Model model){
         super(tableModel(model));
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -46,16 +53,16 @@ public class PathListsTable extends JTable {
         String[] elements;
         switch (model){
             case AREA:
-                elements = AreaServiceImpl.getInstance().getAllInStrings();
+                elements = areaRepository.getAll().toArray(new String[0]);
                 break;
             case PROCESS:
-                elements = ProcessServiceImpl.getInstance().getAllInStrings();
+                elements = processRepository.getAll().toArray(new String[0]);
                 break;
             case INSTALLATION:
-                elements = InstallationServiceImpl.getInstance().getAllInStrings();
+                elements = installationRepository.getAll().toArray(new String[0]);
                 break;
             default:
-                elements = DepartmentServiceImpl.getInstance().getAllInStrings();
+                elements = departmentRepository.getAll().toArray(new String[0]);
                 break;
         }
         for (String element : elements){

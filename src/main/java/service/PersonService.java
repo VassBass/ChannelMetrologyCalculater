@@ -9,7 +9,7 @@ import javax.annotation.ParametersAreNullableByDefault;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface PersonService extends Service<Person> {
+public interface PersonService {
     /**
      * @return array with first String equals "<Порожньо>"
      */
@@ -19,14 +19,4 @@ public interface PersonService extends Service<Person> {
      * @return array with first String equals "<Порожньо>"
      */
     String[] getNamesOfHeadsWithFirstEmptyString();
-
-    boolean add(@Nonnull Collection<Person> persons);
-
-    @Override
-    boolean set(@Nonnull Person person, @Nullable Person ignored);
-    boolean set(@Nonnull Person person);
-
-    Optional<Person> get(@Nonnegative int id);
-
-    boolean resetToDefault();
 }

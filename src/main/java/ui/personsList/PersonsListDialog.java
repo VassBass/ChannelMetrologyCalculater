@@ -1,12 +1,11 @@
 package ui.personsList;
 
-import application.Application;
 import converters.ConverterUI;
-import service.impl.PersonServiceImpl;
+import repository.PersonRepository;
+import repository.impl.PersonRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 import ui.personsList.personInfo.PersonInfoDialog;
-import ui.personsList.personInfo.removePerson.RemovePersonDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,6 +23,8 @@ public class PersonsListDialog extends JDialog {
     private PersonsListTable mainTable;
 
     private JButton buttonAdd, buttonRemove, buttonChange;
+
+    private final PersonRepository personRepository = PersonRepositorySQLite.getInstance();
 
     public PersonsListDialog(MainScreen mainScreen){
         super(mainScreen, WORKERS, true);
@@ -71,27 +72,14 @@ public class PersonsListDialog extends JDialog {
         this.buttonRemove.setEnabled(enabled);
     }
 
-    private final ActionListener clickAdd = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new PersonInfoDialog(PersonsListDialog.this, null).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickAdd = e -> EventQueue.invokeLater(() -> new PersonInfoDialog(PersonsListDialog.this, null).setVisible(true));
 
     private final ActionListener clickChange = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    int index = mainTable.getSelectedRow();
-                    new PersonInfoDialog(PersonsListDialog.this, PersonServiceImpl.getInstance().get(index).get()).setVisible(true);
-                }
+            EventQueue.invokeLater(() -> {
+                int index = mainTable.getSelectedRow();
+                //new PersonInfoDialog(PersonsListDialog.this, personRepository.getById(index).get()).setVisible(true);
             });
         }
     };
@@ -99,12 +87,9 @@ public class PersonsListDialog extends JDialog {
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    int index = mainTable.getSelectedRow();
-                    //new RemovePersonDialog(PersonsListDialog.this, Application.context.personService.get(index)).setVisible(true);
-                }
+            EventQueue.invokeLater(() -> {
+                int index = mainTable.getSelectedRow();
+                //new RemovePersonDialog(PersonsListDialog.this, Application.context.personService.get(index)).setVisible(true);
             });
         }
     };

@@ -1,7 +1,8 @@
 package ui.calibratorsList;
 
 import model.Calibrator;
-import service.impl.CalibratorServiceImpl;
+import repository.CalibratorRepository;
+import repository.impl.CalibratorRepositorySQLite;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -12,6 +13,8 @@ public class CalibratorsListTable extends JTable {
     private static final String NAME = "Назва";
     private static final String TYPE = "Тип";
     private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
+
+    private static final CalibratorRepository calibratorRepository = CalibratorRepositorySQLite.getInstance();
 
     public CalibratorsListTable(){
         super(tableModel());
@@ -30,7 +33,7 @@ public class CalibratorsListTable extends JTable {
         String[]columnsHeader = new String[] {NAME, TYPE, TYPE_OF_MEASUREMENT};
         model.setColumnIdentifiers(columnsHeader);
 
-        ArrayList<Calibrator> calibrators = new ArrayList<>(CalibratorServiceImpl.getInstance().getAll());
+        ArrayList<Calibrator> calibrators = new ArrayList<>(calibratorRepository.getAll());
         for (Calibrator calibrator : Objects.requireNonNull(calibrators)) {
             String[] data = new String[3];
             data[0] = calibrator.getName();

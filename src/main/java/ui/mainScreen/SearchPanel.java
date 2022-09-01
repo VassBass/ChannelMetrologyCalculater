@@ -5,8 +5,9 @@ import backgroundTasks.SearchChannels;
 import constants.Sort;
 import converters.VariableConverter;
 import org.apache.commons.validator.DateValidator;
+import repository.PathElementRepository;
+import repository.impl.*;
 import service.ChannelSorter;
-import service.impl.*;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
@@ -47,6 +48,11 @@ public class SearchPanel extends JPanel {
     private JTextField valueText;
     private JComboBox<String>valueComboBox;
     private JCheckBox valueSuitability;
+
+    private final PathElementRepository departmentRepository = DepartmentRepositorySQLite.getInstance();
+    private final PathElementRepository areaRepository = AreaRepositorySQLite.getInstance();
+    private final PathElementRepository processRepository = ProcessRepositorySQLite.getInstance();
+    private final PathElementRepository installationRepository = InstallationRepositorySQLite.getInstance();
 
     public SearchPanel(){
         super(new GridBagLayout());
@@ -168,31 +174,31 @@ public class SearchPanel extends JPanel {
     };
 
     private ComboBoxModel<String>model_measurementsNames(){
-        return new DefaultComboBoxModel<>(MeasurementServiceImpl.getInstance().getAllNames());
+        return new DefaultComboBoxModel<>(MeasurementRepositorySQLite.getInstance().getAllNames());
     }
 
     private ComboBoxModel<String>model_measurementsValues(){
-        return new DefaultComboBoxModel<>(MeasurementServiceImpl.getInstance().getAllValues());
+        return new DefaultComboBoxModel<>(MeasurementRepositorySQLite.getInstance().getAllValues());
     }
 
     private ComboBoxModel<String>model_departments(){
-        return new DefaultComboBoxModel<>(DepartmentServiceImpl.getInstance().getAllInStrings());
+        return new DefaultComboBoxModel<>(departmentRepository.getAll().toArray(new String[0]));
     }
 
     private ComboBoxModel<String>model_areas(){
-        return new DefaultComboBoxModel<>(AreaServiceImpl.getInstance().getAllInStrings());
+        return new DefaultComboBoxModel<>(areaRepository.getAll().toArray(new String[0]));
     }
 
     private ComboBoxModel<String>model_processes(){
-        return new DefaultComboBoxModel<>(ProcessServiceImpl.getInstance().getAllInStrings());
+        return new DefaultComboBoxModel<>(processRepository.getAll().toArray(new String[0]));
     }
 
     private ComboBoxModel<String>model_installations(){
-        return new DefaultComboBoxModel<>(InstallationServiceImpl.getInstance().getAllInStrings());
+        return new DefaultComboBoxModel<>(installationRepository.getAll().toArray(new String[0]));
     }
 
     private ComboBoxModel<String>model_sensorsTypes(){
-        return new DefaultComboBoxModel<>(SensorServiceImpl.getInstance().getAllTypes());
+        return new DefaultComboBoxModel<>(SensorRepositorySQLite.getInstance().getAllTypes().toArray(new String[0]));
     }
 
     private final ActionListener clickSearch = new ActionListener() {
@@ -262,7 +268,7 @@ public class SearchPanel extends JPanel {
                     }
                 } else {
                     ChannelSorter.getInstance().setOff();
-                    MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+                    MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelRepositorySQLite.getInstance().getAll()));
                     if (field != null) field.setEnabled(true);
                     if (valueText != null) valueText.setEnabled(true);
                     if (valueComboBox != null) valueComboBox.setEnabled(true);
@@ -300,33 +306,30 @@ public class SearchPanel extends JPanel {
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED && field.getSelectedItem() != null){
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        switch (field.getSelectedItem().toString()){
-                            default:
-                                build(TEXT);
-                                valueText.setToolTipText(DEFAULT_TOOLTIP_TEXT);
-                                break;
-                            case MEASUREMENT_NAME:
-                            case MEASUREMENT_VALUE:
-                            case SENSOR_TYPE:
-                            case DEPARTMENT:
-                            case AREA:
-                            case PROCESS:
-                            case INSTALLATION:
-                                build(LIST);
-                                break;
-                            case DATE:
-                                build(TEXT);
-                                valueText.setToolTipText(DATE_TOOLTIP_TEXT);
-                                break;
-                            case SUITABILITY:
-                                build(CHECK);
-                                break;
-                        }
-                        MainScreen.getInstance().refresh();
+                EventQueue.invokeLater(() -> {
+                    switch (field.getSelectedItem().toString()){
+                        default:
+                            build(TEXT);
+                            valueText.setToolTipText(DEFAULT_TOOLTIP_TEXT);
+                            break;
+                        case MEASUREMENT_NAME:
+                        case MEASUREMENT_VALUE:
+                        case SENSOR_TYPE:
+                        case DEPARTMENT:
+                        case AREA:
+                        case PROCESS:
+                        case INSTALLATION:
+                            build(LIST);
+                            break;
+                        case DATE:
+                            build(TEXT);
+                            valueText.setToolTipText(DATE_TOOLTIP_TEXT);
+                            break;
+                        case SUITABILITY:
+                            build(CHECK);
+                            break;
                     }
+                    MainScreen.getInstance().refresh();
                 });
             }
         }

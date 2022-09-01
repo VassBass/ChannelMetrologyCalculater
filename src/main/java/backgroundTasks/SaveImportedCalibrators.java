@@ -1,8 +1,10 @@
 package backgroundTasks;
 
 import model.Calibrator;
-import service.impl.CalibratorServiceImpl;
-import service.impl.ChannelServiceImpl;
+import repository.CalibratorRepository;
+import repository.ChannelRepository;
+import repository.impl.CalibratorRepositorySQLite;
+import repository.impl.ChannelRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.LoadDialog;
 
@@ -24,23 +26,21 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
     private final LoadDialog loadDialog;
     private final File importFile;
 
+    private final CalibratorRepository calibratorRepository = CalibratorRepositorySQLite.getInstance();
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+
     public SaveImportedCalibrators(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator> calibratorsForChange, File file){
         super();
         this.newCalibrators = newCalibrators;
         this.calibratorsForChange = calibratorsForChange;
         this.loadDialog = new LoadDialog(MainScreen.getInstance());
         this.importFile = file;
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                loadDialog.setVisible(true);
-            }
-        });
+        EventQueue.invokeLater(() -> loadDialog.setVisible(true));
     }
 
     @Override
     protected Void doInBackground() throws Exception {
-        CalibratorServiceImpl.getInstance().importData(this.newCalibrators, this.calibratorsForChange);
+        calibratorRepository.importData(this.newCalibrators, this.calibratorsForChange);
         return null;
     }
 
@@ -48,7 +48,7 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
     protected void done() {
         this.loadDialog.dispose();
         if (this.importFile == null) {
-            MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelServiceImpl.getInstance().getAll()));
+            MainScreen.getInstance().setChannelsList(new ArrayList<>(channelRepository.getAll()));
             JOptionPane.showMessageDialog(MainScreen.getInstance(), IMPORT_SUCCESS, IMPORT, JOptionPane.INFORMATION_MESSAGE);
         }else {
             try {
