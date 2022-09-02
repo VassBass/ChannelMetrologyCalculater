@@ -191,8 +191,6 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
     @Override
     public boolean set(@Nonnull Calibrator oldCalibrator, @Nonnull Calibrator newCalibrator) {
-        if (oldCalibrator.isMatch(newCalibrator)) return true;
-
         String sql = "UPDATE calibrators SET "
                 + "name = '" + newCalibrator.getName() + "', "
                 + "type = '" + newCalibrator.getType() + "', "

@@ -221,8 +221,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
 
     @Override
     public boolean set(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor) {
-        if (oldSensor.isMatch(newSensor)) return true;
-
         String sql = "UPDATE sensors SET name = ?, type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, "
                 + "range_min = ?, range_max = ? WHERE name = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
@@ -247,8 +245,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
 
     @Override
     public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
-        if (oldValue.equals(newValue)) return true;
-
         String sql = "UPDATE sensors SET measurement = '" + newValue + "' WHERE measurement = '" + oldValue + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);

@@ -286,8 +286,6 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
 
     @Override
     public boolean changeSensor(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor, int ... ignored) {
-        if (oldSensor.isMatch(newSensor)) return true;
-
         List<Channel>changedChannels = new ArrayList<>();
 
         Sensor sensor = new Sensor();
@@ -341,8 +339,6 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
 
     @Override
     public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
-        if (oldValue.equals(newValue)) return true;
-
         List<String>needChangeSensorCodes = new ArrayList<>();
         List<Sensor>sensors = new ArrayList<>();
         Collection<Channel>channels = getAll();
@@ -377,8 +373,6 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
 
     @Override
     public boolean set(@Nonnull Channel oldChannel, @Nonnull Channel newChannel) {
-        if (oldChannel.isMatch(newChannel)) return true;
-
         String sql = "UPDATE channels SET "
                 + "code = '" + newChannel.getCode() + "', "
                 + "name = '" + newChannel.getName() + "', "

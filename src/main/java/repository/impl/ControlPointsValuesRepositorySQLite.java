@@ -223,8 +223,6 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
 
     @Override
     public boolean changeSensorType(@Nonnull String oldSensorType, @Nonnull String newSensorType) {
-        if (oldSensorType.equals(newSensorType)) return true;
-
         String sql = "UPDATE control_points SET "
                 + "sensor_type = '" + newSensorType + "' "
                 + "WHERE sensor_type = '" + oldSensorType + "';";

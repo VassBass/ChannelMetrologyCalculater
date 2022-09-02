@@ -212,8 +212,6 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
 
     @Override
     public boolean set(@Nonnull Measurement oldMeasurement, @Nonnull Measurement newMeasurement) {
-        if (oldMeasurement.isMatch(newMeasurement)) return true;
-
         String sql = "UPDATE measurements SET name = ?, value = ?, factors = ? WHERE value = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
             statement.setString(1, newMeasurement.getName());
@@ -361,7 +359,6 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     @Override
     public boolean exists(@Nonnull String oldValue, @Nonnull String newValue) {
         if (oldValue.equals(newValue)) return false;
-
         return exists(newValue);
     }
 }

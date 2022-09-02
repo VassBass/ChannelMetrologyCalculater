@@ -100,8 +100,6 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementR
      */
     @Override
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
-        if (oldObject.equals(newObject)) return true;
-
         String sql = "UPDATE areas SET area = '" + newObject + "' WHERE area = '" + oldObject + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
