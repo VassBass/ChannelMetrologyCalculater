@@ -77,7 +77,7 @@ public class ValuesPanel extends JPanel{
         if (measurementValue != null) {
             Measurement measurement = MeasurementRepositorySQLite.getInstance().get(measurementValue).get();
 
-            currentFactors = measurement.getFactors();
+            currentFactors = new HashMap<>(measurement.getFactors());
             String[] values = currentFactors.keySet().toArray(new String[0]);
             valuesLabels = new JButton[values.length];
             valuesTexts = new JTextField[values.length];

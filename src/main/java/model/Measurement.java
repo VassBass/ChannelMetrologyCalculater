@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -64,7 +65,7 @@ public class Measurement implements Serializable {
      * @see #KPA
      * and other
      */
-    @Nonnull protected HashMap<String, Double>factors = new HashMap<>();
+    @Nonnull protected Map<String, Double>factors = new HashMap<>();
 
     public Measurement(){}
 
@@ -79,7 +80,7 @@ public class Measurement implements Serializable {
 
     @Nonnull public String getName() {return this.name;}
     @Nonnull public String getValue() {return this.value;}
-    @Nonnull public HashMap<String,Double>getFactors(){return this.factors;}
+    @Nonnull public Map<String,Double>getFactors(){return this.factors;}
     @Nonnull public String _getFactorsJson() throws JsonProcessingException {
         ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
         return writer.writeValueAsString(this.factors);
@@ -88,7 +89,7 @@ public class Measurement implements Serializable {
 
     public void setName(@Nonnull String name) {this.name = name;}
     public void setValue(@Nonnull String value){this.value = value;}
-    public void setFactors(@Nonnull HashMap<String, Double>factors){this.factors = factors;}
+    public void setFactors(@Nonnull Map<String, Double> factors){this.factors = factors;}
 
     @SuppressWarnings("unchecked")
     public void _setFactors(@Nonnull String json) throws JsonProcessingException {

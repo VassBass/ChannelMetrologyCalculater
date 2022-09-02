@@ -3,7 +3,6 @@ package repository;
 import model.Measurement;
 
 import javax.annotation.Nonnull;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +17,7 @@ public interface MeasurementRepository extends Repository<Measurement>{
 
     boolean changeFactors(@Nonnull String measurementValue, @Nonnull Map<String, Double> factors);
 
-    boolean isLastInMeasurement(@Nonnull String measurementValue) throws SQLException;
+    boolean isLastInMeasurement(@Nonnull String measurementValue);
     boolean exists(@Nonnull String measurementValue);
     boolean exists(@Nonnull String oldValue, @Nonnull String newValue);
 }

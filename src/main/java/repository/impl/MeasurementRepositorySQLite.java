@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class MeasurementRepositorySQLite extends RepositoryJDBC implements MeasurementRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(MeasurementRepositorySQLite.class);
@@ -176,7 +177,10 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
             Collection<Measurement>measurements = getAll();
             for (Measurement m : measurements) {
                 if (measurement.getName().equals(m.getName())) {
-                    Double factor = 1 / measurement._getFactor(m.getValue());
+                    Double f = measurement._getFactor(m.getValue());
+                    if (f == null) continue;
+
+                    Double factor = 1 / f;
                     m.addFactor(measurement.getValue(), factor);
 
                     sql = "UPDATE measurements SET factors = '" + m._getFactorsJson() + "' WHERE value = '" + m.getValue() + "';";
@@ -196,13 +200,17 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
 
     @Override
     public boolean changeFactors(@Nonnull String measurementValue, @Nonnull Map<String, Double> factors) {
+        Map<String, Double>checkedMap = factors.entrySet().stream()
+                .filter(e -> e.getKey() != null && e.getValue() != null)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
         try (Statement statement = getStatement()) {
             ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-            String factorsJson = writer.writeValueAsString(factors);
+            String factorsJson = writer.writeValueAsString(checkedMap);
             String sql = "UPDATE measurements SET factors = '" + factorsJson + "' WHERE value = '" + measurementValue + "';";
             int result = statement.executeUpdate(sql);
 
-            if (result > 0) LOGGER.info("Factors of measurement with value: {} was replaced by:\n{}\nsuccessfully", measurementValue, factors);
+            if (result > 0) LOGGER.info("Factors of measurement with value: {} was replaced by:\n{}\nsuccessfully", measurementValue, checkedMap);
             return true;
         }catch (SQLException | JsonProcessingException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -227,15 +235,20 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
                     measurement.getFactors().remove(oldMeasurement.getValue());
                     measurement.getFactors().put(newMeasurement.getValue(), f);
 
-                    sql = "UPDATE measurement SET factors = '" + measurement._getFactorsJson() + "' WHERE value = '" + measurement.getValue() + "';";
+                    sql = "UPDATE measurements SET factors = '" + measurement._getFactorsJson() + "' WHERE value = '" + measurement.getValue() + "';";
                     try (Statement st = getStatement()){
                         st.execute(sql);
                     }
                 }
             }
 
-            if (result > 0) LOGGER.info("Measurement:\n{}\nwas replaced by:\n{}\nsuccessfully", oldMeasurement, newMeasurement);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Measurement:\n{}\nwas replaced by:\n{}\nsuccessfully", oldMeasurement, newMeasurement);
+                return true;
+            }else {
+                LOGGER.info("Measurement:\n{}\nnot found", oldMeasurement);
+                return false;
+            }
         }catch (SQLException | JsonProcessingException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -256,9 +269,11 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
                 }
 
                 LOGGER.info("Measurement = {} was removed successfully", measurement);
-            }else LOGGER.info("Measurement = {} not found", measurement);
-
-            return true;
+                return true;
+            }else {
+                LOGGER.info("Measurement = {} not found", measurement);
+                return false;
+            }
         }catch (SQLException | JsonProcessingException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -312,6 +327,8 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
                 for (Measurement measurement : measurements) {
+                    if (measurement == null) continue;
+
                     sqlBuilder.append("('").append(measurement.getName()).append("', ")
                             .append("'").append(measurement.getValue()).append("', ")
                             .append("'").append(measurement._getFactorsJson()).append("'),");
@@ -329,7 +346,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
     }
 
     @Override
-    public boolean isLastInMeasurement(@Nonnull String measurementValue) throws SQLException {
+    public boolean isLastInMeasurement(@Nonnull String measurementValue) {
         Optional<Measurement>m = get(measurementValue);
         if (m.isPresent()){
             Measurement measurement = m.get();
@@ -342,7 +359,10 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
                 LOGGER.warn("Exception was thrown!", e);
                 return false;
             }
-        }else throw new SQLException("Measurement with value = '" + measurementValue + "' not found");
+        }else {
+            LOGGER.info("Measurement with value = '" + measurementValue + "' not found");
+            return false;
+        }
     }
 
     @Override
