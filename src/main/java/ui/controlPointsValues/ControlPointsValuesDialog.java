@@ -35,7 +35,7 @@ public class ControlPointsValuesDialog extends JDialog {
     }
 
     private void createElements(){
-        String measurement = SensorRepositorySQLite.getInstance().getMeasurement(this.values.getSensorType());
+        String measurement = SensorRepositorySQLite.getInstance().getMeasurement(this.values.getSensorType()).get();
         if (measurement.equals(Measurement.TEMPERATURE)){
             this.controlPointsPanel = new TemperaturePanel(this.values.getRangeMin(), this.values.getRangeMax());
         }else if (measurement.equals(Measurement.PRESSURE)){

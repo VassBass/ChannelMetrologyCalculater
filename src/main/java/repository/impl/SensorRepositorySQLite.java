@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(SensorRepositorySQLite.class);
@@ -109,7 +110,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public List<String> getAllTypes() {
+    public Collection<String> getAllTypes() {
         List<String>types = new ArrayList<>();
         LOGGER.info("Reading all sensors types from DB");
         String sql = "SELECT DISTINCT type FROM sensors";
@@ -125,28 +126,30 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public String getMeasurement(@Nonnull String sensorType) {
+    public Optional<String> getMeasurement(@Nonnull String sensorType) {
         LOGGER.info("Reading sensor measurement by type = {} from DB", sensorType);
         String sql = "SELECT measurement FROM sensors WHERE type = '" + sensorType + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
-                return resultSet.getString("measurement");
+                return Optional.of(resultSet.getString("measurement"));
             }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override
-    public List<String> getAllSensorsName(@Nonnull String measurementName) {
+    public Collection<String> getAllSensorsName(@Nonnull String measurementName) {
         List<String> names = new ArrayList<>();
 
         LOGGER.info("Reading all sensors names by measurement = {} from DB", measurementName);
         String sql = "SELECT name FROM sensors WHERE measurement = '" + measurementName + "';";
         try (ResultSet resultSet = getResultSet(sql)){
-            names.add(resultSet.getString("name"));
+            while (resultSet.next()) {
+                names.add(resultSet.getString("name"));
+            }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
         }
@@ -155,7 +158,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     }
 
     @Override
-    public Sensor get(@Nonnull String sensorName) {
+    public Optional<Sensor> get(@Nonnull String sensorName) {
         LOGGER.info("Reading sensor with name = {} from DB", sensorName);
         String sql = "SELECT * FROM sensors WHERE name = '" + sensorName + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -170,14 +173,14 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
                 sensor.setRangeMin(resultSet.getDouble("range_min"));
                 sensor.setRangeMax(resultSet.getDouble("range_max"));
 
-                return sensor;
+                return Optional.of(sensor);
             }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
         }
 
         LOGGER.info("Sensor with name = {} not found", sensorName);
-        return null;
+        return Optional.empty();
     }
 
     @Override

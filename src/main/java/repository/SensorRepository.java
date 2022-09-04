@@ -5,13 +5,14 @@ import model.Sensor;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface SensorRepository extends Repository<Sensor>{
     Collection<Sensor> getAll(@Nonnull String measurement);
-    List<String> getAllTypes();
-    String getMeasurement(@Nonnull String sensorType);
-    List<String> getAllSensorsName(@Nonnull String measurementName);
-    Sensor get(@Nonnull String sensorName);
+    Collection<String> getAllTypes();
+    Optional<String> getMeasurement(@Nonnull String sensorType);
+    Collection<String> getAllSensorsName(@Nonnull String measurementName);
+    Optional<Sensor> get(@Nonnull String sensorName);
 
     boolean removeMeasurementValue(@Nonnull String measurementValue);
 

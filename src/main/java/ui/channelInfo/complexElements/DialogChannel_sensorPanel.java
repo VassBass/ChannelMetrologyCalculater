@@ -14,6 +14,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -98,7 +99,7 @@ public class DialogChannel_sensorPanel extends JPanel {
                         }
                     }
                     if (parent.sensorRangePanel != null && !parent.rangeLikeChannel.isSelected()){
-                        parent.sensorRangePanel.update(sensorRepository.get(sensorsList.getSelectedItem().toString()));
+                        parent.sensorRangePanel.update(sensorRepository.get(sensorsList.getSelectedItem().toString()).get());
                     }
                 }
             }
@@ -153,7 +154,7 @@ public class DialogChannel_sensorPanel extends JPanel {
     public void update(Sensor sensor){
         if (sensor != null){
             if (this.currentMeasurement.equals(sensor.getMeasurement())) {
-                List<String> sensors = sensorRepository.getAllSensorsName(sensor.getMeasurement());
+                List<String> sensors = new ArrayList<>(sensorRepository.getAllSensorsName(sensor.getMeasurement()));
                 for (int x = 0; x < sensors.size(); x++) {
                     if (sensor.getName().equals(sensors.get(x))) {
                         this.sensorsList.setSelectedIndex(x);
@@ -177,7 +178,7 @@ public class DialogChannel_sensorPanel extends JPanel {
 
     public Sensor getSensor(){
         String selectedSensor = Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString();
-        return sensorRepository.get(selectedSensor);
+        return sensorRepository.get(selectedSensor).get();
     }
 
     public String getSerialNumber(){

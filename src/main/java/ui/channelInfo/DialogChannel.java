@@ -337,7 +337,7 @@ public class DialogChannel extends JDialog {
         if (measurementName.equals(Measurement.TEMPERATURE)
             || measurementName.equals(Measurement.PRESSURE)){
             this.sensorRangePanel = new DialogChannel_sensorRangePanel(this, measurement);
-            this.sensorRangePanel.update(sensorRepository.get(this.sensorPanel.getSensor().getName()));
+            this.sensorRangePanel.update(sensorRepository.get(this.sensorPanel.getSensor().getName()).get());
             this.rangePanel.setTitle(RANGE_OF_CHANNEL);
             this.allowableErrorPanel.setEnabled(true);
         }else if (measurementName.equals(Measurement.CONSUMPTION)){
@@ -402,7 +402,7 @@ public class DialogChannel extends JDialog {
                     sensorRangePanel.setEnabled(false);
                 } else {
                     sensorRangePanel.setEnabled(true);
-                    sensorRangePanel.update(sensorRepository.get(sensorPanel.getSensor().getName()));
+                    sensorRangePanel.update(sensorRepository.get(sensorPanel.getSensor().getName()).get());
                 }
             }
         }
