@@ -17,6 +17,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class MeasurementRepositorySQLiteTest {
 
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
@@ -115,7 +116,6 @@ public class MeasurementRepositorySQLiteTest {
         assertArrayEquals(expected, repository.getValues(Measurement.PRESSURE));
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testGetExisted() {
         assertEquals(degreeCelsius, repository.get(degreeCelsius.getValue()).get());
@@ -142,7 +142,6 @@ public class MeasurementRepositorySQLiteTest {
         assertArrayEquals(testMeasurements, repository.getAll().toArray(new Measurement[0]));
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testChangeFactors() throws JsonProcessingException {
         Map<String, Double> newFactors = new HashMap<>();
@@ -176,6 +175,7 @@ public class MeasurementRepositorySQLiteTest {
     @Test
     public void testSetSame() {
         assertTrue(repository.set(kPa, kPa));
+        assertEquals(kPa.getName(), repository.get(kPa.getValue()).get().getName());
         assertArrayEquals(testMeasurements, repository.getAll().toArray(new Measurement[0]));
     }
 
@@ -184,18 +184,23 @@ public class MeasurementRepositorySQLiteTest {
         testMeasurements[2] = cmS;
 
         assertTrue(repository.set(pa, cmS));
+        assertFalse(repository.get(pa.getValue()).isPresent());
+        assertTrue(repository.get(cmS.getValue()).isPresent());
         assertArrayEquals(testMeasurements, repository.getAll().toArray(new Measurement[0]));
     }
 
     @Test
     public void testSetExisted() {
         assertFalse(repository.set(testMeasurements[2], degreeCelsius));
+        assertEquals(testMeasurements[2].getName(), repository.get(pa.getValue()).get().getName());
         assertArrayEquals(testMeasurements, repository.getAll().toArray(new Measurement[0]));
     }
 
     @Test
     public void testSetInsteadNotExisted() {
         assertFalse(repository.set(cmS, degreeCelsius));
+        assertFalse(repository.get(cmS.getValue()).isPresent());
+        assertTrue(repository.get(degreeCelsius.getValue()).isPresent());
         assertArrayEquals(testMeasurements, repository.getAll().toArray(new Measurement[0]));
     }
 

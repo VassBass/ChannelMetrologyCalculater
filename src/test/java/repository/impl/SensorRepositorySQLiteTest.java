@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class SensorRepositorySQLiteTest {
 
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
@@ -143,198 +144,248 @@ public class SensorRepositorySQLiteTest {
         assertArrayEquals(expected, repository.getAllSensorsName(Measurement.TEMPERATURE).toArray(new String[0]));
         assertArrayEquals(new String[0], repository.getAllSensorsName("Not Exist").toArray(new String[0]));
     }
-//
-//    @SuppressWarnings("OptionalGetWithoutIsPresent")
-//    @Test
-//    public void testGetExisted() {
-//        assertEquals(createCalibrator(1), repository.get("calibrator1").get());
-//    }
-//
-//    @Test
-//    public void testGetNotExisted() {
-//        assertFalse(repository.get("Not Existed").isPresent());
-//    }
-//
-//    @Test
-//    public void testAddNotExisted() {
-//        Calibrator[] expected = Arrays.copyOf(testCalibrators, 8);
-//        expected[expected.length-1] = createCalibrator(7);
-//
-//        assertTrue(repository.add(createCalibrator(7)));
-//        assertArrayEquals(expected, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testAddExisted() {
-//        assertFalse(repository.add(createCalibrator(2)));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testRemoveExisted() {
-//        Calibrator[] expected = Arrays.copyOf(testCalibrators, 6);
-//
-//        assertTrue(repository.remove(createCalibrator(6)));
-//        assertArrayEquals(expected, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testRemoveNotExisted() {
-//        assertFalse(repository.remove(createCalibrator(8)));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testRemoveByMeasurementValueExisted() {
-//        Calibrator[]expected = Arrays.copyOf(testCalibrators, 5);
-//
-//        assertTrue(repository.removeByMeasurementValue(Measurement.M3_HOUR));
-//        assertArrayEquals(expected, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testRemoveByMeasurementValueNotExisted() {
-//        assertFalse(repository.removeByMeasurementValue("Not Existed"));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testSetSame() {
-//        assertTrue(repository.set(createCalibrator(2), createCalibrator(2)));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testSetNew() {
-//        testCalibrators[2] = createCalibrator(8);
-//
-//        assertTrue(repository.set(createCalibrator(2), createCalibrator(8)));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testSetExisted() {
-//        assertFalse(repository.set(createCalibrator(2), createCalibrator(0)));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testSetInsteadNotExisted() {
-//        assertFalse(repository.set(createCalibrator(8), createCalibrator(0)));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testChangeToSameMeasurementValue() {
-//        assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.DEGREE_CELSIUS));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testChangeToNewMeasurementValue() {
-//        testCalibrators[0].setValue(Measurement.PA);
-//        testCalibrators[1].setValue(Measurement.PA);
-//        testCalibrators[2].setValue(Measurement.PA);
-//
-//        assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.PA));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testChangeToExistedMeasurementValue() {
-//        testCalibrators[0].setValue(Measurement.KPA);
-//        testCalibrators[1].setValue(Measurement.KPA);
-//        testCalibrators[2].setValue(Measurement.KPA);
-//
-//        assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.KPA));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testChangeInsteadNotExistedMeasurementValue() {
-//        assertFalse(repository.changeMeasurementValue(Measurement.PA, Measurement.KPA));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testClear() {
-//        assertTrue(repository.clear());
-//        assertArrayEquals(new Calibrator[0], repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testRewriteNotEmpty() {
-//        Calibrator[] expected = new Calibrator[]{createCalibrator(8), createCalibrator(9), createCalibrator(0)};
-//        Calibrator[] toRewrite = new Calibrator[]{createCalibrator(8), null, createCalibrator(9), createCalibrator(0)};
-//
-//        assertTrue(repository.rewrite(Arrays.asList(toRewrite)));
-//        assertArrayEquals(expected, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testRewriteEmpty() {
-//        assertTrue(repository.rewrite(new ArrayList<>()));
-//        assertArrayEquals(new Calibrator[0], repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testImportDataWithNewAndChanging() {
-//        testCalibrators[2].setErrorFormula("New Error-Formula");
-//        testCalibrators[4].setNumber("New Number");
-//        Calibrator[] expected = Arrays.copyOf(testCalibrators, 9);
-//        expected[expected.length-2] = createCalibrator(8);
-//        expected[expected.length-1] = createCalibrator(9);
-//
-//        ArrayList<Calibrator>forChange = new ArrayList<>();
-//        forChange.add(testCalibrators[2]);
-//        forChange.add(null);
-//        forChange.add(testCalibrators[4]);
-//
-//        ArrayList<Calibrator>newCal = new ArrayList<>();
-//        newCal.add(createCalibrator(8));
-//        newCal.add(null);
-//        newCal.add(createCalibrator(9));
-//
-//        assertTrue(repository.importData(newCal, forChange));
-//        assertArrayEquals(expected, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testImportDataOnlyWithNew() {
-//        Calibrator[] expected = Arrays.copyOf(testCalibrators, 9);
-//        expected[expected.length-2] = createCalibrator(8);
-//        expected[expected.length-1] = createCalibrator(9);
-//
-//        ArrayList<Calibrator>newCal = new ArrayList<>();
-//        newCal.add(createCalibrator(8));
-//        newCal.add(createCalibrator(9));
-//
-//        assertTrue(repository.importData(newCal, new ArrayList<>()));
-//        assertArrayEquals(expected, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testImportDataOnlyWithChanging() {
-//        testCalibrators[2].setErrorFormula("New Error-Formula");
-//        testCalibrators[4].setNumber("New Number");
-//
-//        ArrayList<Calibrator>forChange = new ArrayList<>();
-//        forChange.add(testCalibrators[2]);
-//        forChange.add(testCalibrators[4]);
-//
-//        assertTrue(repository.importData(new ArrayList<>(), forChange));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testImportDataWithoutNewAndChanging() {
-//        assertTrue(repository.importData(new ArrayList<>(), new ArrayList<>()));
-//        assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
-//    }
-//
-//    @Test
-//    public void testIsExists() {
-//        assertTrue(repository.isExists(createCalibrator(0)));
-//        assertFalse(repository.isExists(createCalibrator(8)));
-//    }
+
+    @Test
+    public void testGetExisted() {
+        assertEquals(testSensors[1], repository.get("name1").get());
+    }
+
+    @Test
+    public void testGetNotExisted() {
+        assertFalse(repository.get("Not Existed").isPresent());
+    }
+
+    @Test
+    public void testAddNotExisted() {
+        Sensor toAdd = createSensor(7, new Measurement(Measurement.TEMPERATURE, Measurement.DEGREE_CELSIUS));
+        Sensor[] expected = Arrays.copyOf(testSensors, 8);
+        expected[expected.length-1] = toAdd;
+
+        assertTrue(repository.add(toAdd));
+        assertTrue(repository.get("name7").isPresent());
+        assertArrayEquals(expected, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testAddExisted() {
+        assertFalse(repository.add(testSensors[2]));
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testRemoveExisted() {
+        Sensor[] expected = Arrays.copyOf(testSensors, 6);
+
+        assertTrue(repository.remove(testSensors[6]));
+        assertFalse(repository.get("name6").isPresent());
+        assertArrayEquals(expected, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testRemoveNotExisted() {
+        assertFalse(repository.remove(createSensor(8, new Measurement())));
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testSetSame() {
+        assertTrue(repository.set(testSensors[2], testSensors[2]));
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testSetNew() {
+        Sensor toChange = createSensor(8, new Measurement());
+
+        assertTrue(repository.set(testSensors[2], toChange));
+        testSensors[2] = toChange;
+
+        assertFalse(repository.get("name2").isPresent());
+        assertTrue(repository.get("name8").isPresent());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testSetExisted() {
+        assertFalse(repository.set(testSensors[2], testSensors[0]));
+        assertTrue(repository.get("name2").isPresent());
+        assertTrue(repository.get("name0").isPresent());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testSetInsteadNotExisted() {
+        assertFalse(repository.set(createSensor(8, new Measurement()), testSensors[0]));
+        assertFalse(repository.get("name8").isPresent());
+        assertTrue(repository.get("name0").isPresent());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testChangeToSameMeasurementValue() {
+        assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.DEGREE_CELSIUS));
+        assertEquals(testSensors[0].getValue(), repository.get("name0").get().getValue());
+        assertEquals(testSensors[0].getMeasurement(), repository.get("name0").get().getMeasurement());
+        assertEquals(testSensors[4].getValue(), repository.get("name4").get().getValue());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testChangeToNewMeasurementValue() {
+        testSensors[0].setValue(Measurement.PA);
+        testSensors[1].setValue(Measurement.PA);
+        testSensors[2].setValue(Measurement.PA);
+
+        assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.PA));
+        assertEquals(testSensors[1].getValue(), repository.get("name1").get().getValue());
+        assertEquals(testSensors[1].getMeasurement(), repository.get("name1").get().getMeasurement());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testChangeToExistedMeasurementValue() {
+        testSensors[0].setValue(Measurement.KPA);
+        testSensors[1].setValue(Measurement.KPA);
+        testSensors[2].setValue(Measurement.KPA);
+
+        assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.KPA));
+        assertEquals(testSensors[1].getValue(), repository.get("name1").get().getValue());
+        assertEquals(testSensors[1].getMeasurement(), repository.get("name1").get().getMeasurement());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+
+    @Test
+    public void testChangeInsteadNotExistedMeasurementValue() {
+        assertTrue(repository.changeMeasurementValue(Measurement.PA, Measurement.KPA));
+        assertEquals(testSensors[1].getValue(), repository.get("name1").get().getValue());
+        assertEquals(testSensors[1].getMeasurement(), repository.get("name1").get().getMeasurement());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testRemoveExistedMeasurementValue(){
+        testSensors[0].setValue("");
+        testSensors[1].setValue("");
+        testSensors[2].setValue("");
+
+        assertTrue(repository.removeMeasurementValue(Measurement.DEGREE_CELSIUS));
+        assertEquals("", repository.get("name1").get().getValue());
+        assertEquals(testSensors[1].getMeasurement(), repository.get("name1").get().getMeasurement());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testRemoveNotExistedMeasurementValue(){
+        assertTrue(repository.removeMeasurementValue(Measurement.PA));
+        assertEquals(Measurement.DEGREE_CELSIUS, repository.get("name1").get().getValue());
+        assertEquals(testSensors[1].getMeasurement(), repository.get("name1").get().getMeasurement());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testClear() {
+        assertTrue(repository.clear());
+        assertArrayEquals(new Sensor[0], repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testRewriteNotEmpty() {
+        Sensor[] expected = new Sensor[]{
+                createSensor(8, new Measurement()),
+                createSensor(9, new Measurement()),
+                testSensors[0]
+        };
+        Sensor[] toRewrite = new Sensor[]{
+                createSensor(8, new Measurement()),
+                null,
+                createSensor(9, new Measurement()),
+                testSensors[0]
+        };
+
+        assertTrue(repository.rewrite(Arrays.asList(toRewrite)));
+        assertArrayEquals(expected, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testRewriteEmpty() {
+        assertTrue(repository.rewrite(new ArrayList<>()));
+        assertArrayEquals(new Sensor[0], repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testIsLastInMeasurement(){
+        repository.remove(testSensors[6]);
+
+        assertFalse(repository.isLastInMeasurement(testSensors[0]));
+        assertTrue(repository.isLastInMeasurement(testSensors[5]));
+        assertTrue(repository.isLastInMeasurement(createSensor(8, new Measurement())));
+    }
+
+    @Test
+    public void testImportDataWithNewAndChanging() {
+        testSensors[2].setErrorFormula("New Error-Formula");
+        testSensors[4].setNumber("New Number");
+        Sensor[] expected = Arrays.copyOf(testSensors, 9);
+        expected[expected.length-2] = createSensor(8, new Measurement());
+        expected[expected.length-1] = createSensor(9, new Measurement());
+
+        ArrayList<Sensor>forChange = new ArrayList<>();
+        forChange.add(testSensors[2]);
+        forChange.add(null);
+        forChange.add(testSensors[4]);
+
+        ArrayList<Sensor>newSen = new ArrayList<>();
+        newSen.add(createSensor(8, new Measurement()));
+        newSen.add(null);
+        newSen.add(createSensor(9, new Measurement()));
+
+        assertTrue(repository.importData(newSen, forChange));
+        assertEquals(testSensors[2].getErrorFormula(), repository.get("name2").get().getErrorFormula());
+        assertEquals(testSensors[4].getNumber(), repository.get("name4").get().getNumber());
+        assertTrue(repository.get("name9").isPresent());
+        assertArrayEquals(expected, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testImportDataOnlyWithNew() {
+        Sensor[] expected = Arrays.copyOf(testSensors, 9);
+        expected[expected.length-2] = createSensor(8, new Measurement());
+        expected[expected.length-1] = createSensor(9, new Measurement());
+
+        ArrayList<Sensor>newSen = new ArrayList<>();
+        newSen.add(createSensor(8, new Measurement()));
+        newSen.add(createSensor(9, new Measurement()));
+
+        assertTrue(repository.importData(newSen, new ArrayList<>()));
+        assertTrue(repository.get("name9").isPresent());
+        assertArrayEquals(expected, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testImportDataOnlyWithChanging() {
+        testSensors[2].setErrorFormula("New Error-Formula");
+        testSensors[4].setNumber("New Number");
+
+        ArrayList<Sensor>forChange = new ArrayList<>();
+        forChange.add(testSensors[2]);
+        forChange.add(testSensors[4]);
+
+        assertTrue(repository.importData(new ArrayList<>(), forChange));
+        assertEquals(testSensors[2].getErrorFormula(), repository.get("name2").get().getErrorFormula());
+        assertEquals(testSensors[4].getNumber(), repository.get("name4").get().getNumber());
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testImportDataWithoutNewAndChanging() {
+        assertTrue(repository.importData(new ArrayList<>(), new ArrayList<>()));
+        assertArrayEquals(testSensors, repository.getAll().toArray(new Sensor[0]));
+    }
+
+    @Test
+    public void testIsExists() {
+        assertTrue(repository.isExists("name0"));
+        assertFalse(repository.isExists("name9"));
+    }
 }

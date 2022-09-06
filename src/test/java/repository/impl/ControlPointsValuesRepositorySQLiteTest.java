@@ -11,11 +11,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class ControlPointsValuesRepositorySQLiteTest {
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
     private static final ControlPointsValuesRepository repository = new ControlPointsValuesRepositorySQLite(DB_URL, null, null);
@@ -92,7 +92,6 @@ public class ControlPointsValuesRepositorySQLiteTest {
         assertArrayEquals(testCpv, repository.getAll().toArray(new ControlPointsValues[0]));
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testGetByIdExisted() {
         assertEquals(createCpv(0), repository.getById(0).get());
@@ -131,18 +130,22 @@ public class ControlPointsValuesRepositorySQLiteTest {
         testCpv[2] = cpv2;
 
         assertTrue(repository.set(cpv2, null));
+        assertEquals(cpv2.getSensorType(), repository.getById(2).get().getSensorType());
         assertArrayEquals(testCpv, repository.getAll().toArray(new ControlPointsValues[0]));
 
         assertTrue(repository.set(cpv2));
+        assertEquals(cpv2.getSensorType(), repository.getById(2).get().getSensorType());
         assertArrayEquals(testCpv, repository.getAll().toArray(new ControlPointsValues[0]));
     }
 
     @Test
     public void testSetExisted() {
         assertTrue(repository.set(createCpv(2), null));
+        assertEquals(createCpv(2).getSensorType(), repository.getById(2).get().getSensorType());
         assertArrayEquals(testCpv, repository.getAll().toArray(new ControlPointsValues[0]));
 
         assertTrue(repository.set(createCpv(2)));
+        assertEquals(createCpv(2).getSensorType(), repository.getById(2).get().getSensorType());
         assertArrayEquals(testCpv, repository.getAll().toArray(new ControlPointsValues[0]));
     }
 
@@ -169,6 +172,7 @@ public class ControlPointsValuesRepositorySQLiteTest {
     @Test
     public void testChangeSensorTypeEquals(){
         assertTrue(repository.changeSensorType(createCpv(1).getSensorType(), createCpv(1).getSensorType()));
+        assertEquals(testCpv[1].getSensorType(), repository.getById(1).get().getSensorType());
         assertArrayEquals(testCpv, repository.getAll().toArray(new ControlPointsValues[0]));
     }
 
@@ -177,6 +181,7 @@ public class ControlPointsValuesRepositorySQLiteTest {
         testCpv[1].setSensorType("type");
 
         assertTrue(repository.changeSensorType(createCpv(1).getSensorType(), "type"));
+        assertEquals(testCpv[1].getSensorType(), repository.getById(1).get().getSensorType());
         assertArrayEquals(testCpv, repository.getAll().toArray(new ControlPointsValues[0]));
     }
 

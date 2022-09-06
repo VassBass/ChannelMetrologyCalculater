@@ -212,10 +212,11 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
             int result = statement.executeUpdate(sql);
             if (result > 0){
                 LOGGER.info("Sensor = {} was removed successfully", sensor.getName());
+                return true;
             }else {
                 LOGGER.info("Sensor with name = {} not found", sensor.getName());
+                return false;
             }
-            return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -238,8 +239,13 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
             statement.setString(9, oldSensor.getName());
 
             int result = statement.executeUpdate();
-            if (result > 0) LOGGER.info("Sensor:\n{}\nwas replaced by:\n{}\nsuccessfully", oldSensor, newSensor);
-            return true;
+            if (result > 0) {
+                LOGGER.info("Sensor:\n{}\nwas replaced by:\n{}\nsuccessfully", oldSensor, newSensor);
+                return true;
+            }else {
+                LOGGER.info("Sensor with name = {} not found", oldSensor.getName());
+                return false;
+            }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -248,7 +254,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
 
     @Override
     public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
-        String sql = "UPDATE sensors SET measurement = '" + newValue + "' WHERE measurement = '" + oldValue + "';";
+        String sql = "UPDATE sensors SET value = '" + newValue + "' WHERE value = '" + oldValue + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
             LOGGER.info("Changed measurementValue of {} sensors from {} to {}", result, oldValue, newValue);
@@ -261,7 +267,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
 
     @Override
     public boolean removeMeasurementValue(@Nonnull String measurementValue) {
-        String sql = "UPDATE sensors SET measurement = '' WHERE measurement = '" + measurementValue + "';";
+        String sql = "UPDATE sensors SET value = '' WHERE value = '" + measurementValue + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
             LOGGER.info("Measurement value = {} was removed from {} sensors",measurementValue, result);
@@ -285,6 +291,8 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
                 for (Sensor sensor : sensors) {
+                    if (sensor == null) continue;
+
                     sqlBuilder.append("('").append(sensor.getName()).append("', ")
                             .append("'").append(sensor.getType()).append("', ")
                             .append("'").append(sensor.getNumber()).append("', ")
@@ -342,6 +350,8 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
         int addResult = 0;
         if (!sensorsForChange.isEmpty()){
             for (Sensor s : sensorsForChange){
+                if (s == null) continue;
+
                 String sql = "UPDATE sensors SET "
                         + "type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, range_min = ?, range_max = ? "
                         + "WHERE name = ?;";
@@ -371,6 +381,8 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
             StringBuilder sqlBuilder = new StringBuilder(sql);
             try (Statement statement = getStatement()) {
                 for (Sensor sensor : newSensors) {
+                    if (sensor == null) continue;
+
                     sqlBuilder.append("('").append(sensor.getName()).append("', ")
                             .append("'").append(sensor.getType()).append("', ")
                             .append("'").append(sensor.getNumber()).append("', ")

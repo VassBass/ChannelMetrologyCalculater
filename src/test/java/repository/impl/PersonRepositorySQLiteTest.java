@@ -15,6 +15,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class PersonRepositorySQLiteTest {
 
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
@@ -95,7 +96,6 @@ public class PersonRepositorySQLiteTest {
         assertArrayEquals(testPersons, repository.getAll().toArray(new Person[0]));
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testGetByIdExisted() {
         assertEquals(createPerson(0,false), repository.getById(0).get());
@@ -134,6 +134,7 @@ public class PersonRepositorySQLiteTest {
         testPersons[2] = person2;
 
         assertTrue(repository.set(person2, null));
+        assertEquals(person2.getName(), repository.getById(2).get().getName());
         assertArrayEquals(testPersons, repository.getAll().toArray(new Person[0]));
 
         assertTrue(repository.set(person2));
@@ -163,7 +164,6 @@ public class PersonRepositorySQLiteTest {
         assertArrayEquals(expected, repository.getAll().toArray(new Person[0]));
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testAllCollectionWithExists(){
         Person[]expected = Arrays.copyOf(testPersons, 10);

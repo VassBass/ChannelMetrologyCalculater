@@ -15,6 +15,7 @@ import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class CalibratorRepositorySQLiteTest {
 
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
@@ -122,7 +123,6 @@ public class CalibratorRepositorySQLiteTest {
         assertArrayEquals(expectedConsumption, repository.getAllNames(new Measurement(Measurement.CONSUMPTION, Measurement.M3_HOUR)));
     }
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     @Test
     public void testGetExisted() {
         assertEquals(createCalibrator(1), repository.get("calibrator1").get());
@@ -187,24 +187,32 @@ public class CalibratorRepositorySQLiteTest {
         testCalibrators[2] = createCalibrator(8);
 
         assertTrue(repository.set(createCalibrator(2), createCalibrator(8)));
+        assertFalse(repository.get("calibrator2").isPresent());
+        assertTrue(repository.get("calibrator8").isPresent());
         assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
     }
 
     @Test
     public void testSetExisted() {
         assertFalse(repository.set(createCalibrator(2), createCalibrator(0)));
+        assertTrue(repository.get("calibrator2").isPresent());
+        assertTrue(repository.get("calibrator0").isPresent());
         assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
     }
 
     @Test
     public void testSetInsteadNotExisted() {
         assertFalse(repository.set(createCalibrator(8), createCalibrator(0)));
+        assertTrue(repository.get("calibrator0").isPresent());
         assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
     }
 
     @Test
     public void testChangeToSameMeasurementValue() {
         assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.DEGREE_CELSIUS));
+        assertEquals(testCalibrators[0].getValue(), repository.get("calibrator0").get().getValue());
+        assertEquals(testCalibrators[0].getMeasurement(), repository.get("calibrator0").get().getMeasurement());
+        assertEquals(testCalibrators[4].getValue(), repository.get("calibrator4").get().getValue());
         assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
     }
 
@@ -215,6 +223,8 @@ public class CalibratorRepositorySQLiteTest {
         testCalibrators[2].setValue(Measurement.PA);
 
         assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.PA));
+        assertEquals(testCalibrators[1].getValue(), repository.get("calibrator1").get().getValue());
+        assertEquals(testCalibrators[1].getMeasurement(), repository.get("calibrator1").get().getMeasurement());
         assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
     }
 
@@ -225,12 +235,16 @@ public class CalibratorRepositorySQLiteTest {
         testCalibrators[2].setValue(Measurement.KPA);
 
         assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.KPA));
+        assertEquals(testCalibrators[1].getValue(), repository.get("calibrator1").get().getValue());
+        assertEquals(testCalibrators[1].getMeasurement(), repository.get("calibrator1").get().getMeasurement());
         assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
     }
 
     @Test
     public void testChangeInsteadNotExistedMeasurementValue() {
         assertFalse(repository.changeMeasurementValue(Measurement.PA, Measurement.KPA));
+        assertEquals(testCalibrators[1].getValue(), repository.get("calibrator1").get().getValue());
+        assertEquals(testCalibrators[1].getMeasurement(), repository.get("calibrator1").get().getMeasurement());
         assertArrayEquals(testCalibrators, repository.getAll().toArray(new Calibrator[0]));
     }
 

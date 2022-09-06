@@ -133,12 +133,13 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
 
     @Override
     public boolean set(@Nonnull ControlPointsValues cpv, @Nullable ControlPointsValues ignored) {
-        String sql = "UPDATE control_points SET range_min = ?, range_max = ?, points = ? WHERE id = ?;";
+        String sql = "UPDATE control_points SET sensor_type = ?, range_min = ?, range_max = ?, points = ? WHERE id = ?;";
         try (PreparedStatement statement = getPreparedStatement(sql)){
-            statement.setDouble(1, cpv.getRangeMin());
-            statement.setDouble(2, cpv.getRangeMax());
-            statement.setString(3, cpv._getValuesString());
-            statement.setInt(4, cpv.getId());
+            statement.setString(1, cpv.getSensorType());
+            statement.setDouble(2, cpv.getRangeMin());
+            statement.setDouble(3, cpv.getRangeMax());
+            statement.setString(4, cpv._getValuesString());
+            statement.setInt(5, cpv.getId());
 
             int result = statement.executeUpdate();
             if (result > 0) LOGGER.info("Control_points with id = {} was updated by : {}", cpv.getId(), cpv);
