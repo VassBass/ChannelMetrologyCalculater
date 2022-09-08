@@ -1,11 +1,9 @@
 package repository.impl;
 
-import model.Calibrator;
 import model.Measurement;
 import model.Sensor;
 import org.junit.*;
 import org.sqlite.JDBC;
-import repository.CalibratorRepository;
 import repository.SensorRepository;
 
 import java.sql.Connection;

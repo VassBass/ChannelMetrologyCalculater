@@ -16,6 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChannelRepositorySQLite.class);
@@ -68,7 +69,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public Channel get(@Nonnull String code) {
+    public Optional<Channel> get(@Nonnull String code) {
         LOGGER.info("Reading channel with code = {} from DB", code);
         String sql = "SELECT * FROM channels WHERE code = '" + code + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -91,14 +92,14 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                 channel.setAllowableError(resultSet.getDouble("allowable_error_percent"),
                         resultSet.getDouble("allowable_error_value"));
 
-                return channel;
+                return Optional.of(channel);
             }else {
                 LOGGER.info("Channel with code = {} not found", code);
-                return null;
+                return Optional.empty();
             }
         }catch (SQLException | JsonProcessingException e){
             LOGGER.warn("Exception was thrown!", e);
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -179,10 +180,11 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
             int result = statement.executeUpdate(sql);
             if (result > 0){
                 LOGGER.info("Channel = {} was removed successfully", channel.getName());
+                return true;
             }else {
                 LOGGER.info("Channel with code = {} not found", channel.getCode());
+                return false;
             }
-            return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -246,6 +248,8 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
                 for (Channel channel : channels) {
+                    if (channel == null) continue;
+
                     sqlBuilder.append("('").append(channel.getCode()).append("', ")
                             .append("'").append(channel.getName()).append("', ")
                             .append("'").append(channel.getDepartment()).append("', ")
@@ -319,7 +323,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
             return false;
         }
 
-        LOGGER.info("Changed sensor of {} channels from {} to {}", result, oldSensor, newSensor);
+        LOGGER.info("Changed sensor of {} channels from {} to {}", result, oldSensor, sensor);
         return true;
     }
 
@@ -327,6 +331,8 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     public boolean changeSensors(@Nonnull List<Sensor> sensors) {
         Collection<Channel>channels = getAll();
         for (Sensor sensor : sensors){
+            if (sensor == null) continue;
+
             for (Channel channel : channels){
                 if (channel.getSensor().equals(sensor)){
                     channel.setSensor(sensor);
@@ -395,8 +401,13 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                 + "WHERE code = '" + oldChannel.getCode() + "';";
         try (Statement statement = getStatement()){
             int result = statement.executeUpdate(sql);
-            if (result > 0) LOGGER.info("Channel:\n{}\nwas replaced by channel:\n{}\nsuccessfully", oldChannel, newChannel);
-            return true;
+            if (result > 0){
+                LOGGER.info("Channel:\n{}\nwas replaced by channel:\n{}\nsuccessfully", oldChannel, newChannel);
+                return true;
+            }else {
+                LOGGER.info("Channel with code \"{}\" not found", oldChannel.getCode());
+                return false;
+            }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -422,6 +433,8 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
         int addResult = 0;
         if (!channelsForChange.isEmpty()){
             for (Channel c : channelsForChange){
+                if (c == null) continue;
+
                 String sql = "UPDATE channels SET "
                         + "name = ?, department = ?, area = ?, process = ?, installation = ?, technology_number = ?, protocol_number = ?, "
                         + "reference = ?, date = ?, suitability = ?, measurement_value = ?, sensor = ?, frequency = ?, range_min = ?, "
@@ -465,6 +478,8 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
             StringBuilder sqlBuilder = new StringBuilder(insertSql);
             try (Statement statement = getStatement()) {
                 for (Channel channel : newChannels) {
+                    if (channel == null) continue;
+
                     sqlBuilder.append("('").append(channel.getCode()).append("', ")
                             .append("'").append(channel.getName()).append("', ")
                             .append("'").append(channel.getDepartment()).append("', ")

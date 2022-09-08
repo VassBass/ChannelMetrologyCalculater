@@ -41,7 +41,7 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
 
     @Override
     protected Channel doInBackground() throws Exception {
-        return channelRepository.get(this.code);
+        return channelRepository.get(this.code).get();
     }
 
     @Override
