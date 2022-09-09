@@ -1,11 +1,11 @@
-package service;
+package service.impl;
 
 import model.Person;
 import org.junit.*;
 import org.sqlite.JDBC;
 import repository.PersonRepository;
 import repository.impl.PersonRepositorySQLite;
-import service.impl.PersonServiceImpl;
+import service.PersonService;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,7 +14,7 @@ import java.sql.Statement;
 
 import static org.junit.Assert.*;
 
-public class PersonServiceTest {
+public class PersonServiceImplTest {
 
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
     private static final PersonRepository repository = new PersonRepositorySQLite(DB_URL, null, null);
