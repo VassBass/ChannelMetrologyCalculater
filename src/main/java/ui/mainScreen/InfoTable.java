@@ -20,7 +20,6 @@ public class InfoTable extends JPanel {
 
     public InfoTable(){
         super(new GridBagLayout());
-
         this.createElements();
         this.build();
     }
