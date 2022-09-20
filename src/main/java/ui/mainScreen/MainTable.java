@@ -2,7 +2,6 @@ package ui.mainScreen;
 
 import developer.calculating.OS_Chooser;
 import model.Channel;
-import model.Measurement;
 import ui.model.Table;
 
 import javax.swing.*;
@@ -15,7 +14,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Optional;
 
 public class MainTable extends Table<Channel> {
     private static final String CODE = "Код";
@@ -48,44 +46,50 @@ public class MainTable extends Table<Channel> {
         this.setRowsColor();
     }
 
-    private final ListSelectionListener select = e -> {
-        if (MainTable.this.getSelectedRow() != -1) {
-            MainScreen.getInstance().updateChannelInfo(channelsList.get(MainTable.this.getSelectedRow()));
-        }
-    };
-
-    private final KeyListener keyListener = new KeyAdapter() {
-        @Override
-        public void keyPressed(KeyEvent e){
-            if (buttonsPanel == null) buttonsPanel = MainScreen.getInstance().buttonsPanel;
-            switch (e.getKeyCode()){
-                case KeyEvent.VK_A:
-                    buttonsPanel.buttonAdd.doClick();
-                    break;
-                case KeyEvent.VK_R:
-                    buttonsPanel.buttonRemove.doClick();
-                    break;
-                case KeyEvent.VK_D:
-                    buttonsPanel.buttonDetails.doClick();
-                    break;
-                case KeyEvent.VK_C:
-                    buttonsPanel.buttonCalculate.doClick();
-                case KeyEvent.VK_ENTER:
-                    if (e.isControlDown() && e.isAltDown()) {
-                        EventQueue.invokeLater(() -> {
-                            int index = MainTable.this.getSelectedRow();
-                            if (index >= 0 && index < MainScreen.getInstance().getChannelsList().size()) {
-                                new OS_Chooser(MainScreen.getInstance(), MainScreen.getInstance().getChannelsList().get(index)).setVisible(true);
-                            }
-                        });
-                    }
-                    break;
-                case KeyEvent.VK_F:
-                    buttonsPanel.buttonCertificateFolder.doClick();
-                    break;
+    private final ListSelectionListener select;
+    {
+        select = e -> {
+            if (MainTable.this.getSelectedRow() != -1) {
+                MainScreen.getInstance().updateChannelInfo(channelsList.get(MainTable.this.getSelectedRow()));
             }
-        }
-    };
+        };
+    }
+
+    private final KeyListener keyListener;
+    {
+        keyListener = new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (buttonsPanel == null) buttonsPanel = MainScreen.getInstance().buttonsPanel;
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_A:
+                        buttonsPanel.buttonAdd.doClick();
+                        break;
+                    case KeyEvent.VK_R:
+                        buttonsPanel.buttonRemove.doClick();
+                        break;
+                    case KeyEvent.VK_D:
+                        buttonsPanel.buttonDetails.doClick();
+                        break;
+                    case KeyEvent.VK_C:
+                        buttonsPanel.buttonCalculate.doClick();
+                    case KeyEvent.VK_ENTER:
+                        if (e.isControlDown() && e.isAltDown()) {
+                            EventQueue.invokeLater(() -> {
+                                int index = MainTable.this.getSelectedRow();
+                                if (index >= 0 && index < MainScreen.getInstance().getChannelsList().size()) {
+                                    new OS_Chooser(MainScreen.getInstance(), MainScreen.getInstance().getChannelsList().get(index)).setVisible(true);
+                                }
+                            });
+                        }
+                        break;
+                    case KeyEvent.VK_F:
+                        buttonsPanel.buttonCertificateFolder.doClick();
+                        break;
+                }
+            }
+        };
+    }
 
     private void setRowsColor(){
         this.setDefaultRenderer(Object.class, new DefaultTableCellRenderer(){
