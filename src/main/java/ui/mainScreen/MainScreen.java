@@ -2,14 +2,18 @@ package ui.mainScreen;
 
 import application.Application;
 import model.Channel;
+import repository.ChannelRepository;
+import repository.impl.ChannelRepositorySQLite;
 import ui.mainScreen.menu.MenuBar;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class MainScreen extends JFrame {
@@ -27,21 +31,19 @@ public class MainScreen extends JFrame {
     public ButtonsPanel buttonsPanel;
     public SearchPanel searchPanel;
 
-    ArrayList<Channel>channelsList;
+    private List<Channel> channelsList;
+
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
     private MainScreen(){
         super();
-    }
 
-    public void init(ArrayList<Channel> channelsList){
-        LOGGER.fine("MainScreen: initialization start ...");
-        this.channelsList = channelsList;
+        channelsList = new ArrayList<>(channelRepository.getAll());
         this.setTitle(windowHeader(channelsList.size()));
 
-        this.createElements();
+        this.createElements(channelsList);
         this.setReactions();
         this.build();
-        LOGGER.info("MainScreen: initialization SUCCESS");
     }
 
     public static MainScreen getInstance() {
@@ -50,11 +52,11 @@ public class MainScreen extends JFrame {
         return mainScreen;
     }
 
-    private void createElements() {
-        this.menuBar = new MenuBar(this);
-        this.mainTable = new MainTable(this);
+    private void createElements(@Nonnull List<Channel>channelList) {
+        this.menuBar = new MenuBar();
+        this.mainTable = new MainTable(channelList);
         this.infoTable = new InfoTable();
-        this.buttonsPanel = new ButtonsPanel(this);
+        this.buttonsPanel = new ButtonsPanel();
         this.searchPanel = new SearchPanel();
     }
 
@@ -80,7 +82,11 @@ public class MainScreen extends JFrame {
         this.infoTable.updateInfo(channel);
     }
 
-    public void setChannelsList(ArrayList<Channel>list){
+    public List<Channel>getChannelsList(){
+        return channelsList;
+    }
+
+    public void setChannelsList(List<Channel>list){
         this.channelsList = list;
         this.mainTable.setList(list);
         this.setTitle(windowHeader(list.size()));
@@ -88,7 +94,7 @@ public class MainScreen extends JFrame {
     }
 
     public void refreshMenu(){
-        this.setJMenuBar(new MenuBar(this));
+        this.setJMenuBar(new MenuBar());
         this.refresh();
     }
 
@@ -100,14 +106,11 @@ public class MainScreen extends JFrame {
     private final WindowListener windowListener = new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    int result = JOptionPane.showConfirmDialog(MainScreen.this,
-                            "Закрити програму?", "Вихід", JOptionPane.OK_CANCEL_OPTION);
-                    if (result == 0){
-                        System.exit(0);
-                    }
+            EventQueue.invokeLater(() -> {
+                int result = JOptionPane.showConfirmDialog(MainScreen.this,
+                        "Закрити програму?", "Вихід", JOptionPane.OK_CANCEL_OPTION);
+                if (result == 0){
+                    System.exit(0);
                 }
             });
         }
@@ -126,6 +129,5 @@ public class MainScreen extends JFrame {
             this.gridwidth = width;
             this.weighty = height;
         }
-
     }
 }

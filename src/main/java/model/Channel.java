@@ -123,13 +123,17 @@ public class Channel implements Serializable {
 
     @Nonnull public String getCode() {return this.code;}
     @Nonnull public String getName() {return this.name;}
-    @Nonnull public Measurement _getMeasurement() {
+
+    @Nonnull
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    public Measurement _getMeasurement() {
         if (this.measurementValue.equals(Measurement.M_S) || this.measurementValue.equals(Measurement.CM_S)){
             return new Measurement(Measurement.CONSUMPTION, this.measurementValue);
         }else {
-            return MeasurementRepositorySQLite.getInstance().get(this.measurementValue).get();
+            return MeasurementRepositorySQLite.getInstance().getWithLoggerTurnOff(this.measurementValue).get();
         }
     }
+
     @Nonnull public String getMeasurementValue(){return this.measurementValue;}
     public String getDepartment() {return this.department;}
     public String getArea() {return this.area;}

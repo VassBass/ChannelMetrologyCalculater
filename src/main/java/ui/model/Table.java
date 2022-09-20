@@ -2,7 +2,7 @@ package ui.model;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Table<M> extends JTable {
 
@@ -10,5 +10,5 @@ public class Table<M> extends JTable {
         super(dm);
     }
 
-    public void setList(ArrayList<M>list){}
+    public void setList(List<M> list){}
 }

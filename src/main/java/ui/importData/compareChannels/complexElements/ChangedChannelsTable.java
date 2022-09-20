@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChangedChannelsTable extends Table<Channel> {
     private static final String NAME = "Назва";
@@ -45,12 +46,12 @@ public class ChangedChannelsTable extends Table<Channel> {
     }
 
     @Override
-    public void setList(ArrayList<Channel>channelList){
+    public void setList(List<Channel> channelList){
         this.setModel(tableModel(channelList));
         this.setCenterAlignment();
     }
 
-    private static DefaultTableModel tableModel(ArrayList<Channel> channelList){
+    private static DefaultTableModel tableModel(List<Channel> channelList){
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){

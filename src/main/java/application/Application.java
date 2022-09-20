@@ -10,7 +10,6 @@ import ui.model.ApplicationLogo;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -96,7 +95,6 @@ public class Application extends SwingWorker<Void, String> {
         publish("Архівування сертифікатів/протоколів");
         FileBrowser.createArchive();
         publish("Завантаження головного вікна");
-        MainScreen.getInstance().init(new ArrayList<>(ChannelRepositorySQLite.getInstance().getAll()));
         return null;
     }
 
@@ -107,7 +105,7 @@ public class Application extends SwingWorker<Void, String> {
 
     @Override
     protected void done() {
-        logo.dispose();
         MainScreen.getInstance().setVisible(true);
+        logo.dispose();
     }
 }

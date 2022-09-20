@@ -8,7 +8,6 @@ import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -31,15 +30,12 @@ public class MenuExpImp extends JMenu {
     private static final String IMPORT_INSTALLATIONS = "Імпорт установок";
     private static final String IMPORT_DATA = "Імпортувати дані";
 
-    private final MainScreen mainScreen;
-
     private JMenuItem buttonExport, buttonImport, buttonFolder;
     private JMenuItem btnImportChannels, btnImportSensors, btnImportCalibrators, btnImportPersons, btnControlPoints,
             btnImportDepartments, btnImportAreas, btnImportProcesses, btnImportInstallations;
 
     public MenuExpImp(){
         super(EXPORT_IMPORT);
-        this.mainScreen = MainScreen.getInstance();
 
         this.createElements();
         this.setReactions();
@@ -92,184 +88,96 @@ public class MenuExpImp extends JMenu {
         this.add(this.btnImportInstallations);
     }
 
-    private final ActionListener clickExport = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            new ConfirmExportDialog(mainScreen).setVisible(true);
-        }
-    };
+    private final ActionListener clickExport = e -> new ConfirmExportDialog(MainScreen.getInstance()).setVisible(true);
 
-    private final ActionListener clickImport = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.ALL).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImport = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.ALL).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickImportChannel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.CHANNEL).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImportChannel = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.CHANNEL).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickImportSensor = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.SENSOR).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImportSensor = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.SENSOR).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickImportCalibrator = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.CALIBRATOR).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImportCalibrator = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.CALIBRATOR).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickImportCPV = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.SENSOR_VALUE).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImportCPV = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.SENSOR_VALUE).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickImportPerson = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.PERSON).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImportPerson = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.PERSON).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickImportDepartment = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.DEPARTMENT).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImportDepartment = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.DEPARTMENT).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickImportArea = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.AREA).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImportArea = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.AREA).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickImportProcess = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.PROCESS).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImportProcess = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.PROCESS).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickImportInstallation = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        new ImportFileChooser(Model.INSTALLATION).setVisible(true);
-                    } catch (SQLException ex) {
-                        LOGGER.log(Level.SEVERE, "ERROR: ", ex);
-                    }
-                }
-            });
+    private final ActionListener clickImportInstallation = e -> EventQueue.invokeLater(() -> {
+        try {
+            new ImportFileChooser(Model.INSTALLATION).setVisible(true);
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "ERROR: ", ex);
         }
-    };
+    });
 
-    private final ActionListener clickFolder = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Desktop desktop;
-            if (Desktop.isDesktopSupported()){
-                desktop = Desktop.getDesktop();
-                try {
-                    desktop.open(FileBrowser.DIR_EXPORT);
-                }catch (Exception ex){
-                    ex.printStackTrace();
-                }
+    private final ActionListener clickFolder = e -> {
+        Desktop desktop;
+        if (Desktop.isDesktopSupported()){
+            desktop = Desktop.getDesktop();
+            try {
+                desktop.open(FileBrowser.DIR_EXPORT);
+            }catch (Exception ex){
+                ex.printStackTrace();
             }
         }
     };

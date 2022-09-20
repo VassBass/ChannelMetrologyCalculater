@@ -16,7 +16,9 @@ public abstract class RepositoryJDBC {
 
     private static final String ERROR = "Помилка";
 
-    private String dbUrl, dbUser, dbPassword;
+    private static String dbUrl, dbUser, dbPassword;
+
+    private static boolean propertiesWasLoaded = false;
 
     /**
      * Gets url of db from jdbc.properties file
@@ -26,6 +28,8 @@ public abstract class RepositoryJDBC {
      * @see #dbPassword
      */
     public void setPropertiesFromFile(){
+        if (propertiesWasLoaded) return;
+
         try {
             String propertiesFileName = "jdbc.properties";
             InputStream in = RepositoryJDBC.class.getClassLoader().getResourceAsStream(propertiesFileName);
@@ -60,6 +64,8 @@ public abstract class RepositoryJDBC {
                 System.exit(0);
             }
         }
+
+        propertiesWasLoaded = true;
     }
 
     public Connection getConnection() throws SQLException {
@@ -82,10 +88,10 @@ public abstract class RepositoryJDBC {
         return getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
-    public void setProperties(@Nonnull String dbUrl, @Nullable String dbUser, @Nullable String dbPassword){
-        this.dbUrl = dbUrl;
-        this.dbUser = dbUser;
-        this.dbPassword = dbPassword;
+    public void setProperties(@Nonnull String url, @Nullable String user, @Nullable String password){
+        dbUrl = url;
+        dbUser = user;
+        dbPassword = password;
     }
 
     public boolean isTableExists(@Nonnull String tableName) throws SQLException {

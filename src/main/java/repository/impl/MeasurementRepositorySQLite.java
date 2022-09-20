@@ -165,6 +165,23 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
         }
     }
 
+    public Optional<Measurement> getWithLoggerTurnOff(@Nonnull String value) {
+        String sql = "SELECT * FROM measurements WHERE value = '" + value + "' LIMIT 1;";
+        try (ResultSet resultSet = getResultSet(sql)){
+            if (resultSet.next()){
+                Measurement measurement = new Measurement();
+                measurement.setName(resultSet.getString("name"));
+                measurement.setValue(resultSet.getString("value"));
+                measurement._setFactors(resultSet.getString("factors"));
+
+                return Optional.of(measurement);
+            }else return Optional.empty();
+        }catch (SQLException |JsonProcessingException e){
+            LOGGER.warn("Exception was thrown!", e);
+            return Optional.empty();
+        }
+    }
+
     @Override
     public boolean add(@Nonnull Measurement measurement) {
         String sql = "INSERT INTO measurements(name, value, factors) VALUES (?, ?, ?);";

@@ -8,7 +8,6 @@ import ui.removeChannels.DialogRemoveChannels;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ButtonsPanel extends JPanel {
@@ -18,13 +17,10 @@ public class ButtonsPanel extends JPanel {
     private static final String CALCULATE = "Розрахувати (C)";
     private static final String CERTIFICATES_PROTOCOLS = "Сертифікати/Протоколи (F)";
 
-    private final MainScreen mainScreen;
-
     public JButton buttonDetails, buttonRemove, buttonAdd, buttonCalculate, buttonCertificateFolder;
 
-    public ButtonsPanel(MainScreen mainScreen){
+    public ButtonsPanel(){
         super(new GridBagLayout());
-        this.mainScreen = mainScreen;
 
         this.createElements();
         this.setReactions();
@@ -55,73 +51,36 @@ public class ButtonsPanel extends JPanel {
         this.add(this.buttonCalculate, new Cell(1, 2, 1));
     }
 
-    private final ActionListener clickDetails = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            final int channelIndex = mainScreen.mainTable.getSelectedRow();
-            if (channelIndex!=-1) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
-                    }
-                });
-            }
+    private final ActionListener clickDetails = e -> {
+        final int channelIndex = MainScreen.getInstance().mainTable.getSelectedRow();
+        if (channelIndex!=-1) {
+            EventQueue.invokeLater(() -> new DialogChannel(MainScreen.getInstance(), MainScreen.getInstance().getChannelsList().get(channelIndex)).setVisible(true));
         }
     };
 
-    private final ActionListener clickRemove = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (mainScreen.channelsList.size() > 0) {
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        new DialogRemoveChannels(mainScreen).setVisible(true);
-                    }
-                });
-            }
+    private final ActionListener clickRemove = e -> {
+        if (MainScreen.getInstance().getChannelsList().size() > 0) {
+            EventQueue.invokeLater(() -> new DialogRemoveChannels(MainScreen.getInstance()).setVisible(true));
         }
     };
 
-    private final ActionListener clickAdd = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new DialogChannel(mainScreen, null).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickAdd = e -> EventQueue.invokeLater(() -> new DialogChannel(MainScreen.getInstance(), null).setVisible(true));
 
-    private final ActionListener clickCalculate = new ActionListener(){
-        @Override
-        public void actionPerformed(ActionEvent e){
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    int index = mainScreen.mainTable.getSelectedRow();
-                    if (index >= 0 && index < mainScreen.channelsList.size() ){
-                        new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
-                    }
-                }
-            });
+    private final ActionListener clickCalculate = e -> EventQueue.invokeLater(() -> {
+        int index = MainScreen.getInstance().mainTable.getSelectedRow();
+        if (index >= 0 && index < MainScreen.getInstance().getChannelsList().size() ){
+            new CalculateStartDialog(MainScreen.getInstance(), MainScreen.getInstance().getChannelsList().get(index), null).setVisible(true);
         }
-    };
+    });
 
-    private final ActionListener clickCertificateFolder = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Desktop desktop;
-            if (Desktop.isDesktopSupported()){
-                desktop = Desktop.getDesktop();
-                try {
-                    desktop.open(FileBrowser.DIR_CERTIFICATES);
-                }catch (Exception ex){
-                    ex.printStackTrace();
-                }
+    private final ActionListener clickCertificateFolder = e -> {
+        Desktop desktop;
+        if (Desktop.isDesktopSupported()){
+            desktop = Desktop.getDesktop();
+            try {
+                desktop.open(FileBrowser.DIR_CERTIFICATES);
+            }catch (Exception ex){
+                ex.printStackTrace();
             }
         }
     };

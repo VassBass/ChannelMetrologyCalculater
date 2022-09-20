@@ -14,7 +14,6 @@ import ui.sensorsList.SensorsListDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MenuLists extends JMenu {
@@ -30,8 +29,6 @@ public class MenuLists extends JMenu {
     private static final String CONTROL_POINTS = "Контрольні точки";
     private static final String MEASUREMENTS_LIST = "Список вимірювальних величин";
 
-    private final MainScreen mainScreen;
-
     private JMenuItem btn_persons;
     private JMenuItem btn_departments, btn_areas, btn_processes, btn_installations;
     private JMenuItem btn_sensors, btn_controlPoints;
@@ -39,10 +36,8 @@ public class MenuLists extends JMenu {
     private JMenuItem btn_calibrators;
 
 
-    public MenuLists(MainScreen mainScreen){
+    public MenuLists(){
         super(LISTS);
-        this.mainScreen = mainScreen;
-
         this.createElements();
         this.setReactions();
         this.build();
@@ -103,147 +98,27 @@ public class MenuLists extends JMenu {
         this.add(methods);
     }
 
-    private final ActionListener clickPersons = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new PersonsListDialog(mainScreen).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickPersons = e -> EventQueue.invokeLater(() -> new PersonsListDialog(MainScreen.getInstance()).setVisible(true));
 
-    private final ActionListener clickDepartments = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new PathListsDialog(mainScreen, Model.DEPARTMENT).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickDepartments = e -> EventQueue.invokeLater(() -> new PathListsDialog(MainScreen.getInstance(), Model.DEPARTMENT).setVisible(true));
 
-    private final ActionListener clickAreas = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new PathListsDialog(mainScreen, Model.AREA).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickAreas = e -> EventQueue.invokeLater(() -> new PathListsDialog(MainScreen.getInstance(), Model.AREA).setVisible(true));
 
-    private final ActionListener clickProcesses = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new PathListsDialog(mainScreen, Model.PROCESS).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickProcesses = e -> EventQueue.invokeLater(() -> new PathListsDialog(MainScreen.getInstance(), Model.PROCESS).setVisible(true));
 
-    private final ActionListener clickInstallations = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new PathListsDialog(mainScreen, Model.INSTALLATION).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickInstallations = e -> EventQueue.invokeLater(() -> new PathListsDialog(MainScreen.getInstance(), Model.INSTALLATION).setVisible(true));
 
-    private final ActionListener clickSensors = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new SensorsListDialog(mainScreen).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickSensors = e -> EventQueue.invokeLater(() -> new SensorsListDialog(MainScreen.getInstance()).setVisible(true));
 
-    private final ActionListener clickControlPoints = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new ControlPointsListDialog(mainScreen).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickControlPoints = e -> EventQueue.invokeLater(() -> new ControlPointsListDialog(MainScreen.getInstance()).setVisible(true));
 
-    private final ActionListener clickTemperature = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new MethodInfoDialog(mainScreen, Measurement.TEMPERATURE).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickTemperature = e -> EventQueue.invokeLater(() -> new MethodInfoDialog(MainScreen.getInstance(), Measurement.TEMPERATURE).setVisible(true));
 
-    private final ActionListener clickPressure = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new MethodInfoDialog(mainScreen, Measurement.PRESSURE).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickPressure = e -> EventQueue.invokeLater(() -> new MethodInfoDialog(MainScreen.getInstance(), Measurement.PRESSURE).setVisible(true));
 
-    private final ActionListener clickConsumption = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new MethodInfoDialog(mainScreen, Measurement.CONSUMPTION).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickConsumption = e -> EventQueue.invokeLater(() -> new MethodInfoDialog(MainScreen.getInstance(), Measurement.CONSUMPTION).setVisible(true));
 
-    private final ActionListener clickCalibrators = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new CalibratorsListDialog(mainScreen).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickCalibrators = e -> EventQueue.invokeLater(() -> new CalibratorsListDialog(MainScreen.getInstance()).setVisible(true));
 
-    private final ActionListener clickMeasurements = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new MeasurementsListDialog(mainScreen).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickMeasurements = e -> EventQueue.invokeLater(() -> new MeasurementsListDialog(MainScreen.getInstance()).setVisible(true));
 }

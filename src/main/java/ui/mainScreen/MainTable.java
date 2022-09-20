@@ -2,10 +2,10 @@ package ui.mainScreen;
 
 import developer.calculating.OS_Chooser;
 import model.Channel;
+import model.Measurement;
 import ui.model.Table;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -13,8 +13,9 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Optional;
 
 public class MainTable extends Table<Channel> {
     private static final String CODE = "Код";
@@ -22,46 +23,41 @@ public class MainTable extends Table<Channel> {
     private static final String TYPE_OF_MEASUREMENT = "Вид вимірювання";
     private static final String TECHNOLOGY_NUMBER = "Технологічний номер";
 
-    private final MainScreen parent;
     private ButtonsPanel buttonsPanel;
-    private ArrayList<Channel>channelsList;
+    private List<Channel>channelsList;
 
-    public MainTable(final MainScreen parent){
-        super(tableModel(parent.channelsList));
-        this.parent = parent;
-        this.channelsList = parent.channelsList;
+    public MainTable(final List<Channel> channelList){
+        super(tableModel(channelList));
+        this.channelsList = channelList;
 
         this.getTableHeader().setReorderingAllowed(false);
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        ListSelectionListener select = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (MainTable.this.getSelectedRow() != -1) {
-                    parent.updateChannelInfo(channelsList.get(MainTable.this.getSelectedRow()));
-                }
-            }
-        };
-        this.getSelectionModel().addListSelectionListener(select);
 
         if (this.channelsList != null) {
             this.setRowsColor();
         }
 
+        this.getSelectionModel().addListSelectionListener(select);
         this.addKeyListener(this.keyListener);
     }
 
     @Override
-    public void setList(ArrayList<Channel>channelsList){
+    public void setList(List<Channel>channelsList){
         this.channelsList = channelsList;
         this.setModel(tableModel(channelsList));
         this.setRowsColor();
     }
 
+    private final ListSelectionListener select = e -> {
+        if (MainTable.this.getSelectedRow() != -1) {
+            MainScreen.getInstance().updateChannelInfo(channelsList.get(MainTable.this.getSelectedRow()));
+        }
+    };
+
     private final KeyListener keyListener = new KeyAdapter() {
         @Override
         public void keyPressed(KeyEvent e){
-            if (buttonsPanel == null) buttonsPanel = parent.buttonsPanel;
+            if (buttonsPanel == null) buttonsPanel = MainScreen.getInstance().buttonsPanel;
             switch (e.getKeyCode()){
                 case KeyEvent.VK_A:
                     buttonsPanel.buttonAdd.doClick();
@@ -76,13 +72,10 @@ public class MainTable extends Table<Channel> {
                     buttonsPanel.buttonCalculate.doClick();
                 case KeyEvent.VK_ENTER:
                     if (e.isControlDown() && e.isAltDown()) {
-                        EventQueue.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                int index = MainTable.this.getSelectedRow();
-                                if (index >= 0 && index < parent.channelsList.size()) {
-                                    new OS_Chooser(parent, MainScreen.getInstance().channelsList.get(index)).setVisible(true);
-                                }
+                        EventQueue.invokeLater(() -> {
+                            int index = MainTable.this.getSelectedRow();
+                            if (index >= 0 && index < MainScreen.getInstance().getChannelsList().size()) {
+                                new OS_Chooser(MainScreen.getInstance(), MainScreen.getInstance().getChannelsList().get(index)).setVisible(true);
                             }
                         });
                     }
@@ -134,7 +127,7 @@ public class MainTable extends Table<Channel> {
         });
     }
 
-    private static DefaultTableModel tableModel(ArrayList<Channel>channelList){
+    private static DefaultTableModel tableModel(List<Channel>channelList){
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){

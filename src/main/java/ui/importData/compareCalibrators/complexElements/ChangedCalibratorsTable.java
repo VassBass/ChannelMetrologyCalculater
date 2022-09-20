@@ -10,6 +10,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChangedCalibratorsTable extends Table<Calibrator> {
     private static final String NAME = "Назва";
@@ -45,12 +46,12 @@ public class ChangedCalibratorsTable extends Table<Calibrator> {
     }
 
     @Override
-    public void setList(ArrayList<Calibrator>calibratorList){
+    public void setList(List<Calibrator> calibratorList){
         this.setModel(tableModel(calibratorList));
         this.setCenterAlignment();
     }
 
-    private static DefaultTableModel tableModel(ArrayList<Calibrator> calibratorList){
+    private static DefaultTableModel tableModel(List<Calibrator> calibratorList){
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){
