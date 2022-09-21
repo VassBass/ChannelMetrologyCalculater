@@ -24,7 +24,7 @@ public class PressurePanel extends MeasurementPanel {
 
     @Override
     protected void createElements() {
-        String value = this.channel.getMeasurementValue();
+        String value = this.channel.getMeasurement().getValue();
         String columnValue = "Задано в [" + value + "]";
         String columnMeasurement = "Отримані дані в [" + value + "]";
         String columnPercent = "% від шкали";
@@ -46,7 +46,7 @@ public class PressurePanel extends MeasurementPanel {
         this.labelPercent[3] = new ButtonCell(false, valuesPercent[3] + "%");
         this.labelPercent[4] = new ButtonCell(false, valuesPercent[4] + "%");
 
-        double maxCalibratorPower = this.channel._getMeasurement().convertFrom(Measurement.KGS_SM2, -0.8);
+        double maxCalibratorPower = this.channel.getMeasurement().convertFrom(Measurement.KGS_SM2, -0.8);
 
         //this.values = Application.context.controlPointsValuesService.getValues(
              //   this.channel.getSensor().getType(), this.channel.getRangeMin(), this.channel.getRangeMax());

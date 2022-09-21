@@ -1,8 +1,6 @@
 package backgroundTasks;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import model.*;
-import org.sqlite.JDBC;
 import repository.*;
 import repository.impl.*;
 import ui.importData.compareCalibrators.CompareCalibratorsDialog;
@@ -14,13 +12,14 @@ import ui.model.LoadDialog;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class Importer extends SwingWorker<Boolean, Void> {
 
-    private final Connection connection;
     private final LoadDialog loadDialog = new LoadDialog(MainScreen.getInstance());
     private final Model model;
     private int stage = -1;
@@ -36,18 +35,27 @@ public class Importer extends SwingWorker<Boolean, Void> {
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
-    private ArrayList<Calibrator>newCalibrators, calibratorsForChange, changedCalibrators;
-    private ArrayList<Channel>newChannels, channelsForChange, changedChannels;
-    private ArrayList<Sensor>newSensors, sensorsForChange, changedSensors;
+    private PathElementRepository importDepartmentRepository;
+    private PathElementRepository importAreaRepository;
+    private PathElementRepository importProcessRepository;
+    private PathElementRepository importInstallationRepository;
+    private PersonRepository importPersonRepository;
+    private ControlPointsValuesRepository importControlPointsValuesRepository;
+    private CalibratorRepository importCalibratorRepository;
+    private SensorRepository importSensorRepository;
+    private ChannelRepository importChannelRepository;
 
-    public Importer(File importFile, Model model) throws SQLException {
+    private List<Calibrator>newCalibrators, calibratorsForChange, changedCalibrators;
+    private List<Channel>newChannels, channelsForChange, changedChannels;
+    private List<Sensor>newSensors, sensorsForChange, changedSensors;
+
+    public Importer(File importFile, Model model) {
         super();
         this.importFile = importFile;
         String dbUrl = "jdbc:sqlite:" + importFile.getAbsolutePath();
         this.model = model;
         if (model == Model.ALL) this.stage = 0;
-        DriverManager.registerDriver(new JDBC());
-        this.connection = DriverManager.getConnection(dbUrl);
+        initImportRepositories(dbUrl);
         EventQueue.invokeLater(() -> loadDialog.setVisible(true));
     }
 
@@ -62,81 +70,97 @@ public class Importer extends SwingWorker<Boolean, Void> {
         this.stage = stage;
         String dbUrl = "jdbc:sqlite:" + importFile.getAbsolutePath();
         this.model = Model.ALL;
-        DriverManager.registerDriver(new JDBC());
-        this.connection = DriverManager.getConnection(dbUrl);
+        initImportRepositories(dbUrl);
         EventQueue.invokeLater(() -> loadDialog.setVisible(true));
+    }
+
+    private void initImportRepositories(String dbUrl){
+        importDepartmentRepository = new DepartmentRepositorySQLite(dbUrl, null, null);
+        importAreaRepository = new AreaRepositorySQLite(dbUrl, null, null);
+        importProcessRepository = new ProcessRepositorySQLite(dbUrl, null, null);
+        importInstallationRepository = new InstallationRepositorySQLite(dbUrl, null, null);
+        importPersonRepository = new PersonRepositorySQLite(dbUrl, null, null);
+        importControlPointsValuesRepository = new ControlPointsValuesRepositorySQLite(dbUrl, null, null);
+        importCalibratorRepository = new CalibratorRepositorySQLite(dbUrl, null, null);
+        importSensorRepository = new SensorRepositorySQLite(dbUrl, null, null);
+        importChannelRepository = new ChannelRepositorySQLite(dbUrl, null, null, null);
     }
 
     @Override
     protected Boolean doInBackground() throws Exception {
-        try {
-            switch (this.model) {
-                case ALL:
-                    switch (stage){
-                        case 0:
-                            departmentRepository.add(this.getDepartments());
-                            areaRepository.add(this.getAreas());
-                            processRepository.add(this.getProcesses());
-                            installationRepository.add(this.getInstallations());
-                            ArrayList<Person> p = this.getPersons();
-                            for (Person person : p) {
-                                personRepository.set(person, person);
-                                personRepository.add(person);
-                            }
-                            ArrayList<ControlPointsValues>points = this.getControlPoints();
-                            for (ControlPointsValues cpv : points){
-                                controlPointsValuesRepository.add(cpv);
-                            }
-                            this.fuelingCalibratorsLists(this.getCalibrators());
-                            break;
-                        case 1:
-                            this.fuelingSensorsLists(this.getSensors());
-                            break;
-                        case 2:
-                            this.fuelingChannelsLists(this.getChannels(), this.getSensors());
-                            break;
-                    }
-                    return true;
-                case DEPARTMENT:
-                    departmentRepository.add(this.getDepartments());
-                    return true;
-                case AREA:
-                    areaRepository.add(this.getAreas());
-                    return true;
-                case PROCESS:
-                    processRepository.add(this.getProcesses());
-                    return true;
-                case INSTALLATION:
-                    installationRepository.add(this.getInstallations());
-                    return true;
-                case CALIBRATOR:
-                    this.fuelingCalibratorsLists(this.getCalibrators());
-                    return true;
-                case CHANNEL:
-                    this.fuelingChannelsLists(this.getChannels(), this.getSensors());
-                    return true;
-                case PERSON:
-                    ArrayList<Person>persons = this.getPersons();
-                    for (Person person : persons){
-                        personRepository.set(person, person);
-                        personRepository.add(person);
-                    }
-                    return true;
-                case SENSOR:
-                    this.fuelingSensorsLists(this.getSensors());
-                    return true;
-                case SENSOR_VALUE:
-                    ArrayList<ControlPointsValues>points = this.getControlPoints();
-                    for (ControlPointsValues cpv : points){
-                        controlPointsValuesRepository.add(cpv);
-                    }
-                    return true;
-            }
-            return false;
-        }catch (SQLException | JsonProcessingException ex){
-            ex.printStackTrace();
-            return false;
+        switch (this.model) {
+            case ALL:
+                switch (stage){
+                    case 0:
+                        departmentRepository.add(importDepartmentRepository.getAll());
+                        areaRepository.add(importAreaRepository.getAll());
+                        processRepository.add(importProcessRepository.getAll());
+                        installationRepository.add(importInstallationRepository.getAll());
+                        List<Person> p = new ArrayList<>(importPersonRepository.getAll());
+                        for (Person person : p) {
+                            personRepository.set(person, person);
+                            personRepository.add(person);
+                        }
+                        List<ControlPointsValues>points = new ArrayList<>(importControlPointsValuesRepository.getAll());
+                        for (ControlPointsValues cpv : points){
+                            controlPointsValuesRepository.add(cpv);
+                        }
+                        this.fuelingCalibratorsLists(importCalibratorRepository.getAll());
+                        break;
+
+                    case 1:
+                        this.fuelingSensorsLists(importSensorRepository.getAll());
+                        break;
+                    case 2:
+                        this.fuelingChannelsLists(importChannelRepository.getAll(), importSensorRepository.getAll());
+                        break;
+                }
+                return true;
+
+            case DEPARTMENT:
+                departmentRepository.add(importDepartmentRepository.getAll());
+                return true;
+
+            case AREA:
+                areaRepository.add(importAreaRepository.getAll());
+                return true;
+
+            case PROCESS:
+                processRepository.add(importProcessRepository.getAll());
+                return true;
+
+            case INSTALLATION:
+                installationRepository.add(importInstallationRepository.getAll());
+                return true;
+
+            case CALIBRATOR:
+                this.fuelingCalibratorsLists(importCalibratorRepository.getAll());
+                return true;
+
+            case CHANNEL:
+                this.fuelingChannelsLists(importChannelRepository.getAll(), importSensorRepository.getAll());
+                return true;
+
+            case PERSON:
+                List<Person>persons = new ArrayList<>(importPersonRepository.getAll());
+                for (Person person : persons){
+                    personRepository.set(person, person);
+                    personRepository.add(person);
+                }
+                return true;
+
+            case SENSOR:
+                this.fuelingSensorsLists(importSensorRepository.getAll());
+                return true;
+
+            case SENSOR_VALUE:
+                List<ControlPointsValues>points = new ArrayList<>(importControlPointsValuesRepository.getAll());
+                for (ControlPointsValues cpv : points){
+                    controlPointsValuesRepository.add(cpv);
+                }
+                return true;
         }
+        return false;
     }
 
     @Override
@@ -189,10 +213,10 @@ public class Importer extends SwingWorker<Boolean, Void> {
         }
     }
 
-    private void fuelingCalibratorsLists(ArrayList<Calibrator>importedCalibrators){
+    private void fuelingCalibratorsLists(Collection<Calibrator> importedCalibrators){
         ArrayList<Calibrator>oldList = new ArrayList<>(calibratorRepository.getAll());
         if (oldList.isEmpty()) {
-            this.newCalibrators = importedCalibrators;
+            this.newCalibrators = new ArrayList<>(importedCalibrators);
         }else {
             ArrayList<Calibrator>newList = new ArrayList<>();
             ArrayList<Calibrator>changedList = new ArrayList<>();
@@ -219,10 +243,10 @@ public class Importer extends SwingWorker<Boolean, Void> {
         }
     }
 
-    private void fuelingChannelsLists(ArrayList<Channel>importedChannels, ArrayList<Sensor>importedSensors){
+    private void fuelingChannelsLists(Collection<Channel>importedChannels, Collection<Sensor>importedSensors){
         ArrayList<Sensor> oldSensors = new ArrayList<>(sensorRepository.getAll());
         if (oldSensors.isEmpty()) {
-            this.newSensors = importedSensors;
+            this.newSensors = new ArrayList<>(importedSensors);
         } else {
             ArrayList<Sensor> newSensorsList = new ArrayList<>();
             ArrayList<Sensor> sensorsForChange = new ArrayList<>();
@@ -247,7 +271,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
 
         ArrayList<Channel> oldList = new ArrayList<>(channelRepository.getAll());
         if (oldList.isEmpty()) {
-            this.newChannels = importedChannels;
+            this.newChannels = new ArrayList<>(importedChannels);
             this.channelsForChange = new ArrayList<>();
         } else {
             ArrayList<Channel> newList = new ArrayList<>();
@@ -275,10 +299,10 @@ public class Importer extends SwingWorker<Boolean, Void> {
         }
     }
 
-    void fuelingSensorsLists(ArrayList<Sensor>importedSensors){
+    void fuelingSensorsLists(Collection<Sensor>importedSensors){
         ArrayList<Sensor>oldList = new ArrayList<>(sensorRepository.getAll());
         if (oldList.isEmpty()) {
-            this.newSensors = importedSensors;
+            this.newSensors = new ArrayList<>(importedSensors);
         }else {
             ArrayList<Sensor>newList = new ArrayList<>();
             ArrayList<Sensor>changedList = new ArrayList<>();
@@ -304,154 +328,5 @@ public class Importer extends SwingWorker<Boolean, Void> {
             this.sensorsForChange = sensorsForChange;
             this.changedSensors = changedList;
         }
-    }
-
-    private ArrayList<String> getDepartments() throws SQLException {
-        ArrayList<String>list = new ArrayList<>();
-        Statement statement = this.connection.createStatement();
-        String sql = "SELECT * FROM departments";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()){
-            list.add(resultSet.getString("department"));
-        }
-        return list;
-    }
-
-    private ArrayList<String> getAreas() throws SQLException {
-        ArrayList<String>list = new ArrayList<>();
-        Statement statement = this.connection.createStatement();
-        String sql = "SELECT * FROM areas";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()){
-            list.add(resultSet.getString("area"));
-        }
-        return list;
-    }
-
-    private ArrayList<String> getProcesses() throws SQLException {
-        ArrayList<String>list = new ArrayList<>();
-        Statement statement = this.connection.createStatement();
-        String sql = "SELECT * FROM processes";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()){
-            list.add(resultSet.getString("process"));
-        }
-        return list;
-    }
-
-    private ArrayList<String> getInstallations() throws SQLException {
-        ArrayList<String>list = new ArrayList<>();
-        Statement statement = this.connection.createStatement();
-        String sql = "SELECT * FROM installations";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()){
-            list.add(resultSet.getString("installation"));
-        }
-        return list;
-    }
-
-    private ArrayList<Calibrator> getCalibrators() throws SQLException, JsonProcessingException {
-        ArrayList<Calibrator>list = new ArrayList<>();
-        Statement statement = this.connection.createStatement();
-        String sql = "SELECT * FROM calibrators";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()){
-            Calibrator calibrator = new Calibrator();
-            calibrator.setName(resultSet.getString("name"));
-            calibrator.setType(resultSet.getString("type"));
-            calibrator.setNumber(resultSet.getString("number"));
-            calibrator.setMeasurement(resultSet.getString("measurement"));
-            calibrator.setValue(resultSet.getString("value"));
-            calibrator.setErrorFormula(resultSet.getString("error_formula"));
-            String certificateString = resultSet.getString("certificate");
-            calibrator.setCertificate(Calibrator.Certificate.fromString(certificateString));
-            calibrator.setRangeMin(resultSet.getDouble("range_min"));
-            calibrator.setRangeMax(resultSet.getDouble("range_max"));
-            list.add(calibrator);
-        }
-        return list;
-    }
-
-    private ArrayList<Channel> getChannels() throws SQLException, JsonProcessingException {
-        ArrayList<Channel>list = new ArrayList<>();
-        Statement statement = this.connection.createStatement();
-        String sql = "SELECT * FROM channels";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()){
-            Channel channel = new Channel();
-            channel.setCode(resultSet.getString("code"));
-            channel.setName(resultSet.getString("name"));
-            channel.setDepartment(resultSet.getString("department"));
-            channel.setArea(resultSet.getString("area"));
-            channel.setProcess(resultSet.getString("process"));
-            channel.setInstallation(resultSet.getString("installation"));
-            channel.setTechnologyNumber(resultSet.getString("technology_number"));
-            channel.setNumberOfProtocol(resultSet.getString("protocol_number"));
-            channel.setReference(resultSet.getString("reference"));
-            channel.setDate(resultSet.getString("date"));
-            channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
-            channel.setMeasurementValue(resultSet.getString("measurement_value"));
-            channel.setSensor(Sensor.fromString(resultSet.getString("sensor")));
-            channel.setFrequency(resultSet.getDouble("frequency"));
-            channel.setRangeMin(resultSet.getDouble("range_min"));
-            channel.setRangeMax(resultSet.getDouble("range_max"));
-            double allowableErrorPercent = resultSet.getDouble("allowable_error_percent");
-            double allowableErrorValue = resultSet.getDouble("allowable_error_value");
-            channel.setAllowableError(allowableErrorPercent, allowableErrorValue);
-            list.add(channel);
-        }
-        return list;
-    }
-
-    private ArrayList<ControlPointsValues> getControlPoints() throws SQLException {
-        ArrayList<ControlPointsValues>list = new ArrayList<>();
-        Statement statement = this.connection.createStatement();
-        String sql = "SELECT * FROM control_points";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()){
-            ControlPointsValues cpv = new ControlPointsValues();
-            cpv.setSensorType(resultSet.getString("sensor_type"));
-            cpv._setValuesFromString(resultSet.getString("points"));
-            cpv.setRangeMin(resultSet.getDouble("range_min"));
-            cpv.setRangeMax(resultSet.getDouble("range_max"));
-            list.add(cpv);
-        }
-        return list;
-    }
-
-    private ArrayList<Person> getPersons() throws SQLException {
-        ArrayList<Person>list = new ArrayList<>();
-        Statement statement = this.connection.createStatement();
-        String sql = "SELECT * FROM persons";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()){
-            Person person = new Person();
-            person.setName(resultSet.getString("name"));
-            person.setSurname(resultSet.getString("surname"));
-            person.setPatronymic(resultSet.getString("patronymic"));
-            person.setPosition(resultSet.getString("position"));
-            list.add(person);
-        }
-        return list;
-    }
-
-    private ArrayList<Sensor> getSensors() throws SQLException {
-        ArrayList<Sensor>list = new ArrayList<>();
-        Statement statement = this.connection.createStatement();
-        String sql = "SELECT * FROM sensors";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()){
-            Sensor sensor = new Sensor();
-            sensor.setName(resultSet.getString("name"));
-            sensor.setType(resultSet.getString("type"));
-            sensor.setNumber(resultSet.getString("number"));
-            sensor.setMeasurement(resultSet.getString("measurement"));
-            sensor.setValue(resultSet.getString("value"));
-            sensor.setErrorFormula(resultSet.getString("error_formula"));
-            sensor.setRangeMin(resultSet.getDouble("range_min"));
-            sensor.setRangeMax(resultSet.getDouble("range_max"));
-            list.add(sensor);
-        }
-        return list;
     }
 }

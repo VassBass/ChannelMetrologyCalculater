@@ -100,7 +100,7 @@ public class ChannelSorter {
         ArrayList<Channel>channels = new ArrayList<>(channelRepository.getAll());
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
-            String channelMeasurementName = VariableConverter.kirillToLatinLetters(channel._getMeasurement().getName());
+            String channelMeasurementName = VariableConverter.kirillToLatinLetters(channel.getMeasurement().getName());
             if (channelMeasurementName.equals(this.sortString)){
                 sortedList.add(channel);
             }
@@ -114,7 +114,7 @@ public class ChannelSorter {
         ArrayList<Channel>channels = new ArrayList<>(channelRepository.getAll());
         ArrayList<Channel>sortedList = new ArrayList<>();
         for (Channel channel : channels){
-            String channelMeasurementValue = VariableConverter.kirillToLatinLetters(channel.getMeasurementValue());
+            String channelMeasurementValue = VariableConverter.kirillToLatinLetters(channel.getMeasurement().getValue());
             if (channelMeasurementValue.equals(this.sortString)){
                 sortedList.add(channel);
             }

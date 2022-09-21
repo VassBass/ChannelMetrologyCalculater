@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 public class CompareCalibratorsDialog extends JDialog {
     private static final String IMPORT = "Імпорт калібраторів";
@@ -29,7 +29,7 @@ public class CompareCalibratorsDialog extends JDialog {
     public final boolean NEW_SENSORS_TABLE = true;
     public final boolean CHANGED_SENSORS_TABLE = false;
 
-    private final ArrayList<Calibrator>newCalibrators, calibratorsForChange, changedCalibrators;
+    private final List<Calibrator> newCalibrators, calibratorsForChange, changedCalibrators;
     private File importFile = null;
 
     private JWindow newCalibratorInfo, oldCalibratorInfo;
@@ -38,7 +38,7 @@ public class CompareCalibratorsDialog extends JDialog {
     private Table<Calibrator> newCalibratorsTable, changedCalibratorsTable;
     private JButton removeFromNew, removeFromChanges, btnConfirmNew, btnConfirmChanges;
 
-    public CompareCalibratorsDialog(ArrayList<Calibrator>newCalibratorsList,ArrayList<Calibrator>calibratorsForChange, ArrayList<Calibrator>changedCalibratorsList){
+    public CompareCalibratorsDialog(List<Calibrator>newCalibratorsList, List<Calibrator>calibratorsForChange, List<Calibrator>changedCalibratorsList){
         super(MainScreen.getInstance(), IMPORT, true);
         this.newCalibrators = newCalibratorsList;
         this.calibratorsForChange = calibratorsForChange;
@@ -49,7 +49,7 @@ public class CompareCalibratorsDialog extends JDialog {
         this.build();
     }
 
-    public CompareCalibratorsDialog(ArrayList<Calibrator>newCalibratorsList,ArrayList<Calibrator>calibratorsForChange, ArrayList<Calibrator>changedCalibratorsList, File file){
+    public CompareCalibratorsDialog(List<Calibrator>newCalibratorsList, List<Calibrator>calibratorsForChange, List<Calibrator>changedCalibratorsList, File file){
         super(MainScreen.getInstance(), IMPORT, true);
         this.newCalibrators = newCalibratorsList;
         this.calibratorsForChange = calibratorsForChange;

@@ -160,10 +160,10 @@ public class Calibrator implements Serializable {
     public double getError(@Nonnull Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
         Measurement input = MeasurementRepositorySQLite.getInstance().get(this.value).get();
-        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel._getMeasurement());
+        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
         Function f = new Function("At(R,r,convR) = " + formula);
         Argument R = new Argument("R = " + channel._getRange());
-        double cR = channel._getMeasurement().convertFrom(this.value, this._getRange());
+        double cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
         Argument r = new Argument("r = " + this._getRange());
         Argument convR = new Argument("convR = " + cR);
         Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);

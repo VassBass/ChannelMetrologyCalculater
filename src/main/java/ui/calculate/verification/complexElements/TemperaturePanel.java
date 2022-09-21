@@ -192,7 +192,7 @@ public class TemperaturePanel extends JPanel {
                 + " до "
                 + VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN)
                 + " "
-                + this.channel.getMeasurementValue();
+                + this.channel.getMeasurement().getValue();
         this.rangeChannel.setText(rangeChannel);
 
         String allowableErrorChannel =
@@ -201,7 +201,7 @@ public class TemperaturePanel extends JPanel {
                 + "% або "
                 + PLUS_MINUS
                 + VariableConverter.roundingDouble3(this.channel.getAllowableError(), Locale.GERMAN)
-                + this.channel.getMeasurementValue();
+                + this.channel.getMeasurement().getValue();
         this.allowableErrorChannel.setText(allowableErrorChannel);
 
         this.sensor.setText(this.channel.getSensor().getType());
@@ -214,7 +214,7 @@ public class TemperaturePanel extends JPanel {
                 + "% або "
                 + PLUS_MINUS
                 + VariableConverter.roundingDouble2(errorSensor, Locale.GERMAN)
-                + this.channel.getMeasurementValue();
+                + this.channel.getMeasurement().getValue();
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
         String rangeSensor =
@@ -223,7 +223,7 @@ public class TemperaturePanel extends JPanel {
                 + " до "
                 + VariableConverter.roundingDouble(this.channel.getSensor().getRangeMax(), Locale.GERMAN)
                 + " "
-                + this.channel.getMeasurementValue();
+                + this.channel.getMeasurement().getValue();
         this.rangeSensor.setText(rangeSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
@@ -253,7 +253,7 @@ public class TemperaturePanel extends JPanel {
                 + "% або "
                 + PLUS_MINUS
                 + errorC
-                + this.channel.getMeasurementValue();
+                + this.channel.getMeasurement().getValue();
         this.allowableErrorCalibrator.setText(allowableErrorCalibrator);
 
         this.resultOfCheck = new ButtonCell(true);
@@ -403,7 +403,7 @@ public class TemperaturePanel extends JPanel {
                     cells[x] = new ButtonCell(false, "95");
                     this.add(cells[x], new Cell(1, 6, 1, 2));
                 }else if (x == 8) {
-                    cells[x] = new ButtonCell(false, "Xет,".concat(channel.getMeasurementValue()));
+                    cells[x] = new ButtonCell(false, "Xет,".concat(channel.getMeasurement().getValue()));
                     this.add(cells[x], new Cell(3, 0, 1, 2));
                 }else if (x == 9) {
                     double value5 = calculation.getControlPointsValues()[1];
@@ -468,7 +468,7 @@ public class TemperaturePanel extends JPanel {
             cells[6].setText("U = "
                     + PLUS_MINUS
                     + VariableConverter.roundingDouble(calculation.getExtendedIndeterminacy(), Locale.GERMAN)
-                    + channel.getMeasurementValue());
+                    + channel.getMeasurement().getValue());
             double d = channel.getAllowableErrorPercent() - calculation.getErrorInRangeWidthSensorError();
             if (d <= 0.1){
                 cells[7].setText(GAMMA
@@ -480,7 +480,7 @@ public class TemperaturePanel extends JPanel {
                         + " вк = "
                         + PLUS_MINUS
                         + VariableConverter.roundingDouble2(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN)
-                        + channel.getMeasurementValue());
+                        + channel.getMeasurement().getValue());
             }else {
                 cells[7].setText(GAMMA
                         + " вк = "
@@ -491,7 +491,7 @@ public class TemperaturePanel extends JPanel {
                         + " вк = "
                         + PLUS_MINUS
                         + VariableConverter.roundingDouble(calculation.getAbsoluteErrorWithSensorError(), Locale.GERMAN)
-                        + channel.getMeasurementValue());
+                        + channel.getMeasurement().getValue());
             }
 
             String s5;
@@ -503,39 +503,39 @@ public class TemperaturePanel extends JPanel {
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[0], Locale.GERMAN)
-                        + channel.getMeasurementValue();
+                        + channel.getMeasurement().getValue();
             }else {
                 s5 = "5% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble(calculation.getSystematicErrors()[0], Locale.GERMAN)
-                        + channel.getMeasurementValue();
+                        + channel.getMeasurement().getValue();
             }
             if (calculation.getSystematicErrors()[1] < 0.1 && calculation.getSystematicErrors()[1] > -0.05){
                 s50 = "50% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[1], Locale.GERMAN)
-                        + channel.getMeasurementValue();
+                        + channel.getMeasurement().getValue();
             }else {
                 s50 = "50% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble(calculation.getSystematicErrors()[1], Locale.GERMAN)
-                        + channel.getMeasurementValue();
+                        + channel.getMeasurement().getValue();
             }
             if (calculation.getSystematicErrors()[2] < 0.1 && calculation.getSystematicErrors()[2] > -0.05){
                 s95 = "95% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble2(calculation.getSystematicErrors()[2], Locale.GERMAN)
-                        + channel.getMeasurementValue();
+                        + channel.getMeasurement().getValue();
             }else {
                 s95 = "95% "
                         + DELTA
                         + "s = "
                         + VariableConverter.roundingDouble(calculation.getSystematicErrors()[2], Locale.GERMAN)
-                        + channel.getMeasurementValue();
+                        + channel.getMeasurement().getValue();
             }
             cells[9].setText(s5);
             cells[10].setText(s50);

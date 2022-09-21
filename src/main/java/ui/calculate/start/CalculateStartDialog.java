@@ -99,7 +99,7 @@ public class CalculateStartDialog extends JDialog {
         this.calibrator = new JComboBox<>();
         this.calibrator.setBackground(Color.WHITE);
         this.calibrator.setEditable(false);
-        this.updateCalibrators(this.channel._getMeasurement().getName());
+        this.updateCalibrators(this.channel.getMeasurement().getName());
 
         this.weatherPanel = new CalculateStartDialog_weatherPanel();
 
@@ -164,7 +164,7 @@ public class CalculateStartDialog extends JDialog {
         if (values != null){
             this.numberOfProtocol.setText((String) values.get(Key.CHANNEL_PROTOCOL_NUMBER));
             this.datePanel.update((String) values.get(Key.CHANNEL_DATE));
-            String[] calibrators = calibratorRepository.getAllNames(this.channel._getMeasurement());
+            String[] calibrators = calibratorRepository.getAllNames(this.channel.getMeasurement());
             Calibrator calibrator = (Calibrator) values.get(Key.CALIBRATOR);
             for (int x=0;x<calibrators.length;x++){
                 if (calibrator != null && calibrator.getName().equals(calibrators[x])){

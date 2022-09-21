@@ -146,7 +146,7 @@ public class MainTable extends Table<Channel> {
             String[] data = new String[4];
             data[0] = channel.getCode();
             data[1] = channel.getName();
-            data[2] = channel._getMeasurement().getName();
+            data[2] = channel.getMeasurement().getName();
             data[3] = channel.getTechnologyNumber();
 
             model.addRow(data);

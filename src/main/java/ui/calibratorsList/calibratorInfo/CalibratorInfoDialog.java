@@ -112,9 +112,9 @@ public class CalibratorInfoDialog extends JDialog {
         this.oldCalibrator = null;
 
         this.createElements();
-        this.measurementsList.setSelectedItem(channel._getMeasurement().getName());
+        this.measurementsList.setSelectedItem(channel.getMeasurement().getName());
         this.measurementsList.setEnabled(false);
-        this.rangePanel.setValues(channel._getMeasurement().getName(), channel.getMeasurementValue());
+        this.rangePanel.setValues(channel.getMeasurement().getName(), channel.getMeasurement().getValue());
         this.setReactions();
         this.build();
     }

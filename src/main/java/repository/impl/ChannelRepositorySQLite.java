@@ -2,10 +2,12 @@ package repository.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import model.Channel;
+import model.Measurement;
 import model.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.ChannelRepository;
+import repository.MeasurementRepository;
 import repository.RepositoryJDBC;
 
 import javax.annotation.Nonnull;
@@ -22,13 +24,17 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     private static final Logger LOGGER = LoggerFactory.getLogger(ChannelRepositorySQLite.class);
     private static ChannelRepositorySQLite instance;
 
+    private final MeasurementRepository measurementRepository;
+
     private ChannelRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
+        measurementRepository = MeasurementRepositorySQLite.getInstance();
     }
-    public ChannelRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
+    public ChannelRepositorySQLite(String dbUrl, String dbUser, String dbPassword, MeasurementRepository measurementRepository){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
+        this.measurementRepository = measurementRepository;
     }
 
     public static ChannelRepositorySQLite getInstance() {
@@ -85,12 +91,15 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                 channel.setReference(resultSet.getString("reference"));
                 channel.setDate(resultSet.getString("date"));
                 channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
-                channel.setMeasurementValue(resultSet.getString("measurement_value"));
                 channel.setSensor(Sensor.fromString(resultSet.getString("sensor")));
                 channel.setFrequency(resultSet.getDouble("frequency"));
                 channel.setRange(resultSet.getDouble("range_min"), resultSet.getDouble("range_max"));
                 channel.setAllowableError(resultSet.getDouble("allowable_error_percent"),
                         resultSet.getDouble("allowable_error_value"));
+
+                String measurementValue = resultSet.getString("measurement_value");
+                Optional<Measurement> m = measurementRepository.get(measurementValue);
+                m.ifPresent(channel::setMeasurement);
 
                 return Optional.of(channel);
             }else {
@@ -106,6 +115,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     @Override
     public Collection<Channel> getAll() {
         List<Channel>channels = new ArrayList<>();
+        List<Measurement>measurements = new ArrayList<>(measurementRepository.getAll());
 
         String sql = "SELECT * FROM channels;";
         LOGGER.info("Reading all channels from DB");
@@ -122,12 +132,17 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                 channel.setReference(resultSet.getString("reference"));
                 channel.setDate(resultSet.getString("date"));
                 channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
-                channel.setMeasurementValue(resultSet.getString("measurement_value"));
                 channel.setSensor(Sensor.fromString(resultSet.getString("sensor")));
                 channel.setFrequency(resultSet.getDouble("frequency"));
                 channel.setRange(resultSet.getDouble("range_min"), resultSet.getDouble("range_max"));
                 channel.setAllowableError(resultSet.getDouble("allowable_error_percent"),
                         resultSet.getDouble("allowable_error_value"));
+
+                String measurementValue = resultSet.getString("measurement_value");
+                Optional<Measurement> mea = measurements.stream()
+                        .filter(m -> m.getValue().equals(measurementValue))
+                        .findAny();
+                mea.ifPresent(channel::setMeasurement);
 
                 channels.add(channel);
             }
@@ -156,7 +171,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
             statement.setString(9,channel.getReference());
             statement.setString(10, channel.getDate());
             statement.setString(11, String.valueOf(channel.isSuitability()));
-            statement.setString(12, channel.getMeasurementValue());
+            statement.setString(12, channel.getMeasurement().getValue());
             statement.setString(13, channel.getSensor().toString());
             statement.setDouble(14, channel.getFrequency());
             statement.setDouble(15, channel.getRangeMin());
@@ -261,7 +276,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                             .append("'").append(channel.getReference()).append("', ")
                             .append("'").append(channel.getDate()).append("', ")
                             .append("'").append(channel.isSuitability()).append("', ")
-                            .append("'").append(channel.getMeasurementValue()).append("', ")
+                            .append("'").append(channel.getMeasurement().getValue()).append("', ")
                             .append("'").append(channel.getSensor()).append("', ")
                             .append(channel.getFrequency()).append(", ")
                             .append(channel.getRangeMin()).append(", ")
@@ -391,7 +406,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                 + "reference = '" + newChannel.getReference() + "', "
                 + "date = '" + newChannel.getDate() + "', "
                 + "suitability = '" + newChannel.isSuitability() + "', "
-                + "measurement_value = '" + newChannel.getMeasurementValue() + "', "
+                + "measurement_value = '" + newChannel.getMeasurement().getValue() + "', "
                 + "sensor = '" + newChannel.getSensor() + "', "
                 + "frequency = " + newChannel.getFrequency() + ", "
                 + "range_min = " + newChannel.getRangeMin() + ", "
@@ -451,7 +466,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                     statement.setString(8, c.getReference());
                     statement.setString(9, c.getDate());
                     statement.setString(10, String.valueOf(c.isSuitability()));
-                    statement.setString(11, c.getMeasurementValue());
+                    statement.setString(11, c.getMeasurement().getValue());
                     statement.setString(12, c.getSensor().toString());
                     statement.setDouble(13, c.getFrequency());
                     statement.setDouble(14, c.getRangeMin());
@@ -491,7 +506,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                             .append("'").append(channel.getReference()).append("', ")
                             .append("'").append(channel.getDate()).append("', ")
                             .append("'").append(channel.isSuitability()).append("', ")
-                            .append("'").append(channel.getMeasurementValue()).append("', ")
+                            .append("'").append(channel.getMeasurement().getValue()).append("', ")
                             .append("'").append(channel.getSensor()).append("', ")
                             .append(channel.getFrequency()).append(", ")
                             .append(channel.getRangeMin()).append(", ")

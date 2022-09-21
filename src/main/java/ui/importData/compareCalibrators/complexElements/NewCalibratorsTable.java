@@ -5,28 +5,23 @@ import ui.importData.compareCalibrators.CompareCalibratorsDialog;
 import ui.model.Table;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
 import java.util.List;
 
 public class NewCalibratorsTable extends Table<Calibrator> {
     private static final String NAME = "Назва";
 
-    public NewCalibratorsTable(final CompareCalibratorsDialog parent, final ArrayList<Calibrator> calibrators){
+    public NewCalibratorsTable(final CompareCalibratorsDialog parent, final List<Calibrator> calibrators){
         super(tableModel(calibrators));
 
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionListener select = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (NewCalibratorsTable.this.getSelectedRow() != -1) {
-                    parent.cancelSelection(parent.CHANGED_SENSORS_TABLE);
-                    parent.hideOldCalibratorInfo();
-                    parent.showNewCalibratorInfo(calibrators.get(NewCalibratorsTable.this.getSelectedRow()));
-                }
+        ListSelectionListener select = e -> {
+            if (NewCalibratorsTable.this.getSelectedRow() != -1) {
+                parent.cancelSelection(parent.CHANGED_SENSORS_TABLE);
+                parent.hideOldCalibratorInfo();
+                parent.showNewCalibratorInfo(calibrators.get(NewCalibratorsTable.this.getSelectedRow()));
             }
         };
         this.getSelectionModel().addListSelectionListener(select);

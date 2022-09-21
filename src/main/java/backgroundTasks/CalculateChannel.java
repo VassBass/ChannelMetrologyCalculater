@@ -50,7 +50,7 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
         double[]controlPointsValues = (double[]) this.values.get(Key.CONTROL_POINTS);
 
         double[][]measurements = new double[5][8];
-        String measurementName = this.channel._getMeasurement().getName();
+        String measurementName = this.channel.getMeasurement().getName();
         if (measurementName.equals(Measurement.TEMPERATURE)){
             this.calculation = new CalculationTemperature(this.channel);
             measurements = new double[5][8];

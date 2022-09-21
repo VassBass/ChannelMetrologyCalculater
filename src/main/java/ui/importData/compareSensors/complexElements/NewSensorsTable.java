@@ -5,28 +5,23 @@ import ui.importData.compareSensors.CompareSensorsDialog;
 import ui.model.Table;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
 import java.util.List;
 
 public class NewSensorsTable extends Table<Sensor> {
     private static final String NAME = "Назва";
 
-    public NewSensorsTable(final CompareSensorsDialog parent, final ArrayList<Sensor>sensors){
+    public NewSensorsTable(final CompareSensorsDialog parent, final List<Sensor>sensors){
         super(tableModel(sensors));
 
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionListener select = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (NewSensorsTable.this.getSelectedRow() != -1) {
-                    parent.cancelSelection(parent.CHANGED_SENSORS_TABLE);
-                    parent.hideOldSensorInfo();
-                    parent.showNewSensorInfo(sensors.get(NewSensorsTable.this.getSelectedRow()));
-                }
+        ListSelectionListener select = e -> {
+            if (NewSensorsTable.this.getSelectedRow() != -1) {
+                parent.cancelSelection(parent.CHANGED_SENSORS_TABLE);
+                parent.hideOldSensorInfo();
+                parent.showNewSensorInfo(sensors.get(NewSensorsTable.this.getSelectedRow()));
             }
         };
         this.getSelectionModel().addListSelectionListener(select);

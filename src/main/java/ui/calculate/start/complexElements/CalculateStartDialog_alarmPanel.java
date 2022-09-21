@@ -32,7 +32,7 @@ public class CalculateStartDialog_alarmPanel extends JPanel {
     private void createElements() {
         this.message = new JLabel(ALARM_MESSAGE);
         this.value = new JTextField(DEFAULT_ALARM_VALUE,5);
-        this.measurementValue = new JLabel(this.channel.getMeasurementValue());
+        this.measurementValue = new JLabel(this.channel.getMeasurement().getValue());
     }
 
     private void setReactions() {

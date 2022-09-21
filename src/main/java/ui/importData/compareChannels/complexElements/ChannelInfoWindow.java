@@ -88,7 +88,7 @@ public class ChannelInfoWindow extends JWindow {
         this.technologyNumber.setHorizontalAlignment(SwingConstants.LEFT);
         this.technologyNumber.setToolTipText(this.channel.getTechnologyNumber());
 
-        String m = this.channel._getMeasurement().getName() + " | " + this.channel.getMeasurementValue();
+        String m = this.channel.getMeasurement().getName() + " | " + this.channel.getMeasurement().getValue();
         this.measurementLabel = new ButtonCell(true, MEASUREMENT);
         this.measurementLabel.setHorizontalAlignment(SwingConstants.LEFT);
         this.measurementLabel.setToolTipText(m);
@@ -105,7 +105,7 @@ public class ChannelInfoWindow extends JWindow {
         this.channelRange.setToolTipText(rc);
 
         String e = this.channel.getAllowableErrorPercent() + " %  або " +
-                this.channel.getAllowableError() + this.channel.getMeasurementValue();
+                this.channel.getAllowableError() + this.channel.getMeasurement().getValue();
         this.allowableErrorLabel = new ButtonCell(true, ALLOWABLE_ERROR_OF_CHANNEL);
         this.allowableErrorLabel.setHorizontalAlignment(SwingConstants.LEFT);
         this.allowableErrorLabel.setToolTipText(e);

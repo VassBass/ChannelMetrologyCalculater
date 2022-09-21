@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import converters.VariableConverter;
-import repository.impl.MeasurementRepositorySQLite;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -33,11 +32,11 @@ public class Channel implements Serializable {
     @Nonnull private String name = "";
 
     /**
-     * DB field = measurement_value [TEXT]
+     * Foreign key = measurement_value [TEXT]
      *
      * @see Measurement
      */
-    @Nonnull private String measurementValue = "";
+    private Measurement measurement;
 
     /**
      * DB field department [TEXT]
@@ -121,35 +120,24 @@ public class Channel implements Serializable {
      */
     private boolean suitability = true;
 
-    @Nonnull public String getCode() {return this.code;}
-    @Nonnull public String getName() {return this.name;}
-
-    @Nonnull
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public Measurement _getMeasurement() {
-        if (this.measurementValue.equals(Measurement.M_S) || this.measurementValue.equals(Measurement.CM_S)){
-            return new Measurement(Measurement.CONSUMPTION, this.measurementValue);
-        }else {
-            return MeasurementRepositorySQLite.getInstance().getWithLoggerTurnOff(this.measurementValue).get();
-        }
-    }
-
-    @Nonnull public String getMeasurementValue(){return this.measurementValue;}
-    public String getDepartment() {return this.department;}
-    public String getArea() {return this.area;}
-    public String getProcess() {return this.process;}
-    public String getInstallation() {return this.installation;}
-    @Nonnull public String getDate() {return this.date;}
-    public String getTechnologyNumber() {return this.technologyNumber;}
-    @Nonnull public Sensor getSensor() {return this.sensor;}
-    public String getNumberOfProtocol() {return this.numberOfProtocol;}
-    public double getFrequency() {return this.frequency;}
-    public double getRangeMin() {return this.rangeMin;}
-    public double getRangeMax() {return this.rangeMax;}
-    public String getReference(){return this.reference;}
-    public double getAllowableErrorPercent(){return this.allowableErrorPercent;}
-    public double getAllowableError(){return this.allowableError;}
-    public boolean isSuitability(){return this.suitability;}
+    @Nonnull public String getCode() {return code;}
+    @Nonnull public String getName() {return name;}
+    public Measurement getMeasurement() {return measurement;}
+    public String getDepartment() {return department;}
+    public String getArea() {return area;}
+    public String getProcess() {return process;}
+    public String getInstallation() {return installation;}
+    @Nonnull public String getDate() {return date;}
+    public String getTechnologyNumber() {return technologyNumber;}
+    @Nonnull public Sensor getSensor() {return sensor;}
+    public String getNumberOfProtocol() {return numberOfProtocol;}
+    public double getFrequency() {return frequency;}
+    public double getRangeMin() {return rangeMin;}
+    public double getRangeMax() {return rangeMax;}
+    public String getReference(){return reference;}
+    public double getAllowableErrorPercent(){return allowableErrorPercent;}
+    public double getAllowableError(){return allowableError;}
+    public boolean isSuitability(){return suitability;}
 
     /**
      * @return date of next channel control or null if {@link #suitability} = false
@@ -200,7 +188,7 @@ public class Channel implements Serializable {
 
     public void setCode(@Nonnull String code) {this.code = code;}
     public void setName(@Nonnull String name) {this.name = name;}
-    public void setMeasurementValue(@Nonnull String measurementValue) {this.measurementValue = measurementValue;}
+    public void setMeasurement(@Nonnull Measurement measurement) {this.measurement = measurement;}
     public void setDepartment(String department) {this.department = department;}
     public void setArea(String area) {this.area = area;}
     public void setProcess(String process) {this.process = process;}
@@ -230,7 +218,6 @@ public class Channel implements Serializable {
     public int hashCode() {
         return Objects.hash(this.code, this.name, this.technologyNumber);
     }
-
 
     /**
      *
@@ -291,7 +278,7 @@ public class Channel implements Serializable {
         Channel c = new Channel();
         c.setCode(channel.getCode());
         c.setName(channel.getName());
-        c.setMeasurementValue(channel.getMeasurementValue());
+        c.setMeasurement(channel.getMeasurement());
         c.setDepartment(channel.getDepartment());
         c.setArea(channel.getArea());
         c.setProcess(channel.getProcess());
@@ -316,7 +303,7 @@ public class Channel implements Serializable {
     public boolean isMatch(Channel channel){
         return this.code.equals(channel.getCode())
                 && this.name.equals(channel.getName())
-                && this.measurementValue.equals(channel.getMeasurementValue())
+                && this.measurement.equals(channel.getMeasurement())
                 && this.department.equals(channel.getDepartment())
                 && this.area.equals(channel.getArea())
                 && this.process.equals(channel.getProcess())

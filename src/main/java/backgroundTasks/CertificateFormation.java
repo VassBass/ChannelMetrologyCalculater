@@ -46,7 +46,7 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
 
     @Override
     protected Void doInBackground() throws Exception {
-        String measurementName = this.channel._getMeasurement().getName();
+        String measurementName = this.channel.getMeasurement().getName();
         if (measurementName.equals(Measurement.TEMPERATURE)){
             this.certificate = new TemperatureCertificate();
         }else if (measurementName.equals(Measurement.PRESSURE)){

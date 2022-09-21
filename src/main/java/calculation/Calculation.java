@@ -93,7 +93,7 @@ public abstract class Calculation {
     }
 
     public String getName(){
-        return Settings.getSettingValue(this.channel._getMeasurement().getName());
+        return Settings.getSettingValue(this.channel.getMeasurement().getName());
     }
 
     public double[] getControlPointsValues(){

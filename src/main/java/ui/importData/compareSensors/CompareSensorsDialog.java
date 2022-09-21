@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 public class CompareSensorsDialog extends JDialog {
     private static final String IMPORT = "Імпорт ПВП";
@@ -30,7 +30,7 @@ public class CompareSensorsDialog extends JDialog {
     public final boolean CHANGED_SENSORS_TABLE = false;
     private File importFile;
 
-    private final ArrayList<Sensor>newSensors, sensorsForChange, changedSensors;
+    private final List<Sensor> newSensors, sensorsForChange, changedSensors;
 
     private JWindow newSensorInfo, oldSensorInfo;
 
@@ -38,7 +38,7 @@ public class CompareSensorsDialog extends JDialog {
     private Table<Sensor> newSensorsTable, changedSensorsTable;
     private JButton removeFromNew, removeFromChanges, btnConfirmNew, btnConfirmChanges;
 
-    public CompareSensorsDialog(ArrayList<Sensor>newSensorsList,ArrayList<Sensor>sensorsForChange, ArrayList<Sensor>changedSensorsList){
+    public CompareSensorsDialog(List<Sensor>newSensorsList, List<Sensor>sensorsForChange, List<Sensor>changedSensorsList){
         super(MainScreen.getInstance(), IMPORT, true);
         this.newSensors = newSensorsList;
         this.sensorsForChange = sensorsForChange;
@@ -49,7 +49,7 @@ public class CompareSensorsDialog extends JDialog {
         this.build();
     }
 
-    public CompareSensorsDialog(ArrayList<Sensor>newSensorsList,ArrayList<Sensor>sensorsForChange, ArrayList<Sensor>changedSensorsList, File file){
+    public CompareSensorsDialog(List<Sensor>newSensorsList, List<Sensor>sensorsForChange, List<Sensor>changedSensorsList, File file){
         super(MainScreen.getInstance(), IMPORT, true);
         this.newSensors = newSensorsList;
         this.sensorsForChange = sensorsForChange;

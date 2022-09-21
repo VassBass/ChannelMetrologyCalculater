@@ -182,7 +182,7 @@ public class ConsumptionPanel extends JPanel {
                 + " до "
                 + VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN)
                 + " "
-                + this.channel.getMeasurementValue();
+                + this.channel.getMeasurement().getValue();
         this.rangeChannel.setText(rangeChannel);
 
         this.sensor.setText(this.channel.getSensor().getType());
@@ -207,7 +207,7 @@ public class ConsumptionPanel extends JPanel {
                 + "% або "
                 + PLUS_MINUS
                 + errorSensorValue
-                + this.channel.getMeasurementValue();
+                + this.channel.getMeasurement().getValue();
         this.allowableErrorSensor.setText(allowableErrorSensor);
 
         this.externalTemperature.setText(this.values.get(Key.CALCULATION_EXTERNAL_TEMPERATURE)
@@ -243,7 +243,7 @@ public class ConsumptionPanel extends JPanel {
                 + "% або "
                 + PLUS_MINUS
                 + error
-                + this.channel.getMeasurementValue();
+                + this.channel.getMeasurement().getValue();
         this.allowableErrorCalibrator.setText(allowableErrorCalibrator);
 
         this.resultOfCheck = new ButtonCell(true);
@@ -378,7 +378,7 @@ public class ConsumptionPanel extends JPanel {
             //create cells
             ButtonCell headerNum = new ButtonCell(false, "№");
             ButtonCell headerPercent = new ButtonCell(false, "%");
-            ButtonCell headerXet = new ButtonCell(false, "Xет," + channel.getMeasurementValue());
+            ButtonCell headerXet = new ButtonCell(false, "Xет," + channel.getMeasurement().getValue());
             ButtonCell headerXi = new ButtonCell(false, "Отримані значення, Хі");
 
             ButtonCell[] valuesNum1 = new ButtonCell[]{
@@ -451,7 +451,7 @@ public class ConsumptionPanel extends JPanel {
         }
 
         private void createRosemountForm(){
-            String value = channel.getMeasurementValue();
+            String value = channel.getMeasurement().getValue();
             //create cells
             ButtonCell headerNum = new ButtonCell(false, "№");
             ButtonCell headerXet = new ButtonCell(false, "Xет," + value);
@@ -541,7 +541,7 @@ public class ConsumptionPanel extends JPanel {
             cells[4].setText("Не усуненна систематична похибка");
             cells[5].setText("Отримані значення МХ");
 
-            String value = channel.getMeasurementValue();
+            String value = channel.getMeasurement().getValue();
 
             String u;
             double extendedIndeterminacy = calculation.getExtendedIndeterminacy();

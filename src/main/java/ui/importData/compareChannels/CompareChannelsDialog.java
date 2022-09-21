@@ -17,6 +17,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CompareChannelsDialog extends JDialog {
     private static final String IMPORT = "Імпорт каналів";
@@ -30,8 +31,8 @@ public class CompareChannelsDialog extends JDialog {
     public final boolean NEW_SENSORS_TABLE = true;
     public final boolean CHANGED_SENSORS_TABLE = false;
 
-    private final ArrayList<Channel>newChannels, channelsForChange, changedChannels;
-    private final ArrayList<Sensor>newSensors, sensorsToChange;
+    private final List<Channel> newChannels, channelsForChange, changedChannels;
+    private final List<Sensor>newSensors, sensorsToChange;
 
     private JWindow newChannelInfo, oldChannelInfo;
 
@@ -39,8 +40,8 @@ public class CompareChannelsDialog extends JDialog {
     private Table<Channel> newChannelsTable, changedChannelsTable;
     private JButton removeFromNew, removeFromChanges, btnConfirmNew, btnConfirmChanges;
 
-    public CompareChannelsDialog(ArrayList<Channel>newChannelsList,ArrayList<Channel>channelsForChange, ArrayList<Channel>changedChannelsList,
-                                ArrayList<Sensor>newSensors, ArrayList<Sensor>sensorsToChange){
+    public CompareChannelsDialog(List<Channel>newChannelsList,List<Channel>channelsForChange, List<Channel>changedChannelsList,
+                                List<Sensor>newSensors, List<Sensor>sensorsToChange){
         super(MainScreen.getInstance(), IMPORT, true);
         this.newChannels = newChannelsList;
         this.channelsForChange = channelsForChange;
@@ -262,12 +263,7 @@ public class CompareChannelsDialog extends JDialog {
         protected RemoveSensor(Sensor sensor){
             this.sensor = sensor;
             this.loadDialog = new LoadDialog(CompareChannelsDialog.this);
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    loadDialog.setVisible(true);
-                }
-            });
+            EventQueue.invokeLater(() -> loadDialog.setVisible(true));
         }
 
         @Override

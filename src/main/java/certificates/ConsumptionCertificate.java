@@ -128,7 +128,7 @@ public class ConsumptionCertificate extends Certificate {
         String rangeMax = VariableConverter.roundingDouble(this.channel.getRangeMax(), Locale.GERMAN);
         cell(19, 7).setCellValue(rangeMax);
 
-        this.measurementValue = this.channel.getMeasurementValue();
+        this.measurementValue = this.channel.getMeasurement().getValue();
         cell(19, 8).setCellValue(this.measurementValue);
         cell(20, 8).setCellValue(this.measurementValue);
         cell(29, 2).setCellValue(this.measurementValue);

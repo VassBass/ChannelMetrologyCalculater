@@ -19,7 +19,7 @@ public class CalculationConsumption extends Calculation {
     @Override
     public void setCalibrator(Calibrator calibrator) {
         super.setCalibrator(calibrator);
-        this.calibrator.setValue(this.channel.getMeasurementValue());
+        this.calibrator.setValue(this.channel.getMeasurement().getValue());
     }
 
     @Override
@@ -33,7 +33,7 @@ public class CalculationConsumption extends Calculation {
         if (this.controlPointsValues == null){
             if (this.calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)){
                 this.controlPointsValues = new double[4];
-                String value = this.channel.getMeasurementValue();
+                String value = this.channel.getMeasurement().getValue();
 
                 this.controlPointsValues[0] = 0D;
                 this.controlPointsValues[1] = 0.91;

@@ -5,32 +5,26 @@ import ui.importData.compareCalibrators.CompareCalibratorsDialog;
 import ui.model.Table;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChangedCalibratorsTable extends Table<Calibrator> {
     private static final String NAME = "Назва";
 
-    public ChangedCalibratorsTable(final CompareCalibratorsDialog parent,
-                               final ArrayList<Calibrator> calibratorsForChange, final ArrayList<Calibrator>changedCalibrators){
+    public ChangedCalibratorsTable(final CompareCalibratorsDialog parent, final List<Calibrator> calibratorsForChange, final List<Calibrator>changedCalibrators){
         super(tableModel(calibratorsForChange));
 
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionListener select = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int index = ChangedCalibratorsTable.this.getSelectedRow();
-                if (index != -1) {
-                    Calibrator newCalibrator = calibratorsForChange.get(index);
-                    Calibrator oldCalibrator = changedCalibrators.get(index);
-                    parent.cancelSelection(parent.NEW_SENSORS_TABLE);
-                    parent.showNewCalibratorInfo(newCalibrator);
-                    parent.showOldCalibratorInfo(oldCalibrator);
-                }
+        ListSelectionListener select = e -> {
+            int index = ChangedCalibratorsTable.this.getSelectedRow();
+            if (index != -1) {
+                Calibrator newCalibrator = calibratorsForChange.get(index);
+                Calibrator oldCalibrator = changedCalibrators.get(index);
+                parent.cancelSelection(parent.NEW_SENSORS_TABLE);
+                parent.showNewCalibratorInfo(newCalibrator);
+                parent.showOldCalibratorInfo(oldCalibrator);
             }
         };
         this.getSelectionModel().addListSelectionListener(select);

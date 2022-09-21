@@ -13,6 +13,7 @@ import java.awt.*;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,14 +23,14 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
     private static final String IMPORT = "Імпорт";
     private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
 
-    private final ArrayList<Calibrator>newCalibrators, calibratorsForChange;
+    private final List<Calibrator> newCalibrators, calibratorsForChange;
     private final LoadDialog loadDialog;
     private final File importFile;
 
     private final CalibratorRepository calibratorRepository = CalibratorRepositorySQLite.getInstance();
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
-    public SaveImportedCalibrators(ArrayList<Calibrator>newCalibrators, ArrayList<Calibrator> calibratorsForChange, File file){
+    public SaveImportedCalibrators(List<Calibrator>newCalibrators, List<Calibrator> calibratorsForChange, File file){
         super();
         this.newCalibrators = newCalibrators;
         this.calibratorsForChange = calibratorsForChange;

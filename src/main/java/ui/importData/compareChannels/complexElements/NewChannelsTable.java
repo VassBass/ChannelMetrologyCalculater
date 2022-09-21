@@ -5,28 +5,23 @@ import ui.importData.compareChannels.CompareChannelsDialog;
 import ui.model.Table;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.util.ArrayList;
 import java.util.List;
 
 public class NewChannelsTable extends Table<Channel> {
     private static final String NAME = "Назва";
 
-    public NewChannelsTable(final CompareChannelsDialog parent, final ArrayList<Channel> channels){
+    public NewChannelsTable(final CompareChannelsDialog parent, final List<Channel> channels){
         super(tableModel(channels));
 
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        ListSelectionListener select = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (NewChannelsTable.this.getSelectedRow() != -1) {
-                    parent.cancelSelection(parent.CHANGED_SENSORS_TABLE);
-                    parent.hideOldChannelInfo();
-                    parent.showNewChannelInfo(channels.get(NewChannelsTable.this.getSelectedRow()));
-                }
+        ListSelectionListener select = e -> {
+            if (NewChannelsTable.this.getSelectedRow() != -1) {
+                parent.cancelSelection(parent.CHANGED_SENSORS_TABLE);
+                parent.hideOldChannelInfo();
+                parent.showNewChannelInfo(channels.get(NewChannelsTable.this.getSelectedRow()));
             }
         };
         this.getSelectionModel().addListSelectionListener(select);
