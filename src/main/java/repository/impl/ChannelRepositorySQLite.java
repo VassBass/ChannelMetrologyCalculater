@@ -115,7 +115,6 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     @Override
     public Collection<Channel> getAll() {
         List<Channel>channels = new ArrayList<>();
-        List<Measurement>measurements = new ArrayList<>(measurementRepository.getAll());
 
         String sql = "SELECT * FROM channels;";
         LOGGER.info("Reading all channels from DB");
@@ -139,9 +138,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                         resultSet.getDouble("allowable_error_value"));
 
                 String measurementValue = resultSet.getString("measurement_value");
-                Optional<Measurement> mea = measurements.stream()
-                        .filter(m -> m.getValue().equals(measurementValue))
-                        .findAny();
+                Optional<Measurement> mea = measurementRepository.get(measurementValue);
                 mea.ifPresent(channel::setMeasurement);
 
                 channels.add(channel);
