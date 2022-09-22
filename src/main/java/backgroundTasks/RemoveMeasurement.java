@@ -69,7 +69,7 @@ public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
             if (this.get()){
                 this.dialog.updateMeasurementsList(measurement.getName());
                 if (ChannelSorter.getInstance().isOn()){
-                    this.dialog.updateMain(ChannelSorter.getInstance().getCurrent());
+                    this.dialog.updateMain(new ArrayList<>(ChannelSorter.getInstance().getCurrent()));
                 }else {
                     this.dialog.updateMain(new ArrayList<>(channelRepository.getAll()));
                 }

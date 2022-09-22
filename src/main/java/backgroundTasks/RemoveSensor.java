@@ -65,7 +65,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
                 String measurement = dialog.getMeasurement().equals(ALL) ? null : dialog.getMeasurement();
                 this.dialog.update(measurement);
                 if (ChannelSorter.getInstance().isOn()){
-                    this.dialog.updateMain(ChannelSorter.getInstance().getCurrent());
+                    this.dialog.updateMain(new ArrayList<>(ChannelSorter.getInstance().getCurrent()));
                 }else {
                     this.dialog.updateMain(new ArrayList<>(channelRepository.getAll()));
                 }
