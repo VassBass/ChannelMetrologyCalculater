@@ -83,7 +83,7 @@ public class Importer extends SwingWorker<Boolean, Void> {
         importControlPointsValuesRepository = new ControlPointsValuesRepositorySQLite(dbUrl, null, null);
         importCalibratorRepository = new CalibratorRepositorySQLite(dbUrl, null, null);
         importSensorRepository = new SensorRepositorySQLite(dbUrl, null, null);
-        importChannelRepository = new ChannelRepositorySQLite(dbUrl, null, null, null);
+        importChannelRepository = new ChannelRepositorySQLite(dbUrl, null, null);
     }
 
     @Override

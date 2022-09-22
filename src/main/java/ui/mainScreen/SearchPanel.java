@@ -5,7 +5,9 @@ import backgroundTasks.SearchChannels;
 import constants.Sort;
 import converters.VariableConverter;
 import org.apache.commons.validator.DateValidator;
+import repository.MeasurementRepository;
 import repository.PathElementRepository;
+import repository.SensorRepository;
 import repository.impl.*;
 import service.ChannelSorter;
 import ui.model.DefaultButton;
@@ -53,6 +55,8 @@ public class SearchPanel extends JPanel {
     private final PathElementRepository areaRepository = AreaRepositorySQLite.getInstance();
     private final PathElementRepository processRepository = ProcessRepositorySQLite.getInstance();
     private final PathElementRepository installationRepository = InstallationRepositorySQLite.getInstance();
+    private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
+    private final MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
 
     public SearchPanel(){
         super(new GridBagLayout());
@@ -174,11 +178,11 @@ public class SearchPanel extends JPanel {
     };
 
     private ComboBoxModel<String>model_measurementsNames(){
-        return new DefaultComboBoxModel<>(MeasurementRepositorySQLite.getInstance().getAllNames());
+        return new DefaultComboBoxModel<>(measurementRepository.getAllNames());
     }
 
     private ComboBoxModel<String>model_measurementsValues(){
-        return new DefaultComboBoxModel<>(MeasurementRepositorySQLite.getInstance().getAllValues());
+        return new DefaultComboBoxModel<>(measurementRepository.getAllValues());
     }
 
     private ComboBoxModel<String>model_departments(){
@@ -198,7 +202,7 @@ public class SearchPanel extends JPanel {
     }
 
     private ComboBoxModel<String>model_sensorsTypes(){
-        return new DefaultComboBoxModel<>(SensorRepositorySQLite.getInstance().getAllTypes().toArray(new String[0]));
+        return new DefaultComboBoxModel<>(sensorRepository.getAllTypes().toArray(new String[0]));
     }
 
     private final ActionListener clickSearch = new ActionListener() {

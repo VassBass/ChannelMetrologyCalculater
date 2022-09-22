@@ -8,10 +8,10 @@ import ui.model.LoadDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Optional;
 
-public class CheckChannel extends SwingWorker<Channel, Void> {
-    private final JDialog parentDialog;
-    private final JFrame parentFrame;
+public class CheckChannel extends SwingWorker<Optional<Channel>, Void> {
+    private final Component parent;
     private final String code;
     private final LoadDialog loadWindow;
 
@@ -19,8 +19,7 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
 
     public CheckChannel(JDialog parent, String code){
         super();
-        this.parentDialog = parent;
-        this.parentFrame = null;
+        this.parent = parent;
         this.code = code;
         this.loadWindow = new LoadDialog(parent);
         EventQueue.invokeLater(() -> loadWindow.setVisible(true));
@@ -28,8 +27,7 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
 
     public CheckChannel(JFrame parent, String code){
         super();
-        this.parentFrame = parent;
-        this.parentDialog = null;
+        this.parent = parent;
         this.code = code;
         this.loadWindow = new LoadDialog(parent);
         EventQueue.invokeLater(() -> loadWindow.setVisible(true));
@@ -40,24 +38,17 @@ public class CheckChannel extends SwingWorker<Channel, Void> {
     }
 
     @Override
-    protected Channel doInBackground() throws Exception {
-        return channelRepository.get(this.code).get();
+    protected Optional<Channel> doInBackground() throws Exception {
+        return channelRepository.get(this.code);
     }
 
     @Override
     protected void done() {
         this.loadWindow.dispose();
-        Component parent = parentDialog == null ? parentFrame : parentDialog;
         try {
-            final Channel channel = this.get();
-            if (channel != null){
-                EventQueue.invokeLater(() -> {
-                    if (parentDialog == null) {
-                        new ChannelExistsDialog(parentFrame, channel).setVisible(true);
-                    }else {
-                        new ChannelExistsDialog(parentDialog, channel).setVisible(true);
-                    }
-                });
+            if (this.get().isPresent()){
+                Channel channel = this.get().get();
+                EventQueue.invokeLater(() -> new ChannelExistsDialog(parent, channel).setVisible(true));
             }else {
                 JOptionPane.showMessageDialog(parent,
                         "Канал з данним кодом відсутній в списку", "Пошук",

@@ -10,18 +10,27 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ChannelExistsDialog extends JDialog {
-    private final JDialog parentDialog;
-    private final JFrame parentFrame;
+    private final Component parent;
     private final Channel channel;
 
     private JLabel message, channelName;
     private JButton buttonOpen, buttonClose;
 
+    public ChannelExistsDialog(Component parent, Channel channel){
+        super((JFrame)parent, "Пошук", true);
+
+        this.parent = parent;
+        this.channel = channel;
+
+        this.createElements();
+        this.build();
+        this.setReactions();
+    }
+
     public ChannelExistsDialog(JDialog parent, Channel channel){
         super(parent, "Пошук", true);
 
-        this.parentDialog = parent;
-        this.parentFrame = null;
+        this.parent = parent;
         this.channel = channel;
 
         this.createElements();
@@ -32,8 +41,7 @@ public class ChannelExistsDialog extends JDialog {
     public ChannelExistsDialog(JFrame parent, Channel channel){
         super(parent, "Пошук", true);
 
-        this.parentFrame = parent;
-        this.parentDialog = null;
+        this.parent = parent;
         this.channel = channel;
 
         this.createElements();
@@ -60,31 +68,20 @@ public class ChannelExistsDialog extends JDialog {
 
     private void build(){
         this.setSize(500,120);
-        Component parent = this.parentDialog == null ? this.parentFrame : this.parentDialog;
-        this.setLocation(ConverterUI.POINT_CENTER(parent, this));
+        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
         this.setResizable(false);
 
         this.setContentPane(new MainPanel());
     }
 
-    private final ActionListener clickClose = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickClose = e -> dispose();
 
     private final ActionListener clickOpen = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            if (parentDialog != null) parentDialog.dispose();
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new DialogChannel(MainScreen.getInstance(), channel).setVisible(true);
-                }
-            });
+            if (parent instanceof JDialog) ((JDialog) parent).dispose();
+            EventQueue.invokeLater(() -> new DialogChannel(MainScreen.getInstance(), channel).setVisible(true));
         }
     };
 

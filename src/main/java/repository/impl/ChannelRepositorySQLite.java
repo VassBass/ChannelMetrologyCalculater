@@ -31,10 +31,10 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
         createTable();
         measurementRepository = MeasurementRepositorySQLite.getInstance();
     }
-    public ChannelRepositorySQLite(String dbUrl, String dbUser, String dbPassword, MeasurementRepository measurementRepository){
+    public ChannelRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
-        this.measurementRepository = measurementRepository;
+        measurementRepository = new MeasurementRepositorySQLite(dbUrl, dbUser, dbPassword);
     }
 
     public static ChannelRepositorySQLite getInstance() {

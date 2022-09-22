@@ -23,7 +23,7 @@ public class ChannelRepositorySQLiteTest {
 
     private static final String DB_URL = "jdbc:sqlite:TestData.db";
     private static final MeasurementRepository measurementRepository = new MeasurementRepositorySQLite(DB_URL, null, null);
-    private static final ChannelRepository repository = new ChannelRepositorySQLite(DB_URL, null, null, measurementRepository);
+    private static final ChannelRepository repository = new ChannelRepositorySQLite(DB_URL, null, null);
 
     private static Channel[] testChannels;
 
