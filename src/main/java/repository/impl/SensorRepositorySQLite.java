@@ -61,7 +61,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     public Collection<Sensor> getAll() {
         List<Sensor>sensors = new ArrayList<>();
 
-        LOGGER.info("Reading all sensors from DB");
         String sql = "SELECT * FROM sensors;";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()){
@@ -87,7 +86,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     public Collection<Sensor> getAll(@Nonnull String measurement) {
         List<Sensor>sensors = new ArrayList<>();
 
-        LOGGER.info("Reading all sensors with measurement = {} from DB", measurement);
         String sql = "SELECT * FROM sensors WHERE measurement = '" + measurement + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()){
@@ -112,7 +110,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     @Override
     public Collection<String> getAllTypes() {
         List<String>types = new ArrayList<>();
-        LOGGER.info("Reading all sensors types from DB");
         String sql = "SELECT DISTINCT type FROM sensors";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()){
@@ -127,7 +124,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
 
     @Override
     public Optional<String> getMeasurement(@Nonnull String sensorType) {
-        LOGGER.info("Reading sensor measurement by type = {} from DB", sensorType);
         String sql = "SELECT measurement FROM sensors WHERE type = '" + sensorType + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
@@ -144,7 +140,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     public Collection<String> getAllSensorsName(@Nonnull String measurementName) {
         List<String> names = new ArrayList<>();
 
-        LOGGER.info("Reading all sensors names by measurement = {} from DB", measurementName);
         String sql = "SELECT name FROM sensors WHERE measurement = '" + measurementName + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()) {
@@ -159,7 +154,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
 
     @Override
     public Optional<Sensor> get(@Nonnull String sensorName) {
-        LOGGER.info("Reading sensor with name = {} from DB", sensorName);
         String sql = "SELECT * FROM sensors WHERE name = '" + sensorName + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
@@ -179,7 +173,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
             LOGGER.warn("Exception was thrown!", e);
         }
 
-        LOGGER.info("Sensor with name = {} not found", sensorName);
         return Optional.empty();
     }
 
@@ -196,9 +189,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
             statement.setDouble(7, sensor.getRangeMin());
             statement.setDouble(8, sensor.getRangeMax());
 
-            int result = statement.executeUpdate();
-            if (result > 0) LOGGER.info("Sensor = {} was added successfully", sensor.getName());
-            return true;
+            return statement.executeUpdate() > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -209,14 +200,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     public boolean remove(@Nonnull Sensor sensor) {
         String sql = "DELETE FROM sensors WHERE name = '" + sensor.getName() + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0){
-                LOGGER.info("Sensor = {} was removed successfully", sensor.getName());
-                return true;
-            }else {
-                LOGGER.info("Sensor with name = {} not found", sensor.getName());
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -238,14 +222,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
             statement.setDouble(8, newSensor.getRangeMax());
             statement.setString(9, oldSensor.getName());
 
-            int result = statement.executeUpdate();
-            if (result > 0) {
-                LOGGER.info("Sensor:\n{}\nwas replaced by:\n{}\nsuccessfully", oldSensor, newSensor);
-                return true;
-            }else {
-                LOGGER.info("Sensor with name = {} not found", oldSensor.getName());
-                return false;
-            }
+            return statement.executeUpdate() > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -256,8 +233,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
         String sql = "UPDATE sensors SET value = '" + newValue + "' WHERE value = '" + oldValue + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            LOGGER.info("Changed measurementValue of {} sensors from {} to {}", result, oldValue, newValue);
+            statement.execute(sql);
             return true;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -269,8 +245,7 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     public boolean removeMeasurementValue(@Nonnull String measurementValue) {
         String sql = "UPDATE sensors SET value = '' WHERE value = '" + measurementValue + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            LOGGER.info("Measurement value = {} was removed from {} sensors",measurementValue, result);
+            statement.execute(sql);
             return true;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -283,7 +258,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
         String sql = "DELETE FROM sensors;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);
-            LOGGER.info("Sensors list in DB was cleared successfully");
 
             if (!sensors.isEmpty()) {
                 String insertSql = "INSERT INTO sensors (name, type, number, measurement, value, error_formula, range_min, range_max) "
@@ -306,7 +280,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old sensors has been rewritten to the new one:\n{}", sensors);
             return true;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -336,7 +309,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
         String sql = "DELETE FROM sensors;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Sensors list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -346,8 +318,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
 
     @Override
     public boolean importData(@Nonnull Collection<Sensor> newSensors, @Nonnull Collection<Sensor> sensorsForChange) {
-        int changeResult = 0;
-        int addResult = 0;
         if (!sensorsForChange.isEmpty()){
             for (Sensor s : sensorsForChange){
                 if (s == null) continue;
@@ -367,7 +337,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
                     statement.setString(8, s.getName());
 
                     statement.execute();
-                    changeResult++;
                 } catch (SQLException e) {
                     LOGGER.warn("Exception was thrown!", e);
                     return false;
@@ -393,15 +362,13 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
                             .append(sensor.getRangeMax()).append("),");
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
-                addResult = statement.executeUpdate(sqlBuilder.toString());
+                statement.execute(sqlBuilder.toString());
             } catch (SQLException e) {
                 LOGGER.warn("Exception was thrown!", e);
                 return false;
             }
         }
 
-        LOGGER.info("Sensors import was successful");
-        LOGGER.info("Changed = {} | Added = {}", changeResult, addResult);
         return true;
     }
 

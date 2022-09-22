@@ -53,7 +53,6 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementR
         List<String>areas = new ArrayList<>();
         String sql = "SELECT * FROM areas;";
 
-        LOGGER.info("Reading all areas from DB");
         try (ResultSet resultSet = getResultSet(sql)){
 
             while (resultSet.next()){
@@ -75,13 +74,8 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementR
     public boolean add(@Nonnull String object) {
         String sql = "INSERT INTO areas VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0) {
-                LOGGER.info("Area = {} was added successfully", object);
-                return true;
-            } else return false;
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.info("Area = {} is already exists", object);
             return false;
         }
     }
@@ -102,16 +96,8 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementR
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         String sql = "UPDATE areas SET area = '" + newObject + "' WHERE area = '" + oldObject + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0) {
-                LOGGER.info("Area = {} was replaced by area = {} successfully", oldObject, newObject);
-                return true;
-            }else {
-                LOGGER.info("Area = {} was not found", oldObject);
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.info("Area = {} is already exists", newObject);
             return false;
         }
     }
@@ -124,14 +110,7 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementR
     public boolean remove(@Nonnull String object) {
         String sql = "DELETE FROM areas WHERE area = '" + object + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0) {
-                LOGGER.info("Area = {} was removed successfully", object);
-                return true;
-            } else {
-                LOGGER.info("Area = {} was not found", object);
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -147,7 +126,6 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementR
         String sql = "DELETE FROM areas;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Areas list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -165,7 +143,6 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementR
         String sql = "DELETE FROM areas;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Areas list in DB was cleared successfully");
 
             if (!newList.isEmpty()) {
                 StringBuilder sqlBuilder = new StringBuilder();
@@ -180,7 +157,6 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementR
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old areas has been rewritten to the new one:\n{}", newList);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);

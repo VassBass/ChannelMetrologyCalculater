@@ -59,7 +59,6 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     @Override
     public Collection<ControlPointsValues> getAll() {
         List<ControlPointsValues>values = new ArrayList<>();
-        LOGGER.info("Reading all control_points from DB");
         String sql = "SELECT * FROM control_points;";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()){
@@ -82,7 +81,6 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     @Override
     public Optional<ControlPointsValues> getById(@Nonnegative int id) {
         String sql = "SELECT * FROM control_points WHERE id = " + id + " LIMIT 1;";
-        LOGGER.info("Reading control_points from DB with id = {}", id);
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
                 ControlPointsValues cpv = new ControlPointsValues();
@@ -93,14 +91,12 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
                 cpv._setValuesFromString(resultSet.getString("points"));
 
                 return Optional.of(cpv);
-            }else {
-                LOGGER.info("Control points with id = {} not found", id);
-                return Optional.empty();
             }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
-            return Optional.empty();
         }
+
+        return Optional.empty();
     }
 
     @Override
@@ -114,17 +110,14 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
 
             if (statement.executeUpdate() > 0){
                 ResultSet key = statement.getGeneratedKeys();
-                int id = key.next() ? key.getInt(1) : -1;
-                if (id > 0) {
+                Integer id = key.next() ? key.getInt(1) : null;
+                if (id != null) {
                     cpv.setId(id);
-                    LOGGER.info("Control_points = {} was added successfully", cpv);
+                    return true;
                 }
-                return id > 0;
-            }else {
-                LOGGER.info("Control_points = {} not added", cpv);
-                return false;
             }
 
+            return false;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -141,9 +134,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
             statement.setString(4, cpv._getValuesString());
             statement.setInt(5, cpv.getId());
 
-            int result = statement.executeUpdate();
-            if (result > 0) LOGGER.info("Control_points with id = {} was updated by : {}", cpv.getId(), cpv);
-            return result > 0;
+            return statement.executeUpdate() > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -153,7 +144,6 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     @Override
     public List<ControlPointsValues> getBySensorType(@Nonnull String sensorType) {
         List<ControlPointsValues>values = new ArrayList<>();
-        LOGGER.info("Reading from DB all control_points with sensor_type = {}", sensorType);
         String sql = "SELECT * FROM control_points WHERE sensor_type = '" + sensorType + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()){
@@ -188,16 +178,11 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
                 Integer id = key.next() ? key.getInt(1) : null;
                 if (id != null) {
                     cpv.setId(id);
-                    LOGGER.info("Control_points = {} was added successfully", cpv);
                     return Optional.of(id);
-                }else {
-                    return Optional.empty();
                 }
-            }else {
-                LOGGER.info("Control_points = {} not added", cpv);
-                return Optional.empty();
             }
 
+            return Optional.empty();
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return Optional.empty();
@@ -213,9 +198,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
             statement.setString(3, cpv._getValuesString());
             statement.setInt(4, cpv.getId());
 
-            int result = statement.executeUpdate();
-            if (result > 0) LOGGER.info("Control_points with id = {} was updated by : {}", cpv.getId(), cpv);
-            return result > 0;
+            return statement.executeUpdate() > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -229,7 +212,6 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
                 + "WHERE sensor_type = '" + oldSensorType + "';";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Sensor type in all control_points was updated from = {}, to = {}", oldSensorType, newSensorType);
             return true;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -241,13 +223,7 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
     public boolean remove(@Nonnull ControlPointsValues cpv) {
         String sql = "DELETE FROM control_points WHERE id = " + cpv.getId() + ";";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0){
-                LOGGER.info("Control_points with id = {} was removed successfully", cpv.getId());
-            }else {
-                LOGGER.info("Control_points with id = {} not found", cpv.getId());
-            }
-            return result > 0;
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -259,8 +235,6 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
         String sql = "DELETE FROM control_points WHERE sensor_type = '" + sensorType + "';";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-
-            LOGGER.info("All control_points with sensor_type = {} was removed", sensorType);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -273,7 +247,6 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
         String sql = "DELETE FROM control_points;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Control_points list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -304,7 +277,6 @@ public class ControlPointsValuesRepositorySQLite extends RepositoryJDBC implemen
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old control_points has been rewritten to the new one:\n{}", list);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);

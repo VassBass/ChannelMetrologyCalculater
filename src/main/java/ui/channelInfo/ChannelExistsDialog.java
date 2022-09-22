@@ -10,14 +10,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class ChannelExistsDialog extends JDialog {
-    private final Component parent;
+    private final Window parent;
     private final Channel channel;
 
     private JLabel message, channelName;
     private JButton buttonOpen, buttonClose;
 
-    public ChannelExistsDialog(Component parent, Channel channel){
-        super((JFrame)parent, "Пошук", true);
+    public ChannelExistsDialog(Window parent, Channel channel){
+        super(parent, "Пошук", ModalityType.APPLICATION_MODAL);
 
         this.parent = parent;
         this.channel = channel;
@@ -25,28 +25,6 @@ public class ChannelExistsDialog extends JDialog {
         this.createElements();
         this.build();
         this.setReactions();
-    }
-
-    public ChannelExistsDialog(JDialog parent, Channel channel){
-        super(parent, "Пошук", true);
-
-        this.parent = parent;
-        this.channel = channel;
-
-        this.createElements();
-        this.build();
-        this.setReactions();
-    }
-
-    public ChannelExistsDialog(JFrame parent, Channel channel){
-        super(parent, "Пошук", true);
-
-        this.parent = parent;
-        this.channel = channel;
-
-        this.createElements();
-        this.setReactions();
-        this.build();
     }
 
     private void createElements(){
@@ -80,7 +58,7 @@ public class ChannelExistsDialog extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
-            if (parent instanceof JDialog) ((JDialog) parent).dispose();
+            if (parent instanceof JDialog) parent.dispose();
             EventQueue.invokeLater(() -> new DialogChannel(MainScreen.getInstance(), channel).setVisible(true));
         }
     };

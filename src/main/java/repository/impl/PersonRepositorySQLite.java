@@ -57,7 +57,6 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
 
     @Override
     public Collection<Person> getAll() {
-        LOGGER.info("Reading all persons from DB");
         List<Person>persons = new ArrayList<>();
         String sql = "SELECT * FROM persons;";
         try (ResultSet resultSet = getResultSet(sql)){
@@ -79,7 +78,6 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
 
     @Override
     public Optional<Person> getById(@Nonnegative int id) {
-        LOGGER.info("Reading person with id = {} from DB", id);
         String sql = "SELECT * FROM persons WHERE id = " + id + " LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
@@ -90,14 +88,12 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
                 person.setPosition(resultSet.getString("position"));
 
                 return Optional.of(person);
-            }else {
-                LOGGER.info("Person with id = {} not found", id);
-                return Optional.empty();
             }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
-            return Optional.empty();
         }
+
+        return Optional.empty();
     }
 
     @Override
@@ -109,11 +105,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
             statement.setString(3, person.getPatronymic());
             statement.setString(4, person.getPosition());
 
-            int result = statement.executeUpdate();
-            if (result > 0){
-                LOGGER.info("Person = {} was added successfully", person._getFullName());
-                return true;
-            } else return false;
+            return statement.executeUpdate() > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -130,11 +122,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
             statement.setString(4, person.getPosition());
             statement.setInt(5, person.getId());
 
-            int result = statement.executeUpdate();
-            if (result > 0) {
-                LOGGER.info("Person was replaced by:\n{}\nsuccessfully", person);
-                return true;
-            }else return false;
+            return statement.executeUpdate() > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -160,11 +148,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
         sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');
 
         try (Statement statement = getStatement()) {
-            int result = statement.executeUpdate(sqlBuilder.toString());
-            if (result > 0) {
-                LOGGER.info("Persons list:\n{}\nwas added successfully", persons);
-                return true;
-            }return false;
+            return statement.executeUpdate(sqlBuilder.toString()) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -175,14 +159,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
     public boolean remove(@Nonnull Person person) {
         String sql = "DELETE FROM persons WHERE id = " + person.getId();
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0){
-                LOGGER.info("Person = {} was removed successfully", person._getFullName());
-                return true;
-            }else {
-                LOGGER.info("Person with id = {} not found", person.getId());
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -199,11 +176,7 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
             statement.setString(4, person.getPosition());
             statement.setInt(5, person.getId());
 
-            int result = statement.executeUpdate();
-            if (result > 0) {
-                LOGGER.info("Person was replaced by:\n{}\nsuccessfully", person);
-                return true;
-            }else return false;
+            return statement.executeUpdate() > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -215,7 +188,6 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
         String sql = "DELETE FROM persons;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Persons list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -228,7 +200,6 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
         String sql = "DELETE FROM persons;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);
-            LOGGER.info("Persons list in DB was cleared successfully");
 
             if (!persons.isEmpty()) {
                 sql = "INSERT INTO persons (name, surname, patronymic, position) VALUES ";
@@ -246,7 +217,6 @@ public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepo
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old persons has been rewritten to the new one:\n{}", persons);
             return true;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);

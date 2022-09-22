@@ -53,7 +53,6 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements PathEleme
         List<String>areas = new ArrayList<>();
         String sql = "SELECT * FROM processes;";
 
-        LOGGER.info("Reading all processes from DB");
         try (ResultSet resultSet = getResultSet(sql)){
 
             while (resultSet.next()){
@@ -75,13 +74,8 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements PathEleme
     public boolean add(@Nonnull String object) {
         String sql = "INSERT INTO processes VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0){
-                LOGGER.info("Process = {} was added successfully", object);
-                return true;
-            } else return false;
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.info("Process = {} is already exists", object);
             return false;
         }
     }
@@ -95,16 +89,8 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements PathEleme
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         String sql = "UPDATE processes SET process = '" + newObject + "' WHERE process = '" + oldObject + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0) {
-                LOGGER.info("Process = {} was replaced by department = {} successfully", oldObject, newObject);
-                return true;
-            }else {
-                LOGGER.info("Process = {} was not found", oldObject);
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.info("Process = {} is already exists", newObject);
             return false;
         }
     }
@@ -117,14 +103,7 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements PathEleme
     public boolean remove(@Nonnull String object) {
         String sql = "DELETE FROM processes WHERE process = '" + object + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0) {
-                LOGGER.info("Process = {} was removed successfully", object);
-                return true;
-            } else {
-                LOGGER.info("Process = {} was not found", object);
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -140,7 +119,6 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements PathEleme
         String sql = "DELETE FROM processes;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Processes list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -158,7 +136,6 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements PathEleme
         String sql = "DELETE FROM processes;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Processes list in DB was cleared successfully");
 
             if (!newList.isEmpty()) {
                 StringBuilder sqlBuilder = new StringBuilder();
@@ -173,7 +150,6 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements PathEleme
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old processes has been rewritten to the new one:\n{}", newList);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);

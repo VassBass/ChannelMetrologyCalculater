@@ -15,7 +15,6 @@ import ui.model.DefaultButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 
 public class SearchPanel extends JPanel {
     private static final String CODE = "Код каналу";
@@ -222,8 +221,8 @@ public class SearchPanel extends JPanel {
 
                     startSearch(f);
                 } else {
+                    new SearchChannels().cancel();
                     ChannelSorter.getInstance().setOff();
-                    MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelRepositorySQLite.getInstance().getAll()));
                     if (field != null) field.setEnabled(true);
                     if (valueText != null) valueText.setEnabled(true);
                     if (valueComboBox != null) valueComboBox.setEnabled(true);

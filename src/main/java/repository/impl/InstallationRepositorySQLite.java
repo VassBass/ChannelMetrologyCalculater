@@ -53,7 +53,6 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Path
         List<String>installations = new ArrayList<>();
         String sql = "SELECT * FROM installations;";
 
-        LOGGER.info("Reading all installations from DB");
         try (ResultSet resultSet = getResultSet(sql)){
 
             while (resultSet.next()){
@@ -75,13 +74,8 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Path
     public boolean add(@Nonnull String object) {
         String sql = "INSERT INTO installations VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0){
-                LOGGER.info("Installation = {} was added successfully", object);
-                return true;
-            } else return false;
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.info("Installation = {} is already exists", object);
             return false;
         }
     }
@@ -95,14 +89,7 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Path
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         String sql = "UPDATE installations SET installation = '" + newObject + "' WHERE installation = '" + oldObject + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0) {
-                LOGGER.info("Installation = {} was replaced by department = {} successfully", oldObject, newObject);
-                return true;
-            }else {
-                LOGGER.info("Installation = {} was not found", oldObject);
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.info("Installation = {} is already exists", newObject);
             return false;
@@ -117,14 +104,7 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Path
     public boolean remove(@Nonnull String object) {
         String sql = "DELETE FROM installations WHERE installation = '" + object + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0) {
-                LOGGER.info("Installation = {} was removed successfully", object);
-                return true;
-            } else {
-                LOGGER.info("Installation = {} was not found", object);
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -140,7 +120,6 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Path
         String sql = "DELETE FROM installations;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Installations list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -158,7 +137,6 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Path
         String sql = "DELETE FROM installations;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Installations list in DB was cleared successfully");
 
             if (!newList.isEmpty()) {
                 StringBuilder sqlBuilder = new StringBuilder();
@@ -173,7 +151,6 @@ public class InstallationRepositorySQLite extends RepositoryJDBC implements Path
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old installations has been rewritten to the new one:\n{}", newList);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);

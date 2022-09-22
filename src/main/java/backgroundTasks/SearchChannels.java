@@ -43,6 +43,12 @@ public class SearchChannels extends SwingWorker<Void, Void> {
         this.execute();
     }
 
+    public void cancel(){
+        this.field = -1;
+        EventQueue.invokeLater(() -> loadDialog.setVisible(true));
+        this.execute();
+    }
+
     @Override
     protected Void doInBackground() throws Exception {
         switch (this.field){

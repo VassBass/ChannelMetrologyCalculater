@@ -64,7 +64,6 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
         List<Calibrator>calibrators = new ArrayList<>();
         String sql = "SELECT * FROM calibrators;";
 
-        LOGGER.info("Reading all calibrators from DB");
         try (ResultSet resultSet = getResultSet(sql)){
 
             while (resultSet.next()){
@@ -93,7 +92,6 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     public String[] getAllNames(@Nonnull Measurement measurement) {
         List<String>calibrators = new ArrayList<>();
 
-        LOGGER.info("Reading all calibrators names from DB");
         String sql = "SELECT name FROM calibrators WHERE measurement = '" + measurement.getName() + "';";
         try (ResultSet resultSet = getResultSet(sql)){
             while (resultSet.next()) {
@@ -108,7 +106,6 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
     @Override
     public Optional<Calibrator> get(@Nonnull String name) {
-        LOGGER.info("Reading calibrator with name = {} from DB", name);
         String sql = "SELECT * FROM calibrators WHERE name = '" + name + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
@@ -124,14 +121,12 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                 calibrator.setCertificate(Calibrator.Certificate.fromString(resultSet.getString("certificate")));
 
                 return Optional.of(calibrator);
-            }else {
-                LOGGER.info("Calibrator with name = {} not found", name);
-                return Optional.empty();
             }
         }catch (SQLException | JsonProcessingException e){
             LOGGER.warn("Exception was thrown!", e);
-            return Optional.empty();
         }
+
+        return Optional.empty();
     }
 
     @Override
@@ -148,10 +143,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
             statement.setString(7, calibrator.getCertificate().toString());
             statement.setDouble(8, calibrator.getRangeMin());
             statement.setDouble(9, calibrator.getRangeMax());
-            int result = statement.executeUpdate();
 
-            if (result > 0) LOGGER.info("Calibrator = {} was added successfully", calibrator.getName());
-            return true;
+            return statement.executeUpdate() > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -162,14 +155,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     public boolean remove(@Nonnull Calibrator calibrator) {
         String sql = "DELETE FROM calibrators WHERE name = '" + calibrator.getName() + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0){
-                LOGGER.info("Calibrator = {} was removed successfully", calibrator.getName());
-                return true;
-            }else {
-                LOGGER.info("Calibrator with name = {} not found", calibrator.getName());
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -180,9 +166,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
         String sql = "DELETE FROM calibrators WHERE value = '" + measurementValue + "';";
         try (Statement statement = getStatement()) {
-            int result = statement.executeUpdate(sql);
-            LOGGER.info("Removed {} calibrators with measurementValue = {}", result, measurementValue);
-            return result > 0;
+            return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -203,14 +187,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                 + "range_max = " + newCalibrator.getRangeMax() + " "
                 + "WHERE name = '" + oldCalibrator.getName() + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0){
-                LOGGER.info("Calibrator:\n{}\nwas replaced by calibrator:\n{}\nsuccessfully", oldCalibrator, newCalibrator);
-                return true;
-            }else {
-                LOGGER.info("Calibrator with name = '" + oldCalibrator.getName() + "' not found");
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -223,9 +200,7 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
         String sql = "UPDATE calibrators SET value = '" + newValue + "' WHERE value = '" + oldValue + "';";
         try (Statement statement = getStatement()) {
-            int result = statement.executeUpdate(sql);
-            LOGGER.info("Changed measurementValue of {} calibrators from {} to {}", result, oldValue, newValue);
-            return result > 0;
+            return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -237,7 +212,6 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
         String sql = "DELETE FROM calibrators;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);
-            LOGGER.info("Calibrators list in DB was cleared successfully");
             return true;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -250,7 +224,6 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
         String sql = "DELETE FROM calibrators;";
         try (Statement statement = getStatement()) {
             statement.execute(sql);
-            LOGGER.info("Calibrators list in DB was cleared successfully");
 
             if (!calibrators.isEmpty()) {
                 String insertSql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
@@ -274,7 +247,6 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old calibrators has been rewritten to the new one:\n{}", calibrators);
             return true;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -284,8 +256,6 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
     @Override
     public boolean importData(@Nonnull Collection<Calibrator> newCalibrators, @Nonnull Collection<Calibrator> calibratorsForChange) {
-        int changeResult = 0;
-        int addResult = 0;
         if (!calibratorsForChange.isEmpty()){
             for (Calibrator c : calibratorsForChange){
                 if (c == null) continue;
@@ -306,7 +276,6 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                     statement.setString(9, c.getName());
 
                     statement.execute();
-                    changeResult++;
                 } catch (SQLException e) {
                     LOGGER.warn("Exception was thrown!", e);
                     return false;
@@ -333,15 +302,13 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                             .append(calibrator.getRangeMax()).append("),");
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
-                addResult = statement.executeUpdate(sqlBuilder.toString());
+                statement.execute(sqlBuilder.toString());
             } catch (SQLException e) {
                 LOGGER.warn("Exception was thrown!", e);
                 return false;
             }
         }
 
-        LOGGER.info("Calibrators import was successful");
-        LOGGER.info("Changed = {} | Added = {}", changeResult, addResult);
         return true;
     }
 

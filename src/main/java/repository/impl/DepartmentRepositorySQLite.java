@@ -53,7 +53,6 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements PathEl
         List<String>departments = new ArrayList<>();
         String sql = "SELECT * FROM departments;";
 
-        LOGGER.info("Reading all departments from DB");
         try (ResultSet resultSet = getResultSet(sql)){
 
             while (resultSet.next()){
@@ -75,13 +74,8 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements PathEl
     public boolean add(@Nonnull String object) {
         String sql = "INSERT INTO departments VALUES ('" + object + "');";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0){
-                LOGGER.info("Department = {} was added successfully", object);
-                return true;
-            } else return false;
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.info("Department = {} is already exists", object);
             return false;
         }
     }
@@ -102,16 +96,8 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements PathEl
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         String sql = "UPDATE departments SET department = '" + newObject + "' WHERE department = '" + oldObject + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0) {
-                LOGGER.info("Department = {} was replaced by department = {} successfully", oldObject, newObject);
-                return true;
-            }else {
-                LOGGER.info("Department = {} was not found", oldObject);
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.info("Department = {} is already exists", newObject);
             return false;
         }
     }
@@ -124,14 +110,7 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements PathEl
     public boolean remove(@Nonnull String object) {
         String sql = "DELETE FROM departments WHERE department = '" + object + "';";
         try (Statement statement = getStatement()){
-            int result = statement.executeUpdate(sql);
-            if (result > 0) {
-                LOGGER.info("Department = {} was removed successfully", object);
-                return true;
-            } else {
-                LOGGER.info("Department = {} was not found", object);
-                return false;
-            }
+            return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;
@@ -147,7 +126,6 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements PathEl
         String sql = "DELETE FROM departments;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Departments list in DB was cleared successfully");
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -160,7 +138,6 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements PathEl
         String sql = "DELETE FROM departments;";
         try (Statement statement = getStatement()){
             statement.execute(sql);
-            LOGGER.info("Departments list in DB was cleared successfully");
 
             if (!newList.isEmpty()) {
                 StringBuilder sqlBuilder = new StringBuilder();
@@ -175,7 +152,6 @@ public class DepartmentRepositorySQLite extends RepositoryJDBC implements PathEl
                 statement.execute(sqlBuilder.toString());
             }
 
-            LOGGER.info("The list of old departments has been rewritten to the new one:\n{}", newList);
             return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);

@@ -11,21 +11,13 @@ import java.awt.*;
 import java.util.Optional;
 
 public class CheckChannel extends SwingWorker<Optional<Channel>, Void> {
-    private final Component parent;
+    private final Window parent;
     private final String code;
     private final LoadDialog loadWindow;
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
-    public CheckChannel(JDialog parent, String code){
-        super();
-        this.parent = parent;
-        this.code = code;
-        this.loadWindow = new LoadDialog(parent);
-        EventQueue.invokeLater(() -> loadWindow.setVisible(true));
-    }
-
-    public CheckChannel(JFrame parent, String code){
+    public CheckChannel(Window parent, String code){
         super();
         this.parent = parent;
         this.code = code;
