@@ -219,57 +219,8 @@ public class SearchPanel extends JPanel {
 
                         buttonSearch.setText(FINISH_SEARCH);
                     }
-                    String value = valueComboBox.getSelectedItem() == null ? null : valueComboBox.getSelectedItem().toString();
-                    switch (f) {
-                        case CODE:
-                            new CheckChannel(MainScreen.getInstance(), valueText.getText()).start();
-                            break;
-                        case NAME:
-                            new SearchChannels().startSearch(Sort.NAME, valueText.getText());
-                            break;
-                        case MEASUREMENT_NAME:
-                            new SearchChannels().startSearch(Sort.MEASUREMENT_NAME, value);
-                            break;
-                        case MEASUREMENT_VALUE:
-                            new SearchChannels().startSearch(Sort.MEASUREMENT_VALUE, value);
-                            break;
-                        case DEPARTMENT:
-                            new SearchChannels().startSearch(Sort.DEPARTMENT, value);
-                            break;
-                        case AREA:
-                            new SearchChannels().startSearch(Sort.AREA, value);
-                            break;
-                        case PROCESS:
-                            new SearchChannels().startSearch(Sort.PROCESS, value);
-                            break;
-                        case INSTALLATION:
-                            new SearchChannels().startSearch(Sort.INSTALLATION, value);
-                            break;
-                        case DATE:
-                            new SearchChannels().startSearch(Sort.DATE, valueText.getText());
-                            break;
-                        case FREQUENCY:
-                            new SearchChannels().startSearch(Sort.FREQUENCY, valueText.getText());
-                            break;
-                        case TECHNOLOGY_NUMBER:
-                            new SearchChannels().startSearch(Sort.TECHNOLOGY_NUMBER, valueText.getText());
-                            break;
-                        case SENSOR_NAME:
-                            new SearchChannels().startSearch(Sort.SENSOR_NAME, valueText.getText());
-                            break;
-                        case SENSOR_TYPE:
-                            new SearchChannels().startSearch(Sort.SENSOR_TYPE, value);
-                            break;
-                        case PROTOCOL_NUMBER:
-                            new SearchChannels().startSearch(Sort.PROTOCOL_NUMBER, valueText.getText());
-                            break;
-                        case REFERENCE:
-                            new SearchChannels().startSearch(Sort.REFERENCE, valueText.getText());
-                            break;
-                        case SUITABILITY:
-                            new SearchChannels().startSearch(Sort.SUITABILITY, valueSuitability.isSelected());
-                            break;
-                    }
+
+                    startSearch(f);
                 } else {
                     ChannelSorter.getInstance().setOff();
                     MainScreen.getInstance().setChannelsList(new ArrayList<>(ChannelRepositorySQLite.getInstance().getAll()));
@@ -282,6 +233,60 @@ public class SearchPanel extends JPanel {
             }
         }
     };
+
+    private void startSearch(String field) {
+        String value = valueComboBox.getSelectedItem() == null ? null : valueComboBox.getSelectedItem().toString();
+        switch (field) {
+            case CODE:
+                new CheckChannel(MainScreen.getInstance(), valueText.getText()).start();
+                break;
+            case NAME:
+                new SearchChannels().startSearch(Sort.NAME, valueText.getText());
+                break;
+            case MEASUREMENT_NAME:
+                new SearchChannels().startSearch(Sort.MEASUREMENT_NAME, value);
+                break;
+            case MEASUREMENT_VALUE:
+                new SearchChannels().startSearch(Sort.MEASUREMENT_VALUE, value);
+                break;
+            case DEPARTMENT:
+                new SearchChannels().startSearch(Sort.DEPARTMENT, value);
+                break;
+            case AREA:
+                new SearchChannels().startSearch(Sort.AREA, value);
+                break;
+            case PROCESS:
+                new SearchChannels().startSearch(Sort.PROCESS, value);
+                break;
+            case INSTALLATION:
+                new SearchChannels().startSearch(Sort.INSTALLATION, value);
+                break;
+            case DATE:
+                new SearchChannels().startSearch(Sort.DATE, valueText.getText());
+                break;
+            case FREQUENCY:
+                new SearchChannels().startSearch(Sort.FREQUENCY, valueText.getText());
+                break;
+            case TECHNOLOGY_NUMBER:
+                new SearchChannels().startSearch(Sort.TECHNOLOGY_NUMBER, valueText.getText());
+                break;
+            case SENSOR_NAME:
+                new SearchChannels().startSearch(Sort.SENSOR_NAME, valueText.getText());
+                break;
+            case SENSOR_TYPE:
+                new SearchChannels().startSearch(Sort.SENSOR_TYPE, value);
+                break;
+            case PROTOCOL_NUMBER:
+                new SearchChannels().startSearch(Sort.PROTOCOL_NUMBER, valueText.getText());
+                break;
+            case REFERENCE:
+                new SearchChannels().startSearch(Sort.REFERENCE, valueText.getText());
+                break;
+            case SUITABILITY:
+                new SearchChannels().startSearch(Sort.SUITABILITY, valueSuitability.isSelected());
+                break;
+        }
+    }
 
     private final FocusListener textFocus = new FocusListener() {
         @Override
