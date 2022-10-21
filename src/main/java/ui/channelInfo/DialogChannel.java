@@ -44,6 +44,21 @@ public class DialogChannel extends JDialog {
     private static final String RESET = "Скинути";
     private static final String REMOVE = "Видалити";
 
+    PanelCode panelCode;
+    PanelName panelName;
+    PanelMeasurement panelMeasurement;
+    PanelTechnologyNumber panelTechnologyNumber;
+    PanelData panelData;
+    PanelProtocolNumber panelProtocolNumber;
+    PanelFrequency panelFrequency;
+    PanelPath panelPath;
+    PanelSensor panelSensor;
+    PanelSensorRange panelSensorRange;
+    PanelChannelRange panelChannelRange;
+    PanelAllowableError panelAllowableError;
+
+    SpecialCharactersPanel specialCharactersPanel;
+
     private final MainScreen parent;
     private MainPanel mainPanel;
 
@@ -66,13 +81,12 @@ public class DialogChannel extends JDialog {
     public DialogChannel_rangePanel rangePanel;
     public DialogChannel_allowableErrorPanel allowableErrorPanel;
     public DialogChannel_sensorRangePanel sensorRangePanel;
-    private SpecialCharactersPanel specialCharactersPanel;
 
     public JCheckBox rangeLikeChannel;
 
-    private JButton negativeButton, positiveButton, saveAndCalculateButton, resetButton, removeButton;
+    JButton negativeButton, positiveButton, saveAndCalculateButton, resetButton, removeButton;
 
-    public final Channel oldChannel;
+    final Channel oldChannel;
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
@@ -209,10 +223,9 @@ public class DialogChannel extends JDialog {
         this.setContentPane(this.mainPanel);
     }
 
-    public void update(Measurement measurement) {
-        if (measurement != null){
-            this.setMeasurement(measurement);
-        }
+    public void update() {
+        this.mainPanel = new MainPanel();
+        this.setContentPane(this.mainPanel);
     }
 
     private boolean allFieldsAreNotFilled(){
@@ -334,6 +347,7 @@ public class DialogChannel extends JDialog {
         String measurementName = measurement.getName();
         this.measurementPanel.update(measurementName);
         this.sensorPanel.update(measurementName);
+
         if (measurementName.equals(Measurement.TEMPERATURE)
             || measurementName.equals(Measurement.PRESSURE)){
             this.sensorRangePanel = new DialogChannel_sensorRangePanel(this, measurement);
@@ -353,6 +367,7 @@ public class DialogChannel extends JDialog {
             this.allowableErrorPanel.updateError(errorSensor, false, channel._getRange());
             this.allowableErrorPanel.setEnabled(false);
         }
+
         this.mainPanel = new MainPanel();
         this.setContentPane(this.mainPanel);
     }

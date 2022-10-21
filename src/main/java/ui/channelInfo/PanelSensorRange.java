@@ -1,11 +1,10 @@
-package ui.channelInfo.complexElements;
+package ui.channelInfo;
 
 import converters.VariableConverter;
 import model.Measurement;
 import model.Sensor;
 import repository.MeasurementRepository;
 import repository.impl.MeasurementRepositorySQLite;
-import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -17,7 +16,7 @@ import java.awt.event.KeyListener;
 import java.util.Locale;
 import java.util.Objects;
 
-public class DialogChannel_sensorRangePanel extends JPanel {
+public class PanelSensorRange extends JPanel {
     private static final String MIN = "Від ";
     private static final String MAX = " до ";
     private static final String DEFAULT_MIN_VALUE = "0.00";
@@ -31,15 +30,15 @@ public class DialogChannel_sensorRangePanel extends JPanel {
 
     private JComboBox<String>value;
 
-    private Measurement measurement;
+    private JCheckBox rangesMatch;
+
     private final DialogChannel parent;
 
     private MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
 
-    public DialogChannel_sensorRangePanel(DialogChannel parent, Measurement measurement){
+    public PanelSensorRange(DialogChannel parent){
         super();
         this.parent = parent;
-        this.measurement = measurement;
 
         this.createElements();
         this.setReactions();
@@ -53,7 +52,7 @@ public class DialogChannel_sensorRangePanel extends JPanel {
         this.min = new JTextField(DEFAULT_MIN_VALUE, 5);
         this.max = new JTextField(DEFAULT_MAX_VALUE, 5);
 
-        this.value = new JComboBox<>(MeasurementRepositorySQLite.getInstance().getValues(this.measurement));
+        this.value = new JComboBox<>();
         this.value.setEditable(false);
         this.value.setBackground(Color.WHITE);
     }
@@ -75,16 +74,13 @@ public class DialogChannel_sensorRangePanel extends JPanel {
     }
 
     public void updateMeasurement(@Nonnull Measurement measurement){
-        this.measurement = measurement;
-        this.value.setModel(new DefaultComboBoxModel<>(measurementRepository.getValues(measurement)));
+        value.setModel(new DefaultComboBoxModel<>(measurementRepository.getValues(measurement)));
     }
 
-    public void update(Sensor sensor) {
-        if (sensor != null) {
-            this.min.setText(VariableConverter.roundingDouble2(sensor.getRangeMin(), Locale.ENGLISH));
-            this.max.setText(VariableConverter.roundingDouble2(sensor.getRangeMax(), Locale.ENGLISH));
-            this.value.setSelectedItem(sensor.getValue());
-        }
+    public void updateSensor(@Nonnull Sensor sensor) {
+        this.min.setText(VariableConverter.roundingDouble2(sensor.getRangeMin(), Locale.ENGLISH));
+        this.max.setText(VariableConverter.roundingDouble2(sensor.getRangeMax(), Locale.ENGLISH));
+        this.value.setSelectedItem(sensor.getValue());
     }
 
     @Override
@@ -112,8 +108,12 @@ public class DialogChannel_sensorRangePanel extends JPanel {
         if (max != null) this.max.setText(max);
     }
 
-    public void setValue(String value){
+    public void updateMeasurementValue(String value){
         this.value.setSelectedItem(value);
+    }
+
+    public boolean isRangesMatch(){
+        return rangesMatch.isSelected();
     }
 
     private final FocusListener focus = new FocusListener() {
