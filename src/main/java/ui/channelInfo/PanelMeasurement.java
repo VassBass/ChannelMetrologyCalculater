@@ -145,12 +145,12 @@ public class PanelMeasurement extends JPanel {
 
                 s.ifPresent(sensor -> parent.panelSensorRange.updateSensor(sensor));
 
-                parent.panelChannelRange.setTitle(RANGE_OF_CHANNEL);
+                parent.panelChannelRange.updateTitle(RANGE_OF_CHANNEL);
                 parent.panelAllowableError.setEnabled(true);
 
             }else if (measurement.getName().equals(Measurement.CONSUMPTION)) {
                 parent.panelSensorRange = null;
-                parent.panelChannelRange.setTitle(RANGE_OF_SENSOR);
+                parent.panelChannelRange.updateTitle(RANGE_OF_SENSOR);
 
                 if (s.isPresent()) {
                     Channel channel = new Channel();

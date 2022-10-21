@@ -8,14 +8,14 @@ import repository.impl.SensorRepositorySQLite;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
-import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 public class PanelSensor extends JPanel {
     private static final String NO = "NO.";
@@ -24,47 +24,25 @@ public class PanelSensor extends JPanel {
 
     private final DialogChannel parent;
 
-    private JComboBox<String>sensorsList;
-    private JLabel number;
-    private JTextField serialNumber;
+    private final JComboBox<String>sensorsList;
+    private final JTextField serialNumber;
     private String currentMeasurement;
 
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
 
-    public PanelSensor(DialogChannel parent){
+    public PanelSensor(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 
-        this.createElements();
-        this.setReactions();
-        this.build();
-    }
+        sensorsList = new SensorsComboBox();
+        serialNumber = new SerialNumberTextField();
 
-    private void createElements() {
-        this.sensorsList = new JComboBox<>();
-        this.sensorsList.setEditable(false);
-        this.sensorsList.setBackground(Color.WHITE);
-
-        this.number = new JLabel(NO);
-        this.serialNumber = new JTextField(10);
-    }
-
-    private void setReactions() {
-        this.sensorsList.addItemListener(this.changeSensorName);
-
-        this.serialNumber.getDocument().addDocumentListener(this.serialNumberUpdate);
-
-        this.sensorsList.addFocusListener(focusOn);
-        this.serialNumber.addFocusListener(focusOn);
-    }
-
-    private void build() {
         this.setBackground(Color.WHITE);
+        this.setBorder(BorderFactory.createTitledBorder(SENSOR));
 
-        this.add(this.sensorsList);
-
-        TitledBorder border = BorderFactory.createTitledBorder(SENSOR);
-        this.setBorder(border);
+        this.add(sensorsList);
+        this.add(new Label(NO));
+        this.add(serialNumber);
     }
 
     @Override
@@ -74,62 +52,7 @@ public class PanelSensor extends JPanel {
         }
     }
 
-    private final ItemListener changeSensorName = new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED && sensorsList.getSelectedItem() != null) {
-                if (sensorsList.getSelectedItem().toString().equals(ADD_NEW_SENSOR)) {
-                    EventQueue.invokeLater(() -> new SensorInfoDialog(parent).setVisible(true));
-                } else {
-                    if (parent.measurementPanel.getMeasurement().getName().equals(Measurement.CONSUMPTION)) {
-                        Channel channel = new Channel();
-                        channel.setMeasurement(parent.measurementPanel.getMeasurement());
-                        channel.setRangeMin(parent.rangePanel.getRangeMin());
-                        channel.setRangeMax(parent.rangePanel.getRangeMax());
-                        Sensor sensor = getSensor();
-                        sensor.setValue(channel.getMeasurement().getValue());
-                        double errorSensor = sensor.getError(channel);
-                        parent.allowableErrorPanel.updateError(errorSensor, false, channel._getRange());
-                        if (sensor.getType().toUpperCase(Locale.ROOT).contains(Sensor.ROSEMOUNT)) {
-                            parent.measurementPanel.setRosemountValues();
-                        } else {
-                            parent.measurementPanel.update(Measurement.CONSUMPTION);
-                        }
-                    }
-                    if (parent.sensorRangePanel != null && !parent.rangeLikeChannel.isSelected()){
-                        parent.sensorRangePanel.update(sensorRepository.get(sensorsList.getSelectedItem().toString()).get());
-                    }
-                }
-            }
-        }
-    };
-
-    private final DocumentListener serialNumberUpdate = new DocumentListener() {
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            serialNumber.setToolTipText(serialNumber.getText());
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            if (serialNumber.getText().length() > 0) {
-                serialNumber.setToolTipText(serialNumber.getText());
-            }
-        }
-
-        @Override public void changedUpdate(DocumentEvent e) {}
-    };
-
-    private final FocusListener focusOn = new FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            parent.resetSpecialCharactersPanel();
-        }
-    };
-
     public void updateMeasurementName(@Nonnull String measurementName) {
-        this.removeAll();
-
         this.currentMeasurement = measurementName;
         String[]s = sensorRepository.getAllSensorsName(measurementName).toArray(new String[0]);
         String[]sensors = new String[s.length + 1];
@@ -137,40 +60,22 @@ public class PanelSensor extends JPanel {
         sensors[sensors.length - 1] = ADD_NEW_SENSOR;
         DefaultComboBoxModel<String>model = new DefaultComboBoxModel<>(sensors);
         this.sensorsList.setModel(model);
-        if (Objects.requireNonNull(this.sensorsList.getSelectedItem()).toString().contains(Sensor.ROSEMOUNT)){
-            this.parent.measurementPanel.setRosemountValues();
-        }
 
-        this.add(this.sensorsList);
-        if (measurementName.equals(Measurement.CONSUMPTION)){
-            this.add(this.number);
-            this.add(this.serialNumber);
+        Object selectedSensor = sensorsList.getSelectedItem();
+        if (selectedSensor != null && selectedSensor.toString().contains(Sensor.ROSEMOUNT)){
+            this.parent.panelMeasurement.setRosemountValues();
         }
     }
 
-    public void update(Sensor sensor){
-        if (sensor != null){
-            if (this.currentMeasurement.equals(sensor.getMeasurement())) {
-                List<String> sensors = new ArrayList<>(sensorRepository.getAllSensorsName(sensor.getMeasurement()));
-                for (int x = 0; x < sensors.size(); x++) {
-                    if (sensor.getName().equals(sensors.get(x))) {
-                        this.sensorsList.setSelectedIndex(x);
-                        break;
-                    }
-                }
-                if (this.currentMeasurement.equals(Measurement.CONSUMPTION)){
-                    this.serialNumber.setText(sensor.getNumber());
-                }
-            }
+    public void update(@Nonnull Sensor sensor){
+        if (this.currentMeasurement.equals(sensor.getMeasurement())) {
+            sensorsList.setSelectedItem(sensor.getName());
+            serialNumber.setText(sensor.getNumber());
         }
     }
 
-    public void setSelectedSensor(String sensorName){
-        if (sensorName == null){
-            this.sensorsList.setSelectedIndex(0);
-        }else {
-            this.sensorsList.setSelectedItem(sensorName);
-        }
+    public void setSelectedSensor(@Nullable String sensorName){
+        this.sensorsList.setSelectedItem(sensorName);
     }
 
     public Optional<Sensor> getSelectedSensor(){
@@ -182,6 +87,9 @@ public class PanelSensor extends JPanel {
         return this.serialNumber.getText();
     }
 
+    /**
+     * Combo box of sensors names
+     */
     private class SensorsComboBox extends JComboBox<String> {
 
         private SensorsComboBox(){
@@ -189,8 +97,12 @@ public class PanelSensor extends JPanel {
 
             this.setEditable(false);
             this.setBackground(Color.WHITE);
+
+            this.addItemListener(changeSensorName);
+            this.addFocusListener(focus);
         }
 
+        @SuppressWarnings("FieldCanBeLocal")
         private final ItemListener changeSensorName = new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -208,30 +120,75 @@ public class PanelSensor extends JPanel {
                                 channel.setRangeMin(parent.panelChannelRange.getRangeMin());
                                 channel.setRangeMax(parent.panelChannelRange.getRangeMax());
 
-                                Optional<Sensor>s =
+                                Optional<Sensor> s = sensorRepository.get(selectedSensor.toString());
+                                if (s.isPresent()){
+                                    Sensor sensor = s.get();
+                                    sensor.setValue(measurement.getValue());
+                                    double errorSensor = sensor.getError(channel);
 
+                                    parent.panelAllowableError.updateError(errorSensor, false, channel._getRange());
+                                    if (sensor.getType().toUpperCase(Locale.ROOT).contains(Sensor.ROSEMOUNT)) {
+                                        parent.panelMeasurement.setRosemountValues();
+                                    }else {
+                                        parent.measurementPanel.update(Measurement.CONSUMPTION);
+                                    }
+
+                                    if (parent.panelSensorRange.isRangesMatch()){
+                                        parent.panelSensorRange.updateSensor(sensor);
+                                    }
+                                }
                             }
-                        }
-                        if (parent.panelMeasurement.getMeasurement().getName().equals(Measurement.CONSUMPTION)) {
-                            Channel channel = new Channel();
-                            channel.setMeasurement(parent.measurementPanel.getMeasurement());
-                            channel.setRangeMin(parent.rangePanel.getRangeMin());
-                            channel.setRangeMax(parent.rangePanel.getRangeMax());
-                            Sensor sensor = getSensor();
-                            sensor.setValue(channel.getMeasurement().getValue());
-                            double errorSensor = sensor.getError(channel);
-                            parent.allowableErrorPanel.updateError(errorSensor, false, channel._getRange());
-                            if (sensor.getType().toUpperCase(Locale.ROOT).contains(Sensor.ROSEMOUNT)) {
-                                parent.measurementPanel.setRosemountValues();
-                            } else {
-                                parent.measurementPanel.update(Measurement.CONSUMPTION);
-                            }
-                        }
-                        if (parent.sensorRangePanel != null && !parent.rangeLikeChannel.isSelected()){
-                            parent.sensorRangePanel.update(sensorRepository.get(sensorsList.getSelectedItem().toString()).get());
                         }
                     }
                 }
+            }
+        };
+
+        @SuppressWarnings("FieldCanBeLocal")
+        private final FocusListener focus = new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                parent.specialCharactersPanel.setFieldForInsert(null);
+            }
+        };
+    }
+
+    /**
+     * Text field for serial number of sensor
+     */
+    private class SerialNumberTextField extends JTextField {
+
+        private SerialNumberTextField(){
+            super(10);
+
+            this.getDocument().addDocumentListener(serialNumberUpdate);
+            this.addFocusListener(focus);
+        }
+
+        @SuppressWarnings("FieldCanBeLocal")
+        private final DocumentListener serialNumberUpdate = new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                JTextField source = SerialNumberTextField.this;
+                source.setToolTipText(source.getText());
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                JTextField source = SerialNumberTextField.this;
+                if (source.getText().length() > 0) {
+                    source.setToolTipText(source.getText());
+                }
+            }
+
+            @Override public void changedUpdate(DocumentEvent e) {}
+        };
+
+        @SuppressWarnings("FieldCanBeLocal")
+        private final FocusListener focus = new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                parent.specialCharactersPanel.setFieldForInsert(SerialNumberTextField.this);
             }
         };
     }
