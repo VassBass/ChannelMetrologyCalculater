@@ -23,7 +23,7 @@ public class PanelData extends JPanel {
     private final JTextField month;
     private final JTextField year;
 
-    public PanelData(@Nonnull DialogChannel parent){
+    PanelData(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 

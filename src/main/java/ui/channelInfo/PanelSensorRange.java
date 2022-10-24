@@ -9,12 +9,9 @@ import repository.impl.MeasurementRepositorySQLite;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.util.Locale;
-import java.util.Objects;
+import java.util.Optional;
 
 public class PanelSensorRange extends JPanel {
     private static final String MIN = "Від ";
@@ -22,55 +19,36 @@ public class PanelSensorRange extends JPanel {
     private static final String DEFAULT_MIN_VALUE = "0.00";
     private static final String DEFAULT_MAX_VALUE = "100.00";
 
-    private JLabel minLabel;
-    private JLabel maxLabel;
-
-    private JTextField min;
-    private JTextField max;
-
-    private JComboBox<String>value;
-
-    private JCheckBox rangesMatch;
+    private final JTextField min;
+    private final JTextField max;
+    private final JComboBox<String>value;
+    private final JCheckBox rangesMatch;
 
     private final DialogChannel parent;
 
-    private MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
+    private final MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
 
-    public PanelSensorRange(DialogChannel parent){
+    PanelSensorRange(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 
-        this.createElements();
-        this.setReactions();
-        this.build();
-    }
+        min = new MinValueTextField();
+        max = new MaxValueTextField();
+        value = new MeasurementValueComboBox();
+        rangesMatch = new RangesMatchCheckBox();
 
-    private void createElements() {
-        this.minLabel = new JLabel(MIN);
-        this.maxLabel = new JLabel(MAX);
-
-        this.min = new JTextField(DEFAULT_MIN_VALUE, 5);
-        this.max = new JTextField(DEFAULT_MAX_VALUE, 5);
-
-        this.value = new JComboBox<>();
-        this.value.setEditable(false);
-        this.value.setBackground(Color.WHITE);
-    }
-
-    private void setReactions() {
-        this.min.addFocusListener(focus);
-        this.max.addFocusListener(focus);
-        this.value.addFocusListener(focus_);
-    }
-
-    private void build() {
         this.setBackground(Color.WHITE);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        this.add(this.minLabel);
-        this.add(this.min);
-        this.add(this.maxLabel);
-        this.add(this.max);
-        this.add(this.value);
+        JPanel topPanel = new JPanel();
+        topPanel.add(new JLabel(MIN));
+        topPanel.add(min);
+        topPanel.add(new JLabel(MAX));
+        topPanel.add(max);
+        topPanel.add(value);
+
+        this.add(topPanel);
+        this.add(rangesMatch);
     }
 
     public void updateMeasurement(@Nonnull Measurement measurement){
@@ -84,7 +62,7 @@ public class PanelSensorRange extends JPanel {
     }
 
     @Override
-    public synchronized void addKeyListener(KeyListener l) {
+    public synchronized void addKeyListener(@Nonnull KeyListener l) {
         for (Component component : this.getComponents()){
             if (component != null) component.addKeyListener(l);
         }
@@ -92,23 +70,40 @@ public class PanelSensorRange extends JPanel {
 
     @Override
     public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
         this.min.setEnabled(enabled);
         this.max.setEnabled(enabled);
         this.value.setEnabled(enabled);
+        this.rangesMatch.setEnabled(enabled);
     }
 
-    public void setRange(String min, String max, String value){
+    public void setDisabled(boolean disabled){
+        this.min.setEnabled(!disabled);
+        this.max.setEnabled(!disabled);
+        this.value.setEnabled(!disabled);
+    }
+
+    public void setRange(@Nonnull String min, @Nonnull String max, @Nonnull String value){
         this.min.setText(min);
         this.max.setText(max);
         this.value.setSelectedItem(value);
     }
 
-    public void setRange(String min, String max){
-        if (min != null) this.min.setText(min);
-        if (max != null) this.max.setText(max);
+    public void setRange(@Nonnull String min, @Nonnull String max){
+        this.min.setText(min);
+        this.max.setText(max);
     }
 
-    public void updateMeasurementValue(String value){
+    public void setRangeMin(@Nonnull String min){
+        this.min.setText(min);
+    }
+
+    public void setRangeMax(@Nonnull String max){
+        this.max.setText(max);
+    }
+
+    public void updateMeasurementValue(@Nonnull String value){
         this.value.setSelectedItem(value);
     }
 
@@ -116,25 +111,44 @@ public class PanelSensorRange extends JPanel {
         return rangesMatch.isSelected();
     }
 
-    private final FocusListener focus = new FocusListener() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            JTextField source = (JTextField)e.getSource();
-            source.selectAll();
-            parent.resetSpecialCharactersPanel();
+    public double getRangeMin(){
+        return Double.parseDouble(this.min.getText());
+    }
+    public double getRangeMax(){
+        return Double.parseDouble(this.max.getText());
+    }
+
+    public String getValue(){
+        Object selected = value.getSelectedItem();
+        return selected == null ? Measurement.DEGREE_CELSIUS : selected.toString();
+    }
+
+    private class MinValueTextField extends JTextField {
+
+        private MinValueTextField() {
+            super(DEFAULT_MIN_VALUE, 5);
+
+            this.addFocusListener(focus);
         }
 
-        @Override
-        public void focusLost(FocusEvent e) {
-            JTextField source = (JTextField) e.getSource();
-
-            if (source.getText().length() == 0) {
-                source.setText(DEFAULT_MIN_VALUE);
+        @SuppressWarnings("FieldCanBeLocal")
+        private final FocusListener focus = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                MinValueTextField.this.selectAll();
+                parent.specialCharactersPanel.setFieldForInsert(null);
             }
-            String forCheck = source.getText();
-            source.setText(VariableConverter.doubleString(forCheck));
 
-            if (source.equals(min)) {
+            @Override
+            public void focusLost(FocusEvent e) {
+                JTextField source = MinValueTextField.this;
+
+                if (source.getText().length() == 0) {
+                    source.setText(DEFAULT_MIN_VALUE);
+                }
+                String forCheck = source.getText();
+                source.setText(VariableConverter.doubleString(forCheck));
+
                 double minD = Double.parseDouble(min.getText());
                 double maxD = Double.parseDouble(max.getText());
                 if (maxD < minD) {
@@ -142,26 +156,97 @@ public class PanelSensorRange extends JPanel {
                     max.setText(String.valueOf(minD));
                 }
             }
-        }
-    };
-
-    private final FocusListener focus_ = new FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            parent.resetSpecialCharactersPanel();
-        }
-    };
-
-    public double getRangeMin(){
-        return Double.parseDouble(this.min.getText());
+        };
     }
-    public double getRangeMax(){
-        return Double.parseDouble(this.max.getText());
-    }
-    public JTextField getRangeMinField(){return this.min;}
-    public JTextField getRangeMaxField(){return this.max;}
 
-    public String getValue(){
-        return Objects.requireNonNull(this.value.getSelectedItem()).toString();
+    private class MaxValueTextField extends JTextField {
+
+        private MaxValueTextField() {
+            super(DEFAULT_MAX_VALUE, 5);
+
+            this.addFocusListener(focus);
+        }
+
+        @SuppressWarnings("FieldCanBeLocal")
+        private final FocusListener focus = new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                MaxValueTextField.this.selectAll();
+                parent.specialCharactersPanel.setFieldForInsert(null);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                JTextField source = MaxValueTextField.this;
+
+                if (source.getText().length() == 0) {
+                    source.setText(DEFAULT_MIN_VALUE);
+                }
+                String forCheck = source.getText();
+                source.setText(VariableConverter.doubleString(forCheck));
+            }
+        };
+    }
+
+    private class MeasurementValueComboBox extends JComboBox<String> {
+
+        private MeasurementValueComboBox(){
+            super();
+
+            this.setBackground(Color.WHITE);
+            this.setEditable(false);
+
+            this.addFocusListener(focus);
+        }
+
+        @SuppressWarnings("FieldCanBeLocal")
+        private final FocusListener focus = new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                parent.specialCharactersPanel.setFieldForInsert(null);
+            }
+        };
+    }
+
+    private class RangesMatchCheckBox extends JCheckBox {
+        private static final String RANGES_MATCH = "Однакові діапазони";
+
+        private RangesMatchCheckBox(){
+            super(RANGES_MATCH);
+
+            this.setBackground(Color.WHITE);
+
+            this.addFocusListener(focus);
+            this.addItemListener(click);
+        }
+
+        @SuppressWarnings("FieldCanBeLocal")
+        private final FocusListener focus = new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                parent.specialCharactersPanel.setFieldForInsert(null);
+            }
+        };
+
+        @SuppressWarnings("FieldCanBeLocal")
+        private final ItemListener click = e -> {
+            if (parent.panelSensor.panelSensorRange.isEnabled()) {
+                if (RangesMatchCheckBox.this.isSelected()) {
+                    Optional<Measurement> m = parent.panelMeasurement.getMeasurement();
+                    m.ifPresent(measurement ->
+                            parent.panelSensor.panelSensorRange.setRange(
+                                    String.valueOf(parent.panelChannelRange.getRangeMin()),
+                                    String.valueOf(parent.panelChannelRange.getRangeMax()),
+                                    measurement.getValue()
+                            ));
+                    parent.panelSensor.panelSensorRange.setDisabled(true);
+                } else {
+                    parent.panelSensor.panelSensorRange.setDisabled(false);
+
+                    Optional<Sensor> s = parent.panelSensor.getSelectedSensor();
+                    s.ifPresent(sensor -> parent.panelSensor.panelSensorRange.updateSensor(sensor));
+                }
+            }
+        };
     }
 }

@@ -25,7 +25,7 @@ public class PanelAllowableError extends JPanel {
     private final JTextField percentValue;
     private final JTextField numberValue;
 
-    public PanelAllowableError(@Nonnull DialogChannel parent){
+    PanelAllowableError(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 

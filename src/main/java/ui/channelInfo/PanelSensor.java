@@ -10,6 +10,7 @@ import ui.sensorsList.sensorInfo.SensorInfoDialog;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -24,25 +25,32 @@ public class PanelSensor extends JPanel {
 
     private final DialogChannel parent;
 
-    private final JComboBox<String>sensorsList;
-    private final JTextField serialNumber;
+    private final JComboBox<String>sensorsList = new SensorsComboBox();
+    private final JTextField serialNumber = new SerialNumberTextField();
+    public final PanelSensorRange panelSensorRange;
+
+    private final TitledBorder border;
+
     private String currentMeasurement;
 
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
 
-    public PanelSensor(@Nonnull DialogChannel parent){
+    PanelSensor(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 
-        sensorsList = new SensorsComboBox();
-        serialNumber = new SerialNumberTextField();
+        panelSensorRange = new PanelSensorRange(parent);
 
         this.setBackground(Color.WHITE);
-        this.setBorder(BorderFactory.createTitledBorder(SENSOR));
+        this.setBorder(border = BorderFactory.createTitledBorder(SENSOR));
 
         this.add(sensorsList);
         this.add(new Label(NO));
         this.add(serialNumber);
+    }
+
+    public void setBorderColor(Color color){
+        border.setTitleColor(color);
     }
 
     @Override
@@ -133,8 +141,8 @@ public class PanelSensor extends JPanel {
                                         parent.measurementPanel.update(Measurement.CONSUMPTION);
                                     }
 
-                                    if (parent.panelSensorRange.isRangesMatch()){
-                                        parent.panelSensorRange.updateSensor(sensor);
+                                    if (panelSensorRange.isRangesMatch()){
+                                        panelSensorRange.updateSensor(sensor);
                                     }
                                 }
                             }

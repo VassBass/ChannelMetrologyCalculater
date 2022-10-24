@@ -22,7 +22,7 @@ public class PanelFrequency extends JPanel {
     private final JTextField frequency;
     private final JLabel nextDate;
 
-    public PanelFrequency(@Nonnull DialogChannel parent){
+    PanelFrequency(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 

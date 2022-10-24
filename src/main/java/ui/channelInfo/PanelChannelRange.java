@@ -12,6 +12,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyListener;
 import java.util.Locale;
+import java.util.Optional;
 
 public class PanelChannelRange extends JPanel {
     private static final String RANGE_OF_CHANNEL = "Діапазон вимірювального каналу";
@@ -25,21 +26,19 @@ public class PanelChannelRange extends JPanel {
     private final JTextField maxRange;
     private final JLabel value;
 
-    public PanelChannelRange(@Nonnull DialogChannel parent){
+    private final TitledBorder border;
+
+    PanelChannelRange(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 
-        minRange = new MinRangeTextField();
-        maxRange = new MaxRangeTextField();
-        value = new JLabel(Measurement.DEGREE_CELSIUS);
-
         this.setBackground(Color.WHITE);
-        this.setBorder(BorderFactory.createTitledBorder(RANGE_OF_CHANNEL));
+        this.setBorder(border = BorderFactory.createTitledBorder(RANGE_OF_CHANNEL));
 
-        this.add(minRange);
+        this.add(minRange = new MinRangeTextField());
         this.add(new JLabel(SEPARATOR));
-        this.add(maxRange);
-        this.add(value);
+        this.add(maxRange = new MaxRangeTextField());
+        this.add(value = new JLabel());
     }
 
     @Override
@@ -51,10 +50,6 @@ public class PanelChannelRange extends JPanel {
 
     public void updateTitle(@Nonnull String title){
         ((TitledBorder) this.getBorder()).setTitle(title);
-    }
-
-    public void updateTitleColor(@Nonnull Color color){
-        ((TitledBorder) this.getBorder()).setTitleColor(color);
     }
 
     public void updateMeasurementValue(@Nonnull String measurementValue) {
@@ -95,6 +90,34 @@ public class PanelChannelRange extends JPanel {
         return Double.parseDouble(this.maxRange.getText());
     }
 
+    public boolean isRangeAvailable(){
+        Optional<Measurement> m = parent.panelMeasurement.getMeasurement();
+
+        if (m.isPresent()) {
+            Measurement measurement = m.get();
+
+            PanelSensorRange panelSensorRange = parent.panelSensor.panelSensorRange;
+            String sensorValue = panelSensorRange.getValue();
+
+            double sensorRangeMin = measurement.convertFrom(sensorValue, panelSensorRange.getRangeMin());
+            double sensorRangeMax = measurement.convertFrom(sensorValue, panelSensorRange.getRangeMax());
+            double channelRangeMin = this.getRangeMin();
+            double channelRangeMax = this.getRangeMax();
+
+            if (channelRangeMin < sensorRangeMin || channelRangeMax > sensorRangeMax){
+                border.setTitleColor(Color.RED);
+                parent.panelSensor.setBorderColor(Color.RED);
+
+                return false;
+            }else {
+                border.setTitleColor(Color.BLACK);
+                parent.panelSensor.setBorderColor(Color.BLACK);
+
+                return true;
+            }
+        } else return false;
+    }
+
     /**
      * TextField for min value of channel range
      */
@@ -126,8 +149,8 @@ public class PanelChannelRange extends JPanel {
                 double range = max - min;
 
                 parent.panelAllowableError.updateChannelRange(range);
-                if (parent.panelSensorRange.isRangesMatch()){
-                    parent.panelSensorRange.setRange(minRange.getText(), maxRange.getText());
+                if (parent.panelSensor.panelSensorRange.isRangesMatch()){
+                    parent.panelSensor.panelSensorRange.setRange(minRange.getText(), maxRange.getText());
                 }
             }
         };
@@ -164,8 +187,8 @@ public class PanelChannelRange extends JPanel {
                 double range = max - min;
 
                 parent.panelAllowableError.updateChannelRange(range);
-                if (parent.panelSensorRange.isRangesMatch()){
-                    parent.panelSensorRange.setRange(minRange.getText(), maxRange.getText());
+                if (parent.panelSensor.panelSensorRange.isRangesMatch()){
+                    parent.panelSensor.panelSensorRange.setRange(minRange.getText(), maxRange.getText());
                 }
             }
         };

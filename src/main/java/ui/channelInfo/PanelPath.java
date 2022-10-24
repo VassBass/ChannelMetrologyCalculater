@@ -24,7 +24,7 @@ public class PanelPath extends JPanel {
     private final JComboBox<String>processes;
     private final JComboBox<String>installations;
 
-    public PanelPath(@Nonnull DialogChannel parent){
+    PanelPath(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 

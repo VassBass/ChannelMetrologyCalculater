@@ -26,6 +26,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class DialogChannel extends JDialog {
     private static final String INFORMATION_ABOUT_CHANNEL = "Інформація вимірювального каналу";
@@ -53,7 +54,6 @@ public class DialogChannel extends JDialog {
     PanelFrequency panelFrequency;
     PanelPath panelPath;
     PanelSensor panelSensor;
-    PanelSensorRange panelSensorRange;
     PanelChannelRange panelChannelRange;
     PanelAllowableError panelAllowableError;
 
@@ -294,6 +294,18 @@ public class DialogChannel extends JDialog {
         }
         if (good) this.refresh();
         return good;
+    }
+
+    public boolean isFieldsAreFilled(){
+        boolean filledCode = panelCode.isCodeAvailable(oldChannel);
+        boolean filledName = panelName.isNameAvailable();
+        boolean filledTechnologyNumber = panelTechnologyNumber.isTechnologyNumberAvailable();
+        boolean filledRanges = panelChannelRange.isRangeAvailable();
+
+        boolean filled = filledCode && filledName && filledTechnologyNumber && filledRanges;
+
+        if (!filled) this.refresh();
+        return filled;
     }
 
     public Channel getChannel(){

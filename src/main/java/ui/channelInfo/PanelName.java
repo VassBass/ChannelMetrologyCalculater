@@ -4,6 +4,8 @@ import application.Application;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.*;
 
 public class PanelName extends JPanel {
@@ -11,13 +13,30 @@ public class PanelName extends JPanel {
 
     private final DialogChannel parent;
 
+    private final JTextField name;
+    private final TitledBorder border;
+
     PanelName(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 
-        this.setBorder(BorderFactory.createTitledBorder(NAME));
+        this.setBorder(border = BorderFactory.createTitledBorder(NAME));
 
-        this.add(new NameTextField());
+        this.add(name = new NameTextField());
+    }
+
+    public boolean isNameAvailable(){
+        if (name.getText().length() == 0){
+            border.setTitleColor(Color.RED);
+            return false;
+        }else {
+            border.setTitleColor(Color.BLACK);
+            return true;
+        }
+    }
+
+    public String getChannelName(){
+        return name.getText();
     }
 
     /**
