@@ -50,10 +50,15 @@ public class PanelMeasurement extends JPanel {
         measurementValues.setSelectedItem(value);
     }
 
-    private void updateMeasurementName(@Nonnull String measurementName){
+    public void updateMeasurementName(@Nonnull String measurementName){
         measurementNames.setSelectedItem(measurementName);
         measurementValues.setModel(
                 new DefaultComboBoxModel<>(measurementRepository.getValues(measurementName)));
+    }
+
+    public void updateMeasurement(@Nonnull Measurement measurement) {
+        this.updateMeasurementName(measurement.getName());
+        this.updateMeasurementValue(measurement.getValue());
     }
 
     public void setRosemountValues(){
@@ -121,14 +126,13 @@ public class PanelMeasurement extends JPanel {
                         }
                     }
 
-                    parent.update();
                     MeasurementNamesComboBox.this.requestFocus();
                 }
             }
         };
 
         private void updateMeasurementName(String measurementName){
-            PanelMeasurement.this.updateMeasurementName(measurementName);
+            parent.panelMeasurement.updateMeasurementName(measurementName);
             parent.panelSensor.updateMeasurementName(measurementName);
         }
 
@@ -141,15 +145,15 @@ public class PanelMeasurement extends JPanel {
             Optional<Sensor> s = parent.panelSensor.getSelectedSensor();
             if (measurement.getName().equals(Measurement.TEMPERATURE)
                     || measurement.getName().equals(Measurement.PRESSURE)) {
-                parent.panelSensorRange.updateMeasurement(measurement);
+                parent.panelSensor.panelSensorRange.updateMeasurement(measurement);
 
-                s.ifPresent(sensor -> parent.panelSensorRange.updateSensor(sensor));
+                s.ifPresent(parent.panelSensor.panelSensorRange::updateSensor);
 
                 parent.panelChannelRange.updateTitle(RANGE_OF_CHANNEL);
                 parent.panelAllowableError.setEnabled(true);
 
             }else if (measurement.getName().equals(Measurement.CONSUMPTION)) {
-                parent.panelSensorRange = null;
+                parent.panelSensor.panelSensorRange.setEnabled(false);
                 parent.panelChannelRange.updateTitle(RANGE_OF_SENSOR);
 
                 if (s.isPresent()) {
@@ -193,8 +197,8 @@ public class PanelMeasurement extends JPanel {
 
                         parent.panelAllowableError.updateMeasurementValue(val);
                         parent.panelChannelRange.updateMeasurementValue(val);
-                        if (parent.panelSensorRange.isRangesMatch()){
-                            parent.panelSensorRange.updateMeasurementValue(val);
+                        if (parent.panelSensor.panelSensorRange.isRangesMatch()){
+                            parent.panelSensor.panelSensorRange.updateMeasurementValue(val);
                         }
                     }
                 }

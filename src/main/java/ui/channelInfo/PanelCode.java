@@ -30,7 +30,7 @@ public class PanelCode extends JPanel {
         super();
         this.parent = parent;
 
-
+        this.setBackground(Color.WHITE);
         this.setBorder(border = BorderFactory.createTitledBorder(CODE));
 
         this.add(code = new CodeTextField());
@@ -69,6 +69,15 @@ public class PanelCode extends JPanel {
         return code.getText();
     }
 
+    public void setCode(@Nonnull String code) {
+        this.code.setText(code);
+    }
+
+    @Override
+    public synchronized void addKeyListener(@Nonnull KeyListener l) {
+        code.addKeyListener(l);
+    }
+
     private class CodeTextField extends JTextField {
         private static final String SEARCH = "Пошук";
 
@@ -76,7 +85,7 @@ public class PanelCode extends JPanel {
          * TextField for channel code
          */
         private CodeTextField(){
-            super(10);
+            super(20);
 
             JPopupMenu codePopupMenu = new JPopupMenu(SEARCH);
             JMenuItem check = new JMenuItem(SEARCH);
@@ -102,14 +111,14 @@ public class PanelCode extends JPanel {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 if (parent.oldChannel != null){
-                    parent.removeButton.setEnabled(parent.oldChannel.getCode().equals(CodeTextField.this.getText()));
+                    parent.buttonRemove.setEnabled(parent.oldChannel.getCode().equals(CodeTextField.this.getText()));
                 }
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 if (parent.oldChannel != null){
-                    parent.removeButton.setEnabled(parent.oldChannel.getCode().equals(CodeTextField.this.getText()));
+                    parent.buttonRemove.setEnabled(parent.oldChannel.getCode().equals(CodeTextField.this.getText()));
                 }
             }
 

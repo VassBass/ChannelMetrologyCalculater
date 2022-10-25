@@ -13,7 +13,7 @@ import java.awt.event.KeyListener;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class PanelData extends JPanel {
+public class PanelDate extends JPanel {
     private static final String SEPARATOR = ".";
     private static final String THIS_DATE = "Дата останньої перевірки";
 
@@ -23,7 +23,7 @@ public class PanelData extends JPanel {
     private final JTextField month;
     private final JTextField year;
 
-    PanelData(@Nonnull DialogChannel parent){
+    PanelDate(@Nonnull DialogChannel parent){
         super();
         this.parent = parent;
 
@@ -34,8 +34,6 @@ public class PanelData extends JPanel {
         this.setBackground(Color.WHITE);
         this.setBorder(BorderFactory.createTitledBorder(THIS_DATE));
 
-        this.updateDate(Calendar.getInstance());
-
         this.add(day);
         this.add(new JLabel(SEPARATOR));
         this.add(month);
@@ -44,7 +42,7 @@ public class PanelData extends JPanel {
     }
 
     @Override
-    public synchronized void addKeyListener(KeyListener l) {
+    public synchronized void addKeyListener(@Nonnull KeyListener l) {
         for (Component component : this.getComponents()){
             if (component != null) component.addKeyListener(l);
         }
@@ -191,7 +189,7 @@ public class PanelData extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 year.selectAll();
-                parent.resetSpecialCharactersPanel();
+                parent.specialCharactersPanel.setFieldForInsert(null);
             }
 
             @Override

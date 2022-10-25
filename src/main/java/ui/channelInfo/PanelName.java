@@ -20,6 +20,7 @@ public class PanelName extends JPanel {
         super();
         this.parent = parent;
 
+        this.setBackground(Color.WHITE);
         this.setBorder(border = BorderFactory.createTitledBorder(NAME));
 
         this.add(name = new NameTextField());
@@ -37,6 +38,15 @@ public class PanelName extends JPanel {
 
     public String getChannelName(){
         return name.getText();
+    }
+
+    public void setChannelName(@Nonnull String name) {
+        this.name.setText(name);
+    }
+
+    @Override
+    public synchronized void addKeyListener(@Nonnull KeyListener l) {
+        name.addKeyListener(l);
     }
 
     /**

@@ -54,7 +54,7 @@ public class ButtonsPanel extends JPanel {
     private final ActionListener clickDetails = e -> {
         final int channelIndex = MainScreen.getInstance().mainTable.getSelectedRow();
         if (channelIndex!=-1) {
-            EventQueue.invokeLater(() -> new DialogChannel(MainScreen.getInstance(), MainScreen.getInstance().getChannelsList().get(channelIndex)).setVisible(true));
+            EventQueue.invokeLater(() -> new DialogChannel(MainScreen.getInstance().getChannelsList().get(channelIndex)).setVisible(true));
         }
     };
 
@@ -64,7 +64,7 @@ public class ButtonsPanel extends JPanel {
         }
     };
 
-    private final ActionListener clickAdd = e -> EventQueue.invokeLater(() -> new DialogChannel(MainScreen.getInstance(), null).setVisible(true));
+    private final ActionListener clickAdd = e -> EventQueue.invokeLater(() -> new DialogChannel(null).setVisible(true));
 
     private final ActionListener clickCalculate = e -> EventQueue.invokeLater(() -> {
         int index = MainScreen.getInstance().mainTable.getSelectedRow();

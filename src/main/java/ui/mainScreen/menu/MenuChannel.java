@@ -63,7 +63,7 @@ public class MenuChannel extends JMenu {
     };
 
     private final ActionListener clickAdd = e -> EventQueue.invokeLater(() ->
-            new DialogChannel(MainScreen.getInstance(), null).setVisible(true));
+            new DialogChannel(null).setVisible(true));
 
     private final ActionListener clickCalculate = e -> EventQueue.invokeLater(() -> {
         int index = MainScreen.getInstance().mainTable.getSelectedRow();

@@ -43,10 +43,16 @@ public class PanelSensor extends JPanel {
 
         this.setBackground(Color.WHITE);
         this.setBorder(border = BorderFactory.createTitledBorder(SENSOR));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        this.add(sensorsList);
-        this.add(new Label(NO));
-        this.add(serialNumber);
+        JPanel topPanel = new JPanel();
+        topPanel.setBackground(Color.WHITE);
+        topPanel.add(sensorsList);
+        topPanel.add(new Label(NO));
+        topPanel.add(serialNumber);
+
+        this.add(topPanel);
+        this.add(panelSensorRange);
     }
 
     public void setBorderColor(Color color){
@@ -54,7 +60,7 @@ public class PanelSensor extends JPanel {
     }
 
     @Override
-    public synchronized void addKeyListener(KeyListener l) {
+    public synchronized void addKeyListener(@Nonnull KeyListener l) {
         for (Component component : this.getComponents()){
             if (component != null) component.addKeyListener(l);
         }
@@ -73,12 +79,20 @@ public class PanelSensor extends JPanel {
         if (selectedSensor != null && selectedSensor.toString().contains(Sensor.ROSEMOUNT)){
             this.parent.panelMeasurement.setRosemountValues();
         }
+
+        Optional<Measurement> m = parent.panelMeasurement.getMeasurement();
+        m.ifPresent(measurement -> {
+            panelSensorRange.setEnabled(!measurement.getName().equals(Measurement.CONSUMPTION));
+            panelSensorRange.setDisabled(panelSensorRange.isRangesMatch());
+            panelSensorRange.updateMeasurement(measurement);
+        });
     }
 
-    public void update(@Nonnull Sensor sensor){
+    public void updateSensor(@Nonnull Sensor sensor){
         if (this.currentMeasurement.equals(sensor.getMeasurement())) {
             sensorsList.setSelectedItem(sensor.getName());
             serialNumber.setText(sensor.getNumber());
+            panelSensorRange.updateSensor(sensor);
         }
     }
 
@@ -138,7 +152,7 @@ public class PanelSensor extends JPanel {
                                     if (sensor.getType().toUpperCase(Locale.ROOT).contains(Sensor.ROSEMOUNT)) {
                                         parent.panelMeasurement.setRosemountValues();
                                     }else {
-                                        parent.measurementPanel.update(Measurement.CONSUMPTION);
+                                        parent.panelMeasurement.updateMeasurementName(Measurement.CONSUMPTION);
                                     }
 
                                     if (panelSensorRange.isRangesMatch()){

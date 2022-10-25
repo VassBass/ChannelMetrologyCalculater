@@ -41,6 +41,7 @@ public class PanelSensorRange extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JPanel topPanel = new JPanel();
+        topPanel.setBackground(Color.WHITE);
         topPanel.add(new JLabel(MIN));
         topPanel.add(min);
         topPanel.add(new JLabel(MAX));
@@ -68,6 +69,10 @@ public class PanelSensorRange extends JPanel {
         }
     }
 
+    /**
+     * Sets enabled or not ALL panel elements
+     * @param enabled ALL panel elements
+     */
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
@@ -78,6 +83,10 @@ public class PanelSensorRange extends JPanel {
         this.rangesMatch.setEnabled(enabled);
     }
 
+    /**
+     * Sets disabled or not all panel elements EXCEPT FOR {@link #rangesMatch}
+     * @param disabled all panel elements EXCEPT FOR {@link #rangesMatch}
+     */
     public void setDisabled(boolean disabled){
         this.min.setEnabled(!disabled);
         this.max.setEnabled(!disabled);

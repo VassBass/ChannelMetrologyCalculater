@@ -5,23 +5,25 @@ import model.Channel;
 import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import service.ChannelSorter;
+import ui.calculate.start.CalculateStartDialog;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.annotation.Nonnull;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class ButtonSave extends DefaultButton {
-    private static final String SAVE = "Зберегти (Alt + Enter)";
-
-    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+public class ButtonSaveAndCalculate extends DefaultButton {
+    private static final String SAVE_AND_CALCULATE = "Зберегти та розрахувати (Ctrl + Enter)";
 
     private DialogChannel parent;
 
-    ButtonSave(@Nonnull DialogChannel parent){
-        super(SAVE);
+    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
+
+    ButtonSaveAndCalculate(@Nonnull DialogChannel parent){
+        super(SAVE_AND_CALCULATE);
         this.parent = parent;
 
         this.addActionListener(click);
@@ -49,6 +51,8 @@ public class ButtonSave extends DefaultButton {
             } else {
                 MainScreen.getInstance().setChannelsList(new ArrayList<>(channelRepository.getAll()));
             }
+
+            EventQueue.invokeLater(() -> new CalculateStartDialog(MainScreen.getInstance(), channel, null).setVisible(true));
         }
     };
 }

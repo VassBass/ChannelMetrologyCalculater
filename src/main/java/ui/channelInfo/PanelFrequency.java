@@ -32,15 +32,13 @@ public class PanelFrequency extends JPanel {
         this.setBackground(Color.WHITE);
         this.setBorder(BorderFactory.createTitledBorder(FREQUENCY_CONTROL));
 
-        this.updateNextDate(Calendar.getInstance());
-
         this.add(frequency);
         this.add(new JLabel(NEXT_DATE));
         this.add(nextDate);
     }
 
     @Override
-    public synchronized void addKeyListener(KeyListener l) {
+    public synchronized void addKeyListener(@Nonnull KeyListener l) {
         for (Component component : this.getComponents()){
             if (component != null) component.addKeyListener(l);
         }
@@ -49,7 +47,7 @@ public class PanelFrequency extends JPanel {
     public void updateFrequency(@Nonnegative double frequency) {
         String frequencyString = VariableConverter.roundingDouble2(frequency, Locale.ENGLISH);
         this.frequency.setText(frequencyString);
-        this.updateNextDate(VariableConverter.stringToDate(this.parent.panelData.getDate()));
+        this.updateNextDate(VariableConverter.stringToDate(this.parent.panelDate.getDate()));
     }
 
     public void updateNextDate(@Nonnull Calendar date){
@@ -70,7 +68,7 @@ public class PanelFrequency extends JPanel {
         private static final String ZERO = "0.00";
 
         private FrequencyTextField(){
-            super(DEFAULT_FREQUENCY_VALUE, 4);
+            super(4);
 
             this.addFocusListener(changeFocus);
         }
@@ -96,7 +94,7 @@ public class PanelFrequency extends JPanel {
                     frequency.setText(afterCheck);
                 }
 
-                updateNextDate(VariableConverter.stringToDate(parent.panelData.getDate()));
+                updateNextDate(VariableConverter.stringToDate(parent.panelDate.getDate()));
             }
         };
     }

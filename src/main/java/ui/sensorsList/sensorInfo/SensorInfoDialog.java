@@ -110,7 +110,8 @@ public class SensorInfoDialog extends JDialog {
         this.oldSensor = null;
 
         this.createElements();
-        Measurement measurement = dialogChannel.measurementPanel.getMeasurement();
+
+        Measurement measurement = dialogChannel.panelMeasurement.getMeasurement().get();
         this.measurementsList.setSelectedItem(measurement.getName());
         this.measurementsList.setEnabled(false);
         if (measurement.getName().equals(Measurement.CONSUMPTION)){
@@ -350,7 +351,7 @@ public class SensorInfoDialog extends JDialog {
     private final ActionListener clickCancel = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (dialogChannel != null) dialogChannel.sensorPanel.setSelectedSensor(null);
+            if (dialogChannel != null) dialogChannel.panelSensor.setSelectedSensor(null);
             dispose();
         }
     };
@@ -389,8 +390,8 @@ public class SensorInfoDialog extends JDialog {
                     JOptionPane.showMessageDialog(SensorInfoDialog.this, "ПВП с такою назвою вже існує в списку");
                 }else {
                     SensorRepositorySQLite.getInstance().add(sensor);
-                    dialogChannel.sensorPanel.update(dialogChannel.measurementPanel.getMeasurement().getName());
-                    dialogChannel.sensorPanel.setSelectedSensor(sensor.getName());
+                    dialogChannel.panelSensor.updateMeasurementName(dialogChannel.panelMeasurement.getMeasurement().get().getName());
+                    dialogChannel.panelSensor.setSelectedSensor(sensor.getName());
                     dispose();
                 }
             }

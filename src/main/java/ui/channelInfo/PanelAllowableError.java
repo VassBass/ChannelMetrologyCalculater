@@ -66,7 +66,7 @@ public class PanelAllowableError extends JPanel {
     }
 
     @Override
-    public synchronized void addKeyListener(KeyListener l) {
+    public synchronized void addKeyListener(@Nonnull KeyListener l) {
         for (Component component : this.getComponents()){
             if (component != null) component.addKeyListener(l);
         }
