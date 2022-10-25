@@ -25,7 +25,7 @@ public class PanelPath extends JPanel {
     private final JComboBox<String>installations;
 
     PanelPath(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         departments = new DepartmentComboBox();
@@ -33,14 +33,13 @@ public class PanelPath extends JPanel {
         processes = new ProcessComboBox();
         installations = new InstallationComboBox();
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(Color.WHITE);
         this.setBorder(BorderFactory.createTitledBorder(PATH));
 
-        this.add(departments);
-        this.add(areas);
-        this.add(processes);
-        this.add(installations);
+        this.add(departments, new Cell(0,0));
+        this.add(areas, new Cell(0,1));
+        this.add(processes, new Cell(0,2));
+        this.add(installations, new Cell(0,3));
     }
 
     @Override
@@ -176,5 +175,17 @@ public class PanelPath extends JPanel {
             });
         }
 
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weightx = 1D;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

@@ -6,6 +6,7 @@ import converters.VariableConverter;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -24,7 +25,7 @@ public class PanelDate extends JPanel {
     private final JTextField year;
 
     PanelDate(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         day = new DayTextField();
@@ -32,13 +33,15 @@ public class PanelDate extends JPanel {
         year = new YearTextField();
 
         this.setBackground(Color.WHITE);
-        this.setBorder(BorderFactory.createTitledBorder(THIS_DATE));
+        TitledBorder border = BorderFactory.createTitledBorder(THIS_DATE);
+        border.setTitleJustification(TitledBorder.CENTER);
+        this.setBorder(border);
 
-        this.add(day);
-        this.add(new JLabel(SEPARATOR));
-        this.add(month);
-        this.add(new JLabel(SEPARATOR));
-        this.add(year);
+        this.add(day, new Cell(0,0));
+        this.add(new JLabel(SEPARATOR), new Cell(1,0));
+        this.add(month, new Cell(2,0));
+        this.add(new JLabel(SEPARATOR), new Cell(3,0));
+        this.add(year, new Cell(4,0));
     }
 
     @Override
@@ -79,7 +82,6 @@ public class PanelDate extends JPanel {
 
         private DayTextField(){
             super(2);
-
             this.setHorizontalAlignment(SwingConstants.CENTER);
 
             this.addFocusListener(dayFocus);
@@ -130,7 +132,6 @@ public class PanelDate extends JPanel {
 
         private MonthTextField(){
             super(2);
-
             this.setHorizontalAlignment(SwingConstants.CENTER);
 
             this.addFocusListener(monthFocus);
@@ -178,7 +179,6 @@ public class PanelDate extends JPanel {
 
         private YearTextField(){
             super(4);
-
             this.setHorizontalAlignment(SwingConstants.CENTER);
 
             this.addFocusListener(yearFocus);
@@ -223,5 +223,16 @@ public class PanelDate extends JPanel {
                 parent.panelFrequency.updateNextDate(VariableConverter.stringToDate(getDate()));
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

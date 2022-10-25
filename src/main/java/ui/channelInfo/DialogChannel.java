@@ -77,7 +77,7 @@ public class DialogChannel extends JDialog {
 
         this.addKeyListener();
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.setSize(Application.sizeOfScreen);
+        this.setSize(850,850);
         this.setChannelInfo(oldChannel);
         this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(),this));
         this.setContentPane(new MainPanel());

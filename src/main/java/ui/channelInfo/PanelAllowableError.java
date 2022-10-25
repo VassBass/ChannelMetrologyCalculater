@@ -6,6 +6,7 @@ import converters.VariableConverter;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -26,7 +27,7 @@ public class PanelAllowableError extends JPanel {
     private final JTextField numberValue;
 
     PanelAllowableError(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         percentValue = new PercentValueTextField();
@@ -34,13 +35,15 @@ public class PanelAllowableError extends JPanel {
         value = new JLabel();
 
         this.setBackground(Color.WHITE);
-        this.setBorder(BorderFactory.createTitledBorder(ALLOWABLE_ERROR_OF_CHANNEL));
+        TitledBorder border = BorderFactory.createTitledBorder(ALLOWABLE_ERROR_OF_CHANNEL);
+        border.setTitleJustification(TitledBorder.CENTER);
+        this.setBorder(border);
 
-        this.add(percentValue);
-        this.add(new JLabel(PERCENT));
-        this.add(new JLabel(AND));
-        this.add(numberValue);
-        this.add(value);
+        this.add(percentValue, new Cell(0,0));
+        this.add(new JLabel(PERCENT), new Cell(1,0));
+        this.add(new JLabel(AND), new Cell(2,0));
+        this.add(numberValue, new Cell(3,0));
+        this.add(value, new Cell(4,0));
     }
 
     public void updateChannelRange(@Nonnegative double range) {
@@ -104,6 +107,7 @@ public class PanelAllowableError extends JPanel {
 
         private PercentValueTextField(){
             super(DEFAULT_VALUE, 5);
+            this.setHorizontalAlignment(JTextField.CENTER);
 
             this.addFocusListener(focus);
         }
@@ -144,6 +148,7 @@ public class PanelAllowableError extends JPanel {
 
         private NumberValueTextField(){
             super(DEFAULT_VALUE, 5);
+            this.setHorizontalAlignment(JTextField.CENTER);
 
             this.addFocusListener(focus);
         }
@@ -174,5 +179,16 @@ public class PanelAllowableError extends JPanel {
                 percentValue.setText(errorString);
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

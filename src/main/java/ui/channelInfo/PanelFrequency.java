@@ -5,6 +5,7 @@ import converters.VariableConverter;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -23,18 +24,20 @@ public class PanelFrequency extends JPanel {
     private final JLabel nextDate;
 
     PanelFrequency(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         frequency = new FrequencyTextField();
         nextDate = new JLabel();
 
         this.setBackground(Color.WHITE);
-        this.setBorder(BorderFactory.createTitledBorder(FREQUENCY_CONTROL));
+        TitledBorder border = BorderFactory.createTitledBorder(FREQUENCY_CONTROL);
+        border.setTitleJustification(TitledBorder.CENTER);
+        this.setBorder(border);
 
-        this.add(frequency);
-        this.add(new JLabel(NEXT_DATE));
-        this.add(nextDate);
+        this.add(frequency, new Cell(0,0));
+        this.add(new JLabel(NEXT_DATE), new Cell(1,0));
+        this.add(nextDate, new Cell(2,0));
     }
 
     @Override
@@ -69,6 +72,7 @@ public class PanelFrequency extends JPanel {
 
         private FrequencyTextField(){
             super(4);
+            this.setHorizontalAlignment(JTextField.RIGHT);
 
             this.addFocusListener(changeFocus);
         }
@@ -97,5 +101,16 @@ public class PanelFrequency extends JPanel {
                 updateNextDate(VariableConverter.stringToDate(parent.panelDate.getDate()));
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

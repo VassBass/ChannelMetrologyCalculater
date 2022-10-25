@@ -29,16 +29,17 @@ public class PanelChannelRange extends JPanel {
     private final TitledBorder border;
 
     PanelChannelRange(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         this.setBackground(Color.WHITE);
         this.setBorder(border = BorderFactory.createTitledBorder(RANGE_OF_CHANNEL));
+        border.setTitleJustification(TitledBorder.CENTER);
 
-        this.add(minRange = new MinRangeTextField());
-        this.add(new JLabel(SEPARATOR));
-        this.add(maxRange = new MaxRangeTextField());
-        this.add(value = new JLabel());
+        this.add(minRange = new MinRangeTextField(), new Cell(0,0));
+        this.add(new JLabel(SEPARATOR), new Cell(1,0));
+        this.add(maxRange = new MaxRangeTextField(), new Cell(2,0));
+        this.add(value = new JLabel(), new Cell(3,0));
     }
 
     @Override
@@ -125,6 +126,7 @@ public class PanelChannelRange extends JPanel {
 
         private MinRangeTextField(){
             super(DEFAULT_MIN_VALUE, 5);
+            this.setHorizontalAlignment(JTextField.RIGHT);
 
             this.addFocusListener(focus);
         }
@@ -192,5 +194,16 @@ public class PanelChannelRange extends JPanel {
                 }
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

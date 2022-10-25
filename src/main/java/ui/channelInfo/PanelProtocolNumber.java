@@ -2,6 +2,7 @@ package ui.channelInfo;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -16,13 +17,15 @@ public class PanelProtocolNumber extends JPanel {
     private final JTextField protocolNumber;
 
     PanelProtocolNumber(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         this.setBackground(Color.WHITE);
-        this.setBorder(BorderFactory.createTitledBorder(PROTOCOL_NUMBER));
+        TitledBorder border = BorderFactory.createTitledBorder(PROTOCOL_NUMBER);
+        border.setTitleJustification(TitledBorder.CENTER);
+        this.setBorder(border);
 
-        this.add(protocolNumber = new ProtocolNumberTextField());
+        this.add(protocolNumber = new ProtocolNumberTextField(), new Cell(0,0));
     }
 
     public String getProtocolNumber() {
@@ -45,6 +48,7 @@ public class PanelProtocolNumber extends JPanel {
 
         private ProtocolNumberTextField(){
             super(10);
+            this.setHorizontalAlignment(JTextField.CENTER);
 
             this.addFocusListener(focusListener);
         }
@@ -56,5 +60,17 @@ public class PanelProtocolNumber extends JPanel {
                 parent.specialCharactersPanel.setFieldForInsert(ProtocolNumberTextField.this);
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weightx = 1D;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

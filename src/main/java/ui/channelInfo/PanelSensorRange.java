@@ -29,7 +29,7 @@ public class PanelSensorRange extends JPanel {
     private final MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
 
     PanelSensorRange(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         min = new MinValueTextField();
@@ -38,18 +38,15 @@ public class PanelSensorRange extends JPanel {
         rangesMatch = new RangesMatchCheckBox();
 
         this.setBackground(Color.WHITE);
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        JPanel topPanel = new JPanel();
-        topPanel.setBackground(Color.WHITE);
-        topPanel.add(new JLabel(MIN));
-        topPanel.add(min);
-        topPanel.add(new JLabel(MAX));
-        topPanel.add(max);
-        topPanel.add(value);
-
-        this.add(topPanel);
-        this.add(rangesMatch);
+        this.add(new JLabel(MIN), new Cell(0,0));
+        this.add(min, new Cell(1,0));
+        JLabel to = new JLabel(MAX);
+        to.setHorizontalAlignment(JLabel.CENTER);
+        this.add(to, new Cell(2,0));
+        this.add(max, new Cell(3,0));
+        this.add(value, new Cell(4,0));
+        this.add(rangesMatch, new Cell(2,1));
     }
 
     public void updateMeasurement(@Nonnull Measurement measurement){
@@ -253,9 +250,20 @@ public class PanelSensorRange extends JPanel {
                     parent.panelSensor.panelSensorRange.setDisabled(false);
 
                     Optional<Sensor> s = parent.panelSensor.getSelectedSensor();
-                    s.ifPresent(sensor -> parent.panelSensor.panelSensorRange.updateSensor(sensor));
+                    s.ifPresent(parent.panelSensor.panelSensorRange::updateSensor);
                 }
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

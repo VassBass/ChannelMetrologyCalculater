@@ -8,6 +8,7 @@ import repository.impl.MeasurementRepositorySQLite;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -26,17 +27,19 @@ public class PanelMeasurement extends JPanel {
     private final MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
 
     PanelMeasurement(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         measurementNames = new MeasurementNamesComboBox();
         measurementValues = new MeasurementValuesComboBox();
 
         this.setBackground(Color.WHITE);
-        this.setBorder(BorderFactory.createTitledBorder(TYPE_OF_MEASUREMENT));
+        TitledBorder border = BorderFactory.createTitledBorder(TYPE_OF_MEASUREMENT);
+        border.setTitleJustification(TitledBorder.CENTER);
+        this.setBorder(border);
 
-        this.add(measurementNames);
-        this.add(measurementValues);
+        this.add(measurementNames, new Cell(0,0));
+        this.add(measurementValues, new Cell(1,0));
     }
 
     @Override
@@ -221,5 +224,15 @@ public class PanelMeasurement extends JPanel {
                 }
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

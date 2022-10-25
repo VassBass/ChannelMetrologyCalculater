@@ -18,13 +18,14 @@ public class PanelTechnologyNumber extends JPanel {
     private final TitledBorder border;
 
     PanelTechnologyNumber(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         this.setBackground(Color.WHITE);
         this.setBorder(border = BorderFactory.createTitledBorder(TECHNOLOGY_NUMBER));
+        border.setTitleJustification(TitledBorder.CENTER);
 
-        this.add(technologyNumber = new TextTechnologyNumber());
+        this.add(technologyNumber = new TextTechnologyNumber(), new Cell(0,0));
     }
 
     public boolean isTechnologyNumberAvailable(){
@@ -57,6 +58,7 @@ public class PanelTechnologyNumber extends JPanel {
 
         private TextTechnologyNumber(){
             super(10);
+            this.setHorizontalAlignment(JTextField.CENTER);
 
             this.addFocusListener(focusListener);
         }
@@ -68,5 +70,17 @@ public class PanelTechnologyNumber extends JPanel {
                 parent.specialCharactersPanel.setFieldForInsert(TextTechnologyNumber.this);
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weightx = 1D;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

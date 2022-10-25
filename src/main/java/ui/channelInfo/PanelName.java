@@ -17,13 +17,14 @@ public class PanelName extends JPanel {
     private final TitledBorder border;
 
     PanelName(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         this.setBackground(Color.WHITE);
         this.setBorder(border = BorderFactory.createTitledBorder(NAME));
+        border.setTitleJustification(TitledBorder.CENTER);
 
-        this.add(name = new NameTextField());
+        this.add(name = new NameTextField(), new Cell(0,0));
     }
 
     public boolean isNameAvailable(){
@@ -57,6 +58,7 @@ public class PanelName extends JPanel {
 
         private NameTextField(){
             super(10);
+            this.setHorizontalAlignment(JTextField.CENTER);
 
             JPopupMenu namePopupMenu = new JPopupMenu(INSERT);
             this.setComponentPopupMenu(namePopupMenu);
@@ -79,5 +81,17 @@ public class PanelName extends JPanel {
                 parent.specialCharactersPanel.setFieldForInsert(NameTextField.this);
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weightx = 1D;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

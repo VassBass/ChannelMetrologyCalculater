@@ -27,13 +27,14 @@ public class PanelCode extends JPanel {
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
     PanelCode(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         this.setBackground(Color.WHITE);
         this.setBorder(border = BorderFactory.createTitledBorder(CODE));
+        border.setTitleJustification(TitledBorder.CENTER);
 
-        this.add(code = new CodeTextField());
+        this.add(code = new CodeTextField(), new Cell(0, 0));
     }
 
     public boolean isCodeAvailable(@Nullable Channel oldChannel){
@@ -85,7 +86,8 @@ public class PanelCode extends JPanel {
          * TextField for channel code
          */
         private CodeTextField(){
-            super(20);
+            super(10);
+            this.setHorizontalAlignment(JTextField.CENTER);
 
             JPopupMenu codePopupMenu = new JPopupMenu(SEARCH);
             JMenuItem check = new JMenuItem(SEARCH);
@@ -124,5 +126,17 @@ public class PanelCode extends JPanel {
 
             @Override public void changedUpdate(DocumentEvent e) {}
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weightx = 1D;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }

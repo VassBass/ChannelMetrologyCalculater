@@ -36,23 +36,20 @@ public class PanelSensor extends JPanel {
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
 
     PanelSensor(@Nonnull DialogChannel parent){
-        super();
+        super(new GridBagLayout());
         this.parent = parent;
 
         panelSensorRange = new PanelSensorRange(parent);
 
         this.setBackground(Color.WHITE);
         this.setBorder(border = BorderFactory.createTitledBorder(SENSOR));
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        border.setTitleJustification(TitledBorder.CENTER);
 
-        JPanel topPanel = new JPanel();
-        topPanel.setBackground(Color.WHITE);
-        topPanel.add(sensorsList);
-        topPanel.add(new Label(NO));
-        topPanel.add(serialNumber);
+        this.add(sensorsList, new Cell(0,0));
+        this.add(new Label(NO), new Cell(1,0));
+        this.add(serialNumber, new Cell(2,0));
 
-        this.add(topPanel);
-        this.add(panelSensorRange);
+        this.add(panelSensorRange, new Cell(0,1));
     }
 
     public void setBorderColor(Color color){
@@ -213,5 +210,16 @@ public class PanelSensor extends JPanel {
                 parent.specialCharactersPanel.setFieldForInsert(SerialNumberTextField.this);
             }
         };
+    }
+
+    private static class Cell extends GridBagConstraints {
+        private Cell(int x, int y){
+            super();
+            this.fill = BOTH;
+            this.weighty = 1D;
+
+            this.gridx = x;
+            this.gridy = y;
+        }
     }
 }
