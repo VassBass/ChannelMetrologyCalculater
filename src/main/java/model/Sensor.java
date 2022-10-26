@@ -13,6 +13,7 @@ import repository.impl.MeasurementRepositorySQLite;
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * DB table = sensors
@@ -140,7 +141,8 @@ public class Sensor implements Serializable {
      */
     public double getError(@Nonnull Channel channel){
         String formula = VariableConverter.commasToDots(this.errorFormula);
-        Measurement input = MeasurementRepositorySQLite.getInstance().get(this.measurement).get();
+        Optional<Measurement> m = MeasurementRepositorySQLite.getInstance().get(value);
+        Measurement input = m.orElseGet(channel::getMeasurement);
         formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
         Function f = new Function("At(R,r,convR) = " + formula);
         Argument R = new Argument("R = " + channel._getRange());
@@ -250,6 +252,7 @@ public class Sensor implements Serializable {
         } else return false;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean contain(int[]source, int value){
         if (source == null || source.length == 0) return false;
         for (int i : source){

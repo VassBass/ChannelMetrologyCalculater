@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public class PanelSensorRange extends JPanel {
 
     private final JTextField min;
     private final JTextField max;
-    private final JComboBox<String>value;
+    private final MeasurementValueComboBox value;
     private final JCheckBox rangesMatch;
 
     private final DialogChannel parent;
@@ -74,10 +75,9 @@ public class PanelSensorRange extends JPanel {
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
 
-        this.min.setEnabled(enabled);
-        this.max.setEnabled(enabled);
-        this.value.setEnabled(enabled);
-        this.rangesMatch.setEnabled(enabled);
+        rangesMatch.setEnabled(enabled);
+        rangesMatch.setSelected(!enabled);
+        value.setEnabled(enabled);
     }
 
     /**
@@ -129,6 +129,10 @@ public class PanelSensorRange extends JPanel {
         return selected == null ? Measurement.DEGREE_CELSIUS : selected.toString();
     }
 
+    public void setRosemountValues(){
+        value.setRosemountValues();
+    }
+
     private class MinValueTextField extends JTextField {
 
         private MinValueTextField() {
@@ -157,9 +161,12 @@ public class PanelSensorRange extends JPanel {
 
                 double minD = Double.parseDouble(min.getText());
                 double maxD = Double.parseDouble(max.getText());
-                if (maxD < minD) {
-                    min.setText(String.valueOf(maxD));
-                    max.setText(String.valueOf(minD));
+
+                min.setText(String.valueOf(Math.min(minD, maxD)));
+                max.setText(String.valueOf(Math.max(minD, maxD)));
+                if (!parent.panelSensor.panelSensorRange.isEnabled()) {
+                    parent.panelChannelRange.updateRange(Math.min(minD, maxD), Math.max(minD, maxD));
+                    parent.panelAllowableError.updateError();
                 }
             }
         };
@@ -190,6 +197,16 @@ public class PanelSensorRange extends JPanel {
                 }
                 String forCheck = source.getText();
                 source.setText(VariableConverter.doubleString(forCheck));
+
+                double minD = Double.parseDouble(min.getText());
+                double maxD = Double.parseDouble(max.getText());
+
+                min.setText(String.valueOf(Math.min(minD, maxD)));
+                max.setText(String.valueOf(Math.max(minD, maxD)));
+                if (!parent.panelSensor.panelSensorRange.isEnabled()) {
+                    parent.panelChannelRange.updateRange(Math.min(minD, maxD), Math.max(minD, maxD));
+                    parent.panelAllowableError.updateError();
+                }
             }
         };
     }
@@ -212,6 +229,23 @@ public class PanelSensorRange extends JPanel {
                 parent.specialCharactersPanel.setFieldForInsert(null);
             }
         };
+
+        public void setRosemountValues(){
+            this.setModel(new DefaultComboBoxModel<>(rosemountValues()));
+        }
+
+        private String[] rosemountValues(){
+            ArrayList<String> values  = new ArrayList<>();
+            ArrayList<Measurement>measurements = new ArrayList<>(measurementRepository.getAll());
+            for (Measurement measurement : measurements) {
+                if (measurement.getName().equals(Measurement.CONSUMPTION)) {
+                    values.add(measurement.getValue());
+                }
+            }
+            values.add(Measurement.M_S);
+            values.add(Measurement.CM_S);
+            return values.toArray(new String[0]);
+        }
     }
 
     private class RangesMatchCheckBox extends JCheckBox {

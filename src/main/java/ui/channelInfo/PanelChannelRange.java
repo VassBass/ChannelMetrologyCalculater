@@ -119,6 +119,14 @@ public class PanelChannelRange extends JPanel {
         } else return false;
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+
+        minRange.setEnabled(enabled);
+        maxRange.setEnabled(enabled);
+    }
+
     /**
      * TextField for min value of channel range
      */

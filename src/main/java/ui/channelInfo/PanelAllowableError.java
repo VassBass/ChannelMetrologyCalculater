@@ -96,6 +96,18 @@ public class PanelAllowableError extends JPanel {
         numberValue.setText(errorValue);
     }
 
+    public void updateError(){
+        double range = parent.panelChannelRange.getRange();
+        double errorPercent = Double.parseDouble(percentValue.getText());
+        String errorValue;
+        if (range < 10D){
+            errorValue = String.format(Locale.ENGLISH, "%.3f", ErrorConverter.getErrorFrom(errorPercent, true, range));
+        }else {
+            errorValue = String.format(Locale.ENGLISH, "%.2f", ErrorConverter.getErrorFrom(errorPercent, true, range));
+        }
+        numberValue.setText(errorValue);
+    }
+
     public double getAllowableErrorNumber(){
         return Double.parseDouble(numberValue.getText());
     }

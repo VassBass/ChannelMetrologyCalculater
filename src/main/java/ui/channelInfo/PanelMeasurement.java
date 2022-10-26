@@ -116,7 +116,10 @@ public class PanelMeasurement extends JPanel {
                     if (selectedName != null) {
                         String name = selectedName.toString();
 
-                        updateMeasurementName(name);
+                        measurementValues.setModel(
+                                new DefaultComboBoxModel<>(measurementRepository.getValues(name)));
+                        parent.panelSensor.updateMeasurementName(name);
+                        parent.panelChannelRange.setEnabled(!name.equals(Measurement.CONSUMPTION));
 
                         Object selectedValue = measurementValues.getSelectedItem();
                         if (selectedValue != null){
@@ -133,11 +136,6 @@ public class PanelMeasurement extends JPanel {
                 }
             }
         };
-
-        private void updateMeasurementName(String measurementName){
-            parent.panelMeasurement.updateMeasurementName(measurementName);
-            parent.panelSensor.updateMeasurementName(measurementName);
-        }
 
         private void updateMeasurementValue(String measurementValue){
             parent.panelAllowableError.updateMeasurementValue(measurementValue);

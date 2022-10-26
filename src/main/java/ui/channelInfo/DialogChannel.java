@@ -77,7 +77,11 @@ public class DialogChannel extends JDialog {
 
         this.addKeyListener();
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        this.setSize(850,850);
+
+        int width = Math.min(Application.sizeOfScreen.width, 850);
+        int height = Math.min(Application.sizeOfScreen.height, 850);
+        this.setSize(width, height);
+
         this.setChannelInfo(oldChannel);
         this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(),this));
         this.setContentPane(new MainPanel());
@@ -105,6 +109,7 @@ public class DialogChannel extends JDialog {
         buttonRemove.addKeyListener(this.keyListener);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean isFieldsAreFilled(){
         boolean filledCode = panelCode.isCodeAvailable(oldChannel);
         boolean filledName = panelName.isNameAvailable();
@@ -131,7 +136,7 @@ public class DialogChannel extends JDialog {
             Measurement measurement = channel.getMeasurement();
 
             panelCode.setCode(channel.getCode());
-            panelName.setName(channel.getName());
+            panelName.setChannelName(channel.getName());
             panelMeasurement.updateMeasurement(measurement);
             panelTechnologyNumber.setTechnologyNumber(channel.getTechnologyNumber());
             panelDate.updateDate(VariableConverter.stringToDate(channel.getDate()));
@@ -141,6 +146,7 @@ public class DialogChannel extends JDialog {
             panelPath.updateArea(channel.getArea());
             panelPath.updateProcess(channel.getProcess());
             panelPath.updateInstallation(channel.getInstallation());
+            panelSensor.updateMeasurementName(measurement.getName());
             panelSensor.updateSensor(channel.getSensor());
             panelChannelRange.updateRange(channel.getRangeMin(), channel.getRangeMax());
             panelChannelRange.updateMeasurementValue(measurement.getValue());
