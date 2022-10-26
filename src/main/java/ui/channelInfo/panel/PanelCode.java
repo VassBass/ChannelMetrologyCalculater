@@ -1,9 +1,11 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
 
 import backgroundTasks.CheckChannel;
 import model.Channel;
 import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
+import ui.channelInfo.DialogChannel;
+import ui.channelInfo.DialogChannelExists;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,7 +28,7 @@ public class PanelCode extends JPanel {
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
-    PanelCode(@Nonnull DialogChannel parent){
+    public PanelCode(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 
@@ -46,7 +48,7 @@ public class PanelCode extends JPanel {
         }else if (oldChannel == null) {
             if (c.isPresent()){
                 border.setTitleColor(Color.RED);
-                EventQueue.invokeLater(() -> new ChannelExistsDialog(parent, c.get()));
+                EventQueue.invokeLater(() -> new DialogChannelExists(parent, c.get()));
                 return false;
             } else {
                 border.setTitleColor(Color.BLACK);
@@ -56,7 +58,7 @@ public class PanelCode extends JPanel {
             if (channelRepository.isExist(oldChannel.getCode(), code.getText())) {
                 c.ifPresent(channel -> {
                     border.setTitleColor(Color.RED);
-                    EventQueue.invokeLater(() -> new ChannelExistsDialog(parent, channel));
+                    EventQueue.invokeLater(() -> new DialogChannelExists(parent, channel));
                 });
                 return false;
             }else {

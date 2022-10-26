@@ -1,6 +1,7 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
 
 import converters.VariableConverter;
+import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -23,7 +24,7 @@ public class PanelFrequency extends JPanel {
     private final JTextField frequency;
     private final JLabel nextDate;
 
-    PanelFrequency(@Nonnull DialogChannel parent){
+    public PanelFrequency(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

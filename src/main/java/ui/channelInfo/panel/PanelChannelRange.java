@@ -1,7 +1,8 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
 
 import converters.VariableConverter;
 import model.Measurement;
+import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,7 +29,7 @@ public class PanelChannelRange extends JPanel {
 
     private final TitledBorder border;
 
-    PanelChannelRange(@Nonnull DialogChannel parent){
+    public PanelChannelRange(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

@@ -10,6 +10,8 @@ import model.Sensor;
 import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import service.ChannelSorter;
+import ui.channelInfo.button.*;
+import ui.channelInfo.panel.*;
 import ui.mainScreen.MainScreen;
 import ui.specialCharacters.SpecialCharactersPanel;
 
@@ -27,7 +29,7 @@ import java.util.Optional;
 public class DialogChannel extends JDialog {
     private static final String INFORMATION_ABOUT_CHANNEL = "Інформація вимірювального каналу";
 
-    final Channel oldChannel;
+    public final Channel oldChannel;
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
@@ -45,11 +47,11 @@ public class DialogChannel extends JDialog {
 
     @Nonnull public final SpecialCharactersPanel specialCharactersPanel;
 
-    ButtonSave buttonSave;
-    ButtonSaveAndCalculate buttonSaveAndCalculate;
-    ButtonRemove buttonRemove;
-    ButtonReset buttonReset;
-    ButtonClose buttonClose;
+    public final ButtonSave buttonSave;
+    public final ButtonSaveAndCalculate buttonSaveAndCalculate;
+    public final ButtonRemove buttonRemove;
+    public final ButtonReset buttonReset;
+    public final ButtonClose buttonClose;
 
     public DialogChannel(@Nullable Channel oldChannel){
         super(MainScreen.getInstance(), INFORMATION_ABOUT_CHANNEL, true);

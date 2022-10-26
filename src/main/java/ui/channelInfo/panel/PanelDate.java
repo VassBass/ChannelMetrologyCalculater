@@ -1,7 +1,8 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
 
 import constants.CalendarConstants;
 import converters.VariableConverter;
+import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -24,7 +25,7 @@ public class PanelDate extends JPanel {
     private final JTextField month;
     private final JTextField year;
 
-    PanelDate(@Nonnull DialogChannel parent){
+    public PanelDate(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

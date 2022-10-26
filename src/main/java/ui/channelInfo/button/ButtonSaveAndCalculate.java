@@ -1,4 +1,4 @@
-package ui.channelInfo;
+package ui.channelInfo.button;
 
 import application.Application;
 import model.Channel;
@@ -6,6 +6,7 @@ import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import service.ChannelSorter;
 import ui.calculate.start.CalculateStartDialog;
+import ui.channelInfo.DialogChannel;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
@@ -22,7 +23,7 @@ public class ButtonSaveAndCalculate extends DefaultButton {
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
-    ButtonSaveAndCalculate(@Nonnull DialogChannel parent){
+    public ButtonSaveAndCalculate(@Nonnull DialogChannel parent){
         super(SAVE_AND_CALCULATE);
         this.parent = parent;
 

@@ -1,4 +1,6 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
+
+import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -17,7 +19,7 @@ public class PanelTechnologyNumber extends JPanel {
     private final JTextField technologyNumber;
     private final TitledBorder border;
 
-    PanelTechnologyNumber(@Nonnull DialogChannel parent){
+    public PanelTechnologyNumber(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

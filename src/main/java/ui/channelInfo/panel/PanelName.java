@@ -1,6 +1,7 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
 
 import application.Application;
+import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -16,7 +17,7 @@ public class PanelName extends JPanel {
     private final JTextField name;
     private final TitledBorder border;
 
-    PanelName(@Nonnull DialogChannel parent){
+    public PanelName(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

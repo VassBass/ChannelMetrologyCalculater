@@ -1,10 +1,11 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
 
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
 import repository.SensorRepository;
 import repository.impl.SensorRepositorySQLite;
+import ui.channelInfo.DialogChannel;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.annotation.Nonnull;
@@ -33,7 +34,7 @@ public class PanelSensor extends JPanel {
 
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
 
-    PanelSensor(@Nonnull DialogChannel parent){
+    public PanelSensor(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

@@ -8,14 +8,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class ChannelExistsDialog extends JDialog {
+public class DialogChannelExists extends JDialog {
     private final Window parent;
     private final Channel channel;
 
     private JLabel message, channelName;
     private JButton buttonOpen, buttonClose;
 
-    public ChannelExistsDialog(Window parent, Channel channel){
+    public DialogChannelExists(Window parent, Channel channel){
         super(parent, "Пошук", ModalityType.APPLICATION_MODAL);
 
         this.parent = parent;
@@ -81,10 +81,10 @@ public class ChannelExistsDialog extends JDialog {
             super(new GridBagLayout());
             this.setBackground(Color.WHITE);
 
-            this.add(message, new Cell(0,0,2));
-            this.add(channelName, new Cell(0,1,2));
-            this.add(buttonClose, new Cell(0,2,1));
-            this.add(buttonOpen, new Cell(1,2,1));
+            this.add(message, new MainPanel.Cell(0,0,2));
+            this.add(channelName, new MainPanel.Cell(0,1,2));
+            this.add(buttonClose, new MainPanel.Cell(0,2,1));
+            this.add(buttonOpen, new MainPanel.Cell(1,2,1));
         }
 
         private class Cell extends GridBagConstraints {

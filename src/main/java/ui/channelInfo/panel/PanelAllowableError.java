@@ -1,7 +1,8 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
 
 import converters.ErrorConverter;
 import converters.VariableConverter;
+import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -26,7 +27,7 @@ public class PanelAllowableError extends JPanel {
     private final JTextField percentValue;
     private final JTextField numberValue;
 
-    PanelAllowableError(@Nonnull DialogChannel parent){
+    public PanelAllowableError(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

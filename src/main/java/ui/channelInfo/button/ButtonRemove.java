@@ -1,8 +1,9 @@
-package ui.channelInfo;
+package ui.channelInfo.button;
 
 import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import service.ChannelSorter;
+import ui.channelInfo.DialogChannel;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
@@ -19,7 +20,7 @@ public class ButtonRemove extends DefaultButton {
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
-    ButtonRemove(@Nonnull DialogChannel parent) {
+    public ButtonRemove(@Nonnull DialogChannel parent) {
         super(REMOVE);
         this.parent = parent;
 

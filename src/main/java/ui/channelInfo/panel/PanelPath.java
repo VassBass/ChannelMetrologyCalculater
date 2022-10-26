@@ -1,9 +1,10 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
 
 import repository.impl.AreaRepositorySQLite;
 import repository.impl.DepartmentRepositorySQLite;
 import repository.impl.InstallationRepositorySQLite;
 import repository.impl.ProcessRepositorySQLite;
+import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,7 +25,7 @@ public class PanelPath extends JPanel {
     private final JComboBox<String>processes;
     private final JComboBox<String>installations;
 
-    PanelPath(@Nonnull DialogChannel parent){
+    public PanelPath(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

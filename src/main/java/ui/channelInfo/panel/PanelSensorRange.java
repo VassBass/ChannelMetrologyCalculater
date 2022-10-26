@@ -1,10 +1,11 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
 
 import converters.VariableConverter;
 import model.Measurement;
 import model.Sensor;
 import repository.MeasurementRepository;
 import repository.impl.MeasurementRepositorySQLite;
+import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -29,7 +30,7 @@ public class PanelSensorRange extends JPanel {
 
     private final MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
 
-    PanelSensorRange(@Nonnull DialogChannel parent){
+    public PanelSensorRange(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

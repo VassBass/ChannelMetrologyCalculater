@@ -1,10 +1,11 @@
-package ui.channelInfo;
+package ui.channelInfo.button;
 
 import application.Application;
 import model.Channel;
 import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import service.ChannelSorter;
+import ui.channelInfo.DialogChannel;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
@@ -20,7 +21,7 @@ public class ButtonSave extends DefaultButton {
 
     private DialogChannel parent;
 
-    ButtonSave(@Nonnull DialogChannel parent){
+    public ButtonSave(@Nonnull DialogChannel parent){
         super(SAVE);
         this.parent = parent;
 

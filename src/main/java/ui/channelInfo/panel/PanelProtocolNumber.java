@@ -1,4 +1,6 @@
-package ui.channelInfo;
+package ui.channelInfo.panel;
+
+import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -16,7 +18,7 @@ public class PanelProtocolNumber extends JPanel {
 
     private final JTextField protocolNumber;
 
-    PanelProtocolNumber(@Nonnull DialogChannel parent){
+    public PanelProtocolNumber(@Nonnull DialogChannel parent){
         super(new GridBagLayout());
         this.parent = parent;
 

@@ -3,7 +3,7 @@ package backgroundTasks;
 import model.Channel;
 import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
-import ui.channelInfo.ChannelExistsDialog;
+import ui.channelInfo.DialogChannelExists;
 import ui.model.LoadDialog;
 
 import javax.swing.*;
@@ -40,7 +40,7 @@ public class CheckChannel extends SwingWorker<Optional<Channel>, Void> {
         try {
             if (this.get().isPresent()){
                 Channel channel = this.get().get();
-                EventQueue.invokeLater(() -> new ChannelExistsDialog(parent, channel).setVisible(true));
+                EventQueue.invokeLater(() -> new DialogChannelExists(parent, channel).setVisible(true));
             }else {
                 JOptionPane.showMessageDialog(parent,
                         "Канал з данним кодом відсутній в списку", "Пошук",

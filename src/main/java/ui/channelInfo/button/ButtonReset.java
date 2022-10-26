@@ -1,5 +1,6 @@
-package ui.channelInfo;
+package ui.channelInfo.button;
 
+import ui.channelInfo.DialogChannel;
 import ui.model.DefaultButton;
 
 import javax.annotation.Nonnull;
@@ -10,7 +11,7 @@ public class ButtonReset extends DefaultButton {
 
     private DialogChannel parent;
 
-    ButtonReset(@Nonnull DialogChannel parent) {
+    public ButtonReset(@Nonnull DialogChannel parent) {
         super(RESET);
         this.parent = parent;
 
