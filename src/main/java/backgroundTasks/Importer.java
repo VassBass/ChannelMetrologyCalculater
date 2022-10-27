@@ -7,7 +7,7 @@ import ui.importData.compareCalibrators.CompareCalibratorsDialog;
 import ui.importData.compareChannels.CompareChannelsDialog;
 import ui.importData.compareSensors.CompareSensorsDialog;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutionException;
 
 public class Importer extends SwingWorker<Boolean, Void> {
 
-    private final LoadDialog loadDialog = new LoadDialog(MainScreen.getInstance());
+    private final DialogLoading loadDialog = new DialogLoading(MainScreen.getInstance());
     private final Model model;
     private int stage = -1;
     private final File importFile;

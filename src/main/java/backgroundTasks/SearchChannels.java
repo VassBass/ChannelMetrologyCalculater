@@ -5,14 +5,14 @@ import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import service.ChannelSorter;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class SearchChannels extends SwingWorker<Void, Void> {
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
 
     private int field;
     private String valueString;
@@ -24,7 +24,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
 
     public SearchChannels(){
         super();
-        this.loadDialog = new LoadDialog(MainScreen.getInstance());
+        this.loadDialog = new DialogLoading(MainScreen.getInstance());
     }
 
     public void startSearch(int field, String value){

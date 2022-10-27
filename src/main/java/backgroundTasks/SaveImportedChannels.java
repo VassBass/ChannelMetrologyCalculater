@@ -7,7 +7,7 @@ import repository.SensorRepository;
 import repository.impl.ChannelRepositorySQLite;
 import repository.impl.SensorRepositorySQLite;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,7 @@ public class SaveImportedChannels extends SwingWorker<Void, Void> {
 
     private final List<Channel> newChannels, channelsForChange;
     private final List<Sensor>newSensors, sensorsForChange;
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
 
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
@@ -32,7 +32,7 @@ public class SaveImportedChannels extends SwingWorker<Void, Void> {
         this.channelsForChange = channelsForChange;
         this.newSensors = newSensors;
         this.sensorsForChange = sensorsForChange;
-        this.loadDialog = new LoadDialog(MainScreen.getInstance());
+        this.loadDialog = new DialogLoading(MainScreen.getInstance());
         EventQueue.invokeLater(() -> loadDialog.setVisible(true));
     }
 

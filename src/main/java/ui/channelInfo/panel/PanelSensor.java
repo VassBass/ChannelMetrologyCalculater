@@ -165,7 +165,7 @@ public class PanelSensor extends JPanel {
         private final FocusListener focus = new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
         };
     }
@@ -205,7 +205,7 @@ public class PanelSensor extends JPanel {
         private final FocusListener focus = new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                parent.specialCharactersPanel.setFieldForInsert(SerialNumberTextField.this);
+                parent.panelSpecialCharacters.setFieldForInsert(SerialNumberTextField.this);
             }
         };
     }

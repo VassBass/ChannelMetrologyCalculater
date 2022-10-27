@@ -104,7 +104,7 @@ public class PanelMeasurement extends JPanel {
             this.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
-                    parent.specialCharactersPanel.setFieldForInsert(null);
+                    parent.panelSpecialCharacters.setFieldForInsert(null);
                 }
             });
         }
@@ -209,7 +209,7 @@ public class PanelMeasurement extends JPanel {
 
         private final FocusListener changeFocusOnValue = new FocusListener() {
             @Override public void focusGained(FocusEvent e) {
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
 
             @Override

@@ -130,7 +130,7 @@ public class PanelAllowableError extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 percentValue.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
 
             @Override
@@ -171,7 +171,7 @@ public class PanelAllowableError extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 numberValue.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
 
             @Override

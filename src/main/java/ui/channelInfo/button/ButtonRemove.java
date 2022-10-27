@@ -10,13 +10,15 @@ import ui.model.DefaultButton;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class ButtonRemove extends DefaultButton {
     private static final String REMOVE = "Видалити";
 
-    private DialogChannel parent;
+    private final DialogChannel parent;
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
@@ -24,30 +26,63 @@ public class ButtonRemove extends DefaultButton {
         super(REMOVE);
         this.parent = parent;
 
-        this.addActionListener(click);
+        this.addActionListener(new Click());
     }
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final ActionListener click = e -> {
-        if (parent.oldChannel != null){
-            EventQueue.invokeLater(() -> {
-                int result = JOptionPane.showConfirmDialog(
-                        parent,
-                        parent.oldChannel.getName(),
-                        "Видалити канал?",
-                        JOptionPane.OK_CANCEL_OPTION
-                );
+    private class Click extends SwingWorker<Boolean, Void> implements ActionListener {
 
-                if (result == 0){
-                    channelRepository.remove(parent.oldChannel);
-                    parent.dispose();
-                    if (ChannelSorter.getInstance().isOn()){
-                        MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getCurrent());
-                    }else {
-                        MainScreen.getInstance().setChannelsList(new ArrayList<>(channelRepository.getAll()));
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (parent.oldChannel != null){
+                EventQueue.invokeLater(() -> {
+                    int result = JOptionPane.showConfirmDialog(
+                            parent,
+                            "Видалити канал \"" + parent.oldChannel.getName() + "\"?",
+                            parent.oldChannel.getCode(),
+                            JOptionPane.OK_CANCEL_OPTION
+                    );
+
+                    if (result == 0) {
+                        EventQueue.invokeLater(() -> parent.dialogLoading.setVisible(true));
+                        this.execute();
                     }
+                });
+            }
+        }
+
+        @Override
+        protected Boolean doInBackground() throws Exception {
+            if (channelRepository.remove(parent.oldChannel)) {
+                if (ChannelSorter.getInstance().isOn()){
+                    MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getCurrent());
+                }else {
+                    MainScreen.getInstance().setChannelsList(new ArrayList<>(channelRepository.getAll()));
                 }
+                return true;
+            } else return false;
+        }
+
+        @Override
+        protected void done() {
+            parent.dialogLoading.dispose();
+            parent.dispose();
+            try {
+                if (!get()) showErrorMessage();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                showErrorMessage();
+            }
+        }
+
+        private void showErrorMessage() {
+            EventQueue.invokeLater(() -> {
+                JOptionPane.showMessageDialog(
+                        parent,
+                        "Виникла помилка. Будь ласка спробуйте ще раз",
+                        "Помилка",
+                        JOptionPane.ERROR_MESSAGE
+                );
             });
         }
-    };
+    }
 }

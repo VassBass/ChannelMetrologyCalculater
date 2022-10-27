@@ -59,7 +59,7 @@ public class PanelProtocolNumber extends JPanel {
         private final FocusListener focusListener = new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                parent.specialCharactersPanel.setFieldForInsert(ProtocolNumberTextField.this);
+                parent.panelSpecialCharacters.setFieldForInsert(ProtocolNumberTextField.this);
             }
         };
     }

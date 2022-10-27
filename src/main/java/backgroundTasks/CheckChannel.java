@@ -4,7 +4,7 @@ import model.Channel;
 import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import ui.channelInfo.DialogChannelExists;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +13,7 @@ import java.util.Optional;
 public class CheckChannel extends SwingWorker<Optional<Channel>, Void> {
     private final Window parent;
     private final String code;
-    private final LoadDialog loadWindow;
+    private final DialogLoading loadWindow;
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
@@ -21,7 +21,7 @@ public class CheckChannel extends SwingWorker<Optional<Channel>, Void> {
         super();
         this.parent = parent;
         this.code = code;
-        this.loadWindow = new LoadDialog(parent);
+        this.loadWindow = new DialogLoading(parent);
         EventQueue.invokeLater(() -> loadWindow.setVisible(true));
     }
 

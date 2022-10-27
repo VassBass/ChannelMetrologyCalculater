@@ -7,7 +7,7 @@ import model.Measurement;
 import repository.impl.MeasurementRepositorySQLite;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
-import ui.specialCharacters.SpecialCharactersPanel;
+import ui.specialCharacters.PanelSpecialCharacters;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -32,7 +32,7 @@ public class AddMeasurementDialog extends JDialog {
     private JButton[] values;
     private JPanel valuesPanel;
     private JButton btn_positive, btn_negative;
-    private SpecialCharactersPanel specialCharactersPanel;
+    private PanelSpecialCharacters specialCharactersPanel;
 
     public AddMeasurementDialog(MeasurementsListDialog parentDialog){
         super(parentDialog, ADD, true);
@@ -69,7 +69,7 @@ public class AddMeasurementDialog extends JDialog {
         btn_positive = new DefaultButton(ADD);
         btn_negative = new DefaultButton(CANCEL);
 
-        specialCharactersPanel = new SpecialCharactersPanel();
+        specialCharactersPanel = new PanelSpecialCharacters();
         specialCharactersPanel.setFieldForInsert(measurementValue);
     }
 

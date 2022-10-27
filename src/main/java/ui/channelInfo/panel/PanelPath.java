@@ -111,7 +111,7 @@ public class PanelPath extends JPanel {
             this.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
-                    parent.specialCharactersPanel.setFieldForInsert(null);
+                    parent.panelSpecialCharacters.setFieldForInsert(null);
                 }
             });
         }
@@ -131,7 +131,7 @@ public class PanelPath extends JPanel {
             this.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
-                    parent.specialCharactersPanel.setFieldForInsert(null);
+                    parent.panelSpecialCharacters.setFieldForInsert(null);
                 }
             });
         }
@@ -151,7 +151,7 @@ public class PanelPath extends JPanel {
             this.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
-                    parent.specialCharactersPanel.setFieldForInsert(null);
+                    parent.panelSpecialCharacters.setFieldForInsert(null);
                 }
             });
         }
@@ -171,7 +171,7 @@ public class PanelPath extends JPanel {
             this.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
-                    parent.specialCharactersPanel.setFieldForInsert(null);
+                    parent.panelSpecialCharacters.setFieldForInsert(null);
                 }
             });
         }

@@ -6,7 +6,7 @@ import repository.SensorRepository;
 import repository.impl.ChannelRepositorySQLite;
 import repository.impl.SensorRepositorySQLite;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
     private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
 
     private final List<Sensor> newSensors, sensorsForChange;
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
     private final File importFile;
 
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
@@ -34,7 +34,7 @@ public class SaveImportedSensors extends SwingWorker<Void, Void> {
         super();
         this.newSensors = newSensors;
         this.sensorsForChange = sensorsForChange;
-        this.loadDialog = new LoadDialog(MainScreen.getInstance());
+        this.loadDialog = new DialogLoading(MainScreen.getInstance());
         this.importFile = file;
         EventQueue.invokeLater(() -> loadDialog.setVisible(true));
     }

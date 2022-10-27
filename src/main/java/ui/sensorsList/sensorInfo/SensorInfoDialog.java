@@ -15,7 +15,7 @@ import ui.model.ButtonCell;
 import ui.model.DefaultButton;
 import ui.sensorsList.SensorsListDialog;
 import ui.sensorsList.sensorInfo.complexElements.SensorRangePanel;
-import ui.specialCharacters.SpecialCharactersPanel;
+import ui.specialCharacters.PanelSpecialCharacters;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -68,7 +68,7 @@ public class SensorInfoDialog extends JDialog {
     private JTextField nameText;
     private SensorRangePanel rangePanel;
     private JTextField errorFormulaText;
-    public SpecialCharactersPanel specialCharactersPanel;
+    public PanelSpecialCharacters specialCharactersPanel;
 
     private JPopupMenu namePopupMenu, errorPopupMenu;
 
@@ -254,7 +254,7 @@ public class SensorInfoDialog extends JDialog {
         this.buttonCancel = new DefaultButton(CANCEL);
         this.buttonSave = new DefaultButton(SAVE);
 
-        this.specialCharactersPanel = new SpecialCharactersPanel();
+        this.specialCharactersPanel = new PanelSpecialCharacters();
 
         LOGGER.fine("SensorInfoDialog: create elements SUCCESS");
     }

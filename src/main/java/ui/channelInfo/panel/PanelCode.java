@@ -106,7 +106,7 @@ public class PanelCode extends JPanel {
         private final FocusListener focusListener = new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                parent.specialCharactersPanel.setFieldForInsert(CodeTextField.this);
+                parent.panelSpecialCharacters.setFieldForInsert(CodeTextField.this);
             }
         };
 

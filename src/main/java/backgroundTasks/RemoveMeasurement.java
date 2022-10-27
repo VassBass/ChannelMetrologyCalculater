@@ -11,7 +11,7 @@ import repository.impl.MeasurementRepositorySQLite;
 import repository.impl.SensorRepositorySQLite;
 import service.ChannelSorter;
 import ui.measurementsList.MeasurementsListDialog;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +27,7 @@ public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
     private static final String ERROR_MESSAGE = "Помилка при видаленні величини!";
 
     private final MeasurementsListDialog dialog;
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
     private Measurement measurement;
 
     private final CalibratorRepository calibratorRepository = CalibratorRepositorySQLite.getInstance();
@@ -38,7 +38,7 @@ public class RemoveMeasurement extends SwingWorker<Boolean, Void> {
     public RemoveMeasurement(MeasurementsListDialog dialog){
         super();
         this.dialog = dialog;
-        this.loadDialog = new LoadDialog(dialog);
+        this.loadDialog = new DialogLoading(dialog);
     }
 
     public void start(){

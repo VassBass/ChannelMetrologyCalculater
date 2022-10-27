@@ -8,7 +8,7 @@ import repository.impl.ChannelRepositorySQLite;
 import repository.impl.ControlPointsValuesRepositorySQLite;
 import repository.impl.SensorRepositorySQLite;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 import ui.sensorsList.SensorsListDialog;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
@@ -24,7 +24,7 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
     private final SensorInfoDialog dialog;
     private final Sensor newSensor;
     private Sensor oldSensor;
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
 
     private final ControlPointsValuesRepository controlPointsValuesRepository = ControlPointsValuesRepositorySQLite.getInstance();
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
@@ -35,7 +35,7 @@ public class PutSensorInList extends SwingWorker<Boolean, Void> {
         this.mainDialog = mainDialog;
         this.dialog = dialog;
         this.newSensor = sensor;
-        this.loadDialog = new LoadDialog(dialog);
+        this.loadDialog = new DialogLoading(dialog);
     }
 
     public void start(Sensor oldSensor){

@@ -10,7 +10,7 @@ import ui.importData.compareChannels.complexElements.NewChannelsTable;
 import ui.mainScreen.MainScreen;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 import ui.model.Table;
 
 import javax.swing.*;
@@ -258,11 +258,11 @@ public class CompareChannelsDialog extends JDialog {
 
     private class RemoveSensor extends SwingWorker<Void, Void>{
         private final Sensor sensor;
-        private final LoadDialog loadDialog;
+        private final DialogLoading loadDialog;
 
         protected RemoveSensor(Sensor sensor){
             this.sensor = sensor;
-            this.loadDialog = new LoadDialog(CompareChannelsDialog.this);
+            this.loadDialog = new DialogLoading(CompareChannelsDialog.this);
             EventQueue.invokeLater(() -> loadDialog.setVisible(true));
         }
 

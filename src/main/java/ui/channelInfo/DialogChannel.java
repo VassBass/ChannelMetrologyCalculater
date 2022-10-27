@@ -13,7 +13,8 @@ import service.ChannelSorter;
 import ui.channelInfo.button.*;
 import ui.channelInfo.panel.*;
 import ui.mainScreen.MainScreen;
-import ui.specialCharacters.SpecialCharactersPanel;
+import ui.model.DialogLoading;
+import ui.specialCharacters.PanelSpecialCharacters;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,6 +32,8 @@ public class DialogChannel extends JDialog {
 
     public final Channel oldChannel;
 
+    public final DialogLoading dialogLoading;
+
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
     @Nonnull public final PanelCode panelCode;
@@ -45,7 +48,7 @@ public class DialogChannel extends JDialog {
     @Nonnull public final PanelChannelRange panelChannelRange;
     @Nonnull public final PanelAllowableError panelAllowableError;
 
-    @Nonnull public final SpecialCharactersPanel specialCharactersPanel;
+    @Nonnull public final PanelSpecialCharacters panelSpecialCharacters;
 
     public final ButtonSave buttonSave;
     public final ButtonSaveAndCalculate buttonSaveAndCalculate;
@@ -56,6 +59,7 @@ public class DialogChannel extends JDialog {
     public DialogChannel(@Nullable Channel oldChannel){
         super(MainScreen.getInstance(), INFORMATION_ABOUT_CHANNEL, true);
         this.oldChannel = oldChannel;
+        this.dialogLoading = new DialogLoading(this);
 
         panelCode = new PanelCode(this);
         panelName = new PanelName(this);
@@ -69,7 +73,7 @@ public class DialogChannel extends JDialog {
         panelChannelRange = new PanelChannelRange(this);
         panelAllowableError = new PanelAllowableError(this);
 
-        specialCharactersPanel = new SpecialCharactersPanel();
+        panelSpecialCharacters = new PanelSpecialCharacters();
 
         buttonSave = new ButtonSave(this);
         buttonSaveAndCalculate = new ButtonSaveAndCalculate(this);
@@ -102,7 +106,7 @@ public class DialogChannel extends JDialog {
         panelChannelRange.addKeyListener(keyListener);
         panelAllowableError.addKeyListener(keyListener);
 
-        specialCharactersPanel.addKeyListener(keyListener);
+        panelSpecialCharacters.addKeyListener(keyListener);
 
         buttonClose.addKeyListener(keyListener);
         buttonSave.addKeyListener(this.keyListener);
@@ -223,7 +227,7 @@ public class DialogChannel extends JDialog {
                     if (e.isAltDown() && !e.isControlDown()) buttonSave.doClick();
                     if (e.isControlDown() && !e.isAltDown()) buttonSaveAndCalculate.doClick();
                     if (e.isAltDown() && e.isControlDown()) {
-                        specialCharactersPanel.setFieldForInsert(null);
+                        panelSpecialCharacters.setFieldForInsert(null);
                         if (!isFieldsAreFilled()) return;
 
                         Application.putHint(panelName.getChannelName());
@@ -262,7 +266,7 @@ public class DialogChannel extends JDialog {
             this.setBackground(Color.WHITE);
 
             this.add(panelCode, new Cell(0,0));
-            this.add(specialCharactersPanel, new Cell(2,0,5));
+            this.add(panelSpecialCharacters, new Cell(2,0,5));
             this.add(panelName, new Cell(0,1));
             this.add(panelMeasurement, new Cell(0,2));
             this.add(panelTechnologyNumber, new Cell(0,3));

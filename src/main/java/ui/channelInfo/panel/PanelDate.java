@@ -93,7 +93,7 @@ public class PanelDate extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 day.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
 
             @Override
@@ -143,7 +143,7 @@ public class PanelDate extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 month.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
 
             @Override
@@ -190,7 +190,7 @@ public class PanelDate extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 year.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
 
             @Override

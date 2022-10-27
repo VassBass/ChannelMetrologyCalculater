@@ -8,7 +8,7 @@ import repository.impl.ChannelRepositorySQLite;
 import repository.impl.ControlPointsValuesRepositorySQLite;
 import repository.impl.SensorRepositorySQLite;
 import service.ChannelSorter;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 import ui.sensorsList.SensorsListDialog;
 
 import javax.swing.*;
@@ -26,7 +26,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
     private static final String ERROR_MESSAGE = "Помилка при видаленні ПВП!";
 
     private final SensorsListDialog dialog;
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
 
     private final ControlPointsValuesRepository cpvRepository = ControlPointsValuesRepositorySQLite.getInstance();
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
@@ -35,7 +35,7 @@ public class RemoveSensor extends SwingWorker<Boolean, Void> {
     public RemoveSensor(SensorsListDialog dialog){
         super();
         this.dialog = dialog;
-        this.loadDialog = new LoadDialog(dialog);
+        this.loadDialog = new DialogLoading(dialog);
     }
 
     public void start(){

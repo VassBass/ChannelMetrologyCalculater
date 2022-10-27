@@ -145,7 +145,7 @@ public class PanelChannelRange extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 minRange.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
             @Override
             public void focusLost(FocusEvent e) {
@@ -183,7 +183,7 @@ public class PanelChannelRange extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 maxRange.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
             @Override
             public void focusLost(FocusEvent e) {

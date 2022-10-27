@@ -17,7 +17,7 @@ import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
 import ui.calibratorsList.calibratorInfo.complexElements.CertificateDatePanel;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
-import ui.specialCharacters.SpecialCharactersPanel;
+import ui.specialCharacters.PanelSpecialCharacters;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -58,7 +58,7 @@ public class CalibratorInfoDialog extends JDialog {
     private final Calibrator oldCalibrator;
     private final CalculateStartDialog calculateDialog;
 
-    private final SpecialCharactersPanel specialCharactersPanel = new SpecialCharactersPanel();
+    private final PanelSpecialCharacters specialCharactersPanel = new PanelSpecialCharacters();
 
     private ButtonCell labelCalibrator;
     private ButtonCell labelMeasurement;

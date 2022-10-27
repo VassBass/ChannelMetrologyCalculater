@@ -6,7 +6,7 @@ import repository.ChannelRepository;
 import repository.impl.CalibratorRepositorySQLite;
 import repository.impl.ChannelRepositorySQLite;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
     private static final String IMPORT_SUCCESS = "Імпорт виконаний успішно";
 
     private final List<Calibrator> newCalibrators, calibratorsForChange;
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
     private final File importFile;
 
     private final CalibratorRepository calibratorRepository = CalibratorRepositorySQLite.getInstance();
@@ -34,7 +34,7 @@ public class SaveImportedCalibrators extends SwingWorker<Void, Void> {
         super();
         this.newCalibrators = newCalibrators;
         this.calibratorsForChange = calibratorsForChange;
-        this.loadDialog = new LoadDialog(MainScreen.getInstance());
+        this.loadDialog = new DialogLoading(MainScreen.getInstance());
         this.importFile = file;
         EventQueue.invokeLater(() -> loadDialog.setVisible(true));
     }

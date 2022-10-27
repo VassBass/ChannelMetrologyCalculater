@@ -21,6 +21,6 @@ public class ButtonReset extends DefaultButton {
     @SuppressWarnings("FieldCanBeLocal")
     private final ActionListener click = e -> {
         parent.setChannelInfo(parent.oldChannel);
-        parent.specialCharactersPanel.setFieldForInsert(null);
+        parent.panelSpecialCharacters.setFieldForInsert(null);
     };
 }

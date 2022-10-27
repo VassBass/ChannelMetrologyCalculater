@@ -5,7 +5,7 @@ import converters.ConverterUI;
 import model.Measurement;
 import repository.impl.MeasurementRepositorySQLite;
 import ui.model.DefaultButton;
-import ui.specialCharacters.SpecialCharactersPanel;
+import ui.specialCharacters.PanelSpecialCharacters;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class ChangeMeasurementDialog extends JDialog {
 
     private JTextField txt_value;
     private JButton btn_positive, btn_negative;
-    private SpecialCharactersPanel specialCharactersPanel;
+    private PanelSpecialCharacters specialCharactersPanel;
 
     public ChangeMeasurementDialog(MeasurementsListDialog parentDialog){
         super(parentDialog, TITLE, true);
@@ -46,7 +46,7 @@ public class ChangeMeasurementDialog extends JDialog {
         btn_negative = new DefaultButton(CLOSE);
         btn_positive = new DefaultButton(CHANGE);
 
-        specialCharactersPanel = new SpecialCharactersPanel();
+        specialCharactersPanel = new PanelSpecialCharacters();
         specialCharactersPanel.setFieldForInsert(txt_value);
     }
 

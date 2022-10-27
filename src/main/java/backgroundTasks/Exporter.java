@@ -2,7 +2,7 @@ package backgroundTasks;
 
 import service.FileBrowser;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +22,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class Exporter extends SwingWorker<Boolean, Void> {
     private static final Logger LOGGER = Logger.getLogger(Exporter.class.getName());
-    private final LoadDialog loadDialog = new LoadDialog();
+    private final DialogLoading loadDialog = new DialogLoading();
 
     private String fileName(){
         StringBuilder builder = new StringBuilder();

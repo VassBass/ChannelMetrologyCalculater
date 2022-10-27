@@ -69,7 +69,7 @@ public class PanelTechnologyNumber extends JPanel {
         private final FocusListener focusListener = new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                parent.specialCharactersPanel.setFieldForInsert(TextTechnologyNumber.this);
+                parent.panelSpecialCharacters.setFieldForInsert(TextTechnologyNumber.this);
             }
         };
     }

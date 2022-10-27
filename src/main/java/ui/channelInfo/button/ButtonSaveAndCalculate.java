@@ -11,15 +11,18 @@ import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.annotation.Nonnull;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class ButtonSaveAndCalculate extends DefaultButton {
     private static final String SAVE_AND_CALCULATE = "Зберегти та розрахувати (Ctrl + Enter)";
 
-    private DialogChannel parent;
+    private final DialogChannel parent;
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
@@ -27,33 +30,69 @@ public class ButtonSaveAndCalculate extends DefaultButton {
         super(SAVE_AND_CALCULATE);
         this.parent = parent;
 
-        this.addActionListener(click);
+        this.addActionListener(new Click());
     }
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private final ActionListener click = e -> {
-        parent.specialCharactersPanel.setFieldForInsert(null);
-        if (!parent.isFieldsAreFilled()) return;
+    private final class Click extends SwingWorker<Boolean, Void> implements ActionListener {
+        private Channel channel;
 
-        Application.putHint(parent.panelName.getChannelName());
-        parent.dispose();
-
-        Optional<Channel> c = parent.getChannel();
-        if (c.isPresent()) {
-            Channel channel = c.get();
-
-            if (parent.oldChannel == null) {
-                channelRepository.add(channel);
-            } else {
-                channelRepository.set(parent.oldChannel, channel);
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            parent.panelSpecialCharacters.setFieldForInsert(null);
+            if (parent.isFieldsAreFilled()) {
+                EventQueue.invokeLater(() -> parent.dialogLoading.setVisible(true));
+                this.execute();
             }
-            if (ChannelSorter.getInstance().isOn()) {
-                MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getCurrent());
-            } else {
-                MainScreen.getInstance().setChannelsList(new ArrayList<>(channelRepository.getAll()));
-            }
-
-            EventQueue.invokeLater(() -> new CalculateStartDialog(MainScreen.getInstance(), channel, null).setVisible(true));
         }
-    };
+
+        @Override
+        protected Boolean doInBackground() throws Exception {
+            Optional<Channel> c = parent.getChannel();
+            if (c.isPresent()) {
+                channel = c.get();
+
+                if (parent.oldChannel == null) {
+                    channelRepository.add(channel);
+                } else {
+                    channelRepository.set(parent.oldChannel, channel);
+                }
+
+                if (ChannelSorter.getInstance().isOn()) {
+                    MainScreen.getInstance().setChannelsList(ChannelSorter.getInstance().getCurrent());
+                } else {
+                    MainScreen.getInstance().setChannelsList(new ArrayList<>(channelRepository.getAll()));
+                }
+                Application.putHint(parent.panelName.getChannelName());
+                return true;
+            } else return false;
+        }
+
+        @Override
+        protected void done() {
+            try {
+                if (get()) {
+                    parent.dialogLoading.dispose();
+                    parent.dispose();
+                    EventQueue.invokeLater(() -> new CalculateStartDialog(MainScreen.getInstance(), channel, null).setVisible(true));
+                } else {
+                    showErrorMessage();
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                showErrorMessage();
+            }
+        }
+
+        private void showErrorMessage() {
+            EventQueue.invokeLater(() -> {
+                parent.dialogLoading.setVisible(false);
+                JOptionPane.showMessageDialog(
+                        parent,
+                        "Виникла помилка. Будь ласка спробуйте ще раз",
+                        "Помилка",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            });
+        }
+    }
 }

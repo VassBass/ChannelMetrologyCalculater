@@ -83,7 +83,7 @@ public class PanelFrequency extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 frequency.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
 
             @Override

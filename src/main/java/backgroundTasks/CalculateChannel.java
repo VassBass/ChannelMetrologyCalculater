@@ -11,7 +11,7 @@ import model.Channel;
 import model.Measurement;
 import ui.calculate.verification.CalculateVerificationDialog;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +24,7 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
 
     private Calculation calculation;
 
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
 
     public CalculateChannel(MainScreen mainScreen, Channel channel, HashMap<Integer, Object> values){
         super();
@@ -32,7 +32,7 @@ public class CalculateChannel extends SwingWorker<Void, Void> {
         this.channel = channel;
         this.values = values;
 
-        this.loadDialog = new LoadDialog(mainScreen);
+        this.loadDialog = new DialogLoading(mainScreen);
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {

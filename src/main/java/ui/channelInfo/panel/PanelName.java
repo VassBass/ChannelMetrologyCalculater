@@ -79,7 +79,7 @@ public class PanelName extends JPanel {
         private final FocusListener focusListener = new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                parent.specialCharactersPanel.setFieldForInsert(NameTextField.this);
+                parent.panelSpecialCharacters.setFieldForInsert(NameTextField.this);
             }
         };
     }

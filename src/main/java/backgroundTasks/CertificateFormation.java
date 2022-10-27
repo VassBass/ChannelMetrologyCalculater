@@ -10,7 +10,7 @@ import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import ui.calculate.end.CalculateEndDialog;
 import ui.mainScreen.MainScreen;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +22,7 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
     private final HashMap<Integer, Object> values;
     private final Calculation calculation;
 
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
     private Certificate certificate;
 
     private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
@@ -34,7 +34,7 @@ public class CertificateFormation extends SwingWorker<Void, Void> {
         this.values = values;
         this.calculation = calculation;
 
-        this.loadDialog = new LoadDialog(mainScreen);
+        this.loadDialog = new DialogLoading(mainScreen);
         EventQueue.invokeLater(() -> {
             try {
                 loadDialog.setVisible(true);

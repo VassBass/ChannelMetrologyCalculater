@@ -147,7 +147,7 @@ public class PanelSensorRange extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 MinValueTextField.this.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
 
             @Override
@@ -186,7 +186,7 @@ public class PanelSensorRange extends JPanel {
             @Override
             public void focusGained(FocusEvent e) {
                 MaxValueTextField.this.selectAll();
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
 
             @Override
@@ -227,7 +227,7 @@ public class PanelSensorRange extends JPanel {
         private final FocusListener focus = new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
         };
 
@@ -265,7 +265,7 @@ public class PanelSensorRange extends JPanel {
         private final FocusListener focus = new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                parent.specialCharactersPanel.setFieldForInsert(null);
+                parent.panelSpecialCharacters.setFieldForInsert(null);
             }
         };
 

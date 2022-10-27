@@ -2,7 +2,7 @@ package backgroundTasks;
 
 import model.Measurement;
 import ui.measurementsList.MeasurementsListDialog;
-import ui.model.LoadDialog;
+import ui.model.DialogLoading;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +10,7 @@ import java.awt.*;
 public class AddMeasurement extends SwingWorker<Void, Void> {
     private final JDialog parent;
     private final MeasurementsListDialog dialog;
-    private final LoadDialog loadDialog;
+    private final DialogLoading loadDialog;
     private final Measurement measurement;
 
     public AddMeasurement(JDialog parent, MeasurementsListDialog dialog, Measurement measurement){
@@ -18,7 +18,7 @@ public class AddMeasurement extends SwingWorker<Void, Void> {
         this.parent = parent;
         this.dialog = dialog;
         this.measurement = measurement;
-        this.loadDialog = new LoadDialog(parent);
+        this.loadDialog = new DialogLoading(parent);
     }
 
     public void start(){

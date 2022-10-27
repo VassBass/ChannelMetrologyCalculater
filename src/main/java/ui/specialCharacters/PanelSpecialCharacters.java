@@ -10,7 +10,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 
-public class SpecialCharactersPanel extends JPanel {
+public class PanelSpecialCharacters extends JPanel {
     private static final String DEGREE_CELSIUS = "\u2103";
     private static final String DEGREE_OF = "X\u207F";
     private static final String ALPHA = "\u03B1";
@@ -42,7 +42,7 @@ public class SpecialCharactersPanel extends JPanel {
     private JButton insert, back;
     private JTextField degreeOfText, fieldForInsert, buffer;
 
-    public SpecialCharactersPanel(){
+    public PanelSpecialCharacters(){
         super(new GridBagLayout());
 
         this.createElements();
