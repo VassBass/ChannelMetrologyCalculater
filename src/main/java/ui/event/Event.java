@@ -1,0 +1,9 @@
+package ui.event;
+
+public enum Event {
+    CLICK_POSITIVE_BUTTON,
+    CLICK_NEGATIVE_BUTTON,
+    CLICK_ADD_BUTTON,
+    CLICK_REMOVE_BUTTON,
+    CLICK_INFO_BUTTON
+}
