@@ -5,6 +5,6 @@
 /target/maven-archiver
 /target/maven-status
 /target/test-classes
-.idea
 
 TestData.db
+/.idea/
