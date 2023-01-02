@@ -1,8 +1,8 @@
-package converters;
+package ui;
 
 import java.awt.*;
 
-public class ConverterUI {
+public class UI_Constants {
     public static Point POINT_CENTER (Component parent, Component child) {
         int x0 = parent.getLocation().x;
         int pw = parent.getWidth();
@@ -41,7 +41,7 @@ public class ConverterUI {
         return new Point(x,y);
     }
 
-    public static Point RIGHT_FROM_PARENT(Component parent, Component child){
+    public static Point RIGHT_FROM_PARENT(Component parent){
         int parentX = parent.getLocation().x;
         int parentWidth = parent.getWidth();
 

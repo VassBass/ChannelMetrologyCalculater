@@ -1,6 +1,5 @@
 package ui.mainScreen;
 
-import application.Application;
 import model.Channel;
 import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
@@ -15,6 +14,8 @@ import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static ui.UI_ConfigHolder.SCREEN_SIZE;
 
 public class MainScreen extends JFrame {
     private static MainScreen mainScreen;
@@ -66,7 +67,7 @@ public class MainScreen extends JFrame {
     }
 
     private void build() {
-        this.setSize(Application.sizeOfScreen);
+        this.setSize(SCREEN_SIZE);
         this.setJMenuBar(this.menuBar);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());

@@ -1,11 +1,12 @@
 package ui.measurementsList;
 
-import converters.ConverterUI;
 import model.Channel;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
 import java.util.ArrayList;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class MeasurementsListDialog extends JDialog {
 
@@ -32,7 +33,7 @@ public class MeasurementsListDialog extends JDialog {
 
     private void build(){
         this.setSize(800,550);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         JPanel mainPanel = new JPanel();
         mainPanel.add(this.listPanel);

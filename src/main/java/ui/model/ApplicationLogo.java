@@ -1,12 +1,14 @@
 package ui.model;
 
 import application.Application;
-import converters.ConverterUI;
 import service.FileBrowser;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.logging.Logger;
+
+import static ui.UI_ConfigHolder.SCREEN_SIZE;
+import static ui.UI_Constants.POINT_CENTER;
 
 public class ApplicationLogo extends JWindow {
     private static final Logger LOGGER = Logger.getLogger(ApplicationLogo.class.getName());
@@ -44,7 +46,7 @@ public class ApplicationLogo extends JWindow {
         panel.add(progressBar, new Cell(0,3,2, new Insets(5,0,0,0)));
 
         this.setSize(340,153);
-        this.setLocation(ConverterUI.POINT_CENTER(Application.sizeOfScreen, this));
+        this.setLocation(POINT_CENTER(SCREEN_SIZE, this));
         this.getContentPane().add(panel);
 
         LOGGER.info("ApplicationLogo: creation SUCCESS");

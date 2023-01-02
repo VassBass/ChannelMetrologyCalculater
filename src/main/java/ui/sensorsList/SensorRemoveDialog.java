@@ -1,7 +1,6 @@
 package ui.sensorsList;
 
 import backgroundTasks.RemoveSensor;
-import converters.ConverterUI;
 import model.Sensor;
 import ui.model.DefaultButton;
 
@@ -9,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class SensorRemoveDialog extends JDialog {
     private static final String REMOVE = "Видалити";
@@ -60,17 +61,12 @@ public class SensorRemoveDialog extends JDialog {
 
     private void build() {
         this.setSize(800,150);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        this.setLocation(POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private final ActionListener clickRemove = new ActionListener() {
         @Override

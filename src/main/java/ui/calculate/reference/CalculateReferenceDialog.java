@@ -2,7 +2,6 @@ package ui.calculate.reference;
 
 import calculation.Calculation;
 import constants.Key;
-import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Channel;
 import ui.calculate.performers.CalculatePerformersDialog;
@@ -16,6 +15,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class CalculateReferenceDialog extends JDialog {
     private static final String TITLE = "Канал непридатний";
@@ -72,7 +73,7 @@ public class CalculateReferenceDialog extends JDialog {
 
     private void build() {
         this.setSize(600,200);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }

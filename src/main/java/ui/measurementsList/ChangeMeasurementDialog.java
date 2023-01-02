@@ -1,7 +1,6 @@
 package ui.measurementsList;
 
 import backgroundTasks.ChangeMeasurementValue;
-import converters.ConverterUI;
 import model.Measurement;
 import repository.impl.MeasurementRepositorySQLite;
 import ui.model.DefaultButton;
@@ -11,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class ChangeMeasurementDialog extends JDialog {
     private static final String TITLE = "Змінити назву величини";
@@ -52,7 +53,7 @@ public class ChangeMeasurementDialog extends JDialog {
 
     private void build(){
         this.setSize(450,200);
-        this.setLocation(ConverterUI.POINT_CENTER(parentDialog, this));
+        this.setLocation(POINT_CENTER(parentDialog, this));
 
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.add(btn_negative);

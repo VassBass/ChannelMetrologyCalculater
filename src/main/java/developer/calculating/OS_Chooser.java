@@ -1,6 +1,5 @@
 package developer.calculating;
 
-import converters.ConverterUI;
 import model.Channel;
 import service.SystemData;
 import ui.calculate.start.CalculateStartDialog;
@@ -10,6 +9,8 @@ import ui.model.DefaultButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class OS_Chooser extends JDialog {
     private static final String CERTIFICATE = "Сертифікат/Протокол";
@@ -44,7 +45,7 @@ public class OS_Chooser extends JDialog {
 
     private void createView(){
         this.setSize(350,100);
-        this.setLocation(ConverterUI.POINT_CENTER(mainScreen, this));
+        this.setLocation(POINT_CENTER(mainScreen, this));
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -71,12 +72,7 @@ public class OS_Chooser extends JDialog {
         positiveButton.addKeyListener(keyListener);
     }
 
-    private final ActionListener clickNegativeButton = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickNegativeButton = e -> dispose();
 
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override

@@ -1,6 +1,5 @@
 package ui.controlPointsValues;
 
-import converters.ConverterUI;
 import model.ControlPointsValues;
 import repository.ControlPointsValuesRepository;
 import repository.impl.ControlPointsValuesRepositorySQLite;
@@ -17,6 +16,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class ControlPointsListDialog extends JDialog {
     private static final String TITLE = "Контрольні точки";
@@ -65,7 +66,7 @@ public class ControlPointsListDialog extends JDialog {
 
     private void build(){
         this.setSize(300,300);
-        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
+        this.setLocation(POINT_CENTER(MainScreen.getInstance(), this));
         this.setContentPane(new MainPanel());
     }
 

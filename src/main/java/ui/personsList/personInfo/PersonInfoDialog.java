@@ -1,6 +1,5 @@
 package ui.personsList.personInfo;
 
-import converters.ConverterUI;
 import model.Person;
 import repository.PersonRepository;
 import repository.impl.PersonRepositorySQLite;
@@ -12,6 +11,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class PersonInfoDialog extends JDialog {
     private static final String ADD = "Додати";
@@ -56,7 +57,7 @@ public class PersonInfoDialog extends JDialog {
 
     private void build() {
         this.setSize(500,300);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        this.setLocation(POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }

@@ -1,6 +1,5 @@
 package ui.removeChannels;
 
-import converters.ConverterUI;
 import model.Channel;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
@@ -8,6 +7,8 @@ import ui.model.DefaultButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class DialogRemoveChannels extends JDialog {
     private static final String REMOVE_CHANNEL = "Видалити канал";
@@ -77,7 +78,7 @@ public class DialogRemoveChannels extends JDialog {
 
     private void build() {
         this.setSize(800, 150);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
         this.setResizable(true);
 
         this.setContentPane(new MainPanel());
@@ -101,9 +102,7 @@ public class DialogRemoveChannels extends JDialog {
         }
     };
 
-    private final ActionListener clickRemoveAll = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+    private final ActionListener clickRemoveAll = e -> {
 //            EventQueue.invokeLater(new Runnable() {
 //                @Override
 //                public void run() {
@@ -126,7 +125,6 @@ public class DialogRemoveChannels extends JDialog {
 //                    }
 //                }
 //            });
-        }
     };
 
     private final ActionListener clickPositiveButton = new ActionListener() {
@@ -154,12 +152,7 @@ public class DialogRemoveChannels extends JDialog {
         }
     };
 
-    private final ActionListener clickNegativeButton = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            DialogRemoveChannels.this.dispose();
-        }
-    };
+    private final ActionListener clickNegativeButton = e -> DialogRemoveChannels.this.dispose();
 
     private class MainPanel extends JPanel {
 

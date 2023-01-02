@@ -1,13 +1,13 @@
 package ui.calibratorsList;
 
-import application.Application;
-import converters.ConverterUI;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class CalibratorRemoveDialog extends JDialog {
     private static final String REMOVE = "Видалити";
@@ -54,17 +54,12 @@ public class CalibratorRemoveDialog extends JDialog {
 
     private void build() {
         this.setSize(800,100);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        this.setLocation(POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private final ActionListener clickRemove = new ActionListener() {
         @Override

@@ -1,10 +1,8 @@
 package ui.calculate.performers;
 
-import application.Application;
 import backgroundTasks.CertificateFormation;
 import calculation.Calculation;
 import constants.Key;
-import converters.ConverterUI;
 import model.Channel;
 import model.Person;
 import service.impl.PersonServiceImpl;
@@ -18,6 +16,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Objects;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 @SuppressWarnings("unchecked")
 public class CalculatePerformersDialog extends JDialog {
@@ -134,7 +134,7 @@ public class CalculatePerformersDialog extends JDialog {
 
     private void build() {
         this.setSize(500,320);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
@@ -276,16 +276,13 @@ public class CalculatePerformersDialog extends JDialog {
     private final ActionListener clickBack = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    if (calculation.goodChannel()){
-                        dispose();
-                        new CalculateVerificationDialog(mainScreen, channel, getValues(), calculation).setVisible(true);
-                    }else {
-                        dispose();
-                        new CalculateReferenceDialog(mainScreen, channel, getValues(), calculation).setVisible(true);
-                    }
+            EventQueue.invokeLater(() -> {
+                if (calculation.goodChannel()){
+                    dispose();
+                    new CalculateVerificationDialog(mainScreen, channel, getValues(), calculation).setVisible(true);
+                }else {
+                    dispose();
+                    new CalculateReferenceDialog(mainScreen, channel, getValues(), calculation).setVisible(true);
                 }
             });
         }

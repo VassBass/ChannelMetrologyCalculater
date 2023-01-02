@@ -1,6 +1,5 @@
 package ui.calibratorsList.calibratorInfo;
 
-import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Calibrator;
 import model.Channel;
@@ -25,6 +24,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Objects;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class CalibratorInfoDialog extends JDialog {
     private static final String CALIBRATOR = "Калібратор";
@@ -314,9 +315,9 @@ public class CalibratorInfoDialog extends JDialog {
     private void build() {
         this.setSize(1050,750);
         if (calculateDialog == null) {
-            this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+            this.setLocation(POINT_CENTER(this.parent, this));
         }else {
-            this.setLocation(ConverterUI.POINT_CENTER(this.calculateDialog, this));
+            this.setLocation(POINT_CENTER(this.calculateDialog, this));
         }
 
         this.setContentPane(new MainPanel());

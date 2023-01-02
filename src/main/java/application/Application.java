@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 
 public class Application extends SwingWorker<Void, String> {
     public static final String appVersion = "v5.4";
-    public static final Dimension sizeOfScreen = new Dimension(Toolkit.getDefaultToolkit().getScreenSize().width, GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds().height);
     private static final Logger LOGGER = Logger.getLogger(Application.class.getName());
     public static ApplicationContext context;
     private static ApplicationLogo logo;

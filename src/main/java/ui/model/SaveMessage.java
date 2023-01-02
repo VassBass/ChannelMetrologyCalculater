@@ -1,10 +1,11 @@
 package ui.model;
 
-import converters.ConverterUI;
 import service.FileBrowser;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static ui.UI_Constants.POINT_TOP_LEFT;
 
 public class SaveMessage extends JWindow {
     public static final String SAVE_DATA = "Запис даних";
@@ -30,7 +31,7 @@ public class SaveMessage extends JWindow {
 
     public void build() {
         this.setSize(125,25);
-        this.setLocation(ConverterUI.POINT_TOP_LEFT(this.window));
+        this.setLocation(POINT_TOP_LEFT(this.window));
         this.setContentPane(new MainPanel());
     }
 

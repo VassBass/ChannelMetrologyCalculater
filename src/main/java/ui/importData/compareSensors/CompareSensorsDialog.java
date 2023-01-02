@@ -1,7 +1,6 @@
 package ui.importData.compareSensors;
 
 import backgroundTasks.SaveImportedSensors;
-import converters.ConverterUI;
 import model.Sensor;
 import ui.importData.compareSensors.complexElements.ChangedSensorsTable;
 import ui.importData.compareSensors.complexElements.NewSensorsTable;
@@ -16,6 +15,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.List;
+
+import static ui.UI_Constants.*;
 
 public class CompareSensorsDialog extends JDialog {
     private static final String IMPORT = "Імпорт ПВП";
@@ -99,7 +100,7 @@ public class CompareSensorsDialog extends JDialog {
     private void build(){
         this.setSize(400,400);
         this.setResizable(false);
-        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
+        this.setLocation(POINT_CENTER(MainScreen.getInstance(), this));
         this.setContentPane(new MainPanel());
     }
 
@@ -107,7 +108,7 @@ public class CompareSensorsDialog extends JDialog {
         if (this.newSensorInfo != null) this.newSensorInfo.dispose();
 
         this.newSensorInfo = new SensorInfoWindow(IMPORTED_SENSOR,CompareSensorsDialog.this,sensor);
-        this.newSensorInfo.setLocation(ConverterUI.LEFT_FROM_PARENT(CompareSensorsDialog.this, this.newSensorInfo));
+        this.newSensorInfo.setLocation(LEFT_FROM_PARENT(CompareSensorsDialog.this, this.newSensorInfo));
         this.newSensorInfo.setVisible(true);
     }
 
@@ -119,7 +120,7 @@ public class CompareSensorsDialog extends JDialog {
         if (this.oldSensorInfo != null) this.oldSensorInfo.dispose();
 
         this.oldSensorInfo = new SensorInfoWindow(OLD_SENSOR,CompareSensorsDialog.this,sensor);
-        this.oldSensorInfo.setLocation(ConverterUI.RIGHT_FROM_PARENT(CompareSensorsDialog.this, this.oldSensorInfo));
+        this.oldSensorInfo.setLocation(RIGHT_FROM_PARENT(CompareSensorsDialog.this));
         this.oldSensorInfo.setVisible(true);
     }
 
@@ -157,10 +158,10 @@ public class CompareSensorsDialog extends JDialog {
         @Override
         public void componentMoved(ComponentEvent e) {
             if (newSensorInfo != null && newSensorInfo.isVisible()){
-                newSensorInfo.setLocation(ConverterUI.LEFT_FROM_PARENT(CompareSensorsDialog.this, newSensorInfo));
+                newSensorInfo.setLocation(LEFT_FROM_PARENT(CompareSensorsDialog.this, newSensorInfo));
             }
             if (oldSensorInfo != null && oldSensorInfo.isVisible()){
-                oldSensorInfo.setLocation(ConverterUI.RIGHT_FROM_PARENT(CompareSensorsDialog.this, oldSensorInfo));
+                oldSensorInfo.setLocation(RIGHT_FROM_PARENT(CompareSensorsDialog.this));
             }
         }
     };

@@ -1,7 +1,6 @@
 package ui.calculate.start;
 
 import constants.Key;
-import converters.ConverterUI;
 import model.Calibrator;
 import model.Channel;
 import model.Measurement;
@@ -22,6 +21,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Objects;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class CalculateStartDialog extends JDialog {
     private static String title(Channel channel){
@@ -294,7 +295,7 @@ public class CalculateStartDialog extends JDialog {
             }else {
                 CalculateStartDialog.this.setSize(820,300);
             }
-            CalculateStartDialog.this.setLocation(ConverterUI.POINT_CENTER(mainScreen, CalculateStartDialog.this));
+            CalculateStartDialog.this.setLocation(POINT_CENTER(mainScreen, CalculateStartDialog.this));
         }
 
         private class Cell extends GridBagConstraints {

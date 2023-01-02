@@ -3,7 +3,6 @@ package ui.calculate.end;
 import backgroundTasks.CertificateFormation;
 import calculation.Calculation;
 import certificates.Certificate;
-import converters.ConverterUI;
 import model.Channel;
 import repository.impl.ChannelRepositorySQLite;
 import service.ChannelSorter;
@@ -16,6 +15,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class CalculateEndDialog extends JDialog {
     public static final String SUCCESS_SAVE_CERTIFICATE = "Сертифікат та протокол успішно сформовані";
@@ -84,7 +85,7 @@ public class CalculateEndDialog extends JDialog {
 
     private void build() {
         this.setSize(400,180);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel(this.certificate.getCertificateFile().exists()));
     }

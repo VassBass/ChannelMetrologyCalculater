@@ -1,14 +1,14 @@
 package ui.exportData;
 
 import backgroundTasks.Exporter;
-import converters.ConverterUI;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class ConfirmExportDialog extends JDialog {
     private static final String EXPORT = "Експорт";
@@ -43,23 +43,15 @@ public class ConfirmExportDialog extends JDialog {
 
     private void build() {
         this.setSize(400,100);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
         this.setContentPane(new MainPanel());
     }
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
-    private final ActionListener clickExport = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-            new Exporter().export();
-        }
+    private final ActionListener clickExport = e -> {
+        dispose();
+        new Exporter().export();
     };
 
     private class MainPanel extends JPanel{

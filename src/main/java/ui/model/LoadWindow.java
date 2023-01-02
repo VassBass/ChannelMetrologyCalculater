@@ -1,9 +1,10 @@
 package ui.model;
 
-import converters.ConverterUI;
 import ui.mainScreen.MainScreen;
 
 import javax.swing.*;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class LoadWindow extends JWindow {
     private JProgressBar progressBar;
@@ -34,9 +35,9 @@ public class LoadWindow extends JWindow {
     private void build(){
         this.setSize(300,30);
         if (this.parent == null) {
-            this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
+            this.setLocation(POINT_CENTER(MainScreen.getInstance(), this));
         }else {
-            this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+            this.setLocation(POINT_CENTER(this.parent, this));
         }
         this.setAlwaysOnTop(true);
 

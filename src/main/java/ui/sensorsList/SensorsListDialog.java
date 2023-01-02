@@ -1,6 +1,5 @@
 package ui.sensorsList;
 
-import converters.ConverterUI;
 import model.Channel;
 import model.Sensor;
 import repository.impl.MeasurementRepositorySQLite;
@@ -16,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class SensorsListDialog extends JDialog {
     private static final String SENSORS_LIST = "Список первинних вимірювальних пристроїв";
@@ -73,7 +74,7 @@ public class SensorsListDialog extends JDialog {
 
     private void build() {
         this.setSize(800,500);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         this.mainPanel = new MainPanel();
         this.setContentPane(this.mainPanel);

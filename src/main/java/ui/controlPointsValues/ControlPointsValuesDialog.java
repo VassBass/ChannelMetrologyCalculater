@@ -1,6 +1,5 @@
 package ui.controlPointsValues;
 
-import converters.ConverterUI;
 import model.ControlPointsValues;
 import model.Measurement;
 import repository.impl.SensorRepositorySQLite;
@@ -11,6 +10,8 @@ import ui.model.DefaultButton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class ControlPointsValuesDialog extends JDialog {
     private static final String CANCEL = "Відмінити";
@@ -67,7 +68,7 @@ public class ControlPointsValuesDialog extends JDialog {
 
     private void build(){
         this.setSize(600,150);
-        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
+        this.setLocation(POINT_CENTER(MainScreen.getInstance(), this));
 
         this.setContentPane(new MainPanel());
     }

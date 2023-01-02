@@ -1,7 +1,6 @@
 package ui.channelInfo;
 
 import application.Application;
-import converters.ConverterUI;
 import converters.VariableConverter;
 import developer.calculating.OS_Chooser;
 import model.Channel;
@@ -26,6 +25,9 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Optional;
+
+import static ui.UI_ConfigHolder.SCREEN_SIZE;
+import static ui.UI_Constants.POINT_CENTER;
 
 public class DialogChannel extends JDialog {
     private static final String INFORMATION_ABOUT_CHANNEL = "Інформація вимірювального каналу";
@@ -84,12 +86,12 @@ public class DialogChannel extends JDialog {
         this.addKeyListener();
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        int width = Math.min(Application.sizeOfScreen.width, 850);
-        int height = Math.min(Application.sizeOfScreen.height, 850);
+        int width = Math.min(SCREEN_SIZE.width, 850);
+        int height = Math.min(SCREEN_SIZE.height, 850);
         this.setSize(width, height);
 
         this.setChannelInfo(oldChannel);
-        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(),this));
+        this.setLocation(POINT_CENTER(MainScreen.getInstance(),this));
         this.setContentPane(new MainPanel());
     }
 

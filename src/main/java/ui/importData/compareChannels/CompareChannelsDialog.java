@@ -1,7 +1,6 @@
 package ui.importData.compareChannels;
 
 import backgroundTasks.SaveImportedChannels;
-import converters.ConverterUI;
 import model.Channel;
 import model.Sensor;
 import ui.importData.compareChannels.complexElements.ChangedChannelsTable;
@@ -18,6 +17,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ui.UI_Constants.*;
 
 public class CompareChannelsDialog extends JDialog {
     private static final String IMPORT = "Імпорт каналів";
@@ -92,7 +93,7 @@ public class CompareChannelsDialog extends JDialog {
     private void build(){
         this.setSize(400,400);
         this.setResizable(false);
-        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
+        this.setLocation(POINT_CENTER(MainScreen.getInstance(), this));
         this.setContentPane(new MainPanel());
     }
 
@@ -100,7 +101,7 @@ public class CompareChannelsDialog extends JDialog {
         if (this.newChannelInfo != null) this.newChannelInfo.dispose();
 
         this.newChannelInfo = new ChannelInfoWindow(IMPORTED_SENSOR,CompareChannelsDialog.this,channel);
-        this.newChannelInfo.setLocation(ConverterUI.LEFT_FROM_PARENT(CompareChannelsDialog.this, this.newChannelInfo));
+        this.newChannelInfo.setLocation(LEFT_FROM_PARENT(CompareChannelsDialog.this, this.newChannelInfo));
         this.newChannelInfo.setVisible(true);
     }
 
@@ -112,7 +113,7 @@ public class CompareChannelsDialog extends JDialog {
         if (this.oldChannelInfo != null) this.oldChannelInfo.dispose();
 
         this.oldChannelInfo = new ChannelInfoWindow(OLD_SENSOR,CompareChannelsDialog.this,channel);
-        this.oldChannelInfo.setLocation(ConverterUI.RIGHT_FROM_PARENT(CompareChannelsDialog.this, this.oldChannelInfo));
+        this.oldChannelInfo.setLocation(RIGHT_FROM_PARENT(CompareChannelsDialog.this));
         this.oldChannelInfo.setVisible(true);
     }
 
@@ -150,10 +151,10 @@ public class CompareChannelsDialog extends JDialog {
         @Override
         public void componentMoved(ComponentEvent e) {
             if (newChannelInfo != null && newChannelInfo.isVisible()){
-                newChannelInfo.setLocation(ConverterUI.LEFT_FROM_PARENT(CompareChannelsDialog.this, newChannelInfo));
+                newChannelInfo.setLocation(LEFT_FROM_PARENT(CompareChannelsDialog.this, newChannelInfo));
             }
             if (oldChannelInfo != null && oldChannelInfo.isVisible()){
-                oldChannelInfo.setLocation(ConverterUI.RIGHT_FROM_PARENT(CompareChannelsDialog.this, oldChannelInfo));
+                oldChannelInfo.setLocation(RIGHT_FROM_PARENT(CompareChannelsDialog.this));
             }
         }
     };

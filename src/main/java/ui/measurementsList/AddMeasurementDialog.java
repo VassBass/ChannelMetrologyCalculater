@@ -1,7 +1,6 @@
 package ui.measurementsList;
 
 import backgroundTasks.AddMeasurement;
-import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Measurement;
 import repository.impl.MeasurementRepositorySQLite;
@@ -15,6 +14,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class AddMeasurementDialog extends JDialog {
     private static final String ADD = "Додати";
@@ -75,7 +76,7 @@ public class AddMeasurementDialog extends JDialog {
 
     private void build(){
         this.setSize(650,300);
-        this.setLocation(ConverterUI.POINT_CENTER(parentDialog, this));
+        this.setLocation(POINT_CENTER(parentDialog, this));
 
         JScrollPane scroll = new JScrollPane(valuesPanel);
         scroll.setPreferredSize(new Dimension(400,200));

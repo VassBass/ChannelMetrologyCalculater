@@ -1,6 +1,5 @@
 package ui.personsList;
 
-import converters.ConverterUI;
 import repository.PersonRepository;
 import repository.impl.PersonRepositorySQLite;
 import ui.mainScreen.MainScreen;
@@ -11,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class PersonsListDialog extends JDialog {
     private static final String WORKERS = "Робітники";
@@ -53,7 +54,7 @@ public class PersonsListDialog extends JDialog {
 
     private void build() {
         this.setSize(800,600);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
         this.setEnabledButtons(false);
 
         this.setContentPane(new MainPanel());

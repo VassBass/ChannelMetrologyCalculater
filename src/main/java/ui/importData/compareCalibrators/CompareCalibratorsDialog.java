@@ -1,7 +1,6 @@
 package ui.importData.compareCalibrators;
 
 import backgroundTasks.SaveImportedCalibrators;
-import converters.ConverterUI;
 import model.Calibrator;
 import ui.importData.compareCalibrators.complexElements.CalibratorInfoWindow;
 import ui.importData.compareCalibrators.complexElements.ChangedCalibratorsTable;
@@ -16,6 +15,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.util.List;
+
+import static ui.UI_Constants.*;
 
 public class CompareCalibratorsDialog extends JDialog {
     private static final String IMPORT = "Імпорт калібраторів";
@@ -99,7 +100,7 @@ public class CompareCalibratorsDialog extends JDialog {
     private void build(){
         this.setSize(400,400);
         this.setResizable(false);
-        this.setLocation(ConverterUI.POINT_CENTER(MainScreen.getInstance(), this));
+        this.setLocation(POINT_CENTER(MainScreen.getInstance(), this));
         this.setContentPane(new CompareCalibratorsDialog.MainPanel());
     }
 
@@ -107,7 +108,7 @@ public class CompareCalibratorsDialog extends JDialog {
         if (this.newCalibratorInfo != null) this.newCalibratorInfo.dispose();
 
         this.newCalibratorInfo = new CalibratorInfoWindow(IMPORTED_SENSOR,CompareCalibratorsDialog.this,calibrator);
-        this.newCalibratorInfo.setLocation(ConverterUI.LEFT_FROM_PARENT(CompareCalibratorsDialog.this, this.newCalibratorInfo));
+        this.newCalibratorInfo.setLocation(LEFT_FROM_PARENT(CompareCalibratorsDialog.this, this.newCalibratorInfo));
         this.newCalibratorInfo.setVisible(true);
     }
 
@@ -119,7 +120,7 @@ public class CompareCalibratorsDialog extends JDialog {
         if (this.oldCalibratorInfo != null) this.oldCalibratorInfo.dispose();
 
         this.oldCalibratorInfo = new CalibratorInfoWindow(OLD_SENSOR,CompareCalibratorsDialog.this,calibrator);
-        this.oldCalibratorInfo.setLocation(ConverterUI.RIGHT_FROM_PARENT(CompareCalibratorsDialog.this, this.oldCalibratorInfo));
+        this.oldCalibratorInfo.setLocation(RIGHT_FROM_PARENT(CompareCalibratorsDialog.this));
         this.oldCalibratorInfo.setVisible(true);
     }
 
@@ -157,10 +158,10 @@ public class CompareCalibratorsDialog extends JDialog {
         @Override
         public void componentMoved(ComponentEvent e) {
             if (newCalibratorInfo != null && newCalibratorInfo.isVisible()){
-                newCalibratorInfo.setLocation(ConverterUI.LEFT_FROM_PARENT(CompareCalibratorsDialog.this, newCalibratorInfo));
+                newCalibratorInfo.setLocation(LEFT_FROM_PARENT(CompareCalibratorsDialog.this, newCalibratorInfo));
             }
             if (oldCalibratorInfo != null && oldCalibratorInfo.isVisible()){
-                oldCalibratorInfo.setLocation(ConverterUI.RIGHT_FROM_PARENT(CompareCalibratorsDialog.this, oldCalibratorInfo));
+                oldCalibratorInfo.setLocation(RIGHT_FROM_PARENT(CompareCalibratorsDialog.this));
             }
         }
     };

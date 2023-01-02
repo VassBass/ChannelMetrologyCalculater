@@ -1,6 +1,5 @@
 package ui.personsList.personInfo.removePerson;
 
-import converters.ConverterUI;
 import model.Person;
 import ui.model.DefaultButton;
 import ui.personsList.PersonsListDialog;
@@ -9,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class RemovePersonDialog extends JDialog {
     public static final String REMOVE = "Видалити";
@@ -58,7 +59,7 @@ public class RemovePersonDialog extends JDialog {
 
     private void build() {
         this.setSize(700,150);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        this.setLocation(POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }

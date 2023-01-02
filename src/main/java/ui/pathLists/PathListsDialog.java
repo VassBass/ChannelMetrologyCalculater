@@ -1,6 +1,5 @@
 package ui.pathLists;
 
-import converters.ConverterUI;
 import model.Model;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
@@ -9,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class PathListsDialog extends JDialog {
     private static final String REMOVE = "Видалити";
@@ -134,7 +135,7 @@ public class PathListsDialog extends JDialog {
 
     private void build() {
         this.setSize(800,500);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
@@ -145,43 +146,18 @@ public class PathListsDialog extends JDialog {
         this.mainTable.setList(model);
     }
 
-    private final ActionListener clickDepartments = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            update(Model.DEPARTMENT);
-        }
-    };
+    private final ActionListener clickDepartments = e -> update(Model.DEPARTMENT);
 
-    private final ActionListener clickAreas = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            update(Model.AREA);
-        }
-    };
+    private final ActionListener clickAreas = e -> update(Model.AREA);
 
-    private final ActionListener clickProcesses = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            update(Model.PROCESS);
-        }
-    };
+    private final ActionListener clickProcesses = e -> update(Model.PROCESS);
 
-    private final ActionListener clickInstallations = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            update(Model.INSTALLATION);
-        }
-    };
+    private final ActionListener clickInstallations = e -> update(Model.INSTALLATION);
 
     private final ActionListener clickAdd = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new PathElementName(PathListsDialog.this, model, null).setVisible(true);
-                }
-            });
+            EventQueue.invokeLater(() -> new PathElementName(PathListsDialog.this, model, null).setVisible(true));
         }
     };
 
@@ -214,9 +190,7 @@ public class PathListsDialog extends JDialog {
         }
     };
 
-    private final ActionListener clickRemove = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+    private final ActionListener clickRemove = e -> {
 //            EventQueue.invokeLater(new Runnable() {
 //                @Override
 //                public void run() {
@@ -240,15 +214,9 @@ public class PathListsDialog extends JDialog {
 //                    new PathElementsRemove(PathListsDialog.this, model, elementName).setVisible(true);
 //                }
 //            });
-        }
     };
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private class MainPanel extends JPanel {
         protected MainPanel(){

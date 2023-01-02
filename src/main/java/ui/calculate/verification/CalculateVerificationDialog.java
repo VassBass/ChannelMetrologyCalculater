@@ -2,7 +2,6 @@ package ui.calculate.verification;
 
 import calculation.Calculation;
 import constants.Key;
-import converters.ConverterUI;
 import model.Channel;
 import model.Measurement;
 import ui.calculate.measurement.CalculateMeasurementDialog;
@@ -18,6 +17,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class CalculateVerificationDialog extends JDialog {
     private static final String TITLE = "Результати розрахунку";
@@ -74,7 +75,7 @@ public class CalculateVerificationDialog extends JDialog {
     private void build() {
         this.setSize(850,600);
         this.setResizable(false);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         this.mainPanel = new MainPanel();
         this.setContentPane(this.mainPanel);
@@ -83,12 +84,9 @@ public class CalculateVerificationDialog extends JDialog {
     private final ActionListener clickBack = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e){
-            EventQueue.invokeLater(new Runnable(){
-                @Override
-                public void run(){
-                    dispose();
-                    new CalculateMeasurementDialog(mainScreen, channel, values).setVisible(true);
-                }
+            EventQueue.invokeLater(() -> {
+                dispose();
+                new CalculateMeasurementDialog(mainScreen, channel, values).setVisible(true);
             });
         }
     };
@@ -96,22 +94,19 @@ public class CalculateVerificationDialog extends JDialog {
     private final ActionListener clickNext = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    dispose();
-                    if (calculation.goodChannel()) {
-                        values.remove(Key.CHANNEL_REFERENCE);
-                        if (calculation.closeToFalse()){
-                            values.put(Key.CALCULATION_CLOSE_TO_FALSE, resultPanel.getName());
-                        }
-                        new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
-                    }else{
-                        try {
-                            values.put(Key.CHANNEL_IS_GOOD, resultPanel.getName());
-                        }catch (Exception ignored){}
-                        new CalculateReferenceDialog(mainScreen, channel, values, calculation).setVisible(true);
+            EventQueue.invokeLater(() -> {
+                dispose();
+                if (calculation.goodChannel()) {
+                    values.remove(Key.CHANNEL_REFERENCE);
+                    if (calculation.closeToFalse()){
+                        values.put(Key.CALCULATION_CLOSE_TO_FALSE, resultPanel.getName());
                     }
+                    new CalculatePerformersDialog(mainScreen, channel, values, calculation).setVisible(true);
+                }else{
+                    try {
+                        values.put(Key.CHANNEL_IS_GOOD, resultPanel.getName());
+                    }catch (Exception ignored){}
+                    new CalculateReferenceDialog(mainScreen, channel, values, calculation).setVisible(true);
                 }
             });
         }

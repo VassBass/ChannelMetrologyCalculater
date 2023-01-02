@@ -1,6 +1,5 @@
 package ui.methodInfo;
 
-import converters.ConverterUI;
 import settings.Settings;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
@@ -9,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class MethodInfoDialog extends JDialog {
     private static final String METHODS = "Методи розрахунку";
@@ -50,17 +51,12 @@ public class MethodInfoDialog extends JDialog {
 
     private void build() {
         this.setSize(500,100);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private final ActionListener clickSave = new ActionListener() {
         @Override

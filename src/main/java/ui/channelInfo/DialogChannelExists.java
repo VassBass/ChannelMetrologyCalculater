@@ -1,12 +1,13 @@
 package ui.channelInfo;
 
-import converters.ConverterUI;
 import model.Channel;
 import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class DialogChannelExists extends JDialog {
     private final Window parent;
@@ -45,7 +46,7 @@ public class DialogChannelExists extends JDialog {
 
     private void build(){
         this.setSize(500,120);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        this.setLocation(POINT_CENTER(this.parent, this));
         this.setResizable(false);
 
         this.setContentPane(new MainPanel());

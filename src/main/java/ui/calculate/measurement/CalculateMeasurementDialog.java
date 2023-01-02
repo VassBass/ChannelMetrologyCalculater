@@ -2,7 +2,6 @@ package ui.calculate.measurement;
 
 import backgroundTasks.CalculateChannel;
 import constants.Key;
-import converters.ConverterUI;
 import model.Calibrator;
 import model.Channel;
 import model.Measurement;
@@ -15,6 +14,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class CalculateMeasurementDialog extends JDialog {
     private static String title(Channel channel){
@@ -87,7 +88,7 @@ public class CalculateMeasurementDialog extends JDialog {
 
     private void build() {
         this.setSize(670,400);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
@@ -176,17 +177,14 @@ public class CalculateMeasurementDialog extends JDialog {
     private final ActionListener clickBack = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e){
-            EventQueue.invokeLater(new Runnable(){
-                @Override
-                public void run(){
-                    buttonNext.setEnabled(true);
-                    if (measurementNumber == 0){
-                        dispose();
-                        new CalculateStartDialog(mainScreen, channel, getValues()).setVisible(true);
-                    }else {
-                        measurementNumber--;
-                        update();
-                    }
+            EventQueue.invokeLater(() -> {
+                buttonNext.setEnabled(true);
+                if (measurementNumber == 0){
+                    dispose();
+                    new CalculateStartDialog(mainScreen, channel, getValues()).setVisible(true);
+                }else {
+                    measurementNumber--;
+                    update();
                 }
             });
         }
@@ -195,16 +193,13 @@ public class CalculateMeasurementDialog extends JDialog {
     private final ActionListener clickNext = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e){
-            EventQueue.invokeLater(new Runnable(){
-                @Override
-                public void run(){
-                    measurementNumber++;
-                    if (measurementsPanels[measurementNumber] == null){
-                        createMeasurementPanel(measurementNumber, null);
-                    }
-                    buttonNext.setEnabled(measurementNumber != 4);
-                    update();
+            EventQueue.invokeLater(() -> {
+                measurementNumber++;
+                if (measurementsPanels[measurementNumber] == null){
+                    createMeasurementPanel(measurementNumber, null);
                 }
+                buttonNext.setEnabled(measurementNumber != 4);
+                update();
             });
         }
 
@@ -213,21 +208,18 @@ public class CalculateMeasurementDialog extends JDialog {
     private final ActionListener clickClear = new ActionListener(){
         @Override
         public void actionPerformed(ActionEvent e){
-            EventQueue.invokeLater(new Runnable(){
-                @Override
-                public void run(){
-                    buttonNext.setEnabled(true);
-                    String message = removeMessage(measurementNumber + 1);
-                    values.put(measurementNumber, null);
-                    if (measurementNumber == 0){
-                        createMeasurementPanel(0, null);
-                    }else {
-                        measurementsPanels[measurementNumber] = null;
-                        measurementNumber--;
-                    }
-                    JOptionPane.showMessageDialog(CalculateMeasurementDialog.this, message, CANCEL, JOptionPane.INFORMATION_MESSAGE);
-                    update();
+            EventQueue.invokeLater(() -> {
+                buttonNext.setEnabled(true);
+                String message = removeMessage(measurementNumber + 1);
+                values.put(measurementNumber, null);
+                if (measurementNumber == 0){
+                    createMeasurementPanel(0, null);
+                }else {
+                    measurementsPanels[measurementNumber] = null;
+                    measurementNumber--;
                 }
+                JOptionPane.showMessageDialog(CalculateMeasurementDialog.this, message, CANCEL, JOptionPane.INFORMATION_MESSAGE);
+                update();
             });
         }
     };

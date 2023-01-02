@@ -1,6 +1,5 @@
 package ui.calibratorsList;
 
-import converters.ConverterUI;
 import ui.calibratorsList.calibratorInfo.CalibratorInfoDialog;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
@@ -9,6 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class CalibratorsListDialog extends JDialog {
     public static final String CALIBRATORS_LIST = "Список калібраторів";
@@ -51,26 +52,19 @@ public class CalibratorsListDialog extends JDialog {
 
     private void build() {
         this.setSize(800,500);
-        this.setLocation(ConverterUI.POINT_CENTER(this.mainScreen, this));
+        this.setLocation(POINT_CENTER(this.mainScreen, this));
 
         this.setContentPane(new MainPanel());
     }
 
-    private final ActionListener clickCancel = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            dispose();
-        }
-    };
+    private final ActionListener clickCancel = e -> dispose();
 
     private final ActionListener clickRemove = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    int index = mainTable.getSelectedRow();
-                    if (index != -1) {
+            EventQueue.invokeLater(() -> {
+                int index = mainTable.getSelectedRow();
+                if (index != -1) {
 //                        Calibrator calibrator = Application.context.calibratorService.get(index);
 //                        if (calibrator.getName().equals(Calibrator.FLUKE718_30G)
 //                                || calibrator.getName().equals(Calibrator.ROSEMOUNT_8714DQ4)) {
@@ -78,7 +72,6 @@ public class CalibratorsListDialog extends JDialog {
 //                        } else {
 //                            new CalibratorRemoveDialog(CalibratorsListDialog.this).setVisible(true);
 //                        }
-                    }
                 }
             });
         }
@@ -89,28 +82,17 @@ public class CalibratorsListDialog extends JDialog {
         public void actionPerformed(ActionEvent e) {
             final int index = mainTable.getSelectedRow();
             if (index != -1){
-                EventQueue.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        //Calibrator calibrator = Application.context.calibratorService.get(index);
-                        //new CalibratorInfoDialog(CalibratorsListDialog.this, calibrator).setVisible(true);
-                    }
+                EventQueue.invokeLater(() -> {
+                    //Calibrator calibrator = Application.context.calibratorService.get(index);
+                    //new CalibratorInfoDialog(CalibratorsListDialog.this, calibrator).setVisible(true);
                 });
             }
         }
     };
 
-    private final ActionListener clickAdd = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    new CalibratorInfoDialog(CalibratorsListDialog.this, null).setVisible(true);
-                }
-            });
-        }
-    };
+    private final ActionListener clickAdd = e ->
+            EventQueue.invokeLater(() ->
+                    new CalibratorInfoDialog(CalibratorsListDialog.this, null).setVisible(true));
 
     private class MainPanel extends JPanel {
         protected MainPanel(){

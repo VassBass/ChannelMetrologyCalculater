@@ -1,6 +1,5 @@
 package ui.pathLists;
 
-import converters.ConverterUI;
 import model.Model;
 import repository.PathElementRepository;
 import repository.impl.AreaRepositorySQLite;
@@ -14,6 +13,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Objects;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class PathElementsRemove extends JDialog {
     private static final String REMOVE = "Видалити";
@@ -103,7 +104,7 @@ public class PathElementsRemove extends JDialog {
 
     private void build() {
         this.setSize(400,100);
-        this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+        this.setLocation(POINT_CENTER(this.parent, this));
 
         this.setContentPane(new MainPanel());
     }

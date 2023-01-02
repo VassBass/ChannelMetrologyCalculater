@@ -1,6 +1,5 @@
 package ui.pathLists;
 
-import converters.ConverterUI;
 import model.Model;
 import repository.PathElementRepository;
 import repository.impl.AreaRepositorySQLite;
@@ -13,6 +12,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class ConfirmDialog extends JDialog {
     private static final String REMOVE = "Видалити";
@@ -102,7 +103,7 @@ public class ConfirmDialog extends JDialog {
 
     private void build() {
         this.setSize(450,100);
-        this.setLocation(ConverterUI.POINT_CENTER(this.dialog,this));
+        this.setLocation(POINT_CENTER(this.dialog,this));
 
         this.setContentPane(new MainPanel());
     }

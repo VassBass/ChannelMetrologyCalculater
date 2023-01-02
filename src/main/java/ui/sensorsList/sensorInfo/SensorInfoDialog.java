@@ -1,7 +1,6 @@
 package ui.sensorsList.sensorInfo;
 
 import backgroundTasks.PutSensorInList;
-import converters.ConverterUI;
 import converters.VariableConverter;
 import model.Measurement;
 import model.Sensor;
@@ -24,6 +23,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Objects;
 import java.util.logging.Logger;
+
+import static ui.UI_Constants.POINT_CENTER;
 
 public class SensorInfoDialog extends JDialog {
     private static final Logger LOGGER = Logger.getLogger(SensorInfoDialog.class.getName());
@@ -310,9 +311,9 @@ public class SensorInfoDialog extends JDialog {
     private void build() {
         this.setSize(850,700);
         if (this.dialogChannel == null) {
-            this.setLocation(ConverterUI.POINT_CENTER(this.parent, this));
+            this.setLocation(POINT_CENTER(this.parent, this));
         }else {
-            this.setLocation(ConverterUI.POINT_CENTER(this.dialogChannel, this));
+            this.setLocation(POINT_CENTER(this.dialogChannel, this));
         }
 
         this.setContentPane(new MainPanel());
