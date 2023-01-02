@@ -1,5 +1,5 @@
 package ui.event;
 
-public abstract class EventSource {
-    public abstract String getId();
+public interface EventSource {
+    String getId();
 }

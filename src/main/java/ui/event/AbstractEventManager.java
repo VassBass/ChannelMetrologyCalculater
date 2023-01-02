@@ -11,4 +11,5 @@ public abstract class AbstractEventManager {
     }
 
     public abstract void runEvent(Event event);
+    public abstract <I> void  runEvent(Event event, I ... input);
 }
