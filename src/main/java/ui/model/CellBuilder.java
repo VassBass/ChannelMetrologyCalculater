@@ -35,6 +35,7 @@ public class CellBuilder {
     public CellBuilder() {
         cell = new GridBagConstraints();
         cell.weightx = 1.0;
+        cell.weighty = 1.0;
         cell.fill = BOTH;
     }
 

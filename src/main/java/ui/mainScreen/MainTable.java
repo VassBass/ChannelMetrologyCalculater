@@ -1,11 +1,11 @@
 package ui.mainScreen;
 
-import developer.calculating.OS_Chooser;
 import model.Channel;
+import ui.event.EventManager;
+import ui.event.EventSource;
 import ui.model.Table;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -14,6 +14,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Calendar;
 import java.util.List;
+
+import static ui.event.EventManager.*;
+import static ui.event.eventManagers.mainScreen.MainScreenEventManager.*;
 
 public class MainTable extends Table<Channel> {
     private static final String CODE = "Код";
@@ -24,18 +27,20 @@ public class MainTable extends Table<Channel> {
     private ButtonsPanel buttonsPanel;
     private List<Channel>channelsList;
 
-    public MainTable(final List<Channel> channelList){
+    private final EventSource eventSource;
+    private final EventManager eventManager = EventManager.getInstance();
+
+    public MainTable(final EventSource eventSource, final List<Channel> channelList){
         super(tableModel(channelList));
         this.channelsList = channelList;
+        this.eventSource = eventSource;
 
         this.getTableHeader().setReorderingAllowed(false);
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        if (this.channelsList != null) {
-            this.setRowsColor();
-        }
+        if (this.channelsList != null) this.setRowsColor();
 
-        this.getSelectionModel().addListSelectionListener(select);
+        this.getSelectionModel().addListSelectionListener(e -> eventManager.runEvent(eventSource, SELECT_TABLE_ROW));
         this.addKeyListener(this.keyListener);
     }
 
@@ -46,15 +51,6 @@ public class MainTable extends Table<Channel> {
         this.setRowsColor();
     }
 
-    private final ListSelectionListener select;
-    {
-        select = e -> {
-            if (MainTable.this.getSelectedRow() != -1) {
-                MainScreen.getInstance().updateChannelInfo(channelsList.get(MainTable.this.getSelectedRow()));
-            }
-        };
-    }
-
     private final KeyListener keyListener;
     {
         keyListener = new KeyAdapter() {
@@ -63,28 +59,22 @@ public class MainTable extends Table<Channel> {
                 if (buttonsPanel == null) buttonsPanel = MainScreen.getInstance().buttonsPanel;
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_A:
-                        buttonsPanel.buttonAdd.doClick();
+                        eventManager.runEvent(eventSource, CLICK_ADD_BUTTON);
                         break;
                     case KeyEvent.VK_R:
-                        buttonsPanel.buttonRemove.doClick();
+                        eventManager.runEvent(eventSource, CLICK_REMOVE_BUTTON);
                         break;
                     case KeyEvent.VK_D:
-                        buttonsPanel.buttonDetails.doClick();
+                        eventManager.runEvent(eventSource, CLICK_INFO_BUTTON);
                         break;
                     case KeyEvent.VK_C:
-                        buttonsPanel.buttonCalculate.doClick();
+                        eventManager.runEvent(eventSource, CLICK_CALCULATE_BUTTON);
+                        break;
                     case KeyEvent.VK_ENTER:
-                        if (e.isControlDown() && e.isAltDown()) {
-                            EventQueue.invokeLater(() -> {
-                                int index = MainTable.this.getSelectedRow();
-                                if (index >= 0 && index < MainScreen.getInstance().getChannelsList().size()) {
-                                    new OS_Chooser(MainScreen.getInstance(), MainScreen.getInstance().getChannelsList().get(index)).setVisible(true);
-                                }
-                            });
-                        }
+                        eventManager.runEvent(eventSource, CLICK_CHOOSE_OS);
                         break;
                     case KeyEvent.VK_F:
-                        buttonsPanel.buttonCertificateFolder.doClick();
+                        eventManager.runEvent(eventSource, CLICK_FOLDER_BUTTON);
                         break;
                 }
             }

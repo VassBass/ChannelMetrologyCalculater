@@ -5,7 +5,7 @@ import ui.event.EventSource;
 
 import javax.annotation.Nonnull;
 
-import static ui.event.Event.CLICK_REMOVE_BUTTON;
+import static ui.event.EventManager.CLICK_REMOVE_BUTTON;
 
 public class RemoveButton extends DefaultButton {
     private final EventManager eventManager = EventManager.getInstance();

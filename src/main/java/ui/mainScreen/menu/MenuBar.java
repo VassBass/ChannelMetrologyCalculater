@@ -1,20 +1,24 @@
 package ui.mainScreen.menu;
 
+import ui.event.EventSource;
+
 import javax.swing.*;
 
 public class MenuBar extends JMenuBar {
-    private JMenu menuChannel;
+    private final JMenu menuChannel;
     private JMenu menuLists;
     private JMenu menuExportImport;
 
-    public MenuBar(){
+    public MenuBar(EventSource eventSource){
         super();
+
+        this.menuChannel = new MenuChannel(eventSource);
+
         this.createElements();
         this.build();
     }
 
     private void createElements() {
-        this.menuChannel = new MenuChannel();
         this.menuLists = new MenuLists();
         this.menuExportImport = new MenuExpImp();
     }

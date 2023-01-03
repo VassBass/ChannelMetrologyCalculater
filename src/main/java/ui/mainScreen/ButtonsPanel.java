@@ -1,103 +1,40 @@
 package ui.mainScreen;
 
-import service.FileBrowser;
-import ui.calculate.start.CalculateStartDialog;
-import ui.channelInfo.DialogChannel;
-import ui.model.DefaultButton;
-import ui.removeChannels.DialogRemoveChannels;
+import ui.event.EventManager;
+import ui.event.EventSource;
+import ui.model.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+
+import static ui.event.eventManagers.mainScreen.MainScreenEventManager.CLICK_CALCULATE_BUTTON;
+import static ui.event.eventManagers.mainScreen.MainScreenEventManager.CLICK_FOLDER_BUTTON;
 
 public class ButtonsPanel extends JPanel {
-    private static final String DETAILS = "Детальніше (D)";
-    private static final String REMOVE = "Видалити (R)";
-    private static final String ADD = "Додати (A)";
-    private static final String CALCULATE = "Розрахувати (C)";
-    private static final String CERTIFICATES_PROTOCOLS = "Сертифікати/Протоколи (F)";
+    private static final String INFO_BUTTON_TEXT = "Детальніше (D)";
+    private static final String REMOVE_BUTTON_TEXT = "Видалити (R)";
+    private static final String ADD_BUTTON_TEXT = "Додати (A)";
+    private static final String CALCULATE_BUTTON_TEXT = "Розрахувати (C)";
+    private static final String FOLDER_BUTTON_TEXT = "Сертифікати/Протоколи (F)";
 
-    public JButton buttonDetails, buttonRemove, buttonAdd, buttonCalculate, buttonCertificateFolder;
+    private final EventManager eventManager = EventManager.getInstance();
 
-    public ButtonsPanel(){
+    public ButtonsPanel(EventSource eventSource){
         super(new GridBagLayout());
 
-        this.createElements();
-        this.setReactions();
-        this.build();
-    }
+        JButton btnInfo = new InfoButton(eventSource, INFO_BUTTON_TEXT);
+        JButton btnRemove = new RemoveButton(eventSource, REMOVE_BUTTON_TEXT);
+        JButton btnAdd = new AddButton(eventSource, ADD_BUTTON_TEXT);
+        JButton btnCalculate = new DefaultButton(CALCULATE_BUTTON_TEXT);
+        JButton btnFolder = new DefaultButton(FOLDER_BUTTON_TEXT);
 
-    private void createElements() {
-        this.buttonDetails = new DefaultButton(DETAILS);
-        this.buttonRemove = new DefaultButton(REMOVE);
-        this.buttonAdd = new DefaultButton(ADD);
-        this.buttonCalculate = new DefaultButton(CALCULATE);
-        this.buttonCertificateFolder = new DefaultButton(CERTIFICATES_PROTOCOLS);
-    }
+        btnCalculate.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_CALCULATE_BUTTON));
+        btnFolder.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_FOLDER_BUTTON));
 
-    private void setReactions() {
-        this.buttonDetails.addActionListener(this.clickDetails);
-        this.buttonRemove.addActionListener(this.clickRemove);
-        this.buttonAdd.addActionListener(this.clickAdd);
-        this.buttonCalculate.addActionListener(this.clickCalculate);
-        this.buttonCertificateFolder.addActionListener(this.clickCertificateFolder);
-    }
-
-    private void build() {
-        this.add(this.buttonRemove, new Cell(0, 0, 1));
-        this.add(this.buttonAdd, new Cell(1, 0, 1));
-        this.add(this.buttonDetails, new Cell(0, 1, 2));
-        this.add(this.buttonCertificateFolder, new Cell(0, 2, 1));
-        this.add(this.buttonCalculate, new Cell(1, 2, 1));
-    }
-
-    private final ActionListener clickDetails = e -> {
-        final int channelIndex = MainScreen.getInstance().mainTable.getSelectedRow();
-        if (channelIndex!=-1) {
-            EventQueue.invokeLater(() -> new DialogChannel(MainScreen.getInstance().getChannelsList().get(channelIndex)).setVisible(true));
-        }
-    };
-
-    private final ActionListener clickRemove = e -> {
-        if (MainScreen.getInstance().getChannelsList().size() > 0) {
-            EventQueue.invokeLater(() -> new DialogRemoveChannels(MainScreen.getInstance()).setVisible(true));
-        }
-    };
-
-    private final ActionListener clickAdd = e -> EventQueue.invokeLater(() -> new DialogChannel(null).setVisible(true));
-
-    private final ActionListener clickCalculate = e -> EventQueue.invokeLater(() -> {
-        int index = MainScreen.getInstance().mainTable.getSelectedRow();
-        if (index >= 0 && index < MainScreen.getInstance().getChannelsList().size() ){
-            new CalculateStartDialog(MainScreen.getInstance(), MainScreen.getInstance().getChannelsList().get(index), null).setVisible(true);
-        }
-    });
-
-    private final ActionListener clickCertificateFolder = e -> {
-        Desktop desktop;
-        if (Desktop.isDesktopSupported()){
-            desktop = Desktop.getDesktop();
-            try {
-                desktop.open(FileBrowser.DIR_CERTIFICATES);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
-    };
-
-    private static class Cell extends GridBagConstraints{
-
-        protected Cell(int x, int y, int width){
-            super();
-
-            this.fill = BOTH;
-            this.weightx = 1.0;
-            this.weighty = 1.0;
-            this.insets = new Insets(2,2,2,2);
-
-            this.gridx = x;
-            this.gridy = y;
-            this.gridwidth = width;
-        }
+        this.add(btnRemove, new CellBuilder().coordinates(0,0).width(1).create());
+        this.add(btnAdd, new CellBuilder().coordinates(1,0).width(1).create());
+        this.add(btnInfo, new CellBuilder().coordinates(0,1).width(2).create());
+        this.add(btnFolder, new CellBuilder().coordinates(0,2).width(1).create());
+        this.add(btnCalculate, new CellBuilder().coordinates(1,2).width(1).create());
     }
 }

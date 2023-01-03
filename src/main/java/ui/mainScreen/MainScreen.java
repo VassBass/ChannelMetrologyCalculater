@@ -3,7 +3,10 @@ package ui.mainScreen;
 import model.Channel;
 import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
+import ui.event.EventSource;
+import ui.event.EventSourceIdGenerator;
 import ui.mainScreen.menu.MenuBar;
+import ui.model.CellBuilder;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -17,7 +20,7 @@ import java.util.logging.Logger;
 
 import static ui.UI_ConfigHolder.SCREEN_SIZE;
 
-public class MainScreen extends JFrame {
+public class MainScreen extends JFrame implements EventSource {
     private static MainScreen mainScreen;
 
     private static final Logger LOGGER = Logger.getLogger(MainScreen.class.getName());
@@ -34,12 +37,10 @@ public class MainScreen extends JFrame {
 
     private List<Channel> channelsList;
 
-    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
-
     private MainScreen(){
         super();
 
-        channelsList = new ArrayList<>(channelRepository.getAll());
+        channelsList = new ArrayList<>(ChannelRepositorySQLite.getInstance().getAll());
         this.setTitle(windowHeader(channelsList.size()));
 
         this.createElements(channelsList);
@@ -49,15 +50,14 @@ public class MainScreen extends JFrame {
 
     public static MainScreen getInstance() {
         if (mainScreen == null) mainScreen = new MainScreen();
-
         return mainScreen;
     }
 
     private void createElements(@Nonnull List<Channel>channelList) {
-        this.menuBar = new MenuBar();
-        this.mainTable = new MainTable(channelList);
+        this.menuBar = new MenuBar(this);
+        this.mainTable = new MainTable(this, channelList);
         this.infoTable = new InfoTable();
-        this.buttonsPanel = new ButtonsPanel();
+        this.buttonsPanel = new ButtonsPanel(this);
         this.searchPanel = new SearchPanel();
     }
 
@@ -71,10 +71,30 @@ public class MainScreen extends JFrame {
         this.setJMenuBar(this.menuBar);
 
         JPanel mainPanel = new JPanel(new GridBagLayout());
-        mainPanel.add(this.infoTable, new Cell(0, 0, 2, 0.05));
-        mainPanel.add(this.searchPanel, new Cell(0,1,1,0.025));
-        mainPanel.add(this.buttonsPanel, new Cell(1,1,1,0.025));
-        mainPanel.add(new JScrollPane(this.mainTable), new Cell(0, 2, 2,0.9));
+
+        mainPanel.add(this.infoTable, new CellBuilder()
+                .coordinates(0,0)
+                .width(2)
+                .weightY(0.05)
+                .create());
+
+        mainPanel.add(this.searchPanel, new CellBuilder()
+                .coordinates(0,1)
+                .width(1)
+                .weightY(0.025)
+                .create());
+
+        mainPanel.add(this.buttonsPanel, new CellBuilder()
+                .coordinates(1,1)
+                .width(1)
+                .weightY(0.025)
+                .create());
+
+        mainPanel.add(new JScrollPane(this.mainTable), new CellBuilder()
+                .coordinates(0, 2)
+                .width(2)
+                .weightY(0.9)
+                .create());
 
         this.setContentPane(mainPanel);
     }
@@ -95,7 +115,7 @@ public class MainScreen extends JFrame {
     }
 
     public void refreshMenu(){
-        this.setJMenuBar(new MenuBar());
+        this.setJMenuBar(new MenuBar(this));
         this.refresh();
     }
 
@@ -117,18 +137,8 @@ public class MainScreen extends JFrame {
         }
     };
 
-    private static class Cell extends GridBagConstraints {
-
-        private static final long serialVersionUID = 1L;
-
-        protected Cell(int x, int y, int width, double height) {
-            this.fill = BOTH;
-            this.weightx = 1.0;
-
-            this.gridx = x;
-            this.gridy = y;
-            this.gridwidth = width;
-            this.weighty = height;
-        }
+    @Override
+    public String getId() {
+        return EventSourceIdGenerator.generate(MainScreen.class);
     }
 }

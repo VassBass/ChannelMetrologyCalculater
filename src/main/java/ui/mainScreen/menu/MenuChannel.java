@@ -1,93 +1,44 @@
 package ui.mainScreen.menu;
 
-import service.FileBrowser;
-import ui.channelInfo.DialogChannel;
-import ui.mainScreen.MainScreen;
-import ui.removeChannels.DialogRemoveChannels;
+import ui.event.EventManager;
+import ui.event.EventSource;
 
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
+
+import static ui.event.EventManager.*;
+import static ui.event.eventManagers.mainScreen.MainScreenEventManager.CLICK_CALCULATE_BUTTON;
+import static ui.event.eventManagers.mainScreen.MainScreenEventManager.CLICK_FOLDER_BUTTON;
 
 public class MenuChannel extends JMenu {
-    private static final String CHANNEL = "Канал";
-    private static final String ADD = "Додати";
-    private static final String CALCULATE = "Розрахувати";
-    private static final String DETAILS = "Детальніше";
-    private static final String REMOVE = "Видалити";
-    private static final String CERTIFICATES_PROTOCOLS = "Сертифікати/Протоколи";
+    private static final String HEADER_TEXT = "Канал";
+    private static final String ADD_BUTTON_TEXT = "Додати";
+    private static final String CALCULATE_BUTTON_TEXT = "Розрахувати";
+    private static final String INFO_BUTTON_TEXT = "Детальніше";
+    private static final String REMOVE_BUTTON_TEXT = "Видалити";
+    private static final String FOLDER_BUTTON_TEXT = "Сертифікати/Протоколи";
 
-    private JMenuItem btn_calculate, btn_add, btn_details, btn_remove, btn_certificateProtocols = null;
+    public MenuChannel(final EventSource eventSource){
+        super(HEADER_TEXT);
+        final EventManager eventManager = EventManager.getInstance();
 
-    public MenuChannel(){
-        super(CHANNEL);
+        JMenuItem btnAdd = new JMenuItem(ADD_BUTTON_TEXT);
+        JMenuItem btnCalculate = new JMenuItem(CALCULATE_BUTTON_TEXT);
+        JMenuItem btnInfo = new JMenuItem(INFO_BUTTON_TEXT);
+        JMenuItem btnRemove = new JMenuItem(REMOVE_BUTTON_TEXT);
+        JMenuItem btnFolder = new JMenuItem(FOLDER_BUTTON_TEXT);
 
-        createElements();
-        setReactions();
-        build();
-    }
+        btnInfo.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_INFO_BUTTON));
+        btnAdd.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_ADD_BUTTON));
+        btnRemove.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_REMOVE_BUTTON));
+        btnCalculate.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_CALCULATE_BUTTON));
+        btnFolder.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_FOLDER_BUTTON));
 
-    private void createElements() {
-        btn_add = new JMenuItem(ADD);
-        btn_calculate = new JMenuItem(CALCULATE);
-        btn_details = new JMenuItem(DETAILS);
-        btn_remove = new JMenuItem(REMOVE);
-        btn_certificateProtocols = new JMenuItem(CERTIFICATES_PROTOCOLS);
-    }
-
-    private void setReactions() {
-        btn_details.addActionListener(clickDetails);
-        btn_add.addActionListener(clickAdd);
-        btn_remove.addActionListener(clickRemove);
-        btn_calculate.addActionListener(clickCalculate);
-        btn_certificateProtocols.addActionListener(clickCertificateFolder);
-    }
-
-    private void build() {
-        this.add(btn_add);
-        this.add(btn_remove);
+        this.add(btnAdd);
+        this.add(btnRemove);
         this.addSeparator();
-        this.add(btn_details);
-        this.add(btn_calculate);
+        this.add(btnInfo);
+        this.add(btnCalculate);
         this.addSeparator();
-        this.add(btn_certificateProtocols);
+        this.add(btnFolder);
     }
-
-    private final ActionListener clickDetails = e -> {
-        final int channelIndex = MainScreen.getInstance().mainTable.getSelectedRow();
-        if (channelIndex!=-1) {
-            EventQueue.invokeLater(() -> {
-                //new DialogChannel(mainScreen, mainScreen.channelsList.get(channelIndex)).setVisible(true);
-            });
-        }
-    };
-
-    private final ActionListener clickAdd = e -> EventQueue.invokeLater(() ->
-            new DialogChannel(null).setVisible(true));
-
-    private final ActionListener clickCalculate = e -> EventQueue.invokeLater(() -> {
-        int index = MainScreen.getInstance().mainTable.getSelectedRow();
-        if (index != -1){
-            //new CalculateStartDialog(mainScreen, mainScreen.channelsList.get(index), null).setVisible(true);
-        }
-    });
-
-    //}
-    private final ActionListener clickRemove = e -> {
-        if (MainScreen.getInstance().getChannelsList().size() > 0) {
-            EventQueue.invokeLater(() -> new DialogRemoveChannels(MainScreen.getInstance()).setVisible(true));
-        }
-        };
-
-    private final ActionListener clickCertificateFolder = e -> {
-        Desktop desktop;
-        if (Desktop.isDesktopSupported()){
-            desktop = Desktop.getDesktop();
-            try {
-                desktop.open(FileBrowser.DIR_CERTIFICATES);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
-    };
 }

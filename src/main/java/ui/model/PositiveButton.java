@@ -5,7 +5,7 @@ import ui.event.EventSource;
 
 import javax.annotation.Nonnull;
 
-import static ui.event.Event.CLICK_POSITIVE_BUTTON;
+import static ui.event.EventManager.CLICK_POSITIVE_BUTTON;
 
 public class PositiveButton extends DefaultButton {
     private final EventManager eventManager = EventManager.getInstance();

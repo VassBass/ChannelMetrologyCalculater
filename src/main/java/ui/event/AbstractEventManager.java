@@ -3,6 +3,8 @@ package ui.event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+
 public abstract class AbstractEventManager {
     private static final Logger logger = LoggerFactory.getLogger(AbstractEventManager.class);
 
@@ -10,6 +12,5 @@ public abstract class AbstractEventManager {
         logger.info("This action not processed!");
     }
 
-    public abstract void runEvent(Event event);
-    public abstract <I> void  runEvent(Event event, I ... input);
+    public abstract void runEvent(int event);
 }
