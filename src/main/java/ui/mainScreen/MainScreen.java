@@ -58,7 +58,7 @@ public class MainScreen extends JFrame implements EventSource {
         this.mainTable = new MainTable(this, channelList);
         this.infoTable = new InfoTable();
         this.buttonsPanel = new ButtonsPanel(this);
-        this.searchPanel = new SearchPanel();
+        this.searchPanel = new SearchPanel(this);
     }
 
     private void setReactions() {

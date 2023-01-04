@@ -1,7 +1,5 @@
 package ui.mainScreen;
 
-import backgroundTasks.CheckChannel;
-import backgroundTasks.SearchChannels;
 import constants.Sort;
 import converters.VariableConverter;
 import org.apache.commons.validator.DateValidator;
@@ -9,30 +7,35 @@ import repository.MeasurementRepository;
 import repository.PathElementRepository;
 import repository.SensorRepository;
 import repository.impl.*;
-import service.ChannelSorter;
-import ui.model.DefaultButton;
+import service.DataTransfer;
+import ui.event.EventManager;
+import ui.event.EventSource;
+import ui.model.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static ui.event.eventManagers.mainScreen.MainScreenEventManager.*;
+
 public class SearchPanel extends JPanel {
-    private static final String CODE = "Код каналу";
-    private static final String NAME = "Назва каналу";
-    private static final String MEASUREMENT_NAME = "Вид вимірювання";
-    private static final String MEASUREMENT_VALUE = "Одиниці вимірювання";
-    private static final String DEPARTMENT = "Цех";
-    private static final String AREA = "Ділянка";
-    private static final String PROCESS = "Процесс";
-    private static final String INSTALLATION = "Установка";
-    private static final String DATE = "Дата останньої перевірки";
-    private static final String FREQUENCY = "Міжконтрольний інтервал";
-    private static final String TECHNOLOGY_NUMBER = "Технологічний номер";
-    private static final String SENSOR_NAME = "Назва ПВП";
-    private static final String SENSOR_TYPE = "Тип ПВП";
-    private static final String PROTOCOL_NUMBER = "Номер протоколу(сертифікату)";
-    private static final String REFERENCE = "Номер довідки";
-    private static final String SUITABILITY = "Придатність";
+    public static final String CODE = "Код каналу";
+    public static final String NAME = "Назва каналу";
+    public static final String MEASUREMENT_NAME = "Вид вимірювання";
+    public static final String MEASUREMENT_VALUE = "Одиниці вимірювання";
+    public static final String DEPARTMENT = "Цех";
+    public static final String AREA = "Ділянка";
+    public static final String PROCESS = "Процесс";
+    public static final String INSTALLATION = "Установка";
+    public static final String DATE = "Дата останньої перевірки";
+    public static final String FREQUENCY = "Міжконтрольний інтервал";
+    public static final String TECHNOLOGY_NUMBER = "Технологічний номер";
+    public static final String SENSOR_NAME = "Назва ПВП";
+    public static final String SENSOR_TYPE = "Тип ПВП";
+    public static final String PROTOCOL_NUMBER = "Номер протоколу(сертифікату)";
+    public static final String REFERENCE = "Номер довідки";
+    public static final String SUITABILITY = "Придатність";
     private static final String SUITABLE = "Придатний";
     private static final String START_SEARCH = "Шукати (Alt + Enter)";
     private static final String FINISH_SEARCH = "Відмінити";
@@ -45,10 +48,10 @@ public class SearchPanel extends JPanel {
     private static final int CHECK = 3;
 
     public JButton buttonSearch;
-    private JComboBox<String>field;
-    private JTextField valueText;
-    private JComboBox<String>valueComboBox;
-    private JCheckBox valueSuitability;
+    private StringsList field;
+    private InputField valueText;
+    private StringsList valueList;
+    private CheckBox valueSuitability;
 
     private final PathElementRepository departmentRepository = DepartmentRepositorySQLite.getInstance();
     private final PathElementRepository areaRepository = AreaRepositorySQLite.getInstance();
@@ -57,8 +60,14 @@ public class SearchPanel extends JPanel {
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
     private final MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
 
-    public SearchPanel(){
+    private final DataTransfer dataTransfer = DataTransfer.getInstance();
+    private final EventManager eventManager = EventManager.getInstance();
+
+    private final EventSource eventSource;
+
+    public SearchPanel(EventSource eventSource){
         super(new GridBagLayout());
+        this.eventSource = eventSource;
 
         this.createElements();
         this.build(TEXT);
@@ -68,29 +77,21 @@ public class SearchPanel extends JPanel {
     private void createElements() {
         this.buttonSearch = new DefaultButton(START_SEARCH);
 
-        this.field = new JComboBox<>(new String[]{
-                CODE, NAME, MEASUREMENT_NAME, MEASUREMENT_VALUE,
-                DEPARTMENT,AREA, PROCESS, INSTALLATION,
+        this.field = new StringsList(CODE, NAME, MEASUREMENT_NAME, MEASUREMENT_VALUE,
+                DEPARTMENT, AREA, PROCESS, INSTALLATION,
                 DATE, FREQUENCY, TECHNOLOGY_NUMBER,
                 SENSOR_NAME, SENSOR_TYPE, PROTOCOL_NUMBER,
-                REFERENCE, SUITABILITY
-        });
-        ((JLabel)this.field.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
-        this.field.setBackground(Color.BLACK);
-        this.field.setForeground(Color.WHITE);
-        this.field.setFocusable(false);
+                REFERENCE, SUITABILITY);
+        this.field.setHorizontalAlignment(StringsList.CENTER);
 
-        this.valueText = new JTextField(10);
-        this.valueText.setHorizontalAlignment(JTextField.CENTER);
+        this.valueText = new InputFieldText();
+        this.valueText.setHorizontalAlignment(InputField.CENTER);
 
-        this.valueComboBox = new JComboBox<>();
-        ((JLabel)this.valueComboBox.getRenderer()).setHorizontalAlignment(JLabel.CENTER);
-        this.valueComboBox.setBackground(Color.WHITE);
-        this.valueComboBox.setForeground(Color.BLACK);
+        this.valueList = new StringsList(false);
+        this.valueList.setHorizontalAlignment(StringsList.CENTER);
 
-        this.valueSuitability = new JCheckBox(SUITABLE);
+        this.valueSuitability = new CheckBox(SUITABLE);
         this.valueSuitability.setHorizontalAlignment(JCheckBox.CENTER);
-        this.valueSuitability.setFocusPainted(false);
     }
 
     private void setReactions() {
@@ -101,67 +102,60 @@ public class SearchPanel extends JPanel {
 
         this.field.addKeyListener(keyListener);
         this.valueText.addKeyListener(keyListener);
-        this.valueComboBox.addKeyListener(keyListener);
+        this.valueList.addKeyListener(keyListener);
         this.valueSuitability.addKeyListener(keyListener);
         this.buttonSearch.addKeyListener(keyListener);
     }
 
     private void build(int element) {
         this.removeAll();
-        this.add(this.field, new Cell(0));
+        this.add(this.field, new CellBuilder().y(0).create());
         switch (element){
             default:
-                this.add(this.valueText, new Cell(1));
+                this.add(this.valueText, new CellBuilder().y(1).create());
                 break;
             case LIST:
                 this.setModelToComboBox();
-                this.add(this.valueComboBox, new Cell(1));
+                this.add(this.valueList, new CellBuilder().y(1).create());
                 break;
             case CHECK:
-                this.add(this.valueSuitability, new Cell(1));
+                this.add(this.valueSuitability, new CellBuilder().y(1).create());
                 break;
         }
 
-        this.add(this.buttonSearch, new Cell(2));
+        this.add(this.buttonSearch, new CellBuilder().y(2).create());
     }
 
     private void setModelToComboBox(){
         if (this.field.getSelectedItem() != null){
             switch (this.field.getSelectedItem().toString()){
                 case MEASUREMENT_NAME:
-                    this.valueComboBox.setModel(this.model_measurementsNames());
-                    this.valueComboBox.setFocusable(false);
-                    this.valueComboBox.setEditable(false);
+                    this.valueList.setModel(this.model_measurementsNames());
+                    this.valueList.setEditable(false);
                     break;
                 case MEASUREMENT_VALUE:
-                    this.valueComboBox.setModel(this.model_measurementsValues());
-                    this.valueComboBox.setFocusable(false);
-                    this.valueComboBox.setEditable(false);
+                    this.valueList.setModel(this.model_measurementsValues());
+                    this.valueList.setEditable(false);
                     break;
                 case DEPARTMENT:
-                    this.valueComboBox.setModel(this.model_departments());
-                    this.valueComboBox.setFocusable(true);
-                    this.valueComboBox.setEditable(true);
+                    this.valueList.setModel(this.model_departments());
+                    this.valueList.setEditable(true);
                     break;
                 case AREA:
-                    this.valueComboBox.setModel(this.model_areas());
-                    this.valueComboBox.setFocusable(true);
-                    this.valueComboBox.setEditable(true);
+                    this.valueList.setModel(this.model_areas());
+                    this.valueList.setEditable(true);
                     break;
                 case PROCESS:
-                    this.valueComboBox.setModel(this.model_processes());
-                    this.valueComboBox.setFocusable(true);
-                    this.valueComboBox.setEditable(true);
+                    this.valueList.setModel(this.model_processes());
+                    this.valueList.setEditable(true);
                     break;
                 case INSTALLATION:
-                    this.valueComboBox.setModel(this.model_installations());
-                    this.valueComboBox.setFocusable(true);
-                    this.valueComboBox.setEditable(true);
+                    this.valueList.setModel(this.model_installations());
+                    this.valueList.setEditable(true);
                     break;
                 case SENSOR_TYPE:
-                    this.valueComboBox.setModel(this.model_sensorsTypes());
-                    this.valueComboBox.setFocusable(false);
-                    this.valueComboBox.setEditable(false);
+                    this.valueList.setModel(this.model_sensorsTypes());
+                    this.valueList.setEditable(false);
                     break;
             }
         }
@@ -210,81 +204,34 @@ public class SearchPanel extends JPanel {
             if (field.getSelectedItem() != null) {
                 if (buttonSearch.getText().equals(START_SEARCH)) {
                     String f = field.getSelectedItem().toString();
-                    if (!f.equals(CODE)) {
-                        if (field != null) field.setEnabled(false);
-                        if (valueText != null) valueText.setEnabled(false);
-                        if (valueComboBox != null) valueComboBox.setEnabled(false);
-                        if (valueSuitability != null) valueSuitability.setEnabled(false);
+                    if (!f.equals(CODE)) setEnabled(false);
 
-                        buttonSearch.setText(FINISH_SEARCH);
-                    }
+                    String listValue = valueList.getSelectedItem() == null ?
+                            EMPTY :
+                            valueList.getSelectedItem().toString();
 
-                    startSearch(f);
+                    dataTransfer.put(KEY_SEARCH_FIELD, f);
+                    dataTransfer.put(KEY_SEARCH_VALUE_TEXT, valueText.getText());
+                    dataTransfer.put(KEY_SEARCH_VALUE_LIST_ITEM, listValue);
+                    dataTransfer.put(KEY_SEARCH_VALUE_BOOLEAN, valueSuitability.isSelected());
+
+                    eventManager.runEvent(eventSource, CLICK_SEARCH_BUTTON_START);
                 } else {
-                    new SearchChannels().cancel();
-                    ChannelSorter.getInstance().setOff();
-                    if (field != null) field.setEnabled(true);
-                    if (valueText != null) valueText.setEnabled(true);
-                    if (valueComboBox != null) valueComboBox.setEnabled(true);
-                    if (valueSuitability != null) valueSuitability.setEnabled(true);
-                    buttonSearch.setText(START_SEARCH);
+                    dataTransfer.clear();
+                    eventManager.runEvent(eventSource, CLICK_SEARCH_BUTTON_END);
+                    setEnabled(true);
                 }
             }
         }
     };
 
-    private void startSearch(String field) {
-        String value = valueComboBox.getSelectedItem() == null ? null : valueComboBox.getSelectedItem().toString();
-        switch (field) {
-            case CODE:
-                new CheckChannel(MainScreen.getInstance(), valueText.getText()).start();
-                break;
-            case NAME:
-                new SearchChannels().startSearch(Sort.NAME, valueText.getText());
-                break;
-            case MEASUREMENT_NAME:
-                new SearchChannels().startSearch(Sort.MEASUREMENT_NAME, value);
-                break;
-            case MEASUREMENT_VALUE:
-                new SearchChannels().startSearch(Sort.MEASUREMENT_VALUE, value);
-                break;
-            case DEPARTMENT:
-                new SearchChannels().startSearch(Sort.DEPARTMENT, value);
-                break;
-            case AREA:
-                new SearchChannels().startSearch(Sort.AREA, value);
-                break;
-            case PROCESS:
-                new SearchChannels().startSearch(Sort.PROCESS, value);
-                break;
-            case INSTALLATION:
-                new SearchChannels().startSearch(Sort.INSTALLATION, value);
-                break;
-            case DATE:
-                new SearchChannels().startSearch(Sort.DATE, valueText.getText());
-                break;
-            case FREQUENCY:
-                new SearchChannels().startSearch(Sort.FREQUENCY, valueText.getText());
-                break;
-            case TECHNOLOGY_NUMBER:
-                new SearchChannels().startSearch(Sort.TECHNOLOGY_NUMBER, valueText.getText());
-                break;
-            case SENSOR_NAME:
-                new SearchChannels().startSearch(Sort.SENSOR_NAME, valueText.getText());
-                break;
-            case SENSOR_TYPE:
-                new SearchChannels().startSearch(Sort.SENSOR_TYPE, value);
-                break;
-            case PROTOCOL_NUMBER:
-                new SearchChannels().startSearch(Sort.PROTOCOL_NUMBER, valueText.getText());
-                break;
-            case REFERENCE:
-                new SearchChannels().startSearch(Sort.REFERENCE, valueText.getText());
-                break;
-            case SUITABILITY:
-                new SearchChannels().startSearch(Sort.SUITABILITY, valueSuitability.isSelected());
-                break;
-        }
+    @Override
+    public void setEnabled(boolean enabled) {
+        buttonSearch.setText(enabled ? START_SEARCH : FINISH_SEARCH);
+        if (field != null) field.setEnabled(enabled);
+        if (valueText != null) valueText.setEnabled(enabled);
+        if (valueList != null) valueList.setEnabled(enabled);
+        if (valueSuitability != null) valueSuitability.setEnabled(enabled);
     }
 
     private final FocusListener textFocus = new FocusListener() {
@@ -342,18 +289,4 @@ public class SearchPanel extends JPanel {
             }
         }
     };
-
-    private static class Cell extends GridBagConstraints{
-
-        protected Cell(int y){
-            super();
-
-            this.fill = BOTH;
-            this.weightx = 1.0;
-            this.weighty = 1.0;
-
-            this.gridx = 0;
-            this.gridy = y;
-        }
-    }
 }

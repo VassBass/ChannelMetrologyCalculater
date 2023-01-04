@@ -1,6 +1,11 @@
 package ui.event.eventManagers.mainScreen;
 
+import backgroundTasks.CheckChannel;
+import backgroundTasks.SearchChannels;
+import constants.Sort;
 import developer.calculating.OS_Chooser;
+import service.ChannelSorter;
+import service.DataTransfer;
 import service.FileBrowser;
 import ui.channelInfo.DialogChannel;
 import ui.event.AbstractEventManager;
@@ -10,13 +15,23 @@ import ui.removeChannels.DialogRemoveChannels;
 import java.awt.*;
 
 import static ui.event.EventManager.*;
+import static ui.mainScreen.SearchPanel.*;
 
 public class MainScreenEventManager extends AbstractEventManager {
     public static final int CLICK_CALCULATE_BUTTON = 5;
     public static final int CLICK_FOLDER_BUTTON = 6;
     public static final int CLICK_CHOOSE_OS = 7;
+    public static final int CLICK_SEARCH_BUTTON_START = 9;
+    public static final int CLICK_SEARCH_BUTTON_END = 10;
 
     public static final int SELECT_TABLE_ROW = 8;
+
+    public static final String KEY_SEARCH_FIELD = "search_field";
+    public static final String KEY_SEARCH_VALUE_TEXT = "search_value_text";
+    public static final String KEY_SEARCH_VALUE_LIST_ITEM = "search_value_list_item";
+    public static final String KEY_SEARCH_VALUE_BOOLEAN = "search_value_boolean";
+
+    private final DataTransfer dataTransfer = DataTransfer.getInstance();
 
     @Override
     public void runEvent(int event) {
@@ -27,6 +42,8 @@ public class MainScreenEventManager extends AbstractEventManager {
             case CLICK_CALCULATE_BUTTON: clickCalculateButton(); break;
             case CLICK_FOLDER_BUTTON: clickFolderButton(); break;
             case CLICK_CHOOSE_OS: clickChooseOS(); break;
+            case CLICK_SEARCH_BUTTON_START: clickSearchButtonStart(); break;
+            case CLICK_SEARCH_BUTTON_END: clickSearchButtonEnd(); break;
 
             case SELECT_TABLE_ROW: selectTableRow(); break;
 
@@ -92,5 +109,65 @@ public class MainScreenEventManager extends AbstractEventManager {
         }
     }
 
+    private void clickSearchButtonStart() {
+        String field = dataTransfer.extractString(KEY_SEARCH_FIELD);
+        String valueText = dataTransfer.extractString(KEY_SEARCH_VALUE_TEXT);
+        String valueListItem = dataTransfer.extractString(KEY_SEARCH_VALUE_LIST_ITEM);
+        switch (field) {
+            case CODE:
+                new CheckChannel(MainScreen.getInstance(), valueText).start();
+                break;
+            case NAME:
+                new SearchChannels().startSearch(Sort.NAME, valueText);
+                break;
+            case MEASUREMENT_NAME:
+                new SearchChannels().startSearch(Sort.MEASUREMENT_NAME, valueListItem);
+                break;
+            case MEASUREMENT_VALUE:
+                new SearchChannels().startSearch(Sort.MEASUREMENT_VALUE, valueListItem);
+                break;
+            case DEPARTMENT:
+                new SearchChannels().startSearch(Sort.DEPARTMENT, valueListItem);
+                break;
+            case AREA:
+                new SearchChannels().startSearch(Sort.AREA, valueListItem);
+                break;
+            case PROCESS:
+                new SearchChannels().startSearch(Sort.PROCESS, valueListItem);
+                break;
+            case INSTALLATION:
+                new SearchChannels().startSearch(Sort.INSTALLATION, valueListItem);
+                break;
+            case DATE:
+                new SearchChannels().startSearch(Sort.DATE, valueText);
+                break;
+            case FREQUENCY:
+                new SearchChannels().startSearch(Sort.FREQUENCY, valueText);
+                break;
+            case TECHNOLOGY_NUMBER:
+                new SearchChannels().startSearch(Sort.TECHNOLOGY_NUMBER, valueText);
+                break;
+            case SENSOR_NAME:
+                new SearchChannels().startSearch(Sort.SENSOR_NAME, valueText);
+                break;
+            case SENSOR_TYPE:
+                new SearchChannels().startSearch(Sort.SENSOR_TYPE, valueListItem);
+                break;
+            case PROTOCOL_NUMBER:
+                new SearchChannels().startSearch(Sort.PROTOCOL_NUMBER, valueText);
+                break;
+            case REFERENCE:
+                new SearchChannels().startSearch(Sort.REFERENCE, valueText);
+                break;
+            case SUITABILITY:
+                boolean valueBoolean = dataTransfer.extractBoolean(KEY_SEARCH_VALUE_BOOLEAN).orElse(false);
+                new SearchChannels().startSearch(Sort.SUITABILITY, valueBoolean);
+                break;
+        }
+    }
 
+    private void clickSearchButtonEnd() {
+        new SearchChannels().cancel();
+        ChannelSorter.getInstance().setOff();
+    }
 }
