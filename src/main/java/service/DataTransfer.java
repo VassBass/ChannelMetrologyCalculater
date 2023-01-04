@@ -20,6 +20,7 @@ public class DataTransfer {
     private Map<String, String> stringMap;
     private Map<String, Integer> intMap;
     private Map<String, Double> doubleMap;
+    private Map<String, Boolean> booleanMap;
 
     public String extractString(String key) {
         if (stringMap == null) stringMap = new HashMap<>();
@@ -45,6 +46,14 @@ public class DataTransfer {
                 Optional.of(dbl);
     }
 
+    public Optional<Boolean> extractBoolean(String key) {
+        if (booleanMap == null) booleanMap = new HashMap<>();
+        Boolean bool = booleanMap.remove(key);
+        return bool == null ?
+                Optional.empty() :
+                Optional.of(bool);
+    }
+
     public void put(@Nonnull String key, @Nonnull String value) {
         if (stringMap == null) stringMap = new HashMap<>();
         stringMap.put(key, value);
@@ -60,9 +69,15 @@ public class DataTransfer {
         doubleMap.put(key, value);
     }
 
+    public void put(@Nonnull String key, boolean value) {
+        if (booleanMap == null) booleanMap = new HashMap<>();
+        booleanMap.put(key, value);
+    }
+
     public void clear() {
         stringMap = null;
         intMap = null;
         doubleMap = null;
+        booleanMap = null;
     }
 }
