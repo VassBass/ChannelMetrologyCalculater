@@ -59,4 +59,10 @@ public class DataTransfer {
         if (doubleMap == null) doubleMap = new HashMap<>();
         doubleMap.put(key, value);
     }
+
+    public void clear() {
+        stringMap = null;
+        intMap = null;
+        doubleMap = null;
+    }
 }
