@@ -13,12 +13,28 @@ public class StringsList extends JComboBox<String> {
         this.setForeground(Color.WHITE);
     }
 
+    public StringsList(int textHorizontalAlignment, String ... list) {
+        super(list);
+        setHorizontalAlignment(textHorizontalAlignment);
+
+        this.setBackground(Color.BLACK);
+        this.setForeground(Color.WHITE);
+    }
+
     public StringsList(boolean editable, String ... list) {
         super(list);
 
         this.setBackground(Color.BLACK);
         this.setForeground(Color.WHITE);
         this.setEditable(editable);
+    }
+
+    public StringsList(boolean editable, int textHorizontalAlignment, String ... list) {
+        super(list);
+        setHorizontalAlignment(textHorizontalAlignment);
+
+        this.setBackground(Color.BLACK);
+        this.setForeground(Color.WHITE);
     }
 
     @Override

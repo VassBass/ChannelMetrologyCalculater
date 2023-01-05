@@ -1,11 +1,11 @@
 package ui.mainScreen;
 
 import model.Channel;
-import repository.ChannelRepository;
 import repository.impl.ChannelRepositorySQLite;
 import ui.event.EventSource;
 import ui.event.EventSourceIdGenerator;
 import ui.mainScreen.menu.MenuBar;
+import ui.mainScreen.searchPanel.SearchPanel;
 import ui.model.CellBuilder;
 
 import javax.annotation.Nonnull;

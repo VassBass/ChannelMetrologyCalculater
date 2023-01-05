@@ -15,8 +15,23 @@ public class InputFieldText extends InputField {
         this.addFocusListener(focusListener);
     }
 
+    public InputFieldText(int textHorizontalAlignment) {
+        super();
+        setHorizontalAlignment(textHorizontalAlignment);
+
+        this.addFocusListener(focusListener);
+    }
+
     public InputFieldText(PanelSpecialCharacters panelSpecialCharacters) {
         super();
+        this.panelSpecialCharacters = panelSpecialCharacters;
+
+        this.addFocusListener(focusListener);
+    }
+
+    public InputFieldText(int textHorizontalAlignment, PanelSpecialCharacters panelSpecialCharacters) {
+        super();
+        setHorizontalAlignment(textHorizontalAlignment);
         this.panelSpecialCharacters = panelSpecialCharacters;
 
         this.addFocusListener(focusListener);

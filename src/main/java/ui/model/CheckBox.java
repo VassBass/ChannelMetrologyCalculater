@@ -9,4 +9,11 @@ public class CheckBox extends JCheckBox {
 
         this.setFocusPainted(false);
     }
+
+    public CheckBox(String title, int textHorizontalAlignment) {
+        super(title);
+        setHorizontalAlignment(textHorizontalAlignment);
+
+        this.setFocusPainted(false);
+    }
 }

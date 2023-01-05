@@ -15,7 +15,7 @@ import ui.removeChannels.DialogRemoveChannels;
 import java.awt.*;
 
 import static ui.event.EventManager.*;
-import static ui.mainScreen.SearchPanel.*;
+import static ui.mainScreen.searchPanel.SearchPanel.*;
 
 public class MainScreenEventManager extends AbstractEventManager {
     public static final int CLICK_CALCULATE_BUTTON = 5;
@@ -114,52 +114,52 @@ public class MainScreenEventManager extends AbstractEventManager {
         String valueText = dataTransfer.extractString(KEY_SEARCH_VALUE_TEXT);
         String valueListItem = dataTransfer.extractString(KEY_SEARCH_VALUE_LIST_ITEM);
         switch (field) {
-            case CODE:
+            case TEXT_CODE:
                 new CheckChannel(MainScreen.getInstance(), valueText).start();
                 break;
-            case NAME:
+            case TEXT_NAME:
                 new SearchChannels().startSearch(Sort.NAME, valueText);
                 break;
-            case MEASUREMENT_NAME:
+            case TEXT_MEASUREMENT_NAME:
                 new SearchChannels().startSearch(Sort.MEASUREMENT_NAME, valueListItem);
                 break;
-            case MEASUREMENT_VALUE:
+            case TEXT_MEASUREMENT_VALUE:
                 new SearchChannels().startSearch(Sort.MEASUREMENT_VALUE, valueListItem);
                 break;
-            case DEPARTMENT:
+            case TEXT_DEPARTMENT:
                 new SearchChannels().startSearch(Sort.DEPARTMENT, valueListItem);
                 break;
-            case AREA:
+            case TEXT_AREA:
                 new SearchChannels().startSearch(Sort.AREA, valueListItem);
                 break;
-            case PROCESS:
+            case TEXT_PROCESS:
                 new SearchChannels().startSearch(Sort.PROCESS, valueListItem);
                 break;
-            case INSTALLATION:
+            case TEXT_INSTALLATION:
                 new SearchChannels().startSearch(Sort.INSTALLATION, valueListItem);
                 break;
-            case DATE:
+            case TEXT_DATE:
                 new SearchChannels().startSearch(Sort.DATE, valueText);
                 break;
-            case FREQUENCY:
+            case TEXT_FREQUENCY:
                 new SearchChannels().startSearch(Sort.FREQUENCY, valueText);
                 break;
-            case TECHNOLOGY_NUMBER:
+            case TEXT_TECHNOLOGY_NUMBER:
                 new SearchChannels().startSearch(Sort.TECHNOLOGY_NUMBER, valueText);
                 break;
-            case SENSOR_NAME:
+            case TEXT_SENSOR_NAME:
                 new SearchChannels().startSearch(Sort.SENSOR_NAME, valueText);
                 break;
-            case SENSOR_TYPE:
+            case TEXT_SENSOR_TYPE:
                 new SearchChannels().startSearch(Sort.SENSOR_TYPE, valueListItem);
                 break;
-            case PROTOCOL_NUMBER:
+            case TEXT_PROTOCOL_NUMBER:
                 new SearchChannels().startSearch(Sort.PROTOCOL_NUMBER, valueText);
                 break;
-            case REFERENCE:
+            case TEXT_REFERENCE:
                 new SearchChannels().startSearch(Sort.REFERENCE, valueText);
                 break;
-            case SUITABILITY:
+            case TEXT_SUITABILITY:
                 boolean valueBoolean = dataTransfer.extractBoolean(KEY_SEARCH_VALUE_BOOLEAN).orElse(false);
                 new SearchChannels().startSearch(Sort.SUITABILITY, valueBoolean);
                 break;
