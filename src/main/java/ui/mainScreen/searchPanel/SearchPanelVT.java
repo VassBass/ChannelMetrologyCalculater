@@ -26,7 +26,7 @@ public class SearchPanelVT extends SearchPanel {
     private final SensorRepository sensorRepository = SensorRepositorySQLite.getInstance();
     private final MeasurementRepository measurementRepository = MeasurementRepositorySQLite.getInstance();
 
-    public SearchPanelVT(SearchPanel connect) {
+    protected SearchPanelVT(SearchPanel connect) {
         super(null);
         this.connect = connect;
     }

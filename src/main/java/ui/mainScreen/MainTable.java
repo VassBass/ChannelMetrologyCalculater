@@ -3,6 +3,7 @@ package ui.mainScreen;
 import model.Channel;
 import ui.event.EventManager;
 import ui.event.EventSource;
+import ui.mainScreen.buttonsPanel.ButtonsPanel;
 import ui.model.Table;
 
 import javax.swing.*;

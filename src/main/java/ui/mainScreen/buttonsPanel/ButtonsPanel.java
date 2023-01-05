@@ -1,4 +1,4 @@
-package ui.mainScreen;
+package ui.mainScreen.buttonsPanel;
 
 import ui.event.EventManager;
 import ui.event.EventSource;
