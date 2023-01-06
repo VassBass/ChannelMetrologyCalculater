@@ -31,6 +31,7 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
         createTable();
         measurementRepository = repositoryFactory.create(MeasurementRepository.class);
     }
+
     public ChannelRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();

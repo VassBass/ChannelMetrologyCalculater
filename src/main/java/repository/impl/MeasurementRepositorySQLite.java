@@ -24,6 +24,7 @@ public class MeasurementRepositorySQLite extends RepositoryJDBC implements Measu
         setPropertiesFromFile();
         createTable();
     }
+
     public MeasurementRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();

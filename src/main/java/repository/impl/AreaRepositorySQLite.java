@@ -2,7 +2,7 @@ package repository.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.PathElementRepository;
+import repository.AreaRepository;
 import repository.RepositoryJDBC;
 
 import javax.annotation.Nonnull;
@@ -11,11 +11,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementRepository {
+public class AreaRepositorySQLite extends RepositoryJDBC implements AreaRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(AreaRepositorySQLite.class);
-    private static AreaRepositorySQLite instance;
 
-    private AreaRepositorySQLite(){
+    public AreaRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
@@ -23,11 +22,6 @@ public class AreaRepositorySQLite extends RepositoryJDBC implements PathElementR
     public AreaRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
-    }
-
-    public static AreaRepositorySQLite getInstance() {
-        if (instance == null) instance = new AreaRepositorySQLite();
-        return instance;
     }
 
     /**

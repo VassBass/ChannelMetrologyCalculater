@@ -2,7 +2,7 @@ package repository.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.PathElementRepository;
+import repository.ProcessRepository;
 import repository.RepositoryJDBC;
 
 import javax.annotation.Nonnull;
@@ -11,9 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
-public class ProcessRepositorySQLite extends RepositoryJDBC implements PathElementRepository {
+public class ProcessRepositorySQLite extends RepositoryJDBC implements ProcessRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessRepositorySQLite.class);
-    private static ProcessRepositorySQLite instance;
 
     public ProcessRepositorySQLite(){
         setPropertiesFromFile();
@@ -23,11 +22,6 @@ public class ProcessRepositorySQLite extends RepositoryJDBC implements PathEleme
     public ProcessRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
-    }
-
-    public static ProcessRepositorySQLite getInstance() {
-        if (instance == null) instance = new ProcessRepositorySQLite();
-        return instance;
     }
 
     /**

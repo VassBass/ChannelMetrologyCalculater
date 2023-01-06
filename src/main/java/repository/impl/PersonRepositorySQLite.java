@@ -20,20 +20,14 @@ import java.util.Optional;
 
 public class PersonRepositorySQLite extends RepositoryJDBC implements PersonRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(PersonRepositorySQLite.class);
-    private static PersonRepositorySQLite instance;
 
-    private PersonRepositorySQLite(){
+    public PersonRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
     public PersonRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
-    }
-
-    public static PersonRepositorySQLite getInstance() {
-        if (instance == null) instance = new PersonRepositorySQLite();
-        return instance;
     }
 
     @Override

@@ -18,9 +18,8 @@ import java.util.Optional;
 
 public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(SensorRepositorySQLite.class);
-    private static SensorRepositorySQLite instance;
 
-    private SensorRepositorySQLite(){
+    public SensorRepositorySQLite(){
         setPropertiesFromFile();
         createTable();
     }
@@ -28,11 +27,6 @@ public class SensorRepositorySQLite extends RepositoryJDBC implements SensorRepo
     public SensorRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
-    }
-
-    public static SensorRepositorySQLite getInstance() {
-        if (instance == null) instance = new SensorRepositorySQLite();
-        return instance;
     }
 
     @Override
