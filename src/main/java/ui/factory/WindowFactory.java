@@ -10,9 +10,9 @@ import java.util.Map;
 public class WindowFactory extends AbstractFactory {
     private final Map<String, Object> singletons = new HashMap<>();
 
-    private final SQLiteRepositoryFactory repositoryFactory;
+    private final AbstractFactory repositoryFactory;
 
-    public WindowFactory(SQLiteRepositoryFactory repositoryFactory) {
+    public WindowFactory(AbstractFactory repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
     }
 

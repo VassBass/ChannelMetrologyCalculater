@@ -1,6 +1,7 @@
 package ui.model;
 
 public interface Window {
-    void show();
-    void hide();
+    void showWindow();
+    void hideWindow();
+    void refreshWindow();
 }

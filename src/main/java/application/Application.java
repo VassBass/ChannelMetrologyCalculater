@@ -1,9 +1,12 @@
 package application;
 
 import def.*;
+import factory.AbstractFactory;
+import repository.*;
 import repository.impl.*;
 import service.FileBrowser;
 import settings.Settings;
+import ui.factory.WindowFactory;
 import ui.mainScreen.MainScreen;
 import ui.model.ApplicationLogo;
 
@@ -22,6 +25,34 @@ public class Application extends SwingWorker<Void, String> {
     private static boolean firstStart = true;
 
     private static final String[] bufferNamesOfChannels = new String[10];
+
+    private final DepartmentRepository departmentRepository;
+    private final AreaRepository areaRepository;
+    private final ProcessRepository processRepository;
+    private final InstallationRepository installationRepository;
+    private final PersonRepository personRepository;
+    private final MeasurementRepository measurementRepository;
+    private final CalibratorRepository calibratorRepository;
+    private final SensorRepository sensorRepository;
+    private final ControlPointsValuesRepository controlPointsValuesRepository;
+
+    private final MainScreen mainScreen;
+
+    public Application() {
+        AbstractFactory repositoryFactory = new SQLiteRepositoryFactory();
+        this.departmentRepository = repositoryFactory.create(DepartmentRepository.class);
+        this.areaRepository = repositoryFactory.create(AreaRepository.class);
+        this.processRepository = repositoryFactory.create(ProcessRepository.class);
+        this.installationRepository = repositoryFactory.create(InstallationRepository.class);
+        this.personRepository = repositoryFactory.create(PersonRepository.class);
+        this.measurementRepository = repositoryFactory.create(MeasurementRepository.class);
+        this.calibratorRepository = repositoryFactory.create(CalibratorRepository.class);
+        this.sensorRepository = repositoryFactory.create(SensorRepository.class);
+        this.controlPointsValuesRepository = repositoryFactory.create(ControlPointsValuesRepository.class);
+
+        AbstractFactory windowFactory = new WindowFactory(repositoryFactory);
+        this.mainScreen = windowFactory.create(MainScreen.class);
+    }
 
     public static void main(String[] args){
         LOGGER.info("Application starts from main!");
@@ -81,15 +112,15 @@ public class Application extends SwingWorker<Void, String> {
         ApplicationContext.setUkraineLocalization();
         publish("Завантаження списків");
         if (firstStart){
-            DepartmentRepositorySQLite.getInstance().rewrite(DefaultDepartments.get());
-            AreaRepositorySQLite.getInstance().rewrite(DefaultAreas.get());
-            InstallationRepositorySQLite.getInstance().rewrite(DefaultInstallations.get());
-            ProcessRepositorySQLite.getInstance().rewrite(DefaultProcesses.get());
-            PersonRepositorySQLite.getInstance().rewrite(DefaultPersons.get());
-            MeasurementRepositorySQLite.getInstance().rewrite(DefaultMeasurements.get());
-            CalibratorRepositorySQLite.getInstance().rewrite(DefaultCalibrators.get());
-            SensorRepositorySQLite.getInstance().rewrite(DefaultSensors.get());
-            ControlPointsValuesRepositorySQLite.getInstance().rewrite(DefaultControlPointsValues.get());
+            departmentRepository.rewrite(DefaultDepartments.get());
+            areaRepository.rewrite(DefaultAreas.get());
+            installationRepository.rewrite(DefaultInstallations.get());
+            processRepository.rewrite(DefaultProcesses.get());
+            personRepository.rewrite(DefaultPersons.get());
+            measurementRepository.rewrite(DefaultMeasurements.get());
+            calibratorRepository.rewrite(DefaultCalibrators.get());
+            sensorRepository.rewrite(DefaultSensors.get());
+            controlPointsValuesRepository.rewrite(DefaultControlPointsValues.get());
         }
         publish("Архівування сертифікатів/протоколів");
         FileBrowser.createArchive();

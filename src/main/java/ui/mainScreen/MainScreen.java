@@ -1,8 +1,8 @@
 package ui.mainScreen;
 
+import factory.AbstractFactory;
 import model.Channel;
 import repository.ChannelRepository;
-import repository.SQLiteRepositoryFactory;
 import ui.event.EventSource;
 import ui.event.EventSourceIdGenerator;
 import ui.mainScreen.buttonsPanel.ButtonsPanel;
@@ -11,6 +11,7 @@ import ui.mainScreen.infoTable.InfoTable;
 import ui.mainScreen.menu.MenuBar;
 import ui.mainScreen.searchPanel.SearchPanel;
 import ui.model.CellBuilder;
+import ui.model.Window;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -22,9 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static java.awt.EventQueue.invokeLater;
 import static ui.UI_ConfigHolder.SCREEN_SIZE;
 
-public class MainScreen extends JFrame implements EventSource {
+public class MainScreen extends JFrame implements EventSource, Window {
     public static final String KEY_SEARCH_FIELD_TEXT = "search_field_text";
     public static final String KEY_SEARCH_VALUE_TEXT = "search_value_text";
     public static final String KEY_SEARCH_VALUE_LIST_ITEM_TEXT = "search_value_list_item_text";
@@ -44,7 +46,7 @@ public class MainScreen extends JFrame implements EventSource {
 
     private List<Channel> channelsList;
 
-    public MainScreen(SQLiteRepositoryFactory repositoryFactory){
+    public MainScreen(AbstractFactory repositoryFactory){
         super();
         ChannelRepository channelRepository = repositoryFactory.create(ChannelRepository.class);
 
@@ -119,18 +121,29 @@ public class MainScreen extends JFrame implements EventSource {
 
     public void refreshMenu(){
         this.setJMenuBar(new MenuBar(this));
-        this.refresh();
+        this.refreshWindow();
     }
 
-    public void refresh(){
+    @Override
+    public void refreshWindow(){
         this.setVisible(false);
         this.setVisible(true);
+    }
+
+    @Override
+    public void showWindow() {
+        invokeLater(() -> this.setVisible(true));
+    }
+
+    @Override
+    public void hideWindow() {
+        invokeLater(this::dispose);
     }
 
     private final WindowListener windowListener = new WindowAdapter() {
         @Override
         public void windowClosing(WindowEvent e) {
-            EventQueue.invokeLater(() -> {
+            invokeLater(() -> {
                 int result = JOptionPane.showConfirmDialog(MainScreen.this,
                         "Закрити програму?", "Вихід", JOptionPane.OK_CANCEL_OPTION);
                 if (result == 0){
