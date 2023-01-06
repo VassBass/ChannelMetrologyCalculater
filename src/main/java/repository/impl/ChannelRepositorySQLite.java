@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.ChannelRepository;
 import repository.MeasurementRepository;
+import repository.SQLiteRepositoryFactory;
 import repository.RepositoryJDBC;
 
 import javax.annotation.Nonnull;
@@ -22,24 +23,18 @@ import java.util.Optional;
 
 public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(ChannelRepositorySQLite.class);
-    private static ChannelRepositorySQLite instance;
 
     private final MeasurementRepository measurementRepository;
 
-    private ChannelRepositorySQLite(){
+    public ChannelRepositorySQLite(SQLiteRepositoryFactory repositoryFactory){
         setPropertiesFromFile();
         createTable();
-        measurementRepository = MeasurementRepositorySQLite.getInstance();
+        measurementRepository = repositoryFactory.create(MeasurementRepository.class);
     }
     public ChannelRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
         setProperties(dbUrl, dbUser, dbPassword);
         createTable();
         measurementRepository = new MeasurementRepositorySQLite(dbUrl, dbUser, dbPassword);
-    }
-
-    public static ChannelRepositorySQLite getInstance() {
-        if (instance == null) instance = new ChannelRepositorySQLite();
-        return instance;
     }
 
     @Override

@@ -1,10 +1,12 @@
 package ui.mainScreen;
 
 import model.Channel;
-import repository.impl.ChannelRepositorySQLite;
+import repository.ChannelRepository;
+import repository.SQLiteRepositoryFactory;
 import ui.event.EventSource;
 import ui.event.EventSourceIdGenerator;
 import ui.mainScreen.buttonsPanel.ButtonsPanel;
+import ui.mainScreen.channelTable.ChannelTable;
 import ui.mainScreen.infoTable.InfoTable;
 import ui.mainScreen.menu.MenuBar;
 import ui.mainScreen.searchPanel.SearchPanel;
@@ -23,7 +25,10 @@ import java.util.logging.Logger;
 import static ui.UI_ConfigHolder.SCREEN_SIZE;
 
 public class MainScreen extends JFrame implements EventSource {
-    private static MainScreen mainScreen;
+    public static final String KEY_SEARCH_FIELD_TEXT = "search_field_text";
+    public static final String KEY_SEARCH_VALUE_TEXT = "search_value_text";
+    public static final String KEY_SEARCH_VALUE_LIST_ITEM_TEXT = "search_value_list_item_text";
+    public static final String KEY_SEARCH_VALUE_BOOLEAN = "search_value_boolean";
 
     private static final Logger LOGGER = Logger.getLogger(MainScreen.class.getName());
 
@@ -31,7 +36,7 @@ public class MainScreen extends JFrame implements EventSource {
         return "Вимірювальні канали [кількість : "+ listSize + "]";
     }
 
-    public MainTable mainTable;
+    public ChannelTable channelTable;
     private MenuBar menuBar;
     private InfoTable infoTable;
     public ButtonsPanel buttonsPanel;
@@ -39,10 +44,11 @@ public class MainScreen extends JFrame implements EventSource {
 
     private List<Channel> channelsList;
 
-    private MainScreen(){
+    public MainScreen(SQLiteRepositoryFactory repositoryFactory){
         super();
+        ChannelRepository channelRepository = repositoryFactory.create(ChannelRepository.class);
 
-        channelsList = new ArrayList<>(ChannelRepositorySQLite.getInstance().getAll());
+        channelsList = new ArrayList<>(channelRepository.getAll());
         this.setTitle(windowHeader(channelsList.size()));
 
         this.createElements(channelsList);
@@ -50,14 +56,9 @@ public class MainScreen extends JFrame implements EventSource {
         this.build();
     }
 
-    public static MainScreen getInstance() {
-        if (mainScreen == null) mainScreen = new MainScreen();
-        return mainScreen;
-    }
-
     private void createElements(@Nonnull List<Channel>channelList) {
         this.menuBar = new MenuBar(this);
-        this.mainTable = new MainTable(this, channelList);
+        this.channelTable = new ChannelTable(this, channelList);
         this.infoTable = new InfoTable();
         this.buttonsPanel = new ButtonsPanel(this);
         this.searchPanel = new SearchPanel(this);
@@ -92,7 +93,7 @@ public class MainScreen extends JFrame implements EventSource {
                 .weightY(0.025)
                 .create());
 
-        mainPanel.add(new JScrollPane(this.mainTable), new CellBuilder()
+        mainPanel.add(new JScrollPane(this.channelTable), new CellBuilder()
                 .coordinates(0, 2)
                 .width(2)
                 .weightY(0.9)
@@ -111,7 +112,7 @@ public class MainScreen extends JFrame implements EventSource {
 
     public void setChannelsList(List<Channel>list){
         this.channelsList = list;
-        this.mainTable.setList(list);
+        this.channelTable.setList(list);
         this.setTitle(windowHeader(list.size()));
         this.infoTable.updateInfo(null);
     }
