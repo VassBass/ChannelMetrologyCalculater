@@ -3,8 +3,8 @@ package ui.mainScreen;
 import factory.AbstractFactory;
 import model.Channel;
 import repository.ChannelRepository;
-import ui.event.EventSource;
-import ui.event.EventSourceIdGenerator;
+import service.MainScreenEventListener;
+import ui.event.Event;
 import ui.mainScreen.buttonsPanel.ButtonsPanel;
 import ui.mainScreen.channelTable.ChannelTable;
 import ui.mainScreen.infoTable.InfoTable;
@@ -26,7 +26,9 @@ import java.util.logging.Logger;
 import static java.awt.EventQueue.invokeLater;
 import static ui.UI_ConfigHolder.SCREEN_SIZE;
 
-public class MainScreen extends JFrame implements EventSource, Window {
+public class MainScreen extends JFrame implements Window {
+    public static final String KEY_CHANNEL = "channel";
+
     public static final String KEY_SEARCH_FIELD_TEXT = "search_field_text";
     public static final String KEY_SEARCH_VALUE_TEXT = "search_value_text";
     public static final String KEY_SEARCH_VALUE_LIST_ITEM_TEXT = "search_value_list_item_text";
@@ -46,9 +48,12 @@ public class MainScreen extends JFrame implements EventSource, Window {
 
     private List<Channel> channelsList;
 
-    public MainScreen(AbstractFactory repositoryFactory){
+    private final MainScreenEventListener eventListener;
+
+    public MainScreen(AbstractFactory repositoryFactory, MainScreenEventListener eventListener){
         super();
         ChannelRepository channelRepository = repositoryFactory.create(ChannelRepository.class);
+        this.eventListener = eventListener;
 
         channelsList = new ArrayList<>(channelRepository.getAll());
         this.setTitle(windowHeader(channelsList.size()));
@@ -59,8 +64,8 @@ public class MainScreen extends JFrame implements EventSource, Window {
     }
 
     private void createElements(@Nonnull List<Channel>channelList) {
-        this.menuBar = new MenuBar(this);
         this.channelTable = new ChannelTable(this, channelList);
+        this.menuBar = new MenuBar(eventListener, channelTable);
         this.infoTable = new InfoTable();
         this.buttonsPanel = new ButtonsPanel(this);
         this.searchPanel = new SearchPanel(this);
@@ -68,7 +73,7 @@ public class MainScreen extends JFrame implements EventSource, Window {
 
     private void setReactions() {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.addWindowListener(this.windowListener);
+        this.addWindowListener(eventListener.clickClose(Event.emptyEvent));
     }
 
     private void build() {
@@ -126,8 +131,10 @@ public class MainScreen extends JFrame implements EventSource, Window {
 
     @Override
     public void refreshWindow(){
-        this.setVisible(false);
-        this.setVisible(true);
+        invokeLater(() -> {
+            this.setVisible(false);
+            this.setVisible(true);
+        });
     }
 
     @Override
@@ -138,23 +145,5 @@ public class MainScreen extends JFrame implements EventSource, Window {
     @Override
     public void hideWindow() {
         invokeLater(this::dispose);
-    }
-
-    private final WindowListener windowListener = new WindowAdapter() {
-        @Override
-        public void windowClosing(WindowEvent e) {
-            invokeLater(() -> {
-                int result = JOptionPane.showConfirmDialog(MainScreen.this,
-                        "Закрити програму?", "Вихід", JOptionPane.OK_CANCEL_OPTION);
-                if (result == 0){
-                    System.exit(0);
-                }
-            });
-        }
-    };
-
-    @Override
-    public String getId() {
-        return EventSourceIdGenerator.generate(MainScreen.class);
     }
 }

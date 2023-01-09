@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.ChannelRepository;
 import repository.MeasurementRepository;
-import repository.SQLiteRepositoryFactory;
+import factory.SQLiteRepositoryFactory;
 import repository.RepositoryJDBC;
 
 import javax.annotation.Nonnull;
@@ -71,7 +71,9 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
     }
 
     @Override
-    public Optional<Channel> get(@Nonnull String code) {
+    public Channel get(String code) {
+        if (code == null) return null;
+
         String sql = "SELECT * FROM channels WHERE code = '" + code + "' LIMIT 1;";
         try (ResultSet resultSet = getResultSet(sql)){
             if (resultSet.next()){
@@ -96,13 +98,13 @@ public class ChannelRepositorySQLite extends RepositoryJDBC implements ChannelRe
                 Optional<Measurement> m = measurementRepository.get(measurementValue);
                 m.ifPresent(channel::setMeasurement);
 
-                return Optional.of(channel);
+                return channel;
             }
         }catch (SQLException | JsonProcessingException e){
             LOGGER.warn("Exception was thrown!", e);
         }
 
-        return Optional.empty();
+        return null;
     }
 
     @Override

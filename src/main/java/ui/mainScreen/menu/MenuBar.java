@@ -1,6 +1,7 @@
 package ui.mainScreen.menu;
 
-import ui.event.EventSource;
+import service.MainScreenEventListener;
+import ui.mainScreen.channelTable.ChannelTable;
 
 import javax.swing.*;
 
@@ -9,10 +10,10 @@ public class MenuBar extends JMenuBar {
     private JMenu menuLists;
     private JMenu menuExportImport;
 
-    public MenuBar(EventSource eventSource){
+    public MenuBar(MainScreenEventListener eventListener, ChannelTable channelTable){
         super();
 
-        this.menuChannel = new MenuChannel(eventSource);
+        this.menuChannel = new MenuChannel(eventListener, channelTable);
 
         this.createElements();
         this.build();

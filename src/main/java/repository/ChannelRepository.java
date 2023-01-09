@@ -4,12 +4,13 @@ import model.Channel;
 import model.Sensor;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public interface ChannelRepository extends Repository<Channel>{
-    Optional<Channel> get(@Nonnull String code);
+    @Nullable Channel get(@Nullable String code);
 
     boolean removeBySensor(@Nonnull Sensor sensor);
     boolean removeByMeasurementValue(@Nonnull String measurementValue);

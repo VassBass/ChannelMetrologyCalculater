@@ -1,13 +1,14 @@
 package ui.mainScreen.menu;
 
-import ui.event.EventManager;
-import ui.event.EventSource;
+import service.MainScreenEventListener;
+import ui.event.Event;
+import ui.event.SimpleEvent;
+import ui.mainScreen.channelTable.ChannelTable;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 
-import static ui.event.EventManager.*;
-import static ui.event.eventManagers.mainScreen.MainScreenEventManager.CLICK_CALCULATE_BUTTON;
-import static ui.event.eventManagers.mainScreen.MainScreenEventManager.CLICK_FOLDER_BUTTON;
+import static ui.mainScreen.MainScreen.KEY_CHANNEL;
 
 public class MenuChannel extends JMenu {
     private static final String HEADER_TEXT = "Канал";
@@ -17,9 +18,9 @@ public class MenuChannel extends JMenu {
     private static final String REMOVE_BUTTON_TEXT = "Видалити";
     private static final String FOLDER_BUTTON_TEXT = "Сертифікати/Протоколи";
 
-    public MenuChannel(final EventSource eventSource){
+    public MenuChannel(@Nonnull final MainScreenEventListener eventService,
+                       @Nonnull final ChannelTable channelTable){
         super(HEADER_TEXT);
-        final EventManager eventManager = EventManager.getInstance();
 
         JMenuItem btnAdd = new JMenuItem(ADD_BUTTON_TEXT);
         JMenuItem btnCalculate = new JMenuItem(CALCULATE_BUTTON_TEXT);
@@ -27,11 +28,16 @@ public class MenuChannel extends JMenu {
         JMenuItem btnRemove = new JMenuItem(REMOVE_BUTTON_TEXT);
         JMenuItem btnFolder = new JMenuItem(FOLDER_BUTTON_TEXT);
 
-        btnInfo.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_INFO_BUTTON));
-        btnAdd.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_ADD_BUTTON));
-        btnRemove.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_REMOVE_BUTTON));
-        btnCalculate.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_CALCULATE_BUTTON));
-        btnFolder.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_FOLDER_BUTTON));
+        btnInfo.addActionListener(eventService
+                .clickInfoButton(new SimpleEvent<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
+        btnAdd.addActionListener(eventService
+                .clickAddButton(Event.emptyEvent));
+        btnRemove.addActionListener(eventService
+                .clickRemoveButton(new SimpleEvent<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
+        btnCalculate.addActionListener(eventService
+                .clickCalculateButton(new SimpleEvent<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
+        btnFolder.addActionListener(eventService
+                .clickOpenFolderButton(Event.emptyEvent));
 
         this.add(btnAdd);
         this.add(btnRemove);
