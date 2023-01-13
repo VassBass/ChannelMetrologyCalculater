@@ -44,6 +44,7 @@ public class ChannelRepositoryInitializer implements RepositoryInitializer {
                 + ", range_max real NOT NULL"
                 + ", allowable_error_percent real NOT NULL"
                 + ", allowable_error_value real NOT NULL"
+                + ", control_points text NOT NULL"
                 + ", PRIMARY KEY (\"code\")"
                 + ");", tableName);
 

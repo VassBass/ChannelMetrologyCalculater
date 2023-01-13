@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -117,6 +118,13 @@ public class Channel implements Serializable {
      */
     private boolean suitability = true;
 
+    /**
+     * DB field control_points
+     * key - percent value of point
+     * value - value of point
+     */
+    private Map<Double, Double> controlPoints;
+
     @Nonnull public String getCode() {return code;}
     @Nonnull public String getName() {return name;}
     public Measurement getMeasurement() {return measurement;}
@@ -135,6 +143,7 @@ public class Channel implements Serializable {
     public double getAllowableErrorPercent(){return allowableErrorPercent;}
     public double getAllowableError(){return allowableError;}
     public boolean isSuitability(){return suitability;}
+    public Map<Double, Double> getControlPoints(){return controlPoints;}
 
     /**
      * @return date of next channel control or null if {@link #suitability} = false
@@ -143,7 +152,7 @@ public class Channel implements Serializable {
      * @see #suitability
      * @see #date
      */
-    public Calendar _getNextDate() {
+    public Calendar getNextDate() {
         if (this.suitability) {
             long l = (long) (31536000000L * frequency);
             Calendar nextDate = new GregorianCalendar();
@@ -158,7 +167,7 @@ public class Channel implements Serializable {
      * @return string of full channel path
      * format {@link #department}/{@link #area}/{@link #process}/{@link #installation}
      */
-    public String _getFullPath() {
+    public String getFullPath() {
         StringBuilder builder = new StringBuilder();
         if (this.department!=null) {builder.append(this.department);}
         if (this.area!=null) {
@@ -179,7 +188,7 @@ public class Channel implements Serializable {
     /**
      * @return full channel range - {@link #rangeMax} minus {@link #rangeMin}
      */
-    public double _getRange(){
+    public double getRange(){
         return this.rangeMax - this.rangeMin;
     }
 
@@ -199,7 +208,7 @@ public class Channel implements Serializable {
     public void setRangeMax(double rangeMax) {this.rangeMax = rangeMax;}
     public void setReference(String reference){this.reference = reference;}
     public void setSuitability(boolean suitability){this.suitability = suitability;}
-
+    public void setControlPoints(Map<Double, Double> controlPoints){this.controlPoints = controlPoints;}
 
     public void setAllowableError(double percent, double value){
         this.allowableErrorPercent = percent;
@@ -235,7 +244,7 @@ public class Channel implements Serializable {
 
     @Override
     public String toString() {
-        return code;
+        return String.format("(%s)%s[%s]{%s}", code, name, technologyNumber, getFullPath());
     }
 
     /**
@@ -261,6 +270,7 @@ public class Channel implements Serializable {
         c.setRange(channel.getRangeMin(), channel.getRangeMax());
         c.setAllowableError(channel.getAllowableErrorPercent(), channel.getAllowableError());
         c.setSuitability(channel.isSuitability());
+        c.setControlPoints(channel.getControlPoints());
         return c;
     }
 
@@ -287,6 +297,7 @@ public class Channel implements Serializable {
                 && this.rangeMax == channel.getRangeMax()
                 && this.allowableErrorPercent == channel.getAllowableErrorPercent()
                 && this.allowableError == channel.getAllowableError()
-                && this.suitability == channel.isSuitability();
+                && this.suitability == channel.isSuitability()
+                && this.controlPoints.equals(channel.controlPoints);
     }
 }

@@ -4,6 +4,8 @@ import model.Channel;
 import model.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.json.JacksonJsonObjectMapper;
+import service.json.JsonObjectMapper;
 import service.repository.RepositoryImplementationFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
@@ -18,6 +20,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class ChannelRepositorySQLite implements ChannelRepository {
     private static final Logger logger = LoggerFactory.getLogger(ChannelRepositorySQLite.class);
@@ -26,6 +29,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
     private final RepositoryDBConnector connector;
     private final MeasurementRepository measurementRepository;
     private final SensorRepository sensorRepository;
+    private final JsonObjectMapper jsonMapper = JacksonJsonObjectMapper.getInstance();
 
     public ChannelRepositorySQLite(RepositoryConfigHolder configHolder,
                                    RepositoryDBConnector connector,
@@ -37,6 +41,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Channel get(@Nonnull String code) {
         String sql = String.format("SELECT * FROM %s WHERE code = '%s' LIMIT 1;", tableName, code);
         try (ResultSet resultSet = connector.getResultSet(sql)){
@@ -64,6 +69,9 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                 String measurementValue = resultSet.getString("measurement_value");
                 channel.setMeasurement(measurementRepository.get(measurementValue));
 
+                String controlPointsJson = resultSet.getString("control_points");
+                channel.setControlPoints(jsonMapper.JsonToObject(controlPointsJson, Map.class));
+
                 return channel;
             }
         }catch (SQLException e){
@@ -74,6 +82,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Collection<Channel> getAll() {
         List<Channel>channels = new ArrayList<>();
 
@@ -103,6 +112,9 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                 String measurementValue = resultSet.getString("measurement_value");
                 channel.setMeasurement(measurementRepository.get(measurementValue));
 
+                String controlPointsJson = resultSet.getString("control_points");
+                channel.setControlPoints(jsonMapper.JsonToObject(controlPointsJson, Map.class));
+
                 channels.add(channel);
             }
         }catch (SQLException e){
@@ -116,8 +128,8 @@ public class ChannelRepositorySQLite implements ChannelRepository {
     public boolean add(@Nonnull Channel channel) {
         String sql = String.format("INSERT INTO %s (code, name, department, area, process, installation, technology_number" +
                 ", protocol_number, reference, date, suitability, measurement_value, sensor_name, frequency, range_min, range_max" +
-                ", allowable_error_percent, allowable_error_value) "
-                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", tableName);
+                ", allowable_error_percent, allowable_error_value, control_points) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", tableName);
         try (PreparedStatement statement = connector.getPreparedStatement(sql)){
             statement.setString(1, channel.getCode());
             statement.setString(2, channel.getName());
@@ -137,6 +149,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
             statement.setDouble(16, channel.getRangeMax());
             statement.setDouble(17, channel.getAllowableErrorPercent());
             statement.setDouble(18, channel.getAllowableError());
+            statement.setString(19, jsonMapper.objectToJson(channel.getControlPoints()));
 
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -197,7 +210,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                     if (channel == null) continue;
 
                     String values = String.format(
-                            "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s),",
+                            "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
                             channel.getCode(),
                             channel.getName(),
                             channel.getDepartment(),
@@ -215,7 +228,8 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                             channel.getRangeMin(),
                             channel.getRangeMax(),
                             channel.getAllowableErrorPercent(),
-                            channel.getAllowableError()
+                            channel.getAllowableError(),
+                            jsonMapper.objectToJson(channel.getControlPoints())
                     );
                     sqlBuilder.append(values);
                 }
@@ -292,6 +306,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                 ", range_max = %s" +
                 ", allowable_error_percent = %s" +
                 ", allowable_error_value = %s" +
+                ", control_points = '%s'" +
                 " WHERE code = '%s';",
                 tableName,
                 newChannel.getCode(),
@@ -312,6 +327,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                 newChannel.getRangeMax(),
                 newChannel.getAllowableErrorPercent(),
                 newChannel.getAllowableError(),
+                jsonMapper.objectToJson(newChannel.getControlPoints()),
                 oldChannel.getCode()
         );
         try (Statement statement = connector.getStatement()){
@@ -343,7 +359,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                 String sql = String.format("UPDATE %s SET "
                         + "name = ?, department = ?, area = ?, process = ?, installation = ?, technology_number = ?, protocol_number = ?, "
                         + "reference = ?, date = ?, suitability = ?, measurement_value = ?, sensor_name = ?, frequency = ?, range_min = ?, "
-                        + "range_max = ?, allowable_error_percent = ?, allowable_error_value = ? "
+                        + "range_max = ?, allowable_error_percent = ?, allowable_error_value = ?, control_points = ? "
                         + "WHERE code = ?;", tableName);
                 try (PreparedStatement statement = connector.getPreparedStatement(sql)){
                     statement.setString(1, c.getName());
@@ -363,8 +379,9 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                     statement.setDouble(15, c.getRangeMax());
                     statement.setDouble(16, c.getAllowableErrorPercent());
                     statement.setDouble(17, c.getAllowableError());
+                    statement.setString(18, jsonMapper.objectToJson(c.getControlPoints()));
 
-                    statement.setString(18, c.getCode());
+                    statement.setString(19, c.getCode());
 
                     statement.execute();
                 } catch (SQLException e) {
@@ -375,9 +392,9 @@ public class ChannelRepositorySQLite implements ChannelRepository {
         }
 
         if (!newChannels.isEmpty()){
-            String insertSql = String.format("INSERT INTO %s ('code', 'name', 'department', 'area', 'process', 'installation', 'technology_number'" +
-                    ", 'protocol_number', 'reference', 'date', 'suitability', 'measurement_value', 'sensor_name', 'frequency', 'range_min'" +
-                    ", 'range_max', 'allowable_error_percent', 'allowable_error_value')" +
+            String insertSql = String.format("INSERT INTO %s (code, name, department, area, process, installation, technology_number" +
+                    ", protocol_number, reference, date, suitability, measurement_value, sensor_name, frequency, range_min" +
+                    ", range_max, allowable_error_percent, allowable_error_value, control_points)" +
                     " VALUES ", tableName);
             StringBuilder sqlBuilder = new StringBuilder(insertSql);
             try (Statement statement = connector.getStatement()) {
@@ -385,7 +402,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                     if (channel == null) continue;
 
                     String values = String.format(
-                            "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s),",
+                            "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
                             channel.getCode(),
                             channel.getName(),
                             channel.getDepartment(),
@@ -403,7 +420,8 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                             channel.getRangeMin(),
                             channel.getRangeMax(),
                             channel.getAllowableErrorPercent(),
-                            channel.getAllowableError()
+                            channel.getAllowableError(),
+                            jsonMapper.objectToJson(channel.getControlPoints())
                     );
                     sqlBuilder.append(values);
                 }
