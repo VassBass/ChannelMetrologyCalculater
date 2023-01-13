@@ -1,7 +1,7 @@
 package service.repository.init.reg;
 
-import repository.*;
 import service.repository.repos.area.AreaRepository;
+import service.repository.repos.calibrator.CalibratorRepository;
 import service.repository.repos.channel.ChannelRepository;
 import service.repository.repos.department.DepartmentRepository;
 import service.repository.repos.installation.InstallationRepository;

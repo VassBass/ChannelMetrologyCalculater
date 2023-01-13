@@ -9,10 +9,16 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface PersonRepository extends Repository<Person> {
-    Optional<Person> getById(@Nonnegative int id);
+public interface PersonRepository {
+    Collection<Person> getAll();
+    Person getById(@Nonnegative int id);
+
+    boolean add(@Nonnull Person person);
     boolean add(@Nonnull Collection<Person> persons);
-    @Override
-    boolean set(@Nonnull Person oldO, @Nullable Person newO);
+
     boolean set(@Nonnull Person person);
+    boolean rewrite(@Nonnull Collection<Person> persons);
+
+    boolean remove(@Nonnull Person person);
+    boolean clear();
 }

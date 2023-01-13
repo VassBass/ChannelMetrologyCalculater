@@ -1,9 +1,9 @@
 package backgroundTasks;
 
 import model.Calibrator;
-import repository.CalibratorRepository;
+import service.repository.repos.calibrator.CalibratorRepository;
 import service.repository.repos.channel.ChannelRepository;
-import repository.impl.CalibratorRepositorySQLite;
+import service.repository.repos.calibrator.CalibratorRepositorySQLite;
 import service.repository.repos.channel.ChannelRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.DialogLoading;

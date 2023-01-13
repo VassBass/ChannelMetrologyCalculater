@@ -2,7 +2,7 @@ package service.repository.init;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.CalibratorRepository;
+import service.repository.repos.calibrator.CalibratorRepository;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 

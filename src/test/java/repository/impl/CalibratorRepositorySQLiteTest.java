@@ -4,7 +4,8 @@ import model.Calibrator;
 import model.Measurement;
 import org.junit.*;
 import org.sqlite.JDBC;
-import repository.CalibratorRepository;
+import service.repository.repos.calibrator.CalibratorRepository;
+import service.repository.repos.calibrator.CalibratorRepositorySQLite;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -4,6 +4,8 @@ import repository.*;
 import repository.impl.*;
 import service.repository.repos.area.AreaRepository;
 import service.repository.repos.area.AreaRepositorySQLite;
+import service.repository.repos.calibrator.CalibratorRepository;
+import service.repository.repos.calibrator.CalibratorRepositorySQLite;
 import service.repository.repos.channel.ChannelRepository;
 import service.repository.repos.channel.ChannelRepositorySQLite;
 import service.repository.repos.department.DepartmentRepository;

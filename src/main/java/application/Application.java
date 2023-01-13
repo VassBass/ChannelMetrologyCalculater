@@ -4,6 +4,7 @@ import def.*;
 import repository.impl.*;
 import service.FileBrowser;
 import service.repository.repos.area.AreaRepositorySQLite;
+import service.repository.repos.calibrator.CalibratorRepositorySQLite;
 import service.repository.repos.department.DepartmentRepositorySQLite;
 import service.repository.repos.installation.InstallationRepositorySQLite;
 import service.repository.repos.measurement.MeasurementRepositorySQLite;

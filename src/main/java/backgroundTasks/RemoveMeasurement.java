@@ -1,11 +1,11 @@
 package backgroundTasks;
 
 import model.Measurement;
-import repository.CalibratorRepository;
+import service.repository.repos.calibrator.CalibratorRepository;
 import service.repository.repos.channel.ChannelRepository;
 import service.repository.repos.measurement.MeasurementRepository;
 import service.repository.repos.sensor.SensorRepository;
-import repository.impl.CalibratorRepositorySQLite;
+import service.repository.repos.calibrator.CalibratorRepositorySQLite;
 import service.repository.repos.channel.ChannelRepositorySQLite;
 import service.repository.repos.measurement.MeasurementRepositorySQLite;
 import service.repository.repos.sensor.SensorRepositorySQLite;

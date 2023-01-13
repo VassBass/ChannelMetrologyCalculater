@@ -7,6 +7,8 @@ import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 import service.repository.repos.area.AreaRepository;
 import service.repository.repos.area.AreaRepositorySQLite;
+import service.repository.repos.calibrator.CalibratorRepository;
+import service.repository.repos.calibrator.CalibratorRepositorySQLite;
 import service.repository.repos.channel.ChannelRepository;
 import service.repository.repos.channel.ChannelRepositorySQLite;
 import service.repository.repos.department.DepartmentRepository;
@@ -15,6 +17,8 @@ import service.repository.repos.installation.InstallationRepository;
 import service.repository.repos.installation.InstallationRepositorySQLite;
 import service.repository.repos.measurement.MeasurementRepository;
 import service.repository.repos.measurement.MeasurementRepositorySQLite;
+import service.repository.repos.person.PersonRepository;
+import service.repository.repos.person.PersonRepositorySQLite;
 import service.repository.repos.process.ProcessRepository;
 import service.repository.repos.process.ProcessRepositorySQLite;
 import service.repository.repos.sensor.SensorRepository;
@@ -42,43 +46,20 @@ public class RepositoryImplementationFactory implements ImplementationFactory {
         T i = (T) implementations.get(key);
 
         if (i == null) {
-            if (clazz.isAssignableFrom(MeasurementRepository.class)) {
-                i = (T) new MeasurementRepositorySQLite(configHolder, connector);
-                implementations.put(key, i);
-            }
+            if (clazz.isAssignableFrom(MeasurementRepository.class))    i = (T) new MeasurementRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(SensorRepository.class))         i = (T) new SensorRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(DepartmentRepository.class))     i = (T) new DepartmentRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(AreaRepository.class))           i = (T) new AreaRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(ProcessRepository.class))        i = (T) new ProcessRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(InstallationRepository.class))   i = (T) new InstallationRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(PersonRepository.class))         i = (T) new PersonRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(CalibratorRepository.class))     i = (T) new CalibratorRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(ChannelRepository.class))        i = (T) new ChannelRepositorySQLite(configHolder, connector, this);
 
-            if (clazz.isAssignableFrom(SensorRepository.class)) {
-                i = (T) new SensorRepositorySQLite(configHolder, connector);
-                implementations.put(key, i);
-            }
-
-            if (clazz.isAssignableFrom(DepartmentRepository.class)) {
-                i = (T) new DepartmentRepositorySQLite(configHolder, connector);
-                implementations.put(key, i);
-            }
-
-            if (clazz.isAssignableFrom(AreaRepository.class)) {
-                i = (T) new AreaRepositorySQLite(configHolder, connector);
-                implementations.put(key, i);
-            }
-
-            if (clazz.isAssignableFrom(ProcessRepository.class)) {
-                i = (T) new ProcessRepositorySQLite(configHolder, connector);
-                implementations.put(key, i);
-            }
-
-            if (clazz.isAssignableFrom(InstallationRepository.class)) {
-                i = (T) new InstallationRepositorySQLite(configHolder, connector);
-                implementations.put(key, i);
-            }
-
-            if (clazz.isAssignableFrom(ChannelRepository.class)) {
-                i = (T) new ChannelRepositorySQLite(configHolder, connector, this);
-                implementations.put(key, i);
-            }
+            if (i == null) logger.warn(String.format("Can't find implementation for %s", key));
+            else implementations.put(key, i);
         }
 
-        logger.warn(String.format("Can't find implementation for %s", key));
         return i;
     }
 }

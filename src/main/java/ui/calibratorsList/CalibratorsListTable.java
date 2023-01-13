@@ -1,8 +1,8 @@
 package ui.calibratorsList;
 
 import model.Calibrator;
-import repository.CalibratorRepository;
-import repository.impl.CalibratorRepositorySQLite;
+import service.repository.repos.calibrator.CalibratorRepository;
+import service.repository.repos.calibrator.CalibratorRepositorySQLite;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

@@ -1,12 +1,13 @@
-package repository.impl;
+package service.repository.repos.calibrator;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import model.Calibrator;
 import model.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.CalibratorRepository;
-import repository.RepositoryJDBC;
+import service.json.JacksonJsonObjectMapper;
+import service.json.JsonObjectMapper;
+import service.repository.config.RepositoryConfigHolder;
+import service.repository.connection.RepositoryDBConnector;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -16,50 +17,24 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
-public class CalibratorRepositorySQLite extends RepositoryJDBC implements CalibratorRepository {
+public class CalibratorRepositorySQLite implements CalibratorRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CalibratorRepositorySQLite.class);
 
-    public CalibratorRepositorySQLite(){
-        setPropertiesFromFile();
-        createTable();
-    }
-    public CalibratorRepositorySQLite(String dbUrl, String dbUser, String dbPassword){
-        setProperties(dbUrl, dbUser, dbPassword);
-        createTable();
-    }
+    private final String tableName;
+    private final RepositoryDBConnector connector;
+    private final JsonObjectMapper jsonMapper = JacksonJsonObjectMapper.getInstance();
 
-    @Override
-    public boolean createTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS calibrators ("
-                + "name text NOT NULL UNIQUE"
-                + ", type text NOT NULL"
-                + ", number text NOT NULL"
-                + ", measurement text NOT NULL"
-                + ", value text NOT NULL"
-                + ", error_formula text NOT NULL"
-                + ", certificate text NOT NULL"
-                + ", range_min real NOT NULL"
-                + ", range_max real NOT NULL"
-                + ", PRIMARY KEY (\"name\")"
-                + ");";
-        try (Statement statement = getStatement()){
-            statement.execute(sql);
-            return isTableExists("calibrators");
-        }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
-            return false;
-        }
+    public CalibratorRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
+        this.tableName = configHolder.getTableName(CalibratorRepository.class);
+        this.connector = connector;
     }
 
     @Override
     public Collection<Calibrator> getAll() {
         List<Calibrator>calibrators = new ArrayList<>();
-        String sql = "SELECT * FROM calibrators;";
-
-        try (ResultSet resultSet = getResultSet(sql)){
-
+        String sql = String.format("SELECT * FROM %s;", tableName);
+        try (ResultSet resultSet = connector.getResultSet(sql)){
             while (resultSet.next()){
                 Calibrator calibrator = new Calibrator();
                 calibrator.setType(resultSet.getString("type"));
@@ -70,12 +45,14 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                 calibrator.setValue(resultSet.getString("value"));
                 calibrator.setMeasurement(resultSet.getString("measurement"));
                 calibrator.setErrorFormula(resultSet.getString("error_formula"));
-                calibrator.setCertificate(Calibrator.Certificate.fromString(resultSet.getString("certificate")));
+
+                String certificateJson = resultSet.getString("certificate");
+                Calibrator.Certificate certificate = jsonMapper.JsonToObject(certificateJson, Calibrator.Certificate.class);
+                if (certificate != null) calibrator.setCertificate(certificate);
 
                 calibrators.add(calibrator);
             }
-
-        }catch (SQLException | JsonProcessingException e){
+        }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
         }
 
@@ -86,8 +63,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     public String[] getAllNames(@Nonnull Measurement measurement) {
         List<String>calibrators = new ArrayList<>();
 
-        String sql = "SELECT name FROM calibrators WHERE measurement = '" + measurement.getName() + "';";
-        try (ResultSet resultSet = getResultSet(sql)){
+        String sql = String.format("SELECT name FROM %s WHERE measurement = '%s';", tableName, measurement.getName());
+        try (ResultSet resultSet = connector.getResultSet(sql)){
             while (resultSet.next()) {
                 calibrators.add(resultSet.getString("name"));
             }
@@ -99,9 +76,9 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     }
 
     @Override
-    public Optional<Calibrator> get(@Nonnull String name) {
-        String sql = "SELECT * FROM calibrators WHERE name = '" + name + "' LIMIT 1;";
-        try (ResultSet resultSet = getResultSet(sql)){
+    public Calibrator get(@Nonnull String name) {
+        String sql = String.format("SELECT * FROM %s WHERE name = '%s' LIMIT 1;", tableName, name);
+        try (ResultSet resultSet = connector.getResultSet(sql)){
             if (resultSet.next()){
                 Calibrator calibrator = new Calibrator();
                 calibrator.setType(resultSet.getString("type"));
@@ -112,29 +89,32 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
                 calibrator.setValue(resultSet.getString("value"));
                 calibrator.setMeasurement(resultSet.getString("measurement"));
                 calibrator.setErrorFormula(resultSet.getString("error_formula"));
-                calibrator.setCertificate(Calibrator.Certificate.fromString(resultSet.getString("certificate")));
 
-                return Optional.of(calibrator);
+                String certificateJson = resultSet.getString("certificate");
+                Calibrator.Certificate certificate = jsonMapper.JsonToObject(certificateJson, Calibrator.Certificate.class);
+                if (certificate != null) calibrator.setCertificate(certificate);
+
+                return calibrator;
             }
-        }catch (SQLException | JsonProcessingException e){
+        }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
         }
 
-        return Optional.empty();
+        return null;
     }
 
     @Override
     public boolean add(@Nonnull Calibrator calibrator) {
-        String sql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
-                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        try (PreparedStatement statement = getPreparedStatement(sql)){
+        String sql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
+                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);", tableName);
+        try (PreparedStatement statement = connector.getPreparedStatement(sql)){
             statement.setString(1, calibrator.getName());
             statement.setString(2, calibrator.getType());
             statement.setString(3, calibrator.getNumber());
             statement.setString(4, calibrator.getMeasurement());
             statement.setString(5, calibrator.getValue());
             statement.setString(6, calibrator.getErrorFormula());
-            statement.setString(7, calibrator.getCertificate().toString());
+            statement.setString(7, jsonMapper.objectToJson(calibrator.getCertificate()));
             statement.setDouble(8, calibrator.getRangeMin());
             statement.setDouble(9, calibrator.getRangeMax());
 
@@ -147,8 +127,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
     @Override
     public boolean remove(@Nonnull Calibrator calibrator) {
-        String sql = "DELETE FROM calibrators WHERE name = '" + calibrator.getName() + "';";
-        try (Statement statement = getStatement()){
+        String sql = String.format("DELETE FROM %s WHERE name = '%s';", tableName, calibrator.getName());
+        try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -158,8 +138,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
     @Override
     public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
-        String sql = "DELETE FROM calibrators WHERE value = '" + measurementValue + "';";
-        try (Statement statement = getStatement()) {
+        String sql = String.format("DELETE FROM %s WHERE value = '%s';", tableName, measurementValue);
+        try (Statement statement = connector.getStatement()) {
             return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -169,18 +149,29 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
     @Override
     public boolean set(@Nonnull Calibrator oldCalibrator, @Nonnull Calibrator newCalibrator) {
-        String sql = "UPDATE calibrators SET "
-                + "name = '" + newCalibrator.getName() + "', "
-                + "type = '" + newCalibrator.getType() + "', "
-                + "number = '" + newCalibrator.getNumber() + "', "
-                + "measurement = '" + newCalibrator.getMeasurement() + "', "
-                + "value = '" + newCalibrator.getValue() + "', "
-                + "error_formula = '" + newCalibrator.getErrorFormula() + "', "
-                + "certificate = '" + newCalibrator.getCertificate() + "', "
-                + "range_min = " + newCalibrator.getRangeMin() + ", "
-                + "range_max = " + newCalibrator.getRangeMax() + " "
-                + "WHERE name = '" + oldCalibrator.getName() + "';";
-        try (Statement statement = getStatement()){
+        String sql = String.format("UPDATE %s SET " +
+                "name = '%s'" +
+                ", type = '%s'" +
+                ", number = '%s'" +
+                ", measurement = '%s'" +
+                ", value = '%s'" +
+                ", error_formula = '%s'" +
+                ", certificate = '%s'" +
+                ", range_min = %s" +
+                ", range_max = %s" +
+                " WHERE name = '%s';",
+                tableName,
+                newCalibrator.getName(),
+                newCalibrator.getType(),
+                newCalibrator.getNumber(),
+                newCalibrator.getMeasurement(),
+                newCalibrator.getValue(),
+                newCalibrator.getErrorFormula(),
+                jsonMapper.objectToJson(newCalibrator.getCertificate()),
+                newCalibrator.getRangeMin(),
+                newCalibrator.getRangeMax(),
+                oldCalibrator.getName());
+        try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -192,8 +183,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
     public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
         if (oldValue.equals(newValue)) return true;
 
-        String sql = "UPDATE calibrators SET value = '" + newValue + "' WHERE value = '" + oldValue + "';";
-        try (Statement statement = getStatement()) {
+        String sql = String.format("UPDATE %s SET value = '%s' WHERE value = '%s';", tableName, newValue, oldValue);
+        try (Statement statement = connector.getStatement()) {
             return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
             LOGGER.warn("Exception was thrown!", e);
@@ -203,8 +194,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
     @Override
     public boolean clear() {
-        String sql = "DELETE FROM calibrators;";
-        try (Statement statement = getStatement()) {
+        String sql = String.format("DELETE FROM %s;", tableName);
+        try (Statement statement = connector.getStatement()) {
             statement.execute(sql);
             return true;
         } catch (SQLException e) {
@@ -215,27 +206,23 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
     @Override
     public boolean rewrite(@Nonnull Collection<Calibrator> calibrators) {
-        String sql = "DELETE FROM calibrators;";
-        try (Statement statement = getStatement()) {
+        String sql = String.format("DELETE FROM %s;", tableName);
+        try (Statement statement = connector.getStatement()) {
             statement.execute(sql);
 
             if (!calibrators.isEmpty()) {
-                String insertSql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
-                        + "VALUES ";
+                String insertSql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
+                        + "VALUES ", tableName);
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
                 for (Calibrator calibrator : calibrators) {
                     if (calibrator == null) continue;
 
-                    sqlBuilder.append("('").append(calibrator.getName()).append("', ")
-                            .append("'").append(calibrator.getType()).append("', ")
-                            .append("'").append(calibrator.getNumber()).append("', ")
-                            .append("'").append(calibrator.getMeasurement()).append("', ")
-                            .append("'").append(calibrator.getValue()).append("', ")
-                            .append("'").append(calibrator.getErrorFormula()).append("', ")
-                            .append("'").append(calibrator.getCertificate()).append("', ")
-                            .append(calibrator.getRangeMin()).append(", ")
-                            .append(calibrator.getRangeMax()).append("),");
+                    String values = String.format("('%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s),",
+                            calibrator.getName(), calibrator.getType(), calibrator.getNumber(), calibrator.getMeasurement(),
+                            calibrator.getValue(), calibrator.getErrorFormula(), jsonMapper.objectToJson(calibrator.getCertificate()),
+                            calibrator.getRangeMin(), calibrator.getRangeMax());
+                    sqlBuilder.append(values);
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
                 statement.execute(sqlBuilder.toString());
@@ -254,19 +241,18 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
             for (Calibrator c : calibratorsForChange){
                 if (c == null) continue;
 
-                String sql = "UPDATE calibrators SET "
+                String sql = String.format("UPDATE %s SET "
                         + "type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, certificate = ?, range_min = ?, range_max = ? "
-                        + "WHERE name = ?;";
-                try (PreparedStatement statement = getPreparedStatement(sql)){
+                        + "WHERE name = ?;", tableName);
+                try (PreparedStatement statement = connector.getPreparedStatement(sql)){
                     statement.setString(1, c.getType());
                     statement.setString(2, c.getNumber());
                     statement.setString(3, c.getMeasurement());
                     statement.setString(4, c.getValue());
                     statement.setString(5, c.getErrorFormula());
-                    statement.setString(6, c.getCertificate().toString());
+                    statement.setString(6, jsonMapper.objectToJson(c.getCertificate()));
                     statement.setDouble(7, c.getRangeMin());
                     statement.setDouble(8, c.getRangeMax());
-
                     statement.setString(9, c.getName());
 
                     statement.execute();
@@ -278,22 +264,18 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
         }
 
         if (!newCalibrators.isEmpty()){
-            String sql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
-                    + "VALUES ";
+            String sql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
+                    + "VALUES ", tableName);
             StringBuilder sqlBuilder = new StringBuilder(sql);
-            try (Statement statement = getStatement()) {
+            try (Statement statement = connector.getStatement()) {
                 for (Calibrator calibrator : newCalibrators) {
                     if (calibrator == null) continue;
 
-                    sqlBuilder.append("('").append(calibrator.getName()).append("', ")
-                            .append("'").append(calibrator.getType()).append("', ")
-                            .append("'").append(calibrator.getNumber()).append("', ")
-                            .append("'").append(calibrator.getMeasurement()).append("', ")
-                            .append("'").append(calibrator.getValue()).append("', ")
-                            .append("'").append(calibrator.getErrorFormula()).append("', ")
-                            .append("'").append(calibrator.getCertificate()).append("', ")
-                            .append(calibrator.getRangeMin()).append(", ")
-                            .append(calibrator.getRangeMax()).append("),");
+                    String values = String.format("('%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s),",
+                            calibrator.getName(), calibrator.getType(), calibrator.getNumber(), calibrator.getMeasurement(),
+                            calibrator.getValue(), calibrator.getErrorFormula(), jsonMapper.objectToJson(calibrator.getCertificate()),
+                            calibrator.getRangeMin(), calibrator.getRangeMax());
+                    sqlBuilder.append(values);
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
                 statement.execute(sqlBuilder.toString());
@@ -308,8 +290,8 @@ public class CalibratorRepositorySQLite extends RepositoryJDBC implements Calibr
 
     @Override
     public boolean isExists(@Nonnull Calibrator calibrator) {
-        String sql = "SELECT name FROM calibrators WHERE name = '" + calibrator.getName() + "' LIMIT 1;";
-        try (ResultSet resultSet = getResultSet(sql)){
+        String sql = String.format("SELECT name FROM %s WHERE name = '%s' LIMIT 1;", tableName, calibrator.getName());
+        try (ResultSet resultSet = connector.getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
