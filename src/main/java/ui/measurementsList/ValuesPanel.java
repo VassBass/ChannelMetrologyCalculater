@@ -2,7 +2,7 @@ package ui.measurementsList;
 
 import converters.VariableConverter;
 import model.Measurement;
-import repository.impl.MeasurementRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
 

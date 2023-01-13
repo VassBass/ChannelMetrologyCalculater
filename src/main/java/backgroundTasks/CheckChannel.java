@@ -1,8 +1,8 @@
 package backgroundTasks;
 
 import model.Channel;
-import repository.ChannelRepository;
-import repository.impl.ChannelRepositorySQLite;
+import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
 import ui.channelInfo.DialogChannelExists;
 import ui.model.DialogLoading;
 

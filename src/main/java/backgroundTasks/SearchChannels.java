@@ -1,8 +1,7 @@
 package backgroundTasks;
 
-import constants.Sort;
-import repository.ChannelRepository;
-import repository.impl.ChannelRepositorySQLite;
+import factory.ApplicationFactoryContext;
+import factory.WindowFactory;
 import service.ChannelSorter;
 import ui.mainScreen.MainScreen;
 import ui.model.DialogLoading;
@@ -11,23 +10,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static ui.mainScreen.searchPanel.SearchPanel.*;
+
 public class SearchChannels extends SwingWorker<Void, Void> {
+    private final ApplicationFactoryContext context = ApplicationFactoryContext.getInstance();
     private final DialogLoading loadDialog;
 
-    private int field;
+    private String field;
     private String valueString;
     private boolean valueBoolean;
 
-    private final MainScreen mainScreen = MainScreen.getInstance();
+    private final MainScreen mainScreen;
     private final ChannelSorter channelSorter = ChannelSorter.getInstance();
-    private final ChannelRepository channelRepository = ChannelRepositorySQLite.getInstance();
 
     public SearchChannels(){
         super();
-        this.loadDialog = new DialogLoading(MainScreen.getInstance());
+        WindowFactory windowFactory = context.getFactory(WindowFactory.class);
+        mainScreen = windowFactory.getMainScreen();
+        loadDialog = windowFactory.create(DialogLoading.class);
     }
 
-    public void startSearch(int field, String value){
+    public void startSearch(String field, String value){
         this.field = field;
         this.valueString = value;
         if (value != null) {
@@ -36,7 +39,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
         }
     }
 
-    public void startSearch(int field, boolean value){
+    public void startSearch(String field, boolean value){
         this.field = field;
         this.valueBoolean = value;
         EventQueue.invokeLater(() -> loadDialog.setVisible(true));
@@ -44,7 +47,7 @@ public class SearchChannels extends SwingWorker<Void, Void> {
     }
 
     public void cancel(){
-        this.field = -1;
+        this.field = null;
         EventQueue.invokeLater(() -> loadDialog.setVisible(true));
         this.execute();
     }
@@ -52,49 +55,49 @@ public class SearchChannels extends SwingWorker<Void, Void> {
     @Override
     protected Void doInBackground() throws Exception {
         switch (this.field){
-            case Sort.NAME:
+            case TEXT_NAME:
                 mainScreen.setChannelsList(channelSorter.getAllForName(this.valueString));
                 break;
-            case Sort.DATE:
+            case TEXT_DATE:
                 mainScreen.setChannelsList(channelSorter.getAllForDate(this.valueString));
                 break;
-            case Sort.FREQUENCY:
+            case TEXT_FREQUENCY:
                 mainScreen.setChannelsList(channelSorter.getAllForFrequency(Double.parseDouble(this.valueString)));
                 break;
-            case Sort.TECHNOLOGY_NUMBER:
+            case TEXT_TECHNOLOGY_NUMBER:
                 mainScreen.setChannelsList(channelSorter.getAllForTechnologyNumber(this.valueString));
                 break;
-            case Sort.PROTOCOL_NUMBER:
+            case TEXT_PROTOCOL_NUMBER:
                 mainScreen.setChannelsList(channelSorter.getAllForProtocolNumber(this.valueString));
                 break;
-            case Sort.REFERENCE:
+            case TEXT_REFERENCE:
                 mainScreen.setChannelsList(channelSorter.getAllForReference(this.valueString));
                 break;
-            case Sort.SUITABILITY:
+            case TEXT_SUITABILITY:
                 mainScreen.setChannelsList(channelSorter.getAllForSuitability(this.valueBoolean));
                 break;
-            case Sort.MEASUREMENT_NAME:
+            case TEXT_MEASUREMENT_NAME:
                 mainScreen.setChannelsList(channelSorter.getAllForMeasurementName(this.valueString));
                 break;
-            case Sort.MEASUREMENT_VALUE:
+            case TEXT_MEASUREMENT_VALUE:
                 mainScreen.setChannelsList(channelSorter.getAllForMeasurementValue(this.valueString));
                 break;
-            case Sort.DEPARTMENT:
+            case TEXT_DEPARTMENT:
                 mainScreen.setChannelsList(channelSorter.getAllForDepartment(this.valueString));
                 break;
-            case Sort.AREA:
+            case TEXT_AREA:
                 mainScreen.setChannelsList(channelSorter.getAllForArea(this.valueString));
                 break;
-            case Sort.PROCESS:
+            case TEXT_PROCESS:
                 mainScreen.setChannelsList(channelSorter.getAllForProcess(this.valueString));
                 break;
-            case Sort.INSTALLATION:
+            case TEXT_INSTALLATION:
                 mainScreen.setChannelsList(channelSorter.getAllForInstallation(this.valueString));
                 break;
-            case Sort.SENSOR_NAME:
+            case TEXT_SENSOR_NAME:
                 mainScreen.setChannelsList(channelSorter.getAllForSensorName(this.valueString));
                 break;
-            case Sort.SENSOR_TYPE:
+            case TEXT_SENSOR_TYPE:
                 mainScreen.setChannelsList(channelSorter.getAllForSensorType(this.valueString));
                 break;
              default:

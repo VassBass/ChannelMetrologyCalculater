@@ -3,8 +3,8 @@ package ui.channelInfo.panel;
 import converters.VariableConverter;
 import model.Measurement;
 import model.Sensor;
-import repository.MeasurementRepository;
-import repository.impl.MeasurementRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepository;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnull;

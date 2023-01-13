@@ -1,8 +1,8 @@
 package ui.personsList;
 
 import model.Person;
-import repository.PersonRepository;
-import repository.impl.PersonRepositorySQLite;
+import service.repository.repos.person.PersonRepository;
+import service.repository.repos.person.PersonRepositorySQLite;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

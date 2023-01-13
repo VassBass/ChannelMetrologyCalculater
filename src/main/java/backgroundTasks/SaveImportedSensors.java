@@ -1,10 +1,10 @@
 package backgroundTasks;
 
 import model.Sensor;
-import repository.ChannelRepository;
-import repository.SensorRepository;
-import repository.impl.ChannelRepositorySQLite;
-import repository.impl.SensorRepositorySQLite;
+import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.sensor.SensorRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
+import service.repository.repos.sensor.SensorRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.DialogLoading;
 

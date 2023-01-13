@@ -2,7 +2,7 @@ package ui.measurementsList;
 
 import backgroundTasks.ChangeMeasurementValue;
 import model.Measurement;
-import repository.impl.MeasurementRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 import ui.model.DefaultButton;
 import ui.specialCharacters.PanelSpecialCharacters;
 

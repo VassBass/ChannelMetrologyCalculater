@@ -1,8 +1,8 @@
 package service.impl;
 
 import model.Person;
-import repository.PersonRepository;
-import repository.impl.PersonRepositorySQLite;
+import service.repository.repos.person.PersonRepository;
+import service.repository.repos.person.PersonRepositorySQLite;
 import service.PersonService;
 
 import java.util.ArrayList;

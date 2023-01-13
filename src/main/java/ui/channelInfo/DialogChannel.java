@@ -2,17 +2,18 @@ package ui.channelInfo;
 
 import application.Application;
 import converters.VariableConverter;
-import developer.calculating.OS_Chooser;
+import developer.calculating.DialogOSChoose;
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
-import repository.ChannelRepository;
-import repository.impl.ChannelRepositorySQLite;
+import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
 import service.ChannelSorter;
 import ui.channelInfo.button.*;
 import ui.channelInfo.panel.*;
 import ui.mainScreen.MainScreen;
 import ui.model.DialogLoading;
+import ui.model.Window;
 import ui.specialCharacters.PanelSpecialCharacters;
 
 import javax.annotation.Nonnull;
@@ -29,7 +30,7 @@ import java.util.Optional;
 import static ui.UI_ConfigHolder.SCREEN_SIZE;
 import static ui.UI_Constants.POINT_CENTER;
 
-public class DialogChannel extends JDialog {
+public class DialogChannel extends JDialog implements Window {
     private static final String INFORMATION_ABOUT_CHANNEL = "Інформація вимірювального каналу";
 
     public final Channel oldChannel;
@@ -130,7 +131,7 @@ public class DialogChannel extends JDialog {
         return filled;
     }
 
-    public void setChannelInfo(Channel channel) {
+    public void setChannelInfo(@Nullable Channel channel) {
         if (channel == null) {
             panelMeasurement.updateMeasurementName(Measurement.TEMPERATURE);
             panelDate.updateDate(Calendar.getInstance());
@@ -248,7 +249,7 @@ public class DialogChannel extends JDialog {
                             } else {
                                 MainScreen.getInstance().setChannelsList(new ArrayList<>(channelRepository.getAll()));
                             }
-                            EventQueue.invokeLater(() -> new OS_Chooser(MainScreen.getInstance(), channel).setVisible(true));
+                            EventQueue.invokeLater(() -> new DialogOSChoose(MainScreen.getInstance(), channel).setVisible(true));
                         }
                     }
                     break;
@@ -259,6 +260,21 @@ public class DialogChannel extends JDialog {
     private void refresh(){
         this.setVisible(false);
         this.setVisible(true);
+    }
+
+    @Override
+    public void showWindow() {
+
+    }
+
+    @Override
+    public void hideWindow() {
+
+    }
+
+    @Override
+    public void refreshWindow() {
+
     }
 
     private class MainPanel extends JPanel {

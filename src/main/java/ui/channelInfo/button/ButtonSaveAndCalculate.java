@@ -2,10 +2,10 @@ package ui.channelInfo.button;
 
 import application.Application;
 import model.Channel;
-import repository.ChannelRepository;
-import repository.impl.ChannelRepositorySQLite;
+import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
 import service.ChannelSorter;
-import ui.calculate.start.CalculateStartDialog;
+import ui.calculate.start.DialogCalculateStart;
 import ui.channelInfo.DialogChannel;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
@@ -73,7 +73,7 @@ public class ButtonSaveAndCalculate extends DefaultButton {
                 if (get()) {
                     parent.dialogLoading.dispose();
                     parent.dispose();
-                    EventQueue.invokeLater(() -> new CalculateStartDialog(MainScreen.getInstance(), channel, null).setVisible(true));
+                    EventQueue.invokeLater(() -> new DialogCalculateStart(MainScreen.getInstance(), channel, null).setVisible(true));
                 } else {
                     showErrorMessage();
                 }

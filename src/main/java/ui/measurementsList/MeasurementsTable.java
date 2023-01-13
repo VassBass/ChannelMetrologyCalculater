@@ -1,7 +1,7 @@
 package ui.measurementsList;
 
 import model.Measurement;
-import repository.impl.MeasurementRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionListener;

@@ -2,9 +2,9 @@ package ui.mainScreen;
 
 import factory.AbstractFactory;
 import model.Channel;
-import repository.ChannelRepository;
+import service.repository.repos.channel.ChannelRepository;
 import service.MainScreenEventListener;
-import ui.event.Event;
+import ui.event.EventDataSource;
 import ui.mainScreen.buttonsPanel.ButtonsPanel;
 import ui.mainScreen.channelTable.ChannelTable;
 import ui.mainScreen.infoTable.InfoTable;
@@ -16,9 +16,6 @@ import ui.model.Window;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -28,6 +25,7 @@ import static ui.UI_ConfigHolder.SCREEN_SIZE;
 
 public class MainScreen extends JFrame implements Window {
     public static final String KEY_CHANNEL = "channel";
+    public static final String KEY_SEARCH_START = "search_start";
 
     public static final String KEY_SEARCH_FIELD_TEXT = "search_field_text";
     public static final String KEY_SEARCH_VALUE_TEXT = "search_value_text";
@@ -64,16 +62,16 @@ public class MainScreen extends JFrame implements Window {
     }
 
     private void createElements(@Nonnull List<Channel>channelList) {
-        this.channelTable = new ChannelTable(this, channelList);
+        this.channelTable = new ChannelTable(eventListener, channelList);
         this.menuBar = new MenuBar(eventListener, channelTable);
         this.infoTable = new InfoTable();
-        this.buttonsPanel = new ButtonsPanel(this);
+        this.buttonsPanel = new ButtonsPanel(eventListener, channelTable);
         this.searchPanel = new SearchPanel(this);
     }
 
     private void setReactions() {
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.addWindowListener(eventListener.clickClose(Event.emptyEvent));
+        this.addWindowListener(eventListener.clickClose(EventDataSource.empty));
     }
 
     private void build() {
@@ -109,12 +107,21 @@ public class MainScreen extends JFrame implements Window {
         this.setContentPane(mainPanel);
     }
 
-    public void updateChannelInfo(Channel channel) {
-        this.infoTable.updateInfo(channel);
+    public void setEnabledSearchPanel(boolean enabled) {
+        searchPanel.setEnabled(enabled);
     }
 
-    public List<Channel>getChannelsList(){
-        return channelsList;
+    public void rebuildSearchPanel(int mode, String selectedField) {
+        searchPanel.rebuildPanel(mode, selectedField);
+        refreshWindow();
+    }
+
+    public void selectAllTextInSearchValue() {
+        searchPanel.selectAllValueText();
+    }
+
+    public void updateChannelInfo(Channel channel) {
+        this.infoTable.updateInfo(channel);
     }
 
     public void setChannelsList(List<Channel>list){
@@ -125,7 +132,7 @@ public class MainScreen extends JFrame implements Window {
     }
 
     public void refreshMenu(){
-        this.setJMenuBar(new MenuBar(this));
+        this.setJMenuBar(new MenuBar(eventListener, channelTable));
         this.refreshWindow();
     }
 

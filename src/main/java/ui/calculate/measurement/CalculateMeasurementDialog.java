@@ -6,7 +6,7 @@ import model.Calibrator;
 import model.Channel;
 import model.Measurement;
 import ui.calculate.measurement.complexElements.*;
-import ui.calculate.start.CalculateStartDialog;
+import ui.calculate.start.DialogCalculateStart;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 
@@ -181,7 +181,7 @@ public class CalculateMeasurementDialog extends JDialog {
                 buttonNext.setEnabled(true);
                 if (measurementNumber == 0){
                     dispose();
-                    new CalculateStartDialog(mainScreen, channel, getValues()).setVisible(true);
+                    new DialogCalculateStart(mainScreen, channel, getValues()).setVisible(true);
                 }else {
                     measurementNumber--;
                     update();

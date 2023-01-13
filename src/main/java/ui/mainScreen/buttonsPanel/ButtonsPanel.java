@@ -1,14 +1,16 @@
 package ui.mainScreen.buttonsPanel;
 
-import ui.event.EventManager;
-import ui.event.EventSource;
-import ui.model.*;
+import service.MainScreenEventListener;
+import ui.event.EventDataSource;
+import ui.event.SingleEventDataSource;
+import ui.mainScreen.channelTable.ChannelTable;
+import ui.model.CellBuilder;
+import ui.model.DefaultButton;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static ui.event.eventManagers.mainScreen.MainScreenEventManager.CLICK_CALCULATE_BUTTON;
-import static ui.event.eventManagers.mainScreen.MainScreenEventManager.CLICK_FOLDER_BUTTON;
+import static ui.mainScreen.MainScreen.KEY_CHANNEL;
 
 public class ButtonsPanel extends JPanel {
     private static final String INFO_BUTTON_TEXT = "Детальніше (D)";
@@ -17,19 +19,24 @@ public class ButtonsPanel extends JPanel {
     private static final String CALCULATE_BUTTON_TEXT = "Розрахувати (C)";
     private static final String FOLDER_BUTTON_TEXT = "Сертифікати/Протоколи (F)";
 
-    private final EventManager eventManager = EventManager.getInstance();
-
-    public ButtonsPanel(EventSource eventSource){
+    public ButtonsPanel(MainScreenEventListener eventListener,
+                        ChannelTable channelTable){
         super(new GridBagLayout());
 
-        JButton btnInfo = new InfoButton(eventSource, INFO_BUTTON_TEXT);
-        JButton btnRemove = new RemoveButton(eventSource, REMOVE_BUTTON_TEXT);
-        JButton btnAdd = new AddButton(eventSource, ADD_BUTTON_TEXT);
+        JButton btnInfo = new DefaultButton(INFO_BUTTON_TEXT);
+        JButton btnRemove = new DefaultButton(REMOVE_BUTTON_TEXT);
+        JButton btnAdd = new DefaultButton(ADD_BUTTON_TEXT);
         JButton btnCalculate = new DefaultButton(CALCULATE_BUTTON_TEXT);
         JButton btnFolder = new DefaultButton(FOLDER_BUTTON_TEXT);
 
-        btnCalculate.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_CALCULATE_BUTTON));
-        btnFolder.addActionListener(e -> eventManager.runEvent(eventSource, CLICK_FOLDER_BUTTON));
+        btnInfo.addActionListener(eventListener.clickInfoButton(
+                new SingleEventDataSource<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
+        btnRemove.addActionListener(eventListener.clickRemoveButton(
+                new SingleEventDataSource<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
+        btnAdd.addActionListener(eventListener.clickAddButton(EventDataSource.empty));
+        btnCalculate.addActionListener(eventListener.clickCalculateButton(
+                new SingleEventDataSource<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
+        btnFolder.addActionListener(eventListener.clickOpenFolderButton(EventDataSource.empty));
 
         this.add(btnRemove, new CellBuilder().coordinates(0,0).width(1).create());
         this.add(btnAdd, new CellBuilder().coordinates(1,0).width(1).create());

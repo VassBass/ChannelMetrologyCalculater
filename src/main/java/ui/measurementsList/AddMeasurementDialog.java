@@ -3,7 +3,7 @@ package ui.measurementsList;
 import backgroundTasks.AddMeasurement;
 import converters.VariableConverter;
 import model.Measurement;
-import repository.impl.MeasurementRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 import ui.model.ButtonCell;
 import ui.model.DefaultButton;
 import ui.specialCharacters.PanelSpecialCharacters;

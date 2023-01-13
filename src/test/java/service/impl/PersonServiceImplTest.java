@@ -3,8 +3,8 @@ package service.impl;
 import model.Person;
 import org.junit.*;
 import org.sqlite.JDBC;
-import repository.PersonRepository;
-import repository.impl.PersonRepositorySQLite;
+import service.repository.repos.person.PersonRepository;
+import service.repository.repos.person.PersonRepositorySQLite;
 import service.PersonService;
 
 import java.sql.Connection;

@@ -10,6 +10,8 @@ public class WindowFactory extends AbstractFactory {
     private final Map<String, Object> windows = new HashMap<>();
     private final Map<String, Object> services = new HashMap<>();
 
+    private final MainScreen mainScreen;
+
     private final AbstractFactory repositoryFactory;
     private final AbstractFactory eventServiceFactory;
 
@@ -17,6 +19,13 @@ public class WindowFactory extends AbstractFactory {
                          AbstractFactory eventServiceFactory) {
         this.repositoryFactory = repositoryFactory;
         this.eventServiceFactory = eventServiceFactory;
+
+        MainScreenEventListener eventListener = eventServiceFactory.create(MainScreenEventListener.class);
+        mainScreen = new MainScreen(repositoryFactory, eventListener);
+    }
+
+    public MainScreen getMainScreen() {
+        return mainScreen;
     }
 
     @Override

@@ -2,7 +2,7 @@ package ui.sensorsList;
 
 import model.Channel;
 import model.Sensor;
-import repository.impl.MeasurementRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;

@@ -5,8 +5,10 @@ import model.Measurement;
 import model.Sensor;
 import org.junit.*;
 import org.sqlite.JDBC;
-import repository.ChannelRepository;
-import repository.MeasurementRepository;
+import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepository;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

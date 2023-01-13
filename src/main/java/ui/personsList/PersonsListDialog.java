@@ -1,7 +1,7 @@
 package ui.personsList;
 
-import repository.PersonRepository;
-import repository.impl.PersonRepositorySQLite;
+import service.repository.repos.person.PersonRepository;
+import service.repository.repos.person.PersonRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
 import ui.personsList.personInfo.PersonInfoDialog;

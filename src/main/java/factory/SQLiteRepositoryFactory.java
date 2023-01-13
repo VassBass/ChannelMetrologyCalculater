@@ -2,6 +2,22 @@ package factory;
 
 import repository.*;
 import repository.impl.*;
+import service.repository.repos.area.AreaRepository;
+import service.repository.repos.area.AreaRepositorySQLite;
+import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
+import service.repository.repos.department.DepartmentRepository;
+import service.repository.repos.department.DepartmentRepositorySQLite;
+import service.repository.repos.installation.InstallationRepository;
+import service.repository.repos.installation.InstallationRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepository;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
+import service.repository.repos.person.PersonRepository;
+import service.repository.repos.person.PersonRepositorySQLite;
+import service.repository.repos.process.ProcessRepository;
+import service.repository.repos.process.ProcessRepositorySQLite;
+import service.repository.repos.sensor.SensorRepository;
+import service.repository.repos.sensor.SensorRepositorySQLite;
 
 import java.util.HashMap;
 import java.util.Map;

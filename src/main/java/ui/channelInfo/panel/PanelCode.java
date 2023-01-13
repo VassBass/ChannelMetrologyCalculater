@@ -2,8 +2,8 @@ package ui.channelInfo.panel;
 
 import backgroundTasks.CheckChannel;
 import model.Channel;
-import repository.ChannelRepository;
-import repository.impl.ChannelRepositorySQLite;
+import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
 import ui.channelInfo.DialogChannel;
 import ui.channelInfo.DialogChannelExists;
 

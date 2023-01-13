@@ -1,7 +1,7 @@
 package ui.measurementsList;
 
 import backgroundTasks.RemoveMeasurement;
-import repository.impl.MeasurementRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 import ui.model.DefaultButton;
 
 import javax.swing.*;

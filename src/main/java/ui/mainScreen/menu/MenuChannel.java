@@ -1,8 +1,8 @@
 package ui.mainScreen.menu;
 
 import service.MainScreenEventListener;
-import ui.event.Event;
-import ui.event.SimpleEvent;
+import ui.event.EventDataSource;
+import ui.event.SingleEventDataSource;
 import ui.mainScreen.channelTable.ChannelTable;
 
 import javax.annotation.Nonnull;
@@ -29,15 +29,15 @@ public class MenuChannel extends JMenu {
         JMenuItem btnFolder = new JMenuItem(FOLDER_BUTTON_TEXT);
 
         btnInfo.addActionListener(eventService
-                .clickInfoButton(new SimpleEvent<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
+                .clickInfoButton(new SingleEventDataSource<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
         btnAdd.addActionListener(eventService
-                .clickAddButton(Event.emptyEvent));
+                .clickAddButton(EventDataSource.empty));
         btnRemove.addActionListener(eventService
-                .clickRemoveButton(new SimpleEvent<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
+                .clickRemoveButton(new SingleEventDataSource<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
         btnCalculate.addActionListener(eventService
-                .clickCalculateButton(new SimpleEvent<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
+                .clickCalculateButton(new SingleEventDataSource<>(KEY_CHANNEL, channelTable.getSelectedChannel())));
         btnFolder.addActionListener(eventService
-                .clickOpenFolderButton(Event.emptyEvent));
+                .clickOpenFolderButton(EventDataSource.empty));
 
         this.add(btnAdd);
         this.add(btnRemove);

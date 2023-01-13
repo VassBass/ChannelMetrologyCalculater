@@ -1,12 +1,12 @@
 package backgroundTasks;
 
 import model.Sensor;
-import repository.ChannelRepository;
+import service.repository.repos.channel.ChannelRepository;
 import repository.ControlPointsValuesRepository;
-import repository.SensorRepository;
-import repository.impl.ChannelRepositorySQLite;
+import service.repository.repos.sensor.SensorRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
 import repository.impl.ControlPointsValuesRepositorySQLite;
-import repository.impl.SensorRepositorySQLite;
+import service.repository.repos.sensor.SensorRepositorySQLite;
 import service.ChannelSorter;
 import ui.model.DialogLoading;
 import ui.sensorsList.SensorsListDialog;

@@ -2,7 +2,7 @@ package ui.controlPointsValues;
 
 import model.ControlPointsValues;
 import model.Measurement;
-import repository.impl.SensorRepositorySQLite;
+import service.repository.repos.sensor.SensorRepositorySQLite;
 import ui.controlPointsValues.complexElements.*;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;

@@ -1,7 +1,7 @@
 package ui.sensorsList.sensorInfo.complexElements;
 
 import converters.VariableConverter;
-import repository.impl.MeasurementRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 
 import javax.swing.*;

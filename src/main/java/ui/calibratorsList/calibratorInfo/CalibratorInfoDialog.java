@@ -9,8 +9,8 @@ import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import repository.CalibratorRepository;
 import repository.impl.CalibratorRepositorySQLite;
-import repository.impl.MeasurementRepositorySQLite;
-import ui.calculate.start.CalculateStartDialog;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
+import ui.calculate.start.DialogCalculateStart;
 import ui.calibratorsList.CalibratorsListDialog;
 import ui.calibratorsList.calibratorInfo.complexElements.CalibratorRangePanel;
 import ui.calibratorsList.calibratorInfo.complexElements.CertificateDatePanel;
@@ -57,7 +57,7 @@ public class CalibratorInfoDialog extends JDialog {
 
     private final CalibratorsListDialog parent;
     private final Calibrator oldCalibrator;
-    private final CalculateStartDialog calculateDialog;
+    private final DialogCalculateStart calculateDialog;
 
     private final PanelSpecialCharacters specialCharactersPanel = new PanelSpecialCharacters();
 
@@ -106,7 +106,7 @@ public class CalibratorInfoDialog extends JDialog {
         this.build();
     }
 
-    public CalibratorInfoDialog(CalculateStartDialog calculateDialog, Channel channel){
+    public CalibratorInfoDialog(DialogCalculateStart calculateDialog, Channel channel){
         super(calculateDialog, CALIBRATOR, true);
         this.calculateDialog = calculateDialog;
         this.parent = null;

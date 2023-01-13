@@ -3,8 +3,8 @@ package ui.channelInfo.panel;
 import model.Channel;
 import model.Measurement;
 import model.Sensor;
-import repository.SensorRepository;
-import repository.impl.SensorRepositorySQLite;
+import service.repository.repos.sensor.SensorRepository;
+import service.repository.repos.sensor.SensorRepositorySQLite;
 import ui.channelInfo.DialogChannel;
 import ui.sensorsList.sensorInfo.SensorInfoDialog;
 

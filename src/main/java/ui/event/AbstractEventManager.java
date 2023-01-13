@@ -12,5 +12,5 @@ public abstract class AbstractEventManager {
         logger.info("This action not processed!");
     }
 
-    public abstract void runEvent(int event);
+    public abstract void runEvent(EventType eventType);
 }

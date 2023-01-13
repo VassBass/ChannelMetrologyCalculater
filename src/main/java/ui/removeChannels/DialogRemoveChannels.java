@@ -3,14 +3,16 @@ package ui.removeChannels;
 import model.Channel;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;
+import ui.model.Window;
 
+import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
 import static ui.UI_Constants.POINT_CENTER;
 
-public class DialogRemoveChannels extends JDialog {
+public class DialogRemoveChannels extends JDialog implements Window {
     private static final String REMOVE_CHANNEL = "Видалити канал";
     private static final String CHOOSE_CHANNEL_TO_REMOVE = "Виберіть канал для видалення: ";
     private static final String REMOVE_ALL = "Видалити всі (Shift + R)";
@@ -34,8 +36,12 @@ public class DialogRemoveChannels extends JDialog {
         this.build();
     }
 
+    public void setChannelInfo(@Nullable Channel channel) {
+
+    }
+
     private void createElements() {
-        int selectedIndex = this.mainScreen.mainTable.getSelectedRow();
+        int selectedIndex = this.mainScreen.channelTable.getSelectedRow();
 //        if (selectedIndex == -1){
 //            String[]channelsList = new String[this.mainScreen.channelsList.size()];
 //            for (int x=0;x<channelsList.length;x++) {
@@ -130,7 +136,7 @@ public class DialogRemoveChannels extends JDialog {
     private final ActionListener clickPositiveButton = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            int selectedIndex = mainScreen.mainTable.getSelectedRow();
+            int selectedIndex = mainScreen.channelTable.getSelectedRow();
             final Channel channel;
 //            if (selectedIndex == -1){
 //                channel = mainScreen.channelsList.get(channelsList.getSelectedIndex());
@@ -153,6 +159,21 @@ public class DialogRemoveChannels extends JDialog {
     };
 
     private final ActionListener clickNegativeButton = e -> DialogRemoveChannels.this.dispose();
+
+    @Override
+    public void showWindow() {
+
+    }
+
+    @Override
+    public void hideWindow() {
+
+    }
+
+    @Override
+    public void refreshWindow() {
+
+    }
 
     private class MainPanel extends JPanel {
 

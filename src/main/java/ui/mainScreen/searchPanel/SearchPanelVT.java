@@ -3,10 +3,15 @@ package ui.mainScreen.searchPanel;
 import constants.Sort;
 import converters.VariableConverter;
 import org.apache.commons.validator.DateValidator;
-import repository.MeasurementRepository;
+import service.repository.repos.area.AreaRepositorySQLite;
+import service.repository.repos.department.DepartmentRepositorySQLite;
+import service.repository.repos.installation.InstallationRepositorySQLite;
+import service.repository.repos.measurement.MeasurementRepository;
 import repository.PathElementRepository;
-import repository.SensorRepository;
-import repository.impl.*;
+import service.repository.repos.process.ProcessRepositorySQLite;
+import service.repository.repos.sensor.SensorRepository;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
+import service.repository.repos.sensor.SensorRepositorySQLite;
 import ui.mainScreen.MainScreen;
 import ui.model.CellBuilder;
 

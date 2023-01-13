@@ -1,7 +1,7 @@
 package ui.channelInfo.button;
 
-import repository.ChannelRepository;
-import repository.impl.ChannelRepositorySQLite;
+import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
 import service.ChannelSorter;
 import ui.channelInfo.DialogChannel;
 import ui.mainScreen.MainScreen;

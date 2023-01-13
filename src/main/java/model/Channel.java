@@ -1,8 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import converters.VariableConverter;
 
 import javax.annotation.Nonnull;
@@ -83,7 +80,7 @@ public class Channel implements Serializable {
      *
      * @see Sensor
      */
-    @Nonnull private Sensor sensor = new Sensor();
+    private Sensor sensor = new Sensor();
 
     /**
      * DB field = protocol_number [TEXT]
@@ -129,7 +126,7 @@ public class Channel implements Serializable {
     public String getInstallation() {return installation;}
     @Nonnull public String getDate() {return date;}
     public String getTechnologyNumber() {return technologyNumber;}
-    @Nonnull public Sensor getSensor() {return sensor;}
+    public Sensor getSensor() {return sensor;}
     public String getNumberOfProtocol() {return numberOfProtocol;}
     public double getFrequency() {return frequency;}
     public double getRangeMin() {return rangeMin;}
@@ -196,7 +193,7 @@ public class Channel implements Serializable {
     public void setDate(@Nonnull String date) {this.date = date;}
     public void setFrequency(double frequency) { this.frequency = frequency;}
     public void setTechnologyNumber(String number) {this.technologyNumber = number;}
-    public void setSensor(@Nonnull Sensor sensor) {this.sensor = sensor;}
+    public void setSensor(Sensor sensor) {this.sensor = sensor;}
     public void setNumberOfProtocol(String number) {this.numberOfProtocol = number;}
     public void setRangeMin(double rangeMin) {this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax) {this.rangeMax = rangeMax;}
@@ -236,37 +233,9 @@ public class Channel implements Serializable {
         return in.getCode().equals(this.code);
     }
 
-    /**
-     * @return {@link Channel} in JsonString
-     * if 10 times in a row throws {@link JsonProcessingException} return null
-     *
-     * @see com.fasterxml.jackson.core
-     */
     @Override
     public String toString() {
-        int attempt = 0;
-        while (attempt < 10) {
-            try {
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                return writer.writeValueAsString(this);
-            } catch (JsonProcessingException e) {
-                attempt++;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param json {@link Channel} in JsonString
-     *
-     * @see com.fasterxml.jackson.core
-     *
-     * @return {@link Channel}
-     *
-     * @throws JsonProcessingException - if jackson can't transform String to Channel
-     */
-    public static Channel fromString(String json) throws JsonProcessingException {
-        return new ObjectMapper().readValue(json, Channel.class);
+        return code;
     }
 
     /**

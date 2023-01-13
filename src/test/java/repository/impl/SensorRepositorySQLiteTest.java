@@ -4,7 +4,8 @@ import model.Measurement;
 import model.Sensor;
 import org.junit.*;
 import org.sqlite.JDBC;
-import repository.SensorRepository;
+import service.repository.repos.sensor.SensorRepository;
+import service.repository.repos.sensor.SensorRepositorySQLite;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -2,7 +2,7 @@ package service;
 
 import converters.VariableConverter;
 import model.Channel;
-import repository.impl.ChannelRepositorySQLite;
+import service.repository.repos.channel.ChannelRepositorySQLite;
 
 import java.io.File;
 import java.io.IOException;

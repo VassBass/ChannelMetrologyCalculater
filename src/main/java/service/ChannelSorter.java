@@ -3,8 +3,8 @@ package service;
 import constants.Sort;
 import converters.VariableConverter;
 import model.Channel;
-import repository.ChannelRepository;
-import repository.impl.ChannelRepositorySQLite;
+import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.channel.ChannelRepositorySQLite;
 
 import java.util.ArrayList;
 import java.util.List;

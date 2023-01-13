@@ -1,9 +1,9 @@
 package ui.channelInfo.panel;
 
-import repository.impl.AreaRepositorySQLite;
-import repository.impl.DepartmentRepositorySQLite;
-import repository.impl.InstallationRepositorySQLite;
-import repository.impl.ProcessRepositorySQLite;
+import service.repository.repos.area.AreaRepositorySQLite;
+import service.repository.repos.department.DepartmentRepositorySQLite;
+import service.repository.repos.installation.InstallationRepositorySQLite;
+import service.repository.repos.process.ProcessRepositorySQLite;
 import ui.channelInfo.DialogChannel;
 
 import javax.annotation.Nonnull;

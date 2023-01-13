@@ -4,7 +4,7 @@ import backgroundTasks.CertificateFormation;
 import calculation.Calculation;
 import certificates.Certificate;
 import model.Channel;
-import repository.impl.ChannelRepositorySQLite;
+import service.repository.repos.channel.ChannelRepositorySQLite;
 import service.ChannelSorter;
 import ui.mainScreen.MainScreen;
 import ui.model.DefaultButton;

@@ -1,16 +1,25 @@
 package ui.mainScreen.searchPanel;
 
-import service.DataTransfer;
-import ui.event.EventManager;
+import factory.AbstractFactory;
+import service.MainScreenEventListener;
+import service.repository.repos.area.AreaRepository;
+import service.repository.repos.department.DepartmentRepository;
+import service.repository.repos.installation.InstallationRepository;
+import service.repository.repos.measurement.MeasurementRepository;
+import service.repository.repos.process.ProcessRepository;
+import service.repository.repos.sensor.SensorRepository;
+import ui.event.EventDataSource;
+import ui.event.HashMapEventDataSource;
+import ui.event.SingleEventDataSource;
 import ui.event.EventSource;
 import ui.model.*;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Objects;
 
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static ui.event.eventManagers.mainScreen.MainScreenEventManager.*;
+import static ui.mainScreen.MainScreen.*;
 
 public class SearchPanel extends JPanel {
     public static final String TEXT_CODE = "Код каналу";
@@ -42,9 +51,9 @@ public class SearchPanel extends JPanel {
             TEXT_PROTOCOL_NUMBER, TEXT_REFERENCE, TEXT_SUITABILITY
     };
 
-    protected static final int TEXT_MODE = 0;
-    protected static final int LIST_MODE = 1;
-    protected static final int CHECK_MODE = 3;
+    public static final int TEXT_MODE = 0;
+    public static final int LIST_MODE = 1;
+    public static final int CHECK_MODE = 3;
 
     public DefaultButton btnSearch;
     protected StringsList listSearchFields;
@@ -52,16 +61,12 @@ public class SearchPanel extends JPanel {
     protected StringsList listValues;
     protected CheckBox checkSuitability;
 
-    private final DataTransfer dataTransfer = DataTransfer.getInstance();
-    private final EventManager eventManager = EventManager.getInstance();
+    private final AbstractFactory repositoryFactory;
 
-    private final EventSource eventSource;
-    private final SearchPanelVT searchPanelVT;
-
-    public SearchPanel(EventSource eventSource){
+    public SearchPanel(MainScreenEventListener eventListener,
+                       AbstractFactory repositoryFactory){
         super(new GridBagLayout());
-        this.eventSource = eventSource;
-        this.searchPanelVT = new SearchPanelVT(this);
+        this.repositoryFactory = repositoryFactory;
 
         this.btnSearch = new DefaultButton(TEXT_START_SEARCH);
         this.listSearchFields = new StringsList(StringsList.CENTER, SEARCH_FIELDS);
@@ -73,8 +78,9 @@ public class SearchPanel extends JPanel {
         this.add(this.inputValue, new CellBuilder().y(1).create());
         this.add(this.btnSearch, new CellBuilder().y(2).create());
 
-        this.btnSearch.addActionListener(clickButtonSearch);
-        this.listSearchFields.addItemListener(e -> searchPanelVT.changeField());
+        this.btnSearch.addActionListener(eventListener.clickSearchButton(getDataForSearch()));
+        this.listSearchFields.addItemListener(eventListener.changeSearchField(
+                new SingleEventDataSource<>(KEY_SEARCH_FIELD_TEXT, Objects.requireNonNull(listSearchFields.getSelectedItem()).toString())));
         this.inputValue.addFocusListener(inputValueFocusListener);
         this.listSearchFields.addKeyListener(keyListener);
         this.inputValue.addKeyListener(keyListener);
@@ -101,30 +107,18 @@ public class SearchPanel extends JPanel {
         }
     };
 
-    private final ActionListener clickButtonSearch = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (listSearchFields.getSelectedItem() != null) {
-                boolean start = btnSearch.getText().equals(TEXT_START_SEARCH);
-                searchPanelVT.clickSearch(start);
-                if (start) {
-                    String value = listValues.getSelectedItem() == null ?
-                            EMPTY :
-                            listValues.getSelectedItem().toString();
+    private EventDataSource<Void> getDataForSearch() {
+        EventDataSource<Void> eventDataSource = new HashMapEventDataSource<>();
+        eventDataSource.put(KEY_SEARCH_FIELD_TEXT, Objects.requireNonNull(listSearchFields.getSelectedItem()).toString());
+        eventDataSource.put(KEY_SEARCH_VALUE_TEXT, inputValue.getText());
+        eventDataSource.put(KEY_SEARCH_VALUE_LIST_ITEM_TEXT, Objects.requireNonNull(listValues.getSelectedItem()).toString());
+        eventDataSource.put(KEY_SEARCH_VALUE_BOOLEAN, checkSuitability.isSelected());
+        return eventDataSource;
+    }
 
-                    dataTransfer.put(KEY_SEARCH_FIELD, listSearchFields.getSelectedItem().toString());
-                    dataTransfer.put(KEY_SEARCH_VALUE_TEXT, inputValue.getText());
-                    dataTransfer.put(KEY_SEARCH_VALUE_LIST_ITEM, value);
-                    dataTransfer.put(KEY_SEARCH_VALUE_BOOLEAN, checkSuitability.isSelected());
-
-                    eventManager.runEvent(eventSource, CLICK_SEARCH_BUTTON_START);
-                } else {
-                    dataTransfer.clear();
-                    eventManager.runEvent(eventSource, CLICK_SEARCH_BUTTON_END);
-                }
-            }
-        }
-    };
+    public void selectAllValueText() {
+        inputValue.selectAll();
+    }
 
     private final FocusListener inputValueFocusListener = new FocusListener() {
         @Override
@@ -137,4 +131,70 @@ public class SearchPanel extends JPanel {
             searchPanelVT.valueLostFocus();
         }
     };
+
+    public void rebuildPanel(int mode, String selectedField) {
+        EventQueue.invokeLater(() -> {
+            this.removeAll();
+            this.add(this.listSearchFields, new CellBuilder().y(0).create());
+            switch (mode) {
+                default:
+                    if (selectedField.equals(TEXT_DATE)) {
+                        this.inputValue.setToolTipText(TEXT_DATE_TOOLTIP);
+                    } else {
+                        this.inputValue.setToolTipText(TEXT_DEFAULT_TOOLTIP);
+                    }
+                    this.add(this.inputValue, new CellBuilder().y(1).create());
+                    break;
+                case LIST_MODE:
+                    setModelToComboBox(selectedField);
+                    this.add(this.listValues, new CellBuilder().y(1).create());
+                    break;
+                case CHECK_MODE:
+                    this.add(this.checkSuitability, new CellBuilder().y(1).create());
+                    break;
+            }
+
+            this.add(this.btnSearch, new CellBuilder().y(2).create());
+        });
+    }
+
+    private void setModelToComboBox(String selectedField){
+        switch (selectedField){
+            case TEXT_MEASUREMENT_NAME:
+                MeasurementRepository measurementRepository = repositoryFactory.create(MeasurementRepository.class);
+                this.listValues.setModel(new DefaultComboBoxModel<>(measurementRepository.getAllNames()));
+                this.listValues.setEditable(false);
+                break;
+            case TEXT_MEASUREMENT_VALUE:
+                measurementRepository = repositoryFactory.create(MeasurementRepository.class);
+                this.listValues.setModel(new DefaultComboBoxModel<>(measurementRepository.getAllValues()));
+                this.listValues.setEditable(false);
+                break;
+            case TEXT_DEPARTMENT:
+                DepartmentRepository departmentRepository = repositoryFactory.create(DepartmentRepository.class);
+                this.listValues.setModel(new DefaultComboBoxModel<>(departmentRepository.getAll().toArray(new String[0])));
+                this.listValues.setEditable(true);
+                break;
+            case TEXT_AREA:
+                AreaRepository areaRepository = repositoryFactory.create(AreaRepository.class);
+                this.listValues.setModel(new DefaultComboBoxModel<>(areaRepository.getAll().toArray(new String[0])));
+                this.listValues.setEditable(true);
+                break;
+            case TEXT_PROCESS:
+                ProcessRepository processRepository = repositoryFactory.create(ProcessRepository.class);
+                this.listValues.setModel(new DefaultComboBoxModel<>(processRepository.getAll().toArray(new String[0])));
+                this.listValues.setEditable(true);
+                break;
+            case TEXT_INSTALLATION:
+                InstallationRepository installationRepository = repositoryFactory.create(InstallationRepository.class);
+                this.listValues.setModel(new DefaultComboBoxModel<>(installationRepository.getAll().toArray(new String[0])));
+                this.listValues.setEditable(true);
+                break;
+            case TEXT_SENSOR_TYPE:
+                SensorRepository sensorRepository = repositoryFactory.create(SensorRepository.class);
+                this.listValues.setModel(new DefaultComboBoxModel<>(sensorRepository.getAllTypes().toArray(new String[0])));
+                this.listValues.setEditable(false);
+                break;
+        }
+    }
 }

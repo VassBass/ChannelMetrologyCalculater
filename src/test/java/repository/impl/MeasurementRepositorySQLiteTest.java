@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import model.Measurement;
 import org.junit.*;
 import org.sqlite.JDBC;
-import repository.MeasurementRepository;
+import service.repository.repos.measurement.MeasurementRepository;
+import service.repository.repos.measurement.MeasurementRepositorySQLite;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

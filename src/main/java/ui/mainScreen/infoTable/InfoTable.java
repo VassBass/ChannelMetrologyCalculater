@@ -1,11 +1,13 @@
 package ui.mainScreen.infoTable;
 
+import converters.VariableConverter;
 import model.Channel;
 import ui.model.ButtonCell;
 import ui.model.CellBuilder;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Calendar;
 
 public class InfoTable extends JPanel {
     private static final String TEXT_NEXT_DATE = "Дата наступної перевірки";
@@ -18,11 +20,8 @@ public class InfoTable extends JPanel {
     protected final ButtonCell path;
     protected final ButtonCell sensor;
 
-    private final InfoTableVT infoTableVT;
-
     public InfoTable(){
         super(new GridBagLayout());
-        infoTableVT = new InfoTableVT(this);
 
         ButtonCell nextDateTitle = new ButtonCell(true, TEXT_NEXT_DATE);
         ButtonCell pathTitle = new ButtonCell(true, TEXT_PATH);
@@ -41,6 +40,32 @@ public class InfoTable extends JPanel {
     }
 
     public void updateInfo(Channel channel){
-        infoTableVT.updateCells(channel);
+        if (channel == null){
+            nextDate.setText(TEXT_DEFAULT_NEXT_DATE);
+            nextDate.setBackground(Color.WHITE);
+            path.setText(TEXT_DASH);
+            sensor.setText(TEXT_DASH);
+        }else {
+            nextDate.setText(VariableConverter.dateToString(channel._getNextDate()));
+            nextDate.setBackground(setBackgroundColorFromDate(channel._getNextDate()));
+            path.setText(channel._getFullPath());
+            sensor.setText(channel.getSensor().getType());
+        }
+    }
+
+    private Color setBackgroundColorFromDate(Calendar date){
+        long d;
+        if (date != null) {
+            d = date.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
+        }else{
+            d = -1L;
+        }
+        if (d <= 7776000000L && d >= 0L){
+            return Color.YELLOW;
+        }else if (d < 0L){
+            return Color.RED;
+        }else {
+            return Color.WHITE;
+        }
     }
 }

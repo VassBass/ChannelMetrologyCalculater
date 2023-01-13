@@ -3,6 +3,7 @@ package repository.impl;
 import org.junit.*;
 import org.sqlite.JDBC;
 import repository.Repository;
+import service.repository.repos.installation.InstallationRepositorySQLite;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

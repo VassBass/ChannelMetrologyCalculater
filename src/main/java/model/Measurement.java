@@ -81,20 +81,11 @@ public class Measurement implements Serializable {
     @Nonnull public String getName() {return this.name;}
     @Nonnull public String getValue() {return this.value;}
     @Nonnull public Map<String,Double>getFactors(){return this.factors;}
-    @Nonnull public String _getFactorsJson() throws JsonProcessingException {
-        ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        return writer.writeValueAsString(this.factors);
-    }
-    public Double _getFactor(String value){return this.factors.get(value);}
+    public Double getFactor(String value){return this.factors.get(value);}
 
     public void setName(@Nonnull String name) {this.name = name;}
     public void setValue(@Nonnull String value){this.value = value;}
     public void setFactors(@Nonnull Map<String, Double> factors){this.factors = factors;}
-
-    @SuppressWarnings("unchecked")
-    public void _setFactors(@Nonnull String json) throws JsonProcessingException {
-        this.factors = new ObjectMapper().readValue(json, HashMap.class);
-    }
 
     public void addFactor(@Nonnull String measurementValue, @Nonnull Double factor){
         if (!measurementValue.equals(this.value)) this.factors.put(measurementValue, factor);
@@ -187,7 +178,7 @@ public class Measurement implements Serializable {
         if (measurement.getValue().equals(this.value) && measurement.getName().equals(this.name)){
             if (measurement.getFactors().size() == this.factors.size()){
                 for (String key : this.factors.keySet()){
-                    if (measurement._getFactor(key) == null || !measurement._getFactor(key).equals(this.factors.get(key))) return false;
+                    if (measurement.getFactor(key) == null || !measurement.getFactor(key).equals(this.factors.get(key))) return false;
                 }
 
                 return true;

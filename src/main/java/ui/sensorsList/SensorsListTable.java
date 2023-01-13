@@ -1,8 +1,8 @@
 package ui.sensorsList;
 
 import model.Sensor;
-import repository.SensorRepository;
-import repository.impl.SensorRepositorySQLite;
+import service.repository.repos.sensor.SensorRepository;
+import service.repository.repos.sensor.SensorRepositorySQLite;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
