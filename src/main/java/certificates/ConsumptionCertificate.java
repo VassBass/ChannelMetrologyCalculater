@@ -196,12 +196,12 @@ public class ConsumptionCertificate extends Certificate {
         String number = calibrator.getNumber();
         cell(18,12).setCellValue(number);
 
-        String certificate = calibrator.getCertificateInfo();
+        String certificate = calibrator.getCertificate().toString();
         cell(18,9).setCellValue(calibrator._getCertificateType());
         cell(18,12).setCellValue(certificate);
 
         double errorCalibrator = calibrator.getError(this.channel);
-        double eP = errorCalibrator / (this.channel._getRange() / 100);
+        double eP = errorCalibrator / (this.channel.getRange() / 100);
         String errorPercent = VariableConverter.roundingDouble2(eP, Locale.GERMAN);
         cell(20,13).setCellValue(errorPercent);
 

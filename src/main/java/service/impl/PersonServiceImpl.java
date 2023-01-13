@@ -34,7 +34,7 @@ public class PersonServiceImpl implements PersonService {
     public String[] getAllNamesWithFirstEmptyString(){
         List<String> names = new ArrayList<>();
         names.add(EMPTY_ARRAY);
-        names.addAll(repository.getAll().stream().map(Person::_getFullName).collect(Collectors.toList()));
+        names.addAll(repository.getAll().stream().map(Person::getFullName).collect(Collectors.toList()));
         return names.toArray(new String[0]);
     }
 
@@ -44,7 +44,7 @@ public class PersonServiceImpl implements PersonService {
         heads.add(EMPTY_ARRAY);
         heads.addAll(repository.getAll().stream()
                 .filter(p -> p.getPosition().equals(Person.HEAD_OF_DEPARTMENT_ASUTP))
-                .map(Person::_getFullName)
+                .map(Person::getFullName)
                 .collect(Collectors.toList()));
         return heads.toArray(new String[0]);
     }

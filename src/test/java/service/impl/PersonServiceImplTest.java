@@ -76,7 +76,7 @@ public class PersonServiceImplTest {
         int i = 0;
         expected[i++] = EMPTY_ARRAY;
         for (;i<8;i++){
-            expected[i] = testPersons[i-1]._getFullName();
+            expected[i] = testPersons[i-1].getFullName();
         }
 
         assertArrayEquals(expected, service.getAllNamesWithFirstEmptyString());
@@ -85,8 +85,8 @@ public class PersonServiceImplTest {
     @Test
     public void getNamesOfHeadsWithFirstEmptyString() {
         String[] expected = new String[]{EMPTY_ARRAY,
-                testPersons[testPersons.length - 2]._getFullName(),
-                testPersons[testPersons.length - 1]._getFullName()
+                testPersons[testPersons.length - 2].getFullName(),
+                testPersons[testPersons.length - 1].getFullName()
         };
 
         assertArrayEquals(expected, service.getNamesOfHeadsWithFirstEmptyString());

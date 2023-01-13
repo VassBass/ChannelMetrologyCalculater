@@ -1,35 +1,13 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import converters.VariableConverter;
-import org.mariuszgromada.math.mxparser.Argument;
-import org.mariuszgromada.math.mxparser.Expression;
-import org.mariuszgromada.math.mxparser.Function;
-import service.repository.repos.channel.ChannelRepositorySQLite;
-import service.repository.repos.measurement.MeasurementRepositorySQLite;
-
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * DB table = sensors
  */
 public class Sensor implements Serializable {
-    /**
-     * @see ChannelRepositorySQLite#changeSensor(Sensor, Sensor, int...)
-     */
-    public static int TYPE = 0;
-    public static int NAME = 1;
-    public static int RANGE = 2;
-    public static int NUMBER = 3;
-    public static int VALUE = 4;
-    public static int MEASUREMENT = 5;
-    public static int ERROR_FORMULA = 6;
-
     /**
      * Default sensors types
      * @see #getType()
@@ -53,7 +31,7 @@ public class Sensor implements Serializable {
     /**
      * DB field = name (primary key) [TEXT]
      */
-    private String name = "Sensor";
+    private String name = "";
 
     /**
      * DB fields range_min, range_max [REAL]
@@ -86,7 +64,7 @@ public class Sensor implements Serializable {
      * @see #getError(Channel)
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#_getRange()
+     * @see Channel#getRange()
      *
      * r - Measurement range of sensor (Диапазон измерения датчика)
      //* @see Sensor#getRange()
@@ -115,7 +93,7 @@ public class Sensor implements Serializable {
     public String getName(){return this.name;}
     public double getRangeMin() {return this.rangeMin;}
     public double getRangeMax() {return this.rangeMax;}
-    public double _getRange(){return this.rangeMax - this.rangeMin;}
+    public double getRange(){return this.rangeMax - this.rangeMin;}
     public String getNumber(){return this.number;}
     public String getValue(){return this.value;}
     public String getMeasurement(){return this.measurement;}
@@ -126,7 +104,7 @@ public class Sensor implements Serializable {
      * @return numerical value calculated by the {@link #errorFormula}
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#_getRange()
+     * @see Channel#getRange()
      *
      * r - Measurement range of sensor (Диапазон измерения датчика)
      * @see Calibrator#_getRange()
@@ -140,22 +118,23 @@ public class Sensor implements Serializable {
      * @see Measurement#getErrorStringAfterConvertNumbers(String, Measurement, Measurement)
      */
     public double getError(@Nonnull Channel channel){
-        String formula = VariableConverter.commasToDots(this.errorFormula);
-        Optional<Measurement> m = MeasurementRepositorySQLite.getInstance().get(value);
-        Measurement input = m.orElseGet(channel::getMeasurement);
-        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
-        Function f = new Function("At(R,r,convR) = " + formula);
-        Argument R = new Argument("R = " + channel._getRange());
-        double cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
-        Argument r = new Argument("r = " + this._getRange());
-        Argument convR = new Argument("convR = " + cR);
-        Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
-        return expression.calculate();
+//        String formula = VariableConverter.commasToDots(this.errorFormula);
+//        Optional<Measurement> m = MeasurementRepositorySQLite.getInstance().get(value);
+//        Measurement input = m.orElseGet(channel::getMeasurement);
+//        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
+//        Function f = new Function("At(R,r,convR) = " + formula);
+//        Argument R = new Argument("R = " + channel._getRange());
+//        double cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
+//        Argument r = new Argument("r = " + this._getRange());
+//        Argument convR = new Argument("convR = " + cR);
+//        Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
+//        return expression.calculate();
+        return 0D;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.type, this.name, this.measurement);
+        return Objects.hash(this.type, this.name, this.number);
     }
 
     /**
@@ -164,7 +143,7 @@ public class Sensor implements Serializable {
      *
      * @return true if sensors names is equal
      *
-     * If you need to compare all fields of Sensors use {@link #isMatch(Sensor, int...)}
+     * If you need to compare all fields of Sensors use {@link #isMatch(Sensor)}
      */
     @Override
     public boolean equals(Object obj) {
@@ -175,89 +154,25 @@ public class Sensor implements Serializable {
         return in.getName().equals(this.name);
     }
 
-    /**
-     * @return {@link Sensor} in JsonString
-     * @see com.fasterxml.jackson.core
-     */
     @Override
     public String toString() {
-        int attempt = 0;
-        while (attempt < 10) {
-            try {
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                return writer.writeValueAsString(this);
-            } catch (JsonProcessingException e) {
-                attempt++;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param json {@link Sensor} in JsonString
-     *
-     * @see com.fasterxml.jackson.core
-     *
-     * @return {@link Sensor}
-     *
-     * @throws JsonProcessingException - if jackson can't transform String to Ыутыщк
-     */
-    public static Sensor fromString(String json) throws JsonProcessingException {
-        return new ObjectMapper().readValue(json, Sensor.class);
+        return String.format("%s[%s]", name, number);
     }
 
     /**
      * @param sensor to compare
-     * @param ignored ignored fields
-     * @see #NAME
-     * @see #TYPE
-     * @see #RANGE
-     * @see #NUMBER
-     * @see #VALUE
-     * @see #ERROR_FORMULA
      *
      * @return true if sensors fields equal
      */
-    public boolean isMatch(@Nonnull Sensor sensor, int ... ignored){
-        if (this.measurement.equals(sensor.getMeasurement())){
-            StringBuilder builderThis = new StringBuilder();
-            StringBuilder builderSensor = new StringBuilder();
-            if (!contain(ignored, Sensor.NAME)){
-                builderThis.append(this.name);
-                builderSensor.append(sensor.getName());
-            }
-            if (!contain(ignored, Sensor.TYPE)){
-                builderThis.append(this.type);
-                builderSensor.append(sensor.getType());
-            }
-            if (!contain(ignored, Sensor.RANGE)){
-                builderThis.append(this.rangeMin);
-                builderThis.append(this.rangeMax);
-                builderSensor.append(sensor.getRangeMin());
-                builderSensor.append(sensor.getRangeMax());
-            }
-            if (!contain(ignored, Sensor.NUMBER)){
-                builderThis.append(this.number);
-                builderSensor.append(sensor.getNumber());
-            }
-            if (!contain(ignored, Sensor.VALUE)){
-                builderThis.append(this.value);
-                builderSensor.append(sensor.getValue());
-            }
-            if (!contain(ignored, Sensor.ERROR_FORMULA)){
-                builderThis.append(this.errorFormula);
-                builderSensor.append(sensor.getErrorFormula());
-            }
-            return builderThis.toString().equals(builderSensor.toString());
-        } else return false;
-    }
+    public boolean isMatch(@Nonnull Sensor sensor){
+        return name.equals(sensor.getName())
+                && type.equals(sensor.getType())
+                && rangeMin == sensor.getRangeMin()
+                && rangeMax == sensor.getRangeMax()
+                && number.equals(sensor.getNumber())
+                && value.equals(sensor.getValue())
+                && measurement.equals(sensor.getMeasurement())
+                && errorFormula.equals(sensor.getErrorFormula());
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean contain(int[]source, int value){
-        if (source == null || source.length == 0) return false;
-        for (int i : source){
-            if (i == value) return true;
-        }
-        return false;
     }
 }

@@ -1,13 +1,7 @@
 package model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import converters.VariableConverter;
-import org.mariuszgromada.math.mxparser.Argument;
-import org.mariuszgromada.math.mxparser.Expression;
-import org.mariuszgromada.math.mxparser.Function;
-import service.repository.repos.measurement.MeasurementRepositorySQLite;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -80,10 +74,10 @@ public class Calibrator implements Serializable {
      * @see #getError(Channel)
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#_getRange()
+     * @see Channel#getRange()
      *
      * r - Measurement range of calibrator (Диапазон измерения калибратора)
-     * @see Calibrator#_getRange()
+     * @see Calibrator#getRange()
      *
      * convR - Measurement range of calibrator converted by measurement channel value
      * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
@@ -104,7 +98,7 @@ public class Calibrator implements Serializable {
     @Nonnull public Certificate getCertificate(){return this.certificate;}
     public double getRangeMin(){return this.rangeMin;}
     public double getRangeMax(){return this.rangeMax;}
-    public double _getRange(){return this.rangeMax - this.rangeMin;}
+    public double getRange(){return this.rangeMax - this.rangeMin;}
     @Nonnull public String getValue(){return this.value;}
     @Nonnull public String getMeasurement(){return this.measurement;}
     @Nonnull public String _getCertificateType(){return this.certificate.getType();}
@@ -119,34 +113,23 @@ public class Calibrator implements Serializable {
     public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
     public void setValue(@Nonnull String value){this.value = value;}
-    public void _setCertificateType(@Nonnull String type){this.certificate.setType(type);}
-    public void _setCertificateName(@Nonnull String name){this.certificate.setName(name);}
-    public void _setCertificateDate(@Nonnull String date){this.certificate.setDate(date);}
-    public void _setCertificateCompany(@Nonnull String company){this.certificate.setCompany(company);}
+    public void setCertificateType(@Nonnull String type){this.certificate.setType(type);}
+    public void setCertificateName(@Nonnull String name){this.certificate.setName(name);}
+    public void setCertificateDate(@Nonnull String date){this.certificate.setDate(date);}
+    public void setCertificateCompany(@Nonnull String company){this.certificate.setCompany(company);}
     public void setErrorFormula(@Nonnull String errorFormula){this.errorFormula = errorFormula;}
     public void setMeasurement(@Nonnull String measurement){this.measurement = measurement;}
     public void setCertificate(@Nonnull Certificate certificate){this.certificate = certificate;}
-
-    /**
-     * @return main Certificate info in single string
-     *
-     * @see Certificate#getName()
-     * @see Certificate#getDate()
-     * @see Certificate#getCompany()
-     */
-    public String getCertificateInfo(){
-        return this.certificate.getName() + " від " + this.certificate.getDate() + "р " + this.certificate.getCompany();
-    }
 
     /**
      * @param channel against which the calculation is made
      * @return numerical value calculated by the {@link #errorFormula}
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#_getRange()
+     * @see Channel#getRange()
      *
      * r - Measurement range of calibrator (Диапазон измерения калибратора)
-     * @see Calibrator#_getRange()
+     * @see Calibrator#getRange()
      * 
      * convR - Measurement range of calibrator converted by measurement channel value
      * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
@@ -158,16 +141,17 @@ public class Calibrator implements Serializable {
      * @see Measurement#getErrorStringAfterConvertNumbers(String, Measurement, Measurement)
      */
     public double getError(@Nonnull Channel channel){
-        String formula = VariableConverter.commasToDots(this.errorFormula);
-        Measurement input = MeasurementRepositorySQLite.getInstance().get(this.value).get();
-        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
-        Function f = new Function("At(R,r,convR) = " + formula);
-        Argument R = new Argument("R = " + channel._getRange());
-        double cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
-        Argument r = new Argument("r = " + this._getRange());
-        Argument convR = new Argument("convR = " + cR);
-        Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
-        return expression.calculate();
+//        String formula = VariableConverter.commasToDots(this.errorFormula);
+//        Measurement input = MeasurementRepositorySQLite.getInstance().get(this.value).get();
+//        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
+//        Function f = new Function("At(R,r,convR) = " + formula);
+//        Argument R = new Argument("R = " + channel._getRange());
+//        double cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
+//        Argument r = new Argument("r = " + this._getRange());
+//        Argument convR = new Argument("convR = " + cR);
+//        Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
+//        return expression.calculate();
+        return 0D;
     }
 
     public static class Certificate implements Serializable {
@@ -213,39 +197,15 @@ public class Calibrator implements Serializable {
                     && this.type.equals(c.getType());
         }
 
-        /**
-         * @return {@link Certificate} in JsonString
-         * @see com.fasterxml.jackson.core
-         */
         @Override
         public String toString() {
-            int attempt = 0;
-            while (attempt < 10) {
-                try {
-                    ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                    return writer.writeValueAsString(this);
-                } catch (JsonProcessingException e) {
-                    attempt++;
-                }
-            }
-            return null;
-        }
-
-        /**
-         * @param json {@link Certificate} in JsonString
-         * @see com.fasterxml.jackson.core
-         *
-         * @return {@link Certificate}
-         * @throws JsonProcessingException - if jackson can't transform
-         */
-        public static Certificate fromString (String json) throws JsonProcessingException {
-            return new ObjectMapper().readValue(json, Certificate.class);
+            return String.format("%s від %sр %s", name, date, company);
         }
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.type, this.name, this.measurement);
+        return Objects.hash(this.type, this.name, this.number);
     }
 
     /**
@@ -273,29 +233,7 @@ public class Calibrator implements Serializable {
      */
     @Override
     public String toString() {
-        int attempt = 0;
-        while (attempt < 10) {
-            try {
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                return writer.writeValueAsString(this);
-            } catch (JsonProcessingException e) {
-                attempt++;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param json {@link Calibrator} in JsonString
-     *
-     * @see com.fasterxml.jackson.core
-     *
-     * @return {@link Calibrator}
-     *
-     * @throws JsonProcessingException - if jackson can't transform String to Calibrator
-     */
-    public static Calibrator fromString(String json) throws JsonProcessingException{
-            return new ObjectMapper().readValue(json, Calibrator.class);
+        return String.format("[%s]%s(%s)", number, type, name);
     }
 
     /**

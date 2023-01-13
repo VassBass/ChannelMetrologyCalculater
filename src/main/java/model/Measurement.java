@@ -1,9 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -192,36 +188,8 @@ public class Measurement implements Serializable {
         return m;
     }
 
-    /**
-     * @return {@link Measurement} in JsonString
-     * if 10 times in a row throws {@link JsonProcessingException} return null
-     *
-     * @see com.fasterxml.jackson.core
-     */
     @Override
     public String toString() {
-        int attempt = 0;
-        while (attempt < 10) {
-            try {
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                return writer.writeValueAsString(this);
-            } catch (JsonProcessingException e) {
-                attempt++;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param json {@link Measurement} in JsonString
-     *
-     * @see com.fasterxml.jackson.core
-     *
-     * @return {@link Measurement}
-     *
-     * @throws JsonProcessingException - if jackson can't transform String to Measurement
-     */
-    public static Measurement fromString(String json) throws JsonProcessingException {
-        return new ObjectMapper().readValue(json, Measurement.class);
+        return String.format("%s(%s)", name, value);
     }
 }

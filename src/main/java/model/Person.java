@@ -1,9 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-
 import java.util.Locale;
 import java.util.Objects;
 
@@ -42,7 +38,7 @@ public class Person {
      * @return full name of person
      * format {@link #name} + in upper case {@link #surname}
      */
-    public String _getFullName(){
+    public String getFullName(){
         return this.name + " " + this.surname.toUpperCase(Locale.ROOT);
     }
 
@@ -66,39 +62,14 @@ public class Person {
     }
 
     public boolean isMatch(Person person){
-        return this.name.equals(person.getName()) && this.surname.equals(person.getSurname()) && this.patronymic.equals(person.patronymic) && this.position.equals(person.getPosition());
+        return this.name.equals(person.getName())
+                && this.surname.equals(person.getSurname())
+                && this.patronymic.equals(person.patronymic)
+                && this.position.equals(person.getPosition());
     }
 
-    /**
-     * @return {@link Person} in JsonString
-     * if 10 times in a row throws {@link JsonProcessingException} return null
-     *
-     * @see com.fasterxml.jackson.core
-     */
     @Override
     public String toString() {
-        int attempt = 0;
-        while (attempt < 10) {
-            try {
-                ObjectWriter writer = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                return writer.writeValueAsString(this);
-            } catch (JsonProcessingException e) {
-                attempt++;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param json {@link Person} in JsonString
-     *
-     * @see com.fasterxml.jackson.core
-     *
-     * @return {@link Person}
-     *
-     * @throws JsonProcessingException - if jackson can't transform String to Person
-     */
-    public static Person fromString(String json) throws JsonProcessingException {
-        return new ObjectMapper().readValue(json, Person.class);
+        return String.format("%s(%s)", getFullName(), getPosition());
     }
 }

@@ -27,10 +27,10 @@ public class CalibratorRepositorySQLiteTest {
     private static Calibrator createCalibrator(int number){
         Calibrator calibrator = new Calibrator("calibrator" + number);
         calibrator.setType("type" + number);
-        calibrator._setCertificateName("certificate" + number);
-        calibrator._setCertificateType("certificateType" + number);
-        calibrator._setCertificateDate("23.03.2022");
-        calibrator._setCertificateCompany("company" + number);
+        calibrator.setCertificateName("certificate" + number);
+        calibrator.setCertificateType("certificateType" + number);
+        calibrator.setCertificateDate("23.03.2022");
+        calibrator.setCertificateCompany("company" + number);
         calibrator.setNumber(String.valueOf(number));
         String measurement = number < 3 ? Measurement.TEMPERATURE : number < 5 ? Measurement.PRESSURE : Measurement.CONSUMPTION;
         String value = number < 3 ? Measurement.DEGREE_CELSIUS : number < 5 ? Measurement.KPA : Measurement.M3_HOUR;
