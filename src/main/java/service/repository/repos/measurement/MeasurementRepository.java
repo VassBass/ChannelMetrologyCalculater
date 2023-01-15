@@ -10,7 +10,6 @@ public interface MeasurementRepository {
     Collection<Measurement> getAll();
     String[]getAllNames();
     String[]getAllValues();
-    String[]getValues(@Nonnull Measurement measurement);
     String[]getValues(@Nonnull String name);
     Measurement get(@Nonnull String value);
     Collection<Measurement> getMeasurements(@Nonnull String name);

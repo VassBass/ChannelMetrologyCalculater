@@ -94,23 +94,6 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
     }
 
     @Override
-    public String[] getValues(@Nonnull Measurement measurement) {
-        List<String>values = new ArrayList<>();
-
-        String sql = String.format("SELECT value FROM %s WHERE name = '%s';", tableName, measurement.getName());
-        try (ResultSet resultSet = connector.getResultSet(sql)){
-            while (resultSet.next()){
-                String val = resultSet.getString("value");
-                values.add(val);
-            }
-        }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
-        }
-
-        return values.toArray(new String[0]);
-    }
-
-    @Override
     public String[] getValues(@Nonnull String name) {
         List<String>values = new ArrayList<>();
 
