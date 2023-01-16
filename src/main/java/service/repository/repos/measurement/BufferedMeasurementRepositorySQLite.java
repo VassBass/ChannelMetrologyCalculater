@@ -1,26 +1,26 @@
 package service.repository.repos.measurement;
 
 import model.Measurement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 
 import javax.annotation.Nonnull;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
+import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
 public class BufferedMeasurementRepositorySQLite extends MeasurementRepositorySQLite {
-    private static final Logger logger = LoggerFactory.getLogger(BufferedMeasurementRepositorySQLite.class);
-
     private final Map<String, Measurement> buffer;
 
     public BufferedMeasurementRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         super(configHolder, connector);
-        this.buffer = new HashMap<>();
-        super.getAll().forEach(m -> buffer.put(m.getValue(), m));
+        this.buffer = super.getAll().stream()
+                .filter(Objects::nonNull)
+                .collect(toMap(Measurement::getValue, Function.identity()));
     }
 
     @Override
@@ -72,44 +72,60 @@ public class BufferedMeasurementRepositorySQLite extends MeasurementRepositorySQ
 
     @Override
     public boolean set(@Nonnull Measurement oldMeasurement, @Nonnull Measurement newMeasurement) {
-        if (buffer.containsKey(oldMeasurement.getValue()) && buffer.containsKey()) {
-            buffer.put(oldMeasurement.getValue(), newMeasurement);
-            return super.set(oldMeasurement, newMeasurement);
+        if (!oldMeasurement.equals(newMeasurement)) {
+            if (buffer.containsKey(newMeasurement.getValue())) return false;
+
+            buffer.remove(oldMeasurement.getValue());
         }
+
+        buffer.put(newMeasurement.getValue(), newMeasurement);
+        return super.set(oldMeasurement, newMeasurement);
     }
 
     @Override
     public boolean remove(@Nonnull Measurement measurement) {
+        buffer.remove(measurement.getValue());
         return super.remove(measurement);
     }
 
     @Override
     public boolean clear() {
+        buffer.clear();
         return super.clear();
     }
 
     @Override
     public Collection<Measurement> getMeasurements(@Nonnull String name) {
-        return super.getMeasurements(name);
+        return buffer.values().stream()
+                .filter(m -> m.getName().equals(name))
+                .collect(toSet());
     }
 
     @Override
     public boolean rewrite(@Nonnull Collection<Measurement> measurements) {
+        buffer.clear();
+        buffer.putAll(measurements.stream()
+                .filter(Objects::nonNull)
+                .collect(toMap(Measurement::getValue, Function.identity())));
         return super.rewrite(measurements);
     }
 
     @Override
     public boolean isLastInMeasurement(@Nonnull String measurementValue) {
-        return super.isLastInMeasurement(measurementValue);
+        final String name = buffer.get(measurementValue).getName();
+        return buffer.values().stream()
+                .filter(m -> m.getName().equals(name))
+                .count() == 1L;
     }
 
     @Override
     public boolean exists(@Nonnull String measurementValue) {
-        return super.exists(measurementValue);
+        return buffer.containsKey(measurementValue);
     }
 
     @Override
     public boolean exists(@Nonnull String oldValue, @Nonnull String newValue) {
-        return super.exists(oldValue, newValue);
+        if (oldValue.equals(newValue)) return false;
+        return buffer.containsKey(newValue);
     }
 }
