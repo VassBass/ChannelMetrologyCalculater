@@ -84,8 +84,7 @@ public class BufferedMeasurementRepositorySQLite extends MeasurementRepositorySQ
 
     @Override
     public boolean remove(@Nonnull Measurement measurement) {
-        buffer.remove(measurement.getValue());
-        return super.remove(measurement);
+        return buffer.remove(measurement.getValue()) != null && super.remove(measurement);
     }
 
     @Override

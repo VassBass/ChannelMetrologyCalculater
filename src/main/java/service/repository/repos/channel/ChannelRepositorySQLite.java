@@ -27,9 +27,9 @@ public class ChannelRepositorySQLite implements ChannelRepository {
 
     private final String tableName;
     private final RepositoryDBConnector connector;
-    private final MeasurementRepository measurementRepository;
-    private final SensorRepository sensorRepository;
-    private final JsonObjectMapper jsonMapper = JacksonJsonObjectMapper.getInstance();
+    protected final MeasurementRepository measurementRepository;
+    protected final SensorRepository sensorRepository;
+    protected final JsonObjectMapper jsonMapper = JacksonJsonObjectMapper.getInstance();
 
     public ChannelRepositorySQLite(RepositoryConfigHolder configHolder,
                                    RepositoryDBConnector connector,
