@@ -7,11 +7,12 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public interface PersonRepository {
     Collection<Person> getAll();
-    Person getById(@Nonnegative int id);
+    @Nullable Person getById(@Nonnegative int id);
 
     boolean add(@Nonnull Person person);
     boolean add(@Nonnull Collection<Person> persons);

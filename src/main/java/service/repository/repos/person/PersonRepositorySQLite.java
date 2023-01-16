@@ -68,14 +68,22 @@ public class PersonRepositorySQLite implements PersonRepository {
         return null;
     }
 
+    /**
+     * Adds a person to the DB and sets the generated id for him
+     * @param person to add
+     * @return true if person added successful or false if something go wrong
+     */
     @Override
     public boolean add(@Nonnull Person person) {
-        String sql = String.format("INSERT INTO %s (name, surname, patronymic, position) VALUES (?, ?, ?, ?);", tableName);
-        try (PreparedStatement statement = connector.getPreparedStatement(sql)){
-            statement.setString(1, person.getName());
-            statement.setString(2, person.getSurname());
-            statement.setString(3, person.getPatronymic());
-            statement.setString(4, person.getPosition());
+        if (person.getId() < 0) person.setId(PersonIdGenerator.generateForRepository(this));
+
+        String sql = String.format("INSERT INTO %s (id, name, surname, patronymic, position) VALUES (?, ?, ?, ?, ?);", tableName);
+        try (PreparedStatement statement = connector.getPreparedStatementWithKey(sql)){
+            statement.setInt(1, person.getId());
+            statement.setString(2, person.getName());
+            statement.setString(3, person.getSurname());
+            statement.setString(4, person.getPatronymic());
+            statement.setString(5, person.getPosition());
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
@@ -84,24 +92,40 @@ public class PersonRepositorySQLite implements PersonRepository {
         }
     }
 
+    /**
+     * Adds a persons to the DB and sets the generated id for them
+     * @param persons to add
+     * @return true if persons added successful or false if something go wrong
+     */
     @Override
     public boolean add(@Nonnull Collection<Person> persons) {
-        if (persons.isEmpty()) return true;
+        if (persons.isEmpty()) {
+            return false;
+        } else {
+            for (Person p : persons) {
+                if (p.getId() < 0) p.setId(PersonIdGenerator.generateForRepository(this));
+            }
+        }
 
-        String sql = String.format("INSERT INTO %s (name, surname, patronymic, position) VALUES ", tableName);
+        String sql = String.format("INSERT INTO %s (id, name, surname, patronymic, position) VALUES ", tableName);
         StringBuilder sqlBuilder = new StringBuilder(sql);
 
         for (Person person : persons) {
             if (person == null) continue;
 
-            String values = String.format("('%s', '%s', '%s', '%s'),",
-                    person.getName(), person.getSurname(), person.getPatronymic(), person.getPosition());
+            String values = String.format("(%s, '%s', '%s', '%s', '%s'),",
+                    person.getId(),
+                    person.getName(),
+                    person.getSurname(),
+                    person.getPatronymic(),
+                    person.getPosition());
             sqlBuilder.append(values);
         }
         sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');
 
         try (Statement statement = connector.getStatement()) {
-            return statement.executeUpdate(sqlBuilder.toString()) > 0;
+            statement.execute(sqlBuilder.toString());
+            return true;
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
             return false;

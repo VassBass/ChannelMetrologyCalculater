@@ -33,31 +33,52 @@ public class BufferedPersonRepositorySQLite extends PersonRepositorySQLite {
 
     @Override
     public boolean add(@Nonnull Person person) {
-        return
+        int id = person.getId();
+        if (id < 0) {
+            id = PersonIdGenerator.generateForMap(buffer);
+            person.setId(id);
+        }
+        if (buffer.containsKey(person.getId())) return false;
+
+        buffer.put(id, person);
+        return super.add(person);
     }
 
     @Override
     public boolean add(@Nonnull Collection<Person> persons) {
-        return super.add(persons);
+        for (Person p : persons) {
+            if (p.getId() < 0) p.setId(PersonIdGenerator.generateForMap(buffer));
+        }
+        Map<Integer, Person> result = persons.stream()
+                .filter(p -> !buffer.containsKey(p.getId()))
+                .collect(Collectors.toMap(Person::getId, Function.identity()));
+        buffer.clear();
+        buffer.putAll(result);
+        return rewrite(result.values());
     }
 
     @Override
     public boolean remove(@Nonnull Person person) {
-        return super.remove(person);
+        return buffer.remove(person.getId()) != null && super.remove(person);
     }
 
     @Override
     public boolean set(@Nonnull Person person) {
-        return super.set(person);
+        return buffer.put(person.getId(), person) !=null && super.set(person);
     }
 
     @Override
     public boolean clear() {
+        buffer.clear();
         return super.clear();
     }
 
     @Override
     public boolean rewrite(@Nonnull Collection<Person> persons) {
+        buffer.clear();
+        buffer.putAll(persons.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(Person::getId, Function.identity())));
         return super.rewrite(persons);
     }
 }

@@ -16,7 +16,7 @@ public class Person {
     /**
      * DB field = id (primary key)[INTEGER]
      */
-    private int id;
+    private int id = -1;
 
     /**
      * DB fields = surname, name, patronymic, position [TEXT]
