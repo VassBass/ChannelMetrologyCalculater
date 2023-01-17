@@ -16,6 +16,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.*;
 
 public class SqliteRepositoryConfigHolderTest {
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
 
     private SqliteRepositoryConfigHolder configHolder;
     private SqliteRepositoryConfigHolder configHolderTestInstance;
@@ -23,8 +24,8 @@ public class SqliteRepositoryConfigHolderTest {
 
     @Before
     public void setUp() {
-        configHolder = new SqliteRepositoryConfigHolder();
-        configHolderTestInstance = new SqliteRepositoryConfigHolder("properties/test_repository.properties");
+        configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
+        configHolderTestInstance = new SqliteRepositoryConfigHolder();
         configHolderPropertiesFileNotExists = new SqliteRepositoryConfigHolder(EMPTY);
     }
 

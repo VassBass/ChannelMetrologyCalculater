@@ -22,10 +22,10 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
         this(PROPERTIES_FILE_PATH);
     }
 
-    public SqliteRepositoryConfigHolder(String propertiesPath) {
+    public SqliteRepositoryConfigHolder(String propertiesFile) {
         try {
             InputStream in = SqliteRepositoryConfigHolder.class.getClassLoader()
-                    .getResourceAsStream(propertiesPath);
+                    .getResourceAsStream(propertiesFile);
             if (in == null){
                 logger.warn("Couldn't find property file");
             }else {
