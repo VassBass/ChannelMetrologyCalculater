@@ -15,35 +15,28 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
 
     private static final String PROPERTIES_FILE_PATH = "properties/repository.properties";
     private static final String KEY_DB_URL = "jdbc.sqlite.url";
-    private static final String TEST_KEY_DB_URL = "test.jdbc.sqlite.url";
 
-    private static String keyDbUrl;
-
-    private String dbUrl;
+    private String dbUrl = EMPTY;
 
     public SqliteRepositoryConfigHolder() {
-        if (keyDbUrl == null) keyDbUrl = KEY_DB_URL;
+        this(PROPERTIES_FILE_PATH);
+    }
+
+    public SqliteRepositoryConfigHolder(String propertiesPath) {
         try {
             InputStream in = SqliteRepositoryConfigHolder.class.getClassLoader()
-                    .getResourceAsStream(PROPERTIES_FILE_PATH);
+                    .getResourceAsStream(propertiesPath);
             if (in == null){
                 logger.warn("Couldn't find property file");
             }else {
                 Properties properties = new Properties();
                 properties.load(in);
 
-                dbUrl = properties.getProperty(keyDbUrl, EMPTY);
+                dbUrl = properties.getProperty(KEY_DB_URL, EMPTY);
             }
         } catch (IOException e) {
             logger.warn("Exception was thrown: ",e);
-        } finally {
-            if (dbUrl == null) dbUrl = EMPTY;
         }
-    }
-
-    public static SqliteRepositoryConfigHolder getTestInstance() {
-        keyDbUrl = TEST_KEY_DB_URL;
-        return new SqliteRepositoryConfigHolder();
     }
 
     @Override

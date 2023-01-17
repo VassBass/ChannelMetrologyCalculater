@@ -22,7 +22,7 @@ public class SqliteRepositoryConfigHolderTest {
     @Before
     public void setUp() {
         configHolder = new SqliteRepositoryConfigHolder();
-        configHolderTestInstance = SqliteRepositoryConfigHolder.getTestInstance();
+        configHolderTestInstance = new SqliteRepositoryConfigHolder("properties/test_repository.properties");
     }
 
     @Test
@@ -32,7 +32,7 @@ public class SqliteRepositoryConfigHolderTest {
 
     @Test
     public void testGetDBUrl() {
-        String dbUrl = "jdbc:sqlite:Support/Data.db";
+        String dbUrl = "jdbc:sqlite:Data.db";
         String testDbUrl = "jdbc:sqlite:TestData.db";
 
         assertEquals(dbUrl, configHolder.getDBUrl());
