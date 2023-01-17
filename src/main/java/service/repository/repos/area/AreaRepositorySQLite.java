@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
+import static java.util.stream.Collectors.toList;
+
 public class AreaRepositorySQLite implements AreaRepository {
     private static final Logger logger = LoggerFactory.getLogger(AreaRepositorySQLite.class);
 
@@ -61,9 +63,9 @@ public class AreaRepositorySQLite implements AreaRepository {
      * @return true if areas was added or false if not
      */
     @Override
-    public boolean add(@Nonnull Collection<String> areas) {
+    public boolean addAll(@Nonnull Collection<String> areas) {
         Set<String> old = new LinkedHashSet<>(getAll());
-        old.addAll(areas);
+        old.addAll(areas.stream().filter(Objects::nonNull).collect(toList()));
         return rewrite(old);
     }
 

@@ -22,7 +22,7 @@ public class SqliteRepositoryDBConnectorTest {
 
     @BeforeClass
     public static void createDBFile() throws IOException {
-        if (!TEST_DB_FILE.exists()) Files.createFile(TEST_DB_FILE.toPath());
+        Files.createFile(TEST_DB_FILE.toPath());
     }
 
     @Before
@@ -33,7 +33,7 @@ public class SqliteRepositoryDBConnectorTest {
 
     @AfterClass
     public static void deleteDBFile() throws IOException {
-        if (TEST_DB_FILE.exists()) Files.delete(TEST_DB_FILE.toPath());
+        Files.delete(TEST_DB_FILE.toPath());
     }
 
     @Test
