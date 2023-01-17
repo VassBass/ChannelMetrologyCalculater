@@ -1,4 +1,4 @@
-package service.application;
+package service.root;
 
 public interface ImplementationFactory {
     <T> T getImplementation(Class<T> clazz);

@@ -2,7 +2,7 @@ package service.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.application.ImplementationFactory;
+import service.root.ImplementationFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 import service.repository.repos.area.AreaRepository;
