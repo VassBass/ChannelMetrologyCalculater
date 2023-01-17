@@ -14,11 +14,15 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
     private static final Logger logger = LoggerFactory.getLogger(SqliteRepositoryConfigHolder.class);
 
     private static final String PROPERTIES_FILE_PATH = "properties/repository.properties";
-    private static String KEY_DB_URL = "jdbc.sqlite.url";
+    private static final String KEY_DB_URL = "jdbc.sqlite.url";
+    private static final String TEST_KEY_DB_URL = "test.jdbc.sqlite.url";
+
+    private static String keyDbUrl;
 
     private String dbUrl;
 
     public SqliteRepositoryConfigHolder() {
+        if (keyDbUrl == null) keyDbUrl = KEY_DB_URL;
         try {
             InputStream in = SqliteRepositoryConfigHolder.class.getClassLoader()
                     .getResourceAsStream(PROPERTIES_FILE_PATH);
@@ -28,7 +32,7 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
                 Properties properties = new Properties();
                 properties.load(in);
 
-                dbUrl = properties.getProperty(KEY_DB_URL, EMPTY);
+                dbUrl = properties.getProperty(keyDbUrl, EMPTY);
             }
         } catch (IOException e) {
             logger.warn("Exception was thrown: ",e);
@@ -38,7 +42,7 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
     }
 
     public static SqliteRepositoryConfigHolder getTestInstance() {
-        KEY_DB_URL = "test." + KEY_DB_URL;
+        keyDbUrl = TEST_KEY_DB_URL;
         return new SqliteRepositoryConfigHolder();
     }
 
