@@ -30,7 +30,7 @@ public class PersonRepositoryInitializer implements RepositoryInitializer {
                 ", surname text NOT NULL" +
                 ", patronymic text" +
                 ", position text NOT NULL" +
-                ", PRIMARY KEY (\"id\" AUTOINCREMENT)" +
+                ", PRIMARY KEY (id AUTOINCREMENT)" +
                 ");", tableName);
 
         try (Statement statement = connector.getStatement()) {
