@@ -8,11 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
     private static final Logger logger = LoggerFactory.getLogger(SqliteRepositoryConfigHolder.class);
 
     private static final String PROPERTIES_FILE_PATH = "properties/repository.properties";
-    private static final String KEY_DB_URL = "jdbc.sqlite.url";
+    private static String KEY_DB_URL = "jdbc.sqlite.url";
 
     private String dbUrl;
 
@@ -26,13 +28,18 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
                 Properties properties = new Properties();
                 properties.load(in);
 
-                dbUrl = properties.getProperty(KEY_DB_URL, "");
+                dbUrl = properties.getProperty(KEY_DB_URL, EMPTY);
             }
         } catch (IOException e) {
             logger.warn("Exception was thrown: ",e);
         } finally {
-            if (dbUrl == null) dbUrl = "";
+            if (dbUrl == null) dbUrl = EMPTY;
         }
+    }
+
+    public static SqliteRepositoryConfigHolder getTestInstance() {
+        KEY_DB_URL = "test." + KEY_DB_URL;
+        return new SqliteRepositoryConfigHolder();
     }
 
     @Override
@@ -42,16 +49,20 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
 
     @Override
     public String getUser() {
-        return "";
+        return EMPTY;
     }
 
     @Override
     public String getPassword() {
-        return "";
+        return EMPTY;
     }
 
     @Override
     public String getTableName(Class<?> clazz) {
-        return RepositoryTableRegistrar.getRegisteredTables().get(clazz);
+        String name = RepositoryTableRegistrar.getRegisteredTables().get(clazz);
+        if (name == null) {
+            logger.warn(String.format("Table name for %s not registered", clazz.getName()));
+            return EMPTY;
+        } else return name;
     }
 }
