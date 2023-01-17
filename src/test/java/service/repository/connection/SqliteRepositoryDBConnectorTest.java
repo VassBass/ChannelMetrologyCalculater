@@ -1,9 +1,6 @@
 package service.repository.connection;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runners.MethodSorters;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.config.SqliteRepositoryConfigHolder;
@@ -24,8 +21,7 @@ public class SqliteRepositoryDBConnectorTest {
     private SqliteRepositoryDBConnector connector;
 
     @BeforeClass
-    public static void refreshDBFile() throws IOException {
-        if (TEST_DB_FILE.exists()) Files.delete(TEST_DB_FILE.toPath());
+    public static void createDBFile() throws IOException {
         if (!TEST_DB_FILE.exists()) Files.createFile(TEST_DB_FILE.toPath());
     }
 
@@ -33,6 +29,11 @@ public class SqliteRepositoryDBConnectorTest {
     public void setUp() {
         RepositoryConfigHolder configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
         connector = new SqliteRepositoryDBConnector(configHolder);
+    }
+
+    @AfterClass
+    public static void deleteDBFile() throws IOException {
+        if (TEST_DB_FILE.exists()) Files.delete(TEST_DB_FILE.toPath());
     }
 
     @Test
