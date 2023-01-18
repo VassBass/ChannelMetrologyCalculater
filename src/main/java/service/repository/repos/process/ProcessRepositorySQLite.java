@@ -10,6 +10,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class ProcessRepositorySQLite implements ProcessRepository {
     private static final Logger logger = LoggerFactory.getLogger(ProcessRepositorySQLite.class);
@@ -137,9 +140,9 @@ public class ProcessRepositorySQLite implements ProcessRepository {
      * @return true if processes was added or false if not
      */
     @Override
-    public boolean add(Collection<String> objects) {
+    public boolean addAll(Collection<String> objects) {
         Set<String> old = new LinkedHashSet<>(getAll());
-        old.addAll(objects);
+        old.addAll(objects.stream().filter(Objects::nonNull).collect(toList()));
         return rewrite(old);
     }
 }

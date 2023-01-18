@@ -7,6 +7,9 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+
+import static java.util.stream.Collectors.toList;
 
 public class BufferedProcessRepositorySQLite extends ProcessRepositorySQLite {
     private final List<String> buffer;
@@ -31,19 +34,21 @@ public class BufferedProcessRepositorySQLite extends ProcessRepositorySQLite {
     }
 
     @Override
-    public boolean add(@Nonnull Collection<String> objects) {
+    public boolean addAll(@Nonnull Collection<String> objects) {
         objects.forEach(o -> {
-            if (!buffer.contains(o)) buffer.add(o);
+            if (o != null && !buffer.contains(o)) buffer.add(o);
         });
-        return super.add(objects);
+        return super.addAll(objects);
     }
 
     @Override
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
-        if (oldObject.equals(newObject)) return true;
+        if (!oldObject.equals(newObject) && buffer.contains(newObject)) return false;
 
         int index = buffer.indexOf(oldObject);
         if (index >= 0) {
+            if (oldObject.equals(newObject)) return true;
+
             buffer.set(index, newObject);
             return super.set(oldObject, newObject);
         } else return false;
@@ -63,7 +68,7 @@ public class BufferedProcessRepositorySQLite extends ProcessRepositorySQLite {
     @Override
     public boolean rewrite(@Nonnull Collection<String> newList) {
         buffer.clear();
-        buffer.addAll(newList);
+        buffer.addAll(newList.stream().filter(Objects::nonNull).collect(toList()));
         return super.rewrite(newList);
     }
 }

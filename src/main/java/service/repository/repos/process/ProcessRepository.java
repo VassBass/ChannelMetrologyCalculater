@@ -10,7 +10,7 @@ public interface ProcessRepository {
     boolean rewrite(@Nonnull Collection<String> newList);
 
     boolean add(@Nonnull String object);
-    boolean add(Collection<String> objects);
+    boolean addAll(Collection<String> objects);
 
     boolean remove(@Nonnull String object);
     boolean clear();
