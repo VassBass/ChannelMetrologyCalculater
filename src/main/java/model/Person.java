@@ -3,6 +3,8 @@ package model;
 import java.util.Locale;
 import java.util.Objects;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 /**
  * DB table = persons
  */
@@ -21,7 +23,10 @@ public class Person {
     /**
      * DB fields = surname, name, patronymic, position [TEXT]
      */
-    private String surname, name, patronymic, position;
+    private String surname = EMPTY;
+    private String name = EMPTY;
+    private String patronymic = EMPTY;
+    private String position = EMPTY;
 
     public Person(){}
     public Person(int id){
@@ -38,7 +43,7 @@ public class Person {
      * @return full name of person
      * format {@link #name} + in upper case {@link #surname}
      */
-    public String getFullName(){
+    public String createFullName(){
         return this.name + " " + this.surname.toUpperCase(Locale.ROOT);
     }
 
@@ -62,14 +67,14 @@ public class Person {
     }
 
     public boolean isMatch(Person person){
-        return this.name.equals(person.getName())
-                && this.surname.equals(person.getSurname())
-                && this.patronymic.equals(person.patronymic)
-                && this.position.equals(person.getPosition());
+        return person.getName().equals(name)
+                && person.getSurname().equals(surname)
+                && person.getPatronymic().equals(patronymic)
+                && person.getPosition().equals(position);
     }
 
     @Override
     public String toString() {
-        return String.format("%s(%s)", getFullName(), getPosition());
+        return String.format("%s(%s)", createFullName(), getPosition());
     }
 }
