@@ -42,11 +42,12 @@ public class BufferedAreaRepositorySQLite extends AreaRepositorySQLite {
 
     @Override
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
-        if (oldObject.equals(newObject)) return true;
-        if (buffer.contains(newObject)) return false;
+        if (!oldObject.equals(newObject) && buffer.contains(newObject)) return false;
 
         int index = buffer.indexOf(oldObject);
         if (index >= 0) {
+            if (oldObject.equals(newObject)) return true;
+
             buffer.set(index, newObject);
             return super.set(oldObject, newObject);
         } else return false;

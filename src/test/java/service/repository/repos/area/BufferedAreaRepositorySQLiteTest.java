@@ -162,7 +162,7 @@ public class BufferedAreaRepositorySQLiteTest {
     public void testSet_replaceNotExistingAreaWithTheSameArea() {
         List<String>expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5);
 
-        assertTrue(repository.set(AREA_6, AREA_6));
+        assertFalse(repository.set(AREA_6, AREA_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 

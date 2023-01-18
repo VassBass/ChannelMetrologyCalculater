@@ -1,4 +1,4 @@
-package service.repository.repos.department;
+package service.repository.repos.installation;
 
 import org.junit.*;
 import org.sqlite.JDBC;
@@ -20,28 +20,28 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class BufferedDepartmentRepositorySQLiteTest {
+public class BufferedInstallationRepositorySQLiteTest {
     private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
     private static final File TEST_DB_FILE = new File("TestData.db");
     private static final String TEST_DB_URL = "jdbc:sqlite:TestData.db";
-    private static final String TABLE_NAME = "departments";
+    private static final String TABLE_NAME = "installations";
 
-    private static final String DEPARTMENT_1 = "department1";
-    private static final String DEPARTMENT_2 = "department2";
-    private static final String DEPARTMENT_3 = "department3";
-    private static final String DEPARTMENT_4 = "department4";
-    private static final String DEPARTMENT_5 = "department5";
-    private static final String DEPARTMENT_6 = "department6";
-    private static final String DEPARTMENT_7 = "department7";
+    private static final String INSTALLATION_1 = "installation1";
+    private static final String INSTALLATION_2 = "installation2";
+    private static final String INSTALLATION_3 = "installation3";
+    private static final String INSTALLATION_4 = "installation4";
+    private static final String INSTALLATION_5 = "installation5";
+    private static final String INSTALLATION_6 = "installation6";
+    private static final String INSTALLATION_7 = "installation7";
 
-    private DepartmentRepository repository;
+    private InstallationRepository repository;
 
     @BeforeClass
     public static void createDB() throws IOException, SQLException {
         Files.createFile(TEST_DB_FILE.toPath());
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
-                "department text NOT NULL UNIQUE" +
-                ", PRIMARY KEY (\"department\")" +
+                "installation text NOT NULL UNIQUE" +
+                ", PRIMARY KEY (\"installation\")" +
                 ");", TABLE_NAME);
         try (Connection connection = DriverManager.getConnection(TEST_DB_URL);
              Statement statement = connection.createStatement()) {
@@ -57,7 +57,7 @@ public class BufferedDepartmentRepositorySQLiteTest {
     @Before
     public void init() throws SQLException {
         String sql = String.format("INSERT INTO %s VALUES ('%s'), ('%s'), ('%s'), ('%s'), ('%s');",
-                TABLE_NAME, DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+                TABLE_NAME, INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         DriverManager.registerDriver(new JDBC());
         try (Connection connection = DriverManager.getConnection(TEST_DB_URL);
@@ -67,7 +67,7 @@ public class BufferedDepartmentRepositorySQLiteTest {
 
         RepositoryConfigHolder configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
         RepositoryDBConnector connector = new SqliteRepositoryDBConnector(configHolder);
-        repository = new BufferedDepartmentRepositorySQLite(configHolder, connector);
+        repository = new BufferedInstallationRepositorySQLite(configHolder, connector);
     }
 
     @After
@@ -81,112 +81,112 @@ public class BufferedDepartmentRepositorySQLiteTest {
 
     @Test
     public void testGetAll() {
-        List<String> expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String> expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testAddNewArea() {
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5, DEPARTMENT_6);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5, INSTALLATION_6);
 
-        assertTrue(repository.add(DEPARTMENT_6));
+        assertTrue(repository.add(INSTALLATION_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testAddExistingArea(){
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
-        assertFalse(repository.add(DEPARTMENT_1));
+        assertFalse(repository.add(INSTALLATION_1));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testAddAllNewAreas() {
-        List<String> expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5, DEPARTMENT_6, DEPARTMENT_7);
+        List<String> expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5, INSTALLATION_6, INSTALLATION_7);
 
-        assertTrue(repository.addAll(Arrays.asList(DEPARTMENT_6, DEPARTMENT_7)));
+        assertTrue(repository.addAll(Arrays.asList(INSTALLATION_6, INSTALLATION_7)));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testAddAllWithExistedAreas() {
-        List<String> expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5, DEPARTMENT_6, DEPARTMENT_7);
+        List<String> expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5, INSTALLATION_6, INSTALLATION_7);
 
-        assertTrue(repository.addAll(Arrays.asList(DEPARTMENT_1, DEPARTMENT_6, DEPARTMENT_2, DEPARTMENT_7)));
+        assertTrue(repository.addAll(Arrays.asList(INSTALLATION_1, INSTALLATION_6, INSTALLATION_2, INSTALLATION_7)));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testAddAllWithNull() {
-        List<String> expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5, DEPARTMENT_6, DEPARTMENT_7);
+        List<String> expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5, INSTALLATION_6, INSTALLATION_7);
 
-        assertTrue(repository.addAll(Arrays.asList(null, DEPARTMENT_6, DEPARTMENT_7)));
+        assertTrue(repository.addAll(Arrays.asList(null, INSTALLATION_6, INSTALLATION_7)));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testSet_replaceExistingAreaWithExistingArea() {
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
-        assertFalse(repository.set(DEPARTMENT_2, DEPARTMENT_5));
+        assertFalse(repository.set(INSTALLATION_2, INSTALLATION_5));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testSet_replaceExistingAreaWithTheSameArea() {
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
-        assertTrue(repository.set(DEPARTMENT_2, DEPARTMENT_2));
+        assertTrue(repository.set(INSTALLATION_2, INSTALLATION_2));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testSet_replaceExistingAreaWithNewArea() {
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_6, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_6, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
-        assertTrue(repository.set(DEPARTMENT_2, DEPARTMENT_6));
+        assertTrue(repository.set(INSTALLATION_2, INSTALLATION_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testSet_replaceNotExistingAreaWithExistingArea() {
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
-        assertFalse(repository.set(DEPARTMENT_6, DEPARTMENT_5));
+        assertFalse(repository.set(INSTALLATION_6, INSTALLATION_5));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testSet_replaceNotExistingAreaWithTheSameArea() {
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
-        assertFalse(repository.set(DEPARTMENT_6, DEPARTMENT_6));
+        assertFalse(repository.set(INSTALLATION_6, INSTALLATION_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testSet_replaceNotExistingAreaWithNewArea() {
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
-        assertFalse(repository.set(DEPARTMENT_6, DEPARTMENT_7));
+        assertFalse(repository.set(INSTALLATION_6, INSTALLATION_7));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testRemoveExistingArea() {
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
-        assertTrue(repository.remove(DEPARTMENT_2));
+        assertTrue(repository.remove(INSTALLATION_2));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
     @Test
     public void testRemoveNotExistingArea() {
-        List<String>expected = Arrays.asList(DEPARTMENT_1, DEPARTMENT_2, DEPARTMENT_3, DEPARTMENT_4, DEPARTMENT_5);
+        List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
-        assertFalse(repository.remove(DEPARTMENT_6));
+        assertFalse(repository.remove(INSTALLATION_6));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
     }
 
@@ -198,8 +198,8 @@ public class BufferedDepartmentRepositorySQLiteTest {
 
     @Test
     public void testRewriteNewList() {
-        List<String>expected = Arrays.asList(DEPARTMENT_6, DEPARTMENT_7);
-        List<String> toRewrite = Arrays.asList(DEPARTMENT_6, null, DEPARTMENT_7);
+        List<String>expected = Arrays.asList(INSTALLATION_6, INSTALLATION_7);
+        List<String> toRewrite = Arrays.asList(INSTALLATION_6, null, INSTALLATION_7);
 
         assertTrue(repository.rewrite(toRewrite));
         assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InstallationRepositorySQLite implements InstallationRepository {
     private static final Logger logger = LoggerFactory.getLogger(InstallationRepositorySQLite.class);
@@ -138,9 +139,9 @@ public class InstallationRepositorySQLite implements InstallationRepository {
      * @return true if installations was added or false if not
      */
     @Override
-    public boolean add(Collection<String> objects) {
+    public boolean addAll(Collection<String> objects) {
         Set<String> old = new LinkedHashSet<>(getAll());
-        old.addAll(objects);
+        old.addAll(objects.stream().filter(Objects::nonNull).collect(Collectors.toList()));
         return rewrite(old);
     }
 }
