@@ -1,8 +1,11 @@
 package service.json;
 
-import model.Person;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.*;
 
 public class JacksonJsonObjectMapperTest {
@@ -14,29 +17,19 @@ public class JacksonJsonObjectMapperTest {
 
     @Test
     public void objectToJson() {
-        Person person = new Person(1);
-        String expected = "{\n" +
-                "  \"id\" : 1,\n" +
-                "  \"surname\" : \"\",\n" +
-                "  \"name\" : \"\",\n" +
-                "  \"patronymic\" : \"\",\n" +
-                "  \"position\" : \"\"\n" +
-                "}";
-        assertEquals(expected, JacksonJsonObjectMapper.getInstance().objectToJson(person));
+        Collection<String> collection = Arrays.asList("string1", "string2", EMPTY, "string3", null);
+        String expected = "[ \"string1\", \"string2\", \"\", \"string3\", null ]";
+
+        assertEquals(expected, JacksonJsonObjectMapper.getInstance().objectToJson(collection));
     }
 
     @Test
     public void jsonToObject() {
-        Person expected = new Person(1);
-        String json = "{\n" +
-                "  \"id\" : 1,\n" +
-                "  \"surname\" : \"\",\n" +
-                "  \"name\" : \"\",\n" +
-                "  \"patronymic\" : \"\",\n" +
-                "  \"position\" : \"\"\n" +
-                "}";
-        Person actual = JacksonJsonObjectMapper.getInstance().JsonToObject(json, Person.class);
+        String[] expected = {"string1", "string2", EMPTY, "string3", null};
+        String json = "[ \"string1\", \"string2\", \"\", \"string3\", null ]";
+
+        String[] actual = JacksonJsonObjectMapper.getInstance().JsonToObject(json, String[].class);
         assertNotNull(actual);
-        assertTrue(expected.isMatch(actual));
+        assertArrayEquals(expected, actual);
     }
 }
