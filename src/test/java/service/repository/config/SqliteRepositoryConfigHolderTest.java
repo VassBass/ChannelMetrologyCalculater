@@ -24,8 +24,8 @@ public class SqliteRepositoryConfigHolderTest {
 
     @Before
     public void setUp() {
-        configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
-        configHolderTestInstance = new SqliteRepositoryConfigHolder();
+        configHolder = new SqliteRepositoryConfigHolder();
+        configHolderTestInstance = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
         configHolderPropertiesFileNotExists = new SqliteRepositoryConfigHolder(EMPTY);
     }
 

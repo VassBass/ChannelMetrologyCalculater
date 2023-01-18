@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class BufferedDepartmentRepositorySQLite extends DepartmentRepositorySQLite {
     private final List<String> buffer;
@@ -31,16 +33,17 @@ public class BufferedDepartmentRepositorySQLite extends DepartmentRepositorySQLi
     }
 
     @Override
-    public boolean add(@Nonnull Collection<String> objects) {
+    public boolean addAll(@Nonnull Collection<String> objects) {
         objects.forEach(o -> {
-            if (!buffer.contains(o)) buffer.add(o);
+            if (o != null && !buffer.contains(o)) buffer.add(o);
         });
-        return super.add(objects);
+        return super.addAll(objects);
     }
 
     @Override
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
         if (oldObject.equals(newObject)) return true;
+        if (buffer.contains(newObject)) return false;
 
         int index = buffer.indexOf(oldObject);
         if (index >= 0) {
@@ -63,7 +66,7 @@ public class BufferedDepartmentRepositorySQLite extends DepartmentRepositorySQLi
     @Override
     public boolean rewrite(@Nonnull Collection<String> newList) {
         buffer.clear();
-        buffer.addAll(newList);
+        buffer.addAll(newList.stream().filter(Objects::nonNull).collect(Collectors.toList()));
         return super.rewrite(newList);
     }
 }

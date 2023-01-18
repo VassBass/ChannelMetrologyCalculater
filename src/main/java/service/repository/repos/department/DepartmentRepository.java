@@ -10,7 +10,7 @@ public interface DepartmentRepository {
     boolean rewrite(@Nonnull Collection<String> newList);
 
     boolean add(@Nonnull String object);
-    boolean add(@Nonnull Collection<String> objects);
+    boolean addAll(@Nonnull Collection<String> objects);
 
     boolean remove(@Nonnull String object);
     boolean clear();

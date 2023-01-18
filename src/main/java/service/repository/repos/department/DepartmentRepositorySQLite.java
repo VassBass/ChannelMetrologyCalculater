@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class DepartmentRepositorySQLite implements DepartmentRepository {
     private static final Logger logger = LoggerFactory.getLogger(DepartmentRepositorySQLite.class);
@@ -62,9 +63,9 @@ public class DepartmentRepositorySQLite implements DepartmentRepository {
      * @return true if departments was added or false if not
      */
     @Override
-    public boolean add(@Nonnull Collection<String>objects){
+    public boolean addAll(@Nonnull Collection<String>objects){
         Set<String> old = new LinkedHashSet<>(getAll());
-        old.addAll(objects);
+        old.addAll(objects.stream().filter(Objects::nonNull).collect(Collectors.toList()));
         return rewrite(old);
     }
 
