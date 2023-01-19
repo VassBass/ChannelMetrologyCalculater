@@ -5,10 +5,9 @@ import converters.VariableConverter;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.Serializable;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * DB table = channels
@@ -22,39 +21,39 @@ public class Channel implements Serializable {
     /**
      * DB field = code (primary key)[TEXT]
      */
-    @Nonnull private String code = "";
+    @Nonnull private String code = EMPTY;
 
     /**
      * DB field = name [TEXT]
      */
-    @Nonnull private String name = "";
+    @Nonnull private String name = EMPTY;
 
     /**
      * Foreign key = measurement_value [TEXT]
      *
      * @see Measurement
      */
-    private Measurement measurement;
+    private Measurement measurement = new Measurement();
 
     /**
      * DB field department [TEXT]
      */
-    private String department = "";
+    private String department = EMPTY;
 
     /**
      * DB field = area [TEXT]
      */
-    private String area = "";
+    private String area = EMPTY;
 
     /**
      * DB field = process [TEXT]
      */
-    private String process = "";
+    private String process = EMPTY;
 
     /**
      * DB field = installation [TEXT]
      */
-    private String installation = "";
+    private String installation = EMPTY;
 
     /**
      * DB field = date [TEXT]
@@ -74,7 +73,7 @@ public class Channel implements Serializable {
     /**
      * DB field = technology_number [TEXT]
      */
-    private String technologyNumber = "";
+    private String technologyNumber = EMPTY;
 
     /**
      * DB field = sensor [TEXT{Json}]
@@ -86,12 +85,12 @@ public class Channel implements Serializable {
     /**
      * DB field = protocol_number [TEXT]
      */
-    private String numberOfProtocol = "";
+    private String numberOfProtocol = EMPTY;
 
     /**
      * DB field = reference [TEXT]
      */
-    private String reference = "";
+    private String reference = EMPTY;
 
     /**
      * DB field = range_min [REAL]
@@ -123,7 +122,7 @@ public class Channel implements Serializable {
      * key - percent value of point
      * value - value of point
      */
-    private Map<Double, Double> controlPoints;
+    private Map<Double, Double> controlPoints = new HashMap<>();
 
     @Nonnull public String getCode() {return code;}
     @Nonnull public String getName() {return name;}
@@ -152,7 +151,7 @@ public class Channel implements Serializable {
      * @see #suitability
      * @see #date
      */
-    public Calendar getNextDate() {
+    public Calendar calculateNextDate() {
         if (this.suitability) {
             long l = (long) (31536000000L * frequency);
             Calendar nextDate = new GregorianCalendar();
@@ -167,7 +166,7 @@ public class Channel implements Serializable {
      * @return string of full channel path
      * format {@link #department}/{@link #area}/{@link #process}/{@link #installation}
      */
-    public String getFullPath() {
+    public String createFullPath() {
         StringBuilder builder = new StringBuilder();
         if (this.department!=null) {builder.append(this.department);}
         if (this.area!=null) {
@@ -188,7 +187,7 @@ public class Channel implements Serializable {
     /**
      * @return full channel range - {@link #rangeMax} minus {@link #rangeMin}
      */
-    public double getRange(){
+    public double calculateRange(){
         return this.rangeMax - this.rangeMin;
     }
 
@@ -244,7 +243,7 @@ public class Channel implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("(%s)%s[%s]{%s}", code, name, technologyNumber, getFullPath());
+        return String.format("(%s)%s[%s]{%s}", code, name, technologyNumber, createFullPath());
     }
 
     /**
@@ -252,7 +251,7 @@ public class Channel implements Serializable {
      *
      * @return copy of Channel in @param
      */
-    public Channel copyFrom(Channel channel){
+    public Channel copyFrom(@Nonnull Channel channel){
         Channel c = new Channel();
         c.setCode(channel.getCode());
         c.setName(channel.getName());
@@ -280,6 +279,9 @@ public class Channel implements Serializable {
      * @return true if channels fields equal
      */
     public boolean isMatch(Channel channel){
+        if (channel == null) return false;
+        if (this == channel) return true;
+
         return this.code.equals(channel.getCode())
                 && this.name.equals(channel.getName())
                 && this.measurement.equals(channel.getMeasurement())

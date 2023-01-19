@@ -146,11 +146,11 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
             Collection<Measurement>measurements = getAll();
             for (Measurement m : measurements) {
                 if (measurement.getName().equals(m.getName())) {
-                    Double f = measurement.getFactor(m.getValue());
+                    Double f = measurement.findFactor(m.getValue());
                     if (f == null) continue;
 
                     Double factor = 1 / f;
-                    m.addFactor(measurement.getValue(), factor);
+                    m.putFactor(measurement.getValue(), factor);
                     String mFactorsJson = jsonObjectMapper.objectToJson(factor);
 
                     sql = String.format("UPDATE %s SET factors = '%s' WHERE value = '%s';",

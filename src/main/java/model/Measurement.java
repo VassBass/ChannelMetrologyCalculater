@@ -1,10 +1,14 @@
 package model;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * DB table = measurements
@@ -28,8 +32,9 @@ public class Measurement implements Serializable {
      * @see Calibrator#getValue() {@link Calibrator#setValue(String)}
      * @see Sensor#getValue() {@link Sensor#setValue(String)}
      */
+    //Temperature
     public static String DEGREE_CELSIUS = "\u2103";
-
+    //Pressure
     public static String KPA = "кПа";
     public static String PA = "Па";
     public static String MM_ACVA = "мм вод ст";
@@ -37,7 +42,7 @@ public class Measurement implements Serializable {
     public static String BAR = "бар";
     public static String KGS_MM2 = "кгc/мм" + "\u00B2";
     public static String ML_BAR = "мбар";
-
+    //Consumption
     public static String M3_HOUR = "м" + "\u00B3" + "/h";
     public static String M_S = "м/с";
     public static String CM_S = "см/с";
@@ -45,12 +50,12 @@ public class Measurement implements Serializable {
     /**
      * DB field = name [TEXT]
      */
-    @Nonnull protected String name = "measurement";
+    @Nonnull protected String name = EMPTY;
 
     /**
      * DB field = value (primary key) [TEXT]
      */
-    @Nonnull protected String value = "value";
+    @Nonnull protected String value = EMPTY;
 
     /**
      * DB field = factors [TEXT{Json}]
@@ -76,14 +81,14 @@ public class Measurement implements Serializable {
 
     @Nonnull public String getName() {return this.name;}
     @Nonnull public String getValue() {return this.value;}
-    @Nonnull public Map<String,Double>getFactors(){return this.factors;}
-    public Double getFactor(String value){return this.factors.get(value);}
+    @Nonnull public Map<String,Double>getFactors(){return Collections.unmodifiableMap(this.factors);}
+    @Nullable public Double findFactor(String value){return this.factors.get(value);}
 
     public void setName(@Nonnull String name) {this.name = name;}
     public void setValue(@Nonnull String value){this.value = value;}
     public void setFactors(@Nonnull Map<String, Double> factors){this.factors = factors;}
 
-    public void addFactor(@Nonnull String measurementValue, @Nonnull Double factor){
+    public void putFactor(@Nonnull String measurementValue, @Nonnull Double factor){
         if (!measurementValue.equals(this.value)) this.factors.put(measurementValue, factor);
     }
 
@@ -127,34 +132,35 @@ public class Measurement implements Serializable {
      *  }
      */
     public static String getErrorStringAfterConvertNumbers(String errorString, Measurement input, Measurement output){
-            if (errorString != null && input != null && output != null) {
-                char[] chars = errorString.toCharArray();
-                int index;
-
-                for (int i = 0; i < chars.length; ) {
-                    if (chars[i] == 'c') {
-                        index = i;
-
-                        if (chars[++i] == 'o' && chars[++i] == 'n' && chars[++i] == 'v' && chars[++i] == '(') {
-                            char c = chars[++i];
-                            StringBuilder b = new StringBuilder();
-
-                            while (c != ')') {
-                                b.append(c);
-                                c = chars[++i];
-                            }
-                            double d = Double.parseDouble(b.toString());
-                            double converted = input.convertTo(output.getValue(), d);
-
-                            String f = errorString.substring(0, index);
-                            return getErrorStringAfterConvertNumbers(f + converted + errorString.substring(++i), input, output);
-                        }
-
-                    } else ++i;
-                }
-            }
-
-            return errorString;
+//            if (errorString != null && input != null && output != null) {
+//                char[] chars = errorString.toCharArray();
+//                int index;
+//
+//                for (int i = 0; i < chars.length; ) {
+//                    if (chars[i] == 'c') {
+//                        index = i;
+//
+//                        if (chars[++i] == 'o' && chars[++i] == 'n' && chars[++i] == 'v' && chars[++i] == '(') {
+//                            char c = chars[++i];
+//                            StringBuilder b = new StringBuilder();
+//
+//                            while (c != ')') {
+//                                b.append(c);
+//                                c = chars[++i];
+//                            }
+//                            double d = Double.parseDouble(b.toString());
+//                            double converted = input.convertTo(output.getValue(), d);
+//
+//                            String f = errorString.substring(0, index);
+//                            return getErrorStringAfterConvertNumbers(f + converted + errorString.substring(++i), input, output);
+//                        }
+//
+//                    } else ++i;
+//                }
+//            }
+//
+//            return errorString;
+        return EMPTY;
     }
 
     @Override
@@ -171,15 +177,12 @@ public class Measurement implements Serializable {
     }
 
     public boolean isMatch(Measurement measurement){
-        if (measurement.getValue().equals(this.value) && measurement.getName().equals(this.name)){
-            if (measurement.getFactors().size() == this.factors.size()){
-                for (String key : this.factors.keySet()){
-                    if (measurement.getFactor(key) == null || !measurement.getFactor(key).equals(this.factors.get(key))) return false;
-                }
+        if (measurement == null) return false;
+        if (this == measurement) return true;
 
-                return true;
-            }else return false;
-        }else return false;
+        return value.equals(measurement.getValue()) &&
+                name.equals(measurement.getName()) &&
+                factors.equals(measurement.getFactors());
     }
 
     public Measurement copy(){

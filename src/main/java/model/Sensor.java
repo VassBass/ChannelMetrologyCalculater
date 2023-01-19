@@ -4,6 +4,8 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Objects;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 /**
  * DB table = sensors
  */
@@ -26,12 +28,12 @@ public class Sensor implements Serializable {
     /**
      * DB field = type [TEXT]
      */
-    private String type;
+    private String type = EMPTY;
 
     /**
      * DB field = name (primary key) [TEXT]
      */
-    private String name = "";
+    private String name = EMPTY;
 
     /**
      * DB fields range_min, range_max [REAL]
@@ -42,21 +44,21 @@ public class Sensor implements Serializable {
     /**
      * DB field = number [TEXT]
      */
-    private String number = "";
+    private String number = EMPTY;
 
     /**
      * DB field = value [TEXT]
      *
      * @see Measurement
      */
-    private String value = "";
+    private String value = EMPTY;
 
     /**
      * DB field = measurement [TEXT]
      *
      * @see Measurement
      */
-    private String measurement = "";
+    private String measurement = EMPTY;
 
     /**
      * DB field = error_formula [TEXT]
@@ -64,7 +66,7 @@ public class Sensor implements Serializable {
      * @see #getError(Channel)
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#getRange()
+     * @see Channel#calculateRange()
      *
      * r - Measurement range of sensor (Диапазон измерения датчика)
      //* @see Sensor#getRange()
@@ -74,7 +76,7 @@ public class Sensor implements Serializable {
      * @see Measurement#convertTo(String, double)
      * @see Measurement#convertFrom(String, double)
      */
-    private String errorFormula = "";
+    private String errorFormula = EMPTY;
 
     public void setType(String type) {this.type = type;}
     public void setName(String name){this.name = name;}
@@ -93,21 +95,22 @@ public class Sensor implements Serializable {
     public String getName(){return this.name;}
     public double getRangeMin() {return this.rangeMin;}
     public double getRangeMax() {return this.rangeMax;}
-    public double getRange(){return this.rangeMax - this.rangeMin;}
     public String getNumber(){return this.number;}
     public String getValue(){return this.value;}
     public String getMeasurement(){return this.measurement;}
     public String getErrorFormula(){return this.errorFormula;}
+
+    public double calculateRange(){return this.rangeMax - this.rangeMin;}
 
     /**
      * @param channel against which the calculation is made
      * @return numerical value calculated by the {@link #errorFormula}
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#getRange()
+     * @see Channel#calculateRange()
      *
      * r - Measurement range of sensor (Диапазон измерения датчика)
-     * @see Calibrator#_getRange()
+     * @see Calibrator#calculateRange()
      *
      * convR - Measurement range of sensor converted by measurement channel value
      * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
@@ -164,15 +167,18 @@ public class Sensor implements Serializable {
      *
      * @return true if sensors fields equal
      */
-    public boolean isMatch(@Nonnull Sensor sensor){
-        return name.equals(sensor.getName())
-                && type.equals(sensor.getType())
-                && rangeMin == sensor.getRangeMin()
-                && rangeMax == sensor.getRangeMax()
-                && number.equals(sensor.getNumber())
-                && value.equals(sensor.getValue())
-                && measurement.equals(sensor.getMeasurement())
-                && errorFormula.equals(sensor.getErrorFormula());
+    public boolean isMatch(Sensor sensor){
+        if (sensor == null) return false;
+        if (this == sensor) return true;
+
+        return name.equals(sensor.getName()) &&
+                type.equals(sensor.getType()) &&
+                rangeMin == sensor.getRangeMin() &&
+                rangeMax == sensor.getRangeMax() &&
+                number.equals(sensor.getNumber()) &&
+                value.equals(sensor.getValue()) &&
+                measurement.equals(sensor.getMeasurement()) &&
+                errorFormula.equals(sensor.getErrorFormula());
 
     }
 }

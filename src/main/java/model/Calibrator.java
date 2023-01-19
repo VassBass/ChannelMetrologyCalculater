@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Objects;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 /**
  * DB table = calibrators
  */
@@ -25,12 +27,12 @@ public class Calibrator implements Serializable {
     /**
      * DB field = type [TEXT]
      */
-    @Nonnull private String type = "";
+    @Nonnull private String type = EMPTY;
 
     /**
      * DB field = name (primary key) [TEXT]
      */
-    @Nonnull private String name = "";
+    @Nonnull private String name = EMPTY;
 
     /**
      * DB field = certificate [TEXT{Json}]
@@ -42,14 +44,14 @@ public class Calibrator implements Serializable {
     /**
      * DB field = number [TEXT]
      */
-    @Nonnull private String number = "";
+    @Nonnull private String number = EMPTY;
 
     /**
      * DB field = measurement [TEXT]
      *
      * @see Measurement
      */
-    @Nonnull private String measurement = "";
+    @Nonnull private String measurement = EMPTY;
 
     /**
      * DB field = range_min [REAL]
@@ -66,25 +68,25 @@ public class Calibrator implements Serializable {
      *
      * @see Measurement
      */
-    @Nonnull private String value = "";
+    @Nonnull private String value = EMPTY;
 
     /**
      * DB field = error_formula [TEXT]
      * 
-     * @see #getError(Channel)
+     * //@see #getError(Channel)
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#getRange()
+     * @see Channel#calculateRange()
      *
      * r - Measurement range of calibrator (Диапазон измерения калибратора)
-     * @see Calibrator#getRange()
+     * @see Calibrator#calculateRange()
      *
      * convR - Measurement range of calibrator converted by measurement channel value
      * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
      * @see Measurement#convertTo(String, double) 
      * @see Measurement#convertFrom(String, double)
      */
-    @Nonnull private String errorFormula = "";
+    @Nonnull private String errorFormula = EMPTY;
 
     public Calibrator(){}
 
@@ -98,13 +100,8 @@ public class Calibrator implements Serializable {
     @Nonnull public Certificate getCertificate(){return this.certificate;}
     public double getRangeMin(){return this.rangeMin;}
     public double getRangeMax(){return this.rangeMax;}
-    public double getRange(){return this.rangeMax - this.rangeMin;}
     @Nonnull public String getValue(){return this.value;}
     @Nonnull public String getMeasurement(){return this.measurement;}
-    @Nonnull public String _getCertificateType(){return this.certificate.getType();}
-    @Nonnull public String _getCertificateName(){return this.certificate.getName();}
-    @Nonnull public String _getCertificateDate(){return this.certificate.getDate();}
-    @Nonnull public String _getCertificateCompany(){return this.certificate.getCompany();}
     @Nonnull public String getErrorFormula(){return this.errorFormula;}
 
     public void setType(@Nonnull String type) {this.type = type;}
@@ -113,23 +110,21 @@ public class Calibrator implements Serializable {
     public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
     public void setValue(@Nonnull String value){this.value = value;}
-    public void setCertificateType(@Nonnull String type){this.certificate.setType(type);}
-    public void setCertificateName(@Nonnull String name){this.certificate.setName(name);}
-    public void setCertificateDate(@Nonnull String date){this.certificate.setDate(date);}
-    public void setCertificateCompany(@Nonnull String company){this.certificate.setCompany(company);}
     public void setErrorFormula(@Nonnull String errorFormula){this.errorFormula = errorFormula;}
     public void setMeasurement(@Nonnull String measurement){this.measurement = measurement;}
     public void setCertificate(@Nonnull Certificate certificate){this.certificate = certificate;}
 
+    public double calculateRange(){return this.rangeMax - this.rangeMin;}
+
     /**
-     * @param channel against which the calculation is made
+     * //@param channel against which the calculation is made
      * @return numerical value calculated by the {@link #errorFormula}
      *
      * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#getRange()
+     * @see Channel#calculateRange()
      *
      * r - Measurement range of calibrator (Диапазон измерения калибратора)
-     * @see Calibrator#getRange()
+     * @see Calibrator#calculateRange()
      * 
      * convR - Measurement range of calibrator converted by measurement channel value
      * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
@@ -140,7 +135,7 @@ public class Calibrator implements Serializable {
      * (Число переконвертированное под измерительную величину канала)
      * @see Measurement#getErrorStringAfterConvertNumbers(String, Measurement, Measurement)
      */
-    public double getError(@Nonnull Channel channel){
+//    public double getError(@Nonnull Channel channel){
 //        String formula = VariableConverter.commasToDots(this.errorFormula);
 //        Measurement input = MeasurementRepositorySQLite.getInstance().get(this.value).get();
 //        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
@@ -151,15 +146,15 @@ public class Calibrator implements Serializable {
 //        Argument convR = new Argument("convR = " + cR);
 //        Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
 //        return expression.calculate();
-        return 0D;
-    }
+//        return 0D;
+//    }
 
     public static class Certificate implements Serializable {
-        public static final String defaultType = "Сертифікат калібрування";
+        private static final String defaultType = "Сертифікат калібрування";
 
-        @Nonnull private String name = "";
+        @Nonnull private String name = EMPTY;
         @Nonnull private String date = "23.03.2022";
-        @Nonnull private String company = "";
+        @Nonnull private String company = EMPTY;
         @Nonnull private String type = defaultType;
 
         @Nonnull public String getName(){return this.name;}
@@ -187,9 +182,9 @@ public class Calibrator implements Serializable {
 
         @Override
         public boolean equals(Object object){
-            if (!object.getClass().equals(this.getClass())){
-                return false;
-            }
+            if (object == null || object.getClass() != this.getClass()) return false;
+            if (this == object) return true;
+
             Certificate c = (Certificate) object;
             return this.name.equals(c.name)
                     && this.company.equals(c.company)
@@ -241,6 +236,9 @@ public class Calibrator implements Serializable {
      * @return true if calibrators fields equal
      */
     public boolean isMatch(Calibrator calibrator){
+        if (calibrator == null) return false;
+        if (this == calibrator) return true;
+
         return this.name.equals(calibrator.getName())
                 && this.type.equals(calibrator.getType())
                 && this.number.equals(calibrator.getNumber())

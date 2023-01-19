@@ -67,10 +67,13 @@ public class Person {
     }
 
     public boolean isMatch(Person person){
-        return person.getName().equals(name)
-                && person.getSurname().equals(surname)
-                && person.getPatronymic().equals(patronymic)
-                && person.getPosition().equals(position);
+        if (person == null) return false;
+        if (this == person) return true;
+
+        return name.equals(person.getName()) &&
+                surname.equals(person.getSurname()) &&
+                patronymic.equals(person.getPatronymic()) &&
+                position.equals(person.getPosition());
     }
 
     @Override
