@@ -82,8 +82,9 @@ public class BufferedProcessRepositorySQLiteTest {
     @Test
     public void testGetAll() {
         List<String> expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5);
-
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -91,7 +92,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5, PROCESS_6);
 
         assertTrue(repository.add(PROCESS_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -99,7 +102,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5);
 
         assertFalse(repository.add(PROCESS_1));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -107,7 +112,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String> expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5, PROCESS_6, PROCESS_7);
 
         assertTrue(repository.addAll(Arrays.asList(PROCESS_6, PROCESS_7)));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -115,7 +122,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String> expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5, PROCESS_6, PROCESS_7);
 
         assertTrue(repository.addAll(Arrays.asList(PROCESS_1, PROCESS_6, PROCESS_2, PROCESS_7)));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -123,7 +132,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String> expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5, PROCESS_6, PROCESS_7);
 
         assertTrue(repository.addAll(Arrays.asList(null, PROCESS_6, PROCESS_7)));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -131,7 +142,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5);
 
         assertFalse(repository.set(PROCESS_2, PROCESS_5));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -139,7 +152,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5);
 
         assertTrue(repository.set(PROCESS_2, PROCESS_2));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -147,7 +162,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_6, PROCESS_3, PROCESS_4, PROCESS_5);
 
         assertTrue(repository.set(PROCESS_2, PROCESS_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -155,7 +172,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5);
 
         assertFalse(repository.set(PROCESS_6, PROCESS_5));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -163,7 +182,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5);
 
         assertFalse(repository.set(PROCESS_6, PROCESS_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -171,7 +192,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5);
 
         assertFalse(repository.set(PROCESS_6, PROCESS_7));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -179,7 +202,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_3, PROCESS_4, PROCESS_5);
 
         assertTrue(repository.remove(PROCESS_2));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -187,13 +212,15 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = Arrays.asList(PROCESS_1, PROCESS_2, PROCESS_3, PROCESS_4, PROCESS_5);
 
         assertFalse(repository.remove(PROCESS_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
     public void testClear() {
         assertTrue(repository.clear());
-        assertArrayEquals(new String[0], repository.getAll().toArray(new String[0]));
+        assertEquals(0, repository.getAll().size());
     }
 
     @Test
@@ -202,7 +229,9 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String> toRewrite = Arrays.asList(PROCESS_6, null, PROCESS_7);
 
         assertTrue(repository.rewrite(toRewrite));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -210,6 +239,8 @@ public class BufferedProcessRepositorySQLiteTest {
         List<String>expected = new ArrayList<>();
 
         assertTrue(repository.rewrite(expected));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 }

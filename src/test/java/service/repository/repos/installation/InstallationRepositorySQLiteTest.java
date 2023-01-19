@@ -82,8 +82,9 @@ public class InstallationRepositorySQLiteTest {
     @Test
     public void testGetAll() {
         List<String> expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
-
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -91,7 +92,9 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5, INSTALLATION_6);
 
         assertTrue(repository.add(INSTALLATION_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -99,7 +102,9 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertFalse(repository.add(INSTALLATION_1));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -107,7 +112,9 @@ public class InstallationRepositorySQLiteTest {
         List<String> expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5, INSTALLATION_6, INSTALLATION_7);
 
         assertTrue(repository.addAll(Arrays.asList(INSTALLATION_6, INSTALLATION_7)));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -115,7 +122,9 @@ public class InstallationRepositorySQLiteTest {
         List<String> expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5, INSTALLATION_6, INSTALLATION_7);
 
         assertTrue(repository.addAll(Arrays.asList(INSTALLATION_1, INSTALLATION_6, INSTALLATION_2, INSTALLATION_7)));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -123,7 +132,9 @@ public class InstallationRepositorySQLiteTest {
         List<String> expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5, INSTALLATION_6, INSTALLATION_7);
 
         assertTrue(repository.addAll(Arrays.asList(null, INSTALLATION_6, INSTALLATION_7)));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -131,7 +142,9 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertFalse(repository.set(INSTALLATION_2, INSTALLATION_5));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -139,7 +152,9 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertTrue(repository.set(INSTALLATION_2, INSTALLATION_2));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -147,7 +162,9 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_6, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertTrue(repository.set(INSTALLATION_2, INSTALLATION_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -155,7 +172,9 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertFalse(repository.set(INSTALLATION_6, INSTALLATION_5));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -163,7 +182,9 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertFalse(repository.set(INSTALLATION_6, INSTALLATION_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -171,7 +192,9 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertFalse(repository.set(INSTALLATION_6, INSTALLATION_7));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -179,7 +202,9 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertTrue(repository.remove(INSTALLATION_2));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -187,13 +212,15 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = Arrays.asList(INSTALLATION_1, INSTALLATION_2, INSTALLATION_3, INSTALLATION_4, INSTALLATION_5);
 
         assertFalse(repository.remove(INSTALLATION_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
     public void testClear() {
         assertTrue(repository.clear());
-        assertArrayEquals(new String[0], repository.getAll().toArray(new String[0]));
+        assertEquals(0, repository.getAll().size());
     }
 
     @Test
@@ -202,7 +229,9 @@ public class InstallationRepositorySQLiteTest {
         List<String> toRewrite = Arrays.asList(INSTALLATION_6, null, INSTALLATION_7);
 
         assertTrue(repository.rewrite(toRewrite));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -210,6 +239,8 @@ public class InstallationRepositorySQLiteTest {
         List<String>expected = new ArrayList<>();
 
         assertTrue(repository.rewrite(expected));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual =  new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 }

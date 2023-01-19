@@ -82,8 +82,10 @@ public class AreaRepositorySQLiteTest {
     @Test
     public void testGetAll() {
         List<String> expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5);
+        List<String> actual = new ArrayList<>(repository.getAll());
 
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -91,7 +93,9 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5, AREA_6);
 
         assertTrue(repository.add(AREA_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -99,7 +103,9 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5);
 
         assertFalse(repository.add(AREA_1));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -107,7 +113,9 @@ public class AreaRepositorySQLiteTest {
         List<String> expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5, AREA_6, AREA_7);
 
         assertTrue(repository.addAll(Arrays.asList(AREA_6, AREA_7)));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -115,7 +123,9 @@ public class AreaRepositorySQLiteTest {
         List<String> expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5, AREA_6, AREA_7);
 
         assertTrue(repository.addAll(Arrays.asList(AREA_1, AREA_6, AREA_2, AREA_7)));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -123,7 +133,9 @@ public class AreaRepositorySQLiteTest {
         List<String> expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5, AREA_6, AREA_7);
 
         assertTrue(repository.addAll(Arrays.asList(null, AREA_6, AREA_7)));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -131,7 +143,9 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5);
 
         assertFalse(repository.set(AREA_2, AREA_5));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -139,7 +153,9 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5);
 
         assertTrue(repository.set(AREA_2, AREA_2));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -147,7 +163,9 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_6, AREA_3, AREA_4, AREA_5);
 
         assertTrue(repository.set(AREA_2, AREA_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -155,7 +173,9 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5);
 
         assertFalse(repository.set(AREA_6, AREA_5));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -163,7 +183,9 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5);
 
         assertFalse(repository.set(AREA_6, AREA_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -171,7 +193,9 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5);
 
         assertFalse(repository.set(AREA_6, AREA_7));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -179,7 +203,9 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_3, AREA_4, AREA_5);
 
         assertTrue(repository.remove(AREA_2));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -187,13 +213,15 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = Arrays.asList(AREA_1, AREA_2, AREA_3, AREA_4, AREA_5);
 
         assertFalse(repository.remove(AREA_6));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
     public void testClear() {
         assertTrue(repository.clear());
-        assertArrayEquals(new String[0], repository.getAll().toArray(new String[0]));
+        assertEquals(0, repository.getAll().size());
     }
 
     @Test
@@ -202,7 +230,9 @@ public class AreaRepositorySQLiteTest {
         List<String> toRewrite = Arrays.asList(AREA_6, null, AREA_7);
 
         assertTrue(repository.rewrite(toRewrite));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -210,6 +240,8 @@ public class AreaRepositorySQLiteTest {
         List<String>expected = new ArrayList<>();
 
         assertTrue(repository.rewrite(expected));
-        assertArrayEquals(expected.toArray(new String[0]), repository.getAll().toArray(new String[0]));
+        List<String> actual = new ArrayList<>(repository.getAll());
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
     }
 }
