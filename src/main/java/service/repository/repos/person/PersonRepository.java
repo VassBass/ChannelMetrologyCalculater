@@ -15,7 +15,7 @@ public interface PersonRepository {
     @Nullable Person getById(@Nonnegative int id);
 
     boolean add(@Nonnull Person person);
-    boolean add(@Nonnull Collection<Person> persons);
+    boolean addAll(@Nonnull Collection<Person> persons);
 
     boolean set(@Nonnull Person person);
     boolean rewrite(@Nonnull Collection<Person> persons);

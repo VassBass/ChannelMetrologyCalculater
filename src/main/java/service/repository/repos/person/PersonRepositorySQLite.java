@@ -98,37 +98,17 @@ public class PersonRepositorySQLite implements PersonRepository {
      * @return true if persons added successful or false if something go wrong
      */
     @Override
-    public boolean add(@Nonnull Collection<Person> persons) {
+    public boolean addAll(@Nonnull Collection<Person> persons) {
         if (persons.isEmpty()) {
-            return false;
-        } else {
-            for (Person p : persons) {
-                if (p.getId() < 0) p.setId(PersonIdGenerator.generateForRepository(this));
-            }
-        }
-
-        String sql = String.format("INSERT INTO %s (id, name, surname, patronymic, position) VALUES ", tableName);
-        StringBuilder sqlBuilder = new StringBuilder(sql);
-
-        for (Person person : persons) {
-            if (person == null) continue;
-
-            String values = String.format("(%s, '%s', '%s', '%s', '%s'),",
-                    person.getId(),
-                    person.getName(),
-                    person.getSurname(),
-                    person.getPatronymic(),
-                    person.getPosition());
-            sqlBuilder.append(values);
-        }
-        sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');
-
-        try (Statement statement = connector.getStatement()) {
-            statement.execute(sqlBuilder.toString());
             return true;
-        }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
-            return false;
+        } else {
+            Collection<Person> all = getAll();
+            for (Person p : persons) {
+                if (p == null || all.contains(p)) continue;
+                if (p.getId() < 0) p.setId(PersonIdGenerator.generateForCollection(all));
+                all.add(p);
+            }
+            return rewrite(all);
         }
     }
 
@@ -179,14 +159,16 @@ public class PersonRepositorySQLite implements PersonRepository {
             statement.execute(sql);
 
             if (!persons.isEmpty()) {
-                sql = String.format("INSERT INTO %s (name, surname, patronymic, position) VALUES ", tableName);
+                sql = String.format("INSERT INTO %s (id, name, surname, patronymic, position) VALUES ", tableName);
                 StringBuilder sqlBuilder = new StringBuilder(sql);
 
+                int id = 0;
                 for (Person person : persons) {
                     if (person == null) continue;
+                    if (person.getId() < 0) person.setId(id++);
 
-                    String values = String.format("('%s', '%s', '%s', '%s'),",
-                            person.getName(), person.getSurname(), person.getPatronymic(), person.getPosition());
+                    String values = String.format("(%s, '%s', '%s', '%s', '%s'),",
+                            person.getId(), person.getName(), person.getSurname(), person.getPatronymic(), person.getPosition());
                     sqlBuilder.append(values);
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');

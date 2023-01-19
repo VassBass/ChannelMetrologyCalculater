@@ -16,7 +16,7 @@ public class BufferedPersonRepositorySQLite extends PersonRepositorySQLite {
 
     public BufferedPersonRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         super(configHolder, connector);
-        buffer = getAll().stream()
+        buffer = super.getAll().stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(Person::getId, Function.identity()));
     }
@@ -45,16 +45,17 @@ public class BufferedPersonRepositorySQLite extends PersonRepositorySQLite {
     }
 
     @Override
-    public boolean add(@Nonnull Collection<Person> persons) {
-        for (Person p : persons) {
-            if (p.getId() < 0) p.setId(PersonIdGenerator.generateForMap(buffer));
-        }
-        Map<Integer, Person> result = persons.stream()
-                .filter(p -> !buffer.containsKey(p.getId()))
-                .collect(Collectors.toMap(Person::getId, Function.identity()));
-        buffer.clear();
-        buffer.putAll(result);
-        return rewrite(result.values());
+    public boolean addAll(@Nonnull Collection<Person> persons) {
+        persons.stream()
+                .filter(Objects::nonNull)
+                .forEach(p -> {
+                    int id = p.getId() < 0 ?
+                            PersonIdGenerator.generateForMap(buffer) :
+                            p.getId();
+                    p.setId(id);
+                    if (!buffer.containsKey(id)) buffer.put(id, p);
+                });
+        return super.addAll(persons);
     }
 
     @Override
