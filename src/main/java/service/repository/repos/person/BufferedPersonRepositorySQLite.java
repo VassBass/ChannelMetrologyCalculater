@@ -46,16 +46,12 @@ public class BufferedPersonRepositorySQLite extends PersonRepositorySQLite {
 
     @Override
     public boolean addAll(@Nonnull Collection<Person> persons) {
-        persons.stream()
-                .filter(Objects::nonNull)
-                .forEach(p -> {
-                    int id = p.getId() < 0 ?
-                            PersonIdGenerator.generateForMap(buffer) :
-                            p.getId();
-                    p.setId(id);
-                    if (!buffer.containsKey(id)) buffer.put(id, p);
-                });
-        return super.addAll(persons);
+        for (Person p : persons) {
+            if (p == null || buffer.containsKey(p.getId())) continue;
+            if (p.getId() < 0) p.setId(PersonIdGenerator.generateForMap(buffer));
+            buffer.put(p.getId(), p);
+        }
+        return super.rewrite(buffer.values());
     }
 
     @Override
