@@ -17,7 +17,7 @@ public class BufferedCalibratorRepositorySQLite extends CalibratorRepositorySQLi
 
     public BufferedCalibratorRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         super(configHolder, connector);
-        buffer = getAll().stream()
+        buffer = super.getAll().stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(Calibrator::getName, Function.identity()));
     }
