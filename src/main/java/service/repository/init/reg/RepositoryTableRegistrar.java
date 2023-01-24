@@ -3,6 +3,7 @@ package service.repository.init.reg;
 import service.repository.repos.area.AreaRepository;
 import service.repository.repos.calibrator.CalibratorRepository;
 import service.repository.repos.channel.ChannelRepository;
+import service.repository.repos.control_points.ControlPointsRepository;
 import service.repository.repos.department.DepartmentRepository;
 import service.repository.repos.installation.InstallationRepository;
 import service.repository.repos.measurement.MeasurementRepository;
@@ -29,6 +30,7 @@ public class RepositoryTableRegistrar {
             registeredTables.put(InstallationRepository.class, "installations");
             registeredTables.put(CalibratorRepository.class, "calibrators");
             registeredTables.put(PersonRepository.class, "persons");
+            registeredTables.put(ControlPointsRepository.class, "controlPoints");
         }
 
         return registeredTables;
