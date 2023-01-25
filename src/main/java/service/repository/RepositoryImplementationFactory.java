@@ -56,7 +56,7 @@ public class RepositoryImplementationFactory implements ImplementationFactory {
             if (clazz.isAssignableFrom(InstallationRepository.class))   i = (T) new BufferedInstallationRepositorySQLite(configHolder, connector);
             if (clazz.isAssignableFrom(PersonRepository.class))         i = (T) new BufferedPersonRepositorySQLite(configHolder, connector);
             if (clazz.isAssignableFrom(CalibratorRepository.class))     i = (T) new BufferedCalibratorRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(ChannelRepository.class))        i = (T) new BufferedChannelRepositorySQLite(configHolder, connector, this);
+            if (clazz.isAssignableFrom(ChannelRepository.class))        i = (T) new BufferedChannelRepositorySQLite(configHolder, connector);
             if (clazz.isAssignableFrom(ControlPointsRepository.class))  i = (T) new BufferedControlPointsRepositorySQLite(configHolder, connector);
 
             if (i == null) logger.warn(String.format("Can't find implementation for %s", key));

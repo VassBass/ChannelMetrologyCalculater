@@ -1,14 +1,11 @@
 package service.repository.repos.channel;
 
 import model.Channel;
-import model.Sensor;
-import service.repository.RepositoryImplementationFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -17,10 +14,8 @@ import java.util.stream.Collectors;
 public class BufferedChannelRepositorySQLite extends ChannelRepositorySQLite {
     private final Map<String, Channel> buffer;
 
-    public BufferedChannelRepositorySQLite(RepositoryConfigHolder configHolder,
-                                           RepositoryDBConnector connector,
-                                           RepositoryImplementationFactory implementationFactory) {
-        super(configHolder, connector, implementationFactory);
+    public BufferedChannelRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
+        super(configHolder, connector);
 
         buffer = super.getAll().stream()
                 .filter(Objects::nonNull)
@@ -51,20 +46,20 @@ public class BufferedChannelRepositorySQLite extends ChannelRepositorySQLite {
     }
 
     @Override
-    public boolean removeBySensor(@Nonnull Sensor sensor) {
+    public boolean removeBySensorName(@Nonnull String sensorName) {
         Collection<Channel> result = buffer.values().stream()
-                .filter(c -> !c.getSensor().equals(sensor))
+                .filter(c -> !c.getSensorName().equals(sensorName))
                 .collect(Collectors.toSet());
         buffer.clear();
 
         buffer.putAll(result.stream().collect(Collectors.toMap(Channel::getCode, Function.identity())));
-        return super.removeBySensor(sensor);
+        return super.removeBySensorName(sensorName);
     }
 
     @Override
     public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
         Collection<Channel> result = buffer.values().stream()
-                .filter(c -> !c.getMeasurement().getValue().equals(measurementValue))
+                .filter(c -> !c.getMeasurementValue().equals(measurementValue))
                 .collect(Collectors.toSet());
         buffer.clear();
 
@@ -82,29 +77,17 @@ public class BufferedChannelRepositorySQLite extends ChannelRepositorySQLite {
     }
 
     @Override
-    public boolean changeSensor(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor) {
+    public boolean changeSensorName(@Nonnull String oldSensor, @Nonnull String newSensor) {
         buffer.values().forEach(c -> {
-                    if (c.getSensor().equals(oldSensor)) c.setSensor(newSensor);
+                    if (c.getSensorName().equals(oldSensor)) c.setSensorName(newSensor);
                 });
-        return super.changeSensor(oldSensor, newSensor);
-    }
-
-    @Override
-    public boolean changeSensors(@Nonnull List<Sensor> sensors) {
-        sensors.stream()
-                .filter(Objects::nonNull)
-                .forEach(s -> {
-                    buffer.values().forEach(b -> {
-                        if (b.getSensor().equals(s)) b.setSensor(s);
-                    });
-                });
-        return super.changeSensors(sensors);
+        return super.changeSensorName(oldSensor, newSensor);
     }
 
     @Override
     public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
         buffer.values().forEach(c -> {
-            if (c.getMeasurement().getValue().equals(oldValue)) c.setMeasurement(measurementRepository.get(newValue));
+            if (c.getMeasurementValue().equals(oldValue)) c.setMeasurementValue(newValue);
         });
         return super.changeMeasurementValue(oldValue, newValue);
     }

@@ -16,7 +16,9 @@ public class Channel implements Serializable {
 
     public Channel(){}
 
-    public Channel(@Nonnull String code){this.code = code;}
+    public Channel(@Nonnull String code){
+        this.code = code;
+    }
 
     /**
      * DB field = code (primary key)[TEXT]
@@ -33,7 +35,7 @@ public class Channel implements Serializable {
      *
      * @see Measurement
      */
-    private Measurement measurement = new Measurement();
+    private String measurementValue = EMPTY;
 
     /**
      * DB field department [TEXT]
@@ -76,11 +78,11 @@ public class Channel implements Serializable {
     private String technologyNumber = EMPTY;
 
     /**
-     * DB field = sensor [TEXT{Json}]
+     * DB field = sensor [TEXT]
      *
      * @see Sensor
      */
-    private Sensor sensor = new Sensor();
+    private String sensorName = EMPTY;
 
     /**
      * DB field = protocol_number [TEXT]
@@ -118,7 +120,7 @@ public class Channel implements Serializable {
     private boolean suitability = true;
 
     /**
-     * DB field control_points
+     * DB field = control_points [TEXT{Json}]
      * key - percent value of point
      * value - value of point
      */
@@ -126,14 +128,14 @@ public class Channel implements Serializable {
 
     @Nonnull public String getCode() {return code;}
     @Nonnull public String getName() {return name;}
-    public Measurement getMeasurement() {return measurement;}
+    public String getMeasurementValue() {return measurementValue;}
     public String getDepartment() {return department;}
     public String getArea() {return area;}
     public String getProcess() {return process;}
     public String getInstallation() {return installation;}
     @Nonnull public String getDate() {return date;}
     public String getTechnologyNumber() {return technologyNumber;}
-    public Sensor getSensor() {return sensor;}
+    public String getSensorName() {return sensorName;}
     public String getNumberOfProtocol() {return numberOfProtocol;}
     public double getFrequency() {return frequency;}
     public double getRangeMin() {return rangeMin;}
@@ -142,7 +144,9 @@ public class Channel implements Serializable {
     public double getAllowableErrorPercent(){return allowableErrorPercent;}
     public double getAllowableError(){return allowableError;}
     public boolean isSuitability(){return suitability;}
-    public Map<Double, Double> getControlPoints(){return controlPoints;}
+    public Map<Double, Double> getControlPoints(){
+        return controlPoints;
+    }
 
     /**
      * @return date of next channel control or null if {@link #suitability} = false
@@ -193,7 +197,7 @@ public class Channel implements Serializable {
 
     public void setCode(@Nonnull String code) {this.code = code;}
     public void setName(@Nonnull String name) {this.name = name;}
-    public void setMeasurement(@Nonnull Measurement measurement) {this.measurement = measurement;}
+    public void setMeasurementValue(@Nonnull String measurementValue) {this.measurementValue = measurementValue;}
     public void setDepartment(String department) {this.department = department;}
     public void setArea(String area) {this.area = area;}
     public void setProcess(String process) {this.process = process;}
@@ -201,7 +205,7 @@ public class Channel implements Serializable {
     public void setDate(@Nonnull String date) {this.date = date;}
     public void setFrequency(double frequency) { this.frequency = frequency;}
     public void setTechnologyNumber(String number) {this.technologyNumber = number;}
-    public void setSensor(Sensor sensor) {this.sensor = sensor;}
+    public void setSensorName(String sensorName) {this.sensorName = sensorName;}
     public void setNumberOfProtocol(String number) {this.numberOfProtocol = number;}
     public void setRangeMin(double rangeMin) {this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax) {this.rangeMax = rangeMax;}
@@ -255,7 +259,7 @@ public class Channel implements Serializable {
         Channel c = new Channel();
         c.setCode(channel.getCode());
         c.setName(channel.getName());
-        c.setMeasurement(channel.getMeasurement());
+        c.setMeasurementValue(channel.getMeasurementValue());
         c.setDepartment(channel.getDepartment());
         c.setArea(channel.getArea());
         c.setProcess(channel.getProcess());
@@ -263,7 +267,7 @@ public class Channel implements Serializable {
         c.setDate(channel.getDate());
         c.setFrequency(channel.getFrequency());
         c.setTechnologyNumber(channel.getTechnologyNumber());
-        c.setSensor(channel.getSensor());
+        c.setSensorName(channel.getSensorName());
         c.setNumberOfProtocol(channel.getNumberOfProtocol());
         c.setReference(channel.getReference());
         c.setRange(channel.getRangeMin(), channel.getRangeMax());
@@ -284,7 +288,7 @@ public class Channel implements Serializable {
 
         return this.code.equals(channel.getCode())
                 && this.name.equals(channel.getName())
-                && this.measurement.equals(channel.getMeasurement())
+                && this.measurementValue.equals(channel.getMeasurementValue())
                 && this.department.equals(channel.getDepartment())
                 && this.area.equals(channel.getArea())
                 && this.process.equals(channel.getProcess())
@@ -292,7 +296,7 @@ public class Channel implements Serializable {
                 && this.date.equals(channel.getDate())
                 && this.frequency == channel.getFrequency()
                 && this.technologyNumber.equals(channel.getTechnologyNumber())
-                && this.sensor.isMatch(channel.getSensor())
+                && this.sensorName.equals(channel.getSensorName())
                 && this.numberOfProtocol.equals(channel.getNumberOfProtocol())
                 && this.reference.equals(channel.getReference())
                 && this.rangeMin == channel.getRangeMin()
@@ -300,6 +304,6 @@ public class Channel implements Serializable {
                 && this.allowableErrorPercent == channel.getAllowableErrorPercent()
                 && this.allowableError == channel.getAllowableError()
                 && this.suitability == channel.isSuitability()
-                && this.controlPoints.equals(channel.controlPoints);
+                && this.controlPoints.equals(channel.getControlPoints());
     }
 }
