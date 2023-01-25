@@ -32,44 +32,6 @@ public class ChannelRepositorySQLite implements ChannelRepository {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Channel get(@Nonnull String code) {
-        String sql = String.format("SELECT * FROM %s WHERE code = '%s' LIMIT 1;", tableName, code);
-        try (ResultSet resultSet = connector.getResultSet(sql)){
-            if (resultSet.next()){
-                Channel channel = new Channel(code);
-                channel.setName(resultSet.getString("name"));
-                channel.setDepartment(resultSet.getString("department"));
-                channel.setArea(resultSet.getString("area"));
-                channel.setProcess(resultSet.getString("process"));
-                channel.setInstallation(resultSet.getString("installation"));
-                channel.setTechnologyNumber(resultSet.getString("technology_number"));
-                channel.setNumberOfProtocol(resultSet.getString("protocol_number"));
-                channel.setReference(resultSet.getString("reference"));
-                channel.setDate(resultSet.getString("date"));
-                channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
-                channel.setSensorName(resultSet.getString("sensor_name"));
-                channel.setFrequency(resultSet.getDouble("frequency"));
-                channel.setRange(resultSet.getDouble("range_min"), resultSet.getDouble("range_max"));
-                channel.setMeasurementValue(resultSet.getString("measurement_value"));
-
-                double allowableErrorPercent = resultSet.getDouble("allowable_error_percent");
-                double allowableErrorValue = resultSet.getDouble("allowable_error_value");
-                channel.setAllowableError(allowableErrorPercent, allowableErrorValue);
-
-                String controlPointsJson = resultSet.getString("control_points");
-                channel.setControlPoints(jsonMapper.JsonToObject(controlPointsJson, Map.class));
-
-                return channel;
-            }
-        }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
-        }
-
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public Collection<Channel> getAll() {
         List<Channel>channels = new ArrayList<>();
 
@@ -106,6 +68,44 @@ public class ChannelRepositorySQLite implements ChannelRepository {
         }
 
         return channels;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Channel get(@Nonnull String code) {
+        String sql = String.format("SELECT * FROM %s WHERE code = '%s' LIMIT 1;", tableName, code);
+        try (ResultSet resultSet = connector.getResultSet(sql)){
+            if (resultSet.next()){
+                Channel channel = new Channel(code);
+                channel.setName(resultSet.getString("name"));
+                channel.setDepartment(resultSet.getString("department"));
+                channel.setArea(resultSet.getString("area"));
+                channel.setProcess(resultSet.getString("process"));
+                channel.setInstallation(resultSet.getString("installation"));
+                channel.setTechnologyNumber(resultSet.getString("technology_number"));
+                channel.setNumberOfProtocol(resultSet.getString("protocol_number"));
+                channel.setReference(resultSet.getString("reference"));
+                channel.setDate(resultSet.getString("date"));
+                channel.setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")));
+                channel.setSensorName(resultSet.getString("sensor_name"));
+                channel.setFrequency(resultSet.getDouble("frequency"));
+                channel.setRange(resultSet.getDouble("range_min"), resultSet.getDouble("range_max"));
+                channel.setMeasurementValue(resultSet.getString("measurement_value"));
+
+                double allowableErrorPercent = resultSet.getDouble("allowable_error_percent");
+                double allowableErrorValue = resultSet.getDouble("allowable_error_value");
+                channel.setAllowableError(allowableErrorPercent, allowableErrorValue);
+
+                String controlPointsJson = resultSet.getString("control_points");
+                channel.setControlPoints(jsonMapper.JsonToObject(controlPointsJson, Map.class));
+
+                return channel;
+            }
+        }catch (SQLException e){
+            logger.warn("Exception was thrown!", e);
+        }
+
+        return null;
     }
 
     @Override
@@ -186,7 +186,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
             if (!channels.isEmpty()) {
                 String insertSql = String.format("INSERT INTO %s (code, name, department, area, process, installation, technology_number"
                         + ", protocol_number, reference, date, suitability, measurement_value, sensor_name, frequency, range_min, range_max"
-                        + ", allowable_error_percent, allowable_error_value) "
+                        + ", allowable_error_percent, allowable_error_value, control_points) "
                         + "VALUES ", tableName);
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 

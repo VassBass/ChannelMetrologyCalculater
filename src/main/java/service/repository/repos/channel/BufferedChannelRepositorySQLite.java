@@ -94,6 +94,8 @@ public class BufferedChannelRepositorySQLite extends ChannelRepositorySQLite {
 
     @Override
     public boolean set(@Nonnull Channel oldChannel, @Nonnull Channel newChannel) {
+        if (!buffer.containsKey(oldChannel.getCode())) return false;
+
         if (!oldChannel.equals(newChannel)) {
             if (buffer.containsKey(newChannel.getCode())) return false;
 

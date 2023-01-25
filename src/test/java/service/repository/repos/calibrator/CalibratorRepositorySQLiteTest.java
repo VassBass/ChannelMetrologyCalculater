@@ -81,8 +81,8 @@ public class CalibratorRepositorySQLiteTest {
         expected = new ArrayList<>(7);
         for (int n = 0;n < 7;n++) expected.add(createCalibrator(n));
 
-        String insertSql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max)"
-                + " VALUES ";
+        String insertSql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, certificate, range_min, range_max)"
+                + " VALUES ", TABLE_NAME);
         StringBuilder sql = new StringBuilder(insertSql);
 
         for (Calibrator calibrator : expected) {
@@ -112,7 +112,7 @@ public class CalibratorRepositorySQLiteTest {
 
     @After
     public void clearTestDB() throws Exception {
-        String sql = "DELETE FROM calibrators;";
+        String sql = String.format("DELETE FROM %s;", TABLE_NAME);
         try (Connection connection = DriverManager.getConnection(TEST_DB_URL);
              Statement statement = connection.createStatement()) {
             statement.execute(sql);
