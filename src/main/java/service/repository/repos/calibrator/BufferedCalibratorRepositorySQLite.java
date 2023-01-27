@@ -66,6 +66,8 @@ public class BufferedCalibratorRepositorySQLite extends CalibratorRepositorySQLi
 
     @Override
     public boolean set(@Nonnull Calibrator oldCalibrator, @Nonnull Calibrator newCalibrator) {
+        if (!buffer.containsKey(oldCalibrator.getName())) return false;
+
         if (!oldCalibrator.equals(newCalibrator)) {
             if (buffer.containsKey(newCalibrator.getName())) return false;
 
