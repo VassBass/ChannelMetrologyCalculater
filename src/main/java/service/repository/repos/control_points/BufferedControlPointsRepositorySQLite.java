@@ -48,6 +48,8 @@ public class BufferedControlPointsRepositorySQLite extends ControlPointsReposito
 
     @Override
     public boolean set(@Nonnull ControlPoints oldControlPoints, @Nonnull ControlPoints newControlPoints) {
+        if (!buffer.containsKey(oldControlPoints.getName())) return false;
+
         if (!oldControlPoints.equals(newControlPoints)) {
             if (buffer.containsKey(newControlPoints.getName())) return false;
 
@@ -77,8 +79,6 @@ public class BufferedControlPointsRepositorySQLite extends ControlPointsReposito
         Collection<ControlPoints> result = buffer.values();
         result.removeIf(cp -> cp.getSensorType().equals(sensorType));
 
-        buffer.clear();
-        buffer.putAll(result.stream().collect(Collectors.toMap(ControlPoints::getName, Function.identity())));
         return super.removeBySensorType(sensorType);
     }
 

@@ -8,7 +8,6 @@ import service.json.JacksonJsonObjectMapper;
 import service.json.JsonObjectMapper;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
-import service.repository.repos.area.AreaRepository;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -28,7 +27,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
     private final JsonObjectMapper jsonMapper = JacksonJsonObjectMapper.getInstance();
 
     public ControlPointsRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
-        this.tableName = configHolder.getTableName(AreaRepository.class);
+        this.tableName = configHolder.getTableName(ControlPointsRepository.class);
         this.connector = connector;
     }
 
@@ -63,15 +62,17 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
         Collection<ControlPoints> controlPoints = new ArrayList<>();
         String sql = String.format("SELECT * FROM %s WHERE sensor_type = '%s';", tableName, sensorType);
         try (ResultSet resultSet = connector.getResultSet(sql)) {
-            String name = resultSet.getString("name");
-            String senType = resultSet.getString("sensor_type");
-            String jsonPoints = resultSet.getString("points");
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                String senType = resultSet.getString("sensor_type");
+                String jsonPoints = resultSet.getString("points");
 
-            ControlPoints cp = new ControlPointsBuilder(name)
-                    .setSensorType(senType)
-                    .setPoints(jsonMapper.JsonToObject(jsonPoints, Map.class))
-                    .build();
-            controlPoints.add(cp);
+                ControlPoints cp = new ControlPointsBuilder(name)
+                        .setSensorType(senType)
+                        .setPoints(jsonMapper.JsonToObject(jsonPoints, Map.class))
+                        .build();
+                controlPoints.add(cp);
+            }
         }catch (SQLException e) {
             logger.warn("Exception was thrown!", e);
         }

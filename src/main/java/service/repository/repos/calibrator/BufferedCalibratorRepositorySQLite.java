@@ -55,12 +55,9 @@ public class BufferedCalibratorRepositorySQLite extends CalibratorRepositorySQLi
 
     @Override
     public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
-        Collection<Calibrator> result = buffer.values().stream()
-                .filter(c -> !c.getValue().equals(measurementValue))
-                .collect(Collectors.toSet());
+        Collection<Calibrator> result = buffer.values();
+        result.removeIf(c -> c.getValue().equals(measurementValue));
 
-        buffer.clear();
-        buffer.putAll(result.stream().collect(Collectors.toMap(Calibrator::getName, Function.identity())));
         return super.removeByMeasurementValue(measurementValue);
     }
 
