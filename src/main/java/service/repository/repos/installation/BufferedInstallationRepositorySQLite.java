@@ -42,6 +42,7 @@ public class BufferedInstallationRepositorySQLite extends InstallationRepository
 
     @Override
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
+        if (!buffer.contains(oldObject)) return false;
         if (!oldObject.equals(newObject) && buffer.contains(newObject)) return false;
 
         int index = buffer.indexOf(oldObject);
