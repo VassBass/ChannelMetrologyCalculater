@@ -2,6 +2,7 @@ package model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import converters.VariableConverter;
+import service.validator.Validator;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -150,12 +151,13 @@ public class Calibrator implements Serializable {
 //    }
 
     public static class Certificate implements Serializable {
-        private static final String defaultType = "Сертифікат калібрування";
+        private static final String DEFAULT_TYPE = "Сертифікат калібрування";
+        private static final String DEFAULT_DATE = "23.03.2022";
 
         @Nonnull private String name = EMPTY;
-        @Nonnull private String date = "23.03.2022";
+        @Nonnull private String date = DEFAULT_DATE;
         @Nonnull private String company = EMPTY;
-        @Nonnull private String type = defaultType;
+        @Nonnull private String type = DEFAULT_TYPE;
 
         @Nonnull public String getName(){return this.name;}
 
@@ -195,6 +197,38 @@ public class Calibrator implements Serializable {
         @Override
         public String toString() {
             return String.format("%s від %sр %s", name, date, company);
+        }
+
+        public static class CertificateBuilder {
+            private final Certificate certificate;
+
+            public CertificateBuilder() {
+                certificate = new Certificate();
+            }
+
+            public CertificateBuilder setName(String name) {
+                certificate.setName(name == null ? EMPTY : name);
+                return this;
+            }
+
+            public CertificateBuilder setDate(String date) {
+                certificate.setDate(Validator.isDateValid(date) ? date : DEFAULT_DATE);
+                return this;
+            }
+
+            public CertificateBuilder setCompany(String company) {
+                certificate.setCompany(company == null ? EMPTY : company);
+                return this;
+            }
+
+            public CertificateBuilder setType(String type) {
+                certificate.setType(type == null || type.isEmpty() ? DEFAULT_TYPE : type);
+                return this;
+            }
+
+            public Certificate build() {
+                return certificate;
+            }
         }
     }
 
