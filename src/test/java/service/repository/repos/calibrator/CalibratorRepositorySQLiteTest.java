@@ -2,6 +2,7 @@ package service.repository.repos.calibrator;
 
 import model.Calibrator;
 import model.Measurement;
+import model.builder.CalibratorBuilder;
 import org.junit.*;
 import service.json.JacksonJsonObjectMapper;
 import service.json.JsonObjectMapper;
@@ -29,22 +30,31 @@ public class CalibratorRepositorySQLiteTest {
     private static final String TABLE_NAME = "calibrators";
 
     private List<Calibrator> expected;
-    private Calibrator createCalibrator(int number){
-        Calibrator calibrator = new Calibrator("calibrator" + number);
-        calibrator.setType("type" + number);
-        calibrator.getCertificate().setName("certificate" + number);
-        calibrator.getCertificate().setType("certificateType" + number);
-        calibrator.getCertificate().setDate("23.03.2022");
-        calibrator.getCertificate().setCompany("company" + number);
-        calibrator.setNumber(String.valueOf(number));
-        String measurement = number < 3 ? Measurement.TEMPERATURE : number < 5 ? Measurement.PRESSURE : Measurement.CONSUMPTION;
-        String value = number < 3 ? Measurement.DEGREE_CELSIUS : number < 5 ? Measurement.KPA : Measurement.M3_HOUR;
-        calibrator.setMeasurement(measurement);
-        calibrator.setValue(value);
-        calibrator.setRangeMin(0D);
-        calibrator.setRangeMax(100D);
-        calibrator.setErrorFormula(number + "+" + number);
-        return calibrator;
+    private Calibrator createCalibrator(int n){
+        String name = "calibrator" + n;
+        String type = "type" + n;
+        String certificateName = "certificate" + n;
+        String certificateType = "certificateType" + n;
+        String certificateDate = "23.03.2022";
+        String certificateCompany = "company" + n;
+        String number = String.valueOf(n);
+        String measurementName = n < 3 ?
+                Measurement.TEMPERATURE :
+                n < 5 ? Measurement.PRESSURE : Measurement.CONSUMPTION;
+        String measurementValue = n < 3 ?
+                Measurement.DEGREE_CELSIUS :
+                n < 5 ? Measurement.KPA : Measurement.M3_HOUR;
+        String errorFormula = number + "+" + number;
+
+        return new CalibratorBuilder(name)
+                .setType(type)
+                .setCertificate(certificateType, certificateName, certificateDate, certificateCompany)
+                .setNumber(number)
+                .setMeasurementName(measurementName)
+                .setMeasurementValue(measurementValue)
+                .setRange(0D, 100D)
+                .setErrorFormula(errorFormula)
+                .build();
     }
 
     private final JsonObjectMapper jsonObjectMapper = JacksonJsonObjectMapper.getInstance();
