@@ -80,10 +80,6 @@ public class Sensor implements Serializable {
 
     public void setType(String type) {this.type = type;}
     public void setName(String name){this.name = name;}
-    public void setRange(double min, double max) {
-        this.rangeMin = min;
-        this.rangeMax = max;
-    }
     public void setRangeMin(double min) {this.rangeMin = min;}
     public void setRangeMax(double max) {this.rangeMax = max;}
     public void setNumber(String number){this.number = number;}

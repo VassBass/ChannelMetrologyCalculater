@@ -88,6 +88,18 @@ public class ChannelBuilder {
         return this;
     }
 
+    public ChannelBuilder setRange(double r1, double r2) {
+        if (r1 > r2) {
+            r1 = r1 + r2;
+            r2 = r1 - r2;
+            r1 -= r2;
+        }
+        channel.setRangeMin(r1);
+        channel.setRangeMax(r2);
+
+        return this;
+    }
+
     public ChannelBuilder setReference(@Nonnull String reference){
         this.channel.setReference(reference);
         return this;
