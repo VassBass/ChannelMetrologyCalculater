@@ -2,6 +2,7 @@ package service.repository.repos.calibrator;
 
 import model.Calibrator;
 import model.Measurement;
+import model.builder.CalibratorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.json.JacksonJsonObjectMapper;
@@ -36,21 +37,21 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
         String sql = String.format("SELECT * FROM %s;", tableName);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             while (resultSet.next()){
-                Calibrator calibrator = new Calibrator();
-                calibrator.setType(resultSet.getString("type"));
-                calibrator.setName(resultSet.getString("name"));
-                calibrator.setNumber(resultSet.getString("number"));
-                calibrator.setRangeMin(resultSet.getDouble("range_min"));
-                calibrator.setRangeMax(resultSet.getDouble("range_max"));
-                calibrator.setValue(resultSet.getString("value"));
-                calibrator.setMeasurement(resultSet.getString("measurement"));
-                calibrator.setErrorFormula(resultSet.getString("error_formula"));
+                CalibratorBuilder calibratorBuilder = new CalibratorBuilder();
+                calibratorBuilder.setType(resultSet.getString("type"));
+                calibratorBuilder.setName(resultSet.getString("name"));
+                calibratorBuilder.setNumber(resultSet.getString("number"));
+                calibratorBuilder.setRangeMin(resultSet.getDouble("range_min"));
+                calibratorBuilder.setRangeMax(resultSet.getDouble("range_max"));
+                calibratorBuilder.setMeasurementValue(resultSet.getString("value"));
+                calibratorBuilder.setMeasurementName(resultSet.getString("measurement"));
+                calibratorBuilder.setErrorFormula(resultSet.getString("error_formula"));
 
                 String certificateJson = resultSet.getString("certificate");
                 Calibrator.Certificate certificate = jsonMapper.JsonToObject(certificateJson, Calibrator.Certificate.class);
-                if (certificate != null) calibrator.setCertificate(certificate);
+                if (certificate != null) calibratorBuilder.setCertificate(certificate);
 
-                calibrators.add(calibrator);
+                calibrators.add(calibratorBuilder.build());
             }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -80,21 +81,21 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
         String sql = String.format("SELECT * FROM %s WHERE name = '%s' LIMIT 1;", tableName, name);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             if (resultSet.next()){
-                Calibrator calibrator = new Calibrator();
-                calibrator.setType(resultSet.getString("type"));
-                calibrator.setName(resultSet.getString("name"));
-                calibrator.setNumber(resultSet.getString("number"));
-                calibrator.setRangeMin(resultSet.getDouble("range_min"));
-                calibrator.setRangeMax(resultSet.getDouble("range_max"));
-                calibrator.setValue(resultSet.getString("value"));
-                calibrator.setMeasurement(resultSet.getString("measurement"));
-                calibrator.setErrorFormula(resultSet.getString("error_formula"));
+                CalibratorBuilder calibratorBuilder = new CalibratorBuilder();
+                calibratorBuilder.setType(resultSet.getString("type"));
+                calibratorBuilder.setName(resultSet.getString("name"));
+                calibratorBuilder.setNumber(resultSet.getString("number"));
+                calibratorBuilder.setRangeMin(resultSet.getDouble("range_min"));
+                calibratorBuilder.setRangeMax(resultSet.getDouble("range_max"));
+                calibratorBuilder.setMeasurementValue(resultSet.getString("value"));
+                calibratorBuilder.setMeasurementName(resultSet.getString("measurement"));
+                calibratorBuilder.setErrorFormula(resultSet.getString("error_formula"));
 
                 String certificateJson = resultSet.getString("certificate");
                 Calibrator.Certificate certificate = jsonMapper.JsonToObject(certificateJson, Calibrator.Certificate.class);
-                if (certificate != null) calibrator.setCertificate(certificate);
+                if (certificate != null) calibratorBuilder.setCertificate(certificate);
 
-                return calibrator;
+                return calibratorBuilder.build();
             }
         }catch (SQLException e){
             LOGGER.warn("Exception was thrown!", e);
@@ -219,9 +220,15 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                     if (calibrator == null) continue;
 
                     String values = String.format("('%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s),",
-                            calibrator.getName(), calibrator.getType(), calibrator.getNumber(), calibrator.getMeasurement(),
-                            calibrator.getValue(), calibrator.getErrorFormula(), jsonMapper.objectToJson(calibrator.getCertificate()),
-                            calibrator.getRangeMin(), calibrator.getRangeMax());
+                            calibrator.getName(),
+                            calibrator.getType(),
+                            calibrator.getNumber(),
+                            calibrator.getMeasurement(),
+                            calibrator.getValue(),
+                            calibrator.getErrorFormula(),
+                            jsonMapper.objectToJson(calibrator.getCertificate()),
+                            calibrator.getRangeMin(),
+                            calibrator.getRangeMax());
                     sqlBuilder.append(values);
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
@@ -272,9 +279,15 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                     if (calibrator == null) continue;
 
                     String values = String.format("('%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s),",
-                            calibrator.getName(), calibrator.getType(), calibrator.getNumber(), calibrator.getMeasurement(),
-                            calibrator.getValue(), calibrator.getErrorFormula(), jsonMapper.objectToJson(calibrator.getCertificate()),
-                            calibrator.getRangeMin(), calibrator.getRangeMax());
+                            calibrator.getName(),
+                            calibrator.getType(),
+                            calibrator.getNumber(),
+                            calibrator.getMeasurement(),
+                            calibrator.getValue(),
+                            calibrator.getErrorFormula(),
+                            jsonMapper.objectToJson(calibrator.getCertificate()),
+                            calibrator.getRangeMin(),
+                            calibrator.getRangeMax());
                     sqlBuilder.append(values);
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
