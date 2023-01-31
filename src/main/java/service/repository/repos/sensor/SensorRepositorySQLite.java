@@ -54,7 +54,7 @@ public class SensorRepositorySQLite implements SensorRepository {
     }
 
     @Override
-    public Collection<Sensor> getAll(@Nonnull String measurement) {
+    public Collection<Sensor> getAllByMeasurementName(@Nonnull String measurement) {
         List<Sensor>sensors = new ArrayList<>();
 
         String sql = String.format("SELECT * FROM %s WHERE measurement = '%s';", tableName, measurement);
@@ -94,8 +94,8 @@ public class SensorRepositorySQLite implements SensorRepository {
     }
 
     @Override
-    public String getMeasurement(@Nonnull String sensorType) {
-        String sql = String.format("SELECT %s FROM sensors WHERE type = '%s';", tableName, sensorType);
+    public String getMeasurementNameBySensorType(@Nonnull String sensorType) {
+        String sql = String.format("SELECT measurement FROM %s WHERE type = '%s';", tableName, sensorType);
         String measurement = null;
         try (ResultSet resultSet = connector.getResultSet(sql)){
             if (resultSet.next()){
@@ -109,7 +109,7 @@ public class SensorRepositorySQLite implements SensorRepository {
     }
 
     @Override
-    public Collection<String> getAllSensorsName(@Nonnull String measurementName) {
+    public Collection<String> getAllSensorsNameByMeasurementName(@Nonnull String measurementName) {
         List<String> names = new ArrayList<>();
 
         String sql = String.format("SELECT name FROM %s WHERE measurement = '%s';", tableName, measurementName);
@@ -244,8 +244,14 @@ public class SensorRepositorySQLite implements SensorRepository {
                 for (Sensor sensor : sensors) {
                     if (sensor == null) continue;
                     String values = String.format("('%s', '%s', '%s', '%s', '%s', '%s', %s, %s),",
-                            sensor.getName(), sensor.getType(), sensor.getNumber(), sensor.getMeasurement(), sensor.getValue(),
-                            sensor.getErrorFormula(), sensor.getRangeMin(), sensor.getRangeMax());
+                            sensor.getName(),
+                            sensor.getType(),
+                            sensor.getNumber(),
+                            sensor.getMeasurement(),
+                            sensor.getValue(),
+                            sensor.getErrorFormula(),
+                            sensor.getRangeMin(),
+                            sensor.getRangeMax());
                     sqlBuilder.append(values);
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');

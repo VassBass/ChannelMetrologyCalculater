@@ -8,10 +8,10 @@ import java.util.Collection;
 
 public interface SensorRepository {
     Collection<Sensor> getAll();
-    Collection<Sensor> getAll(@Nonnull String measurement);
+    Collection<Sensor> getAllByMeasurementName(@Nonnull String measurement);
     Collection<String> getAllTypes();
-    String getMeasurement(@Nonnull String sensorType);
-    Collection<String> getAllSensorsName(@Nonnull String measurementName);
+    String getMeasurementNameBySensorType(@Nonnull String sensorType);
+    Collection<String> getAllSensorsNameByMeasurementName(@Nonnull String measurementName);
     @Nullable Sensor get(@Nonnull String sensorName);
 
     boolean add(@Nonnull Sensor sensor);

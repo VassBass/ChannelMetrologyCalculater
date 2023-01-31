@@ -30,7 +30,7 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     }
 
     @Override
-    public Collection<Sensor> getAll(@Nonnull String measurement) {
+    public Collection<Sensor> getAllByMeasurementName(@Nonnull String measurement) {
         return buffer.values().stream()
                 .filter(s -> s.getMeasurement().equals(measurement))
                 .collect(Collectors.toSet());
@@ -44,7 +44,7 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     }
 
     @Override
-    public String getMeasurement(@Nonnull String sensorType) {
+    public String getMeasurementNameBySensorType(@Nonnull String sensorType) {
         Optional<Sensor> s = buffer.values().stream()
                 .filter(sen -> sen.getType().equals(sensorType))
                 .findAny();
@@ -54,7 +54,7 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     }
 
     @Override
-    public Collection<String> getAllSensorsName(@Nonnull String measurementName) {
+    public Collection<String> getAllSensorsNameByMeasurementName(@Nonnull String measurementName) {
         return buffer.values().stream()
                 .filter(s -> s.getMeasurement().equals(measurementName))
                 .map(Sensor::getName)
@@ -81,6 +81,8 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
 
     @Override
     public boolean set(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor) {
+        if (!buffer.containsKey(oldSensor.getName())) return false;
+
         if (!oldSensor.equals(newSensor)) {
             if (buffer.containsKey(newSensor.getName())) return false;
 
