@@ -37,6 +37,7 @@ public class ChannelRepositoryInitializer implements RepositoryInitializer {
                 + ", reference text"
                 + ", date text"
                 + ", suitability text NOT NULL"
+                + ", measurement_name text NOT NULL"
                 + ", measurement_value text NOT NULL"
                 + ", sensor_name text NOT NULL"
                 + ", frequency real NOT NULL"

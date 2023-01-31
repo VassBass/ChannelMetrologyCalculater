@@ -31,7 +31,14 @@ public class Channel implements Serializable {
     @Nonnull private String name = EMPTY;
 
     /**
-     * Foreign key = measurement_value [TEXT]
+     * DB field = measurement_name
+     *
+     * @see Measurement
+     */
+    private String measurementName = EMPTY;
+
+    /**
+     * DB field = measurement_value [TEXT]
      *
      * @see Measurement
      */
@@ -128,6 +135,7 @@ public class Channel implements Serializable {
 
     @Nonnull public String getCode() {return code;}
     @Nonnull public String getName() {return name;}
+    public String getMeasurementName() {return measurementName;}
     public String getMeasurementValue() {return measurementValue;}
     public String getDepartment() {return department;}
     public String getArea() {return area;}
@@ -197,6 +205,7 @@ public class Channel implements Serializable {
 
     public void setCode(@Nonnull String code) {this.code = code;}
     public void setName(@Nonnull String name) {this.name = name;}
+    public void setMeasurementName(String measurementName) {this.measurementName = measurementName;}
     public void setMeasurementValue(@Nonnull String measurementValue) {this.measurementValue = measurementValue;}
     public void setDepartment(String department) {this.department = department;}
     public void setArea(String area) {this.area = area;}
@@ -248,33 +257,6 @@ public class Channel implements Serializable {
     @Override
     public String toString() {
         return String.format("(%s)%s[%s]{%s}", code, name, technologyNumber, createFullPath());
-    }
-
-    /**
-     * @param channel to copy from
-     *
-     * @return copy of Channel in @param
-     */
-    public Channel copyFrom(@Nonnull Channel channel){
-        Channel c = new Channel();
-        c.setCode(channel.getCode());
-        c.setName(channel.getName());
-        c.setMeasurementValue(channel.getMeasurementValue());
-        c.setDepartment(channel.getDepartment());
-        c.setArea(channel.getArea());
-        c.setProcess(channel.getProcess());
-        c.setInstallation(channel.getInstallation());
-        c.setDate(channel.getDate());
-        c.setFrequency(channel.getFrequency());
-        c.setTechnologyNumber(channel.getTechnologyNumber());
-        c.setSensorName(channel.getSensorName());
-        c.setNumberOfProtocol(channel.getNumberOfProtocol());
-        c.setReference(channel.getReference());
-        c.setRange(channel.getRangeMin(), channel.getRangeMax());
-        c.setAllowableError(channel.getAllowableErrorPercent(), channel.getAllowableError());
-        c.setSuitability(channel.isSuitability());
-        c.setControlPoints(channel.getControlPoints());
-        return c;
     }
 
     /**

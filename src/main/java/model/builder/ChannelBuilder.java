@@ -1,6 +1,7 @@
 package model.builder;
 
 import model.Channel;
+import model.Measurement;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -18,73 +19,105 @@ public class ChannelBuilder {
         channel = new Channel(code);
     }
 
+    public ChannelBuilder(@Nonnull Channel channel) {
+        this.channel = new Channel(channel.getCode());
+        this.channel.setName(channel.getName());
+        this.channel.setMeasurementName(channel.getMeasurementName());
+        this.channel.setMeasurementValue(channel.getMeasurementValue());
+        this.channel.setDepartment(channel.getDepartment());
+        this.channel.setArea(channel.getArea());
+        this.channel.setProcess(channel.getProcess());
+        this.channel.setInstallation(channel.getInstallation());
+        this.channel.setDate(channel.getDate());
+        this.channel.setFrequency(channel.getFrequency());
+        this.channel.setTechnologyNumber(channel.getTechnologyNumber());
+        this.channel.setSensorName(channel.getSensorName());
+        this.channel.setNumberOfProtocol(channel.getNumberOfProtocol());
+        this.channel.setReference(channel.getReference());
+        this.channel.setRange(channel.getRangeMin(), channel.getRangeMax());
+        this.channel.setAllowableError(channel.getAllowableErrorPercent(), channel.getAllowableError());
+        this.channel.setSuitability(channel.isSuitability());
+        this.channel.setControlPoints(channel.getControlPoints());
+    }
+
     public ChannelBuilder setCode(@Nonnull String code) {
         channel.setCode(code);
         return this;
     }
 
     public ChannelBuilder setName(@Nonnull String name) {
-        this.channel.setName(name);
+        channel.setName(name);
+        return this;
+    }
+
+    public ChannelBuilder setMeasurementName(String measurementName) {
+        channel.setMeasurementName(measurementName == null ? EMPTY : measurementName);
         return this;
     }
 
     public ChannelBuilder setMeasurementValue(@Nonnull String measurementValue) {
-        this.channel.setMeasurementValue(measurementValue);
+        channel.setMeasurementValue(measurementValue);
+        return this;
+    }
+
+    public ChannelBuilder setMeasurement(Measurement measurement) {
+        channel.setMeasurementName(measurement.getName());
+        channel.setMeasurementValue(measurement.getValue());
         return this;
     }
 
     public ChannelBuilder setDepartment(@Nonnull String department) {
-        this.channel.setDepartment(department);
+        channel.setDepartment(department);
         return this;
     }
 
     public ChannelBuilder setArea(@Nonnull String area) {
-        this.channel.setArea(area);
+        channel.setArea(area);
         return this;
     }
 
     public ChannelBuilder setProcess(@Nonnull String process) {
-        this.channel.setProcess(process);
+        channel.setProcess(process);
         return this;
     }
 
     public ChannelBuilder setInstallation(@Nonnull String installation) {
-        this.channel.setInstallation(installation);
+        channel.setInstallation(installation);
         return this;
     }
 
     public ChannelBuilder setDate(@Nonnull String date) {
-        this.channel.setDate(date);
+        channel.setDate(date);
         return this;
     }
 
     public ChannelBuilder setFrequency(double frequency) {
-        this.channel.setFrequency(frequency);
+        channel.setFrequency(frequency);
         return this;
     }
 
     public ChannelBuilder setTechnologyNumber(@Nonnull String number) {
-        this.channel.setTechnologyNumber(number);
+        channel.setTechnologyNumber(number);
         return this;
     }
 
     public ChannelBuilder setSensorName(@Nonnull String sensorName) {
-        this.channel.setSensorName(sensorName);
+        channel.setSensorName(sensorName);
         return this;
     }
 
     public ChannelBuilder setNumberOfProtocol(@Nonnull String number) {
-        this.channel.setNumberOfProtocol(number);
+        channel.setNumberOfProtocol(number);
         return this;
     }
 
     public ChannelBuilder setRangeMin(double rangeMin) {
-        this.channel.setRangeMin(rangeMin);
+        channel.setRangeMin(rangeMin);
         return this;
     }
 
     public ChannelBuilder setRangeMax(double rangeMax) {
-        this.channel.setRangeMax(rangeMax);
+        channel.setRangeMax(rangeMax);
         return this;
     }
 
@@ -101,27 +134,27 @@ public class ChannelBuilder {
     }
 
     public ChannelBuilder setReference(@Nonnull String reference){
-        this.channel.setReference(reference);
+        channel.setReference(reference);
         return this;
     }
 
     public ChannelBuilder setSuitability(boolean suitability){
-        this.channel.setSuitability(suitability);
+        channel.setSuitability(suitability);
         return this;
     }
 
     public ChannelBuilder setControlPoints(@Nonnull Map<Double, Double> controlPoints){
-        this.channel.setControlPoints(controlPoints);
+        channel.setControlPoints(controlPoints);
         return this;
     }
 
     public ChannelBuilder setAllowableErrorInPercent(double value) {
-        this.channel.setAllowableError(value, channel.getAllowableError());
+        channel.setAllowableError(value, channel.getAllowableError());
         return this;
     }
 
     public ChannelBuilder setAllowableErrorInValue(double value) {
-        this.channel.setAllowableError(channel.getAllowableErrorPercent(), value);
+        channel.setAllowableError(channel.getAllowableErrorPercent(), value);
         return this;
     }
 

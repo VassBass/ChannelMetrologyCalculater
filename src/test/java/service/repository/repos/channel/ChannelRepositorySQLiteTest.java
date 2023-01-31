@@ -58,6 +58,7 @@ public class ChannelRepositorySQLiteTest {
                 + ", reference text"
                 + ", date text"
                 + ", suitability text NOT NULL"
+                + ", measurement_name text NOT NULL"
                 + ", measurement_value text NOT NULL"
                 + ", sensor_name text NOT NULL"
                 + ", frequency real NOT NULL"
@@ -91,14 +92,14 @@ public class ChannelRepositorySQLiteTest {
         expected.add(createChannel(6, Sensor.ROSEMOUNT, Measurement.M3_HOUR));
 
         String sql = String.format("INSERT INTO %s (code, name, department, area, process, installation, technology_number" +
-                ", protocol_number, reference, date, suitability, measurement_value, sensor_name, frequency, range_min, range_max" +
+                ", protocol_number, reference, date, suitability, measurement_name, measurement_value, sensor_name, frequency, range_min, range_max" +
                 ", allowable_error_percent, allowable_error_value, control_points) "
                 + "VALUES ", TABLE_NAME);
         StringBuilder sqlBuilder = new StringBuilder(sql);
 
         for (Channel channel : expected) {
             String values = String.format(
-                    "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
+                    "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
                     channel.getCode(),
                     channel.getName(),
                     channel.getDepartment(),
@@ -110,6 +111,7 @@ public class ChannelRepositorySQLiteTest {
                     channel.getReference(),
                     channel.getDate(),
                     channel.isSuitability(),
+                    channel.getMeasurementName(),
                     channel.getMeasurementValue(),
                     channel.getSensorName(),
                     channel.getFrequency(),
