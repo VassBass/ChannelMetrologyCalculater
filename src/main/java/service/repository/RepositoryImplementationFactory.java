@@ -18,6 +18,8 @@ import service.repository.repos.installation.BufferedInstallationRepositorySQLit
 import service.repository.repos.installation.InstallationRepository;
 import service.repository.repos.measurement.BufferedMeasurementRepositorySQLite;
 import service.repository.repos.measurement.MeasurementRepository;
+import service.repository.repos.measurement_factor.BufferedMeasurementFactorRepositorySQLite;
+import service.repository.repos.measurement_factor.MeasurementFactorRepository;
 import service.repository.repos.person.BufferedPersonRepositorySQLite;
 import service.repository.repos.person.PersonRepository;
 import service.repository.repos.process.BufferedProcessRepositorySQLite;
@@ -48,16 +50,28 @@ public class RepositoryImplementationFactory implements ImplementationFactory {
         T i = (T) implementations.get(key);
 
         if (i == null) {
-            if (clazz.isAssignableFrom(MeasurementRepository.class))    i = (T) new BufferedMeasurementRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(SensorRepository.class))         i = (T) new BufferedSensorRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(DepartmentRepository.class))     i = (T) new BufferedDepartmentRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(AreaRepository.class))           i = (T) new BufferedAreaRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(ProcessRepository.class))        i = (T) new BufferedProcessRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(InstallationRepository.class))   i = (T) new BufferedInstallationRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(PersonRepository.class))         i = (T) new BufferedPersonRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(CalibratorRepository.class))     i = (T) new BufferedCalibratorRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(ChannelRepository.class))        i = (T) new BufferedChannelRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(ControlPointsRepository.class))  i = (T) new BufferedControlPointsRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(MeasurementRepository.class))
+                i = (T) new BufferedMeasurementRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(SensorRepository.class))
+                i = (T) new BufferedSensorRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(DepartmentRepository.class))
+                i = (T) new BufferedDepartmentRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(AreaRepository.class))
+                i = (T) new BufferedAreaRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(ProcessRepository.class))
+                i = (T) new BufferedProcessRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(InstallationRepository.class))
+                i = (T) new BufferedInstallationRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(PersonRepository.class))
+                i = (T) new BufferedPersonRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(CalibratorRepository.class))
+                i = (T) new BufferedCalibratorRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(ChannelRepository.class))
+                i = (T) new BufferedChannelRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(ControlPointsRepository.class))
+                i = (T) new BufferedControlPointsRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(MeasurementFactorRepository.class))
+                i = (T) new BufferedMeasurementFactorRepositorySQLite(configHolder, connector);
 
             if (i == null) logger.warn(String.format("Can't find implementation for %s", key));
             else implementations.put(key, i);
