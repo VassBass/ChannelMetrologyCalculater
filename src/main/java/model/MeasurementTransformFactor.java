@@ -1,6 +1,9 @@
 package model;
 
+import javax.annotation.Nonnegative;
 import java.util.Objects;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * DB table = measurement_factors
@@ -8,12 +11,17 @@ import java.util.Objects;
 public class MeasurementTransformFactor {
 
     /**
+     * DB field = id (primary key)[INTEGER]
+     */
+    private final int id;
+
+    /**
      * Source measurement value to transform
      * DB field = source [TEXT]
      *
      * @see Measurement#value
      */
-    private final String transformFrom;
+    private String transformFrom;
 
     /**
      * Measurement value transform result
@@ -21,17 +29,25 @@ public class MeasurementTransformFactor {
      *
      * @see Measurement#value
      */
-    private final String transformTo;
+    private String transformTo;
 
     /**
      * DB field = factor [REAL]
      */
-    private final double transformFactor;
+    private double transformFactor;
 
-    public MeasurementTransformFactor(String transformFrom, String transformTo, double transformFactor) {
-        this.transformFrom = transformFrom;
-        this.transformTo = transformTo;
+    public MeasurementTransformFactor(@Nonnegative int id,
+                                      String transformFrom,
+                                      String transformTo,
+                                      double transformFactor) {
+        this.id = id;
+        this.transformFrom = transformFrom == null ? EMPTY : transformFrom;
+        this.transformTo = transformTo == null ? EMPTY : transformTo;
         this.transformFactor = transformFactor;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTransformFrom() {
@@ -44,6 +60,18 @@ public class MeasurementTransformFactor {
 
     public double getTransformFactor() {
         return transformFactor;
+    }
+
+    public void setTransformFrom(String transformFrom) {
+        this.transformFrom = transformFrom;
+    }
+
+    public void setTransformTo(String transformTo) {
+        this.transformTo = transformTo;
+    }
+
+    public void setTransformFactor(double transformFactor) {
+        this.transformFactor = transformFactor;
     }
 
     @Override

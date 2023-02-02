@@ -7,6 +7,7 @@ import service.repository.repos.control_points.ControlPointsRepository;
 import service.repository.repos.department.DepartmentRepository;
 import service.repository.repos.installation.InstallationRepository;
 import service.repository.repos.measurement.MeasurementRepository;
+import service.repository.repos.measurement_factor.MeasurementFactorRepository;
 import service.repository.repos.person.PersonRepository;
 import service.repository.repos.process.ProcessRepository;
 import service.repository.repos.sensor.SensorRepository;
@@ -31,6 +32,7 @@ public class RepositoryTableRegistrar {
             registeredTables.put(CalibratorRepository.class, "calibrators");
             registeredTables.put(PersonRepository.class, "persons");
             registeredTables.put(ControlPointsRepository.class, "controlPoints");
+            registeredTables.put(MeasurementFactorRepository.class, "measurement_factors");
         }
 
         return registeredTables;

@@ -27,7 +27,7 @@ public class BufferedPersonRepositorySQLiteTest {
     private List<Person> expected;
     private PersonRepository repository;
 
-    private static Person createPerson(int number){
+    private Person createPerson(int number){
         Person person = new Person();
         person.setId(number);
         person.setName("name" + number);
