@@ -50,7 +50,7 @@ public class BufferedMeasurementRepositorySQLite extends MeasurementRepositorySQ
     }
 
     @Override
-    public Measurement get(@Nonnull String value) {
+    public Measurement getByValue(@Nonnull String value) {
         return buffer.get(value);
     }
 
@@ -65,13 +65,9 @@ public class BufferedMeasurementRepositorySQLite extends MeasurementRepositorySQ
     }
 
     @Override
-    public boolean changeFactors(@Nonnull String measurementValue, @Nonnull Map<String, Double> factors) {
-        buffer.get(measurementValue).setFactors(factors);
-        return super.changeFactors(measurementValue, factors);
-    }
-
-    @Override
     public boolean set(@Nonnull Measurement oldMeasurement, @Nonnull Measurement newMeasurement) {
+        if (!buffer.containsKey(oldMeasurement.getValue())) return false;
+
         if (!oldMeasurement.equals(newMeasurement)) {
             if (buffer.containsKey(newMeasurement.getValue())) return false;
 
@@ -94,7 +90,7 @@ public class BufferedMeasurementRepositorySQLite extends MeasurementRepositorySQ
     }
 
     @Override
-    public Collection<Measurement> getMeasurements(@Nonnull String name) {
+    public Collection<Measurement> getMeasurementsByName(@Nonnull String name) {
         return buffer.values().stream()
                 .filter(m -> m.getName().equals(name))
                 .collect(toSet());
@@ -124,6 +120,7 @@ public class BufferedMeasurementRepositorySQLite extends MeasurementRepositorySQ
 
     @Override
     public boolean exists(@Nonnull String oldValue, @Nonnull String newValue) {
+        if (!buffer.containsKey(oldValue)) return true;
         if (oldValue.equals(newValue)) return false;
         return buffer.containsKey(newValue);
     }

@@ -11,13 +11,12 @@ public interface MeasurementRepository {
     String[]getAllNames();
     String[]getAllValues();
     String[]getValues(@Nonnull String name);
-    Measurement get(@Nonnull String value);
-    Collection<Measurement> getMeasurements(@Nonnull String name);
+    Measurement getByValue(@Nonnull String value);
+    Collection<Measurement> getMeasurementsByName(@Nonnull String name);
 
     boolean add(Measurement measurement);
 
     boolean set(@Nonnull Measurement oldMeasurement, @Nonnull Measurement newMeasurement);
-    boolean changeFactors(@Nonnull String measurementValue, @Nonnull Map<String, Double> factors);
     boolean rewrite(@Nonnull Collection<Measurement> measurements);
 
     boolean remove(@Nonnull Measurement measurement);

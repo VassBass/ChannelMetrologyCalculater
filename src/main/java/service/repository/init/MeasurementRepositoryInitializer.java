@@ -27,7 +27,6 @@ public class MeasurementRepositoryInitializer implements RepositoryInitializer {
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "name text NOT NULL" +
                 ", value text NOT NULL UNIQUE" +
-                ", factors text NOT NULL" +
                 ", PRIMARY KEY(value)" +
                 ");", tableName);
 

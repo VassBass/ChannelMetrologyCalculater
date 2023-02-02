@@ -1,11 +1,7 @@
 package model;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -57,17 +53,6 @@ public class Measurement implements Serializable {
      */
     @Nonnull protected String value = EMPTY;
 
-    /**
-     * DB field = factors [TEXT{Json}]
-     * values for converting
-     * Use for keys Measurement constants like:
-     * @see #DEGREE_CELSIUS
-     * @see #M3_HOUR
-     * @see #KPA
-     * and other
-     */
-    @Nonnull protected Map<String, Double>factors = new HashMap<>();
-
     public Measurement(){}
 
     public Measurement(@Nonnull String value){
@@ -81,42 +66,9 @@ public class Measurement implements Serializable {
 
     @Nonnull public String getName() {return this.name;}
     @Nonnull public String getValue() {return this.value;}
-    @Nonnull public Map<String,Double>getFactors(){return Collections.unmodifiableMap(this.factors);}
-    @Nullable public Double findFactor(String value){return this.factors.get(value);}
 
     public void setName(@Nonnull String name) {this.name = name;}
     public void setValue(@Nonnull String value){this.value = value;}
-    public void setFactors(@Nonnull Map<String, Double> factors){this.factors = factors;}
-
-    public void putFactor(@Nonnull String measurementValue, @Nonnull Double factor){
-        if (!measurementValue.equals(this.value)) this.factors.put(measurementValue, factor);
-    }
-
-    public void removeFactor(@Nonnull String measurementValue){
-        this.factors.remove(measurementValue);
-    }
-
-    /**
-     * Convert from current measurement value to given
-     * @param measurementValue the value to which is converted
-     * @param quantity of measurement value
-     * @return transformed value
-     */
-    public Double convertTo(@Nonnull String measurementValue, double quantity){
-        double factor = measurementValue.equals(this.value) ? 1D : this.factors.get(measurementValue);
-        return quantity * factor;
-    }
-
-    /**
-     * Convert from given measurement value to current
-     * @param measurementValue the value from which is converted
-     * @param quantity of measurement value
-     * @return transformed value
-     */
-    public Double convertFrom(@Nonnull String measurementValue, double quantity){
-        double factor = measurementValue.equals(this.value) ? 1D : this.factors.get(measurementValue);
-        return quantity / factor;
-    }
 
     /**
      * Convert all numbers in brackets after "conv" chars from input measurementValue to output measurementValue
@@ -173,22 +125,8 @@ public class Measurement implements Serializable {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         if (obj == this) return true;
         Measurement measurement = (Measurement) obj;
-        return this.value.equals(measurement.getValue());
-    }
-
-    public boolean isMatch(Measurement measurement){
-        if (measurement == null) return false;
-        if (this == measurement) return true;
-
-        return value.equals(measurement.getValue()) &&
-                name.equals(measurement.getName()) &&
-                factors.equals(measurement.getFactors());
-    }
-
-    public Measurement copy(){
-        Measurement m = new Measurement(this.name, this.value);
-        m.setFactors(this.factors);
-        return m;
+        return this.name.equalsIgnoreCase(measurement.getName()) &&
+                this.value.equals(measurement.getValue());
     }
 
     @Override
