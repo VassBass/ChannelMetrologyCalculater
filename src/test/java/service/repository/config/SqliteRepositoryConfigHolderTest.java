@@ -54,6 +54,16 @@ public class SqliteRepositoryConfigHolderTest {
     }
 
     @Test
+    public void testGetDBFile() {
+        String dataFile = "Data.db";
+        String testDataFile = "TestData.db";
+
+        assertEquals(dataFile, configHolder.getDBFile());
+        assertEquals(testDataFile, configHolderTestInstance.getDBFile());
+        assertTrue(configHolderPropertiesFileNotExists.getDBFile().isEmpty());
+    }
+
+    @Test
     public void testGetMeasurementTableName() {
         String measurementTableName = "measurements";
 
