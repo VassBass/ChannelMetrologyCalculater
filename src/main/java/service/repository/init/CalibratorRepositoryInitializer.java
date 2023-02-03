@@ -9,19 +9,17 @@ import service.repository.connection.RepositoryDBConnector;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CalibratorRepositoryInitializer implements RepositoryInitializer {
+public class CalibratorRepositoryInitializer extends RepositoryInitializer {
     private static final Logger logger = LoggerFactory.getLogger(CalibratorRepositoryInitializer.class);
 
-    private final RepositoryConfigHolder configHolder;
-    private final RepositoryDBConnector connector;
-
     public CalibratorRepositoryInitializer(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
-        this.configHolder = configHolder;
-        this.connector = connector;
+        super(configHolder, connector);
     }
 
     @Override
     public void init() {
+        super.init();
+
         String tableName = configHolder.getTableName(CalibratorRepository.class);
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s ("

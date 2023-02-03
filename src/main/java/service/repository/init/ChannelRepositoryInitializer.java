@@ -9,21 +9,18 @@ import service.repository.connection.RepositoryDBConnector;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ChannelRepositoryInitializer implements RepositoryInitializer {
+public class ChannelRepositoryInitializer extends RepositoryInitializer {
     private static final Logger logger = LoggerFactory.getLogger(ChannelRepositoryInitializer.class);
 
-    private final RepositoryConfigHolder configHolder;
-    private final RepositoryDBConnector connector;
-
     public ChannelRepositoryInitializer(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
-        this.configHolder = configHolder;
-        this.connector = connector;
+        super(configHolder, connector);
     }
 
     @Override
     public void init() {
-        String tableName = configHolder.getTableName(ChannelRepository.class);
+        super.init();
 
+        String tableName = configHolder.getTableName(ChannelRepository.class);
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s ("
                 + "code text NOT NULL UNIQUE"

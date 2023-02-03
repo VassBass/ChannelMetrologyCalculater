@@ -9,19 +9,17 @@ import service.repository.repos.measurement.MeasurementRepository;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class MeasurementRepositoryInitializer implements RepositoryInitializer {
+public class MeasurementRepositoryInitializer extends RepositoryInitializer {
     private static final Logger logger = LoggerFactory.getLogger(MeasurementRepositoryInitializer.class);
 
-    private final RepositoryConfigHolder configHolder;
-    private final RepositoryDBConnector connector;
-
     public MeasurementRepositoryInitializer(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
-        this.configHolder = configHolder;
-        this.connector = connector;
+        super(configHolder, connector);
     }
 
     @Override
     public void init() {
+        super.init();
+
         String tableName = configHolder.getTableName(MeasurementRepository.class);
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +

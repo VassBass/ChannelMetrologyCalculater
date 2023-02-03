@@ -15,8 +15,10 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
 
     private static final String PROPERTIES_FILE_PATH = "properties/repository.properties";
     private static final String KEY_DB_URL = "jdbc.sqlite.url";
+    private static final String KEY_DB_FILE = "jdbc.sqlite.file";
 
     private String dbUrl = EMPTY;
+    private String dbFile = EMPTY;
 
     public SqliteRepositoryConfigHolder() {
         this(PROPERTIES_FILE_PATH);
@@ -33,6 +35,7 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
                 properties.load(in);
 
                 dbUrl = properties.getProperty(KEY_DB_URL, EMPTY);
+                dbFile = properties.getProperty(KEY_DB_FILE, EMPTY);
             }
         } catch (IOException e) {
             logger.warn("Exception was thrown: ",e);
@@ -52,6 +55,11 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
     @Override
     public String getPassword() {
         return EMPTY;
+    }
+
+    @Override
+    public String getDBFile() {
+        return dbFile;
     }
 
     @Override

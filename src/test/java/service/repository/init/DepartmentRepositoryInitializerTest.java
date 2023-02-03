@@ -2,8 +2,9 @@ package service.repository.init;
 
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.config.SqliteRepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
@@ -11,27 +12,22 @@ import service.repository.connection.SqliteRepositoryDBConnector;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.*;
 
 import static org.junit.Assert.assertTrue;
 
 public class DepartmentRepositoryInitializerTest {
+    private static final Logger logger = LoggerFactory.getLogger(DepartmentRepositoryInitializerTest.class);
+
     private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
-    private static final File TEST_DB_FILE = new File("TestData.db");
-    private static final String TEST_DB_URL = "jdbc:sqlite:TestData.db";
     private static final String TABLE_NAME = "departments";
 
+    private static RepositoryConfigHolder configHolder;
     private RepositoryInitializer initializer;
-
-    @BeforeClass
-    public static void refreshDBFile() throws IOException {
-        Files.createFile(TEST_DB_FILE.toPath());
-    }
 
     @Before
     public void setUp() {
-        RepositoryConfigHolder configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
+        configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
         RepositoryDBConnector connector = new SqliteRepositoryDBConnector(configHolder);
 
         initializer = new DepartmentRepositoryInitializer(configHolder, connector);
@@ -39,14 +35,18 @@ public class DepartmentRepositoryInitializerTest {
 
     @AfterClass
     public static void deleteDBFile() throws IOException {
-        Files.delete(TEST_DB_FILE.toPath());
+        String dbFileName = configHolder.getDBFile();
+        if (!new File(dbFileName).delete()) {
+            logger.warn(String.format("%s has not been deleted! This may affect the following tests!", dbFileName));
+        }
     }
 
     @Test
     public void testInit() throws SQLException {
+        String testDBUrl = configHolder.getDBUrl();
         initializer.init();
 
-        try (Connection connection = DriverManager.getConnection(TEST_DB_URL)) {
+        try (Connection connection = DriverManager.getConnection(testDBUrl)) {
             DatabaseMetaData dbm = connection.getMetaData();
             try (ResultSet result = dbm.getTables(null, null, TABLE_NAME, null)) {
                 assertTrue(result.next());

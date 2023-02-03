@@ -14,13 +14,13 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-public class ProcessRepositoryInitializerTest {
-    private static final Logger logger = LoggerFactory.getLogger(ProcessRepositoryInitializerTest.class);
+public class ControlPointsRepositoryInitializerTest {
+    private static final Logger logger = LoggerFactory.getLogger(AreaRepositoryInitializerTest.class);
 
     private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
-    private static final String TABLE_NAME = "processes";
+    private static final String TABLE_NAME = "controlPoints";
 
     private static RepositoryConfigHolder configHolder;
     private RepositoryInitializer initializer;
@@ -30,7 +30,7 @@ public class ProcessRepositoryInitializerTest {
         configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
         RepositoryDBConnector connector = new SqliteRepositoryDBConnector(configHolder);
 
-        initializer = new ProcessRepositoryInitializer(configHolder, connector);
+        initializer = new ControlPointsRepositoryInitializer(configHolder, connector);
     }
 
     @AfterClass

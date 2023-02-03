@@ -9,19 +9,17 @@ import service.repository.repos.control_points.ControlPointsRepository;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ControlPointsRepositoryInitializer implements RepositoryInitializer {
+public class ControlPointsRepositoryInitializer extends RepositoryInitializer {
     private static final Logger logger = LoggerFactory.getLogger(ControlPointsRepositoryInitializer.class);
 
-    private final RepositoryConfigHolder configHolder;
-    private final RepositoryDBConnector connector;
-
     public ControlPointsRepositoryInitializer(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
-        this.configHolder = configHolder;
-        this.connector = connector;
+        super(configHolder, connector);
     }
 
     @Override
     public void init() {
+        super.init();
+
         String tableName = configHolder.getTableName(ControlPointsRepository.class);
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s ("

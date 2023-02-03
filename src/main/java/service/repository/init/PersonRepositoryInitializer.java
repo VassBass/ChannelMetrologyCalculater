@@ -9,19 +9,17 @@ import service.repository.connection.RepositoryDBConnector;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class PersonRepositoryInitializer implements RepositoryInitializer {
+public class PersonRepositoryInitializer extends RepositoryInitializer {
     private static final Logger logger = LoggerFactory.getLogger(PersonRepositoryInitializer.class);
 
-    private final RepositoryConfigHolder configHolder;
-    private final RepositoryDBConnector connector;
-
     public PersonRepositoryInitializer(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
-        this.configHolder = configHolder;
-        this.connector = connector;
+        super(configHolder, connector);
     }
 
     @Override
     public void init() {
+        super.init();
+
         String tableName = configHolder.getTableName(PersonRepository.class);
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
