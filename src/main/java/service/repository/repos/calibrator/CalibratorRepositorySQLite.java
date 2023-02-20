@@ -9,6 +9,7 @@ import service.json.JacksonJsonObjectMapper;
 import service.json.JsonObjectMapper;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.CalibratorRepositoryInitializer;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -29,6 +30,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
     public CalibratorRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.tableName = configHolder.getTableName(CalibratorRepository.class);
         this.connector = connector;
+        new CalibratorRepositoryInitializer(configHolder, connector).init();
     }
 
     @Override

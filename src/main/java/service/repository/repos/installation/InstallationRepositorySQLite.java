@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.InstallationRepositoryInitializer;
 
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
@@ -21,6 +22,7 @@ public class InstallationRepositorySQLite implements InstallationRepository {
     public InstallationRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.tableName = configHolder.getTableName(InstallationRepository.class);
         this.connector = connector;
+        new InstallationRepositoryInitializer(configHolder, connector).init();
     }
 
     /**

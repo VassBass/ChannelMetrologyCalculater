@@ -2,12 +2,12 @@ package service.repository.connection;
 
 import org.junit.*;
 import org.junit.runners.MethodSorters;
+import org.sqlite.JDBC;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.config.SqliteRepositoryConfigHolder;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.*;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -16,14 +16,16 @@ import static org.junit.Assert.*;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SqliteRepositoryDBConnectorTest {
     private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
+    private static final String TABLE_NAME = "test";
 
     private static RepositoryConfigHolder configHolder;
     private SqliteRepositoryDBConnector connector;
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @BeforeClass
     public static void createDBFile() throws IOException {
         configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
-        Files.createFile(Paths.get(configHolder.getDBFile()));
+        new File(configHolder.getDBFile()).createNewFile();
     }
 
     @Before
@@ -32,8 +34,13 @@ public class SqliteRepositoryDBConnectorTest {
     }
 
     @AfterClass
-    public static void deleteDBFile() throws IOException {
-        Files.delete(Paths.get(configHolder.getDBFile()));
+    public static void removeDB() throws SQLException {
+        String sql = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
+        DriverManager.registerDriver(new JDBC());
+        try (Connection connection = DriverManager.getConnection(configHolder.getDBUrl());
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 
     @Test
@@ -45,7 +52,9 @@ public class SqliteRepositoryDBConnectorTest {
 
     @Test
     public void $2_testGetStatement() throws SQLException {
-        String sqlCreate = "CREATE TABLE IF NOT EXISTS test (id integer, test text, PRIMARY KEY (id AUTOINCREMENT));";
+        String sqlCreate = String.format(
+                "CREATE TABLE IF NOT EXISTS %s (id integer, test text, PRIMARY KEY (id AUTOINCREMENT));",
+                TABLE_NAME);
         try (Statement statement = connector.getStatement()) {
             statement.execute(sqlCreate);
             assertThrows(SQLException.class, () -> statement.execute(EMPTY));

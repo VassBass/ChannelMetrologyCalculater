@@ -2,6 +2,7 @@ package service.repository.repos.person;
 
 import model.Person;
 import org.junit.Test;
+import org.sqlite.JDBC;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.config.SqliteRepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
@@ -9,7 +10,6 @@ import service.repository.connection.SqliteRepositoryDBConnector;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -56,6 +56,7 @@ public class PersonIdGeneratorTest {
     /**
      * @see PersonRepositorySQLite
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void generateForDefaultSqliteRepository() throws IOException, SQLException {
         String repositoryPropertiesFile = "properties/test_repository.properties";
@@ -63,7 +64,7 @@ public class PersonIdGeneratorTest {
         String dbUrl = "jdbc:sqlite:TestData.db";
         String tableName = "persons";
 
-        Files.createFile(dbFile.toPath());
+        dbFile.createNewFile();
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "id integer NOT NULL UNIQUE" +
                 ", name text NOT NULL" +
@@ -93,12 +94,18 @@ public class PersonIdGeneratorTest {
             assertNull(repository.getById(generatedId));
         }
 
-        Files.delete(dbFile.toPath());
+        sql = String.format("DROP TABLE IF EXISTS %s", tableName);
+        DriverManager.registerDriver(new JDBC());
+        try (Connection connection = DriverManager.getConnection(configHolder.getDBUrl());
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 
     /**
      * @see BufferedPersonRepositorySQLite
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void generateForBufferedSqliteRepository() throws IOException, SQLException {
         String repositoryPropertiesFile = "properties/test_repository.properties";
@@ -106,7 +113,7 @@ public class PersonIdGeneratorTest {
         String dbUrl = "jdbc:sqlite:TestData.db";
         String tableName = "persons";
 
-        Files.createFile(dbFile.toPath());
+        dbFile.createNewFile();
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "id integer NOT NULL UNIQUE" +
                 ", name text NOT NULL" +
@@ -137,6 +144,11 @@ public class PersonIdGeneratorTest {
             assertNull(repository.getById(generatedId));
         }
 
-        Files.delete(dbFile.toPath());
+        sql = String.format("DROP TABLE IF EXISTS %s", tableName);
+        DriverManager.registerDriver(new JDBC());
+        try (Connection connection = DriverManager.getConnection(configHolder.getDBUrl());
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 }

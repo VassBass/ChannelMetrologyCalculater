@@ -4,6 +4,7 @@ import model.ControlPoints;
 import model.Sensor;
 import model.builder.ControlPointsBuilder;
 import org.junit.*;
+import org.sqlite.JDBC;
 import service.json.JacksonJsonObjectMapper;
 import service.json.JsonObjectMapper;
 import service.repository.config.RepositoryConfigHolder;
@@ -45,9 +46,10 @@ public class ControlPointsRepositorySQLiteTest {
     private final JsonObjectMapper jsonObjectMapper = JacksonJsonObjectMapper.getInstance();
     private ControlPointsRepository repository;
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @BeforeClass
     public static void createDB() throws IOException, SQLException {
-        Files.createFile(TEST_DB_FILE.toPath());
+        TEST_DB_FILE.createNewFile();
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s ("
                 + "name text NOT NULL UNIQUE"
                 + ", sensor_type text NOT NULL"
@@ -61,8 +63,13 @@ public class ControlPointsRepositorySQLiteTest {
     }
 
     @AfterClass
-    public static void removeDB() throws IOException {
-        Files.delete(TEST_DB_FILE.toPath());
+    public static void removeDB() throws SQLException {
+        String sql = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
+        DriverManager.registerDriver(new JDBC());
+        try (Connection connection = DriverManager.getConnection(TEST_DB_URL);
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 
     @Before

@@ -2,6 +2,7 @@ package service.repository.repos.measurement_factor;
 
 import model.MeasurementTransformFactor;
 import org.junit.Test;
+import org.sqlite.JDBC;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.config.SqliteRepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
@@ -11,7 +12,6 @@ import service.repository.repos.person.PersonRepositorySQLite;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -57,6 +57,7 @@ public class MeasurementFactorIdGeneratorTest {
     /**
      * @see PersonRepositorySQLite
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void generateForDefaultSqliteRepository() throws IOException, SQLException {
         String repositoryPropertiesFile = "properties/test_repository.properties";
@@ -64,7 +65,7 @@ public class MeasurementFactorIdGeneratorTest {
         String dbUrl = "jdbc:sqlite:TestData.db";
         String tableName = "measurement_factors";
 
-        Files.createFile(dbFile.toPath());
+        dbFile.createNewFile();
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "id integer NOT NULL UNIQUE" +
                 ", source TEXT NOT NULL" +
@@ -91,12 +92,18 @@ public class MeasurementFactorIdGeneratorTest {
             assertNull(repository.getById(generatedId));
         }
 
-        Files.delete(dbFile.toPath());
+        sql = String.format("DROP TABLE IF EXISTS %s", tableName);
+        DriverManager.registerDriver(new JDBC());
+        try (Connection connection = DriverManager.getConnection(configHolder.getDBUrl());
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 
     /**
      * @see BufferedPersonRepositorySQLite
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void generateForBufferedSqliteRepository() throws IOException, SQLException {
         String repositoryPropertiesFile = "properties/test_repository.properties";
@@ -104,7 +111,7 @@ public class MeasurementFactorIdGeneratorTest {
         String dbUrl = "jdbc:sqlite:TestData.db";
         String tableName = "measurement_factors";
 
-        Files.createFile(dbFile.toPath());
+        dbFile.createNewFile();
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "id integer NOT NULL UNIQUE" +
                 ", source TEXT NOT NULL" +
@@ -131,6 +138,11 @@ public class MeasurementFactorIdGeneratorTest {
             assertNull(repository.getById(generatedId));
         }
 
-        Files.delete(dbFile.toPath());
+        sql = String.format("DROP TABLE IF EXISTS %s", tableName);
+        DriverManager.registerDriver(new JDBC());
+        try (Connection connection = DriverManager.getConnection(configHolder.getDBUrl());
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 }

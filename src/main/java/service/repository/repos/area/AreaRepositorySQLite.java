@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.AreaRepositoryInitializer;
 
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
@@ -22,6 +23,7 @@ public class AreaRepositorySQLite implements AreaRepository {
     public AreaRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.tableName = configHolder.getTableName(AreaRepository.class);
         this.connector = connector;
+        new AreaRepositoryInitializer(configHolder, connector).init();
     }
 
     /**

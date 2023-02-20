@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.SensorRepositoryInitializer;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -26,6 +27,7 @@ public class SensorRepositorySQLite implements SensorRepository {
     public SensorRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector){
         this.tableName = configHolder.getTableName(SensorRepository.class);
         this.connector = connector;
+        new SensorRepositoryInitializer(configHolder, connector).init();
     }
 
     @Override

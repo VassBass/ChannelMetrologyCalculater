@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.DepartmentRepositoryInitializer;
 
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
@@ -21,6 +22,7 @@ public class DepartmentRepositorySQLite implements DepartmentRepository {
     public DepartmentRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.tableName = configHolder.getTableName(DepartmentRepository.class);
         this.connector = connector;
+        new DepartmentRepositoryInitializer(configHolder, connector).init();
     }
 
     /**

@@ -2,6 +2,7 @@ package service.repository.repos.person;
 
 import model.Person;
 import org.junit.*;
+import org.sqlite.JDBC;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.config.SqliteRepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
@@ -9,7 +10,6 @@ import service.repository.connection.SqliteRepositoryDBConnector;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -38,9 +38,10 @@ public class PersonRepositorySQLiteTest {
         return person;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @BeforeClass
     public static void createDB() throws IOException, SQLException {
-        Files.createFile(TEST_DB_FILE.toPath());
+        TEST_DB_FILE.createNewFile();
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "id integer NOT NULL UNIQUE" +
                 ", name text NOT NULL" +
@@ -56,8 +57,13 @@ public class PersonRepositorySQLiteTest {
     }
 
     @AfterClass
-    public static void removeDB() throws IOException {
-        Files.delete(TEST_DB_FILE.toPath());
+    public static void removeDB() throws SQLException {
+        String sql = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
+        DriverManager.registerDriver(new JDBC());
+        try (Connection connection = DriverManager.getConnection(TEST_DB_URL);
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 
     @Before

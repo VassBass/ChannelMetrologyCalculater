@@ -4,6 +4,7 @@ import model.Calibrator;
 import model.Measurement;
 import model.builder.CalibratorBuilder;
 import org.junit.*;
+import org.sqlite.JDBC;
 import service.json.JacksonJsonObjectMapper;
 import service.json.JsonObjectMapper;
 import service.repository.config.RepositoryConfigHolder;
@@ -60,9 +61,10 @@ public class BufferedCalibratorRepositorySQLiteTest {
     private final JsonObjectMapper jsonObjectMapper = JacksonJsonObjectMapper.getInstance();
     private CalibratorRepository repository;
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @BeforeClass
     public static void createDB() throws IOException, SQLException {
-        Files.createFile(TEST_DB_FILE.toPath());
+        TEST_DB_FILE.createNewFile();
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s ("
                 + "name text NOT NULL UNIQUE"
                 + ", type text NOT NULL"
@@ -82,8 +84,13 @@ public class BufferedCalibratorRepositorySQLiteTest {
     }
 
     @AfterClass
-    public static void removeDB() throws IOException {
-        Files.delete(TEST_DB_FILE.toPath());
+    public static void removeDB() throws SQLException {
+        String sql = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
+        DriverManager.registerDriver(new JDBC());
+        try (Connection connection = DriverManager.getConnection(TEST_DB_URL);
+             Statement statement = connection.createStatement()) {
+            statement.execute(sql);
+        }
     }
 
     @Before

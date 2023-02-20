@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.MeasurementRepositoryInitializer;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -21,10 +22,10 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
     private final RepositoryDBConnector connector;
     private final String tableName;
 
-    public MeasurementRepositorySQLite(RepositoryConfigHolder configHolder,
-                                       RepositoryDBConnector connector){
+    public MeasurementRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector){
         this.connector = connector;
         this.tableName = configHolder.getTableName(MeasurementRepository.class);
+        new MeasurementRepositoryInitializer(configHolder, connector).init();
     }
 
     @Override

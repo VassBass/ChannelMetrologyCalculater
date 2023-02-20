@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.PersonRepositoryInitializer;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -25,6 +26,7 @@ public class PersonRepositorySQLite implements PersonRepository {
     public PersonRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.tableName = configHolder.getTableName(PersonRepository.class);
         this.connector = connector;
+        new PersonRepositoryInitializer(configHolder, connector).init();
     }
 
     @Override

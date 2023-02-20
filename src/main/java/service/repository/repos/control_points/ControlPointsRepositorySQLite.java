@@ -8,6 +8,7 @@ import service.json.JacksonJsonObjectMapper;
 import service.json.JsonObjectMapper;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.ControlPointsRepositoryInitializer;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -29,6 +30,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
     public ControlPointsRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.tableName = configHolder.getTableName(ControlPointsRepository.class);
         this.connector = connector;
+        new ControlPointsRepositoryInitializer(configHolder, connector).init();
     }
 
     @Override

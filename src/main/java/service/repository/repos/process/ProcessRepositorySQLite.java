@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.ProcessRepositoryInitializer;
 
 import javax.annotation.Nonnull;
 import java.sql.ResultSet;
@@ -23,6 +24,7 @@ public class ProcessRepositorySQLite implements ProcessRepository {
     public ProcessRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.tableName = configHolder.getTableName(ProcessRepository.class);
         this.connector = connector;
+        new ProcessRepositoryInitializer(configHolder, connector).init();
     }
 
     /**

@@ -8,6 +8,7 @@ import service.json.JacksonJsonObjectMapper;
 import service.json.JsonObjectMapper;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
+import service.repository.init.ChannelRepositoryInitializer;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -26,6 +27,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
     public ChannelRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.tableName = configHolder.getTableName(ChannelRepository.class);
         this.connector = connector;
+        new ChannelRepositoryInitializer(configHolder, connector).init();
     }
 
     @Override
