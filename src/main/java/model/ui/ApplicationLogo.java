@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-public class ApplicationLogo extends JWindow {
+public class ApplicationLogo extends Window {
     private static final String LOGO_FILE_NAME = "logo.png";
     private static final String INIT_TEXT_MESSAGE = "Завантаження...";
     private static final String DEVELOPER = "VassBassApp";

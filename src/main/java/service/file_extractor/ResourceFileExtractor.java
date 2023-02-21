@@ -3,6 +3,7 @@ package service.file_extractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -24,6 +25,7 @@ public class ResourceFileExtractor implements FileExtractor {
         return instance;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void extract(String source, String destination) {
         logger.info(String.format("Extracting %s to %s", source, destination));
@@ -31,6 +33,9 @@ public class ResourceFileExtractor implements FileExtractor {
             if (in == null) {
                 logger.warn(String.format("File not found: %s", source));
             } else {
+                File dest = new File(destination);
+                dest.mkdirs();
+                dest.createNewFile();
                 Files.copy(in, Paths.get(destination), REPLACE_EXISTING);
             }
         } catch (IOException e) {
