@@ -15,6 +15,7 @@ public class Validator {
             if (month <= 0 || month > 12) return false;
 
             int year = Integer.parseInt(splittedString[2]);
+            if (year < 1900) return false;
 
             Calendar calendar = new GregorianCalendar(year, month - 1, 1);
             int day = Integer.parseInt(splittedString[0]);
