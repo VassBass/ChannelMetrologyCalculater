@@ -2,7 +2,7 @@ package model.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import converters.VariableConverter;
-import service.validator.Validator;
+import util.Validator;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;

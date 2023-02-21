@@ -1,6 +1,4 @@
-package ui.model;
-
-import org.apache.poi.ss.usermodel.Cell;
+package model.ui.builder;
 
 import java.awt.*;
 
@@ -92,7 +90,12 @@ public class CellBuilder {
         return this;
     }
 
-    public GridBagConstraints create() {
+    public CellBuilder margin(int left, int top, int right, int bottom) {
+        cell.insets = new Insets(top, left, bottom, right);
+        return this;
+    }
+
+    public GridBagConstraints build() {
         return cell;
     }
 }

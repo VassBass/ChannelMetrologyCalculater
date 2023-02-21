@@ -1,9 +1,9 @@
-package ui;
+package util;
 
 import java.awt.*;
 
-public class UI_Constants {
-    public static Point POINT_CENTER (Component parent, Component child) {
+public class ScreenPoint {
+    public static Point center(Component parent, Component child) {
         int x0 = parent.getLocation().x;
         int pw = parent.getWidth();
         int cw = child.getWidth();
@@ -18,7 +18,7 @@ public class UI_Constants {
         return new Point(x,y);
     }
 
-    public static Point POINT_CENTER (Dimension parent, Component child) {
+    public static Point center(Dimension parent, Component child) {
         int pw = parent.width;
         int cw = child.getWidth();
 
@@ -31,7 +31,7 @@ public class UI_Constants {
         return new Point(x,y);
     }
 
-    public static Point LEFT_FROM_PARENT(Component parent, Component child){
+    public static Point leftFromParent(Component parent, Component child){
         int parentX = parent.getLocation().x;
         int childWidth = child.getWidth();
 
@@ -41,7 +41,7 @@ public class UI_Constants {
         return new Point(x,y);
     }
 
-    public static Point RIGHT_FROM_PARENT(Component parent){
+    public static Point rightFromParent(Component parent){
         int parentX = parent.getLocation().x;
         int parentWidth = parent.getWidth();
 
@@ -51,7 +51,7 @@ public class UI_Constants {
         return new Point(x,y);
     }
 
-    public static Point POINT_TOP_LEFT (Component parent){
+    public static Point topLeftCornerOf(Component parent){
         return new Point(parent.getLocation().x, parent.getLocation().y);
     }
 }
