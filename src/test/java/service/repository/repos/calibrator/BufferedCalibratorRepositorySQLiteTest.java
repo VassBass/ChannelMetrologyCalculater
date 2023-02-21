@@ -1,8 +1,8 @@
 package service.repository.repos.calibrator;
 
-import model.Calibrator;
-import model.Measurement;
-import model.builder.CalibratorBuilder;
+import model.dto.Calibrator;
+import model.dto.Measurement;
+import model.dto.builder.CalibratorBuilder;
 import org.junit.*;
 import org.sqlite.JDBC;
 import service.json.JacksonJsonObjectMapper;
@@ -14,7 +14,6 @@ import service.repository.connection.SqliteRepositoryDBConnector;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

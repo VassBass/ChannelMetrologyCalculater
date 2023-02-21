@@ -1,7 +1,7 @@
-package model.builder;
+package model.dto.builder;
 
-import model.Channel;
-import model.Measurement;
+import model.dto.Channel;
+import model.dto.Measurement;
 
 import javax.annotation.Nonnull;
 import java.util.Map;

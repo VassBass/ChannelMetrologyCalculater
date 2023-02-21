@@ -1,7 +1,7 @@
 package service.repository.repos.channel;
 
-import model.Channel;
-import model.builder.ChannelBuilder;
+import model.dto.Channel;
+import model.dto.builder.ChannelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.json.JacksonJsonObjectMapper;

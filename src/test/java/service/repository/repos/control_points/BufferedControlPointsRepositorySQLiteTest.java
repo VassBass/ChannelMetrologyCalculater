@@ -1,8 +1,8 @@
 package service.repository.repos.control_points;
 
-import model.ControlPoints;
-import model.Sensor;
-import model.builder.ControlPointsBuilder;
+import model.dto.ControlPoints;
+import model.dto.Sensor;
+import model.dto.builder.ControlPointsBuilder;
 import org.junit.*;
 import org.sqlite.JDBC;
 import service.json.JacksonJsonObjectMapper;

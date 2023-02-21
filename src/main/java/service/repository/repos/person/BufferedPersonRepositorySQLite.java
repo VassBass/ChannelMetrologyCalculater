@@ -1,6 +1,6 @@
 package service.repository.repos.person;
 
-import model.Person;
+import model.dto.Person;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 

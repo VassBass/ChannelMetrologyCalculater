@@ -1,7 +1,7 @@
 package service.repository.repos.calibrator;
 
-import model.Calibrator;
-import model.Measurement;
+import model.dto.Calibrator;
+import model.dto.Measurement;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 

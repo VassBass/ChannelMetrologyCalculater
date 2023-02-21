@@ -1,6 +1,6 @@
 package service.repository.repos.channel;
 
-import model.Channel;
+import model.dto.Channel;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 

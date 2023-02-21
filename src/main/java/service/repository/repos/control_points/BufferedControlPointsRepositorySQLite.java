@@ -1,6 +1,6 @@
 package service.repository.repos.control_points;
 
-import model.ControlPoints;
+import model.dto.ControlPoints;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 

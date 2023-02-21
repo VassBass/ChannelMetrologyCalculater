@@ -1,12 +1,10 @@
 package service.repository.repos.channel;
 
-import model.Channel;
-import model.Sensor;
+import model.dto.Channel;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.List;
 
 public interface ChannelRepository {
     Collection<Channel> getAll();

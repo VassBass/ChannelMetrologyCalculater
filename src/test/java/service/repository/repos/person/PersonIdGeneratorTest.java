@@ -1,6 +1,6 @@
 package service.repository.repos.person;
 
-import model.Person;
+import model.dto.Person;
 import org.junit.Test;
 import org.sqlite.JDBC;
 import service.repository.config.RepositoryConfigHolder;

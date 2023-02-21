@@ -1,6 +1,6 @@
 package service.repository.repos.measurement;
 
-import model.Measurement;
+import model.dto.Measurement;
 import org.junit.*;
 import org.sqlite.JDBC;
 import service.repository.config.RepositoryConfigHolder;

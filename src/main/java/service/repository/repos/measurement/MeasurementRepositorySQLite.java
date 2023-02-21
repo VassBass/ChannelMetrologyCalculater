@@ -1,6 +1,6 @@
 package service.repository.repos.measurement;
 
-import model.Measurement;
+import model.dto.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;

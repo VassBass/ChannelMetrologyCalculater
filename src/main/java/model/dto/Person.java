@@ -1,4 +1,4 @@
-package model;
+package model.dto;
 
 import java.util.Locale;
 import java.util.Objects;

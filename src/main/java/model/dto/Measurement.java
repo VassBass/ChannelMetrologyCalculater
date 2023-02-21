@@ -1,4 +1,4 @@
-package model;
+package model.dto;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;

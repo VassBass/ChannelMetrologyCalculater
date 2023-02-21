@@ -1,7 +1,7 @@
 package service.repository.repos.control_points;
 
-import model.ControlPoints;
-import model.builder.ControlPointsBuilder;
+import model.dto.ControlPoints;
+import model.dto.builder.ControlPointsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.json.JacksonJsonObjectMapper;

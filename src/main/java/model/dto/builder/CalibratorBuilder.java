@@ -1,6 +1,6 @@
-package model.builder;
+package model.dto.builder;
 
-import model.Calibrator;
+import model.dto.Calibrator;
 
 import javax.annotation.Nonnull;
 

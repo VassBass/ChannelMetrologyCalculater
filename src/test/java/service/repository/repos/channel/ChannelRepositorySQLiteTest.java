@@ -1,9 +1,9 @@
 package service.repository.repos.channel;
 
-import model.Channel;
-import model.Measurement;
-import model.Sensor;
-import model.builder.ChannelBuilder;
+import model.dto.Channel;
+import model.dto.Measurement;
+import model.dto.Sensor;
+import model.dto.builder.ChannelBuilder;
 import org.junit.*;
 import org.sqlite.JDBC;
 import service.json.JacksonJsonObjectMapper;

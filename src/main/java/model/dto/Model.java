@@ -1,4 +1,4 @@
-package model;
+package model.dto;
 
 public enum Model {
     CHANNEL, SENSOR, PERSON, CALIBRATOR, MEASUREMENT,

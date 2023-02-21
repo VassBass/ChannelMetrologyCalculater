@@ -1,6 +1,6 @@
-package model.builder;
+package model.dto.builder;
 
-import model.ControlPoints;
+import model.dto.ControlPoints;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

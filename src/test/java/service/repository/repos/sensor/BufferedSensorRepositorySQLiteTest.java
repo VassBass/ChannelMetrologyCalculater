@@ -1,8 +1,8 @@
 package service.repository.repos.sensor;
 
-import model.Measurement;
-import model.Sensor;
-import model.builder.SensorBuilder;
+import model.dto.Measurement;
+import model.dto.Sensor;
+import model.dto.builder.SensorBuilder;
 import org.junit.*;
 import org.sqlite.JDBC;
 import service.repository.config.RepositoryConfigHolder;

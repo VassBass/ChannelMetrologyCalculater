@@ -1,10 +1,9 @@
 package service.repository.repos.measurement;
 
-import model.Measurement;
+import model.dto.Measurement;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
-import java.util.Map;
 
 public interface MeasurementRepository {
     Collection<Measurement> getAll();

@@ -1,6 +1,6 @@
 package service.repository.repos.sensor;
 
-import model.Sensor;
+import model.dto.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;

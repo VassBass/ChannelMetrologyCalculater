@@ -1,7 +1,7 @@
 package service.repository.repos.measurement_factor;
 
-import model.Measurement;
-import model.MeasurementTransformFactor;
+import model.dto.Measurement;
+import model.dto.MeasurementTransformFactor;
 import org.junit.*;
 import org.sqlite.JDBC;
 import service.repository.config.RepositoryConfigHolder;

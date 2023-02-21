@@ -1,4 +1,4 @@
-package model;
+package model.dto;
 
 import converters.VariableConverter;
 

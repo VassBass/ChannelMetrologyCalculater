@@ -26,7 +26,7 @@ import service.repository.repos.process.BufferedProcessRepositorySQLite;
 import service.repository.repos.process.ProcessRepository;
 import service.repository.repos.sensor.BufferedSensorRepositorySQLite;
 import service.repository.repos.sensor.SensorRepository;
-import service.root.ImplementationFactory;
+import service.application.ImplementationFactory;
 
 import java.util.HashMap;
 import java.util.Map;

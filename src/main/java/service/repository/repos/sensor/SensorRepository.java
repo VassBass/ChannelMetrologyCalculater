@@ -1,6 +1,6 @@
 package service.repository.repos.sensor;
 
-import model.Sensor;
+import model.dto.Sensor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -1,4 +1,4 @@
-package model;
+package model.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import converters.VariableConverter;
@@ -84,8 +84,6 @@ public class Calibrator implements Serializable {
      *
      * convR - Measurement range of calibrator converted by measurement channel value
      * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
-     * @see Measurement#convertTo(String, double) 
-     * @see Measurement#convertFrom(String, double)
      */
     @Nonnull private String errorFormula = EMPTY;
 
@@ -129,8 +127,6 @@ public class Calibrator implements Serializable {
      * 
      * convR - Measurement range of calibrator converted by measurement channel value
      * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
-     * @see Measurement#convertTo(String, double)
-     * @see Measurement#convertFrom(String, double)
      *
      * conv(...) - number converted by measurement channel value
      * (Число переконвертированное под измерительную величину канала)

@@ -6,9 +6,9 @@ import service.repository.config.RepositoryConfigHolder;
 import service.repository.config.SqliteRepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 import service.repository.connection.SqliteRepositoryDBConnector;
-import service.root.FactoryImplementationHolder;
-import service.root.ImplementationFactory;
-import service.root.ServiceExecuter;
+import service.application.FactoryImplementationHolder;
+import service.application.ImplementationFactory;
+import service.application.ServiceExecuter;
 
 public class RepositoryServiceExecuter implements ServiceExecuter {
     private static final Logger logger = LoggerFactory.getLogger(RepositoryServiceExecuter.class);

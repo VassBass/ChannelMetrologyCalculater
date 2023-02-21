@@ -1,6 +1,6 @@
 package service.repository.repos.measurement_factor;
 
-import model.MeasurementTransformFactor;
+import model.dto.MeasurementTransformFactor;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 

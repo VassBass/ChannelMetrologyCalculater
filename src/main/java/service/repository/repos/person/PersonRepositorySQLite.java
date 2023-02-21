@@ -1,6 +1,6 @@
 package service.repository.repos.person;
 
-import model.Person;
+import model.dto.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.repository.config.RepositoryConfigHolder;

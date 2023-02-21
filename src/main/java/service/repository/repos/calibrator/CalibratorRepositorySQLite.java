@@ -1,8 +1,8 @@
 package service.repository.repos.calibrator;
 
-import model.Calibrator;
-import model.Measurement;
-import model.builder.CalibratorBuilder;
+import model.dto.Calibrator;
+import model.dto.Measurement;
+import model.dto.builder.CalibratorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.json.JacksonJsonObjectMapper;

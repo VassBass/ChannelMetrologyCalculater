@@ -1,4 +1,4 @@
-package model;
+package model.dto;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -72,9 +72,7 @@ public class Sensor implements Serializable {
      //* @see Sensor#getRange()
      *
      * convR - Measurement range of sensor converted by measurement channel value
-     * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
-     * @see Measurement#convertTo(String, double)
-     * @see Measurement#convertFrom(String, double)
+     * (Диапазон измерения датчика переконвертированый под измерительную величину канала
      */
     private String errorFormula = EMPTY;
 
@@ -110,8 +108,6 @@ public class Sensor implements Serializable {
      *
      * convR - Measurement range of sensor converted by measurement channel value
      * (Диапазон измерения датчика переконвертированый под измерительную величину канала)
-     * @see Measurement#convertTo(String, double)
-     * @see Measurement#convertFrom(String, double)
      * conv(...) - number converted by measurement channel value
      * (Число переконвертированное под измерительную величину канала)
      * @see Measurement#getErrorStringAfterConvertNumbers(String, Measurement, Measurement)

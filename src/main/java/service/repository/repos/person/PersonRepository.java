@@ -1,6 +1,6 @@
 package service.repository.repos.person;
 
-import model.Person;
+import model.dto.Person;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;

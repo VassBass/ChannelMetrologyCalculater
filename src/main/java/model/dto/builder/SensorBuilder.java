@@ -1,6 +1,6 @@
-package model.builder;
+package model.dto.builder;
 
-import model.Sensor;
+import model.dto.Sensor;
 
 import javax.annotation.Nonnull;
 

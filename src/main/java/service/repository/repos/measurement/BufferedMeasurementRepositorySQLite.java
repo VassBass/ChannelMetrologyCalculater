@@ -1,6 +1,6 @@
 package service.repository.repos.measurement;
 
-import model.Measurement;
+import model.dto.Measurement;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 
