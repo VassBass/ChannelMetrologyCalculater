@@ -1,7 +1,7 @@
 package service.application;
 
 import model.ui.ApplicationLogo;
-import service.repository.RepositoryServiceExecuter;
+import service.root.ServiceExecuter;
 
 import javax.swing.*;
 import java.util.List;
@@ -38,20 +38,22 @@ public class ApplicationExecuter implements ServiceExecuter {
         }
 
         @Override
-        protected void done() {
-            logo.setMessage("Starting application");
+        protected Void doInBackground() {
+            String message = "Initialization of services";
+            publish(message);
+            new ApplicationInitializer().init();
+
+            message = "Creating of ApplicationScreen";
+            publish(message);
+            ApplicationScreen.getInstance();
+
+            return null;
         }
 
         @Override
-        protected Void doInBackground() {
-            FactoryImplementationHolder factoryImplementationHolder = new HashMapFactoryImplementationHolder();
-
-            String serviceInitMessage = "Service initialization ... ";
-
-            publish(serviceInitMessage + "RepositoryService");
-            new RepositoryServiceExecuter(factoryImplementationHolder).execute();
-
-            return null;
+        protected void done() {
+            logo.dispose();
+            ApplicationScreen.getInstance().showing();
         }
     }
 }

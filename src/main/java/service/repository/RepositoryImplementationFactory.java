@@ -2,6 +2,7 @@ package service.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.root.ImplementationFactory;
 import service.repository.config.RepositoryConfigHolder;
 import service.repository.connection.RepositoryDBConnector;
 import service.repository.repos.area.AreaRepository;
@@ -26,21 +27,37 @@ import service.repository.repos.process.BufferedProcessRepositorySQLite;
 import service.repository.repos.process.ProcessRepository;
 import service.repository.repos.sensor.BufferedSensorRepositorySQLite;
 import service.repository.repos.sensor.SensorRepository;
-import service.application.ImplementationFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class RepositoryImplementationFactory implements ImplementationFactory {
+    private static volatile RepositoryImplementationFactory instance;
+
     private static final Logger logger = LoggerFactory.getLogger(RepositoryImplementationFactory.class);
     private final Map<String, Object> implementations = new HashMap<>();
 
-    private final RepositoryConfigHolder configHolder;
-    private final RepositoryDBConnector connector;
+    private static RepositoryConfigHolder configHolder;
+    private static RepositoryDBConnector connector;
 
-    public RepositoryImplementationFactory(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
-        this.configHolder = configHolder;
-        this.connector = connector;
+    public static RepositoryImplementationFactory getInstance() {
+        if (configHolder == null || connector == null) {
+            String message = "Before getting the instance, you need to execute the static init() method to initialize the factory";
+            logger.warn(message);
+            return null;
+        }
+
+        if (instance == null) {
+            synchronized (RepositoryImplementationFactory.class) {
+                if (instance == null) instance = new RepositoryImplementationFactory();
+            }
+        }
+        return instance;
+    }
+
+    public static void init(RepositoryConfigHolder config, RepositoryDBConnector conn) {
+        configHolder = config;
+        connector = conn;
     }
 
     @Override
