@@ -15,6 +15,7 @@ public class ApplicationScreen extends JFrame implements UI {
 
     private static final String TITLE = "ChannelMetrologyCalculater";
     private static ApplicationConfigHolder configHolder;
+    private final JMenuBar menuBar;
 
     private static volatile ApplicationScreen instance;
     public static ApplicationScreen getInstance() {
@@ -38,11 +39,13 @@ public class ApplicationScreen extends JFrame implements UI {
 
     private ApplicationScreen() {
         super();
+        this.menuBar = new JMenuBar();
         
         this.setTitle(TITLE);
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.addWindowListener(windowListener);
         this.setSize(configHolder.getScreenWidth(), configHolder.getScreenHeight());
+        this.setJMenuBar(menuBar);
     }
 
     private final WindowListener windowListener = new WindowAdapter() {
@@ -56,6 +59,10 @@ public class ApplicationScreen extends JFrame implements UI {
             if (result == 0) shutdown();
         }
     };
+
+    public void addMenu(JMenu menu) {
+        menuBar.add(menu);
+    }
 
     @Override
     public void showing() {

@@ -7,5 +7,7 @@
 /target/test-classes
 
 TestData.db
+Data.db
 /.idea
 /images
+/Certificates

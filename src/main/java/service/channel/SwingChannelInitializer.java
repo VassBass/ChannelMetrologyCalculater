@@ -33,6 +33,7 @@ public class SwingChannelInitializer implements ServiceInitializer {
             manager.init(infoTable, searchPanel, channelsTable);
             SwingPanel swingPanel = new SwingPanel(infoTable, searchPanel, buttonsPanel, channelsTable);
             applicationScreen.setContentPane(swingPanel);
+            applicationScreen.addMenu(new SwingMenuChannel(manager));
 
             logger.info(("Initialization completed successfully"));
         }
