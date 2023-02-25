@@ -1,13 +1,15 @@
-package ui.model;
+package model.ui;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalButtonUI;
 import java.awt.*;
 
 public class ButtonCell extends JButton {
-    public ButtonCell (boolean isHeader) {
+    public static final int HEADER = 0;
+    public static final int SIMPLE = 1;
 
-        if (isHeader) {
+    public ButtonCell (int type) {
+        if (type == HEADER) {
             this.setUI(new MetalButtonUI(){
                 protected Color getDisabledTextColor() {
                     return Color.WHITE;
@@ -26,10 +28,10 @@ public class ButtonCell extends JButton {
         this.setEnabled(false);
     }
 
-    public ButtonCell (boolean isHeader, String text) {
+    public ButtonCell (int type, String text) {
         this.setText(text);
 
-        if (isHeader) {
+        if (type == HEADER) {
             this.setUI(new MetalButtonUI(){
                 protected Color getDisabledTextColor() {
                     return Color.WHITE;

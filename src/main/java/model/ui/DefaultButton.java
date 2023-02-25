@@ -1,4 +1,4 @@
-package ui.model;
+package model.ui;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;

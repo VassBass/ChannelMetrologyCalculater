@@ -13,9 +13,9 @@ public class RepositoryServiceInitializer implements ServiceInitializer {
 
     @Override
     public void init() {
-        logger.info(("Start initialization of RepositoryService"));
         RepositoryConfigHolder configHolder = new SqliteRepositoryConfigHolder();
         RepositoryDBConnector connector = new SqliteRepositoryDBConnector(configHolder);
         RepositoryImplementationFactory.init(configHolder, connector);
+        logger.info(("Initialization completed successfully"));
     }
 }

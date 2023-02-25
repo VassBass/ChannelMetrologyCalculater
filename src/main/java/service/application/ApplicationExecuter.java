@@ -45,10 +45,6 @@ public class ApplicationExecuter implements ServiceExecuter {
             publish(message);
             new ApplicationInitializer(configHolder).init();
 
-            message = "Creating of ApplicationScreen";
-            publish(message);
-            ApplicationScreen.getInstance();
-
             return null;
         }
 

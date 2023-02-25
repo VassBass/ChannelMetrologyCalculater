@@ -2,6 +2,7 @@ package model.ui;
 
 import model.ui.builder.CellBuilder;
 import service.application.ApplicationConfigHolder;
+import service.application.ApplicationScreen;
 import service.file_extractor.FileExtractor;
 import service.file_extractor.ResourceFileExtractor;
 import util.ScreenPoint;
@@ -10,7 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-public class ApplicationLogo extends Window {
+public class ApplicationLogo extends JWindow implements UI {
     private static final String LOGO_FILE_NAME = "logo.png";
     private static final String INIT_TEXT_MESSAGE = "Завантаження...";
     private static final String DEVELOPER = "VassBassApp";
@@ -74,5 +75,22 @@ public class ApplicationLogo extends Window {
 
     public void setMessage(String message){
         this.message.setText(message);
+    }
+
+    @Override
+    public void showing() {
+        EventQueue.invokeLater(() ->
+                ApplicationLogo.this.setVisible(true));
+    }
+
+    @Override
+    public void hiding() {
+        EventQueue.invokeLater(() ->
+                ApplicationLogo.this.setVisible(false));
+    }
+
+    @Override
+    public void shutdown() {
+        ApplicationLogo.this.dispose();
     }
 }

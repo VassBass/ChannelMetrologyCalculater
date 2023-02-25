@@ -1,18 +1,16 @@
 package service.application;
 
-import model.ui.Frame;
+import model.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.repository.RepositoryImplementationFactory;
-import service.repository.config.RepositoryConfigHolder;
-import service.repository.connection.RepositoryDBConnector;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-public class ApplicationScreen extends Frame {
+public class ApplicationScreen extends JFrame implements UI {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationScreen.class);
 
     private static final String TITLE = "ChannelMetrologyCalculater";
@@ -55,7 +53,24 @@ public class ApplicationScreen extends Frame {
                     message,
                     TITLE,
                     JOptionPane.YES_NO_OPTION);
-            if (result == 0) System.exit(0);
+            if (result == 0) shutdown();
         }
     };
+
+    @Override
+    public void showing() {
+        EventQueue.invokeLater(() ->
+                ApplicationScreen.this.setVisible(true));
+    }
+
+    @Override
+    public void hiding() {
+        EventQueue.invokeLater(() ->
+                ApplicationScreen.this.setVisible(false));
+    }
+
+    @Override
+    public void shutdown() {
+        System.exit(0);
+    }
 }

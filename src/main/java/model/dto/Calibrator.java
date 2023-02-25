@@ -2,7 +2,7 @@ package model.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import converters.VariableConverter;
-import util.Validator;
+import util.DateHelper;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -208,7 +208,7 @@ public class Calibrator implements Serializable {
             }
 
             public CertificateBuilder setDate(String date) {
-                certificate.setDate(Validator.isDateValid(date) ? date : DEFAULT_DATE);
+                certificate.setDate(DateHelper.isDateValid(date) ? date : DEFAULT_DATE);
                 return this;
             }
 
