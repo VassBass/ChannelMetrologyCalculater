@@ -1,17 +1,16 @@
-package service.channel.ui.swing;
+package service.channel_list.ui.swing;
 
 import model.ui.DefaultButton;
 import model.ui.builder.CellBuilder;
-import service.channel.ChannelManager;
-import service.channel.ui.SearchPanel;
+import service.channel_list.ChannelListManager;
+import service.channel_list.ui.ChannelListSearchPanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.Map;
 
-public class SwingSearchPanel extends JPanel implements SearchPanel {
+public class SwingChannelListSearchPanel extends JPanel implements ChannelListSearchPanel {
     private static final String CODE = "Код";
     private static final String SEARCH = "Шукати";
     private static final String CANCEL = "Відмінити пошук";
@@ -23,7 +22,7 @@ public class SwingSearchPanel extends JPanel implements SearchPanel {
     private final JTextField codeField;
     private final JButton buttonSearch;
 
-    public SwingSearchPanel(ChannelManager manager) {
+    public SwingChannelListSearchPanel(ChannelListManager manager) {
         super(new GridBagLayout());
 
         codeField = new JTextField(15);

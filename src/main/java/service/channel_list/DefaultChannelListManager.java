@@ -1,26 +1,26 @@
-package service.channel;
+package service.channel_list;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.channel.ui.ChannelInfoTable;
-import service.channel.ui.ChannelTable;
-import service.channel.ui.SearchPanel;
+import service.channel_list.ui.ChannelListInfoTable;
+import service.channel_list.ui.ChannelListTable;
+import service.channel_list.ui.ChannelListSearchPanel;
 import service.repository.repos.channel.ChannelRepository;
 
 import java.awt.*;
 import java.io.File;
 
-public class DefaultChannelManager implements ChannelManager {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultChannelManager.class);
+public class DefaultChannelListManager implements ChannelListManager {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultChannelListManager.class);
 
     private final ChannelRepository repository;
-    private final ChannelConfigHolder configHolder;
+    private final ChannelListConfigHolder configHolder;
 
-    private ChannelInfoTable channelInfoTable;
-    private SearchPanel searchPanel;
-    private ChannelTable channelTable;
+    private ChannelListInfoTable channelInfoTable;
+    private ChannelListSearchPanel searchPanel;
+    private ChannelListTable channelTable;
 
-    public DefaultChannelManager(ChannelRepository repository, ChannelConfigHolder configHolder) {
+    public DefaultChannelListManager(ChannelRepository repository, ChannelListConfigHolder configHolder) {
         this.repository = repository;
         this.configHolder = configHolder;
     }
@@ -87,9 +87,9 @@ public class DefaultChannelManager implements ChannelManager {
     }
 
     @Override
-    public void init(ChannelInfoTable infoTable,
-                     SearchPanel searchPanel,
-                     ChannelTable channelTable) {
+    public void init(ChannelListInfoTable infoTable,
+                     ChannelListSearchPanel searchPanel,
+                     ChannelListTable channelTable) {
         this.channelInfoTable = infoTable;
         this.searchPanel = searchPanel;
         this.channelTable = channelTable;

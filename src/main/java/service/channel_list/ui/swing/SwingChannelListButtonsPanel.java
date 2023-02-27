@@ -1,20 +1,20 @@
-package service.channel.ui.swing;
+package service.channel_list.ui.swing;
 
 import model.ui.DefaultButton;
 import model.ui.builder.CellBuilder;
-import service.channel.ChannelManager;
+import service.channel_list.ChannelListManager;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SwingChannelButtonsPanel extends JPanel {
+public class SwingChannelListButtonsPanel extends JPanel {
     private static final String INFO_BUTTON_TEXT = "Детальніше (D)";
     private static final String REMOVE_BUTTON_TEXT = "Видалити (R)";
     private static final String ADD_BUTTON_TEXT = "Додати (A)";
     private static final String CALCULATE_BUTTON_TEXT = "Розрахувати (C)";
     private static final String FOLDER_BUTTON_TEXT = "Сертифікати/Протоколи (F)";
 
-    public SwingChannelButtonsPanel(final ChannelManager manager) {
+    public SwingChannelListButtonsPanel(final ChannelListManager manager) {
         super(new GridBagLayout());
 
         JButton btnInfo = new DefaultButton(INFO_BUTTON_TEXT);

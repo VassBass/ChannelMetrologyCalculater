@@ -1,11 +1,11 @@
-package service.channel;
+package service.channel_list;
 
 import model.dto.Channel;
 
 import java.util.Calendar;
 import java.util.Collection;
 
-public interface ChannelService {
+public interface ChannelListService {
     Collection<String> getCodesOfExpiredChannels();
     Collection<String> getCodesOfChannelsCloseToExpired();
     String getFullPath(Channel channel);

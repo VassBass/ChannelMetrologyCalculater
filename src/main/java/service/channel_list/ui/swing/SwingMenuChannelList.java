@@ -1,10 +1,10 @@
-package service.channel.ui.swing;
+package service.channel_list.ui.swing;
 
-import service.channel.ChannelManager;
+import service.channel_list.ChannelListManager;
 
 import javax.swing.*;
 
-public class SwingMenuChannel extends JMenu {
+public class SwingMenuChannelList extends JMenu {
     private static final String HEADER_TEXT = "Канал";
     private static final String ADD_BUTTON_TEXT = "Додати";
     private static final String CALCULATE_BUTTON_TEXT = "Розрахувати";
@@ -12,7 +12,7 @@ public class SwingMenuChannel extends JMenu {
     private static final String REMOVE_BUTTON_TEXT = "Видалити";
     private static final String FOLDER_BUTTON_TEXT = "Сертифікати/Протоколи";
 
-    public SwingMenuChannel(final ChannelManager manager){
+    public SwingMenuChannelList(final ChannelListManager manager){
         super(HEADER_TEXT);
 
         JMenuItem btnAdd = new JMenuItem(ADD_BUTTON_TEXT);

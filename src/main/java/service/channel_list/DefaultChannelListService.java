@@ -1,4 +1,4 @@
-package service.channel;
+package service.channel_list;
 
 import model.dto.Channel;
 import service.repository.repos.channel.ChannelRepository;
@@ -9,10 +9,10 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 
-public class DefaultChannelService implements ChannelService {
+public class DefaultChannelListService implements ChannelListService {
     private final ChannelRepository repository;
 
-    public DefaultChannelService(ChannelRepository repository) {
+    public DefaultChannelListService(ChannelRepository repository) {
         this.repository = repository;
     }
 

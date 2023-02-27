@@ -1,4 +1,4 @@
-package service.channel;
+package service.channel_list;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,20 +9,20 @@ import java.util.Properties;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-public class PropertiesChannelConfigHolder implements ChannelConfigHolder {
-    private static final Logger logger = LoggerFactory.getLogger(PropertiesChannelConfigHolder.class);
+public class PropertiesChannelListConfigHolder implements ChannelListConfigHolder {
+    private static final Logger logger = LoggerFactory.getLogger(PropertiesChannelListConfigHolder.class);
 
     private static final String PROPERTIES_FILE_PATH = "properties/channel.properties";
     private static final String KEY_CHANNELS_CERTIFICATE_FOLDER = "channel.certificate.folder";
 
     private String channelCertificateFolder = EMPTY;
 
-    public PropertiesChannelConfigHolder() {
+    public PropertiesChannelListConfigHolder() {
         this(PROPERTIES_FILE_PATH);
     }
 
-    public PropertiesChannelConfigHolder(String propertiesFile) {
-        try (InputStream in = PropertiesChannelConfigHolder.class.getClassLoader()
+    public PropertiesChannelListConfigHolder(String propertiesFile) {
+        try (InputStream in = PropertiesChannelListConfigHolder.class.getClassLoader()
                 .getResourceAsStream(propertiesFile)) {
             Properties properties = new Properties();
             properties.load(in);

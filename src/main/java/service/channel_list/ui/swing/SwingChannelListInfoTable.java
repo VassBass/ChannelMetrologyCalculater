@@ -1,21 +1,20 @@
-package service.channel.ui.swing;
+package service.channel_list.ui.swing;
 
 import model.dto.Channel;
 import model.ui.ButtonCell;
 import model.ui.builder.CellBuilder;
-import service.channel.ChannelService;
-import service.channel.ui.ChannelInfoTable;
+import service.channel_list.ChannelListService;
+import service.channel_list.ui.ChannelListInfoTable;
 import util.DateHelper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import static model.ui.ButtonCell.HEADER;
 import static model.ui.ButtonCell.SIMPLE;
 
-public class SwingChannelInfoTable extends JPanel implements ChannelInfoTable {
+public class SwingChannelListInfoTable extends JPanel implements ChannelListInfoTable {
     private static final String COLUMN_NEXT_DATE = "Дата наступної перевірки";
     private static final String COLUMN_PATH = "Розташування";
     private static final String COLUMN_SENSOR = "Первинний вимірювальний пристрій";
@@ -23,13 +22,13 @@ public class SwingChannelInfoTable extends JPanel implements ChannelInfoTable {
     private static final String DASH = " - ";
     private static final String EXTRAORDINARY = "Позачерговий";
 
-    private final ChannelService service;
+    private final ChannelListService service;
 
     private final ButtonCell nextDate;
     private final ButtonCell path;
     private final ButtonCell sensor;
 
-    public SwingChannelInfoTable(ChannelService service){
+    public SwingChannelListInfoTable(ChannelListService service){
         super(new GridBagLayout());
         this.service = service;
 

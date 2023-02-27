@@ -1,9 +1,9 @@
-package service.channel.ui.swing;
+package service.channel_list.ui.swing;
 
 import model.dto.Channel;
-import service.channel.ChannelManager;
-import service.channel.ChannelService;
-import service.channel.ui.ChannelTable;
+import service.channel_list.ChannelListManager;
+import service.channel_list.ChannelListService;
+import service.channel_list.ui.ChannelListTable;
 
 import javax.annotation.Nullable;
 import javax.swing.*;
@@ -16,16 +16,16 @@ import java.awt.event.KeyListener;
 import java.util.Collection;
 import java.util.List;
 
-public class SwingChannelsTable extends JTable implements ChannelTable {
+public class SwingChannelListTable extends JTable implements ChannelListTable {
     private static final String COLUMN_CODE = "Код";
     private static final String COLUMN_NAME = "Назва";
     private static final String COLUMN_TYPE_OF_MEASUREMENT = "Вид вимірювання";
     private static final String COLUMN_TECHNOLOGY_NUMBER = "Технологічний номер";
 
-    private final ChannelManager manager;
-    private final ChannelService service;
+    private final ChannelListManager manager;
+    private final ChannelListService service;
 
-    public SwingChannelsTable(ChannelManager manager, ChannelService service){
+    public SwingChannelListTable(ChannelListManager manager, ChannelListService service){
         super();
         this.manager = manager;
         this.service = service;
@@ -90,7 +90,7 @@ public class SwingChannelsTable extends JTable implements ChannelTable {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col){
                 super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-                String code = SwingChannelsTable.this.getModel().getValueAt(row,0).toString();
+                String code = SwingChannelListTable.this.getModel().getValueAt(row,0).toString();
                 if (codesOfExpiredChannels.contains(code)) {
                     setBackground(Color.RED);
                     setForeground(Color.WHITE);

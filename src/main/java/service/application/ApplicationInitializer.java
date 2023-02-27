@@ -1,6 +1,6 @@
 package service.application;
 
-import service.channel.SwingChannelInitializer;
+import service.channel_list.SwingChannelListInitializer;
 import service.repository.RepositoryServiceInitializer;
 import service.root.ServiceInitializer;
 
@@ -18,7 +18,7 @@ public class ApplicationInitializer implements ServiceInitializer {
     private static void INIT() {
         ApplicationScreen.init(config);
         initializerSet.add(new RepositoryServiceInitializer());
-        initializerSet.add(new SwingChannelInitializer());
+        initializerSet.add(new SwingChannelListInitializer());
     }
 
     @Override
