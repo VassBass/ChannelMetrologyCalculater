@@ -1,8 +1,8 @@
-package service.channel_list;
+package service.channel.list;
 
-import service.channel_list.ui.ChannelListInfoTable;
-import service.channel_list.ui.ChannelListTable;
-import service.channel_list.ui.ChannelListSearchPanel;
+import service.channel.list.ui.ChannelListInfoTable;
+import service.channel.list.ui.ChannelListTable;
+import service.channel.list.ui.ChannelListSearchPanel;
 
 public interface ChannelListManager {
     void channelSelected(String channelCode);

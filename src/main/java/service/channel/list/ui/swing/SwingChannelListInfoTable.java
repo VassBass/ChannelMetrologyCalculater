@@ -1,10 +1,10 @@
-package service.channel_list.ui.swing;
+package service.channel.list.ui.swing;
 
 import model.dto.Channel;
 import model.ui.ButtonCell;
 import model.ui.builder.CellBuilder;
-import service.channel_list.ChannelListService;
-import service.channel_list.ui.ChannelListInfoTable;
+import service.channel.list.ChannelListService;
+import service.channel.list.ui.ChannelListInfoTable;
 import util.DateHelper;
 
 import javax.swing.*;

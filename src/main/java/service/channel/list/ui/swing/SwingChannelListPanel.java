@@ -1,4 +1,4 @@
-package service.channel_list.ui.swing;
+package service.channel.list.ui.swing;
 
 import model.ui.builder.CellBuilder;
 

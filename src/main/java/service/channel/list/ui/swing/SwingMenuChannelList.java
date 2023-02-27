@@ -1,6 +1,6 @@
-package service.channel_list.ui.swing;
+package service.channel.list.ui.swing;
 
-import service.channel_list.ChannelListManager;
+import service.channel.list.ChannelListManager;
 
 import javax.swing.*;
 

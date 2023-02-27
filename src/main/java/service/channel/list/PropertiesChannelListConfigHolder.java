@@ -1,4 +1,4 @@
-package service.channel_list;
+package service.channel.list;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

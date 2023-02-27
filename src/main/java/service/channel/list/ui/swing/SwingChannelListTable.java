@@ -1,9 +1,9 @@
-package service.channel_list.ui.swing;
+package service.channel.list.ui.swing;
 
 import model.dto.Channel;
-import service.channel_list.ChannelListManager;
-import service.channel_list.ChannelListService;
-import service.channel_list.ui.ChannelListTable;
+import service.channel.list.ChannelListManager;
+import service.channel.list.ChannelListService;
+import service.channel.list.ui.ChannelListTable;
 
 import javax.annotation.Nullable;
 import javax.swing.*;

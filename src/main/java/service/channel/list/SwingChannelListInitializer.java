@@ -1,9 +1,9 @@
-package service.channel_list;
+package service.channel.list;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.application.ApplicationScreen;
-import service.channel_list.ui.swing.*;
+import service.channel.list.ui.swing.*;
 import service.repository.RepositoryImplementationFactory;
 import service.repository.repos.channel.ChannelRepository;
 import service.root.ServiceInitializer;

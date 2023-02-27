@@ -2,6 +2,7 @@ package service.channel_list;
 
 import org.junit.Before;
 import org.junit.Test;
+import service.channel.list.PropertiesChannelListConfigHolder;
 
 import static org.junit.Assert.*;
 

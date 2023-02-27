@@ -1,9 +1,9 @@
-package service.channel_list.ui.swing;
+package service.channel.list.ui.swing;
 
 import model.ui.DefaultButton;
 import model.ui.builder.CellBuilder;
-import service.channel_list.ChannelListManager;
-import service.channel_list.ui.ChannelListSearchPanel;
+import service.channel.list.ChannelListManager;
+import service.channel.list.ui.ChannelListSearchPanel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;

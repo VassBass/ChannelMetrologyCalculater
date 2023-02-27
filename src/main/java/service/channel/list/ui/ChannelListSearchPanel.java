@@ -1,4 +1,4 @@
-package service.channel_list.ui;
+package service.channel.list.ui;
 
 import java.util.Map;
 

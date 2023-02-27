@@ -1,6 +1,6 @@
 package service.application;
 
-import service.channel_list.SwingChannelListInitializer;
+import service.channel.list.SwingChannelListInitializer;
 import service.repository.RepositoryServiceInitializer;
 import service.root.ServiceInitializer;
 

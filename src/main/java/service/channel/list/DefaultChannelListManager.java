@@ -1,10 +1,10 @@
-package service.channel_list;
+package service.channel.list;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.channel_list.ui.ChannelListInfoTable;
-import service.channel_list.ui.ChannelListTable;
-import service.channel_list.ui.ChannelListSearchPanel;
+import service.channel.list.ui.ChannelListInfoTable;
+import service.channel.list.ui.ChannelListTable;
+import service.channel.list.ui.ChannelListSearchPanel;
 import service.repository.repos.channel.ChannelRepository;
 
 import java.awt.*;
