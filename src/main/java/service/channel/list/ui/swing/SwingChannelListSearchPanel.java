@@ -1,12 +1,13 @@
 package service.channel.list.ui.swing;
 
 import model.ui.DefaultButton;
+import model.ui.TitledTextField;
 import model.ui.builder.CellBuilder;
+import model.ui.builder.TitledTextFieldBuilder;
 import service.channel.list.ChannelListManager;
 import service.channel.list.ui.ChannelListSearchPanel;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.Map;
 
@@ -25,12 +26,13 @@ public class SwingChannelListSearchPanel extends JPanel implements ChannelListSe
     public SwingChannelListSearchPanel(ChannelListManager manager) {
         super(new GridBagLayout());
 
-        codeField = new JTextField(15);
-        TitledBorder codeBorder = BorderFactory.createTitledBorder(CODE);
-        codeBorder.setTitleJustification(TitledBorder.CENTER);
-        codeField.setBorder(codeBorder);
-        codeField.setToolTipText(CODE_TOOLTIP_TEXT);
-        codeField.setHorizontalAlignment(SwingConstants.CENTER);
+        codeField = new TitledTextFieldBuilder()
+                .setColumns(15)
+                .setTitle(CODE)
+                .setBorderLocation(TitledTextField.BORDER_TOP_CENTER)
+                .setTooltipText(CODE_TOOLTIP_TEXT)
+                .setTextLocation(TitledTextField.TEXT_CENTER)
+                .build();
 
         buttonSearch = new DefaultButton(SEARCH);
         JButton buttonAdvancedSearch = new DefaultButton(ADVANCED_SEARCH);
