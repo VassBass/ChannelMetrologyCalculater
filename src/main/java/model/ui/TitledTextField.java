@@ -4,7 +4,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 public class TitledTextField extends JTextField {
-    public static final int BORDER_TOP_CENTER = TitledBorder.CENTER;
+    public static final int TITLE_TOP_CENTER = TitledBorder.CENTER;
     public static final int TEXT_CENTER = SwingConstants.CENTER;
 
     public TitledTextField(int columns) {

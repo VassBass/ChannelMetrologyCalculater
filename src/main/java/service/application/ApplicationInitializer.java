@@ -1,7 +1,7 @@
 package service.application;
 
 import service.channel.list.SwingChannelListInitializer;
-import service.repository.RepositoryServiceInitializer;
+import repository.RepositoryServiceInitializer;
 import service.root.ServiceInitializer;
 
 import java.util.LinkedHashSet;

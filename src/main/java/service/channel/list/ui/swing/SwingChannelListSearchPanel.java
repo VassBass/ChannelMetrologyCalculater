@@ -1,6 +1,7 @@
 package service.channel.list.ui.swing;
 
 import model.ui.DefaultButton;
+import model.ui.DefaultPanel;
 import model.ui.TitledTextField;
 import model.ui.builder.CellBuilder;
 import model.ui.builder.TitledTextFieldBuilder;
@@ -8,10 +9,9 @@ import service.channel.list.ChannelListManager;
 import service.channel.list.ui.ChannelListSearchPanel;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Map;
 
-public class SwingChannelListSearchPanel extends JPanel implements ChannelListSearchPanel {
+public class SwingChannelListSearchPanel extends DefaultPanel implements ChannelListSearchPanel {
     private static final String CODE = "Код";
     private static final String SEARCH = "Шукати";
     private static final String CANCEL = "Відмінити пошук";
@@ -24,12 +24,12 @@ public class SwingChannelListSearchPanel extends JPanel implements ChannelListSe
     private final JButton buttonSearch;
 
     public SwingChannelListSearchPanel(ChannelListManager manager) {
-        super(new GridBagLayout());
+        super();
 
         codeField = new TitledTextFieldBuilder()
                 .setColumns(15)
                 .setTitle(CODE)
-                .setBorderLocation(TitledTextField.BORDER_TOP_CENTER)
+                .setTitleLocation(TitledTextField.TITLE_TOP_CENTER)
                 .setTooltipText(CODE_TOOLTIP_TEXT)
                 .setTextLocation(TitledTextField.TEXT_CENTER)
                 .build();

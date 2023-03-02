@@ -1,13 +1,13 @@
 package service.channel.list.ui.swing;
 
 import model.ui.DefaultButton;
+import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.channel.list.ChannelListManager;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class SwingChannelListButtonsPanel extends JPanel {
+public class SwingChannelListButtonsPanel extends DefaultPanel {
     private static final String INFO_BUTTON_TEXT = "Детальніше (D)";
     private static final String REMOVE_BUTTON_TEXT = "Видалити (R)";
     private static final String ADD_BUTTON_TEXT = "Додати (A)";
@@ -15,7 +15,7 @@ public class SwingChannelListButtonsPanel extends JPanel {
     private static final String FOLDER_BUTTON_TEXT = "Сертифікати/Протоколи (F)";
 
     public SwingChannelListButtonsPanel(final ChannelListManager manager) {
-        super(new GridBagLayout());
+        super();
 
         JButton btnInfo = new DefaultButton(INFO_BUTTON_TEXT);
         JButton btnRemove = new DefaultButton(REMOVE_BUTTON_TEXT);

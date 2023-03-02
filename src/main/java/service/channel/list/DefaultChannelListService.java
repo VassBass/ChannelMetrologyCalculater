@@ -1,7 +1,7 @@
 package service.channel.list;
 
 import model.dto.Channel;
-import service.repository.repos.channel.ChannelRepository;
+import repository.repos.channel.ChannelRepository;
 import util.DateHelper;
 
 import java.util.Calendar;

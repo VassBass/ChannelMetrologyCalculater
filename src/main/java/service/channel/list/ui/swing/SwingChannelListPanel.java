@@ -1,16 +1,16 @@
 package service.channel.list.ui.swing;
 
+import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class SwingChannelListPanel extends JPanel {
+public class SwingChannelListPanel extends DefaultPanel {
     public SwingChannelListPanel(SwingChannelListInfoTable infoTable,
                                  SwingChannelListSearchPanel searchPanel,
                                  SwingChannelListButtonsPanel buttonsPanel,
                                  SwingChannelListTable channelsTable) {
-        super(new GridBagLayout());
+        super();
 
         this.add(infoTable, new CellBuilder().x(0).y(0).width(2).weightY(0.05).build());
         this.add(searchPanel, new CellBuilder().x(0).y(1).width(1).weightY(0.05).build());

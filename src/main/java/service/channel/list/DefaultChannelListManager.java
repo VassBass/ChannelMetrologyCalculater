@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListTable;
 import service.channel.list.ui.ChannelListSearchPanel;
-import service.repository.repos.channel.ChannelRepository;
+import repository.repos.channel.ChannelRepository;
 
 import java.awt.*;
 import java.io.File;

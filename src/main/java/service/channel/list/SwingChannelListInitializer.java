@@ -2,10 +2,10 @@ package service.channel.list;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import repository.RepositoryFactory;
+import repository.repos.channel.ChannelRepository;
 import service.application.ApplicationScreen;
 import service.channel.list.ui.swing.*;
-import service.repository.RepositoryImplementationFactory;
-import service.repository.repos.channel.ChannelRepository;
 import service.root.ServiceInitializer;
 
 import java.util.ArrayList;
@@ -16,8 +16,8 @@ public class SwingChannelListInitializer implements ServiceInitializer {
     @Override
     public void init() {
         ApplicationScreen applicationScreen = ApplicationScreen.getInstance();
-        RepositoryImplementationFactory repositoryFactory =
-                RepositoryImplementationFactory.getInstance();
+        RepositoryFactory repositoryFactory =
+                RepositoryFactory.getInstance();
         if (applicationScreen != null && repositoryFactory != null) {
             ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
             ChannelListConfigHolder configHolder = new PropertiesChannelListConfigHolder();

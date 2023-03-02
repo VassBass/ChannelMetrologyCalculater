@@ -13,7 +13,7 @@ public class TitledTextFieldBuilder {
     private int columns = 10;
     private TitledBorder border;
     private String tooltipText;
-    int borderLocation = -1;
+    int titleLocation = -1;
     int textLocation = -1;
 
     public TitledTextFieldBuilder setColumns(int columns) {
@@ -31,8 +31,8 @@ public class TitledTextFieldBuilder {
         return this;
     }
 
-    public TitledTextFieldBuilder setBorderLocation(int location) {
-        borderLocation = location;
+    public TitledTextFieldBuilder setTitleLocation(int location) {
+        titleLocation = location;
         return this;
     }
 
@@ -45,7 +45,7 @@ public class TitledTextFieldBuilder {
         if (border == null) border = BorderFactory.createTitledBorder(DEFAULT_TITLE_TEXT);
 
         TitledTextField textField = new TitledTextField(columns);
-        if (borderLocation >= 0) border.setTitleJustification(borderLocation);
+        if (titleLocation >= 0) border.setTitleJustification(titleLocation);
         textField.setBorder(border);
         if (tooltipText != null) textField.setToolTipText(tooltipText);
         if (textLocation >= 0) textField.setHorizontalAlignment(textLocation);
