@@ -1,6 +1,7 @@
 package service.channel.info.ui;
 
 public interface ChannelInfoNamePanel {
-    String getName();
-    void setName(String name);
+    String getChannelName();
+    void setChannelName(String name);
+    boolean isNameValid();
 }

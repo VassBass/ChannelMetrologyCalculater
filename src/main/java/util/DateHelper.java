@@ -3,6 +3,8 @@ package util;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 public class DateHelper {
 
     public static boolean isDateValid(String date) {
@@ -64,5 +66,49 @@ public class DateHelper {
             builder.append(day).append(".").append(month).append(".").append(date.get(Calendar.YEAR));
             return builder.toString();
         }
+    }
+
+    public static String getDayFromDateString(String date) {
+        if (isDateValid(date)) {
+            String[] splittedDate = date.split("\\.");
+            return splittedDate[0];
+        }
+        return EMPTY;
+    }
+
+    public static String getMonthFromDateString(String date) {
+        if (isDateValid(date)) {
+            String[] splittedDate = date.split("\\.");
+            return splittedDate[1];
+        }
+        return EMPTY;
+    }
+
+    public static String getYearFromDateString(String date) {
+        if (isDateValid(date)) {
+            String[] splittedDate = date.split("\\.");
+            String year = splittedDate[2];
+            return year.length() == 2 ?
+                    "20" + year :
+                    year.length() == 4 ? year :
+                    EMPTY;
+        }
+        return EMPTY;
+    }
+
+    /**
+     * @param date to splitt
+     * @return array of Strings with length = 3
+     * [0] - day of month
+     * [1] - month (1 or 01 equal January)
+     * [2] - year
+     * if date in string not valid returns array with same length but all strings will be empty
+     */
+    public static String[] getSplittedDate(String date) {
+        if (isDateValid(date)) {
+            String[] splittedDate = date.split("\\.");
+            if (splittedDate[2].length() == 2) splittedDate[2] = "20" + splittedDate[2];
+            return splittedDate;
+        } else return new String[] { EMPTY, EMPTY, EMPTY };
     }
 }
