@@ -18,7 +18,10 @@ public class SwingChannelInfoDialog extends JDialog implements UI {
                                   SwingChannelInfoTechnologyNumberPanel technologyNumberPanel,
                                   SwingChannelInfoDatePanel datePanel,
                                   SwingChannelInfoProtocolNumberPanel protocolNumberPanel,
-                                  SwingChannelInfoFrequencyPanel frequencyPanel) {
+                                  SwingChannelInfoFrequencyPanel frequencyPanel,
+                                  SwingChannelInfoNextDatePanel nextDatePanel,
+                                  SwingChannelInfoPathPanel pathPanel,
+                                  SwingChannelInfoSensorPanel sensorPanel) {
         super(APPLICATION_SCREEN, TITLE_TEXT, true);
 
 

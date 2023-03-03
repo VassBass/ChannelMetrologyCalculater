@@ -7,4 +7,5 @@ public interface ChannelInfoManager {
     void changeMeasurementName();
     void changeMeasurementValue();
     void changeDateOrFrequency();
+    void setChannelAndSensorRangesEqual();
 }
