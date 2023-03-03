@@ -1,11 +1,7 @@
 package service.channel.info.ui.swing;
 
 import model.ui.UI;
-import repository.RepositoryFactory;
-import repository.repos.channel.ChannelRepository;
 import service.application.ApplicationScreen;
-import service.channel.info.ChannelInfoManager;
-import service.channel.info.ui.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,11 +12,13 @@ public class SwingChannelInfoDialog extends JDialog implements UI {
     private static final String TITLE_TEXT = "Інформація вимірювального каналу";
 
 
-    public SwingChannelInfoDialog(ChannelInfoCodePanel codePanel,
-                                  ChannelInfoNamePanel namePanel,
-                                  ChannelInfoMeasurementPanel measurementPanel,
-                                  ChannelInfoTechnologyNumberPanel technologyNumberPanel,
-                                  ChannelInfoDatePanel datePanel) {
+    public SwingChannelInfoDialog(SwingChannelInfoCodePanel codePanel,
+                                  SwingChannelInfoNamePanel namePanel,
+                                  SwingChannelInfoMeasurementPanel measurementPanel,
+                                  SwingChannelInfoTechnologyNumberPanel technologyNumberPanel,
+                                  SwingChannelInfoDatePanel datePanel,
+                                  SwingChannelInfoProtocolNumberPanel protocolNumberPanel,
+                                  SwingChannelInfoFrequencyPanel frequencyPanel) {
         super(APPLICATION_SCREEN, TITLE_TEXT, true);
 
 
