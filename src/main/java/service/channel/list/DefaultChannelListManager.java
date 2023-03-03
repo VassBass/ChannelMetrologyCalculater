@@ -2,6 +2,7 @@ package service.channel.list;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.channel.info.SwingChannelInfoExecuter;
 import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListTable;
 import service.channel.list.ui.ChannelListSearchPanel;
@@ -32,7 +33,7 @@ public class DefaultChannelListManager implements ChannelListManager {
 
     @Override
     public void addChannel() {
-
+        new SwingChannelInfoExecuter().execute();
     }
 
     @Override

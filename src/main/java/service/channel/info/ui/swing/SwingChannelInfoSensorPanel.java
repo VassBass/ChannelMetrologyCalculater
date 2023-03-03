@@ -128,7 +128,7 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
             return false;
         }
 
-        if (Double.parseDouble(min) <= Double.parseDouble(max)) {
+        if (Double.parseDouble(min) > Double.parseDouble(max)) {
             rangePanel.setTitleColor(Color.RED);
             return false;
         } else {

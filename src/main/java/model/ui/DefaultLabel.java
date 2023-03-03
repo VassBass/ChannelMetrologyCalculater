@@ -5,10 +5,16 @@ import java.awt.*;
 
 public class DefaultLabel extends JLabel {
 
-    public DefaultLabel(String text) {
-        super(text);
+    public DefaultLabel() {
+        super();
         this.setBackground(Color.WHITE);
         this.setForeground(Color.BLACK);
+    }
+
+    public DefaultLabel(String text) {
+        this();
+        this.setText(text);
+
     }
 
     public DefaultLabel(String text, String tooltipText) {

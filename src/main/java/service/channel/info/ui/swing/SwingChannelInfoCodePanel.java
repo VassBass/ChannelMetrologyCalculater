@@ -1,6 +1,5 @@
 package service.channel.info.ui.swing;
 
-import model.dto.Channel;
 import model.ui.TitledTextField;
 import repository.repos.channel.ChannelRepository;
 import service.channel.info.ChannelInfoManager;
@@ -15,18 +14,14 @@ public class SwingChannelInfoCodePanel extends TitledTextField implements Channe
     private static final String TOOLTIP_TEXT = "Натисніть праву кнопку миші щоб почати пошук ВК по коду.";
     private static final String SEARCH_TEXT = "Пошук";
 
-    private static final String CHANNEL_NOT_FOUND_MESSAGE = "Канал з данним кодом не знайдений.";
-    private static final String CHANNEL_FOUND_MESSAGE = "Канал знайдено. Відкрити інформацію про канал у данному вікні?";
-
     private final ChannelRepository channelRepository;
 
-    public SwingChannelInfoCodePanel(SwingChannelInfoDialog owner,
-                                     ChannelInfoManager manager,
+    public SwingChannelInfoCodePanel(ChannelInfoManager manager,
                                      ChannelRepository channelRepository) {
         super(TITLE_TEXT, 15);
         this.channelRepository = channelRepository;
         this.setToolTipText(TOOLTIP_TEXT);
-        this.setComponentPopupMenu(popupMenu(channelRepository, manager, owner));
+        this.setComponentPopupMenu(popupMenu(manager));
     }
 
     @Override
@@ -66,20 +61,10 @@ public class SwingChannelInfoCodePanel extends TitledTextField implements Channe
         return false;
     }
 
-    private JPopupMenu popupMenu(final ChannelRepository repository,
-                                 final ChannelInfoManager manager,
-                                 final SwingChannelInfoDialog owner) {
+    private JPopupMenu popupMenu(final ChannelInfoManager manager) {
         JPopupMenu popupMenu = new JPopupMenu(SEARCH_TEXT);
         JMenuItem check = new JMenuItem(SEARCH_TEXT);
-        check.addActionListener(e -> {
-            Channel channel = repository.get(this.getCode());
-            if (channel == null) {
-                JOptionPane.showMessageDialog(owner, CHANNEL_NOT_FOUND_MESSAGE, SEARCH_TEXT, JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                int result = JOptionPane.showConfirmDialog(owner, CHANNEL_FOUND_MESSAGE, SEARCH_TEXT, JOptionPane.OK_CANCEL_OPTION);
-                if (result == 0) manager.setChannelInfo(channel);
-            }
-        });
+        check.addActionListener(e -> manager.searchChannelByCode());
         popupMenu.add(check);
 
         return popupMenu;
