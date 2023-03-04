@@ -1,5 +1,6 @@
 package service.channel.list;
 
+import model.dto.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.channel.info.SwingChannelInfoExecuter;
@@ -38,7 +39,9 @@ public class DefaultChannelListManager implements ChannelListManager {
 
     @Override
     public void showChannelInfo() {
-
+        String channelCode = channelTable.getSelectedChannelCode();
+        Channel channel = repository.get(channelCode);
+        new SwingChannelInfoExecuter(channel).execute();
     }
 
     @Override
