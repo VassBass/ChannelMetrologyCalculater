@@ -85,13 +85,6 @@ public class Channel implements Serializable {
     private String technologyNumber = EMPTY;
 
     /**
-     * DB field = sensor [TEXT]
-     *
-     * @see Sensor
-     */
-    private String sensorName = EMPTY;
-
-    /**
      * DB field = protocol_number [TEXT]
      */
     private String numberOfProtocol = EMPTY;
@@ -143,7 +136,6 @@ public class Channel implements Serializable {
     public String getInstallation() {return installation;}
     @Nonnull public String getDate() {return date;}
     public String getTechnologyNumber() {return technologyNumber;}
-    public String getSensorName() {return sensorName;}
     public String getNumberOfProtocol() {return numberOfProtocol;}
     public double getFrequency() {return frequency;}
     public double getRangeMin() {return rangeMin;}
@@ -154,24 +146,6 @@ public class Channel implements Serializable {
     public boolean isSuitability(){return suitability;}
     public Map<Double, Double> getControlPoints(){
         return controlPoints;
-    }
-
-    /**
-     * @return date of next channel control or null if {@link #suitability} = false
-     *
-     * @see #frequency
-     * @see #suitability
-     * @see #date
-     */
-    public Calendar calculateNextDate() {
-        if (this.suitability) {
-            long l = (long) (31536000000L * frequency);
-            Calendar nextDate = new GregorianCalendar();
-            nextDate.setTimeInMillis(VariableConverter.stringToDate(this.date).getTimeInMillis() + l);
-            return nextDate;
-        }else{
-            return null;
-        }
     }
 
     /**
@@ -214,7 +188,6 @@ public class Channel implements Serializable {
     public void setDate(@Nonnull String date) {this.date = date;}
     public void setFrequency(double frequency) { this.frequency = frequency;}
     public void setTechnologyNumber(String number) {this.technologyNumber = number;}
-    public void setSensorName(String sensorName) {this.sensorName = sensorName;}
     public void setNumberOfProtocol(String number) {this.numberOfProtocol = number;}
     public void setRangeMin(double rangeMin) {this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax) {this.rangeMax = rangeMax;}
@@ -238,12 +211,10 @@ public class Channel implements Serializable {
     }
 
     /**
-     *
-     * This method has been rewritten to work with ArrayList.
+     * This method has been rewritten to work with Collections.
+     * @see Collection#contains(Object)
      *
      * @return true if channels codes is equal
-     *
-     * If you need to compare all fields of Channels use {@link #isMatch(Channel)}
      */
     @Override
     public boolean equals(Object obj) {
@@ -257,35 +228,5 @@ public class Channel implements Serializable {
     @Override
     public String toString() {
         return String.format("(%s)%s[%s]{%s}", code, name, technologyNumber, createFullPath());
-    }
-
-    /**
-     * @param channel to compare with this
-     *
-     * @return true if channels fields equal
-     */
-    public boolean isMatch(Channel channel){
-        if (channel == null) return false;
-        if (this == channel) return true;
-
-        return this.code.equals(channel.getCode())
-                && this.name.equals(channel.getName())
-                && this.measurementValue.equals(channel.getMeasurementValue())
-                && this.department.equals(channel.getDepartment())
-                && this.area.equals(channel.getArea())
-                && this.process.equals(channel.getProcess())
-                && this.installation.equals(channel.getInstallation())
-                && this.date.equals(channel.getDate())
-                && this.frequency == channel.getFrequency()
-                && this.technologyNumber.equals(channel.getTechnologyNumber())
-                && this.sensorName.equals(channel.getSensorName())
-                && this.numberOfProtocol.equals(channel.getNumberOfProtocol())
-                && this.reference.equals(channel.getReference())
-                && this.rangeMin == channel.getRangeMin()
-                && this.rangeMax == channel.getRangeMax()
-                && this.allowableErrorPercent == channel.getAllowableErrorPercent()
-                && this.allowableError == channel.getAllowableError()
-                && this.suitability == channel.isSuitability()
-                && this.controlPoints.equals(channel.getControlPoints());
     }
 }

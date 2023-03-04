@@ -95,7 +95,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void deleteChannel() {
-
+        System.out.printf("width = %s | height = %s", owner.getWidth(), owner.getHeight());
     }
 
     @Override

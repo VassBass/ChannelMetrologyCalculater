@@ -5,6 +5,7 @@ import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
 import service.channel.info.ui.ChannelInfoPathPanel;
 
+import java.awt.*;
 import java.util.List;
 
 public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInfoPathPanel {
@@ -16,7 +17,7 @@ public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInf
     private final DefaultComboBox installations;
 
     public SwingChannelInfoPathPanel() {
-        super(TITLE_TEXT);
+        super(TITLE_TEXT, Color.BLACK);
 
         departments = new DefaultComboBox(true);
         areas = new DefaultComboBox(true);
@@ -47,6 +48,26 @@ public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInf
     @Override
     public void setInstallations(List<String> installations) {
         this.installations.setList(installations);
+    }
+
+    @Override
+    public void setDepartment(String department) {
+        departments.setSelectedItem(department);
+    }
+
+    @Override
+    public void setArea(String area) {
+        areas.setSelectedItem(area);
+    }
+
+    @Override
+    public void setProcess(String process) {
+        processes.setSelectedItem(process);
+    }
+
+    @Override
+    public void setInstallation(String installation) {
+        installations.setSelectedItem(installation);
     }
 
     @Override

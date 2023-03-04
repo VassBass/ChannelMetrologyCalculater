@@ -8,6 +8,11 @@ public interface ChannelInfoPathPanel {
     void setProcesses(List<String> processes);
     void setInstallations(List<String> installations);
 
+    void setDepartment(String department);
+    void setArea(String area);
+    void setProcess(String process);
+    void setInstallation(String installation);
+
     String getSelectedDepartment();
     String getSelectedArea();
     String getSelectedProcess();

@@ -7,4 +7,7 @@ public interface ChannelInfoMeasurementPanel {
     void setMeasurementValue(String value);
     void setMeasurementValues(List<String> values);
     void setMeasurementNames(List<String>names);
+
+    String getSelectedMeasurementName();
+    String getSelectedMeasurementValue();
 }

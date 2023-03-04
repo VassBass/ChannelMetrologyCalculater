@@ -21,8 +21,8 @@ public class Sensor implements Serializable {
     public static final String Pt100 = "ТОП  Pt 100";
 
     public Sensor(){}
-    public Sensor(String name){
-        this.name = name;
+    public Sensor(String channelCode){
+        this.channelCode = channelCode;
     }
 
     /**
@@ -31,9 +31,9 @@ public class Sensor implements Serializable {
     private String type = EMPTY;
 
     /**
-     * DB field = name (primary key) [TEXT]
+     * DB field = channel_code (primary key) [TEXT]
      */
-    private String name = EMPTY;
+    private String channelCode = EMPTY;
 
     /**
      * DB fields range_min, range_max [REAL]
@@ -42,23 +42,23 @@ public class Sensor implements Serializable {
     private double rangeMax = 0D;
 
     /**
-     * DB field = number [TEXT]
+     * DB field = serial_number [TEXT]
      */
-    private String number = EMPTY;
+    private String serialNumber = EMPTY;
 
     /**
-     * DB field = value [TEXT]
+     * DB field = measurement_value [TEXT]
      *
      * @see Measurement
      */
-    private String value = EMPTY;
+    private String measurementValue = EMPTY;
 
     /**
-     * DB field = measurement [TEXT]
+     * DB field = measurement_name [TEXT]
      *
      * @see Measurement
      */
-    private String measurement = EMPTY;
+    private String measurementName = EMPTY;
 
     /**
      * DB field = error_formula [TEXT]
@@ -77,21 +77,21 @@ public class Sensor implements Serializable {
     private String errorFormula = EMPTY;
 
     public void setType(String type) {this.type = type;}
-    public void setName(String name){this.name = name;}
+    public void setChannelCode(String channelCode){this.channelCode = channelCode;}
     public void setRangeMin(double min) {this.rangeMin = min;}
     public void setRangeMax(double max) {this.rangeMax = max;}
-    public void setNumber(String number){this.number = number;}
-    public void setValue(String value){this.value = value;}
-    public void setMeasurement(String measurement){this.measurement = measurement;}
+    public void setSerialNumber(String serialNumber){this.serialNumber = serialNumber;}
+    public void setMeasurementValue(String value){this.measurementValue = value;}
+    public void setMeasurementName(String name){this.measurementName = name;}
     public void setErrorFormula(String formula){this.errorFormula = formula;}
 
     public String getType() {return this.type;}
-    public String getName(){return this.name;}
+    public String getChannelCode(){return this.channelCode;}
     public double getRangeMin() {return this.rangeMin;}
     public double getRangeMax() {return this.rangeMax;}
-    public String getNumber(){return this.number;}
-    public String getValue(){return this.value;}
-    public String getMeasurement(){return this.measurement;}
+    public String getSerialNumber(){return this.serialNumber;}
+    public String getMeasurementValue(){return this.measurementValue;}
+    public String getMeasurementName(){return this.measurementName;}
     public String getErrorFormula(){return this.errorFormula;}
 
     public double calculateRange(){return this.rangeMax - this.rangeMin;}
@@ -129,16 +129,15 @@ public class Sensor implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.type, this.name, this.number);
+        return Objects.hash(this.type, this.channelCode, this.serialNumber);
     }
 
     /**
      *
-     * This method has been rewritten to work with ArrayList.
+     * This method has been rewritten to work with Collections.
+     * @see java.util.Collection#contains(Object)
      *
      * @return true if sensors names is equal
-     *
-     * If you need to compare all fields of Sensors use {@link #isMatch(Sensor)}
      */
     @Override
     public boolean equals(Object obj) {
@@ -146,31 +145,11 @@ public class Sensor implements Serializable {
         if (obj == this) return true;
 
         Sensor in = (Sensor) obj;
-        return in.getName().equals(this.name);
+        return in.getChannelCode().equals(this.channelCode);
     }
 
     @Override
     public String toString() {
-        return String.format("%s[%s]", name, number);
-    }
-
-    /**
-     * @param sensor to compare
-     *
-     * @return true if sensors fields equal
-     */
-    public boolean isMatch(Sensor sensor){
-        if (sensor == null) return false;
-        if (this == sensor) return true;
-
-        return name.equals(sensor.getName()) &&
-                type.equals(sensor.getType()) &&
-                rangeMin == sensor.getRangeMin() &&
-                rangeMax == sensor.getRangeMax() &&
-                number.equals(sensor.getNumber()) &&
-                value.equals(sensor.getValue()) &&
-                measurement.equals(sensor.getMeasurement()) &&
-                errorFormula.equals(sensor.getErrorFormula());
-
+        return String.format("%s[%s]", type, serialNumber);
     }
 }

@@ -1,6 +1,7 @@
 package model.ui;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
@@ -14,9 +15,15 @@ public class TitledTextField extends JTextField {
         super(columns);
     }
 
-    public TitledTextField(String title, int columns) {
+    public TitledTextField(int columns, String title) {
         super(columns);
         border = BorderFactory.createTitledBorder(title);
+        this.setBorder(border);
+    }
+
+    public TitledTextField(int columns, String title, Color borderColor) {
+        super(columns);
+        border = new TitledBorder(new LineBorder(borderColor), title);
         this.setBorder(border);
     }
 

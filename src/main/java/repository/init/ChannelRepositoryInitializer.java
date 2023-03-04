@@ -36,7 +36,6 @@ public class ChannelRepositoryInitializer extends RepositoryInitializer {
                 + ", suitability text NOT NULL"
                 + ", measurement_name text NOT NULL"
                 + ", measurement_value text NOT NULL"
-                + ", sensor_name text NOT NULL"
                 + ", frequency real NOT NULL"
                 + ", range_min real NOT NULL"
                 + ", range_max real NOT NULL"

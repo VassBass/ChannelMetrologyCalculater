@@ -1,7 +1,9 @@
 package service.channel.list;
 
 import model.dto.Channel;
+import model.dto.Sensor;
 import repository.repos.channel.ChannelRepository;
+import repository.repos.sensor.SensorRepository;
 import util.DateHelper;
 
 import java.util.Calendar;
@@ -10,17 +12,20 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 
 public class DefaultChannelListService implements ChannelListService {
-    private final ChannelRepository repository;
+    private final ChannelRepository channelRepository;
+    private final SensorRepository sensorRepository;
 
-    public DefaultChannelListService(ChannelRepository repository) {
-        this.repository = repository;
+    public DefaultChannelListService(ChannelRepository channelRepository,
+                                     SensorRepository sensorRepository ) {
+        this.channelRepository = channelRepository;
+        this.sensorRepository = sensorRepository;
     }
 
     @Override
     public Collection<String> getCodesOfExpiredChannels() {
         Collection<String> result = new HashSet<>();
 
-        for (Channel channel : repository.getAll()) {
+        for (Channel channel : channelRepository.getAll()) {
             Calendar checkDate = DateHelper.stringToDate(channel.getDate());
             if (checkDate == null) {
                 result.add(channel.getCode());
@@ -40,7 +45,7 @@ public class DefaultChannelListService implements ChannelListService {
     public Collection<String> getCodesOfChannelsCloseToExpired() {
         Collection<String> result = new HashSet<>();
 
-        for (Channel channel : repository.getAll()) {
+        for (Channel channel : channelRepository.getAll()) {
             Calendar checkDate = DateHelper.stringToDate(channel.getDate());
             if (checkDate != null) {
                 long checkDateInMills = checkDate.getTimeInMillis();
@@ -75,5 +80,10 @@ public class DefaultChannelListService implements ChannelListService {
 
         }
         return nextDate;
+    }
+
+    @Override
+    public Sensor getSensor(Channel channel) {
+        return sensorRepository.get(channel.getCode());
     }
 }

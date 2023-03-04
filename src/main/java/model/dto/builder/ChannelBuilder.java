@@ -31,7 +31,6 @@ public class ChannelBuilder {
         this.channel.setDate(channel.getDate());
         this.channel.setFrequency(channel.getFrequency());
         this.channel.setTechnologyNumber(channel.getTechnologyNumber());
-        this.channel.setSensorName(channel.getSensorName());
         this.channel.setNumberOfProtocol(channel.getNumberOfProtocol());
         this.channel.setReference(channel.getReference());
         this.channel.setRange(channel.getRangeMin(), channel.getRangeMax());
@@ -98,11 +97,6 @@ public class ChannelBuilder {
 
     public ChannelBuilder setTechnologyNumber(@Nonnull String number) {
         channel.setTechnologyNumber(number);
-        return this;
-    }
-
-    public ChannelBuilder setSensorName(@Nonnull String sensorName) {
-        channel.setSensorName(sensorName);
         return this;
     }
 

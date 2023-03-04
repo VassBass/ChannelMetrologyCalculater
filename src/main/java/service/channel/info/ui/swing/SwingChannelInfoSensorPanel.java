@@ -9,6 +9,8 @@ import util.StringHelper;
 import java.awt.*;
 import java.util.List;
 
+import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingConstants.RIGHT;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelInfoSensorPanel {
@@ -18,7 +20,7 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     private static final String RANGE_TITLE_TEXT = "Діапазон";
     private static final String CHECK_BOX_TEXT = "Однакові діапазони";
 
-    private final DefaultComboBox sensorsNames;
+    private final DefaultComboBox sensorsTypes;
     private final TitledTextField serialNumber;
     private final TitledPanel rangePanel;
     private final DefaultTextField rangeMin, rangeMax;
@@ -26,13 +28,14 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     private final DefaultCheckBox equalsRanges;
 
     public SwingChannelInfoSensorPanel(final ChannelInfoManager manager) {
-        super(TITLE_TEXT);
+        super(TITLE_TEXT, Color.BLACK);
         this.setToolTipText(TOOLTIP_TEXT);
 
-        sensorsNames = new DefaultComboBox(false);
-        serialNumber = new TitledTextField(SERIAL_NUMBER_TITLE_TEXT, 15);
-        rangeMin = new DefaultTextField(5);
+        sensorsTypes = new DefaultComboBox(true);
+        serialNumber = new TitledTextField(15, SERIAL_NUMBER_TITLE_TEXT);
+        rangeMin = new DefaultTextField(5, null, RIGHT);
         rangeMax = new DefaultTextField(5);
+        DefaultLabel separator = new DefaultLabel("...", CENTER);
 
         equalsRanges = new DefaultCheckBox(CHECK_BOX_TEXT);
         equalsRanges.addItemListener(e -> {
@@ -45,24 +48,34 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
 
         rangePanel = new TitledPanel(RANGE_TITLE_TEXT);
         rangePanel.add(rangeMin, new CellBuilder().x(0).y(0).build());
-        rangePanel.add(new DefaultLabel("..."), new CellBuilder().x(1).y(0).build());
+        rangePanel.add(separator, new CellBuilder().x(1).y(0).build());
         rangePanel.add(rangeMax, new CellBuilder().x(2).y(0).build());
         rangePanel.add(measurementValues, new CellBuilder().x(3).y(0).build());
-        rangePanel.add(equalsRanges, new CellBuilder().x(0).y(1).width(4).build());
+        rangePanel.add(equalsRanges, new CellBuilder().x(3).y(1).width(4).build());
 
-        this.add(sensorsNames, new CellBuilder().x(0).y(0).build());
+        this.add(sensorsTypes, new CellBuilder().x(0).y(0).build());
         this.add(serialNumber, new CellBuilder().x(1).y(0).build());
         this.add(rangePanel, new CellBuilder().x(0).y(1).width(2).build());
     }
 
     @Override
-    public void setSensorsNames(List<String> sensorsNames) {
-        this.sensorsNames.setList(sensorsNames);
+    public void setSensorsTypes(List<String> sensorsTypes) {
+        this.sensorsTypes.setList(sensorsTypes);
     }
 
     @Override
     public void setMeasurementValues(List<String> values) {
         this.measurementValues.setList(values);
+    }
+
+    @Override
+    public void setSensorType(String type) {
+        sensorsTypes.setSelectedItem(type);
+    }
+
+    @Override
+    public void setMeasurementValue(String value) {
+        measurementValues.setSelectedItem(value);
     }
 
     @Override
@@ -94,8 +107,8 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     }
 
     @Override
-    public String getSelectedSensorName() {
-        return sensorsNames.getSelectedItem();
+    public String getSelectedSensorType() {
+        return sensorsTypes.getSelectedItem();
     }
 
     @Override

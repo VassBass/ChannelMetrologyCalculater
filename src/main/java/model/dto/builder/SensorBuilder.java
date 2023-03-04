@@ -13,12 +13,12 @@ public class SensorBuilder {
         sensor = new Sensor();
     }
 
-    public SensorBuilder(@Nonnull String name) {
-        sensor = new Sensor(name);
+    public SensorBuilder(@Nonnull String channelCode) {
+        sensor = new Sensor(channelCode);
     }
 
-    public SensorBuilder setName(@Nonnull String name) {
-        sensor.setName(name);
+    public SensorBuilder setChannelCode(@Nonnull String code) {
+        sensor.setChannelCode(code);
         return this;
     }
 
@@ -27,18 +27,18 @@ public class SensorBuilder {
         return this;
     }
 
-    public SensorBuilder setNumber(String number) {
-        sensor.setNumber(number == null ? EMPTY : number);
+    public SensorBuilder setSerialNumber(String number) {
+        sensor.setSerialNumber(number == null ? EMPTY : number);
         return this;
     }
 
     public SensorBuilder setMeasurementName(String name) {
-        sensor.setMeasurement(name == null ? EMPTY : name);
+        sensor.setMeasurementName(name == null ? EMPTY : name);
         return this;
     }
 
     public SensorBuilder setMeasurementValue(String value) {
-        sensor.setValue(value == null ? EMPTY : value);
+        sensor.setMeasurementValue(value == null ? EMPTY : value);
         return this;
     }
 

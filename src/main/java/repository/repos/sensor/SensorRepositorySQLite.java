@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-
 public class SensorRepositorySQLite implements SensorRepository {
     private static final Logger logger = LoggerFactory.getLogger(SensorRepositorySQLite.class);
 
@@ -38,11 +36,11 @@ public class SensorRepositorySQLite implements SensorRepository {
         try (ResultSet resultSet = connector.getResultSet(sql)){
             while (resultSet.next()){
                 Sensor sensor = new Sensor();
-                sensor.setName(resultSet.getString("name"));
+                sensor.setChannelCode(resultSet.getString("channel_code"));
                 sensor.setType(resultSet.getString("type"));
-                sensor.setNumber(resultSet.getString("number"));
-                sensor.setMeasurement(resultSet.getString("measurement"));
-                sensor.setValue(resultSet.getString("value"));
+                sensor.setSerialNumber(resultSet.getString("serial_number"));
+                sensor.setMeasurementName(resultSet.getString("measurement_name"));
+                sensor.setMeasurementValue(resultSet.getString("measurement_value"));
                 sensor.setErrorFormula(resultSet.getString("error_formula"));
                 sensor.setRangeMin(resultSet.getDouble("range_min"));
                 sensor.setRangeMax(resultSet.getDouble("range_max"));
@@ -59,15 +57,15 @@ public class SensorRepositorySQLite implements SensorRepository {
     public Collection<Sensor> getAllByMeasurementName(@Nonnull String measurement) {
         List<Sensor>sensors = new ArrayList<>();
 
-        String sql = String.format("SELECT * FROM %s WHERE measurement = '%s';", tableName, measurement);
+        String sql = String.format("SELECT * FROM %s WHERE measurement_name = '%s';", tableName, measurement);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             while (resultSet.next()){
                 Sensor sensor = new Sensor();
-                sensor.setName(resultSet.getString("name"));
+                sensor.setChannelCode(resultSet.getString("channel_code"));
                 sensor.setType(resultSet.getString("type"));
-                sensor.setNumber(resultSet.getString("number"));
-                sensor.setMeasurement(resultSet.getString("measurement"));
-                sensor.setValue(resultSet.getString("value"));
+                sensor.setSerialNumber(resultSet.getString("serial_number"));
+                sensor.setMeasurementName(resultSet.getString("measurement_name"));
+                sensor.setMeasurementValue(resultSet.getString("measurement_value"));
                 sensor.setErrorFormula(resultSet.getString("error_formula"));
                 sensor.setRangeMin(resultSet.getDouble("range_min"));
                 sensor.setRangeMax(resultSet.getDouble("range_max"));
@@ -96,30 +94,15 @@ public class SensorRepositorySQLite implements SensorRepository {
     }
 
     @Override
-    public String getMeasurementNameBySensorType(@Nonnull String sensorType) {
-        String sql = String.format("SELECT measurement FROM %s WHERE type = '%s';", tableName, sensorType);
-        String measurement = null;
-        try (ResultSet resultSet = connector.getResultSet(sql)){
-            if (resultSet.next()){
-                measurement = resultSet.getString("measurement");
-            }
-        }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
-        }
-
-        return measurement == null ? EMPTY : measurement;
-    }
-
-    @Override
-    public Collection<String> getAllSensorsNameByMeasurementName(@Nonnull String measurementName) {
+    public Collection<String> getAllSensorsTypesByMeasurementName(@Nonnull String measurementName) {
         List<String> names = new ArrayList<>();
 
-        String sql = String.format("SELECT name FROM %s WHERE measurement = '%s';", tableName, measurementName);
+        String sql = String.format("SELECT DISTINCT type FROM %s WHERE measurement_name = '%s';", tableName, measurementName);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             while (resultSet.next()) {
-                String name = resultSet.getString("name");
-                if (name == null) continue;
-                names.add(name);
+                String type = resultSet.getString("type");
+                if (type == null) continue;
+                names.add(type);
             }
         }catch (SQLException e){
             logger.warn("Exception was thrown!", e);
@@ -129,16 +112,16 @@ public class SensorRepositorySQLite implements SensorRepository {
     }
 
     @Override
-    public Sensor get(@Nonnull String sensorName) {
-        String sql = String.format("SELECT * FROM %s WHERE name = '%s' LIMIT 1;", tableName, sensorName);
+    public Sensor get(@Nonnull String channelCode) {
+        String sql = String.format("SELECT * FROM %s WHERE channel_code = '%s' LIMIT 1;", tableName, channelCode);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             if (resultSet.next()){
                 Sensor sensor = new Sensor();
-                sensor.setName(resultSet.getString("name"));
+                sensor.setChannelCode(resultSet.getString("channel_code"));
                 sensor.setType(resultSet.getString("type"));
-                sensor.setNumber(resultSet.getString("number"));
-                sensor.setMeasurement(resultSet.getString("measurement"));
-                sensor.setValue(resultSet.getString("value"));
+                sensor.setSerialNumber(resultSet.getString("serial_number"));
+                sensor.setMeasurementName(resultSet.getString("measurement_name"));
+                sensor.setMeasurementValue(resultSet.getString("measurement_value"));
                 sensor.setErrorFormula(resultSet.getString("error_formula"));
                 sensor.setRangeMin(resultSet.getDouble("range_min"));
                 sensor.setRangeMax(resultSet.getDouble("range_max"));
@@ -154,15 +137,16 @@ public class SensorRepositorySQLite implements SensorRepository {
 
     @Override
     public boolean add(@Nonnull Sensor sensor) {
-        String sql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, range_min, range_max) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+        String sql = String.format("INSERT INTO %s (channel_code, type, serial_number, measurement_name, measurement_value, " +
+                        "error_formula, range_min, range_max) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
                 tableName);
         try (PreparedStatement statement = connector.getPreparedStatement(sql)){
-            statement.setString(1, sensor.getName());
+            statement.setString(1, sensor.getChannelCode());
             statement.setString(2, sensor.getType());
-            statement.setString(3, sensor.getNumber());
-            statement.setString(4, sensor.getMeasurement());
-            statement.setString(5, sensor.getValue());
+            statement.setString(3, sensor.getSerialNumber());
+            statement.setString(4, sensor.getMeasurementName());
+            statement.setString(5, sensor.getMeasurementValue());
             statement.setString(6, sensor.getErrorFormula());
             statement.setDouble(7, sensor.getRangeMin());
             statement.setDouble(8, sensor.getRangeMax());
@@ -176,7 +160,7 @@ public class SensorRepositorySQLite implements SensorRepository {
 
     @Override
     public boolean remove(@Nonnull Sensor sensor) {
-        String sql = String.format("DELETE FROM %s WHERE name = '%s';", tableName, sensor.getName());
+        String sql = String.format("DELETE FROM %s WHERE channel_code = '%s';", tableName, sensor.getChannelCode());
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
@@ -187,19 +171,20 @@ public class SensorRepositorySQLite implements SensorRepository {
 
     @Override
     public boolean set(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor) {
-        String sql = String.format("UPDATE %s SET name = ?, type = ?, number = ?, measurement = ?, value = ?, error_formula = ?" +
-                ", range_min = ?, range_max = ? WHERE name = ?" +
+        String sql = String.format("UPDATE %s SET " +
+                "channel_code = ?, type = ?, serial_number = ?, measurement_name = ?, measurement_value = ?, error_formula = ?" +
+                ", range_min = ?, range_max = ? WHERE channel_code = ?" +
                 ";", tableName);
         try (PreparedStatement statement = connector.getPreparedStatement(sql)){
-            statement.setString(1, newSensor.getName());
+            statement.setString(1, newSensor.getChannelCode());
             statement.setString(2, newSensor.getType());
-            statement.setString(3, newSensor.getNumber());
-            statement.setString(4, newSensor.getMeasurement());
-            statement.setString(5, newSensor.getValue());
+            statement.setString(3, newSensor.getSerialNumber());
+            statement.setString(4, newSensor.getMeasurementName());
+            statement.setString(5, newSensor.getMeasurementValue());
             statement.setString(6, newSensor.getErrorFormula());
             statement.setDouble(7, newSensor.getRangeMin());
             statement.setDouble(8, newSensor.getRangeMax());
-            statement.setString(9, oldSensor.getName());
+            statement.setString(9, oldSensor.getChannelCode());
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
@@ -210,19 +195,7 @@ public class SensorRepositorySQLite implements SensorRepository {
 
     @Override
     public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
-        String sql = String.format("UPDATE %s SET value = '%s' WHERE value = '%s';", tableName, newValue, oldValue);
-        try (Statement statement = connector.getStatement()){
-            statement.execute(sql);
-            return true;
-        } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean removeMeasurementValue(@Nonnull String measurementValue) {
-        String sql = String.format("UPDATE %s SET value = '' WHERE value = '%s';", tableName, measurementValue);
+        String sql = String.format("UPDATE %s SET measurement_value = '%s' WHERE measurement_value = '%s';", tableName, newValue, oldValue);
         try (Statement statement = connector.getStatement()){
             statement.execute(sql);
             return true;
@@ -239,18 +212,19 @@ public class SensorRepositorySQLite implements SensorRepository {
             statement.execute(sql);
 
             if (!sensors.isEmpty()) {
-                String insertSql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, range_min, range_max) "
+                String insertSql = String.format("INSERT INTO %s (channel_code, type, serial_number, " +
+                        "measurement_name, measurement_value, error_formula, range_min, range_max) "
                         + "VALUES ", tableName);
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
                 for (Sensor sensor : sensors) {
                     if (sensor == null) continue;
                     String values = String.format("('%s', '%s', '%s', '%s', '%s', '%s', %s, %s),",
-                            sensor.getName(),
+                            sensor.getChannelCode(),
                             sensor.getType(),
-                            sensor.getNumber(),
-                            sensor.getMeasurement(),
-                            sensor.getValue(),
+                            sensor.getSerialNumber(),
+                            sensor.getMeasurementName(),
+                            sensor.getMeasurementValue(),
                             sensor.getErrorFormula(),
                             sensor.getRangeMin(),
                             sensor.getRangeMax());
@@ -264,19 +238,6 @@ public class SensorRepositorySQLite implements SensorRepository {
         } catch (SQLException e) {
             logger.warn("Exception was thrown!", e);
             return false;
-        }
-    }
-
-    @Override
-    public boolean isLastInMeasurement(@Nonnull Sensor sensor) {
-        String sql = String.format("SELECT name FROM %s WHERE measurement = '%s';", tableName, sensor.getMeasurement());
-        try (ResultSet resultSet = connector.getResultSet(sql)){
-            int n = 0;
-            while (resultSet.next()) if (++n > 1) return false;
-            return true;
-        }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
-            return true;
         }
     }
 
@@ -299,17 +260,18 @@ public class SensorRepositorySQLite implements SensorRepository {
                 if (s == null) continue;
 
                 String sql = String.format("UPDATE %s SET "
-                        + "type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, range_min = ?, range_max = ? "
-                        + "WHERE name = ?;", tableName);
+                        + "type = ?, serial_number = ?, measurement_name = ?, measurement_value = ?, error_formula = ?, " +
+                        "range_min = ?, range_max = ? "
+                        + "WHERE channel_code = ?;", tableName);
                 try (PreparedStatement statement = connector.getPreparedStatement(sql)){
                     statement.setString(1, s.getType());
-                    statement.setString(2, s.getNumber());
-                    statement.setString(3, s.getMeasurement());
-                    statement.setString(4, s.getValue());
+                    statement.setString(2, s.getSerialNumber());
+                    statement.setString(3, s.getMeasurementName());
+                    statement.setString(4, s.getMeasurementValue());
                     statement.setString(5, s.getErrorFormula());
                     statement.setDouble(6, s.getRangeMin());
                     statement.setDouble(7, s.getRangeMax());
-                    statement.setString(8, s.getName());
+                    statement.setString(8, s.getChannelCode());
 
                     statement.execute();
                 } catch (SQLException e) {
@@ -320,15 +282,16 @@ public class SensorRepositorySQLite implements SensorRepository {
         }
 
         if (!newSensors.isEmpty()){
-            String sql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, range_min, range_max) "
+            String sql = String.format("INSERT INTO %s (channel_code, type, serial_number, measurement_name, measurement_value, " +
+                    "error_formula, range_min, range_max) "
                     + "VALUES ", tableName);
             StringBuilder sqlBuilder = new StringBuilder(sql);
             try (Statement statement = connector.getStatement()) {
                 for (Sensor sensor : newSensors) {
                     if (sensor == null) continue;
                     String values = String.format("('%s', '%s', '%s', '%s', '%s', '%s', %s, %s),",
-                            sensor.getName(), sensor.getType(), sensor.getNumber(), sensor.getMeasurement(), sensor.getValue(),
-                            sensor.getErrorFormula(), sensor.getRangeMin(), sensor.getRangeMax());
+                            sensor.getChannelCode(), sensor.getType(), sensor.getSerialNumber(), sensor.getMeasurementName(),
+                            sensor.getMeasurementValue(), sensor.getErrorFormula(), sensor.getRangeMin(), sensor.getRangeMax());
                     sqlBuilder.append(values);
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
@@ -343,8 +306,8 @@ public class SensorRepositorySQLite implements SensorRepository {
     }
 
     @Override
-    public boolean isExists(@Nonnull String sensorName) {
-        String sql = String.format("SELECT name FROM %s WHERE name = '%s' LIMIT 1;", tableName, sensorName);
+    public boolean isExists(@Nonnull String channelCode) {
+        String sql = String.format("SELECT channel_code FROM %s WHERE channel_code = '%s' LIMIT 1;", tableName, channelCode);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){

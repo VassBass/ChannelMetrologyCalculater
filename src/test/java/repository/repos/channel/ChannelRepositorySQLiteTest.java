@@ -2,16 +2,15 @@ package repository.repos.channel;
 
 import model.dto.Channel;
 import model.dto.Measurement;
-import model.dto.Sensor;
 import model.dto.builder.ChannelBuilder;
 import org.junit.*;
 import org.sqlite.JDBC;
-import service.json.JacksonJsonObjectMapper;
-import service.json.JsonObjectMapper;
 import repository.config.RepositoryConfigHolder;
 import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.connection.SqliteRepositoryDBConnector;
+import service.json.JacksonJsonObjectMapper;
+import service.json.JsonObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,11 +31,10 @@ public class ChannelRepositorySQLiteTest {
 
     private static List<Channel> expected;
 
-    private static Channel createChannel(int number, String sensorName, String measurementValue){
+    private static Channel createChannel(int number, String measurementValue){
         return new ChannelBuilder(String.valueOf(number))
                 .setName("name" + number)
                 .setMeasurementValue(measurementValue)
-                .setSensorName(sensorName)
                 .build();
     }
 
@@ -61,7 +59,6 @@ public class ChannelRepositorySQLiteTest {
                 + ", suitability text NOT NULL"
                 + ", measurement_name text NOT NULL"
                 + ", measurement_value text NOT NULL"
-                + ", sensor_name text NOT NULL"
                 + ", frequency real NOT NULL"
                 + ", range_min real NOT NULL"
                 + ", range_max real NOT NULL"
@@ -89,23 +86,23 @@ public class ChannelRepositorySQLiteTest {
     @Before
     public void init() throws SQLException {
         expected = new ArrayList<>(7);
-        expected.add(createChannel(0, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS));
-        expected.add(createChannel(1, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS));
-        expected.add(createChannel(2, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS));
-        expected.add(createChannel(3, Sensor.YOKOGAWA, Measurement.KPA));
-        expected.add(createChannel(4, Sensor.YOKOGAWA, Measurement.KPA));
-        expected.add(createChannel(5, Sensor.ROSEMOUNT, Measurement.M3_HOUR));
-        expected.add(createChannel(6, Sensor.ROSEMOUNT, Measurement.M3_HOUR));
+        expected.add(createChannel(0, Measurement.DEGREE_CELSIUS));
+        expected.add(createChannel(1, Measurement.DEGREE_CELSIUS));
+        expected.add(createChannel(2, Measurement.DEGREE_CELSIUS));
+        expected.add(createChannel(3, Measurement.KPA));
+        expected.add(createChannel(4, Measurement.KPA));
+        expected.add(createChannel(5, Measurement.M3_HOUR));
+        expected.add(createChannel(6, Measurement.M3_HOUR));
 
         String sql = String.format("INSERT INTO %s (code, name, department, area, process, installation, technology_number" +
-                ", protocol_number, reference, date, suitability, measurement_name, measurement_value, sensor_name, frequency, range_min, range_max" +
+                ", protocol_number, reference, date, suitability, measurement_name, measurement_value, frequency, range_min, range_max" +
                 ", allowable_error_percent, allowable_error_value, control_points) "
                 + "VALUES ", TABLE_NAME);
         StringBuilder sqlBuilder = new StringBuilder(sql);
 
         for (Channel channel : expected) {
             String values = String.format(
-                    "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
+                    "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
                     channel.getCode(),
                     channel.getName(),
                     channel.getDepartment(),
@@ -119,7 +116,6 @@ public class ChannelRepositorySQLiteTest {
                     channel.isSuitability(),
                     channel.getMeasurementName(),
                     channel.getMeasurementValue(),
-                    channel.getSensorName(),
                     channel.getFrequency(),
                     channel.getRangeMin(),
                     channel.getRangeMax(),
@@ -169,7 +165,7 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testAddNotExisted() {
-        Channel channel7 = createChannel(7, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
+        Channel channel7 = createChannel(7, Measurement.DEGREE_CELSIUS);
         expected.add(channel7);
 
         assertTrue(repository.add(channel7));
@@ -182,7 +178,7 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testAddExisted() {
-        Channel channel2 = createChannel(2, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS);
+        Channel channel2 = createChannel(2, Measurement.DEGREE_CELSIUS);
 
         assertFalse(repository.add(channel2));
         assertEquals(channel2, repository.get("2"));
@@ -195,7 +191,7 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testRemoveExisted() {
-        Channel channel2 = createChannel(2, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS);
+        Channel channel2 = createChannel(2, Measurement.DEGREE_CELSIUS);
         expected.remove(channel2);
 
         assertTrue(repository.remove(channel2));
@@ -208,33 +204,10 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testRemoveNotExisted() {
-        Channel channel7 = createChannel(7, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
+        Channel channel7 = createChannel(7, Measurement.DEGREE_CELSIUS);
 
         assertFalse(repository.remove(channel7));
         assertNull(repository.get(channel7.getCode()));
-
-        Collection<Channel> actual = repository.getAll();
-        assertEquals(expected.size(), actual.size());
-        assertTrue(expected.containsAll(actual));
-    }
-
-    @Test
-    public void testRemoveByExistedSensorName(){
-        expected.removeIf(ch -> ch.getSensorName().equals(Sensor.TCM_50M));
-
-        assertTrue(repository.removeBySensorName(Sensor.TCM_50M));
-        assertNull(repository.get("0"));
-        assertNull(repository.get("1"));
-        assertNull(repository.get("2"));
-
-        Collection<Channel> actual = repository.getAll();
-        assertEquals(expected.size(), actual.size());
-        assertTrue(expected.containsAll(actual));
-    }
-
-    @Test
-    public void testRemoveByNotExistedSensorName(){
-        assertTrue(repository.removeBySensorName(Sensor.Pt100));
 
         Collection<Channel> actual = repository.getAll();
         assertEquals(expected.size(), actual.size());
@@ -267,10 +240,10 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testRewriteNotEmpty() {
-        Channel channel0 = createChannel(0, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS);
-        Channel channel8 = createChannel(8, Sensor.ROSEMOUNT, Measurement.CM_S);
-        Channel channel9 = createChannel(9, Sensor.YOKOGAWA, Measurement.KPA);
-        Channel channel5 = createChannel(5, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
+        Channel channel0 = createChannel(0, Measurement.DEGREE_CELSIUS);
+        Channel channel8 = createChannel(8, Measurement.CM_S);
+        Channel channel9 = createChannel(9, Measurement.KPA);
+        Channel channel5 = createChannel(5, Measurement.DEGREE_CELSIUS);
         Collection<Channel> toRewrite = Arrays.asList(channel0, channel8, null, channel9, channel5);
         expected = toRewrite.stream().filter(Objects::nonNull).collect(Collectors.toList());
 
@@ -286,34 +259,6 @@ public class ChannelRepositorySQLiteTest {
     public void testRewriteEmpty() {
         assertTrue(repository.rewrite(new ArrayList<>()));
         assertEquals(0, repository.getAll().size());
-    }
-
-    @Test
-    public void testChangeExistedSensorName(){
-        expected.forEach(ch -> {
-            if (ch.getSensorName().equals(Sensor.TCM_50M)) ch.setSensorName(Sensor.YOKOGAWA);
-        });
-
-        assertTrue(repository.changeSensorName(Sensor.TCM_50M, Sensor.YOKOGAWA));
-
-        Collection<Channel> actual = repository.getAll();
-        assertFalse(actual.stream().anyMatch(ch -> ch.getSensorName().equals(Sensor.TCM_50M)));
-        assertEquals(5, actual.stream().filter(ch -> ch.getSensorName().equals(Sensor.YOKOGAWA)).count());
-
-        assertEquals(expected.size(), actual.size());
-        assertTrue(expected.containsAll(actual));
-    }
-
-    @Test
-    public void testChangeNotExistedSensorName(){
-        assertTrue(repository.changeSensorName(Sensor.Pt100, Sensor.TCM_50M));
-
-        Collection<Channel> actual = repository.getAll();
-        assertFalse(actual.stream().anyMatch(ch -> ch.getSensorName().equals(Sensor.Pt100)));
-        assertEquals(3, actual.stream().filter(ch -> ch.getSensorName().equals(Sensor.TCM_50M)).count());
-
-        assertEquals(expected.size(), actual.size());
-        assertTrue(expected.containsAll(actual));
     }
 
     @Test
@@ -349,7 +294,7 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testSetSameExisted() {
-        Channel channel2 = createChannel(2, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS);
+        Channel channel2 = createChannel(2, Measurement.DEGREE_CELSIUS);
         assertTrue(repository.set(channel2, channel2));
 
         assertEquals(channel2, repository.get(channel2.getCode()));
@@ -361,7 +306,7 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testSetSameNotExisted() {
-        Channel channel8 = createChannel(8, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
+        Channel channel8 = createChannel(8, Measurement.DEGREE_CELSIUS);
         assertFalse(repository.set(channel8, channel8));
 
         assertNull(repository.get(channel8.getCode()));
@@ -373,8 +318,8 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testSetNew() {
-        Channel channel2 = createChannel(2, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS);
-        Channel channel8 = createChannel(8, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
+        Channel channel2 = createChannel(2, Measurement.DEGREE_CELSIUS);
+        Channel channel8 = createChannel(8, Measurement.DEGREE_CELSIUS);
         expected.set(2, channel8);
 
         assertTrue(repository.set(channel2, channel8));
@@ -388,8 +333,8 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testSetExisted() {
-        Channel channel0 = createChannel(0, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS);
-        Channel channel2 = createChannel(2, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS);
+        Channel channel0 = createChannel(0, Measurement.DEGREE_CELSIUS);
+        Channel channel2 = createChannel(2, Measurement.DEGREE_CELSIUS);
 
         assertFalse(repository.set(channel2, channel0));
 
@@ -403,8 +348,8 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testSetInsteadNotExisted() {
-        Channel channel2 = createChannel(2, Sensor.TCM_50M, Measurement.DEGREE_CELSIUS);
-        Channel channel8 = createChannel(8, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
+        Channel channel2 = createChannel(2, Measurement.DEGREE_CELSIUS);
+        Channel channel8 = createChannel(8, Measurement.DEGREE_CELSIUS);
 
         assertFalse(repository.set(channel8, channel2));
 
@@ -425,15 +370,15 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testImportDataWithNewAndChanging() {
-        Channel channel0 = createChannel(0, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
-        Channel channel1 = createChannel(1, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
-        Channel channel2 = createChannel(2, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
-        Channel channel8 = createChannel(8, Sensor.ROSEMOUNT, Measurement.CM_S);
-        Channel channel9 = createChannel(9, Sensor.ROSEMOUNT, Measurement.CM_S);
+        Channel channel0 = createChannel(0, Measurement.MM_ACVA);
+        Channel channel1 = createChannel(1, Measurement.MM_ACVA);
+        Channel channel2 = createChannel(2, Measurement.MM_ACVA);
+        Channel channel8 = createChannel(8, Measurement.CM_S);
+        Channel channel9 = createChannel(9, Measurement.CM_S);
 
         expected.forEach(ch -> {
-            if (ch.getSensorName().equals(Sensor.TCM_50M)) {
-                ch.setSensorName(Sensor.Pt100);
+            if (ch.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)) {
+                ch.setMeasurementValue(Measurement.MM_ACVA);
             }
         });
         expected.addAll(Arrays.asList(channel8, channel9));
@@ -444,17 +389,17 @@ public class ChannelRepositorySQLiteTest {
         Channel actualChannel0 = repository.get(channel0.getCode());
         assertNotNull(actualChannel0);
         assertEquals(channel0, actualChannel0);
-        assertEquals(channel0.getSensorName(), actualChannel0.getSensorName());
+        assertEquals(channel0.getMeasurementValue(), actualChannel0.getMeasurementValue());
 
         Channel actualChannel1 = repository.get(channel1.getCode());
         assertNotNull(actualChannel1);
         assertEquals(channel1, actualChannel1);
-        assertEquals(channel1.getSensorName(), actualChannel1.getSensorName());
+        assertEquals(channel1.getMeasurementValue(), actualChannel1.getMeasurementValue());
 
         Channel actualChannel2 = repository.get(channel2.getCode());
         assertNotNull(actualChannel2);
         assertEquals(channel2, actualChannel2);
-        assertEquals(channel2.getSensorName(), actualChannel2.getSensorName());
+        assertEquals(channel2.getMeasurementValue(), actualChannel2.getMeasurementValue());
 
         assertEquals(channel8, repository.get(channel8.getCode()));
         assertEquals(channel9, repository.get(channel9.getCode()));
@@ -466,8 +411,8 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testImportDataOnlyWithNew() {
-        Channel channel8 = createChannel(8, Sensor.ROSEMOUNT, Measurement.CM_S);
-        Channel channel9 = createChannel(9, Sensor.ROSEMOUNT, Measurement.CM_S);
+        Channel channel8 = createChannel(8, Measurement.CM_S);
+        Channel channel9 = createChannel(9, Measurement.CM_S);
         expected.addAll(Arrays.asList(channel8, channel9));
 
         assertTrue(repository.importData(Arrays.asList(channel8, null, channel9), new ArrayList<>()));
@@ -483,12 +428,12 @@ public class ChannelRepositorySQLiteTest {
 
     @Test
     public void testImportDataOnlyWithChanging() {
-        Channel channel0 = createChannel(0, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
-        Channel channel1 = createChannel(1, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
-        Channel channel2 = createChannel(2, Sensor.Pt100, Measurement.DEGREE_CELSIUS);
+        Channel channel0 = createChannel(0, Measurement.MM_ACVA);
+        Channel channel1 = createChannel(1, Measurement.MM_ACVA);
+        Channel channel2 = createChannel(2, Measurement.MM_ACVA);
         expected.forEach(ch -> {
-            if (ch.getSensorName().equals(Sensor.TCM_50M)) {
-                ch.setSensorName(Sensor.Pt100);
+            if (ch.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)) {
+                ch.setMeasurementValue(Measurement.MM_ACVA);
             }
         });
 
@@ -498,17 +443,17 @@ public class ChannelRepositorySQLiteTest {
         Channel actualChannel0 = repository.get(channel0.getCode());
         assertNotNull(actualChannel0);
         assertEquals(channel0, actualChannel0);
-        assertEquals(channel0.getSensorName(), actualChannel0.getSensorName());
+        assertEquals(channel0.getMeasurementValue(), actualChannel0.getMeasurementValue());
 
         Channel actualChannel1 = repository.get(channel1.getCode());
         assertNotNull(actualChannel1);
         assertEquals(channel1, actualChannel1);
-        assertEquals(channel1.getSensorName(), actualChannel1.getSensorName());
+        assertEquals(channel1.getMeasurementValue(), actualChannel1.getMeasurementValue());
 
         Channel actualChannel2 = repository.get(channel2.getCode());
         assertNotNull(actualChannel2);
         assertEquals(channel2, actualChannel2);
-        assertEquals(channel2.getSensorName(), actualChannel2.getSensorName());
+        assertEquals(channel2.getMeasurementValue(), actualChannel2.getMeasurementValue());
 
         Collection<Channel> actual = repository.getAll();
         assertEquals(expected.size(), actual.size());

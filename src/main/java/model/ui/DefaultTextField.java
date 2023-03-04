@@ -2,6 +2,7 @@ package model.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusListener;
 
 public class DefaultTextField extends JTextField {
 
@@ -16,8 +17,19 @@ public class DefaultTextField extends JTextField {
         this.setToolTipText(tooltipText);
     }
 
+    public DefaultTextField(int columns, String tooltipText, int horizontalAlignment) {
+        this(columns);
+        this.setToolTipText(tooltipText);
+        this.setHorizontalAlignment(horizontalAlignment);
+    }
+
     public DefaultTextField(int columns, String text, String tooltipText) {
-        this(columns,tooltipText);
+        this(columns, tooltipText);
         this.setText(text);
+    }
+
+    public DefaultTextField setFocusListener(FocusListener focusListener) {
+        this.addFocusListener(focusListener);
+        return this;
     }
 }

@@ -46,14 +46,6 @@ public class BufferedChannelRepositorySQLite extends ChannelRepositorySQLite {
     }
 
     @Override
-    public boolean removeBySensorName(@Nonnull String sensorName) {
-        Collection<Channel> result = buffer.values();
-        result.removeIf(c -> c.getSensorName().equals(sensorName));
-
-        return super.removeBySensorName(sensorName);
-    }
-
-    @Override
     public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
         Collection<Channel> result = buffer.values();
         result.removeIf(c -> c.getMeasurementValue().equals(measurementValue));
@@ -68,14 +60,6 @@ public class BufferedChannelRepositorySQLite extends ChannelRepositorySQLite {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(Channel::getCode, Function.identity())));
         return super.rewrite(channels);
-    }
-
-    @Override
-    public boolean changeSensorName(@Nonnull String oldSensor, @Nonnull String newSensor) {
-        buffer.values().forEach(c -> {
-                    if (c.getSensorName().equals(oldSensor)) c.setSensorName(newSensor);
-                });
-        return super.changeSensorName(oldSensor, newSensor);
     }
 
     @Override

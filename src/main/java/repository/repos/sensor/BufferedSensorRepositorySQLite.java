@@ -8,11 +8,8 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     private final Map<String, Sensor> buffer;
@@ -21,7 +18,7 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
         super(configHolder, connector);
         buffer = super.getAll().stream()
                 .filter(Objects::nonNull)
-                .collect(Collectors.toMap(Sensor::getName, Function.identity()));
+                .collect(Collectors.toMap(Sensor::getChannelCode, Function.identity()));
     }
 
     @Override
@@ -30,9 +27,9 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     }
 
     @Override
-    public Collection<Sensor> getAllByMeasurementName(@Nonnull String measurement) {
+    public Collection<Sensor> getAllByMeasurementName(@Nonnull final String measurement) {
         return buffer.values().stream()
-                .filter(s -> s.getMeasurement().equals(measurement))
+                .filter(s -> s.getMeasurementName().equals(measurement))
                 .collect(Collectors.toSet());
     }
 
@@ -44,69 +41,51 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     }
 
     @Override
-    public String getMeasurementNameBySensorType(@Nonnull String sensorType) {
-        Optional<Sensor> s = buffer.values().stream()
-                .filter(sen -> sen.getType().equals(sensorType))
-                .findAny();
-        return s.isPresent() ?
-                s.get().getMeasurement() :
-                EMPTY;
-    }
-
-    @Override
-    public Collection<String> getAllSensorsNameByMeasurementName(@Nonnull String measurementName) {
+    public Collection<String> getAllSensorsTypesByMeasurementName(@Nonnull final String measurementName) {
         return buffer.values().stream()
-                .filter(s -> s.getMeasurement().equals(measurementName))
-                .map(Sensor::getName)
+                .filter(s -> s.getMeasurementName().equals(measurementName))
+                .map(Sensor::getType)
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public Sensor get(@Nonnull String sensorName) {
-        return buffer.get(sensorName);
+    public Sensor get(@Nonnull String channelCode) {
+        return buffer.get(channelCode);
     }
 
     @Override
     public boolean add(@Nonnull Sensor sensor) {
-        if (buffer.containsKey(sensor.getName())) return false;
+        if (buffer.containsKey(sensor.getChannelCode())) return false;
 
-        buffer.put(sensor.getName(), sensor);
+        buffer.put(sensor.getChannelCode(), sensor);
         return super.add(sensor);
     }
 
     @Override
     public boolean remove(@Nonnull Sensor sensor) {
-        return buffer.remove(sensor.getName()) != null && super.remove(sensor);
+        return buffer.remove(sensor.getChannelCode()) != null && super.remove(sensor);
     }
 
     @Override
     public boolean set(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor) {
-        if (!buffer.containsKey(oldSensor.getName())) return false;
+        if (!buffer.containsKey(oldSensor.getChannelCode())) return false;
 
         if (!oldSensor.equals(newSensor)) {
-            if (buffer.containsKey(newSensor.getName())) return false;
+            if (buffer.containsKey(newSensor.getChannelCode())) return false;
 
-            buffer.remove(oldSensor.getName());
+            buffer.remove(oldSensor.getChannelCode());
         }
 
-        buffer.put(newSensor.getName(), newSensor);
+        buffer.put(newSensor.getChannelCode(), newSensor);
         return super.set(oldSensor, newSensor);
     }
 
     @Override
-    public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
+    public boolean changeMeasurementValue(@Nonnull final String oldValue, @Nonnull final String newValue) {
         buffer.values().stream()
-                .filter(s -> s.getValue().equals(oldValue))
-                .forEach(s -> s.setValue(newValue));
+                .filter(s -> s.getMeasurementValue().equals(oldValue))
+                .forEach(s -> s.setMeasurementValue(newValue));
         return super.changeMeasurementValue(oldValue, newValue);
-    }
-
-    @Override
-    public boolean removeMeasurementValue(@Nonnull String measurementValue) {
-        buffer.values().forEach(s -> {
-            if (s.getValue().equals(measurementValue)) s.setValue(EMPTY);
-        });
-        return super.removeMeasurementValue(measurementValue);
     }
 
     @Override
@@ -114,15 +93,8 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
         buffer.clear();
         buffer.putAll(sensors.stream()
                 .filter(Objects::nonNull)
-                .collect(Collectors.toMap(Sensor::getName, Function.identity())));
+                .collect(Collectors.toMap(Sensor::getChannelCode, Function.identity())));
         return super.rewrite(sensors);
-    }
-
-    @Override
-    public boolean isLastInMeasurement(@Nonnull Sensor sensor) {
-        return buffer.values().stream()
-                .filter(s -> s.getMeasurement().equals(sensor.getMeasurement()))
-                .count() == 1L;
     }
 
     @Override
@@ -135,15 +107,15 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     public boolean importData(@Nonnull Collection<Sensor> newSensors, @Nonnull Collection<Sensor> sensorsForChange) {
         buffer.putAll(sensorsForChange.stream()
                 .filter(Objects::nonNull)
-                .collect(Collectors.toMap(Sensor::getName, Function.identity())));
+                .collect(Collectors.toMap(Sensor::getChannelCode, Function.identity())));
         buffer.putAll(newSensors.stream()
                 .filter(Objects::nonNull)
-                .collect(Collectors.toMap(Sensor::getName, Function.identity())));
+                .collect(Collectors.toMap(Sensor::getChannelCode, Function.identity())));
         return super.importData(newSensors, sensorsForChange);
     }
 
     @Override
-    public boolean isExists(@Nonnull String sensorName) {
-        return buffer.containsKey(sensorName);
+    public boolean isExists(@Nonnull String channelCode) {
+        return buffer.containsKey(channelCode);
     }
 }

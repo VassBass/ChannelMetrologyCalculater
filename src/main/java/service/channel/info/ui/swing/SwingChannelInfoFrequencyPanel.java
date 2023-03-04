@@ -13,6 +13,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import static javax.swing.SwingConstants.RIGHT;
+
 public class SwingChannelInfoFrequencyPanel extends TitledPanel implements ChannelInfoFrequencyPanel {
     private static final String TITLE_TEXT = "Міжконтрольний інтервал";
     private static final String VALUE_TEXT = "р.";
@@ -22,17 +24,23 @@ public class SwingChannelInfoFrequencyPanel extends TitledPanel implements Chann
     private final DefaultTextField frequency;
 
     public SwingChannelInfoFrequencyPanel(ChannelInfoManager manager) {
-        super(TITLE_TEXT);
+        super(TITLE_TEXT, Color.BLACK);
         this.manager = manager;
         this.setToolTipText(TOOLTIP_TEXT);
 
-        frequency = new DefaultTextField(3);
-        frequency.addFocusListener(frequencyFocusListener);
+        FocusListener frequencyFocusListener = new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (isFrequencyValid()) manager.changeDateOrFrequency();
+            }
+        };
+
+        frequency = new DefaultTextField(3, null, RIGHT).setFocusListener(frequencyFocusListener);
 
         DefaultLabel frequencyValue = new DefaultLabel(VALUE_TEXT);
 
-        this.add(frequency, new CellBuilder().x(0).weightX(0.98).build());
-        this.add(frequencyValue, new CellBuilder().x(1).weightX(0.02).build());
+        this.add(frequency, new CellBuilder().x(0).build());
+        this.add(frequencyValue, new CellBuilder().x(1).build());
     }
 
     @Override
@@ -61,13 +69,4 @@ public class SwingChannelInfoFrequencyPanel extends TitledPanel implements Chann
         this.setTitleColor(Color.RED);
         return false;
     }
-
-    private final FocusListener frequencyFocusListener = new FocusAdapter() {
-        @Override
-        public void focusLost(FocusEvent e) {
-            if (isFrequencyValid()) {
-                manager.changeDateOrFrequency();
-            }
-        }
-    };
 }

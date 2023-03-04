@@ -6,10 +6,10 @@ import service.channel.info.ui.ChannelInfoTechnologyNumberPanel;
 import java.awt.*;
 
 public class SwingChannelInfoTechnologyNumberPanel extends TitledTextField implements ChannelInfoTechnologyNumberPanel {
-    private static final String TITLE_TEXT = "*Технологічний номер";
+    private static final String TITLE_TEXT = "Технологічний номер";
 
     public SwingChannelInfoTechnologyNumberPanel() {
-        super(TITLE_TEXT, 15);
+        super(15, TITLE_TEXT, Color.BLACK);
     }
 
     @Override

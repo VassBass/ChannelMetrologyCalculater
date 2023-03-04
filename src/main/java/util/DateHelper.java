@@ -111,4 +111,15 @@ public class DateHelper {
             return splittedDate;
         } else return new String[] { EMPTY, EMPTY, EMPTY };
     }
+
+    public static String getNextDate(String date, double period) {
+        Calendar dateCal = stringToDate(date);
+        if (dateCal != null) {
+            long yearInMills = 31536000000L;
+            long nextDateInMills = dateCal.getTimeInMillis() + ((long) (yearInMills * period));
+            dateCal.setTimeInMillis(nextDateInMills);
+            return dateToString(dateCal);
+        }
+        return EMPTY;
+    }
 }

@@ -13,6 +13,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingConstants.RIGHT;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingChannelInfoRangePanel extends TitledPanel implements ChannelInfoRangePanel {
@@ -23,24 +25,24 @@ public class SwingChannelInfoRangePanel extends TitledPanel implements ChannelIn
     private final DefaultLabel measurementValue;
 
     public SwingChannelInfoRangePanel(final ChannelInfoManager manager) {
-        super(TITLE_TEXT);
+        super(TITLE_TEXT, Color.BLACK);
         this.setToolTipText(TOOLTIP_TEXT);
 
-        rangeMin = new DefaultTextField(4);
-        rangeMax = new DefaultTextField(4);
         FocusListener textFocusListener = new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
                 if (isRangeValid()) manager.changedChannelRange();
             }
         };
-        rangeMin.addFocusListener(textFocusListener);
-        rangeMax.addFocusListener(textFocusListener);
+
+        rangeMin = new DefaultTextField(4, null, RIGHT).setFocusListener(textFocusListener);
+        rangeMax = new DefaultTextField(4).setFocusListener(textFocusListener);
 
         measurementValue = new DefaultLabel();
+        DefaultLabel separator = new DefaultLabel("...", CENTER);
 
         this.add(rangeMin, new CellBuilder().x(0).build());
-        this.add(new DefaultLabel("..."), new CellBuilder().x(1).build());
+        this.add(separator, new CellBuilder().x(1).build());
         this.add(rangeMax, new CellBuilder().x(2).build());
         this.add(measurementValue, new CellBuilder().x(3).build());
     }

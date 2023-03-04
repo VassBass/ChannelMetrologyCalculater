@@ -10,14 +10,12 @@ public interface SensorRepository {
     Collection<Sensor> getAll();
     Collection<Sensor> getAllByMeasurementName(@Nonnull String measurement);
     Collection<String> getAllTypes();
-    String getMeasurementNameBySensorType(@Nonnull String sensorType);
-    Collection<String> getAllSensorsNameByMeasurementName(@Nonnull String measurementName);
-    @Nullable Sensor get(@Nonnull String sensorName);
+    Collection<String> getAllSensorsTypesByMeasurementName(@Nonnull String measurementName);
+    @Nullable Sensor get(@Nonnull String channelCode);
 
     boolean add(@Nonnull Sensor sensor);
 
     boolean remove(@Nonnull Sensor sensor);
-    boolean removeMeasurementValue(@Nonnull String measurementValue);
     boolean clear();
 
     boolean set(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor);
@@ -27,6 +25,5 @@ public interface SensorRepository {
     boolean importData(@Nonnull Collection<Sensor>newSensors,
                        @Nonnull Collection<Sensor>sensorsForChange);
 
-    boolean isLastInMeasurement(@Nonnull Sensor sensor);
-    boolean isExists(@Nonnull String sensorName);
+    boolean isExists(@Nonnull String channelCode);
 }

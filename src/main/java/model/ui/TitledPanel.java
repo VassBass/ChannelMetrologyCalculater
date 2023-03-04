@@ -1,6 +1,7 @@
 package model.ui;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
@@ -13,6 +14,14 @@ public class TitledPanel extends DefaultPanel {
         this.setBackground(Color.WHITE);
 
         border = BorderFactory.createTitledBorder(title);
+        this.setBorder(border);
+    }
+
+    public TitledPanel(String title, Color borderColor) {
+        super();
+        this.setBackground(Color.WHITE);
+
+        border = new TitledBorder(new LineBorder(borderColor), title);
         this.setBorder(border);
     }
 

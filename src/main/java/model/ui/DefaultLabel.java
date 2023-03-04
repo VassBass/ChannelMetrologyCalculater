@@ -21,4 +21,9 @@ public class DefaultLabel extends JLabel {
         this(text);
         this.setToolTipText(tooltipText);
     }
+
+    public DefaultLabel(String text, int horizontalAlignment) {
+        this(text);
+        this.setHorizontalAlignment(horizontalAlignment);
+    }
 }

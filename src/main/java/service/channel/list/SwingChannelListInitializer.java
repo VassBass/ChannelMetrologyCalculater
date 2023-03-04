@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
+import repository.repos.sensor.SensorRepository;
 import service.application.ApplicationScreen;
 import service.channel.list.ui.swing.*;
 import service.root.ServiceInitializer;
@@ -20,9 +21,12 @@ public class SwingChannelListInitializer implements ServiceInitializer {
                 RepositoryFactory.getInstance();
         if (applicationScreen != null && repositoryFactory != null) {
             ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+            SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+
             ChannelListConfigHolder configHolder = new PropertiesChannelListConfigHolder();
+
             ChannelListManager manager = new DefaultChannelListManager(channelRepository, configHolder);
-            ChannelListService service = new DefaultChannelListService(channelRepository);
+            ChannelListService service = new DefaultChannelListService(channelRepository, sensorRepository);
 
             SwingChannelListInfoTable infoTable = new SwingChannelListInfoTable(service);
             SwingChannelListSearchPanel searchPanel = new SwingChannelListSearchPanel(manager);

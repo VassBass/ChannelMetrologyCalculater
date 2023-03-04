@@ -63,7 +63,7 @@ public class SwingChannelListInfoTable extends JPanel implements ChannelListInfo
             nextDate.setText(nextDateText);
             nextDate.setBackground(setBackgroundColorFromDate(nextDateCal));
             path.setText(service.getFullPath(channel));
-            sensor.setText(channel.getSensorName());
+            sensor.setText(service.getSensor(channel).getType());
         }
     }
 

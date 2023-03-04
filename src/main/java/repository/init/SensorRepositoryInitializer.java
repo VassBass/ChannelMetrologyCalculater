@@ -23,15 +23,15 @@ public class SensorRepositoryInitializer extends RepositoryInitializer {
         String tableName = configHolder.getTableName(SensorRepository.class);
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
-                "name text NOT NULL UNIQUE" +
+                "channel_code text NOT NULL UNIQUE" +
                 ", type text NOT NULL" +
-                ", number text" +
-                ", measurement text NOT NULL" +
-                ", value text" +
+                ", serial_number text" +
+                ", measurement_name text NOT NULL" +
+                ", measurement_value text" +
                 ", error_formula text NOT NULL" +
                 ", range_min real NOT NULL" +
                 ", range_max real NOT NULL" +
-                ", PRIMARY KEY (\"name\")" +
+                ", PRIMARY KEY (channel_code)" +
                 ");", tableName);
 
         try (Statement statement = connector.getStatement()) {

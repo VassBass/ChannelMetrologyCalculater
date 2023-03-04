@@ -9,7 +9,7 @@ public class SwingChannelInfoNamePanel extends TitledTextField implements Channe
     private static final String TITLE_TEXT = "Назва ВК";
 
     public SwingChannelInfoNamePanel() {
-        super(TITLE_TEXT, 15);
+        super(15, TITLE_TEXT, Color.BLACK);
     }
 
     @Override

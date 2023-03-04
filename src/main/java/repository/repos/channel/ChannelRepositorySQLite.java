@@ -51,7 +51,6 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                         .setReference(resultSet.getString("reference"))
                         .setDate(resultSet.getString("date"))
                         .setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")))
-                        .setSensorName(resultSet.getString("sensor_name"))
                         .setFrequency(resultSet.getDouble("frequency"))
                         .setRange(resultSet.getDouble("range_min"), resultSet.getDouble("range_max"))
                         .setMeasurementName(resultSet.getString("measurement_name"))
@@ -87,7 +86,6 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                         .setReference(resultSet.getString("reference"))
                         .setDate(resultSet.getString("date"))
                         .setSuitability(Boolean.parseBoolean(resultSet.getString("suitability")))
-                        .setSensorName(resultSet.getString("sensor_name"))
                         .setFrequency(resultSet.getDouble("frequency"))
                         .setRange(resultSet.getDouble("range_min"), resultSet.getDouble("range_max"))
                         .setMeasurementName(resultSet.getString("measurement_name"))
@@ -107,9 +105,9 @@ public class ChannelRepositorySQLite implements ChannelRepository {
     @Override
     public boolean add(@Nonnull Channel channel) {
         String sql = String.format("INSERT INTO %s (code, name, department, area, process, installation, technology_number" +
-                ", protocol_number, reference, date, suitability, measurement_name, measurement_value, sensor_name, frequency" +
+                ", protocol_number, reference, date, suitability, measurement_name, measurement_value, frequency" +
                 ", range_min, range_max, allowable_error_percent, allowable_error_value, control_points) "
-                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", tableName);
+                + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", tableName);
         try (PreparedStatement statement = connector.getPreparedStatement(sql)){
             statement.setString(1, channel.getCode());
             statement.setString(2, channel.getName());
@@ -124,13 +122,12 @@ public class ChannelRepositorySQLite implements ChannelRepository {
             statement.setString(11, String.valueOf(channel.isSuitability()));
             statement.setString(12, channel.getMeasurementName());
             statement.setString(13, channel.getMeasurementValue());
-            statement.setString(14, channel.getSensorName());
-            statement.setDouble(15, channel.getFrequency());
-            statement.setDouble(16, channel.getRangeMin());
-            statement.setDouble(17, channel.getRangeMax());
-            statement.setDouble(18, channel.getAllowableErrorPercent());
-            statement.setDouble(19, channel.getAllowableError());
-            statement.setString(20, jsonMapper.objectToJson(channel.getControlPoints()));
+            statement.setDouble(14, channel.getFrequency());
+            statement.setDouble(15, channel.getRangeMin());
+            statement.setDouble(16, channel.getRangeMax());
+            statement.setDouble(17, channel.getAllowableErrorPercent());
+            statement.setDouble(18, channel.getAllowableError());
+            statement.setString(19, jsonMapper.objectToJson(channel.getControlPoints()));
 
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -145,18 +142,6 @@ public class ChannelRepositorySQLite implements ChannelRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean removeBySensorName(@Nonnull String sensorName) {
-        String sql = String.format("DELETE FROM %s WHERE sensor_name = '%s';", tableName, sensorName);
-        try (Statement statement = connector.getStatement()) {
-            statement.execute(sql);
-            return true;
-        } catch (SQLException e){
             logger.warn("Exception was thrown!", e);
             return false;
         }
@@ -182,7 +167,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
 
             if (!channels.isEmpty()) {
                 String insertSql = String.format("INSERT INTO %s (code, name, department, area, process, installation, technology_number"
-                        + ", protocol_number, reference, date, suitability, measurement_name, measurement_value, sensor_name, frequency" +
+                        + ", protocol_number, reference, date, suitability, measurement_name, measurement_value, frequency" +
                         ", range_min, range_max, allowable_error_percent, allowable_error_value, control_points) "
                         + "VALUES ", tableName);
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
@@ -191,7 +176,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                     if (channel == null) continue;
 
                     String values = String.format(
-                            "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
+                            "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
                             channel.getCode(),
                             channel.getName(),
                             channel.getDepartment(),
@@ -205,7 +190,6 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                             channel.isSuitability(),
                             channel.getMeasurementName(),
                             channel.getMeasurementValue(),
-                            channel.getSensorName(),
                             channel.getFrequency(),
                             channel.getRangeMin(),
                             channel.getRangeMax(),
@@ -221,19 +205,6 @@ public class ChannelRepositorySQLite implements ChannelRepository {
 
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean changeSensorName(@Nonnull String oldSensor, @Nonnull String newSensor) {
-        String sql = String.format("UPDATE %s SET sensor_name = '%s' WHERE sensor_name = '%s';",
-                tableName, newSensor, oldSensor);
-        try (Statement statement = connector.getStatement()){
-            statement.execute(sql);
-            return true;
-        }catch (SQLException e){
             logger.warn("Exception was thrown!", e);
             return false;
         }
@@ -267,7 +238,6 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                 ", suitability = '%s'" +
                 ", measurement_name = '%s'" +
                 ", measurement_value = '%s'" +
-                ", sensor_name = '%s'" +
                 ", frequency = %s" +
                 ", range_min = %s" +
                 ", range_max = %s" +
@@ -289,7 +259,6 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                 newChannel.isSuitability(),
                 newChannel.getMeasurementName(),
                 newChannel.getMeasurementValue(),
-                newChannel.getSensorName(),
                 newChannel.getFrequency(),
                 newChannel.getRangeMin(),
                 newChannel.getRangeMax(),
@@ -326,7 +295,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
 
                 String sql = String.format("UPDATE %s SET "
                         + "name = ?, department = ?, area = ?, process = ?, installation = ?, technology_number = ?, protocol_number = ?"
-                        + ", reference = ?, date = ?, suitability = ?, measurement_name = ?, measurement_value = ?, sensor_name = ?"
+                        + ", reference = ?, date = ?, suitability = ?, measurement_name = ?, measurement_value = ?"
                         + ", frequency = ?, range_min = ?, range_max = ?, allowable_error_percent = ?, allowable_error_value = ?"
                         + ", control_points = ? WHERE code = ?;", tableName);
                 try (PreparedStatement statement = connector.getPreparedStatement(sql)){
@@ -342,15 +311,14 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                     statement.setString(10, String.valueOf(c.isSuitability()));
                     statement.setString(11, c.getMeasurementName());
                     statement.setString(12, c.getMeasurementValue());
-                    statement.setString(13, c.getSensorName());
-                    statement.setDouble(14, c.getFrequency());
-                    statement.setDouble(15, c.getRangeMin());
-                    statement.setDouble(16, c.getRangeMax());
-                    statement.setDouble(17, c.getAllowableErrorPercent());
-                    statement.setDouble(18, c.getAllowableError());
-                    statement.setString(19, jsonMapper.objectToJson(c.getControlPoints()));
+                    statement.setDouble(13, c.getFrequency());
+                    statement.setDouble(14, c.getRangeMin());
+                    statement.setDouble(15, c.getRangeMax());
+                    statement.setDouble(16, c.getAllowableErrorPercent());
+                    statement.setDouble(17, c.getAllowableError());
+                    statement.setString(18, jsonMapper.objectToJson(c.getControlPoints()));
 
-                    statement.setString(20, c.getCode());
+                    statement.setString(19, c.getCode());
 
                     statement.execute();
                 } catch (SQLException e) {
@@ -362,7 +330,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
 
         if (!newChannels.isEmpty()){
             String insertSql = String.format("INSERT INTO %s (code, name, department, area, process, installation, technology_number" +
-                    ", protocol_number, reference, date, suitability, measurement_name, measurement_value, sensor_name, frequency" +
+                    ", protocol_number, reference, date, suitability, measurement_name, measurement_value, frequency" +
                     ", range_min, range_max, allowable_error_percent, allowable_error_value, control_points)" +
                     " VALUES ", tableName);
             StringBuilder sqlBuilder = new StringBuilder(insertSql);
@@ -371,7 +339,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                     if (channel == null) continue;
 
                     String values = String.format(
-                            "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
+                            "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
                             channel.getCode(),
                             channel.getName(),
                             channel.getDepartment(),
@@ -385,7 +353,6 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                             channel.isSuitability(),
                             channel.getMeasurementName(),
                             channel.getMeasurementValue(),
-                            channel.getSensorName(),
                             channel.getFrequency(),
                             channel.getRangeMin(),
                             channel.getRangeMax(),

@@ -13,12 +13,10 @@ public interface ChannelRepository {
     boolean add(@Nonnull Channel channel);
 
     boolean remove(@Nonnull Channel channel);
-    boolean removeBySensorName(@Nonnull String sensorName);
     boolean removeByMeasurementValue(@Nonnull String measurementValue);
     boolean clear();
 
     boolean set(@Nonnull Channel oldChannel, @Nonnull Channel newChannel);
-    boolean changeSensorName(@Nonnull String oldSensor, @Nonnull String newSensor);
     boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue);
     boolean rewrite(@Nonnull Collection<Channel> channels);
     boolean importData(@Nonnull Collection<Channel> newChannels, @Nonnull Collection<Channel>channelsForChange);

@@ -18,7 +18,7 @@ public class SwingChannelInfoCodePanel extends TitledTextField implements Channe
 
     public SwingChannelInfoCodePanel(ChannelInfoManager manager,
                                      ChannelRepository channelRepository) {
-        super(TITLE_TEXT, 15);
+        super(15, TITLE_TEXT, Color.BLACK);
         this.channelRepository = channelRepository;
         this.setToolTipText(TOOLTIP_TEXT);
         this.setComponentPopupMenu(popupMenu(manager));
