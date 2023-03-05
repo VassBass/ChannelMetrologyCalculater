@@ -15,9 +15,11 @@ public interface ChannelInfoSensorPanel {
     void setSerialNumber(String serialNumber);
 
     String getSelectedSensorType();
+    String getSelectedMeasurementValue();
     String getRangeMin();
     String getRangeMax();
     String getSerialNumber();
 
     boolean isRangeValid();
+    boolean isEqualsRangesCheckboxAreSelected();
 }

@@ -3,6 +3,8 @@ package service.channel.info;
 import model.dto.Channel;
 import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.application.ApplicationScreen;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
@@ -14,6 +16,7 @@ import java.awt.*;
 import java.util.Objects;
 
 public class SwingChannelInfoExecuter implements ServiceExecuter {
+    private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoExecuter.class);
 
     private Channel channel;
 
@@ -25,6 +28,7 @@ public class SwingChannelInfoExecuter implements ServiceExecuter {
 
     @Override
     public void execute() {
+        logger.info("Start of service execution");
         new Worker().execute();
     }
 
@@ -59,6 +63,7 @@ public class SwingChannelInfoExecuter implements ServiceExecuter {
         protected void done() {
             loadingDialogWrapper.shutdown();
             if (dialog != null) dialog.showing();
+            logger.info("The service is running");
         }
     }
 }

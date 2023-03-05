@@ -79,6 +79,11 @@ public class SwingChannelInfoRangePanel extends TitledPanel implements ChannelIn
     }
 
     @Override
+    public String getMeasurementValue() {
+        return measurementValue.getText();
+    }
+
+    @Override
     public boolean isRangeValid() {
         String min = rangeMin.getText();
         String max = rangeMax.getText();

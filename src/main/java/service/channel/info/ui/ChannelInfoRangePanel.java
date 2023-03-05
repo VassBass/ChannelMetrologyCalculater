@@ -7,6 +7,7 @@ public interface ChannelInfoRangePanel {
 
     String getRangeMin();
     String getRangeMax();
+    String getMeasurementValue();
 
     boolean isRangeValid();
 }

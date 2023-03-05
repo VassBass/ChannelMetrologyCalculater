@@ -41,7 +41,7 @@ public class DefaultChannelListManager implements ChannelListManager {
     public void showChannelInfo() {
         String channelCode = channelTable.getSelectedChannelCode();
         Channel channel = repository.get(channelCode);
-        new SwingChannelInfoExecuter(channel).execute();
+        if (channel != null) new SwingChannelInfoExecuter(channel).execute();
     }
 
     @Override

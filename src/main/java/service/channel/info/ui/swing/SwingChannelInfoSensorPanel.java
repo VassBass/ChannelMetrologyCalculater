@@ -112,6 +112,11 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     }
 
     @Override
+    public String getSelectedMeasurementValue() {
+        return measurementValues.getSelectedItem();
+    }
+
+    @Override
     public String getRangeMin() {
         String min = rangeMin.getText();
         return StringHelper.isDouble(min) ?
@@ -148,5 +153,10 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
             rangePanel.setTitleColor(Color.BLACK);
             return true;
         }
+    }
+
+    @Override
+    public boolean isEqualsRangesCheckboxAreSelected() {
+        return equalsRanges.isSelected();
     }
 }

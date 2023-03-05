@@ -45,6 +45,7 @@ public class BufferedSensorRepositorySQLiteTest {
                 .setMeasurementName(measurementName)
                 .setMeasurementValue(measurementValue)
                 .setType(type)
+                .setErrorFormula("Formula for: " + type)
                 .build();
     }
 
@@ -234,6 +235,31 @@ public class BufferedSensorRepositorySQLiteTest {
 
         assertFalse(repository.remove(sensor8));
         assertNull(repository.get(sensor8.getChannelCode()));
+
+        Collection<Sensor> actual = repository.getAll();
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testRemoveByExistedChannelCode() {
+        String channelCode = "0";
+        expected.remove(0);
+
+        assertTrue(repository.removeByChannelCode(channelCode));
+        assertNull(repository.get(channelCode));
+
+        Collection<Sensor> actual = repository.getAll();
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testRemoveByNotExistedChannelCode() {
+        String channelCode = "Not Existed";
+
+        assertFalse(repository.removeByChannelCode(channelCode));
+        assertNull(repository.get(channelCode));
 
         Collection<Sensor> actual = repository.getAll();
         assertEquals(expected.size(), actual.size());
@@ -542,5 +568,51 @@ public class BufferedSensorRepositorySQLiteTest {
     public void testIsExists() {
         assertTrue(repository.isExists("0"));
         assertFalse(repository.isExists("8"));
+    }
+
+    @Test
+    public void testGetExistedErrorFormula() {
+        String expected = "Formula for: " + Sensor.YOKOGAWA;
+
+        assertEquals(expected, repository.getErrorFormula(Sensor.YOKOGAWA));
+    }
+
+    @Test
+    public void testGetNotExistedErrorFormula() {
+        assertTrue(repository.getErrorFormula("Not Existed").isEmpty());
+    }
+
+    @Test
+    public void setErrorFormulaToExistedSensors() {
+        String oldFormula = "Formula for: " + Sensor.TCM_50M;
+        String newFormula = "New Formula";
+        expected.forEach(s -> {
+                    if (s.getType().equals(Sensor.TCM_50M)) s.setErrorFormula(newFormula);
+                });
+
+        Collection<Sensor> actual = repository.getAll();
+        assertEquals(2, actual.stream().filter(s -> s.getErrorFormula().equals(oldFormula)).count());
+        assertEquals(0, actual.stream().filter(s -> s.getErrorFormula().equals(newFormula)).count());
+        assertTrue(repository.setErrorFormula(Sensor.TCM_50M, newFormula));
+
+        actual = repository.getAll();
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+        assertEquals(0, actual.stream().filter(s -> s.getErrorFormula().equals(oldFormula)).count());
+        assertEquals(2, actual.stream().filter(s -> s.getErrorFormula().equals(newFormula)).count());
+    }
+
+    @Test
+    public void setErrorFormulaToNotExistedSensors() {
+        String newFormula = "New Formula";
+
+        Collection<Sensor> actual = repository.getAll();
+        assertEquals(0, actual.stream().filter(s -> s.getErrorFormula().equals(newFormula)).count());
+        assertTrue(repository.setErrorFormula("Not Existed", newFormula));
+
+        actual = repository.getAll();
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+        assertEquals(0, actual.stream().filter(s -> s.getErrorFormula().equals(newFormula)).count());
     }
 }

@@ -16,4 +16,9 @@ public class SwingChannelInfoNextDatePanel extends TitledLabel implements Channe
     public void setNextDate(String date) {
         this.setText(date);
     }
+
+    @Override
+    public String getNextDate() {
+        return this.getText();
+    }
 }

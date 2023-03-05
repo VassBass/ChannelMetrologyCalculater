@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     private final Map<String, Sensor> buffer;
 
@@ -117,5 +119,27 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     @Override
     public boolean isExists(@Nonnull String channelCode) {
         return buffer.containsKey(channelCode);
+    }
+
+    @Override
+    public String getErrorFormula(@Nonnull String sensorType) {
+        return buffer.values().stream()
+                .filter(s -> s.getType().equals(sensorType))
+                .findFirst()
+                .map(Sensor::getErrorFormula)
+                .orElse(EMPTY);
+    }
+
+    @Override
+    public boolean setErrorFormula(@Nonnull String sensorType, @Nonnull String errorFormula) {
+        buffer.values().stream()
+                .filter(s -> s.getType().equals(sensorType))
+                .forEach(s -> s.setErrorFormula(errorFormula));
+        return super.setErrorFormula(sensorType, errorFormula);
+    }
+
+    @Override
+    public boolean removeByChannelCode(@Nonnull String channelCode) {
+        return buffer.remove(channelCode) != null && super.removeByChannelCode(channelCode);
     }
 }
