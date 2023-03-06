@@ -47,7 +47,7 @@ public class DateHelper {
 
     public static String dateToString(Calendar date) {
         if (date == null){
-            return null;
+            return EMPTY;
         }else {
             StringBuilder builder = new StringBuilder();
             String day;
@@ -71,7 +71,10 @@ public class DateHelper {
     public static String getDayFromDateString(String date) {
         if (isDateValid(date)) {
             String[] splittedDate = date.split("\\.");
-            return splittedDate[0];
+            String day = splittedDate[0];
+            return day.length() == 1 ?
+                    "0" + day :
+                    day;
         }
         return EMPTY;
     }
@@ -79,7 +82,10 @@ public class DateHelper {
     public static String getMonthFromDateString(String date) {
         if (isDateValid(date)) {
             String[] splittedDate = date.split("\\.");
-            return splittedDate[1];
+            String month = splittedDate[1];
+            return month.length() == 1 ?
+                    "0" + month :
+                    month;
         }
         return EMPTY;
     }
@@ -87,11 +93,7 @@ public class DateHelper {
     public static String getYearFromDateString(String date) {
         if (isDateValid(date)) {
             String[] splittedDate = date.split("\\.");
-            String year = splittedDate[2];
-            return year.length() == 2 ?
-                    "20" + year :
-                    year.length() == 4 ? year :
-                    EMPTY;
+            return splittedDate[2];
         }
         return EMPTY;
     }
@@ -107,7 +109,8 @@ public class DateHelper {
     public static String[] getSplittedDate(String date) {
         if (isDateValid(date)) {
             String[] splittedDate = date.split("\\.");
-            if (splittedDate[2].length() == 2) splittedDate[2] = "20" + splittedDate[2];
+            if (splittedDate[0].length() == 1) splittedDate[0] = "0" + splittedDate[0];
+            if (splittedDate[1].length() == 1) splittedDate[1] = "0" + splittedDate[1];
             return splittedDate;
         } else return new String[] { EMPTY, EMPTY, EMPTY };
     }
@@ -115,7 +118,7 @@ public class DateHelper {
     public static String getNextDate(String date, double period) {
         Calendar dateCal = stringToDate(date);
         if (dateCal != null) {
-            long yearInMills = 31536000000L;
+            long yearInMills = 31_536_000_000L;
             long nextDateInMills = dateCal.getTimeInMillis() + ((long) (yearInMills * period));
             dateCal.setTimeInMillis(nextDateInMills);
             return dateToString(dateCal);

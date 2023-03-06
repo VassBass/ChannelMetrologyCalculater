@@ -124,6 +124,113 @@ public class DateHelperTest {
     public void testDateToString() {
         Calendar calendar = new GregorianCalendar(2022, Calendar.FEBRUARY, 23);
         String expected = "23.02.2022";
+
         assertEquals(expected, DateHelper.dateToString(calendar));
+        assertNotNull(DateHelper.dateToString(null));
+    }
+
+    @Test
+    public void testGetDayFromDateString() {
+        String validDate1 = "23.02.2022";
+        String validDate2 = "2.02.2022";
+        String invalidDate1 = "68.02.2022";
+        String invalidDate2 = "23.22.2022";
+        String invalidDate3 = "23.02.0";
+
+        assertEquals("23", DateHelper.getDayFromDateString(validDate1));
+        assertEquals("02", DateHelper.getDayFromDateString(validDate2));
+        assertNotNull(DateHelper.getDayFromDateString(invalidDate1));
+        assertNotNull(DateHelper.getDayFromDateString(invalidDate2));
+        assertNotNull(DateHelper.getDayFromDateString(invalidDate3));
+        assertNotNull(DateHelper.getDayFromDateString(null));
+    }
+
+    @Test
+    public void testGetMonthFromDateString() {
+        String validDate1 = "23.02.2022";
+        String validDate2 = "23.2.2022";
+        String invalidDate1 = "68.02.2022";
+        String invalidDate2 = "23.22.2022";
+        String invalidDate3 = "23.02.0";
+
+        assertEquals("02", DateHelper.getMonthFromDateString(validDate1));
+        assertEquals("02", DateHelper.getMonthFromDateString(validDate2));
+        assertNotNull(DateHelper.getMonthFromDateString(invalidDate1));
+        assertNotNull(DateHelper.getMonthFromDateString(invalidDate2));
+        assertNotNull(DateHelper.getMonthFromDateString(invalidDate3));
+        assertNotNull(DateHelper.getMonthFromDateString(null));
+    }
+
+    @Test
+    public void testGetYearFromDateString() {
+        String validDate = "23.02.2022";
+        String invalidDate1 = "68.02.2022";
+        String invalidDate2 = "23.22.2022";
+        String invalidDate3 = "23.02.22";
+
+        assertEquals("2022", DateHelper.getYearFromDateString(validDate));
+        assertNotNull(DateHelper.getYearFromDateString(invalidDate1));
+        assertNotNull(DateHelper.getYearFromDateString(invalidDate2));
+        assertNotNull(DateHelper.getYearFromDateString(invalidDate3));
+        assertNotNull(DateHelper.getYearFromDateString(null));
+    }
+
+    @Test
+    public void testGetSplittedDate() {
+        String validDate1 = "2.02.2022";
+        String validDate2 = "23.2.2022";
+        String validDate3 = "2.2.2022";
+        String invalidDate1 = "68.02.2022";
+        String invalidDate2 = "23.22.2022";
+        String invalidDate3 = "23.02.22";
+
+        String[] expected = new String[] { "02", "02", "2022" };
+        String[] actual = DateHelper.getSplittedDate(validDate1);
+        assertArrayEquals(expected, actual);
+
+        expected = new String[] { "23", "02", "2022" };
+        actual = DateHelper.getSplittedDate(validDate2);
+        assertArrayEquals(expected, actual);
+
+        expected = new String[] { "02", "02", "2022" };
+        actual = DateHelper.getSplittedDate(validDate3);
+        assertArrayEquals(expected, actual);
+
+        actual = DateHelper.getSplittedDate(invalidDate1);
+        assertEquals(3, actual.length);
+        assertNotNull(actual[0]);
+        assertNotNull(actual[1]);
+        assertNotNull(actual[2]);
+
+        actual = DateHelper.getSplittedDate(invalidDate2);
+        assertEquals(3, actual.length);
+        assertNotNull(actual[0]);
+        assertNotNull(actual[1]);
+        assertNotNull(actual[2]);
+
+        actual = DateHelper.getSplittedDate(invalidDate3);
+        assertEquals(3, actual.length);
+        assertNotNull(actual[0]);
+        assertNotNull(actual[1]);
+        assertNotNull(actual[2]);
+    }
+
+    @Test
+    public void getNextDate() {
+        long yearInMills = 31_536_000_000L;
+
+        Calendar nowadays = DateHelper.stringToDate(DateHelper.dateToString(Calendar.getInstance()));
+        assertNotNull(nowadays);
+
+        long expectedMills = nowadays.getTimeInMillis() + yearInMills;
+        Calendar expectedCalendar = new GregorianCalendar();
+        expectedCalendar.setTimeInMillis(expectedMills);
+        String expected = DateHelper.dateToString(expectedCalendar);
+        assertEquals(expected, DateHelper.getNextDate(DateHelper.dateToString(nowadays), 1));
+
+        expectedMills = nowadays.getTimeInMillis() + (yearInMills / 2);
+        expectedCalendar.setTimeInMillis(expectedMills);
+        expected = DateHelper.dateToString(expectedCalendar);
+        assertEquals(expected, DateHelper.getNextDate(DateHelper.dateToString(nowadays), 0.5));
     }
 }
