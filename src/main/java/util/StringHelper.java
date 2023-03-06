@@ -1,9 +1,10 @@
 package util;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class StringHelper {
-    public static boolean isDouble(String doubleString) {
+    public static boolean isDouble(@Nonnull String doubleString) {
         try {
             Double.parseDouble(doubleString);
             return true;
@@ -12,7 +13,7 @@ public class StringHelper {
         }
     }
 
-    public static boolean isInt(String intString) {
+    public static boolean isInt(@Nonnull String intString) {
         try {
             Integer.parseInt(intString);
             return true;
@@ -22,7 +23,7 @@ public class StringHelper {
     }
 
     @Nullable
-    public static Integer parseInt(String intString) {
+    public static Integer parseInt(@Nonnull String intString) {
         try {
             return Integer.parseInt(intString);
         } catch (NumberFormatException e) {
