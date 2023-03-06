@@ -4,7 +4,6 @@ import model.dto.Channel;
 import model.dto.Measurement;
 
 import javax.annotation.Nonnull;
-import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -36,7 +35,6 @@ public class ChannelBuilder {
         this.channel.setRange(channel.getRangeMin(), channel.getRangeMax());
         this.channel.setAllowableError(channel.getAllowableErrorPercent(), channel.getAllowableError());
         this.channel.setSuitability(channel.isSuitability());
-        this.channel.setControlPoints(channel.getControlPoints());
     }
 
     public ChannelBuilder setCode(@Nonnull String code) {
@@ -134,11 +132,6 @@ public class ChannelBuilder {
 
     public ChannelBuilder setSuitability(boolean suitability){
         channel.setSuitability(suitability);
-        return this;
-    }
-
-    public ChannelBuilder setControlPoints(@Nonnull Map<Double, Double> controlPoints){
-        channel.setControlPoints(controlPoints);
         return this;
     }
 

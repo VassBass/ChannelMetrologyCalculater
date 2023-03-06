@@ -4,13 +4,10 @@ import model.dto.Channel;
 import model.dto.Measurement;
 import model.dto.builder.ChannelBuilder;
 import org.junit.*;
-import org.sqlite.JDBC;
 import repository.config.RepositoryConfigHolder;
 import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.connection.SqliteRepositoryDBConnector;
-import service.json.JacksonJsonObjectMapper;
-import service.json.JsonObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +35,6 @@ public class BufferedChannelRepositorySQLiteTest {
                 .build();
     }
 
-    private final JsonObjectMapper jsonMapper = JacksonJsonObjectMapper.getInstance();
     private ChannelRepository repository;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -64,7 +60,6 @@ public class BufferedChannelRepositorySQLiteTest {
                 + ", range_max real NOT NULL"
                 + ", allowable_error_percent real NOT NULL"
                 + ", allowable_error_value real NOT NULL"
-                + ", control_points text NOT NULL"
                 + ", PRIMARY KEY (\"code\")"
                 + ");", TABLE_NAME);
         try (Connection connection = DriverManager.getConnection(TEST_DB_URL);
@@ -76,7 +71,6 @@ public class BufferedChannelRepositorySQLiteTest {
     @AfterClass
     public static void removeDB() throws SQLException {
         String sql = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
-        DriverManager.registerDriver(new JDBC());
         try (Connection connection = DriverManager.getConnection(TEST_DB_URL);
              Statement statement = connection.createStatement()) {
             statement.execute(sql);
@@ -96,13 +90,13 @@ public class BufferedChannelRepositorySQLiteTest {
 
         String sql = String.format("INSERT INTO %s (code, name, department, area, process, installation, technology_number" +
                 ", protocol_number, reference, date, suitability, measurement_name, measurement_value, frequency" +
-                ", range_min, range_max, allowable_error_percent, allowable_error_value, control_points) "
+                ", range_min, range_max, allowable_error_percent, allowable_error_value) "
                 + "VALUES ", TABLE_NAME);
         StringBuilder sqlBuilder = new StringBuilder(sql);
 
         for (Channel channel : expected) {
             String values = String.format(
-                    "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s, '%s'),",
+                    "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %s, %s, %s, %s, %s),",
                     channel.getCode(),
                     channel.getName(),
                     channel.getDepartment(),
@@ -120,8 +114,7 @@ public class BufferedChannelRepositorySQLiteTest {
                     channel.getRangeMin(),
                     channel.getRangeMax(),
                     channel.getAllowableErrorPercent(),
-                    channel.getAllowableError(),
-                    jsonMapper.objectToJson(channel.getControlPoints())
+                    channel.getAllowableError()
             );
             sqlBuilder.append(values);
         }
