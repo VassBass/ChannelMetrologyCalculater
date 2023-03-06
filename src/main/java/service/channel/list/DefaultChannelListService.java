@@ -51,9 +51,9 @@ public class DefaultChannelListService implements ChannelListService {
                 long checkDateInMills = checkDate.getTimeInMillis();
                 long nextDate = DateHelper.yearsToMills(channel.getFrequency()) + checkDateInMills;
                 long toNextCheck = nextDate - Calendar.getInstance().getTimeInMillis();
-                long days90 = 7776000000L;
+                long days90 = 7_776_000_000L;
 
-                if (toNextCheck <= days90) result.add(channel.getCode());
+                if (toNextCheck > 0 && toNextCheck <= days90) result.add(channel.getCode());
             }
         }
 
