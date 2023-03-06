@@ -2,23 +2,27 @@ package service.channel.list;
 
 import org.junit.Before;
 import org.junit.Test;
-import service.channel.list.PropertiesChannelListConfigHolder;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.*;
 
 public class PropertiesChannelListConfigHolderTest {
-    private static final String PROPERTIES_FILE = "properties/test_channel.properties";
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_channel.properties";
 
-    private PropertiesChannelListConfigHolder configHolder;
+    private ChannelListConfigHolder configHolder;
+    private ChannelListConfigHolder configHolderPropertiesFileNotExists;
 
     @Before
-    public void init() {
-        configHolder = new PropertiesChannelListConfigHolder(PROPERTIES_FILE);
+    public void setUp() {
+        configHolder = new PropertiesChannelListConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
+        configHolderPropertiesFileNotExists = new PropertiesChannelListConfigHolder(EMPTY);
     }
 
     @Test
     public void getChannelsCertificatesFolder() {
         String expected = "test_Certificates";
+
         assertEquals(expected, configHolder.getChannelsCertificatesFolder());
+        assertNotNull(configHolderPropertiesFileNotExists.getChannelsCertificatesFolder());
     }
 }

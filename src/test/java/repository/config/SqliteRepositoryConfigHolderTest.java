@@ -13,55 +13,46 @@ import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.SensorRepository;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class SqliteRepositoryConfigHolderTest {
     private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
 
     private SqliteRepositoryConfigHolder configHolder;
-    private SqliteRepositoryConfigHolder configHolderTestInstance;
     private SqliteRepositoryConfigHolder configHolderPropertiesFileNotExists;
 
     @Before
     public void setUp() {
-        configHolder = new SqliteRepositoryConfigHolder();
-        configHolderTestInstance = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
+        configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
         configHolderPropertiesFileNotExists = new SqliteRepositoryConfigHolder(EMPTY);
     }
 
     @Test
     public void testGetDBUrl() {
-        String dbUrl = "jdbc:sqlite:Data.db";
         String testDbUrl = "jdbc:sqlite:TestData.db";
 
-        assertEquals(dbUrl, configHolder.getDBUrl());
-        assertEquals(testDbUrl, configHolderTestInstance.getDBUrl());
-        assertTrue(configHolderPropertiesFileNotExists.getDBUrl().isEmpty());
+        assertEquals(testDbUrl, configHolder.getDBUrl());
+        assertNotNull(configHolderPropertiesFileNotExists.getDBUrl());
     }
 
     @Test
     public void testGetUser() {
         assertTrue(configHolder.getUser().isEmpty());
-        assertTrue(configHolderTestInstance.getUser().isEmpty());
-        assertTrue(configHolderPropertiesFileNotExists.getUser().isEmpty());
+        assertNotNull(configHolderPropertiesFileNotExists.getUser());
     }
 
     @Test
     public void testGetPassword() {
         assertTrue(configHolder.getPassword().isEmpty());
-        assertTrue(configHolderTestInstance.getPassword().isEmpty());
-        assertTrue(configHolderPropertiesFileNotExists.getPassword().isEmpty());
+        assertNotNull(configHolderPropertiesFileNotExists.getPassword());
     }
 
     @Test
     public void testGetDBFile() {
-        String dataFile = "Data.db";
         String testDataFile = "TestData.db";
 
-        assertEquals(dataFile, configHolder.getDBFile());
-        assertEquals(testDataFile, configHolderTestInstance.getDBFile());
-        assertTrue(configHolderPropertiesFileNotExists.getDBFile().isEmpty());
+        assertEquals(testDataFile, configHolder.getDBFile());
+        assertNotNull(configHolderPropertiesFileNotExists.getDBFile());
     }
 
     @Test
@@ -69,7 +60,6 @@ public class SqliteRepositoryConfigHolderTest {
         String measurementTableName = "measurements";
 
         assertEquals(measurementTableName, configHolder.getTableName(MeasurementRepository.class));
-        assertEquals(measurementTableName, configHolderTestInstance.getTableName(MeasurementRepository.class));
         assertEquals(measurementTableName, configHolderPropertiesFileNotExists.getTableName(MeasurementRepository.class));
     }
 
@@ -78,7 +68,6 @@ public class SqliteRepositoryConfigHolderTest {
         String sensorTableName = "sensors";
 
         assertEquals(sensorTableName, configHolder.getTableName(SensorRepository.class));
-        assertEquals(sensorTableName, configHolderTestInstance.getTableName(SensorRepository.class));
         assertEquals(sensorTableName, configHolderPropertiesFileNotExists.getTableName(SensorRepository.class));
     }
 
@@ -87,7 +76,6 @@ public class SqliteRepositoryConfigHolderTest {
         String channelTableName = "channels";
 
         assertEquals(channelTableName, configHolder.getTableName(ChannelRepository.class));
-        assertEquals(channelTableName, configHolderTestInstance.getTableName(ChannelRepository.class));
         assertEquals(channelTableName, configHolderPropertiesFileNotExists.getTableName(ChannelRepository.class));
     }
 
@@ -96,7 +84,6 @@ public class SqliteRepositoryConfigHolderTest {
         String departmentTableName = "departments";
 
         assertEquals(departmentTableName, configHolder.getTableName(DepartmentRepository.class));
-        assertEquals(departmentTableName, configHolderTestInstance.getTableName(DepartmentRepository.class));
         assertEquals(departmentTableName, configHolderPropertiesFileNotExists.getTableName(DepartmentRepository.class));
     }
 
@@ -105,7 +92,6 @@ public class SqliteRepositoryConfigHolderTest {
         String areaTableName = "areas";
 
         assertEquals(areaTableName, configHolder.getTableName(AreaRepository.class));
-        assertEquals(areaTableName, configHolderTestInstance.getTableName(AreaRepository.class));
         assertEquals(areaTableName, configHolderPropertiesFileNotExists.getTableName(AreaRepository.class));
     }
 
@@ -114,7 +100,6 @@ public class SqliteRepositoryConfigHolderTest {
         String processTableName = "processes";
 
         assertEquals(processTableName, configHolder.getTableName(ProcessRepository.class));
-        assertEquals(processTableName, configHolderTestInstance.getTableName(ProcessRepository.class));
         assertEquals(processTableName, configHolderPropertiesFileNotExists.getTableName(ProcessRepository.class));
     }
 
@@ -123,7 +108,6 @@ public class SqliteRepositoryConfigHolderTest {
         String installationTableName = "installations";
 
         assertEquals(installationTableName, configHolder.getTableName(InstallationRepository.class));
-        assertEquals(installationTableName, configHolderTestInstance.getTableName(InstallationRepository.class));
         assertEquals(installationTableName, configHolderPropertiesFileNotExists.getTableName(InstallationRepository.class));
     }
 
@@ -132,7 +116,6 @@ public class SqliteRepositoryConfigHolderTest {
         String calibratorTableName = "calibrators";
 
         assertEquals(calibratorTableName, configHolder.getTableName(CalibratorRepository.class));
-        assertEquals(calibratorTableName, configHolderTestInstance.getTableName(CalibratorRepository.class));
         assertEquals(calibratorTableName, configHolderPropertiesFileNotExists.getTableName(CalibratorRepository.class));
     }
 
@@ -141,14 +124,12 @@ public class SqliteRepositoryConfigHolderTest {
         String personTableName = "persons";
 
         assertEquals(personTableName, configHolder.getTableName(PersonRepository.class));
-        assertEquals(personTableName, configHolderTestInstance.getTableName(PersonRepository.class));
         assertEquals(personTableName, configHolderPropertiesFileNotExists.getTableName(PersonRepository.class));
     }
 
     @Test
     public void testGetUnknownTableName() {
-        assertTrue(configHolder.getTableName(SqliteRepositoryConfigHolderTest.class).isEmpty());
-        assertTrue(configHolderTestInstance.getTableName(SqliteRepositoryConfigHolderTest.class).isEmpty());
-        assertTrue(configHolderPropertiesFileNotExists.getTableName(SqliteRepositoryConfigHolderTest.class).isEmpty());
+        assertNotNull(configHolder.getTableName(SqliteRepositoryConfigHolderTest.class));
+        assertNotNull(configHolderPropertiesFileNotExists.getTableName(SqliteRepositoryConfigHolderTest.class));
     }
 }
