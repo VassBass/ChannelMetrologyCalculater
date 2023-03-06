@@ -3,6 +3,7 @@ package service.channel.info.ui.swing;
 import model.ui.DefaultPanel;
 import model.ui.UI;
 import model.ui.builder.CellBuilder;
+import service.channel.info.ChannelInfoConfigHolder;
 import util.ScreenPoint;
 
 import javax.swing.*;
@@ -34,6 +35,7 @@ public class SwingChannelInfoDialog extends JDialog implements UI {
     }
 
     public void init(
+            ChannelInfoConfigHolder configHolder,
             SwingChannelInfoCodePanel codePanel,
             SwingChannelInfoNamePanel namePanel,
             SwingChannelInfoMeasurementPanel measurementPanel,
@@ -62,10 +64,10 @@ public class SwingChannelInfoDialog extends JDialog implements UI {
         this.allowableErrorPanel = allowableErrorPanel;
         this.buttonsPanel = buttonsPanel;
 
-        buildMainPanel();
+        buildMainPanel(configHolder);
     }
 
-    public void buildMainPanel() {
+    public void buildMainPanel(ChannelInfoConfigHolder configHolder) {
         DefaultPanel panel = new DefaultPanel();
         if (codePanel != null) panel.add(codePanel, new CellBuilder().x(0).y(0).width(2).height(1).build());
         if (namePanel != null) panel.add(namePanel, new CellBuilder().x(0).y(1).width(2).height(1).build());
@@ -81,7 +83,7 @@ public class SwingChannelInfoDialog extends JDialog implements UI {
         if (allowableErrorPanel != null) panel.add(allowableErrorPanel, new CellBuilder().x(0).y(14).width(2).height(1).build());
         if (buttonsPanel != null) panel.add(buttonsPanel, new CellBuilder().x(0).y(15).width(2).height(2).build());
 
-        this.setSize(475, 730);
+        this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(owner, this));
         this.setContentPane(panel);
     }

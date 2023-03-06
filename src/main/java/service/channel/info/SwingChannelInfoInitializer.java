@@ -41,6 +41,7 @@ public class SwingChannelInfoInitializer implements ServiceInitializer {
 
     @Override
     public void init() {
+        ChannelInfoConfigHolder configHolder = new PropertiesChannelInfoConfigHolder();
         ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
         DepartmentRepository departmentRepository = repositoryFactory.getImplementation(DepartmentRepository.class);
@@ -79,6 +80,8 @@ public class SwingChannelInfoInitializer implements ServiceInitializer {
         sensorPanel.setRange("0", "100");
 
         SwingChannelInfoRangePanel rangePanel = new SwingChannelInfoRangePanel(manager);
+        rangePanel.setRangeMin("0");
+        rangePanel.setRangeMax("100");
         rangePanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
 
         SwingChannelInfoAllowableErrorPanel allowableErrorPanel = new SwingChannelInfoAllowableErrorPanel(manager);
@@ -88,7 +91,8 @@ public class SwingChannelInfoInitializer implements ServiceInitializer {
 
         SwingChannelInfoButtonsPanel buttonsPanel = new SwingChannelInfoButtonsPanel(manager);
 
-        dialog.init(codePanel, namePanel, measurementPanel, technologyNumberPanel, datePanel, protocolNumberPanel,
+        dialog.init(configHolder,
+                codePanel, namePanel, measurementPanel, technologyNumberPanel, datePanel, protocolNumberPanel,
                 frequencyPanel, nextDatePanel, pathPanel, sensorPanel, rangePanel, allowableErrorPanel, buttonsPanel);
         manager.init(codePanel, namePanel, measurementPanel, technologyNumberPanel, datePanel, protocolNumberPanel,
                 frequencyPanel, nextDatePanel, pathPanel, sensorPanel, rangePanel, allowableErrorPanel);
