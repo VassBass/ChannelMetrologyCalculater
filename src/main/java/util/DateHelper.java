@@ -5,6 +5,7 @@ import java.util.GregorianCalendar;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
+@SuppressWarnings("MagicConstant")
 public class DateHelper {
 
     public static boolean isDateValid(String date) {
