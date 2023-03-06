@@ -119,13 +119,6 @@ public class Channel implements Serializable {
      */
     private boolean suitability = true;
 
-    /**
-     * DB field = control_points [TEXT{Json}]
-     * key - percent value of point
-     * value - value of point
-     */
-    private Map<Double, Double> controlPoints = new HashMap<>();
-
     @Nonnull public String getCode() {return code;}
     @Nonnull public String getName() {return name;}
     public String getMeasurementName() {return measurementName;}
@@ -144,9 +137,6 @@ public class Channel implements Serializable {
     public double getAllowableErrorPercent(){return allowableErrorPercent;}
     public double getAllowableError(){return allowableError;}
     public boolean isSuitability(){return suitability;}
-    public Map<Double, Double> getControlPoints(){
-        return controlPoints;
-    }
 
     /**
      * @return string of full channel path
@@ -193,7 +183,6 @@ public class Channel implements Serializable {
     public void setRangeMax(double rangeMax) {this.rangeMax = rangeMax;}
     public void setReference(String reference){this.reference = reference;}
     public void setSuitability(boolean suitability){this.suitability = suitability;}
-    public void setControlPoints(Map<Double, Double> controlPoints){this.controlPoints = controlPoints;}
 
     public void setAllowableError(double percent, double value){
         this.allowableErrorPercent = percent;

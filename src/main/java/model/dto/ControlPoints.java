@@ -9,6 +9,9 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = control_points
  */
 public class ControlPoints implements Serializable {
+    public static String createName(String sensorType, double rangeMin, double rangeMax) {
+        return String.format("%s [%s...%s]", sensorType, rangeMin, rangeMax);
+    }
 
     /**
      * DB field = name (primary key) [TEXT]
