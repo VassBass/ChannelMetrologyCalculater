@@ -15,6 +15,7 @@ public interface ChannelListManager {
     void search();
     void advancedSearch();
     void shutdownSearch();
+    void revaluateChannelTable();
     void init(ChannelListInfoTable infoTable,
               ChannelListSearchPanel searchPanel,
               ChannelListTable channelTable);

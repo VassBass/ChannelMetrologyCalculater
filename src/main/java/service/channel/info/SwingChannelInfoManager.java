@@ -13,6 +13,7 @@ import repository.repos.sensor.SensorRepository;
 import service.application.ApplicationScreen;
 import service.channel.info.ui.*;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
+import service.channel.list.ChannelListManager;
 import util.DateHelper;
 import util.ScreenPoint;
 
@@ -33,6 +34,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     private static final String CHANNEL_FOUND_MESSAGE = "Канал знайдено. Відкрити інформацію про канал у данному вікні?";
 
     private final SwingChannelInfoDialog owner;
+    private final ChannelListManager channelListManager;
     private final RepositoryFactory repositoryFactory;
     private Channel oldChannel;
 
@@ -49,8 +51,11 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     private ChannelInfoRangePanel rangePanel;
     private ChannelInfoAllowableErrorPanel allowableErrorPanel;
 
-    public SwingChannelInfoManager(SwingChannelInfoDialog owner, RepositoryFactory repositoryFactory) {
+    public SwingChannelInfoManager(SwingChannelInfoDialog owner,
+                                   ChannelListManager channelListManager,
+                                   RepositoryFactory repositoryFactory) {
         this.owner = owner;
+        this.channelListManager = channelListManager;
         this.repositoryFactory = repositoryFactory;
     }
 
@@ -413,6 +418,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             } catch (InterruptedException | ExecutionException e) {
                 errorReaction(e);
             }
+            channelListManager.revaluateChannelTable();
         }
 
         private void errorReaction(Exception e) {

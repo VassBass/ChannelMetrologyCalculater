@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.application.ApplicationScreen;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
+import service.channel.list.ChannelListManager;
 import service.root.ServiceExecuter;
 import util.ScreenPoint;
 
@@ -18,11 +19,15 @@ import java.util.Objects;
 public class SwingChannelInfoExecuter implements ServiceExecuter {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoExecuter.class);
 
+    private final ChannelListManager channelListManager;
     private Channel channel;
 
-    public SwingChannelInfoExecuter(){}
+    public SwingChannelInfoExecuter(ChannelListManager channelListManager){
+        this.channelListManager = channelListManager;
+    }
 
-    public SwingChannelInfoExecuter(Channel channel) {
+    public SwingChannelInfoExecuter(ChannelListManager channelListManager, Channel channel) {
+        this.channelListManager = channelListManager;
         this.channel = channel;
     }
 
@@ -50,7 +55,7 @@ public class SwingChannelInfoExecuter implements ServiceExecuter {
             ApplicationScreen applicationScreen = ApplicationScreen.getInstance();
             if (repositoryFactory != null && applicationScreen != null) {
                 dialog = new SwingChannelInfoDialog(applicationScreen);
-                ChannelInfoManager manager = new SwingChannelInfoManager(dialog, repositoryFactory);
+                ChannelInfoManager manager = new SwingChannelInfoManager(dialog, channelListManager, repositoryFactory);
 
                 new SwingChannelInfoInitializer(dialog, manager, repositoryFactory, channel).init();
 

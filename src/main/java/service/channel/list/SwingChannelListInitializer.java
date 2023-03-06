@@ -17,15 +17,14 @@ public class SwingChannelListInitializer implements ServiceInitializer {
     @Override
     public void init() {
         ApplicationScreen applicationScreen = ApplicationScreen.getInstance();
-        RepositoryFactory repositoryFactory =
-                RepositoryFactory.getInstance();
+        RepositoryFactory repositoryFactory = RepositoryFactory.getInstance();
         if (applicationScreen != null && repositoryFactory != null) {
             ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
 
             ChannelListConfigHolder configHolder = new PropertiesChannelListConfigHolder();
 
-            ChannelListManager manager = new DefaultChannelListManager(channelRepository, configHolder);
+            ChannelListManager manager = new DefaultChannelListManager(repositoryFactory, configHolder);
             ChannelListService service = new DefaultChannelListService(channelRepository, sensorRepository);
 
             SwingChannelListInfoTable infoTable = new SwingChannelListInfoTable(service);

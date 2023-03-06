@@ -1,6 +1,7 @@
 package service.channel.list.ui.swing;
 
 import model.dto.Channel;
+import model.dto.Sensor;
 import model.ui.ButtonCell;
 import model.ui.builder.CellBuilder;
 import service.channel.list.ChannelListService;
@@ -63,7 +64,9 @@ public class SwingChannelListInfoTable extends JPanel implements ChannelListInfo
             nextDate.setText(nextDateText);
             nextDate.setBackground(setBackgroundColorFromDate(nextDateCal));
             path.setText(service.getFullPath(channel));
-            sensor.setText(service.getSensor(channel).getType());
+
+            Sensor sensor = service.getSensor(channel);
+            if (sensor != null) this.sensor.setText(sensor.getType());
         }
     }
 
