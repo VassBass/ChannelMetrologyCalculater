@@ -47,13 +47,13 @@ public class CalibratorBuilder {
         return this;
     }
 
-    public CalibratorBuilder setMeasurementName(String measurementName) {
-        calibrator.setMeasurement(measurementName == null ? EMPTY : measurementName);
+    public CalibratorBuilder setMeasurementName(String name) {
+        calibrator.setMeasurementName(name == null ? EMPTY : name);
         return this;
     }
 
-    public CalibratorBuilder setMeasurementValue(String measurementValue) {
-        calibrator.setValue(measurementValue == null ? EMPTY : measurementValue);
+    public CalibratorBuilder setMeasurementValue(String value) {
+        calibrator.setMeasurementValue(value == null ? EMPTY : value);
         return this;
     }
 

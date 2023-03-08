@@ -1,7 +1,6 @@
 package repository.repos.calibrator;
 
 import model.dto.Calibrator;
-import model.dto.Measurement;
 import model.dto.builder.CalibratorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +44,8 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 calibratorBuilder.setNumber(resultSet.getString("number"));
                 calibratorBuilder.setRangeMin(resultSet.getDouble("range_min"));
                 calibratorBuilder.setRangeMax(resultSet.getDouble("range_max"));
-                calibratorBuilder.setMeasurementValue(resultSet.getString("value"));
-                calibratorBuilder.setMeasurementName(resultSet.getString("measurement"));
+                calibratorBuilder.setMeasurementValue(resultSet.getString("measurement_value"));
+                calibratorBuilder.setMeasurementName(resultSet.getString("measurement_name"));
                 calibratorBuilder.setErrorFormula(resultSet.getString("error_formula"));
 
                 String certificateJson = resultSet.getString("certificate");
@@ -63,10 +62,10 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
     }
 
     @Override
-    public String[] getAllNames(@Nonnull Measurement measurement) {
+    public String[] getAllNamesByMeasurementName(@Nonnull String measurementName) {
         List<String>calibrators = new ArrayList<>();
 
-        String sql = String.format("SELECT name FROM %s WHERE measurement = '%s';", tableName, measurement.getName());
+        String sql = String.format("SELECT name FROM %s WHERE measurement_name = '%s';", tableName, measurementName);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             while (resultSet.next()) {
                 calibrators.add(resultSet.getString("name"));
@@ -89,8 +88,8 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 calibratorBuilder.setNumber(resultSet.getString("number"));
                 calibratorBuilder.setRangeMin(resultSet.getDouble("range_min"));
                 calibratorBuilder.setRangeMax(resultSet.getDouble("range_max"));
-                calibratorBuilder.setMeasurementValue(resultSet.getString("value"));
-                calibratorBuilder.setMeasurementName(resultSet.getString("measurement"));
+                calibratorBuilder.setMeasurementValue(resultSet.getString("measurement_value"));
+                calibratorBuilder.setMeasurementName(resultSet.getString("measurement_name"));
                 calibratorBuilder.setErrorFormula(resultSet.getString("error_formula"));
 
                 String certificateJson = resultSet.getString("certificate");
@@ -108,14 +107,15 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
 
     @Override
     public boolean add(@Nonnull Calibrator calibrator) {
-        String sql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
+        String sql = String.format("INSERT INTO %s (name, type, number, measurement_name, measurement_value, error_formula, "
+                + "certificate, range_min, range_max) "
                 + "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?);", tableName);
         try (PreparedStatement statement = connector.getPreparedStatement(sql)){
             statement.setString(1, calibrator.getName());
             statement.setString(2, calibrator.getType());
             statement.setString(3, calibrator.getNumber());
-            statement.setString(4, calibrator.getMeasurement());
-            statement.setString(5, calibrator.getValue());
+            statement.setString(4, calibrator.getMeasurementName());
+            statement.setString(5, calibrator.getMeasurementValue());
             statement.setString(6, calibrator.getErrorFormula());
             statement.setString(7, jsonMapper.objectToJson(calibrator.getCertificate()));
             statement.setDouble(8, calibrator.getRangeMin());
@@ -129,8 +129,8 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
     }
 
     @Override
-    public boolean remove(@Nonnull Calibrator calibrator) {
-        String sql = String.format("DELETE FROM %s WHERE name = '%s';", tableName, calibrator.getName());
+    public boolean removeByName(@Nonnull String name) {
+        String sql = String.format("DELETE FROM %s WHERE name = '%s';", tableName, name);
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
@@ -141,7 +141,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
 
     @Override
     public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
-        String sql = String.format("DELETE FROM %s WHERE value = '%s';", tableName, measurementValue);
+        String sql = String.format("DELETE FROM %s WHERE measurement_value = '%s';", tableName, measurementValue);
         try (Statement statement = connector.getStatement()) {
             return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
@@ -156,8 +156,8 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 "name = '%s'" +
                 ", type = '%s'" +
                 ", number = '%s'" +
-                ", measurement = '%s'" +
-                ", value = '%s'" +
+                ", measurement_name = '%s'" +
+                ", measurement_value = '%s'" +
                 ", error_formula = '%s'" +
                 ", certificate = '%s'" +
                 ", range_min = %s" +
@@ -167,8 +167,8 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 newCalibrator.getName(),
                 newCalibrator.getType(),
                 newCalibrator.getNumber(),
-                newCalibrator.getMeasurement(),
-                newCalibrator.getValue(),
+                newCalibrator.getMeasurementName(),
+                newCalibrator.getMeasurementValue(),
                 newCalibrator.getErrorFormula(),
                 jsonMapper.objectToJson(newCalibrator.getCertificate()),
                 newCalibrator.getRangeMin(),
@@ -186,7 +186,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
     public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
         if (oldValue.equals(newValue)) return true;
 
-        String sql = String.format("UPDATE %s SET value = '%s' WHERE value = '%s';", tableName, newValue, oldValue);
+        String sql = String.format("UPDATE %s SET measurement_value = '%s' WHERE measurement_value = '%s';", tableName, newValue, oldValue);
         try (Statement statement = connector.getStatement()) {
             return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
@@ -214,7 +214,8 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
             statement.execute(sql);
 
             if (!calibrators.isEmpty()) {
-                String insertSql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
+                String insertSql = String.format("INSERT INTO %s (name, type, number, measurement_name, measurement_value, error_formula, "
+                        + "certificate, range_min, range_max) "
                         + "VALUES ", tableName);
                 StringBuilder sqlBuilder = new StringBuilder(insertSql);
 
@@ -225,8 +226,8 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                             calibrator.getName(),
                             calibrator.getType(),
                             calibrator.getNumber(),
-                            calibrator.getMeasurement(),
-                            calibrator.getValue(),
+                            calibrator.getMeasurementName(),
+                            calibrator.getMeasurementValue(),
                             calibrator.getErrorFormula(),
                             jsonMapper.objectToJson(calibrator.getCertificate()),
                             calibrator.getRangeMin(),
@@ -251,13 +252,14 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 if (c == null) continue;
 
                 String sql = String.format("UPDATE %s SET "
-                        + "type = ?, number = ?, measurement = ?, value = ?, error_formula = ?, certificate = ?, range_min = ?, range_max = ? "
+                        + "type = ?, number = ?, measurement_name = ?, measurement_value = ?, error_formula = ?, certificate = ?, "
+                        + "range_min = ?, range_max = ? "
                         + "WHERE name = ?;", tableName);
                 try (PreparedStatement statement = connector.getPreparedStatement(sql)){
                     statement.setString(1, c.getType());
                     statement.setString(2, c.getNumber());
-                    statement.setString(3, c.getMeasurement());
-                    statement.setString(4, c.getValue());
+                    statement.setString(3, c.getMeasurementName());
+                    statement.setString(4, c.getMeasurementValue());
                     statement.setString(5, c.getErrorFormula());
                     statement.setString(6, jsonMapper.objectToJson(c.getCertificate()));
                     statement.setDouble(7, c.getRangeMin());
@@ -273,7 +275,8 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
         }
 
         if (!newCalibrators.isEmpty()){
-            String sql = String.format("INSERT INTO %s (name, type, number, measurement, value, error_formula, certificate, range_min, range_max) "
+            String sql = String.format("INSERT INTO %s (name, type, number, measurement_name, measurement_value, error_formula, certificate, "
+                    + "range_min, range_max) "
                     + "VALUES ", tableName);
             StringBuilder sqlBuilder = new StringBuilder(sql);
             try (Statement statement = connector.getStatement()) {
@@ -284,8 +287,8 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                             calibrator.getName(),
                             calibrator.getType(),
                             calibrator.getNumber(),
-                            calibrator.getMeasurement(),
-                            calibrator.getValue(),
+                            calibrator.getMeasurementName(),
+                            calibrator.getMeasurementValue(),
                             calibrator.getErrorFormula(),
                             jsonMapper.objectToJson(calibrator.getCertificate()),
                             calibrator.getRangeMin(),

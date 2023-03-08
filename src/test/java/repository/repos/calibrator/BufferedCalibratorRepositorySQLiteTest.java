@@ -68,8 +68,8 @@ public class BufferedCalibratorRepositorySQLiteTest {
                 + "name text NOT NULL UNIQUE"
                 + ", type text NOT NULL"
                 + ", number text NOT NULL"
-                + ", measurement text NOT NULL"
-                + ", value text NOT NULL"
+                + ", measurement_name text NOT NULL"
+                + ", measurement_value text NOT NULL"
                 + ", error_formula text NOT NULL"
                 + ", certificate text NOT NULL"
                 + ", range_min real NOT NULL"
@@ -97,7 +97,8 @@ public class BufferedCalibratorRepositorySQLiteTest {
         expected = new ArrayList<>(7);
         for (int n = 0;n < 7;n++) expected.add(createCalibrator(n));
 
-        String insertSql = "INSERT INTO calibrators (name, type, number, measurement, value, error_formula, certificate, range_min, range_max)"
+        String insertSql = "INSERT INTO calibrators (name, type, number, measurement_name, measurement_value, error_formula, "
+                + "certificate, range_min, range_max)"
                 + " VALUES ";
         StringBuilder sql = new StringBuilder(insertSql);
 
@@ -106,8 +107,8 @@ public class BufferedCalibratorRepositorySQLiteTest {
                     calibrator.getName(),
                     calibrator.getType(),
                     calibrator.getNumber(),
-                    calibrator.getMeasurement(),
-                    calibrator.getValue(),
+                    calibrator.getMeasurementName(),
+                    calibrator.getMeasurementValue(),
                     calibrator.getErrorFormula(),
                     jsonObjectMapper.objectToJson(calibrator.getCertificate()),
                     calibrator.getRangeMin(),
@@ -143,7 +144,7 @@ public class BufferedCalibratorRepositorySQLiteTest {
     }
 
     @Test
-    public void testGetAllNames() {
+    public void testGetAllNamesByMeasurementName() {
         List<String> expectedTemperature = new ArrayList<>(3);
         List<String> expectedPressure = new ArrayList<>(2);
         List<String> expectedConsumption = new ArrayList<>(2);
@@ -156,13 +157,10 @@ public class BufferedCalibratorRepositorySQLiteTest {
                 expectedConsumption.add(expected.get(i).getName());
             }
         }
-        Measurement temperature = new Measurement(Measurement.TEMPERATURE, Measurement.DEGREE_CELSIUS);
-        Measurement pressure = new Measurement(Measurement.PRESSURE, Measurement.KPA);
-        Measurement consumption = new Measurement(Measurement.CONSUMPTION, Measurement.M3_HOUR);
 
-        List<String> actualTemperature = Arrays.asList(repository.getAllNames(temperature));
-        List<String> actualPressure = Arrays.asList(repository.getAllNames(pressure));
-        List<String> actualConsumption = Arrays.asList(repository.getAllNames(consumption));
+        List<String> actualTemperature = Arrays.asList(repository.getAllNamesByMeasurementName(Measurement.TEMPERATURE));
+        List<String> actualPressure = Arrays.asList(repository.getAllNamesByMeasurementName(Measurement.PRESSURE));
+        List<String> actualConsumption = Arrays.asList(repository.getAllNamesByMeasurementName(Measurement.CONSUMPTION));
 
         assertEquals(expectedTemperature.size(), actualTemperature.size());
         assertEquals(expectedPressure.size(), actualPressure.size());
@@ -209,11 +207,11 @@ public class BufferedCalibratorRepositorySQLiteTest {
     }
 
     @Test
-    public void testRemoveExisted() {
+    public void testRemoveByExistedName() {
         Calibrator calibrator2 = createCalibrator(2);
         expected.remove(2);
 
-        assertTrue(repository.remove(calibrator2));
+        assertTrue(repository.removeByName(calibrator2.getName()));
         assertNull(repository.get(calibrator2.getName()));
 
         List<Calibrator> actual = new ArrayList<>(repository.getAll());
@@ -222,10 +220,10 @@ public class BufferedCalibratorRepositorySQLiteTest {
     }
 
     @Test
-    public void testRemoveNotExisted() {
+    public void testRemoveByNotExistedName() {
         Calibrator calibrator8 = createCalibrator(8);
 
-        assertFalse(repository.remove(calibrator8));
+        assertFalse(repository.removeByName(calibrator8.getName()));
         assertNull(repository.get(calibrator8.getName()));
 
         List<Calibrator> actual = new ArrayList<>(repository.getAll());
@@ -234,11 +232,11 @@ public class BufferedCalibratorRepositorySQLiteTest {
     }
 
     @Test
-    public void testRemoveByMeasurementValueExisted() {
+    public void testRemoveByExistedMeasurementValue() {
         Calibrator calibrator0 = createCalibrator(0);
         Calibrator calibrator1 = createCalibrator(1);
         Calibrator calibrator2 = createCalibrator(2);
-        expected.removeIf(c -> c.getValue().equals(Measurement.DEGREE_CELSIUS));
+        expected.removeIf(c -> c.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS));
 
         assertTrue(repository.removeByMeasurementValue(Measurement.DEGREE_CELSIUS));
         assertNull(repository.get(calibrator0.getName()));
@@ -251,7 +249,7 @@ public class BufferedCalibratorRepositorySQLiteTest {
     }
 
     @Test
-    public void testRemoveByMeasurementValueNotExisted() {
+    public void testRemoveByNotExistedMeasurementValueNotExisted() {
         assertFalse(repository.removeByMeasurementValue("Not Existed"));
         List<Calibrator> actual = new ArrayList<>(repository.getAll());
         assertEquals(expected.size(), actual.size());
@@ -330,10 +328,10 @@ public class BufferedCalibratorRepositorySQLiteTest {
 
         assertTrue(repository.changeMeasurementValue(degreeCelsius, degreeCelsius));
         assertEquals(3, repository.getAll().stream()
-                .filter(c -> c.getValue().equals(degreeCelsius)).count());
-        assertEquals(degreeCelsius, repository.get(calibrator0.getName()).getValue());
-        assertEquals(degreeCelsius, repository.get(calibrator1.getName()).getValue());
-        assertEquals(degreeCelsius, repository.get(calibrator2.getName()).getValue());
+                .filter(c -> c.getMeasurementValue().equals(degreeCelsius)).count());
+        assertEquals(degreeCelsius, repository.get(calibrator0.getName()).getMeasurementValue());
+        assertEquals(degreeCelsius, repository.get(calibrator1.getName()).getMeasurementValue());
+        assertEquals(degreeCelsius, repository.get(calibrator2.getName()).getMeasurementValue());
 
         List<Calibrator> actual = new ArrayList<>(repository.getAll());
         assertEquals(expected.size(), actual.size());
@@ -344,17 +342,17 @@ public class BufferedCalibratorRepositorySQLiteTest {
     public void testChangeToNewMeasurementValue() {
         expected = expected.stream()
                 .peek(c -> {
-                    if (c.getValue().equals(Measurement.DEGREE_CELSIUS)) {
-                        c.setValue(Measurement.PA);
+                    if (c.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)) {
+                        c.setMeasurementValue(Measurement.PA);
                     }
                 }).collect(toList());
 
         assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.PA));
         assertEquals(3, repository.getAll().stream()
-                .filter(c -> c.getValue().equals(Measurement.PA)).count());
-        assertEquals(Measurement.PA, repository.get("calibrator0").getValue());
-        assertEquals(Measurement.PA, repository.get("calibrator1").getValue());
-        assertEquals(Measurement.PA, repository.get("calibrator2").getValue());
+                .filter(c -> c.getMeasurementValue().equals(Measurement.PA)).count());
+        assertEquals(Measurement.PA, repository.get("calibrator0").getMeasurementValue());
+        assertEquals(Measurement.PA, repository.get("calibrator1").getMeasurementValue());
+        assertEquals(Measurement.PA, repository.get("calibrator2").getMeasurementValue());
 
         List<Calibrator> actual = new ArrayList<>(repository.getAll());
         assertEquals(expected.size(), actual.size());
@@ -365,19 +363,19 @@ public class BufferedCalibratorRepositorySQLiteTest {
     public void testChangeToExistedMeasurementValue() {
         expected = expected.stream()
                 .peek(c -> {
-                    if (c.getValue().equals(Measurement.DEGREE_CELSIUS)) {
-                        c.setValue(Measurement.KPA);
+                    if (c.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)) {
+                        c.setMeasurementValue(Measurement.KPA);
                     }
                 }).collect(toList());
 
         assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.KPA));
         assertEquals(5, repository.getAll().stream()
-                .filter(c -> c.getValue().equals(Measurement.KPA)).count());
-        assertEquals(Measurement.KPA, repository.get("calibrator0").getValue());
-        assertEquals(Measurement.KPA, repository.get("calibrator1").getValue());
-        assertEquals(Measurement.KPA, repository.get("calibrator2").getValue());
-        assertEquals(Measurement.KPA, repository.get("calibrator3").getValue());
-        assertEquals(Measurement.KPA, repository.get("calibrator4").getValue());
+                .filter(c -> c.getMeasurementValue().equals(Measurement.KPA)).count());
+        assertEquals(Measurement.KPA, repository.get("calibrator0").getMeasurementValue());
+        assertEquals(Measurement.KPA, repository.get("calibrator1").getMeasurementValue());
+        assertEquals(Measurement.KPA, repository.get("calibrator2").getMeasurementValue());
+        assertEquals(Measurement.KPA, repository.get("calibrator3").getMeasurementValue());
+        assertEquals(Measurement.KPA, repository.get("calibrator4").getMeasurementValue());
 
         List<Calibrator> actual = new ArrayList<>(repository.getAll());
         assertEquals(expected.size(), actual.size());
@@ -388,21 +386,21 @@ public class BufferedCalibratorRepositorySQLiteTest {
     public void testChangeInsteadNotExistedMeasurementValue() {
         assertFalse(repository.changeMeasurementValue(Measurement.PA, Measurement.KPA));
 
-        assertFalse(repository.getAll().stream().anyMatch(c -> c.getValue().equals(Measurement.PA)));
+        assertFalse(repository.getAll().stream().anyMatch(c -> c.getMeasurementValue().equals(Measurement.PA)));
 
         assertEquals(3, repository.getAll().stream()
-                .filter(c -> c.getValue().equals(Measurement.DEGREE_CELSIUS)).count());
+                .filter(c -> c.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)).count());
         assertEquals(2, repository.getAll().stream()
-                .filter(c -> c.getValue().equals(Measurement.KPA)).count());
+                .filter(c -> c.getMeasurementValue().equals(Measurement.KPA)).count());
         assertEquals(2, repository.getAll().stream()
-                .filter(c -> c.getValue().equals(Measurement.M3_HOUR)).count());
-        assertEquals(Measurement.DEGREE_CELSIUS, repository.get("calibrator0").getValue());
-        assertEquals(Measurement.DEGREE_CELSIUS, repository.get("calibrator1").getValue());
-        assertEquals(Measurement.DEGREE_CELSIUS, repository.get("calibrator2").getValue());
-        assertEquals(Measurement.KPA, repository.get("calibrator3").getValue());
-        assertEquals(Measurement.KPA, repository.get("calibrator4").getValue());
-        assertEquals(Measurement.M3_HOUR, repository.get("calibrator5").getValue());
-        assertEquals(Measurement.M3_HOUR, repository.get("calibrator6").getValue());
+                .filter(c -> c.getMeasurementValue().equals(Measurement.M3_HOUR)).count());
+        assertEquals(Measurement.DEGREE_CELSIUS, repository.get("calibrator0").getMeasurementValue());
+        assertEquals(Measurement.DEGREE_CELSIUS, repository.get("calibrator1").getMeasurementValue());
+        assertEquals(Measurement.DEGREE_CELSIUS, repository.get("calibrator2").getMeasurementValue());
+        assertEquals(Measurement.KPA, repository.get("calibrator3").getMeasurementValue());
+        assertEquals(Measurement.KPA, repository.get("calibrator4").getMeasurementValue());
+        assertEquals(Measurement.M3_HOUR, repository.get("calibrator5").getMeasurementValue());
+        assertEquals(Measurement.M3_HOUR, repository.get("calibrator6").getMeasurementValue());
 
         List<Calibrator> actual = new ArrayList<>(repository.getAll());
         assertEquals(expected.size(), actual.size());

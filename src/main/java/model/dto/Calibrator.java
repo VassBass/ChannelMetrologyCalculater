@@ -48,11 +48,11 @@ public class Calibrator implements Serializable {
     @Nonnull private String number = EMPTY;
 
     /**
-     * DB field = measurement [TEXT]
+     * DB field = measurement_name [TEXT]
      *
      * @see Measurement
      */
-    @Nonnull private String measurement = EMPTY;
+    @Nonnull private String measurementName = EMPTY;
 
     /**
      * DB field = range_min [REAL]
@@ -65,11 +65,11 @@ public class Calibrator implements Serializable {
     private double rangeMax = 0D;
 
     /**
-     * DB field = value [TEXT]
+     * DB field = measurement_value [TEXT]
      *
      * @see Measurement
      */
-    @Nonnull private String value = EMPTY;
+    @Nonnull private String measurementValue = EMPTY;
 
     /**
      * DB field = error_formula [TEXT]
@@ -99,8 +99,8 @@ public class Calibrator implements Serializable {
     @Nonnull public Certificate getCertificate(){return this.certificate;}
     public double getRangeMin(){return this.rangeMin;}
     public double getRangeMax(){return this.rangeMax;}
-    @Nonnull public String getValue(){return this.value;}
-    @Nonnull public String getMeasurement(){return this.measurement;}
+    @Nonnull public String getMeasurementValue(){return this.measurementValue;}
+    @Nonnull public String getMeasurementName(){return this.measurementName;}
     @Nonnull public String getErrorFormula(){return this.errorFormula;}
 
     public void setType(@Nonnull String type) {this.type = type;}
@@ -108,9 +108,9 @@ public class Calibrator implements Serializable {
     public void setNumber(@Nonnull String number){this.number = number;}
     public void setRangeMin(double rangeMin){this.rangeMin = rangeMin;}
     public void setRangeMax(double rangeMax){this.rangeMax = rangeMax;}
-    public void setValue(@Nonnull String value){this.value = value;}
+    public void setMeasurementValue(@Nonnull String value){this.measurementValue = value;}
     public void setErrorFormula(@Nonnull String errorFormula){this.errorFormula = errorFormula;}
-    public void setMeasurement(@Nonnull String measurement){this.measurement = measurement;}
+    public void setMeasurementName(@Nonnull String name){this.measurementName = name;}
     public void setCertificate(@Nonnull Certificate certificate){this.certificate = certificate;}
 
     public double calculateRange(){return this.rangeMax - this.rangeMin;}
@@ -184,8 +184,8 @@ public class Calibrator implements Serializable {
             if (this == object) return true;
 
             Certificate c = (Certificate) object;
-            return this.name.equals(c.name)
-                    && this.company.equals(c.company)
+            return this.name.equals(c.getName())
+                    && this.company.equals(c.getCompany())
                     && this.date.equals(c.getDate())
                     && this.type.equals(c.getType());
         }
@@ -238,8 +238,6 @@ public class Calibrator implements Serializable {
      * This method has been rewritten to work with ArrayList.
      *
      * @return true if calibrators names is equal
-     *
-     * If you need to compare all fields of Calibrators use {@link #isMatch(Calibrator)}
      */
     @Override
     public boolean equals(Object obj) {
@@ -259,25 +257,6 @@ public class Calibrator implements Serializable {
     @Override
     public String toString() {
         return String.format("[%s]%s(%s)", number, type, name);
-    }
-
-    /**
-     * @param calibrator to compare with this
-     * @return true if calibrators fields equal
-     */
-    public boolean isMatch(Calibrator calibrator){
-        if (calibrator == null) return false;
-        if (this == calibrator) return true;
-
-        return this.name.equals(calibrator.getName())
-                && this.type.equals(calibrator.getType())
-                && this.number.equals(calibrator.getNumber())
-                && this.measurement.equals(calibrator.getMeasurement())
-                && this.certificate.equals(calibrator.getCertificate())
-                && this.rangeMin == calibrator.getRangeMin()
-                && this.rangeMax == calibrator.getRangeMax()
-                && this.value.equals(calibrator.getValue())
-                && this.errorFormula.equals(calibrator.getErrorFormula());
     }
 }
 

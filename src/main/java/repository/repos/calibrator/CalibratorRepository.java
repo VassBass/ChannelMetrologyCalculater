@@ -8,13 +8,13 @@ import java.util.Collection;
 
 public interface CalibratorRepository {
     Collection<Calibrator> getAll();
-    String[]getAllNames(@Nonnull Measurement measurement);
+    String[]getAllNamesByMeasurementName(@Nonnull String measurementName);
     Calibrator get(String name);
 
     boolean add(@Nonnull Calibrator calibrator);
 
-    boolean remove(@Nonnull Calibrator calibrator);
-    boolean removeByMeasurementValue(@Nonnull String measurementValue);
+    boolean removeByName(@Nonnull String name);
+    boolean removeByMeasurementValue(@Nonnull String value);
     boolean clear();
 
     boolean set(@Nonnull Calibrator oldCalibrator, @Nonnull Calibrator newCalibrator);

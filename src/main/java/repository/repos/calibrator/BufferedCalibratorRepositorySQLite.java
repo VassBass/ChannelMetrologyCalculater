@@ -1,7 +1,6 @@
 package repository.repos.calibrator;
 
 import model.dto.Calibrator;
-import model.dto.Measurement;
 import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 
@@ -28,9 +27,9 @@ public class BufferedCalibratorRepositorySQLite extends CalibratorRepositorySQLi
     }
 
     @Override
-    public String[] getAllNames(@Nonnull Measurement measurement) {
+    public String[] getAllNamesByMeasurementName(@Nonnull String measurementName) {
         return buffer.values().stream()
-                .filter(c -> c.getMeasurement().equals(measurement.getName()))
+                .filter(c -> c.getMeasurementName().equals(measurementName))
                 .map(Calibrator::getName)
                 .toArray(String[]::new);
     }
@@ -49,16 +48,16 @@ public class BufferedCalibratorRepositorySQLite extends CalibratorRepositorySQLi
     }
 
     @Override
-    public boolean remove(@Nonnull Calibrator calibrator) {
-        return buffer.remove(calibrator.getName()) != null && super.remove(calibrator);
+    public boolean removeByName(@Nonnull String name) {
+        return buffer.remove(name) != null && super.removeByName(name);
     }
 
     @Override
-    public boolean removeByMeasurementValue(@Nonnull String measurementValue) {
+    public boolean removeByMeasurementValue(@Nonnull String value) {
         Collection<Calibrator> result = buffer.values();
-        result.removeIf(c -> c.getValue().equals(measurementValue));
+        result.removeIf(c -> c.getMeasurementValue().equals(value));
 
-        return super.removeByMeasurementValue(measurementValue);
+        return super.removeByMeasurementValue(value);
     }
 
     @Override
@@ -78,7 +77,7 @@ public class BufferedCalibratorRepositorySQLite extends CalibratorRepositorySQLi
     @Override
     public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
         buffer.values().forEach(c -> {
-            if (c.getValue().equals(oldValue)) c.setValue(newValue);
+            if (c.getMeasurementValue().equals(oldValue)) c.setMeasurementValue(newValue);
         });
         return super.changeMeasurementValue(oldValue, newValue);
     }
