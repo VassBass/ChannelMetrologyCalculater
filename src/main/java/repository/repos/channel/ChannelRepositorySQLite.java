@@ -117,7 +117,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
             statement.setDouble(15, channel.getRangeMin());
             statement.setDouble(16, channel.getRangeMax());
             statement.setDouble(17, channel.getAllowableErrorPercent());
-            statement.setDouble(18, channel.getAllowableError());
+            statement.setDouble(18, channel.getAllowableErrorValue());
 
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -184,7 +184,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                             channel.getRangeMin(),
                             channel.getRangeMax(),
                             channel.getAllowableErrorPercent(),
-                            channel.getAllowableError()
+                            channel.getAllowableErrorValue()
                     );
                     sqlBuilder.append(values);
                 }
@@ -251,7 +251,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                 newChannel.getRangeMin(),
                 newChannel.getRangeMax(),
                 newChannel.getAllowableErrorPercent(),
-                newChannel.getAllowableError(),
+                newChannel.getAllowableErrorValue(),
                 oldChannel.getCode()
         );
         try (Statement statement = connector.getStatement()){
@@ -302,7 +302,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                     statement.setDouble(14, c.getRangeMin());
                     statement.setDouble(15, c.getRangeMax());
                     statement.setDouble(16, c.getAllowableErrorPercent());
-                    statement.setDouble(17, c.getAllowableError());
+                    statement.setDouble(17, c.getAllowableErrorValue());
 
                     statement.setString(18, c.getCode());
 
@@ -343,7 +343,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                             channel.getRangeMin(),
                             channel.getRangeMax(),
                             channel.getAllowableErrorPercent(),
-                            channel.getAllowableError()
+                            channel.getAllowableErrorValue()
                     );
                     sqlBuilder.append(values);
                 }

@@ -33,7 +33,7 @@ public class ChannelBuilder {
         this.channel.setNumberOfProtocol(channel.getNumberOfProtocol());
         this.channel.setReference(channel.getReference());
         this.channel.setRange(channel.getRangeMin(), channel.getRangeMax());
-        this.channel.setAllowableError(channel.getAllowableErrorPercent(), channel.getAllowableError());
+        this.channel.setAllowableError(channel.getAllowableErrorPercent(), channel.getAllowableErrorValue());
         this.channel.setSuitability(channel.isSuitability());
     }
 
@@ -136,7 +136,7 @@ public class ChannelBuilder {
     }
 
     public ChannelBuilder setAllowableErrorInPercent(double value) {
-        channel.setAllowableError(value, channel.getAllowableError());
+        channel.setAllowableError(value, channel.getAllowableErrorValue());
         return this;
     }
 
@@ -157,7 +157,7 @@ public class ChannelBuilder {
         }
 
         double allowableErrorPercent = channel.getAllowableErrorPercent();
-        double allowableErrorValue = channel.getAllowableError();
+        double allowableErrorValue = channel.getAllowableErrorValue();
         if (allowableErrorValue == 0D && allowableErrorPercent != 0D) {
             allowableErrorValue = (channel.calculateRange() / 100) * allowableErrorPercent;
             channel.setAllowableError(allowableErrorPercent, allowableErrorValue);

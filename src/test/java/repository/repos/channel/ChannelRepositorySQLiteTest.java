@@ -116,7 +116,7 @@ public class ChannelRepositorySQLiteTest {
                     channel.getRangeMin(),
                     channel.getRangeMax(),
                     channel.getAllowableErrorPercent(),
-                    channel.getAllowableError()
+                    channel.getAllowableErrorValue()
             );
             sqlBuilder.append(values);
         }

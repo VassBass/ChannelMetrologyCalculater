@@ -5,7 +5,9 @@ import converters.VariableConverter;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -112,7 +114,7 @@ public class Channel implements Serializable {
     /**
      * DB field = allowable_error_value [REAL]
      */
-    private double allowableError = 0D;
+    private double allowableErrorValue = 0D;
 
     /**
      * DB field = suitability [TEXT]
@@ -135,7 +137,7 @@ public class Channel implements Serializable {
     public double getRangeMax() {return rangeMax;}
     public String getReference(){return reference;}
     public double getAllowableErrorPercent(){return allowableErrorPercent;}
-    public double getAllowableError(){return allowableError;}
+    public double getAllowableErrorValue(){return allowableErrorValue;}
     public boolean isSuitability(){return suitability;}
 
     /**
@@ -186,7 +188,7 @@ public class Channel implements Serializable {
 
     public void setAllowableError(double percent, double value){
         this.allowableErrorPercent = percent;
-        this.allowableError = value;
+        this.allowableErrorValue = value;
     }
 
     public void setRange(double min, double max){

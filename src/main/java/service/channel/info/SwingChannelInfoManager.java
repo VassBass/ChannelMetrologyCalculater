@@ -120,7 +120,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             if (allowableErrorPanel != null && measurementPanel != null) {
                 allowableErrorPanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
                 allowableErrorPanel.setAllowableErrorPercent(String.valueOf(channel.getAllowableErrorPercent()));
-                allowableErrorPanel.setAllowableErrorValue(String.valueOf(channel.getAllowableError()));
+                allowableErrorPanel.setAllowableErrorValue(String.valueOf(channel.getAllowableErrorValue()));
             }
 
             oldChannel = channel;
