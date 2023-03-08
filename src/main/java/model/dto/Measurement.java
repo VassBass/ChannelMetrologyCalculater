@@ -14,7 +14,7 @@ public class Measurement implements Serializable {
      * Measurement names
      * 
      * @see #name
-     * @see Calibrator#getMeasurement() {@link Calibrator#setMeasurement(String)}
+     * @see Calibrator#getMeasurementName() {@link Calibrator#setMeasurementName(String)}
      * @see Sensor#getMeasurementName() {@link Sensor#setMeasurementName(String)}
      */
     public static String TEMPERATURE= "Температура";
@@ -25,7 +25,7 @@ public class Measurement implements Serializable {
      * Measurement values
      *
      * @see #value
-     * @see Calibrator#getValue() {@link Calibrator#setValue(String)}
+     * @see Calibrator#getMeasurementValue()  {@link Calibrator#setMeasurementValue(String)}
      * @see Sensor#getMeasurementValue()  {@link Sensor#setMeasurementValue(String)}
      */
     //Temperature
