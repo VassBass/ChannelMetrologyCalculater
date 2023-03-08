@@ -12,4 +12,16 @@ public class ModelHolder {
         this.model = model;
         fields = new HashMap<>();
     }
+
+    public void setField(ModelField field, String value) {
+        fields.put(field, value);
+    }
+
+    public String getValue(ModelField field) {
+        return fields.get(field);
+    }
+
+    public Model getModel() {
+        return model;
+    }
 }

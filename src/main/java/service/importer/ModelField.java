@@ -1,5 +1,8 @@
 package service.importer;
 
+/**
+ * Contains old version db fields
+ */
 public enum ModelField {
     /**
      * Calibrator fields
@@ -36,6 +39,7 @@ public enum ModelField {
     CHANNEL_SUITABILITY,
     CHANNEL_ALLOWABLE_ERROR_PERCENT,
     CHANNEL_ALLOWABLE_ERROR_VALUE,
+    CHANNEL_SENSOR_NAME,
     /**
      * Control points fields
      * @see model.dto.ControlPoints
@@ -43,12 +47,16 @@ public enum ModelField {
     CONTROL_POINTS_NAME,
     CONTROL_POINTS_SENSOR_TYPE,
     CONTROL_POINTS_VALUES,
+    CONTROL_POINTS_RANGE_MIN,
+    CONTROL_POINTS_RANGE_MAX,
+
     /**
      * Measurement fields
      * @see model.dto.Measurement
      */
     MEASUREMENT_NAME,
     MEASUREMENT_VALUE,
+    MEASUREMENT_FACTORS,
     /**
      * Measurement transform factor fields
      * @see model.dto.MeasurementTransformFactor
@@ -77,5 +85,22 @@ public enum ModelField {
     SENSOR_SERIAL_NUMBER,
     SENSOR_MEASUREMENT_NAME,
     SENSOR_MEASUREMENT_VALUE,
-    SENSOR_ERROR_FORMULA
+    SENSOR_ERROR_FORMULA,
+    SENSOR_NAME,
+    /**
+     * Department fields
+     */
+    DEPARTMENT,
+    /**
+     * Area fields
+     */
+    AREA,
+    /**
+     * Process fields
+     */
+    PROCESS,
+    /**
+     * Installation fields
+     */
+    INSTALLATION
 }
