@@ -22,27 +22,52 @@ public class SqliteReaderOfv5_4 implements Reader {
     private static final Logger logger = LoggerFactory.getLogger(SqliteReaderOfv5_4.class);
 
     @Override
-    public List<ModelHolder> readAll(@Nonnull File file) {
+    public List<ModelHolder> read(@Nonnull File file, @Nonnull Model ... models) {
         List<ModelHolder> result = new ArrayList<>();
 
         try (Connection connection = SqliteConnector.getDBConnection(file)) {
             if (connection != null) {
                 Statement statement = connection.createStatement();
-                appendMeasurements(result, statement);
-                appendChannels(result, statement);
-                appendSensors(result, statement);
-                appendControlPoints(result, statement);
-                appendDepartments(result, statement);
-                appendAreas(result, statement);
-                appendProcesses(result, statement);
-                appendInstallations(result, statement);
-                appendPersons(result, statement);
+                for (Model model : models) {
+                    switch (model) {
+                        case MEASUREMENT:
+                            appendMeasurements(result, statement);
+                            break;
+                        case CHANNEL:
+                            appendChannels(result, statement);
+                            break;
+                        case SENSOR :
+                            appendSensors(result, statement);
+                            break;
+                        case CONTROL_POINTS:
+                            appendControlPoints(result, statement);
+                            break;
+                        case DEPARTMENT:
+                            appendDepartments(result, statement);
+                            break;
+                        case AREA:
+                            appendAreas(result, statement);
+                            break;
+                        case PROCESS:
+                            appendProcesses(result, statement);
+                            break;
+                        case INSTALLATION:
+                            appendInstallations(result, statement);
+                            break;
+                        case PERSON:
+                            appendPersons(result, statement);
+                            break;
+                        case CALIBRATOR:
+                            appendCalibrators(result, statement);
+                            break;
+                    }
+                }
             }
         } catch (SQLException e) {
             logger.warn("Exception was thrown", e);
         }
 
-        return null;
+        return result;
     }
 
     /**
@@ -233,6 +258,32 @@ public class SqliteReaderOfv5_4 implements Reader {
             modelHolder.setField(PERSON_SURNAME, resultSet.getString("surname"));
             modelHolder.setField(PERSON_PATRONYMIC, resultSet.getString("patronymic"));
             modelHolder.setField(PERSON_POSITION, resultSet.getString("position"));
+
+            list.add(modelHolder);
+        }
+    }
+
+    /**
+     * Extract calibrators values from DB and appends to list
+     * @param list to extract fields of calibrators.
+     * @param statement to connection with DB
+     * @throws SQLException see {@link Statement}
+     */
+    private void appendCalibrators(@Nonnull List<ModelHolder> list, @Nonnull Statement statement) throws SQLException {
+        String sql = "SELECT * FROM calibrators;";
+        ResultSet resultSet = statement.executeQuery(sql);
+        while (resultSet.next()) {
+            ModelHolder modelHolder = new ModelHolder(Model.CALIBRATOR);
+
+            modelHolder.setField(CALIBRATOR_NAME, resultSet.getString("name"));
+            modelHolder.setField(CALIBRATOR_TYPE, resultSet.getString("type"));
+            modelHolder.setField(CALIBRATOR_NUMBER, resultSet.getString("number"));
+            modelHolder.setField(CALIBRATOR_MEASUREMENT_NAME, resultSet.getString("measurement"));
+            modelHolder.setField(CALIBRATOR_MEASUREMENT_VALUE, resultSet.getString("value"));
+            modelHolder.setField(CALIBRATOR_ERROR_FORMULA, resultSet.getString("error_formula"));
+            modelHolder.setField(CALIBRATOR_CERTIFICATE, resultSet.getString("certificate"));
+            modelHolder.setField(CALIBRATOR_RANGE_MIN, String.valueOf(resultSet.getDouble("range_min")));
+            modelHolder.setField(CALIBRATOR_RANGE_MAX, String.valueOf(resultSet.getDouble("range_max")));
 
             list.add(modelHolder);
         }

@@ -3,6 +3,7 @@ package repository.repos.measurement;
 import model.dto.Measurement;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public interface MeasurementRepository {
@@ -10,7 +11,7 @@ public interface MeasurementRepository {
     String[]getAllNames();
     String[]getAllValues();
     String[]getValues(@Nonnull String name);
-    Measurement getByValue(@Nonnull String value);
+    @Nullable Measurement getByValue(@Nonnull String value);
     Collection<Measurement> getMeasurementsByName(@Nonnull String name);
 
     boolean add(Measurement measurement);

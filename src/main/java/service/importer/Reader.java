@@ -5,5 +5,5 @@ import java.io.File;
 import java.util.List;
 
 public interface Reader {
-    List<ModelHolder> readAll(@Nonnull File file);
+    List<ModelHolder> read(@Nonnull File file, @Nonnull Model ... models);
 }
