@@ -119,6 +119,7 @@ public class SqliteReaderOfv5_4 implements Reader {
             modelHolder.setField(CHANNEL_SUITABILITY, resultSet.getString("suitability"));
             modelHolder.setField(CHANNEL_ALLOWABLE_ERROR_PERCENT, String.valueOf(resultSet.getDouble("allowable_error_percent")));
             modelHolder.setField(CHANNEL_ALLOWABLE_ERROR_VALUE, String.valueOf(resultSet.getDouble("allowable_error_value")));
+            modelHolder.setField(CHANNEL_SENSOR_JSON, resultSet.getString("sensor"));
 
             list.add(modelHolder);
         }

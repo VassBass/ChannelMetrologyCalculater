@@ -1,13 +1,19 @@
 package service.importer.updater.from_v5_4.to_v6_0;
 
+import model.dto.Calibrator;
 import model.dto.Channel;
 import model.dto.Measurement;
+import model.dto.Sensor;
+import model.dto.builder.CalibratorBuilder;
 import model.dto.builder.ChannelBuilder;
+import model.dto.builder.SensorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
+import repository.repos.calibrator.CalibratorRepository;
 import repository.repos.channel.ChannelRepository;
 import repository.repos.measurement.MeasurementRepository;
+import repository.repos.sensor.SensorRepository;
 import service.importer.*;
 
 import javax.annotation.Nonnull;
@@ -33,6 +39,7 @@ public class DefaultImporter implements Importer {
     public boolean importing(@Nonnull List<ModelHolder> in, @Nonnull RepositoryFactory repositoryFactory) {
         if (!importMeasurements(in, repositoryFactory)) return false;
         if (!importChannels(in, repositoryFactory)) return false;
+        if (!importSensors(in, repositoryFactory)) return false;
 
         return true;
     }
@@ -48,10 +55,10 @@ public class DefaultImporter implements Importer {
 
                 Measurement measurement = repository.getByValue(value);
                 if (measurement == null) {
-                    return repository.add(new Measurement(name, value));
+                    if (!repository.add(new Measurement(name, value))) return false;
                 } else {
                     if (option == ImportOption.REPLACE_EXISTED) {
-                        return repository.set(measurement, new Measurement(name, value));
+                        if (!repository.set(measurement, new Measurement(name, value))) return false;
                     }
                 }
             }
@@ -100,10 +107,69 @@ public class DefaultImporter implements Importer {
 
                 Channel oldChannel = channelRepository.get(code);
                 if (oldChannel == null) {
-                    return channelRepository.add(newChannel);
+                    if (!channelRepository.add(newChannel)) return false;
                 } else {
                     if (option == ImportOption.REPLACE_EXISTED) {
-                        return channelRepository.set(oldChannel, newChannel);
+                        if (!channelRepository.set(oldChannel, newChannel)) return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean importSensors(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
+        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.CHANNEL).collect(Collectors.toList());
+
+        if (input.size() > 0) {
+            SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+
+
+            for (ModelHolder modelHolder : input) {
+                String code = modelHolder.getValue(CHANNEL_CODE);
+                ModelHolder sensorModelHolder = parseSensorFromJson(modelHolder.getValue(CHANNEL_SENSOR_JSON));
+                Sensor newSensor = new SensorBuilder(code)
+                        .setType(sensorModelHolder.getValue(SENSOR_TYPE))
+                        .setSerialNumber(sensorModelHolder.getValue(SENSOR_SERIAL_NUMBER))
+                        .setMeasurementName(sensorModelHolder.getValue(SENSOR_MEASUREMENT_NAME))
+                        .setMeasurementValue(sensorModelHolder.getValue(SENSOR_MEASUREMENT_VALUE))
+                        .setRangeMin(Double.parseDouble(sensorModelHolder.getValue(SENSOR_RANGE_MIN)))
+                        .setRangeMax(Double.parseDouble(sensorModelHolder.getValue(SENSOR_RANGE_MAX)))
+                        .setErrorFormula(sensorModelHolder.getValue(SENSOR_ERROR_FORMULA))
+                        .build();
+
+                Sensor oldSensor = sensorRepository.get(code);
+                if (oldSensor == null) {
+                    if (!sensorRepository.add(newSensor)) return false;
+                } else {
+                    if (option == ImportOption.REPLACE_EXISTED) {
+                        if (!sensorRepository.set(oldSensor, newSensor)) return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean importCalibrators(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
+        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.CALIBRATOR).collect(Collectors.toList());
+        if (input.size() > 0) {
+            CalibratorRepository repository = repositoryFactory.getImplementation(CalibratorRepository.class);
+
+            for (ModelHolder modelHolder : input) {
+                String name = modelHolder.getValue(CALIBRATOR_NAME);
+                Calibrator newCalibrator = new CalibratorBuilder(name)
+                        .setType(modelHolder.getValue(CALIBRATOR_TYPE))
+                        .setNumber(modelHolder.getValue(CALIBRATOR_NUMBER))
+                        .setCertificate()
+                        .build();
+
+                Measurement measurement = repository.getByValue(value);
+                if (measurement == null) {
+                    if (!repository.add(new Measurement(name, value))) return false;
+                } else {
+                    if (option == ImportOption.REPLACE_EXISTED) {
+                        if (!repository.set(measurement, new Measurement(name, value))) return false;
                     }
                 }
             }
@@ -179,5 +245,6 @@ public class DefaultImporter implements Importer {
                     break;
             }
         }
+        return sensor;
     }
 }

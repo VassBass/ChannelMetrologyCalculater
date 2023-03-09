@@ -40,6 +40,7 @@ public enum ModelField {
     CHANNEL_ALLOWABLE_ERROR_PERCENT,
     CHANNEL_ALLOWABLE_ERROR_VALUE,
     CHANNEL_SENSOR_NAME,
+    CHANNEL_SENSOR_JSON,
     /**
      * Control points fields
      * @see model.dto.ControlPoints
