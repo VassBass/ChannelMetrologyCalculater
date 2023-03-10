@@ -6,8 +6,8 @@ import model.dto.builder.ChannelBuilder;
 import model.dto.builder.ControlPointsBuilder;
 import model.dto.builder.SensorBuilder;
 import service.importer.JsonParser;
-import service.importer.Model;
-import service.importer.ModelHolder;
+import service.importer.model.Model;
+import service.importer.model.ModelHolder;
 import service.importer.Transformer;
 
 import javax.annotation.Nullable;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static service.importer.ModelField.*;
+import static service.importer.model.ModelField.*;
 
 public class Transformer_v6_0 implements Transformer {
     private static volatile Transformer_v6_0 instance;

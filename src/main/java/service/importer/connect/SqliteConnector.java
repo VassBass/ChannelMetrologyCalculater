@@ -1,4 +1,4 @@
-package service.importer;
+package service.importer.connect;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

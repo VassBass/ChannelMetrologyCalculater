@@ -1,4 +1,4 @@
-package service.importer;
+package service.importer.model;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,8 +1,8 @@
 package service.importer.updater.from_v5_4.to_v6_0;
 
 import service.importer.JsonParser;
-import service.importer.Model;
-import service.importer.ModelHolder;
+import service.importer.model.Model;
+import service.importer.model.ModelHolder;
 
 import javax.annotation.Nullable;
 
@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
-import static service.importer.ModelField.*;
-import static service.importer.ModelField.SENSOR_ERROR_FORMULA;
+import static service.importer.model.ModelField.*;
+import static service.importer.model.ModelField.SENSOR_ERROR_FORMULA;
 
 public class JsonParser_v5_4 implements JsonParser {
     private static volatile JsonParser_v5_4 instance;

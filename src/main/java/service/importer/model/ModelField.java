@@ -1,4 +1,4 @@
-package service.importer;
+package service.importer.model;
 
 /**
  * Contains old version db fields

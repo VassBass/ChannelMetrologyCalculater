@@ -1,5 +1,7 @@
 package service.importer;
 
+import service.importer.model.ModelHolder;
+
 import javax.annotation.Nullable;
 
 public interface Transformer {

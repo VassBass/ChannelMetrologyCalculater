@@ -2,10 +2,10 @@ package service.importer.updater.from_v5_4.to_v6_0;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.importer.Model;
-import service.importer.ModelHolder;
+import service.importer.model.Model;
+import service.importer.model.ModelHolder;
 import service.importer.Reader;
-import service.importer.SqliteConnector;
+import service.importer.connect.SqliteConnector;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -16,52 +16,27 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static service.importer.ModelField.*;
+import static service.importer.model.ModelField.*;
 
 public class SqliteReaderOfv5_4 implements Reader {
     private static final Logger logger = LoggerFactory.getLogger(SqliteReaderOfv5_4.class);
 
     @Override
-    public List<ModelHolder> read(@Nonnull File file, @Nonnull Model ... models) {
+    public List<ModelHolder> read(@Nonnull File file) {
         List<ModelHolder> result = new ArrayList<>();
 
         try (Connection connection = SqliteConnector.getDBConnection(file)) {
             if (connection != null) {
                 Statement statement = connection.createStatement();
-                for (Model model : models) {
-                    switch (model) {
-                        case MEASUREMENT:
-                            appendMeasurements(result, statement);
-                            break;
-                        case CHANNEL:
-                            appendChannels(result, statement);
-                            break;
-                        case SENSOR :
-                            //appendSensors(result, statement);
-                            break;
-                        case CONTROL_POINTS:
-                            appendControlPoints(result, statement);
-                            break;
-                        case DEPARTMENT:
-                            appendDepartments(result, statement);
-                            break;
-                        case AREA:
-                            appendAreas(result, statement);
-                            break;
-                        case PROCESS:
-                            appendProcesses(result, statement);
-                            break;
-                        case INSTALLATION:
-                            appendInstallations(result, statement);
-                            break;
-                        case PERSON:
-                            appendPersons(result, statement);
-                            break;
-                        case CALIBRATOR:
-                            appendCalibrators(result, statement);
-                            break;
-                    }
-                }
+                appendMeasurements(result, statement);
+                appendChannels(result, statement);
+                appendControlPoints(result, statement);
+                appendDepartments(result, statement);
+                appendAreas(result, statement);
+                appendProcesses(result, statement);
+                appendInstallations(result, statement);
+                appendPersons(result, statement);
+                appendCalibrators(result, statement);
             }
         } catch (SQLException e) {
             logger.warn("Exception was thrown", e);
@@ -114,37 +89,12 @@ public class SqliteReaderOfv5_4 implements Reader {
             modelHolder.setField(CHANNEL_TECHNOLOGY_NUMBER, resultSet.getString("technology_number"));
             modelHolder.setField(CHANNEL_PROTOCOL_NUMBER, resultSet.getString("protocol_number"));
             modelHolder.setField(CHANNEL_RANGE_MIN, String.valueOf(resultSet.getDouble("range_min")));
-            modelHolder.setField(CHANNEL_RANGE_MAX, String.valueOf(resultSet.getDate("range_max")));
+            modelHolder.setField(CHANNEL_RANGE_MAX, String.valueOf(resultSet.getDouble("range_max")));
             modelHolder.setField(CHANNEL_REFERENCE, resultSet.getString("reference"));
             modelHolder.setField(CHANNEL_SUITABILITY, resultSet.getString("suitability"));
             modelHolder.setField(CHANNEL_ALLOWABLE_ERROR_PERCENT, String.valueOf(resultSet.getDouble("allowable_error_percent")));
             modelHolder.setField(CHANNEL_ALLOWABLE_ERROR_VALUE, String.valueOf(resultSet.getDouble("allowable_error_value")));
             modelHolder.setField(CHANNEL_SENSOR_JSON, resultSet.getString("sensor"));
-
-            list.add(modelHolder);
-        }
-    }
-
-    /**
-     * Extract sensors values from DB and appends to list
-     * @param list to extract fields of sensors.
-     * @param statement to connection with DB
-     * @throws SQLException see {@link Statement}
-     */
-    private void appendSensors(@Nonnull List<ModelHolder> list, @Nonnull Statement statement) throws SQLException {
-        String sql = "SELECT * FROM sensors;";
-        ResultSet resultSet = statement.executeQuery(sql);
-        while (resultSet.next()) {
-            ModelHolder modelHolder = new ModelHolder(Model.SENSOR);
-
-            modelHolder.setField(SENSOR_NAME, resultSet.getString("name"));
-            modelHolder.setField(SENSOR_TYPE, resultSet.getString("type"));
-            modelHolder.setField(SENSOR_SERIAL_NUMBER, resultSet.getString("number"));
-            modelHolder.setField(SENSOR_MEASUREMENT_NAME, resultSet.getString("measurement"));
-            modelHolder.setField(SENSOR_MEASUREMENT_VALUE, resultSet.getString("value"));
-            modelHolder.setField(SENSOR_ERROR_FORMULA, resultSet.getString("error_formula"));
-            modelHolder.setField(SENSOR_RANGE_MIN, resultSet.getString("range_min"));
-            modelHolder.setField(SENSOR_RANGE_MAX, resultSet.getString("range_max"));
 
             list.add(modelHolder);
         }

@@ -16,6 +16,8 @@ import repository.repos.person.PersonRepository;
 import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.SensorRepository;
 import service.importer.*;
+import service.importer.model.Model;
+import service.importer.model.ModelHolder;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -24,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static service.importer.ModelField.*;
+import static service.importer.model.ModelField.*;
 
 public class DefaultImporter implements Importer {
     private static final Logger logger = LoggerFactory.getLogger(DefaultImporter.class);

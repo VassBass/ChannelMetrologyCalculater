@@ -1,4 +1,4 @@
-package service.importer;
+package service.importer.model;
 
 public enum Model {
     CHANNEL,
