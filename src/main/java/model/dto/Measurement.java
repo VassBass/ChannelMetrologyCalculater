@@ -10,6 +10,8 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = measurements
  */
 public class Measurement implements Serializable {
+    public static final long serialVersionUID = 6L;
+
     /**
      * Measurement names
      * 

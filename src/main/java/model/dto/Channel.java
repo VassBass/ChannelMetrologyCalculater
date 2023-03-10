@@ -15,6 +15,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = channels
  */
 public class Channel implements Serializable {
+    public static final long serialVersionUID = 6L;
 
     public Channel(){}
 

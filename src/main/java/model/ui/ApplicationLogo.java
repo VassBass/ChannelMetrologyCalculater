@@ -1,8 +1,7 @@
 package model.ui;
 
 import model.ui.builder.CellBuilder;
-import service.application.ApplicationConfigHolder;
-import service.application.ApplicationScreen;
+import application.ApplicationConfigHolder;
 import service.file_extractor.FileExtractor;
 import service.file_extractor.ResourceFileExtractor;
 import util.ScreenPoint;

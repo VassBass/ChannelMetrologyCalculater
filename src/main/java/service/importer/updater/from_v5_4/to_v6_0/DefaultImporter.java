@@ -1,35 +1,37 @@
 package service.importer.updater.from_v5_4.to_v6_0;
 
-import model.dto.Calibrator;
-import model.dto.Channel;
-import model.dto.Measurement;
-import model.dto.Sensor;
-import model.dto.builder.CalibratorBuilder;
-import model.dto.builder.ChannelBuilder;
-import model.dto.builder.SensorBuilder;
+import model.dto.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
+import repository.repos.area.AreaRepository;
 import repository.repos.calibrator.CalibratorRepository;
 import repository.repos.channel.ChannelRepository;
+import repository.repos.control_points.ControlPointsRepository;
+import repository.repos.department.DepartmentRepository;
+import repository.repos.installation.InstallationRepository;
 import repository.repos.measurement.MeasurementRepository;
+import repository.repos.measurement_factor.MeasurementFactorRepository;
+import repository.repos.person.PersonRepository;
+import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.SensorRepository;
 import service.importer.*;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static service.importer.ModelField.*;
 
 public class DefaultImporter implements Importer {
     private static final Logger logger = LoggerFactory.getLogger(DefaultImporter.class);
 
     private final ImportOption option;
+    private final JsonParser jsonParser = JsonParser_v5_4.getInstance();
+    private final Transformer transformer = Transformer_v6_0.getInstance();
 
     public DefaultImporter(ImportOption option) {
         this.option = option;
@@ -40,8 +42,15 @@ public class DefaultImporter implements Importer {
         if (!importMeasurements(in, repositoryFactory)) return false;
         if (!importChannels(in, repositoryFactory)) return false;
         if (!importSensors(in, repositoryFactory)) return false;
+        if (!importCalibrators(in, repositoryFactory)) return false;
+        if (!importDepartments(in, repositoryFactory)) return false;
+        if (!importAreas(in, repositoryFactory)) return false;
+        if (!importProcesses(in, repositoryFactory)) return false;
+        if (!importInstallations(in, repositoryFactory)) return false;
+        if (!importControlPoints(in, repositoryFactory)) return false;
+        if (!importMeasurementTransformFactors(in, repositoryFactory)) return false;
 
-        return true;
+        return importPersons(in, repositoryFactory);
     }
 
     private boolean importMeasurements(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
@@ -85,32 +94,17 @@ public class DefaultImporter implements Importer {
                 if (measurement == null) measurement = new Measurement(Measurement.TEMPERATURE, Measurement.DEGREE_CELSIUS);
 
                 String code = modelHolder.getValue(CHANNEL_CODE);
-                Channel newChannel = new ChannelBuilder(code)
-                        .setName(modelHolder.getValue(CHANNEL_NAME))
-                        .setMeasurementName(measurement.getName())
-                        .setMeasurementValue(measurement.getValue())
-                        .setDepartment(modelHolder.getValue(CHANNEL_DEPARTMENT))
-                        .setArea(modelHolder.getValue(CHANNEL_AREA))
-                        .setProcess(modelHolder.getValue(CHANNEL_PROCESS))
-                        .setInstallation(modelHolder.getValue(CHANNEL_INSTALLATION))
-                        .setDate(modelHolder.getValue(CHANNEL_DATE))
-                        .setFrequency(Double.parseDouble(modelHolder.getValue(CHANNEL_FREQUENCY)))
-                        .setTechnologyNumber(modelHolder.getValue(CHANNEL_TECHNOLOGY_NUMBER))
-                        .setNumberOfProtocol(modelHolder.getValue(CHANNEL_PROTOCOL_NUMBER))
-                        .setRangeMin(Double.parseDouble(modelHolder.getValue(CHANNEL_RANGE_MIN)))
-                        .setRangeMax(Double.parseDouble(modelHolder.getValue(CHANNEL_RANGE_MAX)))
-                        .setReference(modelHolder.getValue(CHANNEL_REFERENCE))
-                        .setSuitability(Boolean.parseBoolean(modelHolder.getValue(CHANNEL_SUITABILITY)))
-                        .setAllowableErrorInPercent(Double.parseDouble(modelHolder.getValue(CHANNEL_ALLOWABLE_ERROR_PERCENT)))
-                        .setAllowableErrorInValue(Double.parseDouble(modelHolder.getValue(CHANNEL_ALLOWABLE_ERROR_VALUE)))
-                        .build();
-
-                Channel oldChannel = channelRepository.get(code);
-                if (oldChannel == null) {
-                    if (!channelRepository.add(newChannel)) return false;
-                } else {
-                    if (option == ImportOption.REPLACE_EXISTED) {
-                        if (!channelRepository.set(oldChannel, newChannel)) return false;
+                Channel newChannel = transformer.transform(modelHolder, Channel.class);
+                if (newChannel != null) {
+                    newChannel.setMeasurementName(measurement.getName());
+                    newChannel.setMeasurementValue(measurement.getValue());
+                    Channel oldChannel = channelRepository.get(code);
+                    if (oldChannel == null) {
+                        if (!channelRepository.add(newChannel)) return false;
+                    } else {
+                        if (option == ImportOption.REPLACE_EXISTED) {
+                            if (!channelRepository.set(oldChannel, newChannel)) return false;
+                        }
                     }
                 }
             }
@@ -127,23 +121,17 @@ public class DefaultImporter implements Importer {
 
             for (ModelHolder modelHolder : input) {
                 String code = modelHolder.getValue(CHANNEL_CODE);
-                ModelHolder sensorModelHolder = parseSensorFromJson(modelHolder.getValue(CHANNEL_SENSOR_JSON));
-                Sensor newSensor = new SensorBuilder(code)
-                        .setType(sensorModelHolder.getValue(SENSOR_TYPE))
-                        .setSerialNumber(sensorModelHolder.getValue(SENSOR_SERIAL_NUMBER))
-                        .setMeasurementName(sensorModelHolder.getValue(SENSOR_MEASUREMENT_NAME))
-                        .setMeasurementValue(sensorModelHolder.getValue(SENSOR_MEASUREMENT_VALUE))
-                        .setRangeMin(Double.parseDouble(sensorModelHolder.getValue(SENSOR_RANGE_MIN)))
-                        .setRangeMax(Double.parseDouble(sensorModelHolder.getValue(SENSOR_RANGE_MAX)))
-                        .setErrorFormula(sensorModelHolder.getValue(SENSOR_ERROR_FORMULA))
-                        .build();
-
-                Sensor oldSensor = sensorRepository.get(code);
-                if (oldSensor == null) {
-                    if (!sensorRepository.add(newSensor)) return false;
-                } else {
-                    if (option == ImportOption.REPLACE_EXISTED) {
-                        if (!sensorRepository.set(oldSensor, newSensor)) return false;
+                ModelHolder sensorModelHolder = jsonParser.parse(modelHolder.getValue(CHANNEL_SENSOR_JSON), Model.SENSOR);
+                Sensor newSensor = transformer.transform(sensorModelHolder, Sensor.class);
+                if (newSensor != null) {
+                    newSensor.setChannelCode(code);
+                    Sensor oldSensor = sensorRepository.get(code);
+                    if (oldSensor == null) {
+                        if (!sensorRepository.add(newSensor)) return false;
+                    } else {
+                        if (option == ImportOption.REPLACE_EXISTED) {
+                            if (!sensorRepository.set(oldSensor, newSensor)) return false;
+                        }
                     }
                 }
             }
@@ -158,18 +146,15 @@ public class DefaultImporter implements Importer {
 
             for (ModelHolder modelHolder : input) {
                 String name = modelHolder.getValue(CALIBRATOR_NAME);
-                Calibrator newCalibrator = new CalibratorBuilder(name)
-                        .setType(modelHolder.getValue(CALIBRATOR_TYPE))
-                        .setNumber(modelHolder.getValue(CALIBRATOR_NUMBER))
-                        .setCertificate()
-                        .build();
-
-                Measurement measurement = repository.getByValue(value);
-                if (measurement == null) {
-                    if (!repository.add(new Measurement(name, value))) return false;
-                } else {
-                    if (option == ImportOption.REPLACE_EXISTED) {
-                        if (!repository.set(measurement, new Measurement(name, value))) return false;
+                Calibrator newCalibrator = transformer.transform(modelHolder, Calibrator.class);
+                if (newCalibrator != null) {
+                    Calibrator oldCalibrator = repository.get(name);
+                    if (oldCalibrator == null) {
+                        if (!repository.add(newCalibrator)) return false;
+                    } else {
+                        if (option == ImportOption.REPLACE_EXISTED) {
+                            if (!repository.set(oldCalibrator, newCalibrator)) return false;
+                        }
                     }
                 }
             }
@@ -177,74 +162,138 @@ public class DefaultImporter implements Importer {
         return true;
     }
 
-    private ModelHolder parseSensorFromJson(String json) {
-        ModelHolder sensor = new ModelHolder(Model.SENSOR);
-        String[] fields = json
-                .replace("{", "")
-                .replace("}", "")
-                .replace("\"", "")
-                .split("\\,");
-        for (String f : fields) {
-            String[] vals = f.split("\\:");
-            switch (vals[0]) {
-                case "type":
-                    if (vals.length > 1) {
-                        sensor.setField(SENSOR_TYPE, vals[1]);
-                    } else {
-                        sensor.setField(SENSOR_TYPE, EMPTY);
-                    }
-                    break;
-                case "name":
-                    if (vals.length > 1) {
-                        sensor.setField(SENSOR_NAME, vals[1]);
-                    } else {
-                        sensor.setField(SENSOR_NAME, EMPTY);
-                    }
-                    break;
-                case "rangeMin":
-                    if (vals.length > 1) {
-                        sensor.setField(SENSOR_RANGE_MIN, vals[1]);
-                    } else {
-                        sensor.setField(SENSOR_RANGE_MIN, "0");
-                    }
-                    break;
-                case "rangeMax":
-                    if (vals.length > 1) {
-                        sensor.setField(SENSOR_RANGE_MAX, vals[1]);
-                    } else {
-                        sensor.setField(SENSOR_RANGE_MAX, "100");
-                    }
-                    break;
-                case "number":
-                    if (vals.length > 1) {
-                        sensor.setField(SENSOR_SERIAL_NUMBER, vals[1]);
-                    } else {
-                        sensor.setField(SENSOR_SERIAL_NUMBER, EMPTY);
-                    }
-                    break;
-                case "value":
-                    if (vals.length > 1) {
-                        sensor.setField(SENSOR_MEASUREMENT_VALUE, vals[1]);
-                    } else {
-                        sensor.setField(SENSOR_MEASUREMENT_VALUE, EMPTY);
-                    }
-                    break;
-                case "measurement":
-                    if (vals.length > 1) {
-                        sensor.setField(SENSOR_MEASUREMENT_NAME, vals[1]);
-                    } else {
-                        sensor.setField(SENSOR_MEASUREMENT_NAME, EMPTY);
-                    }
-                    break;
-                case "errorFormula":
-                    if (vals.length > 1) {
-                        sensor.setField(SENSOR_ERROR_FORMULA, vals[1]);
-                    } else {
-                        sensor.setField(SENSOR_ERROR_FORMULA, EMPTY);
-                    }
-                    break;
+    private boolean importDepartments(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
+        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.DEPARTMENT).collect(Collectors.toList());
+        if (input.size() > 0) {
+            DepartmentRepository repository = repositoryFactory.getImplementation(DepartmentRepository.class);
+            Collection<String> departments = repository.getAll();
+
+            for (ModelHolder modelHolder : input) {
+                String department = modelHolder.getValue(DEPARTMENT);
+                if (department != null && !departments.contains(department)) {
+                    if (!repository.add(department)) return false;
+                }
             }
         }
-        return sensor;
+        return true;
+    }
+
+    private boolean importAreas(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
+        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.AREA).collect(Collectors.toList());
+        if (input.size() > 0) {
+            AreaRepository repository = repositoryFactory.getImplementation(AreaRepository.class);
+            Collection<String> areas = repository.getAll();
+
+            for (ModelHolder modelHolder : input) {
+                String area = modelHolder.getValue(AREA);
+                if (area != null && !areas.contains(area)) {
+                    if (!repository.add(area)) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean importProcesses(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
+        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.PROCESS).collect(Collectors.toList());
+        if (input.size() > 0) {
+            ProcessRepository repository = repositoryFactory.getImplementation(ProcessRepository.class);
+            Collection<String> processes = repository.getAll();
+
+            for (ModelHolder modelHolder : input) {
+                String process = modelHolder.getValue(PROCESS);
+                if (process != null && !processes.contains(process)) {
+                    if (!repository.add(process)) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean importInstallations(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
+        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.INSTALLATION).collect(Collectors.toList());
+        if (input.size() > 0) {
+            InstallationRepository repository = repositoryFactory.getImplementation(InstallationRepository.class);
+            Collection<String> installations = repository.getAll();
+
+            for (ModelHolder modelHolder : input) {
+                String installation = modelHolder.getValue(INSTALLATION);
+                if (installation != null && !installations.contains(installation)) {
+                    if (!repository.add(installation)) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean importControlPoints(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
+        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.CONTROL_POINTS).collect(Collectors.toList());
+        if (input.size() > 0) {
+            ControlPointsRepository repository = repositoryFactory.getImplementation(ControlPointsRepository.class);
+
+            for (ModelHolder modelHolder : input) {
+                ControlPoints newControlPoints = transformer.transform(modelHolder, ControlPoints.class);
+                if (newControlPoints != null) {
+                    ControlPoints oldControlPoints = repository.get(newControlPoints.getName());
+                    if (oldControlPoints == null) {
+                        if (!repository.add(newControlPoints)) return false;
+                    } else {
+                        if (option == ImportOption.REPLACE_EXISTED) {
+                            if (!repository.set(oldControlPoints, newControlPoints)) return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean importMeasurementTransformFactors(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
+        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.MEASUREMENT).collect(Collectors.toList());
+        if (input.size() > 0) {
+            MeasurementFactorRepository repository = repositoryFactory.getImplementation(MeasurementFactorRepository.class);
+
+            for (ModelHolder modelHolder : input) {
+                String from = modelHolder.getValue(MEASUREMENT_VALUE);
+                Collection<MeasurementTransformFactor> oldFactors = repository.getBySource(from);
+
+                Map<String, String> factors = jsonParser.parse(modelHolder.getValue(MEASUREMENT_FACTORS));
+                for (Map.Entry<String, String> entry : factors.entrySet()) {
+                    String to = entry.getKey();
+                    double factor = Double.parseDouble(entry.getValue());
+                    MeasurementTransformFactor old = oldFactors.stream()
+                            .filter(f -> f.getTransformTo().equals(to))
+                            .findAny()
+                            .orElse(null);
+                    if (old == null) {
+                        if (repository.add(from, to, factor) < 0) return false;
+                    } else {
+                        if (option == ImportOption.REPLACE_EXISTED) {
+                            if (!repository.changeFactor(old.getId(), factor)) return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean importPersons(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
+        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.PERSON).collect(Collectors.toList());
+        if (input.size() > 0) {
+            PersonRepository repository = repositoryFactory.getImplementation(PersonRepository.class);
+            Collection<Person> oldPersons = repository.getAll();
+
+            for (ModelHolder modelHolder : input) {
+                Person newPerson = transformer.transform(modelHolder, Person.class);
+                if (newPerson != null) {
+                    Optional<Person> op = oldPersons.stream().filter(p -> p.equalsIgnoreId(newPerson)).findAny();
+                    if (!op.isPresent()) {
+                        repository.add(newPerson);
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

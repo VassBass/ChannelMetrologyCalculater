@@ -18,6 +18,14 @@ public enum ModelField {
     CALIBRATOR_RANGE_MAX,
     CALIBRATOR_ERROR_FORMULA,
     /**
+     * Calibrator certificate fields
+     * @see model.dto.Calibrator.Certificate
+     */
+    CALIBRATOR_CERTIFICATE_TYPE,
+    CALIBRATOR_CERTIFICATE_NAME,
+    CALIBRATOR_CERTIFICATE_DATE,
+    CALIBRATOR_CERTIFICATE_COMPANY,
+    /**
      * Channel fields
      * @see model.dto.Channel
      */
@@ -66,6 +74,7 @@ public enum ModelField {
     MEASUREMENT_TRANSFORM_FACTOR_SOURCE,
     MEASUREMENT_TRANSFORM_FACTOR_RESULT,
     MEASUREMENT_TRANSFORM_FACTOR_FACTOR,
+    MEASUREMENT_TRANSFORM_FACTOR_JSON,
     /**
      * Person fields
      * @see model.dto.Person

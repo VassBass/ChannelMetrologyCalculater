@@ -9,8 +9,10 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = control_points
  */
 public class ControlPoints implements Serializable {
-    public static String createName(String sensorType, double rangeMin, double rangeMax) {
-        return String.format("%s [%s...%s]", sensorType, rangeMin, rangeMax);
+    public static final long serialVersionUID = 6L;
+
+    public static String createName(String sensorType, double channelRangeMin, double channelRangeMax) {
+        return String.format("%s [%s...%s]", sensorType, channelRangeMin, channelRangeMax);
     }
 
     /**

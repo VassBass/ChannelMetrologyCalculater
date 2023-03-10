@@ -15,6 +15,8 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = calibrators
  */
 public class Calibrator implements Serializable {
+    public static final long serialVersionUID = 6L;
+
     /**
      * Default calibrators types
      * 
@@ -147,6 +149,8 @@ public class Calibrator implements Serializable {
 //    }
 
     public static class Certificate implements Serializable {
+        public static final long serialVersionUID = 6L;
+
         private static final String DEFAULT_TYPE = "Сертифікат калібрування";
         private static final String DEFAULT_DATE = "23.03.2022";
 

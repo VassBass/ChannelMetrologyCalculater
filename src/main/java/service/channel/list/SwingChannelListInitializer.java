@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
 import repository.repos.sensor.SensorRepository;
-import service.application.ApplicationScreen;
+import application.ApplicationScreen;
 import service.channel.list.ui.swing.*;
 import service.root.ServiceInitializer;
 

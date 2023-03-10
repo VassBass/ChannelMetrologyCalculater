@@ -1,4 +1,4 @@
-package service.application;
+package application;
 
 public interface ApplicationConfigHolder {
     int getScreenWidth();

@@ -1,6 +1,7 @@
 package model.dto;
 
 import javax.annotation.Nonnegative;
+import java.io.Serializable;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -8,7 +9,8 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 /**
  * DB table = measurement_factors
  */
-public class MeasurementTransformFactor {
+public class MeasurementTransformFactor implements Serializable {
+    public static final long serialVersionUID = 6L;
 
     /**
      * DB field = id (primary key)[INTEGER]

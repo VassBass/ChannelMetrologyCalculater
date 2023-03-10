@@ -1,7 +1,8 @@
-package service.application;
+package application;
 
 import service.channel.list.SwingChannelListInitializer;
 import repository.RepositoryServiceInitializer;
+import service.importer.SwingImporterInitializer;
 import service.root.ServiceInitializer;
 
 import java.util.LinkedHashSet;
@@ -19,6 +20,7 @@ public class ApplicationInitializer implements ServiceInitializer {
         ApplicationScreen.init(config);
         initializerSet.add(new RepositoryServiceInitializer());
         initializerSet.add(new SwingChannelListInitializer());
+        initializerSet.add(new SwingImporterInitializer());
     }
 
     @Override

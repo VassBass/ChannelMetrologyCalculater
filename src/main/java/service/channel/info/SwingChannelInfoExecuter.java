@@ -6,7 +6,7 @@ import model.ui.LoadingDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.application.ApplicationScreen;
+import application.ApplicationScreen;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
 import service.channel.list.ChannelListManager;
 import service.root.ServiceExecuter;

@@ -1,5 +1,7 @@
 package model.dto;
 
+import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -8,7 +10,9 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 /**
  * DB table = persons
  */
-public class Person {
+public class Person implements Serializable {
+    public static final long serialVersionUID = 6L;
+
     public static final String JUNIOR_ENGINEER = "Мол.інженер з АСКВ";
     public static final String ELECTRONIC_ENGINEER = "Інженер-електронік";
     public static final String ENGINEER_ASKV = "Інженер з АСКВ";
@@ -66,14 +70,12 @@ public class Person {
         return person.getId() == this.id;
     }
 
-    public boolean isMatch(Person person){
-        if (person == null) return false;
-        if (this == person) return true;
-
-        return name.equals(person.getName()) &&
-                surname.equals(person.getSurname()) &&
-                patronymic.equals(person.getPatronymic()) &&
-                position.equals(person.getPosition());
+    public boolean equalsIgnoreId(@Nonnull Person person) {
+        if (person == this) return true;
+        return person.getName().equals(name) &&
+                person.getSurname().equals(surname) &&
+                person.getPatronymic().equals(patronymic) &&
+                person.getPosition().equals(position);
     }
 
     @Override

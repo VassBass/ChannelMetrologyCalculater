@@ -1,4 +1,4 @@
-package service.application;
+package application;
 
 import model.ui.ApplicationLogo;
 import service.root.ServiceExecuter;

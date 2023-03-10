@@ -37,7 +37,7 @@ public class SqliteReaderOfv5_4 implements Reader {
                             appendChannels(result, statement);
                             break;
                         case SENSOR :
-                            appendSensors(result, statement);
+                            //appendSensors(result, statement);
                             break;
                         case CONTROL_POINTS:
                             appendControlPoints(result, statement);

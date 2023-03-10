@@ -10,7 +10,7 @@ import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
 import repository.repos.measurement.MeasurementRepository;
 import repository.repos.sensor.SensorRepository;
-import service.application.ApplicationScreen;
+import application.ApplicationScreen;
 import service.channel.info.ui.*;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
 import service.channel.list.ChannelListManager;

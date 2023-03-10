@@ -47,10 +47,12 @@ public class BufferedMeasurementFactorRepositorySQLite extends MeasurementFactor
 
     @Override
     public int add(@Nonnull String source, @Nonnull String result, double factor) {
-        int id = MeasurementFactorIdGenerator.generateForMap(buffer);
-        super.add(source, result, factor);
-        buffer.put(id, new MeasurementTransformFactor(id, source, result, factor));
-        return id;
+        int id = super.add(source, result, factor);
+        if (id >= 0 && !buffer.containsKey(id)) {
+            buffer.put(id, new MeasurementTransformFactor(id, source, result, factor));
+            return id;
+        }
+        return -1;
     }
 
     @Override

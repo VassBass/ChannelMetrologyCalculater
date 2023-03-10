@@ -1,4 +1,4 @@
-package service.application;
+package application;
 
 import model.ui.UI;
 import org.slf4j.Logger;
