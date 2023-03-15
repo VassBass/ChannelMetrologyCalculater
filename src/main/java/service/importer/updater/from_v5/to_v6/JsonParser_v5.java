@@ -1,4 +1,4 @@
-package service.importer.updater.from_v5_4.to_v6_0;
+package service.importer.updater.from_v5.to_v6;
 
 import service.importer.JsonParser;
 import service.importer.model.Model;
@@ -13,14 +13,14 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static service.importer.model.ModelField.*;
 import static service.importer.model.ModelField.SENSOR_ERROR_FORMULA;
 
-public class JsonParser_v5_4 implements JsonParser {
-    private static volatile JsonParser_v5_4 instance;
-    private JsonParser_v5_4(){}
-    public static JsonParser_v5_4 getInstance() {
+public class JsonParser_v5 implements JsonParser {
+    private static volatile JsonParser_v5 instance;
+    private JsonParser_v5(){}
+    public static JsonParser_v5 getInstance() {
         if (instance == null) {
-            synchronized (JsonParser_v5_4.class) {
+            synchronized (JsonParser_v5.class) {
                 if (instance == null) {
-                    instance = new JsonParser_v5_4();
+                    instance = new JsonParser_v5();
                 }
             }
         }

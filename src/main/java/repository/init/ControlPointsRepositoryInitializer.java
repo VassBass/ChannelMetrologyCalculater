@@ -26,7 +26,7 @@ public class ControlPointsRepositoryInitializer extends RepositoryInitializer {
                 + "name text NOT NULL UNIQUE"
                 + ", sensor_type text NOT NULL"
                 + ", points text NOT NULL"
-                + ", PRIMARY KEY (\"name\")"
+                + ", PRIMARY KEY (name)"
                 + ");", tableName);
 
         try (Statement statement = connector.getStatement()) {

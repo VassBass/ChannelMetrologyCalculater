@@ -24,7 +24,7 @@ public class InstallationRepositoryInitializer extends RepositoryInitializer {
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "installation text NOT NULL UNIQUE" +
-                ", PRIMARY KEY (\"installation\")" +
+                ", PRIMARY KEY (installation)" +
                 ");", tableName);
 
         try (Statement statement = connector.getStatement()) {

@@ -24,7 +24,7 @@ public class ProcessRepositoryInitializer extends RepositoryInitializer {
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "process text NOT NULL UNIQUE" +
-                ", PRIMARY KEY (\"process\")" +
+                ", PRIMARY KEY (process)" +
                 ");", tableName);
 
         try (Statement statement = connector.getStatement()) {

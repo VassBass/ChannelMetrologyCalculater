@@ -1,4 +1,4 @@
-package service.importer.updater.from_v5_4.to_v6_0;
+package service.importer.updater.from_v5.to_v6;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,8 @@ import java.util.List;
 
 import static service.importer.model.ModelField.*;
 
-public class SqliteReaderOfv5_4 implements Reader {
-    private static final Logger logger = LoggerFactory.getLogger(SqliteReaderOfv5_4.class);
+public class SqliteReaderOfv5 implements Reader {
+    private static final Logger logger = LoggerFactory.getLogger(SqliteReaderOfv5.class);
 
     @Override
     public List<ModelHolder> read(@Nonnull File file) {

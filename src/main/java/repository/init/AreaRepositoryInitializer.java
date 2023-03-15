@@ -24,7 +24,7 @@ public class AreaRepositoryInitializer extends RepositoryInitializer {
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "area text NOT NULL UNIQUE" +
-                ", PRIMARY KEY (\"area\")" +
+                ", PRIMARY KEY (area)" +
                 ");", tableName);
 
         try (Statement statement = connector.getStatement()) {

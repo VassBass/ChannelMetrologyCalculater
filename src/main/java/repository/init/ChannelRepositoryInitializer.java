@@ -41,7 +41,7 @@ public class ChannelRepositoryInitializer extends RepositoryInitializer {
                 + ", range_max real NOT NULL"
                 + ", allowable_error_percent real NOT NULL"
                 + ", allowable_error_value real NOT NULL"
-                + ", PRIMARY KEY (\"code\")"
+                + ", PRIMARY KEY (code)"
                 + ");", tableName);
 
         try (Statement statement = connector.getStatement()) {

@@ -24,7 +24,7 @@ public class DepartmentRepositoryInitializer extends RepositoryInitializer {
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "department text NOT NULL UNIQUE" +
-                ", PRIMARY KEY (\"department\")" +
+                ", PRIMARY KEY (department)" +
                 ");", tableName);
 
         try (Statement statement = connector.getStatement()) {

@@ -1,4 +1,4 @@
-package service.importer.updater.from_v5_4.to_v6_0;
+package service.importer.updater.from_v5.to_v6;
 
 import model.dto.*;
 import model.dto.builder.CalibratorBuilder;
@@ -19,21 +19,21 @@ import java.util.Map;
 
 import static service.importer.model.ModelField.*;
 
-public class Transformer_v6_0 implements Transformer {
-    private static volatile Transformer_v6_0 instance;
-    private Transformer_v6_0(){}
-    public static Transformer_v6_0 getInstance() {
+public class Transformer_v6 implements Transformer {
+    private static volatile Transformer_v6 instance;
+    private Transformer_v6(){}
+    public static Transformer_v6 getInstance() {
         if (instance == null) {
-            synchronized (Transformer_v6_0.class) {
+            synchronized (Transformer_v6.class) {
                 if (instance == null) {
-                    instance = new Transformer_v6_0();
+                    instance = new Transformer_v6();
                 }
             }
         }
         return instance;
     }
 
-    private final JsonParser jsonParser = JsonParser_v5_4.getInstance();
+    private final JsonParser jsonParser = JsonParser_v5.getInstance();
 
     @Nullable
     @SuppressWarnings("unchecked")
@@ -55,7 +55,7 @@ public class Transformer_v6_0 implements Transformer {
      * @return Sensor model of version 6.0 (without channelCode field)
      * returns null if source object are not valid
      * @see Sensor
-     * @see JsonParser_v5_4#parseSensor(String)
+     * @see JsonParser_v5#parseSensor(String)
      */
     private Sensor transformToSensor(ModelHolder source) {
         if (source.getModel() != Model.SENSOR || Sensor.serialVersionUID != 6L) return null;
@@ -77,7 +77,7 @@ public class Transformer_v6_0 implements Transformer {
      * @return Channel model of version 6.0 (without measurementName field)
      * returns null if source object are not valid
      * @see Channel
-     * @see SqliteReaderOfv5_4#appendChannels(List, Statement)
+     * @see SqliteReaderOfv5#appendChannels(List, Statement)
      */
     private Channel transformToChannel(ModelHolder source) {
         if (source.getModel() != Model.CHANNEL || Channel.serialVersionUID != 6L) return null;
@@ -108,7 +108,7 @@ public class Transformer_v6_0 implements Transformer {
      * @return Calibrator model of version 6.0
      * returns null if source object are not valid
      * @see Calibrator
-     * @see SqliteReaderOfv5_4#appendCalibrators(List, Statement)
+     * @see SqliteReaderOfv5#appendCalibrators(List, Statement)
      */
     private Calibrator transformToCalibrator(ModelHolder source) {
         if (source.getModel() != Model.CALIBRATOR || Calibrator.serialVersionUID != 6L) return null;
@@ -136,8 +136,8 @@ public class Transformer_v6_0 implements Transformer {
      * @return Calibrator.Certificate model of version 6.0
      * returns null if source object are not valid
      * @see Calibrator.Certificate
-     * @see SqliteReaderOfv5_4#appendCalibrators(List, Statement)
-     * @see JsonParser_v5_4#parseCalibratorCertificate(String)
+     * @see SqliteReaderOfv5#appendCalibrators(List, Statement)
+     * @see JsonParser_v5#parseCalibratorCertificate(String)
      */
     private Calibrator.Certificate transformToCalibratorCertificate(ModelHolder source) {
         if (source == null || source.getModel() != Model.CALIBRATOR_CERTIFICATE || Calibrator.Certificate.serialVersionUID != 6L) return null;
@@ -156,8 +156,8 @@ public class Transformer_v6_0 implements Transformer {
      * @return Calibrator.Certificate model of version 6.0
      * returns null if source object are not valid
      * @see Calibrator.Certificate
-     * @see SqliteReaderOfv5_4#appendCalibrators(List, Statement)
-     * @see JsonParser_v5_4#parseCalibratorCertificate(String)
+     * @see SqliteReaderOfv5#appendCalibrators(List, Statement)
+     * @see JsonParser_v5#parseCalibratorCertificate(String)
      */
     private ControlPoints transformToControlPoints(ModelHolder source) {
         if (source == null || source.getModel() != Model.CONTROL_POINTS || ControlPoints.serialVersionUID != 6L) return null;
@@ -187,7 +187,7 @@ public class Transformer_v6_0 implements Transformer {
      * @return Person model of version 6.0 (without id field)
      * returns null if source object are not valid
      * @see model.dto.Person
-     * @see SqliteReaderOfv5_4#appendPersons(List, Statement)
+     * @see SqliteReaderOfv5#appendPersons(List, Statement)
      */
     private Person transformToPerson(ModelHolder source) {
         if (source == null || source.getModel() != Model.PERSON || ControlPoints.serialVersionUID != 6L) return null;

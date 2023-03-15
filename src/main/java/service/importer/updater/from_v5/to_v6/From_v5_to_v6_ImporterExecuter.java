@@ -1,4 +1,4 @@
-package service.importer.updater.from_v5_4.to_v6_0;
+package service.importer.updater.from_v5.to_v6;
 
 import application.ApplicationScreen;
 import model.ui.DialogWrapper;
@@ -17,8 +17,8 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class From_v5_4_to_v6_0_ImporterExecuter implements ServiceExecuter {
-    private static final Logger logger = LoggerFactory.getLogger(From_v5_4_to_v6_0_ImporterExecuter.class);
+public class From_v5_to_v6_ImporterExecuter implements ServiceExecuter {
+    private static final Logger logger = LoggerFactory.getLogger(From_v5_to_v6_ImporterExecuter.class);
 
     private static final String HEADER = "Імпорт";
     private static final String QUESTION_TEXT = "Чи заміняти існуючі дані імпортованими у разі винекнення конфліктів?";
@@ -48,7 +48,7 @@ public class From_v5_4_to_v6_0_ImporterExecuter implements ServiceExecuter {
                     SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
                         @Override
                         protected Boolean doInBackground() {
-                            List<ModelHolder> in = new SqliteReaderOfv5_4().read(selectedFile);
+                            List<ModelHolder> in = new SqliteReaderOfv5().read(selectedFile);
                             return importer.importing(in, repositoryFactory);
                         }
 

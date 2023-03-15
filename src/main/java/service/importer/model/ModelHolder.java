@@ -2,6 +2,7 @@ package service.importer.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ModelHolder {
     private final  Model model;
@@ -23,5 +24,18 @@ public class ModelHolder {
 
     public Model getModel() {
         return model;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ModelHolder that = (ModelHolder) o;
+        return model == that.model && fields.equals(that.fields);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(model, fields);
     }
 }

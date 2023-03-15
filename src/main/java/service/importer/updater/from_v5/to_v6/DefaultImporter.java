@@ -1,4 +1,4 @@
-package service.importer.updater.from_v5_4.to_v6_0;
+package service.importer.updater.from_v5.to_v6;
 
 import model.dto.*;
 import org.slf4j.Logger;
@@ -32,8 +32,8 @@ public class DefaultImporter implements Importer {
     private static final Logger logger = LoggerFactory.getLogger(DefaultImporter.class);
 
     private final ImportOption option;
-    private final JsonParser jsonParser = JsonParser_v5_4.getInstance();
-    private final Transformer transformer = Transformer_v6_0.getInstance();
+    private final JsonParser jsonParser = JsonParser_v5.getInstance();
+    private final Transformer transformer = Transformer_v6.getInstance();
 
     public DefaultImporter(ImportOption option) {
         this.option = option;

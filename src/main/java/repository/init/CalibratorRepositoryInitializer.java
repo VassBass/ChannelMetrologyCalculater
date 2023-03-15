@@ -32,7 +32,7 @@ public class CalibratorRepositoryInitializer extends RepositoryInitializer {
                 + ", certificate text NOT NULL"
                 + ", range_min real NOT NULL"
                 + ", range_max real NOT NULL"
-                + ", PRIMARY KEY (\"name\")"
+                + ", PRIMARY KEY (name)"
                 + ");", tableName);
 
         try (Statement statement = connector.getStatement()) {
