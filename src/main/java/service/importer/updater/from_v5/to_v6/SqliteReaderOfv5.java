@@ -37,6 +37,7 @@ public class SqliteReaderOfv5 implements Reader {
                 appendInstallations(result, statement);
                 appendPersons(result, statement);
                 appendCalibrators(result, statement);
+                appendSensors(result, statement);
             }
         } catch (SQLException e) {
             logger.warn("Exception was thrown", e);
@@ -235,6 +236,31 @@ public class SqliteReaderOfv5 implements Reader {
             modelHolder.setField(CALIBRATOR_CERTIFICATE, resultSet.getString("certificate"));
             modelHolder.setField(CALIBRATOR_RANGE_MIN, String.valueOf(resultSet.getDouble("range_min")));
             modelHolder.setField(CALIBRATOR_RANGE_MAX, String.valueOf(resultSet.getDouble("range_max")));
+
+            list.add(modelHolder);
+        }
+    }
+
+    /**
+     * Extract sensors values from DB and appends to list
+     * @param list to extract fields of sensors.
+     * @param statement to connection with DB
+     * @throws SQLException see {@link Statement}
+     */
+    private void appendSensors(@Nonnull List<ModelHolder> list, @Nonnull Statement statement) throws SQLException {
+        String sql = "SELECT * FROM sensors;";
+        ResultSet resultSet = statement.executeQuery(sql);
+        while (resultSet.next()) {
+            ModelHolder modelHolder = new ModelHolder(Model.SENSOR);
+
+            modelHolder.setField(SENSOR_NAME, resultSet.getString("name"));
+            modelHolder.setField(SENSOR_TYPE, resultSet.getString("type"));
+            modelHolder.setField(SENSOR_SERIAL_NUMBER, resultSet.getString("number"));
+            modelHolder.setField(SENSOR_MEASUREMENT_NAME, resultSet.getString("measurement"));
+            modelHolder.setField(SENSOR_MEASUREMENT_VALUE, resultSet.getString("value"));
+            modelHolder.setField(SENSOR_ERROR_FORMULA, resultSet.getString("error_formula"));
+            modelHolder.setField(SENSOR_RANGE_MIN, String.valueOf(resultSet.getDouble("range_min")));
+            modelHolder.setField(SENSOR_RANGE_MAX, String.valueOf(resultSet.getDouble("range_max")));
 
             list.add(modelHolder);
         }

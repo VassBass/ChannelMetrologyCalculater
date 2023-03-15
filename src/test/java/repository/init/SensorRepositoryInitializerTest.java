@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class SensorRepositoryInitializerTest {
     private static final Logger logger = LoggerFactory.getLogger(SensorRepositoryInitializerTest.class);
 
-    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/repository_test.properties";
     private static final String TABLE_NAME = "sensors";
 
     private static RepositoryConfigHolder configHolder;

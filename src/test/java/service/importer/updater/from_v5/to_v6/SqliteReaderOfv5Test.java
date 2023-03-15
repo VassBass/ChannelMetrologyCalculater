@@ -71,6 +71,7 @@ public class SqliteReaderOfv5Test {
         checkControlPoints(read);
         checkMeasurements(read);
         checkPersons(read);
+        checkSensors(read);
     }
 
     private void checkDepartments(List<ModelHolder> read) {
@@ -461,6 +462,68 @@ public class SqliteReaderOfv5Test {
     private void checkPersons(List<ModelHolder> read) {
         List<ModelHolder> expected = createExpectedPersons();
         List<ModelHolder> actual = read.stream().filter(m -> m.getModel() == Model.PERSON).collect(Collectors.toList());
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    private List<ModelHolder> createExpectedSensors() {
+        ModelHolder sensor1 = new ModelHolder(Model.SENSOR);
+        sensor1.setField(ModelField.SENSOR_NAME, "ТСМ-50М");
+        sensor1.setField(ModelField.SENSOR_TYPE, "ТСМ-50М");
+        sensor1.setField(ModelField.SENSOR_SERIAL_NUMBER, "");
+        sensor1.setField(ModelField.SENSOR_MEASUREMENT_NAME, "Температура");
+        sensor1.setField(ModelField.SENSOR_MEASUREMENT_VALUE, "℃");
+        sensor1.setField(ModelField.SENSOR_ERROR_FORMULA, "(0.005 * R) + 0.3");
+        sensor1.setField(ModelField.SENSOR_RANGE_MIN, "-50.0");
+        sensor1.setField(ModelField.SENSOR_RANGE_MAX, "180.0");
+
+        ModelHolder sensor2 = new ModelHolder(Model.SENSOR);
+        sensor2.setField(ModelField.SENSOR_NAME, "Термопара TXA-2388 (тип К) > 333.5℃");
+        sensor2.setField(ModelField.SENSOR_TYPE, "Термопара TXA-2388 (тип К)");
+        sensor2.setField(ModelField.SENSOR_SERIAL_NUMBER, "");
+        sensor2.setField(ModelField.SENSOR_MEASUREMENT_NAME, "Температура");
+        sensor2.setField(ModelField.SENSOR_MEASUREMENT_VALUE, "℃");
+        sensor2.setField(ModelField.SENSOR_ERROR_FORMULA, "0.0075 * R");
+        sensor2.setField(ModelField.SENSOR_RANGE_MIN, "-50.0");
+        sensor2.setField(ModelField.SENSOR_RANGE_MAX, "1250.0");
+
+        ModelHolder sensor3 = new ModelHolder(Model.SENSOR);
+        sensor3.setField(ModelField.SENSOR_NAME, "Deltabar S");
+        sensor3.setField(ModelField.SENSOR_TYPE, "Deltabar S");
+        sensor3.setField(ModelField.SENSOR_SERIAL_NUMBER, "");
+        sensor3.setField(ModelField.SENSOR_MEASUREMENT_NAME, "Тиск");
+        sensor3.setField(ModelField.SENSOR_MEASUREMENT_VALUE, "кПа");
+        sensor3.setField(ModelField.SENSOR_ERROR_FORMULA, "(convR / 100) * 0.075");
+        sensor3.setField(ModelField.SENSOR_RANGE_MIN, "-10.0");
+        sensor3.setField(ModelField.SENSOR_RANGE_MAX, "10.0");
+
+        ModelHolder sensor4 = new ModelHolder(Model.SENSOR);
+        sensor4.setField(ModelField.SENSOR_NAME, "CERABAR M");
+        sensor4.setField(ModelField.SENSOR_TYPE, "CERABAR M");
+        sensor4.setField(ModelField.SENSOR_SERIAL_NUMBER, "");
+        sensor4.setField(ModelField.SENSOR_MEASUREMENT_NAME, "Тиск");
+        sensor4.setField(ModelField.SENSOR_MEASUREMENT_VALUE, "кПа");
+        sensor4.setField(ModelField.SENSOR_ERROR_FORMULA, "(convR/100) * 0.15");
+        sensor4.setField(ModelField.SENSOR_RANGE_MIN, "-100.0");
+        sensor4.setField(ModelField.SENSOR_RANGE_MAX, "30.0");
+
+        ModelHolder sensor5 = new ModelHolder(Model.SENSOR);
+        sensor5.setField(ModelField.SENSOR_NAME, "YOKOGAWA AXF050G");
+        sensor5.setField(ModelField.SENSOR_TYPE, "YOKOGAWA AXF050G");
+        sensor5.setField(ModelField.SENSOR_SERIAL_NUMBER, "");
+        sensor5.setField(ModelField.SENSOR_MEASUREMENT_NAME, "Витрата");
+        sensor5.setField(ModelField.SENSOR_MEASUREMENT_VALUE, "");
+        sensor5.setField(ModelField.SENSOR_ERROR_FORMULA, "(R / 100) * 0.35");
+        sensor5.setField(ModelField.SENSOR_RANGE_MIN, "0.0");
+        sensor5.setField(ModelField.SENSOR_RANGE_MAX, "0.0");
+
+        return Arrays.asList(sensor1, sensor2, sensor3, sensor4, sensor5);
+    }
+
+    private void checkSensors(List<ModelHolder> read) {
+        List<ModelHolder> expected = createExpectedSensors();
+        List<ModelHolder> actual = read.stream().filter(m -> m.getModel() == Model.SENSOR).collect(Collectors.toList());
 
         assertEquals(expected.size(), actual.size());
         assertTrue(expected.containsAll(actual));

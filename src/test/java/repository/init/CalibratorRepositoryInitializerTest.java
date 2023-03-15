@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class CalibratorRepositoryInitializerTest {
     private static final Logger logger = LoggerFactory.getLogger(CalibratorRepositoryInitializerTest.class);
 
-    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/repository_test.properties";
     private static final String TABLE_NAME = "calibrators";
 
     private static RepositoryConfigHolder configHolder;

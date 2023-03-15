@@ -20,7 +20,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class BufferedDepartmentRepositorySQLiteTest {
-    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/repository_test.properties";
     private static final File TEST_DB_FILE = new File("TestData.db");
     private static final String TEST_DB_URL = "jdbc:sqlite:TestData.db";
     private static final String TABLE_NAME = "departments";

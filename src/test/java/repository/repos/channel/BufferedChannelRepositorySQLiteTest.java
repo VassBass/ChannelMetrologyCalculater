@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.*;
 
 public class BufferedChannelRepositorySQLiteTest {
-    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/repository_test.properties";
     private static final File TEST_DB_FILE = new File("TestData.db");
     private static final String TEST_DB_URL = "jdbc:sqlite:TestData.db";
     private static final String TABLE_NAME = "channels";

@@ -59,7 +59,7 @@ public class PersonIdGeneratorTest {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void generateForDefaultSqliteRepository() throws IOException, SQLException {
-        String repositoryPropertiesFile = "properties/test_repository.properties";
+        String repositoryPropertiesFile = "properties/repository_test.properties";
         File dbFile = new File("TestData.db");
         String dbUrl = "jdbc:sqlite:TestData.db";
         String tableName = "persons";
@@ -108,7 +108,7 @@ public class PersonIdGeneratorTest {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void generateForBufferedSqliteRepository() throws IOException, SQLException {
-        String repositoryPropertiesFile = "properties/test_repository.properties";
+        String repositoryPropertiesFile = "properties/repository_test.properties";
         File dbFile = new File("TestData.db");
         String dbUrl = "jdbc:sqlite:TestData.db";
         String tableName = "persons";

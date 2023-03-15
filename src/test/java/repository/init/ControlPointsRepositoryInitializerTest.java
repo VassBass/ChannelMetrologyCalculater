@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 public class ControlPointsRepositoryInitializerTest {
     private static final Logger logger = LoggerFactory.getLogger(AreaRepositoryInitializerTest.class);
 
-    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/repository_test.properties";
     private static final String TABLE_NAME = "controlPoints";
 
     private static RepositoryConfigHolder configHolder;

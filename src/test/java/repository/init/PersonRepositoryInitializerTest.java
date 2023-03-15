@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
 public class PersonRepositoryInitializerTest {
     private static final Logger logger = LoggerFactory.getLogger(PersonRepositoryInitializerTest.class);
 
-    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_repository.properties";
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/repository_test.properties";
     private static final String TABLE_NAME = "persons";
 
     private static RepositoryConfigHolder configHolder;
