@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,10 +46,12 @@ public class SqliteReaderOfv5Test {
     public static void dropTables() throws SQLException {
         try (Connection connection = DriverManager.getConnection(DB_URL);
             Statement statement = connection.createStatement()) {
-            String sql = "SELECT 'DROP TABLE ' || name || ';' FROM sqlite_master WHERE type = 'table';";
+            String sql = "SELECT name FROM sqlite_master WHERE type = 'table'";
             ResultSet resultSet = statement.executeQuery(sql);
-            while (resultSet.next()) {
-                String dropTableSql = resultSet.getString(1);
+            List<String> tableNames = new ArrayList<>();
+            while (resultSet.next()) tableNames.add(resultSet.getString("name"));
+            for (String table : tableNames) {
+                String dropTableSql = "DROP TABLE IF EXISTS " + table;
                 statement.executeUpdate(dropTableSql);
             }
         }
