@@ -25,18 +25,12 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
     }
 
     public SqliteRepositoryConfigHolder(String propertiesFile) {
-        try {
-            InputStream in = SqliteRepositoryConfigHolder.class.getClassLoader()
-                    .getResourceAsStream(propertiesFile);
-            if (in == null){
-                logger.warn("Couldn't find property file");
-            }else {
-                Properties properties = new Properties();
-                properties.load(in);
+        try (InputStream in = SqliteRepositoryConfigHolder.class.getClassLoader().getResourceAsStream(propertiesFile)){
+            Properties properties = new Properties();
+            properties.load(in);
 
-                dbUrl = properties.getProperty(KEY_DB_URL, EMPTY);
-                dbFile = properties.getProperty(KEY_DB_FILE, EMPTY);
-            }
+            dbUrl = properties.getProperty(KEY_DB_URL, EMPTY);
+            dbFile = properties.getProperty(KEY_DB_FILE, EMPTY);
         } catch (IOException e) {
             logger.warn("Exception was thrown: ",e);
         }

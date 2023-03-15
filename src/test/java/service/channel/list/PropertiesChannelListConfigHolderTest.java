@@ -7,7 +7,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.junit.Assert.*;
 
 public class PropertiesChannelListConfigHolderTest {
-    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/test_channel.properties";
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/channel_test.properties";
 
     private ChannelListConfigHolder configHolder;
     private ChannelListConfigHolder configHolderPropertiesFileNotExists;

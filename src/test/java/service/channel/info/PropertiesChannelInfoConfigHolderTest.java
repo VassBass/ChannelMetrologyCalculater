@@ -8,7 +8,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PropertiesChannelInfoConfigHolderTest {
-    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/channel.properties";
+    private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/channel_test.properties";
 
     private PropertiesChannelInfoConfigHolder configHolder;
     private PropertiesChannelInfoConfigHolder configHolderPropertiesFileNotExists;
