@@ -34,10 +34,11 @@ public class ProcessRepositoryInitializerTest {
     }
 
     @AfterClass
-    public static void deleteDBFile() throws IOException {
-        String dbFileName = configHolder.getDBFile();
-        if (!new File(dbFileName).delete()) {
-            logger.warn(String.format("%s has not been deleted! This may affect the following tests!", dbFileName));
+    public static void deleteDBFile() throws SQLException {
+        String dbUrl = configHolder.getDBUrl();
+        try (Statement statement = DriverManager.getConnection(dbUrl).createStatement()) {
+            String sql = String.format("DROP TABLE IF EXISTS %s;", TABLE_NAME);
+            statement.execute(sql);
         }
     }
 

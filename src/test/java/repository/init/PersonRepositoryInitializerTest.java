@@ -3,22 +3,16 @@ package repository.init;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import repository.config.RepositoryConfigHolder;
 import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.connection.SqliteRepositoryDBConnector;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.*;
 
 import static org.junit.Assert.assertTrue;
 
 public class PersonRepositoryInitializerTest {
-    private static final Logger logger = LoggerFactory.getLogger(PersonRepositoryInitializerTest.class);
-
     private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/repository_test.properties";
     private static final String TABLE_NAME = "persons";
 
@@ -34,10 +28,11 @@ public class PersonRepositoryInitializerTest {
     }
 
     @AfterClass
-    public static void deleteDBFile() throws IOException {
-        String dbFileName = configHolder.getDBFile();
-        if (!new File(dbFileName).delete()) {
-            logger.warn(String.format("%s has not been deleted! This may affect the following tests!", dbFileName));
+    public static void deleteDBFile() throws SQLException {
+        String dbUrl = configHolder.getDBUrl();
+        try (Statement statement = DriverManager.getConnection(dbUrl).createStatement()) {
+            String sql = String.format("DROP TABLE IF EXISTS %s;", TABLE_NAME);
+            statement.execute(sql);
         }
     }
 

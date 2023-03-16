@@ -12,9 +12,9 @@ import java.sql.*;
 
 import static org.junit.Assert.assertTrue;
 
-public class ControlPointsRepositoryInitializerTest {
+public class SensorErrorRepositoryInitializerTest {
     private static final String TEST_REPOSITORY_PROPERTIES_FILE = "properties/repository_test.properties";
-    private static final String TABLE_NAME = "controlPoints";
+    private static final String TABLE_NAME = "sensors_errors";
 
     private static RepositoryConfigHolder configHolder;
     private RepositoryInitializer initializer;
@@ -24,7 +24,7 @@ public class ControlPointsRepositoryInitializerTest {
         configHolder = new SqliteRepositoryConfigHolder(TEST_REPOSITORY_PROPERTIES_FILE);
         RepositoryDBConnector connector = new SqliteRepositoryDBConnector(configHolder);
 
-        initializer = new ControlPointsRepositoryInitializer(configHolder, connector);
+        initializer = new SensorErrorRepositoryInitializer(configHolder, connector);
     }
 
     @AfterClass

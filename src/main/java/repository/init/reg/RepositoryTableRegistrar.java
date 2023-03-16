@@ -11,6 +11,7 @@ import repository.repos.measurement_factor.MeasurementFactorRepository;
 import repository.repos.person.PersonRepository;
 import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.SensorRepository;
+import repository.repos.sensor_error.SensorErrorRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,7 @@ public class RepositoryTableRegistrar {
             registeredTables.put(PersonRepository.class, "persons");
             registeredTables.put(ControlPointsRepository.class, "controlPoints");
             registeredTables.put(MeasurementFactorRepository.class, "measurement_factors");
+            registeredTables.put(SensorErrorRepository.class, "sensors_errors");
         }
 
         return registeredTables;

@@ -59,7 +59,6 @@ public class PersonRepositorySQLiteTest {
     @AfterClass
     public static void removeDB() throws SQLException {
         String sql = String.format("DROP TABLE IF EXISTS %s", TABLE_NAME);
-        DriverManager.registerDriver(new JDBC());
         try (Connection connection = DriverManager.getConnection(TEST_DB_URL);
              Statement statement = connection.createStatement()) {
             statement.execute(sql);
