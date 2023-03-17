@@ -1,8 +1,6 @@
 package service.importer.updater.from_v5.to_v6;
 
 import model.dto.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import repository.repos.area.AreaRepository;
 import repository.repos.calibrator.CalibratorRepository;
@@ -15,9 +13,13 @@ import repository.repos.measurement_factor.MeasurementFactorRepository;
 import repository.repos.person.PersonRepository;
 import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.SensorRepository;
-import service.importer.*;
+import service.importer.ImportOption;
+import service.importer.Importer;
+import service.importer.JsonParser;
+import service.importer.Transformer;
 import service.importer.model.Model;
 import service.importer.model.ModelHolder;
+import util.StringHelper;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -29,8 +31,6 @@ import java.util.stream.Collectors;
 import static service.importer.model.ModelField.*;
 
 public class DefaultImporter implements Importer {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultImporter.class);
-
     private final ImportOption option;
     private final JsonParser jsonParser = JsonParser_v5.getInstance();
     private final Transformer transformer = Transformer_v6.getInstance();
@@ -66,6 +66,7 @@ public class DefaultImporter implements Importer {
 
                 Measurement measurement = repository.getByValue(value);
                 if (measurement == null) {
+                    if (name == null || name.isEmpty() || value.isEmpty()) continue;
                     if (!repository.add(new Measurement(name, value))) return false;
                 } else {
                     if (option == ImportOption.REPLACE_EXISTED) {
@@ -93,11 +94,13 @@ public class DefaultImporter implements Importer {
                         .map(e -> new Measurement(e.getValue(MEASUREMENT_NAME), e.getValue(MEASUREMENT_VALUE)))
                         .orElse(null);
                 if (measurement == null) measurement = measurementRepository.getByValue(measurementValue);
-                if (measurement == null) measurement = new Measurement(Measurement.TEMPERATURE, Measurement.DEGREE_CELSIUS);
+                if (measurement == null) continue;
 
-                String code = modelHolder.getValue(CHANNEL_CODE);
                 Channel newChannel = transformer.transform(modelHolder, Channel.class);
                 if (newChannel != null) {
+                    String code = newChannel.getCode();
+                    if (code.isEmpty()) continue;
+
                     newChannel.setMeasurementName(measurement.getName());
                     newChannel.setMeasurementValue(measurement.getValue());
                     Channel oldChannel = channelRepository.get(code);
@@ -120,9 +123,10 @@ public class DefaultImporter implements Importer {
         if (input.size() > 0) {
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
 
-
             for (ModelHolder modelHolder : input) {
                 String code = modelHolder.getValue(CHANNEL_CODE);
+                if (code == null || code.isEmpty()) continue;
+
                 ModelHolder sensorModelHolder = jsonParser.parse(modelHolder.getValue(CHANNEL_SENSOR_JSON), Model.SENSOR);
                 Sensor newSensor = transformer.transform(sensorModelHolder, Sensor.class);
                 if (newSensor != null) {
@@ -147,9 +151,11 @@ public class DefaultImporter implements Importer {
             CalibratorRepository repository = repositoryFactory.getImplementation(CalibratorRepository.class);
 
             for (ModelHolder modelHolder : input) {
-                String name = modelHolder.getValue(CALIBRATOR_NAME);
                 Calibrator newCalibrator = transformer.transform(modelHolder, Calibrator.class);
                 if (newCalibrator != null) {
+                    String name = newCalibrator.getName();
+                    if (name.isEmpty()) continue;
+
                     Calibrator oldCalibrator = repository.get(name);
                     if (oldCalibrator == null) {
                         if (!repository.add(newCalibrator)) return false;
@@ -236,7 +242,10 @@ public class DefaultImporter implements Importer {
             for (ModelHolder modelHolder : input) {
                 ControlPoints newControlPoints = transformer.transform(modelHolder, ControlPoints.class);
                 if (newControlPoints != null) {
-                    ControlPoints oldControlPoints = repository.get(newControlPoints.getName());
+                    String name = newControlPoints.getName();
+                    if (name.isEmpty()) continue;
+
+                    ControlPoints oldControlPoints = repository.get(name);
                     if (oldControlPoints == null) {
                         if (!repository.add(newControlPoints)) return false;
                     } else {
@@ -257,12 +266,18 @@ public class DefaultImporter implements Importer {
 
             for (ModelHolder modelHolder : input) {
                 String from = modelHolder.getValue(MEASUREMENT_VALUE);
+                if (from == null || from.isEmpty()) continue;
+
                 Collection<MeasurementTransformFactor> oldFactors = repository.getBySource(from);
 
                 Map<String, String> factors = jsonParser.parse(modelHolder.getValue(MEASUREMENT_FACTORS));
                 for (Map.Entry<String, String> entry : factors.entrySet()) {
                     String to = entry.getKey();
-                    double factor = Double.parseDouble(entry.getValue());
+
+                    String value = entry.getValue();
+                    if (!StringHelper.isDouble(value)) continue;
+
+                    double factor = Double.parseDouble(value);
                     MeasurementTransformFactor old = oldFactors.stream()
                             .filter(f -> f.getTransformTo().equals(to))
                             .findAny()

@@ -56,7 +56,7 @@ public class JsonParser_v5Test {
         ModelHolder expected = new ModelHolder(Model.CALIBRATOR_CERTIFICATE);
         expected.setField(ModelField.CALIBRATOR_CERTIFICATE_NAME, "№M-140726-1");
         expected.setField(ModelField.CALIBRATOR_CERTIFICATE_DATE, "16.05.2022");
-        expected.setField(ModelField.CALIBRATOR_CERTIFICATE_COMPANY, "ДП\\\"ПОЛТАВАСТАНДАРТМЕТРОЛОГІЯ\\\"");
+        expected.setField(ModelField.CALIBRATOR_CERTIFICATE_COMPANY, "ДП\"ПОЛТАВАСТАНДАРТМЕТРОЛОГІЯ\"");
         expected.setField(ModelField.CALIBRATOR_CERTIFICATE_TYPE, "Свідоцтво про перевірку МХ");
 
         assertEquals(expected, jsonParser.parse(json, Model.CALIBRATOR_CERTIFICATE));
@@ -84,5 +84,12 @@ public class JsonParser_v5Test {
         expected.put("кгс/см²", "0.01019716");
 
         assertEquals(expected, jsonParser.parse(json));
+    }
+
+    @Test
+    public void testParseEmptyMeasurementFactors() {
+        String json = "{ }";
+
+        assertTrue(jsonParser.parse(json).isEmpty());
     }
 }

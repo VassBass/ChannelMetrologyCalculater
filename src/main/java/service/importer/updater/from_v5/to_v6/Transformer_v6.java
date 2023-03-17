@@ -9,6 +9,7 @@ import service.importer.JsonParser;
 import service.importer.model.Model;
 import service.importer.model.ModelHolder;
 import service.importer.Transformer;
+import util.StringHelper;
 
 import javax.annotation.Nullable;
 
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static service.importer.model.ModelField.*;
 
 public class Transformer_v6 implements Transformer {
@@ -60,14 +62,22 @@ public class Transformer_v6 implements Transformer {
     private Sensor transformToSensor(ModelHolder source) {
         if (source.getModel() != Model.SENSOR || Sensor.serialVersionUID != 6L) return null;
 
+        String type = source.getValue(SENSOR_TYPE);
+        String serialNumber = source.getValue(SENSOR_SERIAL_NUMBER);
+        String measurementName = source.getValue(SENSOR_MEASUREMENT_NAME);
+        String measurementValue = source.getValue(SENSOR_MEASUREMENT_VALUE);
+        String rangeMin = source.getValue(SENSOR_RANGE_MIN);
+        String rangeMax = source.getValue(SENSOR_RANGE_MAX);
+        String errorFormula = source.getValue(SENSOR_ERROR_FORMULA);
+
         return new SensorBuilder()
-                .setType(source.getValue(SENSOR_TYPE))
-                .setSerialNumber(source.getValue(SENSOR_SERIAL_NUMBER))
-                .setMeasurementName(source.getValue(SENSOR_MEASUREMENT_NAME))
-                .setMeasurementValue(source.getValue(SENSOR_MEASUREMENT_VALUE))
-                .setRangeMin(Double.parseDouble(source.getValue(SENSOR_RANGE_MIN)))
-                .setRangeMax(Double.parseDouble(source.getValue(SENSOR_RANGE_MAX)))
-                .setErrorFormula(source.getValue(SENSOR_ERROR_FORMULA))
+                .setType(type == null ? EMPTY : type)
+                .setSerialNumber(serialNumber == null ? EMPTY : serialNumber)
+                .setMeasurementName(measurementName == null ? EMPTY : measurementName)
+                .setMeasurementValue(measurementValue == null ? EMPTY : measurementValue)
+                .setRangeMin(StringHelper.isDouble(rangeMin) ? Double.parseDouble(rangeMin) : 0D)
+                .setRangeMax(StringHelper.isDouble(rangeMax) ? Double.parseDouble(rangeMax) : 100D)
+                .setErrorFormula(errorFormula == null ? EMPTY : errorFormula)
                 .build();
     }
 
@@ -82,23 +92,41 @@ public class Transformer_v6 implements Transformer {
     private Channel transformToChannel(ModelHolder source) {
         if (source.getModel() != Model.CHANNEL || Channel.serialVersionUID != 6L) return null;
 
-        return new ChannelBuilder(source.getValue(CHANNEL_CODE))
-                .setName(source.getValue(CHANNEL_NAME))
-                .setMeasurementValue(source.getValue(CHANNEL_MEASUREMENT_VALUE))
-                .setDepartment(source.getValue(CHANNEL_DEPARTMENT))
-                .setArea(source.getValue(CHANNEL_AREA))
-                .setProcess(source.getValue(CHANNEL_PROCESS))
-                .setInstallation(source.getValue(CHANNEL_INSTALLATION))
-                .setDate(source.getValue(CHANNEL_DATE))
-                .setFrequency(Double.parseDouble(source.getValue(CHANNEL_FREQUENCY)))
-                .setTechnologyNumber(source.getValue(CHANNEL_TECHNOLOGY_NUMBER))
-                .setNumberOfProtocol(source.getValue(CHANNEL_PROTOCOL_NUMBER))
-                .setRangeMin(Double.parseDouble(source.getValue(CHANNEL_RANGE_MIN)))
-                .setRangeMax(Double.parseDouble(source.getValue(CHANNEL_RANGE_MAX)))
-                .setReference(source.getValue(CHANNEL_REFERENCE))
-                .setSuitability(Boolean.parseBoolean(source.getValue(CHANNEL_SUITABILITY)))
-                .setAllowableErrorInPercent(Double.parseDouble(source.getValue(CHANNEL_ALLOWABLE_ERROR_PERCENT)))
-                .setAllowableErrorInValue(Double.parseDouble(source.getValue(CHANNEL_ALLOWABLE_ERROR_VALUE)))
+        String code = source.getValue(CHANNEL_CODE);
+        String name = source.getValue(CHANNEL_NAME);
+        String measurementValue = source.getValue(CHANNEL_MEASUREMENT_VALUE);
+        String department = source.getValue(CHANNEL_DEPARTMENT);
+        String area = source.getValue(CHANNEL_AREA);
+        String process = source.getValue(CHANNEL_PROCESS);
+        String installation = source.getValue(CHANNEL_INSTALLATION);
+        String date = source.getValue(CHANNEL_DATE);
+        String frequency = source.getValue(CHANNEL_FREQUENCY);
+        String technologyNumber = source.getValue(CHANNEL_TECHNOLOGY_NUMBER);
+        String protocolNumber = source.getValue(CHANNEL_PROTOCOL_NUMBER);
+        String rangeMin = source.getValue(CHANNEL_RANGE_MIN);
+        String rangeMax = source.getValue(CHANNEL_RANGE_MAX);
+        String reference = source.getValue(CHANNEL_REFERENCE);
+        String suitability = source.getValue(CHANNEL_SUITABILITY);
+        String allowableErrorPercent = source.getValue(CHANNEL_ALLOWABLE_ERROR_PERCENT);
+        String allowableErrorValue = source.getValue(CHANNEL_ALLOWABLE_ERROR_VALUE);
+
+        return new ChannelBuilder(code == null ? EMPTY : code)
+                .setName(name == null ? EMPTY : name)
+                .setMeasurementValue(measurementValue == null ? EMPTY : measurementValue)
+                .setDepartment(department == null ? EMPTY : department)
+                .setArea(area == null ? EMPTY : area)
+                .setProcess(process == null ? EMPTY : process)
+                .setInstallation(installation == null ? EMPTY : installation)
+                .setDate(date == null ? EMPTY : date)
+                .setFrequency(StringHelper.isDouble(frequency) ? Double.parseDouble(frequency) : 2.0)
+                .setTechnologyNumber(technologyNumber == null ? EMPTY : technologyNumber)
+                .setNumberOfProtocol(protocolNumber == null ? EMPTY : protocolNumber)
+                .setRangeMin(StringHelper.isDouble(rangeMin) ? Double.parseDouble(rangeMin) : 0.0)
+                .setRangeMax(StringHelper.isDouble(rangeMax) ? Double.parseDouble(rangeMax) : 100.0)
+                .setReference(reference == null ? EMPTY : reference)
+                .setSuitability(Boolean.parseBoolean(suitability))
+                .setAllowableErrorInPercent(StringHelper.isDouble(allowableErrorPercent) ? Double.parseDouble(allowableErrorPercent) : 0.0)
+                .setAllowableErrorInValue(StringHelper.isDouble(allowableErrorValue) ? Double.parseDouble(allowableErrorValue) : 0.0)
                 .build();
     }
 
@@ -113,20 +141,29 @@ public class Transformer_v6 implements Transformer {
     private Calibrator transformToCalibrator(ModelHolder source) {
         if (source.getModel() != Model.CALIBRATOR || Calibrator.serialVersionUID != 6L) return null;
 
+        String name = source.getValue(CALIBRATOR_NAME);
+        String type = source.getValue(CALIBRATOR_TYPE);
+        String number = source.getValue(CALIBRATOR_NUMBER);
+        String rangeMin = source.getValue(CALIBRATOR_RANGE_MIN);
+        String rangeMax = source.getValue(CALIBRATOR_RANGE_MAX);
+        String measurementName = source.getValue(CALIBRATOR_MEASUREMENT_NAME);
+        String measurementValue = source.getValue(CALIBRATOR_MEASUREMENT_VALUE);
+        String errorFormula = source.getValue(CALIBRATOR_ERROR_FORMULA);
+
         String certificateJson = source.getValue(CALIBRATOR_CERTIFICATE);
         ModelHolder certificateModelHolder = jsonParser.parse(certificateJson, Model.CALIBRATOR_CERTIFICATE);
         Calibrator.Certificate certificate = transformToCalibratorCertificate(certificateModelHolder);
 
         return new CalibratorBuilder()
-                .setName(source.getValue(CALIBRATOR_NAME))
-                .setType(source.getValue(CALIBRATOR_TYPE))
-                .setNumber(source.getValue(CALIBRATOR_NUMBER))
+                .setName(name == null ? EMPTY : name)
+                .setType(type == null ? EMPTY : type)
+                .setNumber(number == null ? EMPTY : number)
                 .setCertificate(certificate == null ? new Calibrator.Certificate() : certificate)
-                .setRangeMin(Double.parseDouble(source.getValue(CALIBRATOR_RANGE_MIN)))
-                .setRangeMax(Double.parseDouble(source.getValue(CALIBRATOR_RANGE_MAX)))
-                .setMeasurementName(source.getValue(CALIBRATOR_MEASUREMENT_NAME))
-                .setMeasurementValue(source.getValue(CALIBRATOR_MEASUREMENT_VALUE))
-                .setErrorFormula(source.getValue(CALIBRATOR_ERROR_FORMULA))
+                .setRangeMin(StringHelper.isDouble(rangeMin) ? Double.parseDouble(rangeMin) : 0.0)
+                .setRangeMax(StringHelper.isDouble(rangeMax) ? Double.parseDouble(rangeMax) : 100.0)
+                .setMeasurementName(measurementName == null ? EMPTY : measurementName)
+                .setMeasurementValue(measurementValue == null ? EMPTY : measurementValue)
+                .setErrorFormula(errorFormula == null ? EMPTY : errorFormula)
                 .build();
     }
 
@@ -142,11 +179,16 @@ public class Transformer_v6 implements Transformer {
     private Calibrator.Certificate transformToCalibratorCertificate(ModelHolder source) {
         if (source == null || source.getModel() != Model.CALIBRATOR_CERTIFICATE || Calibrator.Certificate.serialVersionUID != 6L) return null;
 
+        String name = source.getValue(CALIBRATOR_CERTIFICATE_NAME);
+        String type = source.getValue(CALIBRATOR_CERTIFICATE_TYPE);
+        String company = source.getValue(CALIBRATOR_CERTIFICATE_COMPANY);
+        String date = source.getValue(CALIBRATOR_CERTIFICATE_DATE);
+
         return new Calibrator.Certificate.CertificateBuilder()
-                .setName(source.getValue(CALIBRATOR_CERTIFICATE_NAME))
-                .setType(source.getValue(CALIBRATOR_CERTIFICATE_TYPE))
-                .setCompany(source.getValue(CALIBRATOR_CERTIFICATE_COMPANY))
-                .setDate(source.getValue(CALIBRATOR_CERTIFICATE_DATE))
+                .setName(name == null ? EMPTY : name)
+                .setType(type == null ? EMPTY : type)
+                .setCompany(company == null ? EMPTY : company)
+                .setDate(date == null ? EMPTY : date)
                 .build();
     }
 
@@ -161,24 +203,32 @@ public class Transformer_v6 implements Transformer {
      */
     private ControlPoints transformToControlPoints(ModelHolder source) {
         if (source == null || source.getModel() != Model.CONTROL_POINTS || ControlPoints.serialVersionUID != 6L) return null;
-        String sensorType = source.getValue(CONTROL_POINTS_SENSOR_TYPE);
-        double rangeMin = Double.parseDouble(source.getValue(CONTROL_POINTS_RANGE_MIN));
-        double rangeMax = Double.parseDouble(source.getValue(CONTROL_POINTS_RANGE_MAX));
-        String name = ControlPoints.createName(sensorType, rangeMin, rangeMax);
-        String[] vals = source.getValue(CONTROL_POINTS_VALUES).split("\\|");
-        if (vals.length == 5) {
-            Map<Double, Double> values = new HashMap<>();
-            values.put(5D, Double.parseDouble(vals[1]));
-            values.put(50D, Double.parseDouble(vals[2]));
-            values.put(95D, Double.parseDouble(vals[3]));
 
-            return new ControlPointsBuilder(name)
-                    .setSensorType(sensorType)
-                    .setPoints(values)
-                    .build();
+        String sensorType = source.getValue(CONTROL_POINTS_SENSOR_TYPE);
+        String rangeMin = source.getValue(CONTROL_POINTS_RANGE_MIN);
+        String rangeMax = source.getValue(CONTROL_POINTS_RANGE_MAX);
+        String name = ControlPoints.createName(
+                sensorType,
+                StringHelper.isDouble(rangeMin) ? Double.parseDouble(rangeMin) : 0.0,
+                StringHelper.isDouble(rangeMax) ? Double.parseDouble(rangeMax) : 100.0
+        );
+
+        String[] vals = source.getValue(CONTROL_POINTS_VALUES).split("\\|");
+        Map<Double, Double> values = new HashMap<>();
+        if (vals.length == 5) {
+            values.put(5D, StringHelper.isDouble(vals[1]) ? Double.parseDouble(vals[1]) : 5D);
+            values.put(50D, StringHelper.isDouble(vals[2]) ? Double.parseDouble(vals[2]) : 50D);
+            values.put(95D, StringHelper.isDouble(vals[3]) ? Double.parseDouble(vals[3]) : 95D);
+        } else {
+            values.put(5D, 5D);
+            values.put(50D, 50D);
+            values.put(95D, 95D);
         }
 
-        return null;
+        return new ControlPointsBuilder(name)
+                .setSensorType(sensorType)
+                .setPoints(values)
+                .build();
     }
 
     /**

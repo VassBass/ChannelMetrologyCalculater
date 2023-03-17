@@ -28,7 +28,7 @@ public class JsonParser_v5 implements JsonParser {
         return instance;
     }
 
-    private static final String UNNECESSARY_DOUBLE_QUOTES_REGEX = "^\\\"|\\\"$|\\\"(?=\\s\\:)|(?<=\\:\\s)\\\"";
+    private static final String UNNECESSARY_SYMBOLS_REGEX = "^\\\"|\\\"$|\\\"(?=\\s\\:)|(?<=\\:\\s)\\\"|\\\\(?=\\\")";
     private static final String CURLY_BRACKETS_REGEX = "^\\{|\\}$";
     private static final String NEW_STRING_REGEX = "(\\n\\s\\s)|(\\n)";
     private static final String COLON_REGEX = "\\s\\:\\s";
@@ -71,7 +71,10 @@ public class JsonParser_v5 implements JsonParser {
         Map<String, String> result = new HashMap<>();
         String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
         for (String f : fields) {
-            String[] vals = f.replaceAll(UNNECESSARY_DOUBLE_QUOTES_REGEX, "").split(COLON_REGEX);
+            String checkStr = f.replaceAll("\\s", "");
+            if (checkStr.isEmpty()) continue;
+
+            String[] vals = f.replaceAll(UNNECESSARY_SYMBOLS_REGEX, "").split(COLON_REGEX);
             result.put(vals[0], vals[1]);
         }
         return result;
@@ -100,7 +103,7 @@ public class JsonParser_v5 implements JsonParser {
         ModelHolder sensor = new ModelHolder(Model.SENSOR);
         String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
         for (String f : fields) {
-            String[] vals = f.replaceAll(UNNECESSARY_DOUBLE_QUOTES_REGEX, "").split(COLON_REGEX);
+            String[] vals = f.replaceAll(UNNECESSARY_SYMBOLS_REGEX, "").split(COLON_REGEX);
             switch (vals[0]) {
                 case "type":
                     if (vals.length > 1) {
@@ -182,7 +185,7 @@ public class JsonParser_v5 implements JsonParser {
         ModelHolder certificate = new ModelHolder(Model.CALIBRATOR_CERTIFICATE);
         String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
         for (String f : fields) {
-            String[] vals = f.replaceAll(UNNECESSARY_DOUBLE_QUOTES_REGEX, "").split(COLON_REGEX);
+            String[] vals = f.replaceAll(UNNECESSARY_SYMBOLS_REGEX, "").split(COLON_REGEX);
             switch (vals[0]) {
                 case "name":
                     if (vals.length > 1) {
