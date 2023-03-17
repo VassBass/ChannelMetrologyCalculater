@@ -31,7 +31,15 @@ public class ModelHolder {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ModelHolder that = (ModelHolder) o;
-        return model == that.model && fields.equals(that.fields);
+        boolean equals = model == that.model;
+        if (equals) {
+            for (Map.Entry<ModelField, String> entry : fields.entrySet()) {
+                String val = that.fields.get(entry.getKey());
+                if (val == null || !val.equals(entry.getValue())) return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override

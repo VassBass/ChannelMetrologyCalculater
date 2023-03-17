@@ -4,6 +4,7 @@ import service.importer.JsonParser;
 import service.importer.model.Model;
 import service.importer.model.ModelHolder;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import java.util.HashMap;
@@ -29,11 +30,75 @@ public class JsonParser_v5 implements JsonParser {
 
     private static final String UNNECESSARY_DOUBLE_QUOTES_REGEX = "^\\\"|\\\"$|\\\"(?=\\s\\:)|(?<=\\:\\s)\\\"";
     private static final String CURLY_BRACKETS_REGEX = "^\\{|\\}$";
+    private static final String NEW_STRING_REGEX = "(\\n\\s\\s)|(\\n)";
     private static final String COLON_REGEX = "\\s\\:\\s";
 
+    /**
+     * @param json in format of v5 DB.
+     * @param model to parse. Supported models {@link model.dto.Sensor}, {@link model.dto.Calibrator.Certificate}
+     * @return ModelHolder of model
+     * @see #parseSensor(String)
+     * @see #parseCalibratorCertificate(String)
+     *
+     * @see ModelHolder
+     * @see model.dto.Sensor
+     * @see model.dto.Calibrator.Certificate
+     */
+    @Nullable
+    @Override
+    public ModelHolder parse(@Nonnull String json, @Nonnull Model model) {
+        switch (model) {
+            case SENSOR: return parseSensor(json);
+            case CALIBRATOR_CERTIFICATE: return parseCalibratorCertificate(json);
+        }
+        return null;
+    }
+
+    /**
+     * Parses json string of measurement factors to {@code Map<String, String>}
+     * where key = output measurement value, value = transform factor (in double)
+     * @param json in format of v5 DB.
+     * Example of input json:
+     * {
+     *   "мм вод ст" : 101.9716,
+     *   "кгс/см²" : 0.01019716
+     * }
+     *
+     * @return {@code Map<String, String>} key = output measurement value, value = transform factor (in double)
+     */
+    @Override
+    public Map<String, String> parse(@Nonnull String json) {
+        Map<String, String> result = new HashMap<>();
+        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
+        for (String f : fields) {
+            String[] vals = f.replaceAll(UNNECESSARY_DOUBLE_QUOTES_REGEX, "").split(COLON_REGEX);
+            result.put(vals[0], vals[1]);
+        }
+        return result;
+    }
+
+    /**
+     * Parse json string to model of Sensor
+     * Example of json:
+     * {
+     *   "type" : "ТСМ-50М",
+     *   "name" : "ТСМ-50М",
+     *   "rangeMin" : -50.0,
+     *   "rangeMax" : 180.0,
+     *   "number" : "",
+     *   "value" : "℃",
+     *   "measurement" : "Температура",
+     *   "errorFormula" : "(0.005 * R) + 0.3"
+     * }
+     *
+     * @param json in format of v5 DB
+     * @return model of Sensor
+     * @see ModelHolder
+     * @see model.dto.Sensor
+     */
     private ModelHolder parseSensor(String json) {
         ModelHolder sensor = new ModelHolder(Model.SENSOR);
-        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").split("\\,");
+        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
         for (String f : fields) {
             String[] vals = f.replaceAll(UNNECESSARY_DOUBLE_QUOTES_REGEX, "").split(COLON_REGEX);
             switch (vals[0]) {
@@ -98,9 +163,24 @@ public class JsonParser_v5 implements JsonParser {
         return sensor;
     }
 
+    /**
+     * Parse json string to model of CalibratorCertificate
+     * Example of json:
+     * {
+     *   "name" : "№M-140726-1",
+     *   "date" : "16.05.2022",
+     *   "company" : "ДП\"ПОЛТАВАСТАНДАРТМЕТРОЛОГІЯ\"",
+     *   "type" : "Свідоцтво про перевірку МХ"
+     * }
+     *
+     * @param json in format of v5 DB
+     * @return model of CalibratorCertificate
+     * @see ModelHolder
+     * @see model.dto.Calibrator.Certificate
+     */
     private ModelHolder parseCalibratorCertificate(String json) {
         ModelHolder certificate = new ModelHolder(Model.CALIBRATOR_CERTIFICATE);
-        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").split("\\,");
+        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
         for (String f : fields) {
             String[] vals = f.replaceAll(UNNECESSARY_DOUBLE_QUOTES_REGEX, "").split(COLON_REGEX);
             switch (vals[0]) {
@@ -135,26 +215,5 @@ public class JsonParser_v5 implements JsonParser {
             }
         }
         return certificate;
-    }
-
-    @Nullable
-    @Override
-    public ModelHolder parse(String json, Model model) {
-        switch (model) {
-            case SENSOR: return parseSensor(json);
-            case CALIBRATOR_CERTIFICATE: return parseCalibratorCertificate(json);
-        }
-        return null;
-    }
-
-    @Override
-    public Map<String, String> parse(String json) {
-        Map<String, String> result = new HashMap<>();
-        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").split("\\,");
-        for (String f : fields) {
-            String[] vals = f.replaceAll(UNNECESSARY_DOUBLE_QUOTES_REGEX, "").split(COLON_REGEX);
-            result.put(vals[0], vals[1]);
-        }
-        return result;
     }
 }
