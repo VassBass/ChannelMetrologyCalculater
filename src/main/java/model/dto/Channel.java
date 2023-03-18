@@ -1,6 +1,6 @@
 package model.dto;
 
-import converters.VariableConverter;
+import util.DateHelper;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -71,11 +71,10 @@ public class Channel implements Serializable {
      * DB field = date [TEXT]
      * String format - DD.MM.YYYY
      *
-     * @see VariableConverter#dateToString(Calendar)
-     * @see VariableConverter#stringToDate(String)
-     * @see VariableConverter#stringToDateString(String)
+     * @see util.DateHelper#dateToString(Calendar)
+     * @see util.DateHelper#stringToDate(String)
      */
-    @Nonnull private String date = VariableConverter.dateToString(Calendar.getInstance());
+    @Nonnull private String date = DateHelper.dateToString(Calendar.getInstance());
 
     /**
      * DB field = frequency [REAL]

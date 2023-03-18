@@ -1,7 +1,6 @@
 package service.channel.list;
 
-import mock.ChannelRepositoryMock;
-import mock.SensorRepositoryMock;
+import mock.RepositoryMockFactory;
 import model.dto.Channel;
 import model.dto.Sensor;
 import model.dto.builder.ChannelBuilder;
@@ -9,6 +8,8 @@ import model.dto.builder.SensorBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import repository.repos.channel.ChannelRepository;
+import repository.repos.sensor.SensorRepository;
 import util.DateHelper;
 
 import java.util.*;
@@ -18,14 +19,16 @@ import static org.junit.Assert.assertTrue;
 
 public class DefaultChannelListServiceTest {
 
-    private ChannelRepositoryMock channelRepository;
-    private SensorRepositoryMock sensorRepository;
+    private RepositoryMockFactory repositoryMockFactory;
+    private ChannelRepository channelRepository;
+    private SensorRepository sensorRepository;
     private ChannelListService service;
 
     @Before
     public void setUp() throws Exception {
-        channelRepository = new ChannelRepositoryMock();
-        sensorRepository = new SensorRepositoryMock();
+        repositoryMockFactory = new RepositoryMockFactory();
+        channelRepository = repositoryMockFactory.getImplementation(ChannelRepository.class);
+        sensorRepository = repositoryMockFactory.getImplementation(SensorRepository.class);
 
         service = new DefaultChannelListService(channelRepository, sensorRepository);
     }
@@ -58,9 +61,8 @@ public class DefaultChannelListServiceTest {
     }
 
     @After
-    public void tearDown() throws Exception {
-        channelRepository.dispose();
-        sensorRepository.dispose();
+    public void tearDown() {
+        repositoryMockFactory.dispose();
     }
 
     @Test

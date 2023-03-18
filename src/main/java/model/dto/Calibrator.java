@@ -1,7 +1,6 @@
 package model.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import converters.VariableConverter;
 import util.DateHelper;
 
 import javax.annotation.Nonnull;
@@ -75,9 +74,6 @@ public class Calibrator implements Serializable {
 
     /**
      * DB field = error_formula [TEXT]
-     * 
-     * //@see #getError(Channel)
-     *
      * R - Measurement range of channel (Диапазон измерения канала)
      * @see Channel#calculateRange()
      *
@@ -164,9 +160,8 @@ public class Calibrator implements Serializable {
         /**
          * @return date string in format = DD.MM.YYYY
          *
-         * @see VariableConverter#dateToString(Calendar)
-         * @see VariableConverter#stringToDate(String)
-         * @see VariableConverter#stringToDateString(String)
+         * @see DateHelper#dateToString(Calendar)
+         * @see DateHelper#stringToDate(String)
          */
         @Nonnull public String getDate(){return this.date;}
         @Nonnull public String getCompany(){return this.company;}
