@@ -52,7 +52,12 @@ public class SwingChannelInfoInitializer implements ServiceInitializer {
 
         SwingChannelInfoCodePanel codePanel = new SwingChannelInfoCodePanel(manager, channelRepository);
         SwingChannelInfoNamePanel namePanel = new SwingChannelInfoNamePanel();
+
         SwingChannelInfoMeasurementPanel measurementPanel = new SwingChannelInfoMeasurementPanel(manager);
+        measurementPanel.setMeasurementNames(Arrays.asList(measurementRepository.getAllNames()));
+        String selectedMeasurementName = measurementPanel.getSelectedMeasurementName();
+        measurementPanel.setMeasurementValues(Arrays.asList(measurementRepository.getValues(selectedMeasurementName)));
+
         SwingChannelInfoTechnologyNumberPanel technologyNumberPanel = new SwingChannelInfoTechnologyNumberPanel();
         SwingChannelInfoProtocolNumberPanel protocolNumberPanel = new SwingChannelInfoProtocolNumberPanel();
 
@@ -74,10 +79,10 @@ public class SwingChannelInfoInitializer implements ServiceInitializer {
         pathPanel.setInstallations(new ArrayList<>(installationRepository.getAll()));
 
         SwingChannelInfoSensorPanel sensorPanel = new SwingChannelInfoSensorPanel(manager);
-        String selectedMeasurementName = measurementPanel.getSelectedMeasurementName();
         sensorPanel.setSensorsTypes(new ArrayList<>(sensorRepository.getAllSensorsTypesByMeasurementName(selectedMeasurementName)));
         sensorPanel.setMeasurementValues(Arrays.asList(measurementRepository.getValues(selectedMeasurementName)));
         sensorPanel.setRange("0", "100");
+
 
         SwingChannelInfoRangePanel rangePanel = new SwingChannelInfoRangePanel(manager);
         rangePanel.setRangeMin("0");

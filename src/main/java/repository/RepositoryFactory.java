@@ -26,6 +26,8 @@ import repository.repos.process.BufferedProcessRepositorySQLite;
 import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.BufferedSensorRepositorySQLite;
 import repository.repos.sensor.SensorRepository;
+import repository.repos.sensor_error.BufferedSensorErrorRepositorySQLite;
+import repository.repos.sensor_error.SensorErrorRepository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +89,8 @@ public class RepositoryFactory {
                 i = (T) new BufferedControlPointsRepositorySQLite(configHolder, connector);
             if (clazz.isAssignableFrom(MeasurementFactorRepository.class))
                 i = (T) new BufferedMeasurementFactorRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(SensorErrorRepository.class))
+                i = (T) new BufferedSensorErrorRepositorySQLite(configHolder, connector);
 
             if (i == null) logger.warn(String.format("Can't find implementation for %s", key));
             else implementations.put(key, i);

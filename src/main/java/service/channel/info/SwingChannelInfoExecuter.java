@@ -58,8 +58,6 @@ public class SwingChannelInfoExecuter implements ServiceExecuter {
                 ChannelInfoManager manager = new SwingChannelInfoManager(dialog, channelListManager, repositoryFactory);
 
                 new SwingChannelInfoInitializer(dialog, manager, repositoryFactory, channel).init();
-
-                dialog.showing();
             }
             return null;
         }

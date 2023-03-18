@@ -5,6 +5,7 @@ import repository.RepositoryServiceInitializer;
 import service.importer.SwingImporterInitializer;
 import service.root.ServiceInitializer;
 
+import javax.swing.*;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -17,7 +18,9 @@ public class ApplicationInitializer implements ServiceInitializer {
     }
 
     private static void INIT() {
+        ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
         ApplicationScreen.init(config);
+
         initializerSet.add(new RepositoryServiceInitializer());
         initializerSet.add(new SwingChannelListInitializer());
         initializerSet.add(new SwingImporterInitializer());

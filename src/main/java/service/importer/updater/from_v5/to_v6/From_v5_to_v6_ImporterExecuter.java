@@ -36,7 +36,6 @@ public class From_v5_to_v6_ImporterExecuter implements ServiceExecuter {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
                 int secondResult = JOptionPane.showConfirmDialog(applicationScreen, QUESTION_TEXT, HEADER, JOptionPane.YES_NO_CANCEL_OPTION);
-                System.out.println(secondResult);
                 ImportOption option = null;
                 if (secondResult == 0) option = ImportOption.REPLACE_EXISTED;
                 if (secondResult == 1) option = ImportOption.IGNORE_EXISTED;

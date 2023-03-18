@@ -17,6 +17,7 @@ public interface ChannelInfoManager {
     void saveAndCalculateChannel();
     void resetChannelInfo();
     void deleteChannel();
+    void setErrorFormulasList();
 
     void init(
             ChannelInfoCodePanel codePanel,

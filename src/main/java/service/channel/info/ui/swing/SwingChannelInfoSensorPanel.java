@@ -19,6 +19,25 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     private static final String TOOLTIP_TEXT = "Первинний вимірювальний пристрій";
     private static final String RANGE_TITLE_TEXT = "Діапазон";
     private static final String CHECK_BOX_TEXT = "Однакові діапазони";
+    private static final String ERROR_FORMULA_TEXT = "Формула розрахунку похибки вимірювання ПВП";
+    private static final String ERROR_FORMULA_TOOLTIP_TEXT = "<html>"
+            + "Щоб написати формулу користуйтеся:"
+            + "<br>0...9, 0.1, 0,1 - Натуральні та дробні числа"
+            + "<br>() - Дужки, для розстановки послідовності дій"
+            + "<br>+, -, *, / - сума, різниця, множення, ділення"
+            + "<br>R - Діапазон вимірювання вимірювального каналу"
+            + "<br>convR - Діапазон вимірювання ПВП переконвертований під вимірювальну величину вимірювального каналу"
+            + "<br>r - Діапазон вимірювання ПВП"
+            + "<br>conv(...) - Число переконвертоване з вимірювальної величини ПВП до вимірювальної величини каналу"
+            + "<br>-----------------------------------------------------------------------------------"
+            + "<br>Приклад: ((0.005 * R) / r) + convR - conv(10)"
+            + "<br>Дія №1 - 0.005 помножено на діапазон вимірювання вимірювального каналу(R)"
+            + "<br>Дія №2 - Результат першої дії поділено на діапазон вимірювання ПВП(r)"
+            + "<br>Дія №3 - До результату другої дії додати діапазон вимірювання ПВП переконвертований під вимірювальну"
+            + "<br>величину вимірювального каналу(convR)"
+            + "<br>Дія №4 - Від результату третьої дії відняти число 10 переконвертоване з вимірювальної величини ПВП"
+            + "<br>до вимірювальної величини вимірювального каналу (conv(10))"
+            + "</html>";
 
     private final DefaultComboBox sensorsTypes;
     private final TitledTextField serialNumber;
@@ -26,6 +45,7 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     private final DefaultTextField rangeMin, rangeMax;
     private final DefaultComboBox measurementValues;
     private final DefaultCheckBox equalsRanges;
+    private final DefaultComboBox errorFormulas;
 
     public SwingChannelInfoSensorPanel(final ChannelInfoManager manager) {
         super(TITLE_TEXT, Color.BLACK);
@@ -53,9 +73,15 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
         rangePanel.add(measurementValues, new CellBuilder().x(3).y(0).build());
         rangePanel.add(equalsRanges, new CellBuilder().x(3).y(1).width(4).build());
 
+        DefaultLabel errorLabel = new DefaultLabel(ERROR_FORMULA_TEXT, ERROR_FORMULA_TOOLTIP_TEXT);
+        errorFormulas = new DefaultComboBox(true);
+        errorFormulas.setToolTipText(ERROR_FORMULA_TOOLTIP_TEXT);
+
         this.add(sensorsTypes, new CellBuilder().x(0).y(0).build());
         this.add(serialNumber, new CellBuilder().x(1).y(0).build());
         this.add(rangePanel, new CellBuilder().x(0).y(1).width(2).build());
+        this.add(errorLabel, new CellBuilder().x(0).y(2).build());
+        this.add(errorFormulas, new CellBuilder().x(1).y(2).build());
     }
 
     @Override
@@ -66,6 +92,11 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     @Override
     public void setMeasurementValues(List<String> values) {
         this.measurementValues.setList(values);
+    }
+
+    @Override
+    public void setErrorFormulas(List<String> errors) {
+        errorFormulas.setList(errors);
     }
 
     @Override
@@ -107,6 +138,11 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     }
 
     @Override
+    public void setErrorFormula(String error) {
+        errorFormulas.setSelectedItem(error);
+    }
+
+    @Override
     public String getSelectedSensorType() {
         return sensorsTypes.getSelectedItem();
     }
@@ -135,6 +171,11 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     @Override
     public String getSerialNumber() {
         return serialNumber.getText();
+    }
+
+    @Override
+    public String getErrorFormula() {
+        return errorFormulas.getSelectedItem();
     }
 
     @Override
