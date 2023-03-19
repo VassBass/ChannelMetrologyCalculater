@@ -37,8 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RepositoryMockFactory {
-    private static final Logger logger = LoggerFactory.getLogger(RepositoryFactory.class);
+public class RepositoryMockFactory extends RepositoryFactory {
+    private static final Logger logger = LoggerFactory.getLogger(RepositoryMockFactory.class);
 
     private final Map<String, Object> implementations = new HashMap<>();
 
@@ -50,6 +50,7 @@ public class RepositoryMockFactory {
         connector = new SqliteRepositoryDBConnector(configHolder);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T getImplementation(Class<T> clazz) {
         String key = clazz.getName();

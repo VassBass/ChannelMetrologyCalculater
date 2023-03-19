@@ -32,15 +32,17 @@ import static service.importer.model.ModelField.*;
 
 public class DefaultImporter implements Importer {
     private final ImportOption option;
+    private final RepositoryFactory repositoryFactory;
     private final JsonParser jsonParser = JsonParser_v5.getInstance();
     private final Transformer transformer = Transformer_v6.getInstance();
 
-    public DefaultImporter(ImportOption option) {
+    public DefaultImporter(@Nonnull ImportOption option, @Nonnull RepositoryFactory repositoryFactory) {
         this.option = option;
+        this.repositoryFactory = repositoryFactory;
     }
 
     @Override
-    public boolean importing(@Nonnull List<ModelHolder> in, @Nonnull RepositoryFactory repositoryFactory) {
+    public boolean importing(@Nonnull List<ModelHolder> in) {
         if (!importMeasurements(in, repositoryFactory)) return false;
         if (!importChannels(in, repositoryFactory)) return false;
         if (!importSensors(in, repositoryFactory)) return false;

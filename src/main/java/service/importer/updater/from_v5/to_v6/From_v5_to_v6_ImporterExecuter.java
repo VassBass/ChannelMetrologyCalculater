@@ -40,7 +40,7 @@ public class From_v5_to_v6_ImporterExecuter implements ServiceExecuter {
                 if (secondResult == 0) option = ImportOption.REPLACE_EXISTED;
                 if (secondResult == 1) option = ImportOption.IGNORE_EXISTED;
                 if (option != null) {
-                    final Importer importer = new DefaultImporter(option);
+                    final Importer importer = new DefaultImporter(option, repositoryFactory);
                     LoadingDialog dialog = LoadingDialog.getInstance();
                     final DialogWrapper loadDialog = new DialogWrapper(applicationScreen, dialog, ScreenPoint.center(applicationScreen, dialog));
                     loadDialog.showing();
@@ -48,7 +48,7 @@ public class From_v5_to_v6_ImporterExecuter implements ServiceExecuter {
                         @Override
                         protected Boolean doInBackground() {
                             List<ModelHolder> in = new SqliteReaderOfv5().read(selectedFile);
-                            return importer.importing(in, repositoryFactory);
+                            return importer.importing(in);
                         }
 
                         @Override
