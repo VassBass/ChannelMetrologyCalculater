@@ -57,6 +57,22 @@ public class DefaultImporter implements Importer {
         return importPersons(in, repositoryFactory);
     }
 
+    /**
+     * Import measurements ignores ImportOption to avoid channel, sensor, transform factors and calibrators incompatibilities.
+     * ImportOption is always = {@link ImportOption#REPLACE_EXISTED}
+     * @param in input of {@link ModelHolder} of Measurements
+     * @param repositoryFactory to save importing measurements
+     * @return true if everything passed without errors. Otherwise, returns false;
+     * @see Channel#measurementName
+     * @see Channel#measurementValue
+     * @see Sensor#measurementName
+     * @see Sensor#measurementValue
+     * @see MeasurementTransformFactor#transformFrom
+     * @see MeasurementTransformFactor#transformTo
+     * @see Calibrator#measurementName
+     * @see Calibrator#measurementValue
+     * @see ImportOption
+     */
     private boolean importMeasurements(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
         List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.MEASUREMENT).collect(Collectors.toList());
         if (input.size() > 0) {
@@ -71,9 +87,7 @@ public class DefaultImporter implements Importer {
                     if (name == null || name.isEmpty() || value.isEmpty()) continue;
                     if (!repository.add(new Measurement(name, value))) return false;
                 } else {
-                    if (option == ImportOption.REPLACE_EXISTED) {
-                        if (!repository.set(measurement, new Measurement(name, value))) return false;
-                    }
+                    if (!repository.set(measurement, new Measurement(name, value))) return false;
                 }
             }
         }

@@ -127,8 +127,7 @@ public class Measurement implements Serializable {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         if (obj == this) return true;
         Measurement measurement = (Measurement) obj;
-        return this.name.equalsIgnoreCase(measurement.getName()) &&
-                this.value.equals(measurement.getValue());
+        return this.value.equals(measurement.getValue());
     }
 
     @Override
