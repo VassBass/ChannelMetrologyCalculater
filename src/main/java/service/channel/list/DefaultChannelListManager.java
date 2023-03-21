@@ -9,6 +9,7 @@ import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
 import repository.repos.sensor.SensorRepository;
 import application.ApplicationScreen;
+import service.calculation.CalculationExecuter;
 import service.channel.info.SwingChannelInfoExecuter;
 import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListSearchPanel;
@@ -110,7 +111,14 @@ public class DefaultChannelListManager implements ChannelListManager {
 
     @Override
     public void calculateChannel() {
-
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+        String channelCode = channelTable.getSelectedChannelCode();
+        if (channelCode != null) {
+            Channel channel = channelRepository.get(channelCode);
+            if (channel != null) {
+                new CalculationExecuter(ApplicationScreen.getInstance(), repositoryFactory, channel).execute();
+            }
+        }
     }
 
     @Override

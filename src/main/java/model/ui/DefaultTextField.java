@@ -17,6 +17,11 @@ public class DefaultTextField extends JTextField {
         this.setToolTipText(tooltipText);
     }
 
+    public DefaultTextField(int columns, int horizontalAlignment) {
+        this(columns);
+        this.setHorizontalAlignment(horizontalAlignment);
+    }
+
     public DefaultTextField(int columns, String tooltipText, int horizontalAlignment) {
         this(columns);
         this.setToolTipText(tooltipText);
