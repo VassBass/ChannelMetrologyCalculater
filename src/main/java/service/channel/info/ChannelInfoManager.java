@@ -18,19 +18,4 @@ public interface ChannelInfoManager {
     void resetChannelInfo();
     void deleteChannel();
     void setErrorFormulasList();
-
-    void init(
-            ChannelInfoCodePanel codePanel,
-            ChannelInfoNamePanel namePanel,
-            ChannelInfoMeasurementPanel measurementPanel,
-            ChannelInfoTechnologyNumberPanel technologyNumberPanel,
-            ChannelInfoDatePanel datePanel,
-            ChannelInfoProtocolNumberPanel protocolNumberPanel,
-            ChannelInfoFrequencyPanel frequencyPanel,
-            ChannelInfoNextDatePanel nextDatePanel,
-            ChannelInfoPathPanel pathPanel,
-            ChannelInfoSensorPanel sensorPanel,
-            ChannelInfoRangePanel rangePanel,
-            ChannelInfoAllowableErrorPanel allowableErrorPanel
-    );
 }

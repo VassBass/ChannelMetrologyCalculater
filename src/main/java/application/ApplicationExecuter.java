@@ -1,65 +1,72 @@
 package application;
 
 import model.ui.ApplicationLogo;
-import service.root.ServiceExecuter;
+import repository.RepositoryFactory;
+import repository.config.RepositoryConfigHolder;
+import repository.config.SqliteRepositoryConfigHolder;
+import repository.connection.RepositoryDBConnector;
+import repository.connection.SqliteRepositoryDBConnector;
+import service.channel.list.SwingChannelListExecuter;
+import service.importer.SwingImporterInitializer;
 
 import javax.swing.*;
 import java.util.List;
 
-public class ApplicationExecuter implements ServiceExecuter {
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
-    @Override
-    public void execute() {
-        ApplicationConfigHolder configHolder = new PropertiesApplicationConfigHolder();
-        new Starter(configHolder).start();
+public class ApplicationExecuter extends SwingWorker<Void, String> {
+    private final ApplicationLogo logo;
+    private final ApplicationConfigHolder applicationConfigHolder;
+    private ApplicationScreen applicationScreen;
+
+    public ApplicationExecuter() {
+        applicationConfigHolder = new PropertiesApplicationConfigHolder();
+        logo = new ApplicationLogo(applicationConfigHolder);
+        logo.showing();
     }
 
-    private static class Starter extends SwingWorker<Void, String> {
-        private final ApplicationLogo logo;
-        private final ApplicationConfigHolder configHolder;
+    @Override
+    protected Void doInBackground() {
+        new ApplicationInitializer().init();
 
-        public Starter(ApplicationConfigHolder configHolder) {
-            super();
-            this.configHolder = configHolder;
-            logo = new ApplicationLogo(configHolder);
-        }
+        String message = "Initialization of main screen";
+        publish(message);
+        applicationScreen = new ApplicationScreen(applicationConfigHolder);
 
-        public void start(){
-            beforeStart();
-            execute();
-        }
+        message = "Initialization of repository";
+        publish(message);
+        RepositoryConfigHolder repositoryConfigHolder = new SqliteRepositoryConfigHolder();
+        RepositoryDBConnector repositoryDBConnector = new SqliteRepositoryDBConnector(repositoryConfigHolder);
+        RepositoryFactory repositoryFactory = new RepositoryFactory(repositoryConfigHolder, repositoryDBConnector);
 
-        private void beforeStart() {
-            logo.showing();
-        }
+        message = "Execution of channel list service";
+        publish(message);
+        new SwingChannelListExecuter(applicationScreen, repositoryFactory).execute();
 
-        @Override
-        protected void process(List<String> chunks) {
-            String message = chunks.get(chunks.size() - 1);
-            logo.setMessage(message == null ? "" : message);
-        }
+        message = "Initialization of import service";
+        publish(message);
+        new SwingImporterInitializer(applicationScreen).init();
 
-        @Override
-        protected Void doInBackground() {
-            String message = "Initialization of services";
-            publish(message);
-            new ApplicationInitializer(configHolder).init();
+        return null;
+    }
 
-            return null;
-        }
+    @Override
+    protected void process(List<String> chunks) {
+        String message = chunks.get(chunks.size() - 1);
+        logo.setMessage(message == null ? EMPTY : message);
+    }
 
-        @Override
-        protected void done() {
-            logo.dispose();
-            if (ApplicationScreen.getInstance() == null) {
-                String message = "Виникла помилка при ініціалізації. Спробуйте ще." +
-                        "\nЯкщо помилка не зникне перевстановіть програму або зверніться до розробника." +
-                        "\nvassbassapp@gmail.com";
-                JOptionPane.showMessageDialog(logo, message, "ERROR!", JOptionPane.ERROR_MESSAGE);
-                System.exit(1);
-            } else {
-                ApplicationScreen.getInstance().showing();
-            }
+    @Override
+    protected void done() {
+        logo.shutdown();
+        if (applicationScreen == null) {
+            String message = "Виникла помилка при ініціалізації. Спробуйте ще." +
+                    "\nЯкщо помилка не зникне перевстановіть програму або зверніться до розробника." +
+                    "\nvassbassapp@gmail.com";
+            JOptionPane.showMessageDialog(logo, message, "ERROR!", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        } else {
+            applicationScreen.showing();
         }
     }
 }

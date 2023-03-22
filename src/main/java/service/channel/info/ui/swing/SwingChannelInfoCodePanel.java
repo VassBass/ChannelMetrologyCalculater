@@ -1,25 +1,27 @@
 package service.channel.info.ui.swing;
 
 import model.ui.TitledTextField;
+import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
 import service.channel.info.ChannelInfoManager;
 import service.channel.info.ui.ChannelInfoCodePanel;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class SwingChannelInfoCodePanel extends TitledTextField implements ChannelInfoCodePanel {
     private static final String TITLE_TEXT = "Код ВК";
     private static final String TOOLTIP_TEXT = "Натисніть праву кнопку миші щоб почати пошук ВК по коду.";
     private static final String SEARCH_TEXT = "Пошук";
 
-    private final ChannelRepository channelRepository;
+    private final RepositoryFactory repositoryFactory;
 
-    public SwingChannelInfoCodePanel(ChannelInfoManager manager,
-                                     ChannelRepository channelRepository) {
+    public SwingChannelInfoCodePanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull ChannelInfoManager manager) {
         super(15, TITLE_TEXT, Color.BLACK);
-        this.channelRepository = channelRepository;
+        this.repositoryFactory = repositoryFactory;
         this.setToolTipText(TOOLTIP_TEXT);
         this.setComponentPopupMenu(popupMenu(manager));
     }
@@ -44,19 +46,21 @@ public class SwingChannelInfoCodePanel extends TitledTextField implements Channe
     public boolean isCodeValid(@Nullable String oldChannelCode) {
         String code = getCode();
         if (code.length() > 0) {
-            if (oldChannelCode == null) {
-                if (channelRepository.isExist(code)) {
-                    this.setTitleColor(Color.BLACK);
-                    return true;
-                }
-            } else {
-                if (channelRepository.isExist(oldChannelCode, code)) {
-                    this.setTitleColor(Color.BLACK);
-                    return true;
+            ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+            if (Objects.nonNull(channelRepository)) {
+                if (oldChannelCode == null) {
+                    if (channelRepository.isExist(code)) {
+                        this.setTitleColor(Color.BLACK);
+                        return true;
+                    }
+                } else {
+                    if (channelRepository.isExist(oldChannelCode, code)) {
+                        this.setTitleColor(Color.BLACK);
+                        return true;
+                    }
                 }
             }
         }
-
         this.setTitleColor(Color.RED);
         return false;
     }

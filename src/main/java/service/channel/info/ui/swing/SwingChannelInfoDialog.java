@@ -1,9 +1,11 @@
 package service.channel.info.ui.swing;
 
+import application.ApplicationScreen;
 import model.ui.DefaultPanel;
 import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.channel.info.ChannelInfoConfigHolder;
+import service.channel.info.ChannelInfoSwingContext;
 import util.ScreenPoint;
 
 import javax.swing.*;
@@ -12,63 +14,26 @@ import java.awt.*;
 public class SwingChannelInfoDialog extends JDialog implements UI {
     private static final String TITLE_TEXT = "Інформація вимірювального каналу";
 
-    private final Frame owner;
 
-    private SwingChannelInfoCodePanel codePanel;
-    private SwingChannelInfoNamePanel namePanel;
-    private SwingChannelInfoMeasurementPanel measurementPanel;
-    private SwingChannelInfoTechnologyNumberPanel technologyNumberPanel;
-    private SwingChannelInfoDatePanel datePanel;
-    private SwingChannelInfoProtocolNumberPanel protocolNumberPanel;
-    private SwingChannelInfoFrequencyPanel frequencyPanel;
-    private SwingChannelInfoNextDatePanel nextDatePanel;
-    private SwingChannelInfoPathPanel pathPanel;
-    private SwingChannelInfoSensorPanel sensorPanel;
-    private SwingChannelInfoRangePanel rangePanel;
-    private SwingChannelInfoAllowableErrorPanel allowableErrorPanel;
-    private SwingChannelInfoButtonsPanel buttonsPanel;
+    public SwingChannelInfoDialog(ApplicationScreen applicationScreen, ChannelInfoConfigHolder configHolder, ChannelInfoSwingContext context) {
+        super(applicationScreen, TITLE_TEXT, true);
 
-
-    public SwingChannelInfoDialog(Frame owner) {
-        super(owner, TITLE_TEXT, true);
-        this.owner = owner;
-    }
-
-    public void init(
-            ChannelInfoConfigHolder configHolder,
-            SwingChannelInfoCodePanel codePanel,
-            SwingChannelInfoNamePanel namePanel,
-            SwingChannelInfoMeasurementPanel measurementPanel,
-            SwingChannelInfoTechnologyNumberPanel technologyNumberPanel,
-            SwingChannelInfoDatePanel datePanel,
-            SwingChannelInfoProtocolNumberPanel protocolNumberPanel,
-            SwingChannelInfoFrequencyPanel frequencyPanel,
-            SwingChannelInfoNextDatePanel nextDatePanel,
-            SwingChannelInfoPathPanel pathPanel,
-            SwingChannelInfoSensorPanel sensorPanel,
-            SwingChannelInfoRangePanel rangePanel,
-            SwingChannelInfoAllowableErrorPanel allowableErrorPanel,
-            SwingChannelInfoButtonsPanel buttonsPanel
-    ) {
-        this.codePanel = codePanel;
-        this.namePanel = namePanel;
-        this.measurementPanel = measurementPanel;
-        this.technologyNumberPanel = technologyNumberPanel;
-        this.datePanel = datePanel;
-        this.protocolNumberPanel = protocolNumberPanel;
-        this.frequencyPanel = frequencyPanel;
-        this.nextDatePanel = nextDatePanel;
-        this.pathPanel = pathPanel;
-        this.sensorPanel = sensorPanel;
-        this.rangePanel = rangePanel;
-        this.allowableErrorPanel = allowableErrorPanel;
-        this.buttonsPanel = buttonsPanel;
-
-        buildMainPanel(configHolder);
-    }
-
-    public void buildMainPanel(ChannelInfoConfigHolder configHolder) {
         DefaultPanel panel = new DefaultPanel();
+
+        SwingChannelInfoCodePanel codePanel = context.getElement(SwingChannelInfoCodePanel.class);
+        SwingChannelInfoNamePanel namePanel = context.getElement(SwingChannelInfoNamePanel.class);
+        SwingChannelInfoMeasurementPanel measurementPanel = context.getElement(SwingChannelInfoMeasurementPanel.class);
+        SwingChannelInfoTechnologyNumberPanel technologyNumberPanel = context.getElement(SwingChannelInfoTechnologyNumberPanel.class);
+        SwingChannelInfoDatePanel datePanel = context.getElement(SwingChannelInfoDatePanel.class);
+        SwingChannelInfoFrequencyPanel frequencyPanel = context.getElement(SwingChannelInfoFrequencyPanel.class);
+        SwingChannelInfoRangePanel rangePanel = context.getElement(SwingChannelInfoRangePanel.class);
+        SwingChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(SwingChannelInfoAllowableErrorPanel.class);
+        SwingChannelInfoProtocolNumberPanel protocolNumberPanel = context.getElement(SwingChannelInfoProtocolNumberPanel.class);
+        SwingChannelInfoPathPanel pathPanel = context.getElement(SwingChannelInfoPathPanel.class);
+        SwingChannelInfoNextDatePanel nextDatePanel = context.getElement(SwingChannelInfoNextDatePanel.class);
+        SwingChannelInfoSensorPanel sensorPanel = context.getElement(SwingChannelInfoSensorPanel.class);
+        SwingChannelInfoButtonsPanel buttonsPanel = context.getElement(SwingChannelInfoButtonsPanel.class);
+
         if (codePanel != null) panel.add(codePanel, new CellBuilder().x(0).y(0).width(2).height(1).build());
         if (namePanel != null) panel.add(namePanel, new CellBuilder().x(0).y(1).width(2).height(1).build());
         if (measurementPanel != null) panel.add(measurementPanel, new CellBuilder().x(0).y(2).width(2).height(1).build());
@@ -84,7 +49,7 @@ public class SwingChannelInfoDialog extends JDialog implements UI {
         if (buttonsPanel != null) panel.add(buttonsPanel, new CellBuilder().x(0).y(15).width(2).height(2).build());
 
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
-        this.setLocation(ScreenPoint.center(owner, this));
+        this.setLocation(ScreenPoint.center(applicationScreen, this));
         this.setContentPane(panel);
     }
 

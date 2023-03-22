@@ -78,18 +78,16 @@ public class ApplicationLogo extends JWindow implements UI {
 
     @Override
     public void showing() {
-        EventQueue.invokeLater(() ->
-                ApplicationLogo.this.setVisible(true));
+        EventQueue.invokeLater(() -> this.setVisible(true));
     }
 
     @Override
     public void hiding() {
-        EventQueue.invokeLater(() ->
-                ApplicationLogo.this.setVisible(false));
+        EventQueue.invokeLater(() -> this.setVisible(false));
     }
 
     @Override
     public void shutdown() {
-        ApplicationLogo.this.dispose();
+        this.dispose();
     }
 }

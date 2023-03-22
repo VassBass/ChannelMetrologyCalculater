@@ -22,6 +22,7 @@ import util.DateHelper;
 import util.ScreenPoint;
 import util.StringHelper;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,41 +40,37 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     private static final String CHANNEL_NOT_FOUND_MESSAGE = "Канал з данним кодом не знайдений.";
     private static final String CHANNEL_FOUND_MESSAGE = "Канал знайдено. Відкрити інформацію про канал у данному вікні?";
 
-    private final SwingChannelInfoDialog owner;
-    private final ChannelListManager channelListManager;
+    private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
+    private final ChannelListManager channelListManager;
+    private final ChannelInfoSwingContext context;
+    private SwingChannelInfoDialog channelInfoDialog;
     private Channel oldChannel;
 
-    private ChannelInfoCodePanel codePanel;
-    private ChannelInfoNamePanel namePanel;
-    private ChannelInfoMeasurementPanel measurementPanel;
-    private ChannelInfoTechnologyNumberPanel technologyNumberPanel;
-    private ChannelInfoDatePanel datePanel;
-    private ChannelInfoProtocolNumberPanel protocolNumberPanel;
-    private ChannelInfoFrequencyPanel frequencyPanel;
-    private ChannelInfoNextDatePanel nextDatePanel;
-    private ChannelInfoPathPanel pathPanel;
-    private ChannelInfoSensorPanel sensorPanel;
-    private ChannelInfoRangePanel rangePanel;
-    private ChannelInfoAllowableErrorPanel allowableErrorPanel;
-
-    public SwingChannelInfoManager(SwingChannelInfoDialog owner,
-                                   ChannelListManager channelListManager,
-                                   RepositoryFactory repositoryFactory) {
-        this.owner = owner;
-        this.channelListManager = channelListManager;
+    public SwingChannelInfoManager(@Nonnull ApplicationScreen applicationScreen,
+                                   @Nonnull RepositoryFactory repositoryFactory,
+                                   @Nonnull ChannelListManager channelListManager,
+                                   @Nonnull ChannelInfoSwingContext context) {
+        this.applicationScreen = applicationScreen;
         this.repositoryFactory = repositoryFactory;
+        this.channelListManager = channelListManager;
+        this.context = context;
+    }
+
+    public void registerDialog(SwingChannelInfoDialog dialog) {
+        this.channelInfoDialog = dialog;
     }
 
     @Override
     public void searchChannelByCode() {
+        ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
         if (codePanel != null) {
             ChannelRepository repository = repositoryFactory.getImplementation(ChannelRepository.class);
             Channel channel = repository.get(codePanel.getCode());
             if (channel == null) {
-                JOptionPane.showMessageDialog(owner, CHANNEL_NOT_FOUND_MESSAGE, SEARCH_TEXT, JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(channelInfoDialog, CHANNEL_NOT_FOUND_MESSAGE, SEARCH_TEXT, JOptionPane.INFORMATION_MESSAGE);
             } else {
-                int result = JOptionPane.showConfirmDialog(owner, CHANNEL_FOUND_MESSAGE, SEARCH_TEXT, JOptionPane.OK_CANCEL_OPTION);
+                int result = JOptionPane.showConfirmDialog(channelInfoDialog, CHANNEL_FOUND_MESSAGE, SEARCH_TEXT, JOptionPane.OK_CANCEL_OPTION);
                 if (result == 0) setChannelInfo(channel);
             }
         }
@@ -85,14 +82,26 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         if (channel != null) {
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
 
+            ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
             if (codePanel != null) codePanel.setCode(channel.getCode());
+
+            ChannelInfoNamePanel namePanel = context.getElement(ChannelInfoNamePanel.class);
             if (namePanel != null) namePanel.setChannelName(channel.getName());
+
+            ChannelInfoTechnologyNumberPanel technologyNumberPanel = context.getElement(ChannelInfoTechnologyNumberPanel.class);
             if (technologyNumberPanel != null) technologyNumberPanel.setTechnologyNumber(channel.getTechnologyNumber());
+
+            ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
             if (datePanel != null) datePanel.setDate(channel.getDate());
+
+            ChannelInfoProtocolNumberPanel protocolNumberPanel = context.getElement(ChannelInfoProtocolNumberPanel.class);
             if (protocolNumberPanel != null) protocolNumberPanel.setProtocolNumber(channel.getNumberOfProtocol());
+
+            ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
             if (frequencyPanel != null) frequencyPanel.setFrequency(String.valueOf(channel.getFrequency()));
             /* set next date */ changeDateOrFrequency();
 
+            ChannelInfoPathPanel pathPanel = context.getElement(ChannelInfoPathPanel.class);
             if (pathPanel != null) {
                 pathPanel.setDepartment(channel.getDepartment());
                 pathPanel.setArea(channel.getArea());
@@ -100,6 +109,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                 pathPanel.setInstallation(channel.getInstallation());
             }
 
+            ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
             if (measurementPanel != null) {
                 measurementPanel.setMeasurementName(channel.getMeasurementName());
                 String selectedMeasurementName = measurementPanel.getSelectedMeasurementName();
@@ -107,6 +117,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                 measurementPanel.setMeasurementValue(channel.getMeasurementValue());
             }
 
+            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
             if (sensorPanel != null) {
                 Sensor sensor = sensorRepository.get(channel.getCode());
                 if (sensor != null) {
@@ -118,12 +129,14 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                 }
             }
 
+            ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
             if (rangePanel != null && measurementPanel != null) {
                 rangePanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
                 rangePanel.setRangeMin(String.valueOf(channel.getRangeMin()));
                 rangePanel.setRangeMax(String.valueOf(channel.getRangeMax()));
             }
 
+            ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
             if (allowableErrorPanel != null && measurementPanel != null) {
                 allowableErrorPanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
                 allowableErrorPanel.setAllowableErrorPercent(String.valueOf(channel.getAllowableErrorPercent()));
@@ -132,12 +145,13 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
             oldChannel = channel;
         } else {
-
+            ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
             if (measurementPanel != null) {
                 String selectedMeasurementName = measurementPanel.getSelectedMeasurementName();
                 measurementPanel.setMeasurementValues(Arrays.asList(measurementRepository.getValues(selectedMeasurementName)));
             }
 
+            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
             if (sensorPanel != null) {
                 setErrorFormulasList();
             }
@@ -146,6 +160,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void changeMeasurementName() {
+        ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
         if (measurementPanel != null) {
             MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
@@ -155,13 +170,18 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             List<String> sensorsTypes = new ArrayList<>(sensorRepository.getAllSensorsTypesByMeasurementName(selectedMeasurementName));
 
             measurementPanel.setMeasurementValues(measurementValues);
+            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
             if (sensorPanel != null) {
                 sensorPanel.setSensorsTypes(sensorsTypes);
                 sensorPanel.setMeasurementValues(measurementValues);
             }
 
             String selectedMeasurementValue = measurementPanel.getSelectedMeasurementValue();
+
+            ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
             if (rangePanel != null) rangePanel.setMeasurementValue(selectedMeasurementValue);
+
+            ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
             if (allowableErrorPanel != null) allowableErrorPanel.setMeasurementValue(selectedMeasurementValue);
 
             setErrorFormulasList();
@@ -170,12 +190,17 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void changeMeasurementValue() {
+        ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
         if (measurementPanel != null) {
             String selectedMeasurementValue =measurementPanel.getSelectedMeasurementValue();
 
+            ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
             if (rangePanel != null) rangePanel.setMeasurementValue(selectedMeasurementValue);
+
+            ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
             if (allowableErrorPanel != null) allowableErrorPanel.setMeasurementValue(selectedMeasurementValue);
 
+            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
             if (sensorPanel != null && sensorPanel.isEqualsRangesCheckboxAreSelected()) {
                 sensorPanel.setMeasurementValue(selectedMeasurementValue);
             }
@@ -186,6 +211,9 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void changeDateOrFrequency() {
+        ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
+        ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
+        ChannelInfoNextDatePanel nextDatePanel = context.getElement(ChannelInfoNextDatePanel.class);
         if (datePanel != null && frequencyPanel != null && nextDatePanel != null) {
             String date = datePanel.getDate();
             String frequency = frequencyPanel.isFrequencyValid() ? frequencyPanel.getFrequency() : EMPTY;
@@ -196,6 +224,8 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void setChannelAndSensorRangesEqual() {
+        ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
+        ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
         if (rangePanel != null && sensorPanel != null) {
             sensorPanel.setRangeMin(rangePanel.getRangeMin());
             sensorPanel.setRangeMax(rangePanel.getRangeMax());
@@ -208,8 +238,9 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void changedChannelRange() {
+        ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
         if (rangePanel != null) {
-
+            ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
             if (allowableErrorPanel != null &&
                     rangePanel.isRangeValid() && allowableErrorPanel.isAllowableErrorPercentValid()) {
                 double range = Double.parseDouble(rangePanel.getRangeMax()) - Double.parseDouble(rangePanel.getRangeMin());
@@ -218,6 +249,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                 allowableErrorPanel.setAllowableErrorValue(String.valueOf(value));
             }
 
+            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
             if (sensorPanel != null && sensorPanel.isEqualsRangesCheckboxAreSelected()) {
                 sensorPanel.setRangeMin(rangePanel.getRangeMin());
                 sensorPanel.setRangeMax(rangePanel.getRangeMax());
@@ -229,7 +261,9 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void changedAllowableErrorPercent() {
+        ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
         if (allowableErrorPanel != null && allowableErrorPanel.isAllowableErrorPercentValid()) {
+            ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
             if (rangePanel != null && rangePanel.isRangeValid()) {
                 double range = Double.parseDouble(rangePanel.getRangeMax()) - Double.parseDouble(rangePanel.getRangeMin());
                 double percent = Double.parseDouble(allowableErrorPanel.getAllowableErrorPercent());
@@ -241,7 +275,9 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void changedAllowableErrorValue() {
+        ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
         if (allowableErrorPanel != null && allowableErrorPanel.isAllowableErrorValueValid()) {
+            ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
             if (rangePanel != null && rangePanel.isRangeValid()) {
                 double range = Double.parseDouble(rangePanel.getRangeMax()) - Double.parseDouble(rangePanel.getRangeMin());
                 double value = Double.parseDouble(allowableErrorPanel.getAllowableErrorValue());
@@ -255,7 +291,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     public void saveChannel() {
         Channel channel = createChannelFromPanel();
         if (channel != null) {
-            Worker worker = new Worker("Канал був успішно збережений") {
+            new Worker("Канал був успішно збережений") {
                 @Override
                 protected Boolean doInBackground() {
                     ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
@@ -276,8 +312,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
                     return false;
                 }
-            };
-            worker.execute();
+            }.execute();
         }
     }
 
@@ -295,12 +330,13 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void deleteChannel() {
+        ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
         if (codePanel != null) {
             String code = codePanel.getCode();
             if (oldChannel != null && oldChannel.getCode().equals(code)) {
                 String message = String.format("Ви впевнені що хочете видалити канал: \"%s\"", oldChannel.getName());
                 String title = String.format("Видалити: \"%s\"", code);
-                int result = JOptionPane.showConfirmDialog(owner, message, title, JOptionPane.YES_NO_OPTION);
+                int result = JOptionPane.showConfirmDialog(channelInfoDialog, message, title, JOptionPane.YES_NO_OPTION);
                 if (result == 0) {
                     Worker worker = new Worker("Канал був успішно видалений") {
                         @Override
@@ -319,6 +355,9 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void setErrorFormulasList() {
+        ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
+        ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
+        ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
         if (sensorPanel != null && measurementPanel != null && rangePanel != null) {
             String currentError = sensorPanel.getErrorFormula();
 
@@ -364,34 +403,16 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         }
     }
 
-    @Override
-    public void init(ChannelInfoCodePanel codePanel,
-                     ChannelInfoNamePanel namePanel,
-                     ChannelInfoMeasurementPanel measurementPanel,
-                     ChannelInfoTechnologyNumberPanel technologyNumberPanel,
-                     ChannelInfoDatePanel datePanel,
-                     ChannelInfoProtocolNumberPanel protocolNumberPanel,
-                     ChannelInfoFrequencyPanel frequencyPanel,
-                     ChannelInfoNextDatePanel nextDatePanel,
-                     ChannelInfoPathPanel pathPanel,
-                     ChannelInfoSensorPanel sensorPanel,
-                     ChannelInfoRangePanel rangePanel,
-                     ChannelInfoAllowableErrorPanel allowableErrorPanel) {
-        this.codePanel = codePanel;
-        this.namePanel = namePanel;
-        this.measurementPanel = measurementPanel;
-        this.technologyNumberPanel = technologyNumberPanel;
-        this.datePanel = datePanel;
-        this.protocolNumberPanel = protocolNumberPanel;
-        this.frequencyPanel = frequencyPanel;
-        this.nextDatePanel = nextDatePanel;
-        this.pathPanel = pathPanel;
-        this.sensorPanel = sensorPanel;
-        this.rangePanel = rangePanel;
-        this.allowableErrorPanel = allowableErrorPanel;
-    }
-
     private boolean isChannelValid() {
+        ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
+        ChannelInfoNamePanel namePanel = context.getElement(ChannelInfoNamePanel.class);
+        ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
+        ChannelInfoTechnologyNumberPanel technologyNumberPanel = context.getElement(ChannelInfoTechnologyNumberPanel.class);
+        ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
+        ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
+        ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
+        ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
+        ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
         return (codePanel != null && codePanel.isCodeValid(oldChannel.getCode())) &
                 (namePanel != null && namePanel.isNameValid()) &
                 (measurementPanel != null) &
@@ -406,6 +427,17 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     private Channel createChannelFromPanel(){
         if (isChannelValid()) {
+            ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
+            ChannelInfoNamePanel namePanel = context.getElement(ChannelInfoNamePanel.class);
+            ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
+            ChannelInfoTechnologyNumberPanel technologyNumberPanel = context.getElement(ChannelInfoTechnologyNumberPanel.class);
+            ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
+            ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
+            ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
+            ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
+            ChannelInfoProtocolNumberPanel protocolNumberPanel = context.getElement(ChannelInfoProtocolNumberPanel.class);
+            ChannelInfoPathPanel pathPanel = context.getElement(ChannelInfoPathPanel.class);
+
             Channel channel = new Channel();
 
             channel.setCode(codePanel.getCode());
@@ -445,9 +477,14 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     private Sensor createSensorFromPanel() {
         if (isChannelValid()) {
+            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
+            ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
+            ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
+
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
 
             Sensor sensor = new Sensor();
+
             String type = sensorPanel.getSelectedSensorType();
             String errorFormula = sensorRepository.getErrorFormula(type);
 
@@ -476,7 +513,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             this.successMessage = successMessage;
 
             LoadingDialog dialog = LoadingDialog.getInstance();
-            loadingDialog = new DialogWrapper(owner, dialog, ScreenPoint.center(owner, dialog));
+            loadingDialog = new DialogWrapper(channelInfoDialog, dialog, ScreenPoint.center(channelInfoDialog, dialog));
             loadingDialog.showing();
         }
 
@@ -485,8 +522,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             loadingDialog.shutdown();
             try {
                 if (get()) {
-                    ApplicationScreen applicationScreen = ApplicationScreen.getInstance();
-                    owner.shutdown();
+                    channelInfoDialog.shutdown();
                     JOptionPane.showMessageDialog(applicationScreen, successMessage, "Успіх", JOptionPane.INFORMATION_MESSAGE);
                 } else errorReaction(null);
             } catch (InterruptedException | ExecutionException e) {
@@ -498,7 +534,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         private void errorReaction(Exception e) {
             logger.warn("Exception was thrown", e);
             String message = "Виникла помилка, будь ласка спробуйте ще раз";
-            JOptionPane.showMessageDialog(owner, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(channelInfoDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

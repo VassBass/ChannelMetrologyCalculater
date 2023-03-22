@@ -33,38 +33,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RepositoryFactory {
-    private static volatile RepositoryFactory instance;
-
     private static final Logger logger = LoggerFactory.getLogger(RepositoryFactory.class);
-    private final Map<String, Object> implementations = new HashMap<>();
+    private final Map<Class<?>, Object> implementations = new HashMap<>();
 
-    private static RepositoryConfigHolder configHolder;
-    private static RepositoryDBConnector connector;
+    private final RepositoryConfigHolder configHolder;
+    private final RepositoryDBConnector connector;
 
-    public static RepositoryFactory getInstance() {
-        if (configHolder == null || connector == null) {
-            String message = "Before getting the instance, you need to execute the static init() method to initialize the factory";
-            logger.warn(message);
-            return null;
-        }
-
-        if (instance == null) {
-            synchronized (RepositoryFactory.class) {
-                if (instance == null) instance = new RepositoryFactory();
-            }
-        }
-        return instance;
-    }
-
-    public static void init(RepositoryConfigHolder config, RepositoryDBConnector conn) {
-        configHolder = config;
-        connector = conn;
+    public RepositoryFactory(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
+        this.configHolder = configHolder;
+        this.connector = connector;
     }
 
     @SuppressWarnings("unchecked")
     public <T> T getImplementation(Class<T> clazz) {
-        String key = clazz.getName();
-        T i = (T) implementations.get(key);
+        T i = (T) implementations.get(clazz);
 
         if (i == null) {
             if (clazz.isAssignableFrom(MeasurementRepository.class))
@@ -92,8 +74,8 @@ public class RepositoryFactory {
             if (clazz.isAssignableFrom(SensorErrorRepository.class))
                 i = (T) new BufferedSensorErrorRepositorySQLite(configHolder, connector);
 
-            if (i == null) logger.warn(String.format("Can't find implementation for %s", key));
-            else implementations.put(key, i);
+            if (i == null) logger.warn(String.format("Can't find implementation for %s", clazz.getName()));
+            else implementations.put(clazz, i);
         }
 
         return i;

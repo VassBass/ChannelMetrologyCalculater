@@ -12,6 +12,7 @@ import service.channel.list.ChannelListManager;
 import service.root.ServiceExecuter;
 import util.ScreenPoint;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
@@ -19,16 +20,22 @@ import java.util.Objects;
 public class SwingChannelInfoExecuter implements ServiceExecuter {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoExecuter.class);
 
+    private final ApplicationScreen applicationScreen;
+    private final RepositoryFactory repositoryFactory;
     private final ChannelListManager channelListManager;
     private Channel channel;
 
-    public SwingChannelInfoExecuter(ChannelListManager channelListManager){
+    public SwingChannelInfoExecuter(@Nonnull ApplicationScreen applicationScreen,
+                                    @Nonnull RepositoryFactory repositoryFactory,
+                                    @Nonnull ChannelListManager channelListManager){
+        this.applicationScreen = applicationScreen;
+        this.repositoryFactory = repositoryFactory;
         this.channelListManager = channelListManager;
     }
 
-    public SwingChannelInfoExecuter(ChannelListManager channelListManager, Channel channel) {
-        this.channelListManager = channelListManager;
+    public SwingChannelInfoExecuter registerChannel(Channel channel) {
         this.channel = channel;
+        return this;
     }
 
     @Override
@@ -43,7 +50,6 @@ public class SwingChannelInfoExecuter implements ServiceExecuter {
         private SwingChannelInfoDialog dialog;
 
         private Worker() {
-            ApplicationScreen applicationScreen = ApplicationScreen.getInstance();
             LoadingDialog loadingDialog = LoadingDialog.getInstance();
             Point location = ScreenPoint.center(Objects.requireNonNull(applicationScreen), loadingDialog);
             loadingDialogWrapper = new DialogWrapper(applicationScreen, loadingDialog, location);
@@ -51,21 +57,22 @@ public class SwingChannelInfoExecuter implements ServiceExecuter {
 
         @Override
         protected Void doInBackground() {
-            RepositoryFactory repositoryFactory = RepositoryFactory.getInstance();
-            ApplicationScreen applicationScreen = ApplicationScreen.getInstance();
-            if (repositoryFactory != null && applicationScreen != null) {
-                dialog = new SwingChannelInfoDialog(applicationScreen);
-                ChannelInfoManager manager = new SwingChannelInfoManager(dialog, channelListManager, repositoryFactory);
+            ChannelInfoConfigHolder configHolder = new PropertiesChannelInfoConfigHolder();
 
-                new SwingChannelInfoInitializer(dialog, manager, repositoryFactory, channel).init();
-            }
+            ChannelInfoSwingContext context = new ChannelInfoSwingContext(repositoryFactory);
+            SwingChannelInfoManager manager = new SwingChannelInfoManager(applicationScreen, repositoryFactory, channelListManager, context);
+            context.registerManager(manager);
+
+            dialog = new SwingChannelInfoDialog(applicationScreen, configHolder, context);
+            manager.registerDialog(dialog);
+
             return null;
         }
 
         @Override
         protected void done() {
             loadingDialogWrapper.shutdown();
-            if (dialog != null) dialog.showing();
+            dialog.showing();
             logger.info("The service is running");
         }
     }

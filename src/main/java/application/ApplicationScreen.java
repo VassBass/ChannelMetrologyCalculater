@@ -1,8 +1,6 @@
 package application;
 
 import model.ui.UI;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,33 +9,10 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 public class ApplicationScreen extends JFrame implements UI {
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationScreen.class);
-
     private static final String TITLE = "ChannelMetrologyCalculater";
-    private static ApplicationConfigHolder configHolder;
     private final JMenuBar menuBar;
 
-    private static volatile ApplicationScreen instance;
-    public static ApplicationScreen getInstance() {
-        if (configHolder == null) {
-            String message = "Before getting the instance, you need to execute the static init() method to initialize the screen";
-            logger.warn(message);
-            return null;
-        }
-
-        if (instance == null) {
-            synchronized (ApplicationScreen.class) {
-                if (instance == null) instance = new ApplicationScreen();
-            }
-        }
-        return instance;
-    }
-
-    public static void init(ApplicationConfigHolder config) {
-        configHolder = config;
-    }
-
-    private ApplicationScreen() {
+    public ApplicationScreen(ApplicationConfigHolder configHolder) {
         super();
         this.menuBar = new JMenuBar();
         
