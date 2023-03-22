@@ -45,7 +45,7 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
 
         message = "Initialization of import service";
         publish(message);
-        new SwingImporterInitializer(applicationScreen).init();
+        new SwingImporterInitializer(applicationScreen, repositoryFactory).init();
 
         return null;
     }

@@ -42,12 +42,8 @@ public class RepositoryMockFactory extends RepositoryFactory {
 
     private final Map<String, Object> implementations = new HashMap<>();
 
-    private final RepositoryConfigHolder configHolder;
-    private final RepositoryDBConnector connector;
-
-    public RepositoryMockFactory() {
-        configHolder = new RepositoryConfigHolderMock();
-        connector = new SqliteRepositoryDBConnector(configHolder);
+    public RepositoryMockFactory(RepositoryConfigHolderMock configHolder) {
+        super(configHolder, new SqliteRepositoryDBConnector(configHolder));
     }
 
     @Override

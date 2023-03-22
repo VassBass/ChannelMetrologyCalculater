@@ -2,7 +2,7 @@ package application;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.root.ServiceInitializer;
+import service.ServiceInitializer;
 
 import javax.swing.*;
 import java.awt.*;

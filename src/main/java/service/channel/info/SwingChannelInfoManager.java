@@ -24,9 +24,7 @@ import util.StringHelper;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -79,7 +77,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     @Override
     public void setChannelInfo(Channel channel) {
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
-        if (channel != null) {
+        if (Objects.nonNull(channel)) {
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
 
             ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
@@ -115,17 +113,20 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                 String selectedMeasurementName = measurementPanel.getSelectedMeasurementName();
                 measurementPanel.setMeasurementValues(Arrays.asList(measurementRepository.getValues(selectedMeasurementName)));
                 measurementPanel.setMeasurementValue(channel.getMeasurementValue());
-            }
 
-            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
-            if (sensorPanel != null) {
-                Sensor sensor = sensorRepository.get(channel.getCode());
-                if (sensor != null) {
-                    sensorPanel.setSensorType(sensor.getType());
-                    sensorPanel.setSerialNumber(sensor.getSerialNumber());
-                    sensorPanel.setMeasurementValue(sensor.getMeasurementValue());
-                    sensorPanel.setRange(String.valueOf(sensor.getRangeMin()), String.valueOf(sensor.getRangeMax()));
-                    sensorPanel.setErrorFormula(sensor.getErrorFormula());
+                ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
+                if (sensorPanel != null) {
+                    sensorPanel.setSensorsTypes(new ArrayList<>(
+                            sensorRepository.getAllSensorsTypesByMeasurementName(
+                                    measurementPanel.getSelectedMeasurementName())));
+                    Sensor sensor = sensorRepository.get(channel.getCode());
+                    if (sensor != null) {
+                        sensorPanel.setSensorType(sensor.getType());
+                        sensorPanel.setSerialNumber(sensor.getSerialNumber());
+                        sensorPanel.setMeasurementValue(sensor.getMeasurementValue());
+                        sensorPanel.setRange(String.valueOf(sensor.getRangeMin()), String.valueOf(sensor.getRangeMax()));
+                        sensorPanel.setErrorFormula(sensor.getErrorFormula());
+                    }
                 }
             }
 
@@ -146,14 +147,47 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             oldChannel = channel;
         } else {
             ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
-            if (measurementPanel != null) {
+            if (Objects.nonNull(measurementPanel)) {
                 String selectedMeasurementName = measurementPanel.getSelectedMeasurementName();
-                measurementPanel.setMeasurementValues(Arrays.asList(measurementRepository.getValues(selectedMeasurementName)));
+                List<String> measurementValues = Arrays.asList(measurementRepository.getValues(selectedMeasurementName));
+                measurementPanel.setMeasurementValues(measurementValues);
+
+                ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
+                SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+                if (Objects.nonNull(sensorPanel) && Objects.nonNull(sensorRepository)) {
+                    sensorPanel.setSensorsTypes(new ArrayList<>(
+                            sensorRepository.getAllSensorsTypesByMeasurementName(
+                                    measurementPanel.getSelectedMeasurementName())));
+                    sensorPanel.setRange("0.0", "100.0");
+                    sensorPanel.setMeasurementValues(measurementValues);
+                    sensorPanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
+                    setErrorFormulasList();
+                }
+
+                ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
+                if (Objects.nonNull(rangePanel)) {
+                    rangePanel.setRangeMin("0.0");
+                    rangePanel.setRangeMax("100.0");
+                    rangePanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
+                }
+
+                ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
+                if (Objects.nonNull(allowableErrorPanel)) {
+                    allowableErrorPanel.setAllowableErrorPercent("1.5");
+                    allowableErrorPanel.setAllowableErrorValue("1.5");
+                    allowableErrorPanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
+                }
             }
 
-            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
-            if (sensorPanel != null) {
-                setErrorFormulasList();
+            ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
+            if (Objects.nonNull(datePanel)) {
+                datePanel.setDate(DateHelper.dateToString(Calendar.getInstance()));
+            }
+
+            ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
+            if (Objects.nonNull(frequencyPanel)) {
+                frequencyPanel.setFrequency("2.0");
+                /* set next date */ changeDateOrFrequency();
             }
         }
     }

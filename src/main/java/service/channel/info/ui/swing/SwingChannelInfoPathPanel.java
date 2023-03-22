@@ -3,10 +3,17 @@ package service.channel.info.ui.swing;
 import model.ui.DefaultComboBox;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
+import repository.RepositoryFactory;
+import repository.repos.area.AreaRepository;
+import repository.repos.department.DepartmentRepository;
+import repository.repos.installation.InstallationRepository;
+import repository.repos.process.ProcessRepository;
 import service.channel.info.ui.ChannelInfoPathPanel;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInfoPathPanel {
     private static final String TITLE_TEXT = "Розташування";
@@ -16,13 +23,22 @@ public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInf
     private final DefaultComboBox processes;
     private final DefaultComboBox installations;
 
-    public SwingChannelInfoPathPanel() {
+    public SwingChannelInfoPathPanel(RepositoryFactory repositoryFactory) {
         super(TITLE_TEXT, Color.BLACK);
 
         departments = new DefaultComboBox(true);
         areas = new DefaultComboBox(true);
         processes = new DefaultComboBox(true);
         installations = new DefaultComboBox(true);
+
+        DepartmentRepository departmentRepository = repositoryFactory.getImplementation(DepartmentRepository.class);
+        if (Objects.nonNull(departmentRepository)) setDepartments(new ArrayList<>(departmentRepository.getAll()));
+        AreaRepository areaRepository = repositoryFactory.getImplementation(AreaRepository.class);
+        if (Objects.nonNull(areaRepository)) setAreas(new ArrayList<>(areaRepository.getAll()));
+        ProcessRepository processRepository = repositoryFactory.getImplementation(ProcessRepository.class);
+        if (Objects.nonNull(processRepository)) setProcesses(new ArrayList<>(processRepository.getAll()));
+        InstallationRepository installationRepository = repositoryFactory.getImplementation(InstallationRepository.class);
+        if (Objects.nonNull(installationRepository)) setInstallations(new ArrayList<>(installationRepository.getAll()));
 
         this.add(departments, new CellBuilder().x(0).y(0).build());
         this.add(areas, new CellBuilder().x(1).y(0).build());

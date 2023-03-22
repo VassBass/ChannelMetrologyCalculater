@@ -1,5 +1,6 @@
 package service.importer.updater.from_v5.to_v6;
 
+import mock.RepositoryConfigHolderMock;
 import mock.RepositoryMockFactory;
 import model.dto.*;
 import model.dto.builder.CalibratorBuilder;
@@ -47,7 +48,7 @@ public class DefaultImporterTest {
 
     @Before
     public void init() {
-        repositoryMockFactory = new RepositoryMockFactory();
+        repositoryMockFactory = new RepositoryMockFactory(new RepositoryConfigHolderMock());
         measurementRepository = repositoryMockFactory.getImplementation(MeasurementRepository.class);
         calibratorRepository = repositoryMockFactory.getImplementation(CalibratorRepository.class);
         channelRepository = repositoryMockFactory.getImplementation(ChannelRepository.class);

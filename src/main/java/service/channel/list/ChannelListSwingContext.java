@@ -2,6 +2,7 @@ package service.channel.list;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListSearchPanel;
 import service.channel.list.ui.ChannelListTable;
 import service.channel.list.ui.swing.SwingChannelListButtonsPanel;
@@ -35,17 +36,27 @@ public class ChannelListSwingContext {
         T element = (T) buffer.get(clazz);
 
         if (element == null) {
-            if (clazz.isAssignableFrom(ChannelListTable.class) || clazz.isAssignableFrom(SwingChannelListInfoTable.class))
+            if (clazz.isAssignableFrom(ChannelListInfoTable.class) || clazz.isAssignableFrom(SwingChannelListInfoTable.class)) {
                 element = (T) new SwingChannelListInfoTable(service);
-            if (clazz.isAssignableFrom(ChannelListSearchPanel.class) || clazz.isAssignableFrom(SwingChannelListSearchPanel.class))
+                buffer.put(ChannelListInfoTable.class, element);
+                buffer.put(SwingChannelListInfoTable.class, element);
+            }
+            if (clazz.isAssignableFrom(ChannelListSearchPanel.class) || clazz.isAssignableFrom(SwingChannelListSearchPanel.class)) {
                 element = (T) new SwingChannelListSearchPanel(manager);
-            if (clazz.isAssignableFrom(SwingChannelListButtonsPanel.class))
+                buffer.put(ChannelListSearchPanel.class, element);
+                buffer.put(SwingChannelListSearchPanel.class, element);
+            }
+            if (clazz.isAssignableFrom(SwingChannelListButtonsPanel.class)) {
                 element = (T) new SwingChannelListButtonsPanel(manager);
-            if (clazz.isAssignableFrom(ChannelListTable.class) || clazz.isAssignableFrom(SwingChannelListTable.class))
+                buffer.put(clazz, element);
+            }
+            if (clazz.isAssignableFrom(ChannelListTable.class) || clazz.isAssignableFrom(SwingChannelListTable.class)) {
                 element = (T) new SwingChannelListTable(manager, service);
+                buffer.put(ChannelListTable.class, element);
+                buffer.put(SwingChannelListTable.class, element);
+            }
 
             if (element == null) logger.warn(String.format("Can't find implementation for %s", clazz.getName()));
-            else buffer.put(clazz, element);
         }
 
         return element;

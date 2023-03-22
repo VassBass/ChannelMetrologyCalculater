@@ -1,4 +1,4 @@
-package service.root;
+package service;
 
 public interface ServiceExecuter {
     void execute();

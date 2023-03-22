@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.channel.list.ui.swing.SwingChannelListPanel;
 import service.channel.list.ui.swing.SwingMenuChannelList;
-import service.root.ServiceExecuter;
+import service.ServiceExecuter;
 
 public class SwingChannelListExecuter implements ServiceExecuter {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelListExecuter.class);

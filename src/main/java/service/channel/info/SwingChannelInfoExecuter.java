@@ -9,7 +9,7 @@ import repository.RepositoryFactory;
 import application.ApplicationScreen;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
 import service.channel.list.ChannelListManager;
-import service.root.ServiceExecuter;
+import service.ServiceExecuter;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
@@ -65,6 +65,8 @@ public class SwingChannelInfoExecuter implements ServiceExecuter {
 
             dialog = new SwingChannelInfoDialog(applicationScreen, configHolder, context);
             manager.registerDialog(dialog);
+
+            manager.setChannelInfo(channel);
 
             return null;
         }

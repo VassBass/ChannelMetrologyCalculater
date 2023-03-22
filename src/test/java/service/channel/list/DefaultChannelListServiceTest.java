@@ -1,5 +1,6 @@
 package service.channel.list;
 
+import mock.RepositoryConfigHolderMock;
 import mock.RepositoryMockFactory;
 import model.dto.Channel;
 import model.dto.Sensor;
@@ -20,17 +21,12 @@ import static org.junit.Assert.assertTrue;
 public class DefaultChannelListServiceTest {
 
     private RepositoryMockFactory repositoryMockFactory;
-    private ChannelRepository channelRepository;
-    private SensorRepository sensorRepository;
     private ChannelListService service;
 
     @Before
     public void setUp() throws Exception {
-        repositoryMockFactory = new RepositoryMockFactory();
-        channelRepository = repositoryMockFactory.getImplementation(ChannelRepository.class);
-        sensorRepository = repositoryMockFactory.getImplementation(SensorRepository.class);
-
-        service = new DefaultChannelListService(channelRepository, sensorRepository);
+        repositoryMockFactory = new RepositoryMockFactory(new RepositoryConfigHolderMock());
+        service = new DefaultChannelListService(repositoryMockFactory);
     }
 
     /**
@@ -67,6 +63,8 @@ public class DefaultChannelListServiceTest {
 
     @Test
     public void testGetCodesOfExpiredChannels() {
+        ChannelRepository channelRepository = repositoryMockFactory.getImplementation(ChannelRepository.class);
+
         Channel expired0 = new ChannelBuilder("0").setDate(createExpiredDate()).setFrequency(1).build();
         Channel expired1 = new ChannelBuilder("1").setDate("expired").build();
         Channel closeToExpired2 = new ChannelBuilder("2").setDate(createCloseToExpiredDate()).setFrequency(1).build();
@@ -89,6 +87,8 @@ public class DefaultChannelListServiceTest {
 
     @Test
     public void testGetCodesOfChannelsCloseToExpired() {
+        ChannelRepository channelRepository = repositoryMockFactory.getImplementation(ChannelRepository.class);
+
         Channel expired0 = new ChannelBuilder("0").setDate(createExpiredDate()).setFrequency(1).build();
         Channel expired1 = new ChannelBuilder("1").setDate("expired").build();
         Channel closeToExpired2 = new ChannelBuilder("2").setDate(createCloseToExpiredDate()).setFrequency(1).build();
@@ -143,6 +143,8 @@ public class DefaultChannelListServiceTest {
 
     @Test
     public void getSensor() {
+        SensorRepository sensorRepository = repositoryMockFactory.getImplementation(SensorRepository.class);
+
         Channel channel = new ChannelBuilder("0").build();
         Sensor sensor = new SensorBuilder(channel.getCode()).build();
 

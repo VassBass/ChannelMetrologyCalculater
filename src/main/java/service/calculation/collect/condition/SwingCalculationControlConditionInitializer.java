@@ -8,7 +8,7 @@ import repository.repos.calibrator.CalibratorRepository;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
 import service.calculation.collect.condition.ui.swing.*;
-import service.root.ServiceInitializer;
+import service.ServiceInitializer;
 
 import java.util.Arrays;
 

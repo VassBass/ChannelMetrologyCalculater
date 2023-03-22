@@ -36,8 +36,8 @@ public class RepositoryFactory {
     private static final Logger logger = LoggerFactory.getLogger(RepositoryFactory.class);
     private final Map<Class<?>, Object> implementations = new HashMap<>();
 
-    private final RepositoryConfigHolder configHolder;
-    private final RepositoryDBConnector connector;
+    protected final RepositoryConfigHolder configHolder;
+    protected final RepositoryDBConnector connector;
 
     public RepositoryFactory(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.configHolder = configHolder;

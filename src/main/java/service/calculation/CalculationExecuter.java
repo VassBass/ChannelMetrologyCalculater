@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.calculation.collect.condition.ui.PropertiesCalculationConfigHolder;
-import service.root.ServiceExecuter;
+import service.ServiceExecuter;
 import util.ScreenPoint;
 
 import javax.swing.*;
