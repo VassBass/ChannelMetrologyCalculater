@@ -22,10 +22,7 @@ import service.importer.model.ModelHolder;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static service.importer.model.ModelField.*;
@@ -77,19 +74,23 @@ public class DefaultImporter implements Importer {
         List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.MEASUREMENT).collect(Collectors.toList());
         if (input.size() > 0) {
             MeasurementRepository repository = repositoryFactory.getImplementation(MeasurementRepository.class);
+            List<Measurement> oldMeasurements = new ArrayList<>(repository.getAll());
 
             for (ModelHolder modelHolder : input) {
                 String name = modelHolder.getValue(MEASUREMENT_NAME);
                 String value = modelHolder.getValue(MEASUREMENT_VALUE);
+                if (name.isEmpty() || value.isEmpty()) continue;
 
-                Measurement measurement = repository.getByValue(value);
-                if (measurement == null) {
-                    if (name == null || name.isEmpty() || value.isEmpty()) continue;
-                    if (!repository.add(new Measurement(name, value))) return false;
+                Measurement newMeasurement = new Measurement(name, value);
+
+                int oldMeasurementIndex = oldMeasurements.indexOf(newMeasurement);
+                if (oldMeasurementIndex >= 0) {
+                    oldMeasurements.set(oldMeasurementIndex, newMeasurement);
                 } else {
-                    if (!repository.set(measurement, new Measurement(name, value))) return false;
+                    oldMeasurements.add(newMeasurement);
                 }
             }
+            return repository.rewrite(oldMeasurements);
         }
         return true;
     }
@@ -102,6 +103,7 @@ public class DefaultImporter implements Importer {
             MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
             List<ModelHolder> oldMeasurements = in.stream().filter(e -> e.getModel() == Model.MEASUREMENT).collect(Collectors.toList());
 
+            List<Channel> oldChannels = new ArrayList<>(channelRepository.getAll());
             for (ModelHolder modelHolder : input) {
                 String measurementValue = modelHolder.getValue(CHANNEL_MEASUREMENT_VALUE);
                 Measurement measurement = oldMeasurements.stream()
@@ -119,16 +121,15 @@ public class DefaultImporter implements Importer {
 
                     newChannel.setMeasurementName(measurement.getName());
                     newChannel.setMeasurementValue(measurement.getValue());
-                    Channel oldChannel = channelRepository.get(code);
-                    if (oldChannel == null) {
-                        if (!channelRepository.add(newChannel)) return false;
+                    int oldIndex = oldChannels.indexOf(newChannel);
+                    if (oldIndex >= 0) {
+                        if (option == ImportOption.REPLACE_EXISTED) oldChannels.set(oldIndex, newChannel);
                     } else {
-                        if (option == ImportOption.REPLACE_EXISTED) {
-                            if (!channelRepository.set(oldChannel, newChannel)) return false;
-                        }
+                        oldChannels.add(newChannel);
                     }
                 }
             }
+            return channelRepository.rewrite(oldChannels);
         }
         return true;
     }
@@ -139,6 +140,7 @@ public class DefaultImporter implements Importer {
         if (input.size() > 0) {
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
 
+            List<Sensor> oldSensors = new ArrayList<>(sensorRepository.getAll());
             for (ModelHolder modelHolder : input) {
                 String code = modelHolder.getValue(CHANNEL_CODE);
                 if (code == null || code.isEmpty()) continue;
@@ -147,16 +149,15 @@ public class DefaultImporter implements Importer {
                 Sensor newSensor = transformer.transform(sensorModelHolder, Sensor.class);
                 if (newSensor != null) {
                     newSensor.setChannelCode(code);
-                    Sensor oldSensor = sensorRepository.get(code);
-                    if (oldSensor == null) {
-                        if (!sensorRepository.add(newSensor)) return false;
+                    int oldIndex = oldSensors.indexOf(newSensor);
+                    if (oldIndex >= 0) {
+                        if (option == ImportOption.REPLACE_EXISTED) oldSensors.set(oldIndex, newSensor);
                     } else {
-                        if (option == ImportOption.REPLACE_EXISTED) {
-                            if (!sensorRepository.set(oldSensor, newSensor)) return false;
-                        }
+                        oldSensors.add(newSensor);
                     }
                 }
             }
+            return sensorRepository.rewrite(oldSensors);
         }
         return true;
     }
@@ -166,22 +167,22 @@ public class DefaultImporter implements Importer {
         if (input.size() > 0) {
             CalibratorRepository repository = repositoryFactory.getImplementation(CalibratorRepository.class);
 
+            List<Calibrator> oldCalibrators = new ArrayList<>(repository.getAll());
             for (ModelHolder modelHolder : input) {
                 Calibrator newCalibrator = transformer.transform(modelHolder, Calibrator.class);
                 if (newCalibrator != null) {
                     String name = newCalibrator.getName();
                     if (name.isEmpty()) continue;
 
-                    Calibrator oldCalibrator = repository.get(name);
-                    if (oldCalibrator == null) {
-                        if (!repository.add(newCalibrator)) return false;
+                    int oldIndex = oldCalibrators.indexOf(newCalibrator);
+                    if (oldIndex >= 0) {
+                        if (option == ImportOption.REPLACE_EXISTED) oldCalibrators.set(oldIndex, newCalibrator);
                     } else {
-                        if (option == ImportOption.REPLACE_EXISTED) {
-                            if (!repository.set(oldCalibrator, newCalibrator)) return false;
-                        }
+                        oldCalibrators.add(newCalibrator);
                     }
                 }
             }
+            return repository.rewrite(oldCalibrators);
         }
         return true;
     }
@@ -195,9 +196,10 @@ public class DefaultImporter implements Importer {
             for (ModelHolder modelHolder : input) {
                 String department = modelHolder.getValue(DEPARTMENT);
                 if (department != null && !departments.contains(department)) {
-                    if (!repository.add(department)) return false;
+                    departments.add(department);
                 }
             }
+            repository.rewrite(departments);
         }
         return true;
     }
@@ -211,9 +213,10 @@ public class DefaultImporter implements Importer {
             for (ModelHolder modelHolder : input) {
                 String area = modelHolder.getValue(AREA);
                 if (area != null && !areas.contains(area)) {
-                    if (!repository.add(area)) return false;
+                    areas.add(area);
                 }
             }
+            return repository.rewrite(areas);
         }
         return true;
     }
@@ -227,9 +230,10 @@ public class DefaultImporter implements Importer {
             for (ModelHolder modelHolder : input) {
                 String process = modelHolder.getValue(PROCESS);
                 if (process != null && !processes.contains(process)) {
-                    if (!repository.add(process)) return false;
+                    processes.add(process);
                 }
             }
+            return repository.rewrite(processes);
         }
         return true;
     }
@@ -243,9 +247,10 @@ public class DefaultImporter implements Importer {
             for (ModelHolder modelHolder : input) {
                 String installation = modelHolder.getValue(INSTALLATION);
                 if (installation != null && !installations.contains(installation)) {
-                    if (!repository.add(installation)) return false;
+                    installations.add(installation);
                 }
             }
+            return repository.rewrite(installations);
         }
         return true;
     }
@@ -255,22 +260,22 @@ public class DefaultImporter implements Importer {
         if (input.size() > 0) {
             ControlPointsRepository repository = repositoryFactory.getImplementation(ControlPointsRepository.class);
 
+            List<ControlPoints> oldControlPoints = new ArrayList<>(repository.getAll());
             for (ModelHolder modelHolder : input) {
                 ControlPoints newControlPoints = transformer.transform(modelHolder, ControlPoints.class);
                 if (newControlPoints != null) {
                     String name = newControlPoints.getName();
                     if (name.isEmpty()) continue;
 
-                    ControlPoints oldControlPoints = repository.get(name);
-                    if (oldControlPoints == null) {
-                        if (!repository.add(newControlPoints)) return false;
+                    int oldIndex = oldControlPoints.indexOf(newControlPoints);
+                    if (oldIndex >= 0) {
+                        if (option == ImportOption.REPLACE_EXISTED) oldControlPoints.set(oldIndex, newControlPoints);
                     } else {
-                        if (option == ImportOption.REPLACE_EXISTED) {
-                            if (!repository.set(oldControlPoints, newControlPoints)) return false;
-                        }
+                        oldControlPoints.add(newControlPoints);
                     }
                 }
             }
+            return repository.rewrite(oldControlPoints);
         }
         return true;
     }

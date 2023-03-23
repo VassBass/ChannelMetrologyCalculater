@@ -3,8 +3,6 @@ package mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import repository.config.RepositoryConfigHolder;
-import repository.connection.RepositoryDBConnector;
 import repository.connection.SqliteRepositoryDBConnector;
 import repository.repos.area.AreaRepository;
 import repository.repos.area.BufferedAreaRepositorySQLite;
@@ -31,7 +29,9 @@ import repository.repos.sensor.SensorRepository;
 import repository.repos.sensor_error.BufferedSensorErrorRepositorySQLite;
 import repository.repos.sensor_error.SensorErrorRepository;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,7 +93,9 @@ public class RepositoryMockFactory extends RepositoryFactory {
             while (resultSet.next()) tableNames.add(resultSet.getString("name"));
             for (String table : tableNames) {
                 String dropTableSql = "DROP TABLE IF EXISTS " + table;
-                statement.executeUpdate(dropTableSql);
+                try {
+                    statement.executeUpdate(dropTableSql);
+                } catch (SQLException ignored) {}
             }
         } catch (SQLException e) {
             String message = "Disposing of repositories was interrupted of exception. " +

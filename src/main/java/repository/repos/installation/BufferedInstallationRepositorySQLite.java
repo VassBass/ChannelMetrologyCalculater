@@ -67,6 +67,8 @@ public class BufferedInstallationRepositorySQLite extends InstallationRepository
 
     @Override
     public boolean rewrite(@Nonnull Collection<String> newList) {
+        if (buffer.equals(newList)) return true;
+
         buffer.clear();
         buffer.addAll(newList.stream().filter(Objects::nonNull).collect(Collectors.toList()));
         return super.rewrite(newList);
