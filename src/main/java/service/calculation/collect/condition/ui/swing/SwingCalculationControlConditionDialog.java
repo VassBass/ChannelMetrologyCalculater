@@ -11,6 +11,7 @@ import service.calculation.collect.CalculationCollectDialog;
 import service.calculation.collect.condition.ui.*;
 import service.calculation.dto.Protocol;
 import util.DateHelper;
+import util.ObjectHelper;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
@@ -114,8 +115,8 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
         String humidity = environmentPanel.getHumidity();
         String pressure = environmentPanel.getPressure();
 
-        if (date == null || protocolNumber.isEmpty() || calibratorName.isEmpty() ||
-                temperature == null || humidity == null || pressure == null) {
+        if (ObjectHelper.anyNull(date, temperature, humidity, pressure) ||
+                protocolNumber.isEmpty() || calibratorName.isEmpty()) {
             return null;
         } else {
             CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);

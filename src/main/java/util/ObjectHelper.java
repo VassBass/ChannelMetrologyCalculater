@@ -7,4 +7,8 @@ public class ObjectHelper {
     public static boolean nonNull(Object ... o) {
         return Arrays.stream(o).noneMatch(Objects::isNull);
     }
+
+    public static boolean anyNull(Object ... o) {
+        return Arrays.stream(o).anyMatch(Objects::isNull);
+    }
 }
