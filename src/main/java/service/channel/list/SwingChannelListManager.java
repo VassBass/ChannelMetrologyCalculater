@@ -12,6 +12,7 @@ import repository.repos.sensor.SensorRepository;
 import service.calculation.CalculationExecuter;
 import service.channel.info.SwingChannelInfoExecuter;
 import service.channel.list.ui.ChannelListInfoTable;
+import service.channel.list.ui.ChannelListSearchPanel;
 import service.channel.list.ui.ChannelListTable;
 import service.channel.list.ui.swing.SwingChannelListInfoTable;
 import service.channel.list.ui.swing.SwingChannelListTable;
@@ -22,6 +23,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 public class SwingChannelListManager implements ChannelListManager {
@@ -162,7 +164,27 @@ public class SwingChannelListManager implements ChannelListManager {
 
     @Override
     public void search() {
-
+        ChannelListSearchPanel searchPanel = context.getElement(ChannelListSearchPanel.class);
+        if (Objects.nonNull(searchPanel)) {
+            ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+            String channelCode = searchPanel.getChannelCode();
+            if (Objects.nonNull(channelRepository)) {
+                Channel channel = channelRepository.get(channelCode);
+                if (Objects.nonNull(channel)) {
+                    String message = String.format("Канал з кодом \"%s\" було знайдено: \"%s\". Відкрити про ньго іформацію?",
+                            channelCode, channel.getName());
+                    int result = JOptionPane.showConfirmDialog(applicationScreen, message, "Знайдено", JOptionPane.YES_NO_OPTION);
+                    if (result == 0) {
+                        new SwingChannelInfoExecuter(applicationScreen, repositoryFactory, this)
+                                .registerChannel(channel)
+                                .execute();
+                    }
+                } else {
+                    String message = String.format("Канал з кодом \"%s\" не знайдено в базі.", channelCode);
+                    JOptionPane.showMessageDialog(applicationScreen, message, "Не знайдено", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
     }
 
     @Override

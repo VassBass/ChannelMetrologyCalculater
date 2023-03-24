@@ -2,7 +2,6 @@ package service.calculation.collect.condition.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import repository.RepositoryFactory;
 import service.calculation.CalculationManager;
 import service.calculation.collect.condition.ui.swing.*;
 
@@ -13,11 +12,6 @@ public class SwingCalculationControlConditionContext {
     private static final Logger logger = LoggerFactory.getLogger(SwingCalculationControlConditionContext.class);
 
     private final Map<Class<?>, Object> buffer = new HashMap<>();
-    private final RepositoryFactory repositoryFactory;
-
-    public SwingCalculationControlConditionContext(RepositoryFactory repositoryFactory) {
-        this.repositoryFactory = repositoryFactory;
-    }
 
     private CalculationManager manager;
 

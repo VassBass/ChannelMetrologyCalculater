@@ -36,7 +36,9 @@ public class SwingCalculationControlConditionExecuter implements ServiceExecuter
 
     @Override
     public void execute() {
-        SwingCalculationControlConditionContext context = new SwingCalculationControlConditionContext(repositoryFactory);
+        SwingCalculationControlConditionContext context = new SwingCalculationControlConditionContext();
+        context.registerManager(manager);
+
         SwingCalculationControlConditionDialog dialog = new SwingCalculationControlConditionDialog(
                 applicationScreen, repositoryFactory, configHolder, context, protocol
         );
