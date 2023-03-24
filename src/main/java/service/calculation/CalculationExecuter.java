@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.ServiceExecuter;
-import service.calculation.dto.Protocol;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
@@ -44,8 +43,7 @@ public class CalculationExecuter implements ServiceExecuter {
             @Override
             protected Boolean doInBackground() {
                 CalculationConfigHolder configHolder = new PropertiesCalculationConfigHolder();
-                Protocol protocol = new Protocol(channel);
-                manager = new SwingCalculationManager(applicationScreen, repositoryFactory, configHolder, protocol);
+                manager = new SwingCalculationManager(applicationScreen, repositoryFactory, configHolder, channel);
                 return true;
             }
 

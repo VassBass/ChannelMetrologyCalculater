@@ -2,6 +2,7 @@ package service.calculation.collect.condition.ui.swing;
 
 import application.ApplicationScreen;
 import model.dto.Calibrator;
+import model.dto.Channel;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
@@ -26,7 +27,6 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
     private static final String TITLE = "Розрахунок ВК: ";
 
     private final RepositoryFactory repositoryFactory;
-    private final Protocol protocol;
 
     private final SwingCalculationControlConditionDatePanel datePanel;
     private final SwingCalculationControlConditionProtocolNumberPanel protocolNumberPanel;
@@ -37,10 +37,9 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
                                                   @Nonnull RepositoryFactory repositoryFactory,
                                                   @Nonnull CalculationConfigHolder configHolder,
                                                   @Nonnull SwingCalculationControlConditionContext context,
-                                                  @Nonnull Protocol protocol) {
-        super(applicationScreen, TITLE + protocol.getChannel().getName(), true);
+                                                  @Nonnull Channel channel) {
+        super(applicationScreen, TITLE + channel.getName(), true);
         this.repositoryFactory = repositoryFactory;
-        this.protocol = protocol;
 
         DefaultPanel panel = new DefaultPanel();
 
@@ -51,24 +50,14 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
         SwingCalculationControlConditionButtonsPanel buttonsPanel = context.getElement(SwingCalculationControlConditionButtonsPanel.class);
 
         CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);
-        String measurementName = protocol.getChannel().getMeasurementName();
+        String measurementName = channel.getMeasurementName();
         List<String> suitableCalibratorsNames = Arrays.asList(calibratorRepository.getAllNamesByMeasurementName(measurementName));
         calibratorPanel.setCalibratorsNamesList(suitableCalibratorsNames);
 
-        if (Objects.nonNull(protocol.getDate())) datePanel.setDate(protocol.getDate());
-        else datePanel.setDate(DateHelper.dateToString(Calendar.getInstance()));
-
-        if (Objects.nonNull(protocol.getNumber())) protocolNumberPanel.setProtocolNumber(protocol.getNumber());
-        if (Objects.nonNull(protocol.getCalibrator())) calibratorPanel.setSelectedCalibrator(protocol.getCalibrator().getName());
-
-        if (Objects.nonNull(protocol.getTemperature())) environmentPanel.setTemperature(protocol.getTemperature());
-        else environmentPanel.setTemperature("21.0");
-
-        if (Objects.nonNull(protocol.getHumidity())) environmentPanel.setHumidity(protocol.getHumidity());
-        else environmentPanel.setHumidity("70.0");
-
-        if (Objects.nonNull(protocol.getPressure())) environmentPanel.setPressure(protocol.getPressure());
-        else environmentPanel.setPressure("750.0");
+        datePanel.setDate(DateHelper.dateToString(Calendar.getInstance()));
+        environmentPanel.setTemperature("21.0");
+        environmentPanel.setHumidity("70.0");
+        environmentPanel.setPressure("750.0");
 
         panel.add(datePanel, new CellBuilder().fill(HORIZONTAL).x(0).y(0).width(1).height(1).build());
         panel.add(protocolNumberPanel, new CellBuilder().fill(HORIZONTAL).x(1).y(0).width(1).height(1).build());
@@ -107,7 +96,7 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
     }
 
     @Override
-    public Protocol fillProtocol() {
+    public boolean fillProtocol(Protocol protocol) {
         String date = datePanel.getDate();
         String protocolNumber = protocolNumberPanel.getProtocolNumber();
         String calibratorName = calibratorPanel.getSelectedCalibratorName();
@@ -117,11 +106,11 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
 
         if (ObjectHelper.anyNull(date, temperature, humidity, pressure) ||
                 protocolNumber.isEmpty() || calibratorName.isEmpty()) {
-            return null;
+            return false;
         } else {
             CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);
             Calibrator calibrator = calibratorRepository.get(calibratorName);
-            if (Objects.isNull(calibrator)) return null;
+            if (Objects.isNull(calibrator)) return false;
 
             protocol.setDate(date);
             protocol.setNumber(protocolNumber);
@@ -129,7 +118,7 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
             protocol.setTemperature(temperature);
             protocol.setHumidity(humidity);
             protocol.setPressure(pressure);
-            return protocol;
+            return true;
         }
     }
 }

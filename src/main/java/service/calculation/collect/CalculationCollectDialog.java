@@ -6,5 +6,5 @@ import service.calculation.dto.Protocol;
 import javax.annotation.Nullable;
 
 public interface CalculationCollectDialog extends UI {
-    @Nullable Protocol fillProtocol();
+    boolean fillProtocol(Protocol protocol);
 }
