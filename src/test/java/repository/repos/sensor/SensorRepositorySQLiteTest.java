@@ -4,7 +4,6 @@ import model.dto.Measurement;
 import model.dto.Sensor;
 import model.dto.builder.SensorBuilder;
 import org.junit.*;
-import org.sqlite.JDBC;
 import repository.config.RepositoryConfigHolder;
 import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
@@ -567,51 +566,5 @@ public class SensorRepositorySQLiteTest {
     public void testIsExists() {
         assertTrue(repository.isExists("0"));
         assertFalse(repository.isExists("8"));
-    }
-
-    @Test
-    public void testGetExistedErrorFormula() {
-        String expected = "Formula for: " + Sensor.YOKOGAWA;
-
-        assertEquals(expected, repository.getErrorFormula(Sensor.YOKOGAWA));
-    }
-
-    @Test
-    public void testGetNotExistedErrorFormula() {
-        assertTrue(repository.getErrorFormula("Not Existed").isEmpty());
-    }
-
-    @Test
-    public void setErrorFormulaToExistedSensors() {
-        String oldFormula = "Formula for: " + Sensor.TCM_50M;
-        String newFormula = "New Formula";
-        expected.forEach(s -> {
-            if (s.getType().equals(Sensor.TCM_50M)) s.setErrorFormula(newFormula);
-        });
-
-        Collection<Sensor> actual = repository.getAll();
-        assertEquals(2, actual.stream().filter(s -> s.getErrorFormula().equals(oldFormula)).count());
-        assertEquals(0, actual.stream().filter(s -> s.getErrorFormula().equals(newFormula)).count());
-        assertTrue(repository.setErrorFormula(Sensor.TCM_50M, newFormula));
-
-        actual = repository.getAll();
-        assertEquals(expected.size(), actual.size());
-        assertTrue(expected.containsAll(actual));
-        assertEquals(0, actual.stream().filter(s -> s.getErrorFormula().equals(oldFormula)).count());
-        assertEquals(2, actual.stream().filter(s -> s.getErrorFormula().equals(newFormula)).count());
-    }
-
-    @Test
-    public void setErrorFormulaToNotExistedSensors() {
-        String newFormula = "New Formula";
-
-        Collection<Sensor> actual = repository.getAll();
-        assertEquals(0, actual.stream().filter(s -> s.getErrorFormula().equals(newFormula)).count());
-        assertTrue(repository.setErrorFormula("Not Existed", newFormula));
-
-        actual = repository.getAll();
-        assertEquals(expected.size(), actual.size());
-        assertTrue(expected.containsAll(actual));
-        assertEquals(0, actual.stream().filter(s -> s.getErrorFormula().equals(newFormula)).count());
     }
 }

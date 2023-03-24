@@ -12,7 +12,6 @@ public interface SensorRepository {
     Collection<String> getAllTypes();
     Collection<String> getAllSensorsTypesByMeasurementName(@Nonnull String measurementName);
     @Nullable Sensor get(@Nonnull String channelCode);
-    String getErrorFormula(@Nonnull String sensorType);
 
     boolean add(@Nonnull Sensor sensor);
 
@@ -21,7 +20,6 @@ public interface SensorRepository {
     boolean clear();
 
     boolean set(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor);
-    boolean setErrorFormula(@Nonnull String sensorType, @Nonnull String errorFormula);
     boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue);
     boolean rewrite(@Nonnull Collection<Sensor> sensors);
 

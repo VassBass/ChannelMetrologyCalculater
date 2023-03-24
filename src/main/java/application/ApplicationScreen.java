@@ -40,15 +40,23 @@ public class ApplicationScreen extends JFrame implements UI {
     }
 
     @Override
+    public void refresh() {
+        EventQueue.invokeLater(() -> {
+            this.setVisible(false);
+            this.setVisible(true);
+        });
+    }
+
+    @Override
     public void showing() {
         EventQueue.invokeLater(() ->
-                ApplicationScreen.this.setVisible(true));
+                this.setVisible(true));
     }
 
     @Override
     public void hiding() {
         EventQueue.invokeLater(() ->
-                ApplicationScreen.this.setVisible(false));
+                this.setVisible(false));
     }
 
     @Override

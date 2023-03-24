@@ -84,11 +84,23 @@ public class SwingChannelInfoAllowableErrorPanel extends TitledPanel implements 
 
     @Override
     public boolean isAllowableErrorPercentValid() {
-        return StringHelper.isDouble(errorPercent.getText());
+        if (StringHelper.isDouble(errorPercent.getText())) {
+            this.setTitleColor(Color.BLACK);
+            return true;
+        } else {
+            this.setTitleColor(Color.RED);
+            return false;
+        }
     }
 
     @Override
     public boolean isAllowableErrorValueValid() {
-        return StringHelper.isDouble(errorValue.getText());
+        if (StringHelper.isDouble(errorValue.getText())) {
+            this.setTitleColor(Color.BLACK);
+            return true;
+        } else {
+            this.setTitleColor(Color.RED);
+            return false;
+        }
     }
 }

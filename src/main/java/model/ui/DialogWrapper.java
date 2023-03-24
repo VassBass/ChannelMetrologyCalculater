@@ -19,6 +19,14 @@ public class DialogWrapper extends JDialog implements UI {
     }
 
     @Override
+    public void refresh() {
+        EventQueue.invokeLater(() -> {
+            this.setVisible(false);
+            this.setVisible(true);
+        });
+    }
+
+    @Override
     public void showing() {
         EventQueue.invokeLater(() -> this.setVisible(true));
     }

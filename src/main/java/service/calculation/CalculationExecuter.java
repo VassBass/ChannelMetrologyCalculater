@@ -1,15 +1,17 @@
 package service.calculation;
 
+import application.ApplicationScreen;
 import model.dto.Channel;
 import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.calculation.collect.condition.ui.PropertiesCalculationConfigHolder;
 import service.ServiceExecuter;
+import service.calculation.dto.Protocol;
 import util.ScreenPoint;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.ExecutionException;
@@ -17,12 +19,14 @@ import java.util.concurrent.ExecutionException;
 public class CalculationExecuter implements ServiceExecuter {
     private static final Logger logger = LoggerFactory.getLogger(CalculationExecuter.class);
 
-    private final Frame owner;
+    private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
     private final Channel channel;
 
-    public CalculationExecuter(Frame owner, RepositoryFactory repositoryFactory, Channel channel) {
-        this.owner = owner;
+    public CalculationExecuter(@Nonnull ApplicationScreen applicationScreen,
+                               @Nonnull RepositoryFactory repositoryFactory,
+                               @Nonnull Channel channel) {
+        this.applicationScreen = applicationScreen;
         this.repositoryFactory = repositoryFactory;
         this.channel = channel;
     }
@@ -30,8 +34,8 @@ public class CalculationExecuter implements ServiceExecuter {
     @Override
     public void execute() {
         LoadingDialog loadingDialog = LoadingDialog.getInstance();
-        Point location = ScreenPoint.center(owner, loadingDialog);
-        DialogWrapper loadingDialogWrapper = new DialogWrapper(owner, loadingDialog, location);
+        Point location = ScreenPoint.center(applicationScreen, loadingDialog);
+        DialogWrapper loadingDialogWrapper = new DialogWrapper(applicationScreen, loadingDialog, location);
         loadingDialogWrapper.showing();
 
         new SwingWorker<Boolean, Void>() {
@@ -40,7 +44,8 @@ public class CalculationExecuter implements ServiceExecuter {
             @Override
             protected Boolean doInBackground() {
                 CalculationConfigHolder configHolder = new PropertiesCalculationConfigHolder();
-                manager = new SwingCalculationManager(owner, channel, configHolder, repositoryFactory);
+                Protocol protocol = new Protocol(channel);
+                manager = new SwingCalculationManager(applicationScreen, repositoryFactory, configHolder, protocol);
                 return true;
             }
 

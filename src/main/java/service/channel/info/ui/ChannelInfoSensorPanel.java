@@ -24,5 +24,6 @@ public interface ChannelInfoSensorPanel {
     String getErrorFormula();
 
     boolean isRangeValid();
+    boolean isErrorFormulaValid();
     boolean isEqualsRangesCheckboxAreSelected();
 }

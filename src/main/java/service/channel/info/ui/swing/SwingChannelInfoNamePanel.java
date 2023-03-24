@@ -24,7 +24,7 @@ public class SwingChannelInfoNamePanel extends TitledTextField implements Channe
 
     @Override
     public boolean isNameValid() {
-        if (getName().isEmpty()) {
+        if (getChannelName().isEmpty()) {
             setTitleColor(Color.RED);
             return false;
         }

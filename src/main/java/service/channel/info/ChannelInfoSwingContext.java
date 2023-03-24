@@ -3,11 +3,9 @@ package service.channel.info;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import repository.repos.measurement.MeasurementRepository;
 import service.channel.info.ui.*;
 import service.channel.info.ui.swing.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -113,37 +113,6 @@ public class Calibrator implements Serializable {
 
     public double calculateRange(){return this.rangeMax - this.rangeMin;}
 
-    /**
-     * //@param channel against which the calculation is made
-     * @return numerical value calculated by the {@link #errorFormula}
-     *
-     * R - Measurement range of channel (Диапазон измерения канала)
-     * @see Channel#calculateRange()
-     *
-     * r - Measurement range of calibrator (Диапазон измерения калибратора)
-     * @see Calibrator#calculateRange()
-     * 
-     * convR - Measurement range of calibrator converted by measurement channel value
-     * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
-     *
-     * conv(...) - number converted by measurement channel value
-     * (Число переконвертированное под измерительную величину канала)
-     * @see Measurement#getErrorStringAfterConvertNumbers(String, Measurement, Measurement)
-     */
-//    public double getError(@Nonnull Channel channel){
-//        String formula = VariableConverter.commasToDots(this.errorFormula);
-//        Measurement input = MeasurementRepositorySQLite.getInstance().get(this.value).get();
-//        formula = Measurement.getErrorStringAfterConvertNumbers(formula, input, channel.getMeasurement());
-//        Function f = new Function("At(R,r,convR) = " + formula);
-//        Argument R = new Argument("R = " + channel._getRange());
-//        double cR = channel.getMeasurement().convertFrom(this.value, this._getRange());
-//        Argument r = new Argument("r = " + this._getRange());
-//        Argument convR = new Argument("convR = " + cR);
-//        Expression expression = new Expression("At(R,r,convR)", f,R,r,convR);
-//        return expression.calculate();
-//        return 0D;
-//    }
-
     public static class Certificate implements Serializable {
         public static final long serialVersionUID = 6L;
 

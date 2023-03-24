@@ -48,13 +48,13 @@ public class SwingChannelInfoCodePanel extends TitledTextField implements Channe
         if (code.length() > 0) {
             ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
             if (Objects.nonNull(channelRepository)) {
-                if (oldChannelCode == null) {
-                    if (channelRepository.isExist(code)) {
+                if (Objects.isNull(oldChannelCode)) {
+                    if (!channelRepository.isExist(code)) {
                         this.setTitleColor(Color.BLACK);
                         return true;
                     }
                 } else {
-                    if (channelRepository.isExist(oldChannelCode, code)) {
+                    if (!channelRepository.isExist(oldChannelCode, code)) {
                         this.setTitleColor(Color.BLACK);
                         return true;
                     }

@@ -4,6 +4,7 @@ import model.ui.*;
 import model.ui.builder.CellBuilder;
 import service.channel.info.ChannelInfoManager;
 import service.channel.info.ui.ChannelInfoSensorPanel;
+import service.error_calculater.ErrorCalculater;
 import util.StringHelper;
 
 import java.awt.*;
@@ -45,6 +46,7 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     private final DefaultTextField rangeMin, rangeMax;
     private final DefaultComboBox measurementValues;
     private final DefaultCheckBox equalsRanges;
+    private final DefaultLabel errorLabel;
     private final DefaultComboBox errorFormulas;
 
     public SwingChannelInfoSensorPanel(final ChannelInfoManager manager) {
@@ -73,7 +75,7 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
         rangePanel.add(measurementValues, new CellBuilder().x(3).y(0).build());
         rangePanel.add(equalsRanges, new CellBuilder().x(3).y(1).width(4).build());
 
-        DefaultLabel errorLabel = new DefaultLabel(ERROR_FORMULA_TEXT, ERROR_FORMULA_TOOLTIP_TEXT);
+        errorLabel = new DefaultLabel(ERROR_FORMULA_TEXT, ERROR_FORMULA_TOOLTIP_TEXT);
         errorFormulas = new DefaultComboBox(true);
         errorFormulas.setToolTipText(ERROR_FORMULA_TOOLTIP_TEXT);
 
@@ -193,6 +195,17 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
         } else {
             rangePanel.setTitleColor(Color.BLACK);
             return true;
+        }
+    }
+
+    @Override
+    public boolean isErrorFormulaValid() {
+        if (ErrorCalculater.isFormulaValid(errorFormulas.getSelectedItem())) {
+            errorLabel.setForeground(Color.BLACK);
+            return true;
+        } else {
+            errorLabel.setForeground(Color.RED);
+            return false;
         }
     }
 

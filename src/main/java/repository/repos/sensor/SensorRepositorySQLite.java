@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.apache.commons.lang3.StringUtils.EMPTY;
-
 public class SensorRepositorySQLite implements SensorRepository {
     private static final Logger logger = LoggerFactory.getLogger(SensorRepositorySQLite.class);
 
@@ -138,20 +136,6 @@ public class SensorRepositorySQLite implements SensorRepository {
     }
 
     @Override
-    public String getErrorFormula(@Nonnull String sensorType) {
-        String sql =String.format("SELECT error_formula FROM %s WHERE type = '%s' LIMIT 1;", tableName, sensorType);
-        try (ResultSet resultSet = connector.getResultSet(sql)){
-            if (resultSet.next()){
-                return resultSet.getString("error_formula");
-            }
-        }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
-        }
-
-        return EMPTY;
-    }
-
-    @Override
     public boolean add(@Nonnull Sensor sensor) {
         String sql = String.format("INSERT INTO %s (channel_code, type, serial_number, measurement_name, measurement_value, " +
                         "error_formula, range_min, range_max) " +
@@ -215,18 +199,6 @@ public class SensorRepositorySQLite implements SensorRepository {
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean setErrorFormula(@Nonnull String sensorType, @Nonnull String errorFormula) {
-        String sql =String.format("UPDATE %s SET error_formula = '%s' WHERE type = '%s';", tableName, errorFormula, sensorType);
-        try (Statement statement = connector.getStatement()){
-            statement.execute(sql);
-            return true;
-        } catch (SQLException e) {
             logger.warn("Exception was thrown!", e);
             return false;
         }

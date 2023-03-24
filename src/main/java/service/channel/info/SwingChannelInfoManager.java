@@ -19,6 +19,7 @@ import service.channel.info.ui.*;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
 import service.channel.list.ChannelListManager;
 import util.DateHelper;
+import util.ObjectHelper;
 import util.ScreenPoint;
 import util.StringHelper;
 
@@ -81,26 +82,26 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
 
             ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
-            if (codePanel != null) codePanel.setCode(channel.getCode());
+            if (Objects.nonNull(codePanel)) codePanel.setCode(channel.getCode());
 
             ChannelInfoNamePanel namePanel = context.getElement(ChannelInfoNamePanel.class);
-            if (namePanel != null) namePanel.setChannelName(channel.getName());
+            if (Objects.nonNull(namePanel)) namePanel.setChannelName(channel.getName());
 
             ChannelInfoTechnologyNumberPanel technologyNumberPanel = context.getElement(ChannelInfoTechnologyNumberPanel.class);
-            if (technologyNumberPanel != null) technologyNumberPanel.setTechnologyNumber(channel.getTechnologyNumber());
+            if (Objects.nonNull(technologyNumberPanel)) technologyNumberPanel.setTechnologyNumber(channel.getTechnologyNumber());
 
             ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
-            if (datePanel != null) datePanel.setDate(channel.getDate());
+            if (Objects.nonNull(datePanel)) datePanel.setDate(channel.getDate());
 
             ChannelInfoProtocolNumberPanel protocolNumberPanel = context.getElement(ChannelInfoProtocolNumberPanel.class);
-            if (protocolNumberPanel != null) protocolNumberPanel.setProtocolNumber(channel.getNumberOfProtocol());
+            if (Objects.nonNull(protocolNumberPanel)) protocolNumberPanel.setProtocolNumber(channel.getNumberOfProtocol());
 
             ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
-            if (frequencyPanel != null) frequencyPanel.setFrequency(String.valueOf(channel.getFrequency()));
+            if (Objects.nonNull(frequencyPanel)) frequencyPanel.setFrequency(String.valueOf(channel.getFrequency()));
             /* set next date */ changeDateOrFrequency();
 
             ChannelInfoPathPanel pathPanel = context.getElement(ChannelInfoPathPanel.class);
-            if (pathPanel != null) {
+            if (Objects.nonNull(pathPanel)) {
                 pathPanel.setDepartment(channel.getDepartment());
                 pathPanel.setArea(channel.getArea());
                 pathPanel.setProcess(channel.getProcess());
@@ -108,19 +109,20 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             }
 
             ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
-            if (measurementPanel != null) {
+            if (Objects.nonNull(measurementPanel)) {
                 measurementPanel.setMeasurementName(channel.getMeasurementName());
                 String selectedMeasurementName = measurementPanel.getSelectedMeasurementName();
                 measurementPanel.setMeasurementValues(Arrays.asList(measurementRepository.getValues(selectedMeasurementName)));
                 measurementPanel.setMeasurementValue(channel.getMeasurementValue());
 
                 ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
-                if (sensorPanel != null) {
+                if (Objects.nonNull(sensorPanel)) {
                     sensorPanel.setSensorsTypes(new ArrayList<>(
                             sensorRepository.getAllSensorsTypesByMeasurementName(
                                     measurementPanel.getSelectedMeasurementName())));
+                    sensorPanel.setMeasurementValues(Arrays.asList(measurementRepository.getValues(selectedMeasurementName)));
                     Sensor sensor = sensorRepository.get(channel.getCode());
-                    if (sensor != null) {
+                    if (Objects.nonNull(sensor)) {
                         sensorPanel.setSensorType(sensor.getType());
                         sensorPanel.setSerialNumber(sensor.getSerialNumber());
                         sensorPanel.setMeasurementValue(sensor.getMeasurementValue());
@@ -248,10 +250,11 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
         ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
         ChannelInfoNextDatePanel nextDatePanel = context.getElement(ChannelInfoNextDatePanel.class);
-        if (datePanel != null && frequencyPanel != null && nextDatePanel != null) {
+
+        if (ObjectHelper.nonNull(datePanel, frequencyPanel, nextDatePanel)) {
             String date = datePanel.getDate();
             String frequency = frequencyPanel.isFrequencyValid() ? frequencyPanel.getFrequency() : EMPTY;
-            if (!date.isEmpty() || !frequency.isEmpty())
+            if (!date.isEmpty() && !frequency.isEmpty())
                 nextDatePanel.setNextDate(DateHelper.getNextDate(date, Double.parseDouble(frequency)));
         }
     }
@@ -324,7 +327,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     @Override
     public void saveChannel() {
         Channel channel = createChannelFromPanel();
-        if (channel != null) {
+        if (Objects.nonNull(channel)) {
             new Worker("Канал був успішно збережений") {
                 @Override
                 protected Boolean doInBackground() {
@@ -347,6 +350,8 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                     return false;
                 }
             }.execute();
+        } else {
+            channelInfoDialog.refresh();
         }
     }
 
@@ -447,16 +452,19 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
         ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
         ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
-        return (codePanel != null && codePanel.isCodeValid(oldChannel.getCode())) &
-                (namePanel != null && namePanel.isNameValid()) &
-                (measurementPanel != null) &
-                (technologyNumberPanel != null && technologyNumberPanel.isTechnologyNumberValid()) &
-                (datePanel != null && datePanel.isDateValid()) &
-                (frequencyPanel != null && frequencyPanel.isFrequencyValid()) &
-                (sensorPanel != null && sensorPanel.isRangeValid()) &
-                (rangePanel != null && rangePanel.isRangeValid()) &
-                (allowableErrorPanel != null &&
-                allowableErrorPanel.isAllowableErrorPercentValid() & allowableErrorPanel.isAllowableErrorValueValid());
+
+        return ObjectHelper.nonNull(codePanel, namePanel, measurementPanel, technologyNumberPanel, datePanel, frequencyPanel,
+                sensorPanel, rangePanel, allowableErrorPanel) &&
+                codePanel.isCodeValid(Objects.isNull(oldChannel) ? null : oldChannel.getCode()) &
+                namePanel.isNameValid() &
+                technologyNumberPanel.isTechnologyNumberValid() &
+                datePanel.isDateValid() &
+                frequencyPanel.isFrequencyValid() &
+                sensorPanel.isRangeValid() &
+                sensorPanel.isErrorFormulaValid() &
+                rangePanel.isRangeValid() &
+                allowableErrorPanel.isAllowableErrorPercentValid() &
+                allowableErrorPanel.isAllowableErrorValueValid();
     }
 
     private Channel createChannelFromPanel(){
@@ -515,21 +523,16 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
             ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
 
-            SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
-
             Sensor sensor = new Sensor();
 
-            String type = sensorPanel.getSelectedSensorType();
-            String errorFormula = sensorRepository.getErrorFormula(type);
-
             sensor.setChannelCode(codePanel.getCode());
-            sensor.setType(type);
+            sensor.setType(sensorPanel.getSelectedSensorType());
             sensor.setRangeMin(Double.parseDouble(sensorPanel.getRangeMin()));
             sensor.setRangeMax(Double.parseDouble(sensorPanel.getRangeMax()));
             sensor.setSerialNumber(sensorPanel.getSerialNumber());
             sensor.setMeasurementName(measurementPanel.getSelectedMeasurementName());
             sensor.setMeasurementValue(sensorPanel.getSelectedMeasurementValue());
-            sensor.setErrorFormula(errorFormula);
+            sensor.setErrorFormula(sensorPanel.getErrorFormula());
 
             return sensor;
         }

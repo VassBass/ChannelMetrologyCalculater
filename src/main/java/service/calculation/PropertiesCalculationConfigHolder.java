@@ -1,8 +1,7 @@
-package service.calculation.collect.condition.ui;
+package service.calculation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.calculation.CalculationConfigHolder;
 import service.channel.list.PropertiesChannelListConfigHolder;
 import util.StringHelper;
 
