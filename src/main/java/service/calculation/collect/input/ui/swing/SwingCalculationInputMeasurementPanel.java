@@ -29,9 +29,9 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     private final DefaultCheckBox autoInputInValue;
     private final DefaultCheckBox[] autoMeasurementValue;
 
-    private final DefaultTextField[] inputsInPercent;
-    private final DefaultTextField[] inputsInValue;
-    private final DefaultTextField[][] measurementValues;
+    private DefaultTextField[] inputsInPercent;
+    private DefaultTextField[] inputsInValue;
+    private DefaultTextField[][] measurementValues;
 
     public SwingCalculationInputMeasurementPanel(@Nonnull RepositoryFactory repositoryFactory,
                                                  @Nonnull Channel channel) {
@@ -51,20 +51,38 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
                 new DefaultCheckBox(AUTO_TEXT)
         };
 
-    }
-
-    private boolean setControlPointsValuesFromRepository(RepositoryFactory repositoryFactory) {
         ControlPointsRepository controlPointsRepository = repositoryFactory.getImplementation(ControlPointsRepository.class);
         SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
-        ControlPoints controlPoints;
+        ControlPoints controlPoints = null;
         if (ObjectHelper.nonNull(controlPointsRepository, sensorRepository)) {
             Sensor sensor = sensorRepository.get(channel.getCode());
             if (Objects.nonNull(sensor)) {
-                String name = ControlPoints.createName(sensor.getType(), channel.getRangeMin(), channel.getRangeMax());
-                controlPoints = controlPointsRepository.get(name);
-                if
+                String controlPointsName = ControlPoints.createName(sensor.getType(), channel.getRangeMin(), channel.getRangeMax());
+                controlPoints = controlPointsRepository.get(controlPointsName);
             }
         }
+        if (Objects.isNull(controlPoints)) buildDefaultPanel(channel);
+        else buildPanel(controlPoints);
+    }
+
+    private void buildPanel(ControlPoints controlPoints) {
+
+    }
+
+    private void buildDefaultPanel(Channel channel) {
+        inputsInPercent = new DefaultTextField[] {
+                new DefaultTextField(4, "5.0", null),
+                new DefaultTextField(4, "50.0", null),
+                new DefaultTextField(4, "95.0", null)
+        };
+        double value5 = channel.getRangeMin() + ((channel.calculateRange() / 100) * 5);
+        double value50 = channel.getRangeMin() + (channel.calculateRange() / 2);
+        double value95 = channel.getRangeMax() - ((channel.calculateRange() / 100) * 5);
+        inputsInValue = new DefaultTextField[] {
+                new DefaultTextField(4, String.valueOf(value5), null),
+                new DefaultTextField(4, String.valueOf(value50), null),
+                new DefaultTextField(4, String.valueOf(value95), null)
+        };
     }
 
     @Override
