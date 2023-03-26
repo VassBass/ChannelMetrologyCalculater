@@ -18,6 +18,8 @@ import util.ScreenPoint;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.*;
 import java.util.List;
 
@@ -65,8 +67,16 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
         panel.add(environmentPanel, new CellBuilder().fill(HORIZONTAL).x(0).y(1).width(3).height(4).build());
         panel.add(buttonsPanel, new CellBuilder().fill(HORIZONTAL).x(0).y(5).width(3).height(1).build());
 
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                buttonsPanel.clickNegativeButton();
+            }
+        });
+
         int width = configHolder.getControlConditionDialogWidth();
         int height = configHolder.getControlConditionDialogHeight();
+        this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.setSize(width, height);
         this.setLocation(ScreenPoint.center(applicationScreen, this));
         this.setContentPane(panel);

@@ -54,12 +54,19 @@ public class SwingCalculationManager implements CalculationManager {
     @Override
     public void showInputDialog() {
         if (Objects.nonNull(controlConditionDialog) && controlConditionDialog.fillProtocol(protocol)) {
-            controlConditionDialog.showing();
+            controlConditionDialog.hiding();
             if (Objects.isNull(inputDialog)) {
                 new SwingCalculationInputExecuter().execute();
             } else {
                 inputDialog.showing();
             }
+        }
+    }
+
+    @Override
+    public void showResultDialog() {
+        if (Objects.nonNull(inputDialog) && inputDialog.fillProtocol(protocol)) {
+
         }
     }
 
