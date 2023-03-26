@@ -16,6 +16,7 @@ import util.ObjectHelper;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -24,18 +25,24 @@ import static model.ui.ButtonCell.HEADER;
 import static model.ui.ButtonCell.SIMPLE;
 
 public class SwingCalculationInputMeasurementPanel extends DefaultPanel implements CalculationInputMeasurementPanel {
+    private static final int INPUTS_IN_PERCENT = -1;
+    private static final int INPUTS_IN_VALUE = 1;
+    private static final int INPUTS_BOTH = 0;
+
     private static final String HEADER_TEXT_INPUT_IN_PERCENT = "% від шкали";
     private static final String HEADER_TEXT_INPUT_IN_VALUE_PREFIX = "Задано в ";
     private static final String HEADER_TEXT_MEASUREMENT_VALUES_PREFIX = "Отримані дані в ";
     private static final String AUTO_TEXT = "Автом.";
     private static final String HEADER_STEP = "Хід";
 
+    private final TreeMap<Double, Double> input;
+
     private final DefaultCheckBox autoInputInPercent;
     private final DefaultCheckBox autoInputInValue;
     private final DefaultCheckBox[] autoMeasurementValue;
 
-    private DefaultTextField[] inputsInPercent;
-    private DefaultTextField[] inputsInValue;
+    private final DefaultTextField[] inputsInPercent;
+    private final DefaultTextField[] inputsInValue;
     private DefaultTextField[][] measurementValues;
 
     public SwingCalculationInputMeasurementPanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull Channel channel) {
@@ -57,38 +64,50 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         };
         autoInputInPercent.setSelected(true);
         autoInputInValue.setSelected(true);
-        for (int i = 1; i < autoMeasurementValue.length; i++) {
-            autoMeasurementValue[i].setSelected(true);
+        for (DefaultCheckBox a : autoMeasurementValue) {
+            a.setSelected(true);
         }
 
-        TreeMap<Double, Double> input = getDefaultInput(repositoryFactory, channel);
+        input = createDefaultInput(repositoryFactory, channel);
         inputsInPercent = new DefaultTextField[input.size()];
         inputsInValue = new DefaultTextField[input.size()];
-        measurementValues = new DefaultTextField[5][input.size() * 2];
+
+        setInputs(input, INPUTS_BOTH);
+        setAutoMeasurements(0, 1, 2, 3, 4);
 
         ButtonCell[] steps = new ButtonCell[input.size() * 2];
-
-        int index = 0;
-        for (Map.Entry<Double, Double> entry : input.entrySet()) {
-            inputsInPercent[index] = new DefaultTextField(4, String.valueOf(entry.getKey()), null);
-            inputsInValue[index] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-
+        for (int index = 0; index < input.size(); index++) {
             int i = index * 2;
-            measurementValues[0][i] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-            measurementValues[0][i + 1] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-            measurementValues[1][i] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-            measurementValues[1][i + 1] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-            measurementValues[2][i] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-            measurementValues[2][i + 1] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-            measurementValues[3][i] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-            measurementValues[3][i + 1] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-            measurementValues[4][i] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-            measurementValues[4][i + 1] = new DefaultTextField(4, String.valueOf(entry.getValue()), null);
-
             steps[i] = new ButtonCell(SIMPLE, "П");
-            steps[i + 1] = new ButtonCell(SIMPLE, "З");
+            steps[++i] = new ButtonCell(SIMPLE, "З");
+        }
 
-            index++;
+        autoInputInPercent.addItemListener(e -> {
+            if (autoInputInPercent.isSelected()) {
+                setInputs(input, INPUTS_IN_PERCENT);
+                for (DefaultTextField v : inputsInPercent) v.setEnabled(false);
+            } else {
+                for (DefaultTextField v : inputsInPercent) v.setEnabled(true);
+            }
+        });
+        autoInputInValue.addItemListener(e -> {
+            if (autoInputInValue.isSelected()) {
+                setInputs(input, INPUTS_IN_VALUE);
+                for (DefaultTextField v : inputsInValue) v.setEnabled(false);
+            } else {
+                for (DefaultTextField v : inputsInValue) v.setEnabled(true);
+            }
+        });
+        for (int index = 0; index < autoMeasurementValue.length; index++) {
+            final int finalIndex = index;
+            autoMeasurementValue[index].addItemListener(e -> {
+                if (autoMeasurementValue[finalIndex].isSelected()) {
+                    setAutoMeasurements(finalIndex);
+                    for (DefaultTextField v : measurementValues[finalIndex]) v.setEnabled(false);
+                } else {
+                    for (DefaultTextField v : measurementValues[finalIndex]) v.setEnabled(true);
+                }
+            });
         }
 
         //header
@@ -113,7 +132,7 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
 
         //values
         int y = 3;
-        for (index = 0; index < inputsInPercent.length; index++) {
+        for (int index = 0; index < inputsInPercent.length; index++) {
             this.add(inputsInPercent[index], new CellBuilder().x(0).y(y).width(1).height(2).build());
             this.add(inputsInValue[index], new CellBuilder().x(1).y(y).width(1).height(2).build());
 
@@ -134,7 +153,111 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         }
     }
 
-    private TreeMap<Double, Double> getDefaultInput(RepositoryFactory repositoryFactory, Channel channel) {
+    private void setInputs(Map<Double, Double> in, int whatInputs) {
+        int index = 0;
+        for (Map.Entry<Double, Double> entry : in.entrySet()) {
+            if (whatInputs == INPUTS_BOTH || whatInputs == INPUTS_IN_PERCENT) {
+                if (Objects.isNull(inputsInPercent[index])) inputsInPercent[index] = new DefaultTextField(4);
+                inputsInPercent[index].setText(String.valueOf(entry.getKey()));
+            }
+            if (whatInputs == INPUTS_BOTH || whatInputs == INPUTS_IN_VALUE) {
+                if (Objects.isNull(inputsInValue[index])) inputsInValue[index] = new DefaultTextField(4);
+                inputsInValue[index++].setText(String.valueOf(entry.getValue()));
+            }
+        }
+    }
+
+    /**
+     *
+     * @param numbersOfMeasurement must be 0, 1, 2, 3 or 4.
+     * Where:
+     * 0 is first measurement, sets values from input
+     * 1 is second measurement, sets values from first measurement
+     * 2 is third measurement, sets values from first measurement
+     * 3 is fourth measurement, sets values from second measurement
+     * 4 is fifth measurement, sets values from third measurement
+     */
+    private void setAutoMeasurements(@Nonnull int ... numbersOfMeasurement) {
+        Arrays.sort(numbersOfMeasurement);
+        for (int numberOfMeasurement : numbersOfMeasurement) {
+            int index;
+            switch (numberOfMeasurement) {
+                case 0:
+                    TreeMap<Double, Double> currentInput = getInputs();
+                    if (Objects.isNull(currentInput)) currentInput = input;
+                    if (Objects.isNull(currentInput)) {
+                        if (Objects.nonNull(autoMeasurementValue) && Objects.nonNull(autoMeasurementValue[0])) {
+                            autoMeasurementValue[0].setSelected(false);
+                        }
+                        break;
+                    }
+
+                    if (Objects.isNull(measurementValues)) measurementValues = new DefaultTextField[5][];
+                    if (Objects.isNull(measurementValues[0])) measurementValues[0] = new DefaultTextField[currentInput.size() * 2];
+
+                    index = 0;
+                    for (Map.Entry<Double, Double> entry : currentInput.entrySet()) {
+                        int i = index * 2;
+                        if (Objects.isNull(measurementValues[0][i])) measurementValues[0][i] = new DefaultTextField(4);
+                        if (Objects.isNull(measurementValues[0][i + 1])) measurementValues[0][i + 1] = new DefaultTextField(4);
+                        measurementValues[0][i].setText(String.valueOf(entry.getValue()));
+                        measurementValues[0][i + 1].setText(String.valueOf(entry.getValue()));
+                        index++;
+                    }
+                    break;
+                case 1:
+                    String[] firstValues = getMeasurementValues()[0];
+
+                    if (Objects.isNull(measurementValues)) measurementValues = new DefaultTextField[5][];
+                    if (Objects.isNull(measurementValues[1])) measurementValues[1] = new DefaultTextField[firstValues.length];
+
+                    index = 0;
+                    for (String val : firstValues) {
+                        if (Objects.isNull(measurementValues[1][index])) measurementValues[1][index] = new DefaultTextField(4);
+                        measurementValues[1][index++].setText(val);
+                    }
+                    break;
+                case 2:
+                    String[] firstValuess = getMeasurementValues()[0];
+
+                    if (Objects.isNull(measurementValues)) measurementValues = new DefaultTextField[5][];
+                    if (Objects.isNull(measurementValues[2])) measurementValues[2] = new DefaultTextField[firstValuess.length];
+
+                    index = 0;
+                    for (String val : firstValuess) {
+                        if (Objects.isNull(measurementValues[2][index])) measurementValues[2][index] = new DefaultTextField(4);
+                        measurementValues[2][index++].setText(val);
+                    }
+                    break;
+                case 3:
+                    String[] secondValues = getMeasurementValues()[1];
+
+                    if (Objects.isNull(measurementValues)) measurementValues = new DefaultTextField[5][];
+                    if (Objects.isNull(measurementValues[3])) measurementValues[3] = new DefaultTextField[secondValues.length];
+
+                    index = 0;
+                    for (String val : secondValues) {
+                        if (Objects.isNull(measurementValues[3][index])) measurementValues[3][index] = new DefaultTextField(4);
+                        measurementValues[3][index++].setText(val);
+                    }
+                    break;
+                case 4:
+                    String[] thirdValues = getMeasurementValues()[2];
+
+                    if (Objects.isNull(measurementValues)) measurementValues = new DefaultTextField[5][];
+                    if (Objects.isNull(measurementValues[3])) measurementValues[4] = new DefaultTextField[thirdValues.length];
+
+                    index = 0;
+                    for (String val : thirdValues) {
+                        if (Objects.isNull(measurementValues[4][index])) measurementValues[4][index] = new DefaultTextField(4);
+                        measurementValues[4][index++].setText(val);
+                    }
+                    break;
+            }
+        }
+    }
+
+    private TreeMap<Double, Double> createDefaultInput(RepositoryFactory repositoryFactory, Channel channel) {
         ControlPointsRepository controlPointsRepository = repositoryFactory.getImplementation(ControlPointsRepository.class);
         SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
         ControlPoints controlPoints = null;
@@ -173,14 +296,11 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     }
 
     @Override
-    public double[][] getMeasurementValues() {
-        double[][] result = new double[5][inputsInPercent.length * 2];
+    public String[][] getMeasurementValues() {
+        String[][] result = new String[5][inputsInValue.length * 2];
         for (int x = 0; x < result.length; x++) {
             for (int y = 0; y < result[x].length; y++) {
-                String val = measurementValues[x][y].getText();
-                if (StringHelper.isDouble(val)) {
-                    result[x][y] = Double.parseDouble(val);
-                } else return null;
+                result[x][y] = measurementValues[x][y].getText();
             }
         }
         return result;

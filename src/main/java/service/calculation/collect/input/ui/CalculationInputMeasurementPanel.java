@@ -5,5 +5,5 @@ import java.util.TreeMap;
 
 public interface CalculationInputMeasurementPanel {
     @Nullable TreeMap<Double, Double> getInputs();
-    @Nullable double[][] getMeasurementValues();
+    String[][] getMeasurementValues();
 }

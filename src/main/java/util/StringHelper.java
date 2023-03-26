@@ -2,9 +2,11 @@ package util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public class StringHelper {
-    public static boolean isDouble(@Nonnull String doubleString) {
+    public static boolean isDouble(String doubleString) {
+        if (Objects.isNull(doubleString)) return false;
         try {
             Double.parseDouble(doubleString);
             return true;
