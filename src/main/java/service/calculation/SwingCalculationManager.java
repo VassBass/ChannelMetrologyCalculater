@@ -3,10 +3,10 @@ package service.calculation;
 import application.ApplicationScreen;
 import model.dto.Channel;
 import repository.RepositoryFactory;
-import service.calculation.collect.CalculationCollectDialog;
-import service.calculation.collect.condition.SwingCalculationControlConditionExecuter;
-import service.calculation.collect.input.SwingCalculationInputExecuter;
+import service.calculation.condition.SwingCalculationControlConditionExecuter;
+import service.calculation.input.SwingCalculationInputExecuter;
 import service.calculation.dto.Protocol;
+import service.calculation.result.SwingCalculationResultExecuter;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -20,6 +20,7 @@ public class SwingCalculationManager implements CalculationManager {
 
     private CalculationCollectDialog controlConditionDialog;
     private CalculationCollectDialog inputDialog;
+    private CalculationCollectDialog resultDialog;
 
     public SwingCalculationManager(@Nonnull ApplicationScreen applicationScreen,
                                    @Nonnull RepositoryFactory repositoryFactory,
@@ -39,6 +40,8 @@ public class SwingCalculationManager implements CalculationManager {
 
     @Override
     public void showConditionDialog() {
+        if (Objects.nonNull(inputDialog)) inputDialog.hiding();
+
         if (Objects.isNull(controlConditionDialog)) {
             new SwingCalculationControlConditionExecuter(applicationScreen, repositoryFactory, configHolder, this, channel).execute();
         } else {
@@ -53,20 +56,45 @@ public class SwingCalculationManager implements CalculationManager {
 
     @Override
     public void showInputDialog() {
-        if (Objects.nonNull(controlConditionDialog) && controlConditionDialog.fillProtocol(protocol)) {
-            controlConditionDialog.hiding();
-            if (Objects.isNull(inputDialog)) {
-                new SwingCalculationInputExecuter().execute();
+        if (Objects.nonNull(resultDialog)) resultDialog.hiding();
+
+        if (Objects.nonNull(controlConditionDialog) && controlConditionDialog.isVisible()) {
+            if (controlConditionDialog.fillProtocol(protocol)) {
+                controlConditionDialog.hiding();
             } else {
-                inputDialog.showing();
+                controlConditionDialog.refresh();
+                return;
             }
+        }
+
+
+        if (Objects.isNull(inputDialog)) {
+            new SwingCalculationInputExecuter(applicationScreen, repositoryFactory, configHolder, this, channel).execute();
+        } else {
+            inputDialog.showing();
         }
     }
 
     @Override
-    public void showResultDialog() {
-        if (Objects.nonNull(inputDialog) && inputDialog.fillProtocol(protocol)) {
+    public void registerResultDialog(@Nonnull CalculationCollectDialog dialog) {
+        resultDialog = dialog;
+    }
 
+    @Override
+    public void showResultDialog() {
+        if (Objects.nonNull(inputDialog) && inputDialog.isVisible()) {
+            if (inputDialog.fillProtocol(protocol)) {
+                inputDialog.hiding();
+            }else {
+                inputDialog.refresh();
+                return;
+            }
+        }
+
+        if (Objects.isNull(resultDialog)) {
+            new SwingCalculationResultExecuter().execute();
+        } else {
+            resultDialog.showing();
         }
     }
 
@@ -74,5 +102,6 @@ public class SwingCalculationManager implements CalculationManager {
     public void disposeCalculation() {
         if (Objects.nonNull(controlConditionDialog)) controlConditionDialog.shutdown();
         if (Objects.nonNull(inputDialog)) inputDialog.shutdown();
+        if (Objects.nonNull(resultDialog)) resultDialog.shutdown();
     }
 }

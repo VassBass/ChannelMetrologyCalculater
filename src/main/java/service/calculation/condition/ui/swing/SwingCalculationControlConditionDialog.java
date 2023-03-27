@@ -1,4 +1,4 @@
-package service.calculation.collect.condition.ui.swing;
+package service.calculation.condition.ui.swing;
 
 import application.ApplicationScreen;
 import model.dto.Calibrator;
@@ -8,8 +8,8 @@ import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.calibrator.CalibratorRepository;
 import service.calculation.CalculationConfigHolder;
-import service.calculation.collect.CalculationCollectDialog;
-import service.calculation.collect.condition.ui.*;
+import service.calculation.CalculationCollectDialog;
+import service.calculation.condition.ui.*;
 import service.calculation.dto.Protocol;
 import util.DateHelper;
 import util.ObjectHelper;

@@ -5,4 +5,5 @@ public interface UI {
     void showing();
     void hiding();
     void shutdown();
+    boolean isVisible();
 }

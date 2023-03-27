@@ -1,10 +1,10 @@
-package service.calculation.collect.condition.ui.swing;
+package service.calculation.condition.ui.swing;
 
 import model.ui.DefaultLabel;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
-import service.calculation.collect.condition.ui.CalculationControlConditionDatePanel;
+import service.calculation.condition.ui.CalculationControlConditionDatePanel;
 import util.DateHelper;
 
 import javax.annotation.Nullable;

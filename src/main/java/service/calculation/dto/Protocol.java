@@ -5,6 +5,8 @@ import model.dto.Channel;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Protocol implements Serializable {
     private static final long serialVersionUID = 6L;
@@ -20,6 +22,9 @@ public class Protocol implements Serializable {
     private String temperature;
     private String humidity;
     private String pressure;
+    private double alarm;
+    private TreeMap<Double, Double> input;
+    private TreeMap<Double, double[]> output;
 
     public Protocol(@Nonnull Channel channel) {
         this.channel = channel;
@@ -75,5 +80,29 @@ public class Protocol implements Serializable {
 
     public Channel getChannel() {
         return channel;
+    }
+
+    public double getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(double alarm) {
+        this.alarm = alarm;
+    }
+
+    public TreeMap<Double, Double> getInput() {
+        return input;
+    }
+
+    public void setInput(TreeMap<Double, Double> input) {
+        this.input = input;
+    }
+
+    public TreeMap<Double, double[]> getOutput() {
+        return output;
+    }
+
+    public void setOutput(TreeMap<Double, double[]> output) {
+        this.output = output;
     }
 }

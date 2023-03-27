@@ -1,4 +1,4 @@
-package service.calculation.collect.condition.ui.swing;
+package service.calculation.condition.ui.swing;
 
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;

@@ -1,4 +1,4 @@
-package service.calculation.collect.input.ui.swing;
+package service.calculation.input.ui.swing;
 
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;

@@ -1,9 +1,9 @@
-package service.calculation.collect.condition.ui;
+package service.calculation.condition.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.calculation.CalculationManager;
-import service.calculation.collect.condition.ui.swing.*;
+import service.calculation.condition.ui.swing.*;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,11 +1,11 @@
-package service.calculation.collect.condition.ui.swing;
+package service.calculation.condition.ui.swing;
 
 import model.dto.Measurement;
 import model.ui.ButtonCell;
 import model.ui.DefaultPanel;
 import model.ui.DefaultTextField;
 import model.ui.builder.CellBuilder;
-import service.calculation.collect.condition.ui.CalculationControlConditionEnvironmentPanel;
+import service.calculation.condition.ui.CalculationControlConditionEnvironmentPanel;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;

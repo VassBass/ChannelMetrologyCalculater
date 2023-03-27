@@ -1,7 +1,5 @@
 package service.calculation;
 
-import service.calculation.collect.CalculationCollectDialog;
-
 import javax.annotation.Nonnull;
 
 public interface CalculationManager {
@@ -11,6 +9,7 @@ public interface CalculationManager {
     void registerInputDialog(@Nonnull CalculationCollectDialog dialog);
     void showInputDialog();
 
+    void registerResultDialog(@Nonnull CalculationCollectDialog dialog);
     void showResultDialog();
 
     void disposeCalculation();

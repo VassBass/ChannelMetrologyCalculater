@@ -1,7 +1,7 @@
-package service.calculation.collect.condition.ui.swing;
+package service.calculation.condition.ui.swing;
 
 import model.ui.TitledComboBox;
-import service.calculation.collect.condition.ui.CalculationControlConditionCalibratorPanel;
+import service.calculation.condition.ui.CalculationControlConditionCalibratorPanel;
 
 import java.awt.*;
 import java.util.List;

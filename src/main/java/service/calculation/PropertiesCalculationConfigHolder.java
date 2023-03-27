@@ -14,11 +14,15 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
 
     private static final String PROPERTIES_FILE_PATH = "properties/calculation.properties";
 
-    private static final String KEY_CONTROL_CONDITION_DIALOG_WIDTH = "calculation.collect.condition.dialog.width";
-    private static final String KEY_CONTROL_CONDITION_DIALOG_HEIGHT = "calculation.collect.condition.dialog.height";
+    private static final String KEY_CONTROL_CONDITION_DIALOG_WIDTH = "calculation.condition.dialog.width";
+    private static final String KEY_CONTROL_CONDITION_DIALOG_HEIGHT = "calculation.condition.dialog.height";
+    private static final String KEY_INPUT_DIALOG_WIDTH = "calculation.input.dialog.width";
+    private static final String KEY_INPUT_DIALOG_HEIGHT = "calculation.input.dialog.height";
 
     private int controlConditionDialogWidth = 685;
     private int controlConditionDialogHeight = 295;
+    private int inputDialogWidth = 780;
+    private int inputDialogHeight = 360;
 
     public PropertiesCalculationConfigHolder() {
         this(PROPERTIES_FILE_PATH);
@@ -36,6 +40,12 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
             Integer controlConditionDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_CONTROL_CONDITION_DIALOG_HEIGHT, null));
             if (controlConditionDialogHeight != null) this.controlConditionDialogHeight = controlConditionDialogHeight;
 
+            Integer inputDialogWidth = StringHelper.parseInt(properties.getProperty(KEY_INPUT_DIALOG_WIDTH, null));
+            if (inputDialogWidth != null) this.inputDialogWidth = inputDialogWidth;
+
+            Integer inputDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_INPUT_DIALOG_HEIGHT, null));
+            if (inputDialogHeight != null) this.inputDialogHeight = inputDialogHeight;
+
         } catch (IOException e) {
             logger.warn("Exception was thrown: ", e);
         }
@@ -49,5 +59,15 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     @Override
     public int getControlConditionDialogHeight() {
         return controlConditionDialogHeight;
+    }
+
+    @Override
+    public int getInputDialogWidth() {
+        return inputDialogWidth;
+    }
+
+    @Override
+    public int getInputDialogHeight() {
+        return inputDialogHeight;
     }
 }

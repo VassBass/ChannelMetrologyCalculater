@@ -1,7 +1,7 @@
-package service.calculation.collect.condition.ui.swing;
+package service.calculation.condition.ui.swing;
 
 import model.ui.TitledTextField;
-import service.calculation.collect.condition.ui.CalculationControlConditionProtocolNumberPanel;
+import service.calculation.condition.ui.CalculationControlConditionProtocolNumberPanel;
 
 import javax.annotation.Nonnull;
 import java.awt.*;

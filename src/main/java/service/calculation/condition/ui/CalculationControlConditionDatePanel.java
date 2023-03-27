@@ -1,4 +1,4 @@
-package service.calculation.collect.condition.ui;
+package service.calculation.condition.ui;
 
 import javax.annotation.Nullable;
 

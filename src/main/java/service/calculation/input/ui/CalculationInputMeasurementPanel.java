@@ -1,9 +1,9 @@
-package service.calculation.collect.input.ui;
+package service.calculation.input.ui;
 
 import javax.annotation.Nullable;
 import java.util.TreeMap;
 
 public interface CalculationInputMeasurementPanel {
     @Nullable TreeMap<Double, Double> getInputs();
-    String[][] getMeasurementValues();
+    @Nullable TreeMap<Double, double[]> getMeasurementValues();
 }

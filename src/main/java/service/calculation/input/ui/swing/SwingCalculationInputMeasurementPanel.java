@@ -1,4 +1,4 @@
-package service.calculation.collect.input.ui.swing;
+package service.calculation.input.ui.swing;
 
 import model.dto.Channel;
 import model.dto.ControlPoints;
@@ -11,15 +11,16 @@ import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.control_points.ControlPointsRepository;
 import repository.repos.sensor.SensorRepository;
-import service.calculation.collect.input.ui.CalculationInputMeasurementPanel;
+import service.calculation.input.ui.CalculationInputMeasurementPanel;
 import util.ObjectHelper;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import javax.swing.text.JTextComponent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.*;
 
 import static model.ui.ButtonCell.HEADER;
 import static model.ui.ButtonCell.SIMPLE;
@@ -85,7 +86,6 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         autoInputInPercent.addItemListener(e -> {
             if (autoInputInPercent.isSelected()) {
                 setInputs(input, INPUTS_IN_PERCENT);
-                for (DefaultTextField v : inputsInPercent) v.setEnabled(false);
             } else {
                 for (DefaultTextField v : inputsInPercent) v.setEnabled(true);
             }
@@ -93,7 +93,6 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         autoInputInValue.addItemListener(e -> {
             if (autoInputInValue.isSelected()) {
                 setInputs(input, INPUTS_IN_VALUE);
-                for (DefaultTextField v : inputsInValue) v.setEnabled(false);
             } else {
                 for (DefaultTextField v : inputsInValue) v.setEnabled(true);
             }
@@ -108,6 +107,11 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
                     for (DefaultTextField v : measurementValues[finalIndex]) v.setEnabled(true);
                 }
             });
+        }
+
+        for (DefaultTextField t : inputsInValue) t.setFocusListener(focusListener);
+        for (DefaultTextField[] array : measurementValues) {
+            for (DefaultTextField t : array) t.setFocusListener(focusListener);
         }
 
         //header
@@ -159,11 +163,14 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
             if (whatInputs == INPUTS_BOTH || whatInputs == INPUTS_IN_PERCENT) {
                 if (Objects.isNull(inputsInPercent[index])) inputsInPercent[index] = new DefaultTextField(4);
                 inputsInPercent[index].setText(String.valueOf(entry.getKey()));
+                inputsInPercent[index].setEnabled(false);
             }
             if (whatInputs == INPUTS_BOTH || whatInputs == INPUTS_IN_VALUE) {
                 if (Objects.isNull(inputsInValue[index])) inputsInValue[index] = new DefaultTextField(4);
-                inputsInValue[index++].setText(String.valueOf(entry.getValue()));
+                inputsInValue[index].setText(String.valueOf(entry.getValue()));
+                inputsInValue[index].setEnabled(false);
             }
+            index++;
         }
     }
 
@@ -202,55 +209,69 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
                         if (Objects.isNull(measurementValues[0][i + 1])) measurementValues[0][i + 1] = new DefaultTextField(4);
                         measurementValues[0][i].setText(String.valueOf(entry.getValue()));
                         measurementValues[0][i + 1].setText(String.valueOf(entry.getValue()));
+                        measurementValues[0][i].setEnabled(false);
+                        measurementValues[0][i + 1].setEnabled(false);
                         index++;
                     }
                     break;
                 case 1:
-                    String[] firstValues = getMeasurementValues()[0];
-
                     if (Objects.isNull(measurementValues)) measurementValues = new DefaultTextField[5][];
+                    if (Objects.isNull(measurementValues[0])) setAutoMeasurements(0);
+                    String[] firstValues = Arrays.stream(measurementValues[0])
+                            .map(JTextComponent::getText)
+                            .toArray(String[]::new);
                     if (Objects.isNull(measurementValues[1])) measurementValues[1] = new DefaultTextField[firstValues.length];
 
                     index = 0;
                     for (String val : firstValues) {
                         if (Objects.isNull(measurementValues[1][index])) measurementValues[1][index] = new DefaultTextField(4);
-                        measurementValues[1][index++].setText(val);
+                        measurementValues[1][index].setText(val);
+                        measurementValues[1][index++].setEnabled(false);
                     }
                     break;
                 case 2:
-                    String[] firstValuess = getMeasurementValues()[0];
-
                     if (Objects.isNull(measurementValues)) measurementValues = new DefaultTextField[5][];
+                    if (Objects.isNull(measurementValues[0])) setAutoMeasurements(0);
+                    String[] firstValuess = Arrays.stream(measurementValues[0])
+                            .map(JTextComponent::getText)
+                            .toArray(String[]::new);
                     if (Objects.isNull(measurementValues[2])) measurementValues[2] = new DefaultTextField[firstValuess.length];
 
                     index = 0;
                     for (String val : firstValuess) {
                         if (Objects.isNull(measurementValues[2][index])) measurementValues[2][index] = new DefaultTextField(4);
-                        measurementValues[2][index++].setText(val);
+                        measurementValues[2][index].setText(val);
+                        measurementValues[2][index++].setEnabled(false);
                     }
                     break;
                 case 3:
-                    String[] secondValues = getMeasurementValues()[1];
-
                     if (Objects.isNull(measurementValues)) measurementValues = new DefaultTextField[5][];
+                    if (Objects.isNull(measurementValues[1])) setAutoMeasurements(1);
+                    String[] secondValues = Arrays.stream(measurementValues[1])
+                            .map(JTextComponent::getText)
+                            .toArray(String[]::new);
                     if (Objects.isNull(measurementValues[3])) measurementValues[3] = new DefaultTextField[secondValues.length];
 
                     index = 0;
                     for (String val : secondValues) {
                         if (Objects.isNull(measurementValues[3][index])) measurementValues[3][index] = new DefaultTextField(4);
-                        measurementValues[3][index++].setText(val);
+                        measurementValues[3][index].setText(val);
+                        measurementValues[3][index++].setEnabled(false);
                     }
                     break;
                 case 4:
-                    String[] thirdValues = getMeasurementValues()[2];
-
                     if (Objects.isNull(measurementValues)) measurementValues = new DefaultTextField[5][];
-                    if (Objects.isNull(measurementValues[3])) measurementValues[4] = new DefaultTextField[thirdValues.length];
+                    if (Objects.isNull(measurementValues[2])) setAutoMeasurements(2);
+                    String[] thirdValues = Arrays.stream(measurementValues[2])
+                            .map(JTextComponent::getText)
+                            .toArray(String[]::new);
+                    if (Objects.isNull(measurementValues[4])) measurementValues[4] = new DefaultTextField[thirdValues.length];
 
                     index = 0;
                     for (String val : thirdValues) {
                         if (Objects.isNull(measurementValues[4][index])) measurementValues[4][index] = new DefaultTextField(4);
-                        measurementValues[4][index++].setText(val);
+                        measurementValues[4][index].setText(val);
+                        measurementValues[4][index++].setEnabled(false);
                     }
                     break;
             }
@@ -296,13 +317,38 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     }
 
     @Override
-    public String[][] getMeasurementValues() {
-        String[][] result = new String[5][inputsInValue.length * 2];
-        for (int x = 0; x < result.length; x++) {
-            for (int y = 0; y < result[x].length; y++) {
-                result[x][y] = measurementValues[x][y].getText();
+    public TreeMap<Double, double[]> getMeasurementValues() {
+        TreeMap<Double, Double> input = getInputs();
+        TreeMap<Double, double[]> result = new TreeMap<>();
+        if (Objects.isNull(input)) return null;
+
+        int x = 0;
+        for (Map.Entry<Double, Double> entry : input.entrySet()) {
+            List<Double> output = new ArrayList<>();
+            for (int y = 0; y < measurementValues.length; y++) {
+                int i = x * 2;
+                String val1 = measurementValues[x][i].getText();
+                String val2 = measurementValues[x][i + 1].getText();
+                if (!StringHelper.isDouble(val1)) return null;
+                if (!StringHelper.isDouble(val2)) return null;
+                output.add(Double.parseDouble(val1));
+                output.add(Double.parseDouble(val2));
             }
+            result.put(entry.getValue(), output.stream().mapToDouble(Double::doubleValue).toArray());
+            x++;
         }
         return result;
     }
+
+    private final FocusListener focusListener = new FocusAdapter() {
+        @Override
+        public void focusLost(FocusEvent e) {
+            for (DefaultCheckBox checkBox : autoMeasurementValue) {
+                if (checkBox.isSelected()) {
+                    checkBox.doClick();
+                    checkBox.doClick();
+                }
+            }
+        }
+    };
 }

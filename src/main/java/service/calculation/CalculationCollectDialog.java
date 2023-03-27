@@ -1,4 +1,4 @@
-package service.calculation.collect;
+package service.calculation;
 
 import model.ui.UI;
 import service.calculation.dto.Protocol;

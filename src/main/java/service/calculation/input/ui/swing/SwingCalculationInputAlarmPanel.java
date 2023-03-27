@@ -1,11 +1,11 @@
-package service.calculation.collect.input.ui.swing;
+package service.calculation.input.ui.swing;
 
 import model.ui.ButtonCell;
 import model.ui.DefaultCheckBox;
 import model.ui.DefaultPanel;
 import model.ui.DefaultTextField;
 import model.ui.builder.CellBuilder;
-import service.calculation.collect.input.ui.CalculationInputAlarmPanel;
+import service.calculation.input.ui.CalculationInputAlarmPanel;
 import util.StringHelper;
 
 import static model.ui.ButtonCell.SIMPLE;

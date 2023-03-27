@@ -1,13 +1,13 @@
-package service.calculation.collect.input.ui;
+package service.calculation.input.ui;
 
 import model.dto.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.calculation.CalculationManager;
-import service.calculation.collect.input.ui.swing.SwingCalculationInputAlarmPanel;
-import service.calculation.collect.input.ui.swing.SwingCalculationInputButtonsPanel;
-import service.calculation.collect.input.ui.swing.SwingCalculationInputMeasurementPanel;
+import service.calculation.input.ui.swing.SwingCalculationInputAlarmPanel;
+import service.calculation.input.ui.swing.SwingCalculationInputButtonsPanel;
+import service.calculation.input.ui.swing.SwingCalculationInputMeasurementPanel;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;

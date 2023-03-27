@@ -1,4 +1,4 @@
-package service.calculation.collect.input.ui;
+package service.calculation.input.ui;
 
 public interface CalculationInputAlarmPanel {
     void setAlarmValue(double value);

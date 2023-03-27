@@ -1,4 +1,4 @@
-package service.calculation.collect.condition;
+package service.calculation.condition;
 
 import application.ApplicationScreen;
 import model.dto.Channel;
@@ -8,8 +8,8 @@ import repository.RepositoryFactory;
 import service.ServiceExecuter;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
-import service.calculation.collect.condition.ui.SwingCalculationControlConditionContext;
-import service.calculation.collect.condition.ui.swing.SwingCalculationControlConditionDialog;
+import service.calculation.condition.ui.SwingCalculationControlConditionContext;
+import service.calculation.condition.ui.swing.SwingCalculationControlConditionDialog;
 
 import javax.annotation.Nonnull;
 
