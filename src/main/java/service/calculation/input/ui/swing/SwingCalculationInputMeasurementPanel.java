@@ -343,12 +343,13 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     private final FocusListener focusListener = new FocusAdapter() {
         @Override
         public void focusLost(FocusEvent e) {
-            for (DefaultCheckBox checkBox : autoMeasurementValue) {
-                if (checkBox.isSelected()) {
-                    checkBox.doClick();
-                    checkBox.doClick();
+            List<Integer> indexes = new ArrayList<>();
+            for (int x = 0; x < autoMeasurementValue.length; x++) {
+                if (autoMeasurementValue[x].isSelected()) {
+                    indexes.add(x);
                 }
             }
+            setAutoMeasurements(indexes.stream().mapToInt(Integer::intValue).toArray());
         }
     };
 }
