@@ -67,7 +67,6 @@ public class SwingCalculationManager implements CalculationManager {
             }
         }
 
-
         if (Objects.isNull(inputDialog)) {
             new SwingCalculationInputExecuter(applicationScreen, repositoryFactory, configHolder, this, channel).execute();
         } else {
