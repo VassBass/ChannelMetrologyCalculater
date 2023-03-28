@@ -73,6 +73,21 @@ public abstract class CalculationWorker {
     }
 
     /**
+     * Calculates relative error in channel range from value of absolute error with errors of other equipment involved in control
+     * ɣch = (Δch * 100) / Rch
+     * where:
+     * ɣch - relative error
+     * Δch - absolute error of channel
+     * Rch - range of channel
+     * @param absoluteErrorWithEquipment {@link #calculateAbsoluteErrorWithEquipment(double, double, double)}
+     * @param channelRange {@link Channel#calculateRange()}
+     * @return value of relative error in percent
+     */
+    protected double calculateRelativeErrorWithEquipment(double absoluteErrorWithEquipment, double channelRange) {
+        return (absoluteErrorWithEquipment * 100) / channelRange;
+    }
+
+    /**
      * Calculates systematic errors for every set-point
      * ΔS = ΣΔXi / n
      * where:

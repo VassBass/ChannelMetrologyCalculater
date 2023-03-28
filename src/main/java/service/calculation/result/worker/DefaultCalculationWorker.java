@@ -46,6 +46,7 @@ public class DefaultCalculationWorker extends CalculationWorker {
             return false;
         }
         double absoluteErrorWithEquipment = calculateAbsoluteErrorWithEquipment(maxAbsoluteError, sensorError, calibratorError);
+        double relativeError = calculateRelativeErrorWithEquipment(absoluteErrorWithEquipment, channel.calculateRange());
         Map<Double, Double> systematicErrors = calculateSystematicErrors(absoluteErrors);
         double standardIndeterminacyA = calculateStandardIndeterminacyA(absoluteErrors);
         double standardIndeterminacyB = calculateStandardIndeterminacyB(sensorError, calibratorError);
@@ -53,7 +54,8 @@ public class DefaultCalculationWorker extends CalculationWorker {
         double extendedIndeterminacy = calculateExtendedIndeterminacy(totalStandardIndeterminacy, 2.0);
 
         //fill protocol
-        protocol.setMaxAbsoluteError(absoluteErrorWithEquipment);
+        protocol.setAbsoluteError(absoluteErrorWithEquipment);
+        protocol.setRelativeError(relativeError);
         protocol.setSystematicErrors(systematicErrors);
         protocol.setExtendedIndeterminacy(extendedIndeterminacy);
         return true;

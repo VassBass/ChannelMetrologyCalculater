@@ -26,7 +26,8 @@ public class Protocol implements Serializable {
     private TreeMap<Double, Double> input;
     private TreeMap<Double, double[]> output;
     private double extendedIndeterminacy;
-    private double maxAbsoluteError;
+    private double absoluteError;
+    private double relativeError;
     private Map<Double, Double> systematicErrors;
 
     public double getExtendedIndeterminacy() {
@@ -37,12 +38,20 @@ public class Protocol implements Serializable {
         this.extendedIndeterminacy = extendedIndeterminacy;
     }
 
-    public double getMaxAbsoluteError() {
-        return maxAbsoluteError;
+    public double getAbsoluteError() {
+        return absoluteError;
     }
 
-    public void setMaxAbsoluteError(double maxAbsoluteError) {
-        this.maxAbsoluteError = maxAbsoluteError;
+    public void setAbsoluteError(double absoluteError) {
+        this.absoluteError = absoluteError;
+    }
+
+    public double getRelativeError() {
+        return relativeError;
+    }
+
+    public void setRelativeError(double relativeError) {
+        this.relativeError = relativeError;
     }
 
     public Map<Double, Double> getSystematicErrors() {
