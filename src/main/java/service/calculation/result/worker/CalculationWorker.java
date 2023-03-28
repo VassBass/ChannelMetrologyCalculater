@@ -14,9 +14,6 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 public abstract class CalculationWorker {
-    private static final Logger logger = LoggerFactory.getLogger(CalculationWorker.class);
-
-
     public abstract boolean calculate(Protocol protocol);
 
     /**
