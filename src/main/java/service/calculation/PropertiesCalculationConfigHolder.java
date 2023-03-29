@@ -18,11 +18,15 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     private static final String KEY_CONTROL_CONDITION_DIALOG_HEIGHT = "calculation.condition.dialog.height";
     private static final String KEY_INPUT_DIALOG_WIDTH = "calculation.input.dialog.width";
     private static final String KEY_INPUT_DIALOG_HEIGHT = "calculation.input.dialog.height";
+    private static final String KEY_RESULT_DIALOG_WIDTH = "calculation.result.dialog.width";
+    private static final String KEY_RESULT_DIALOG_HEIGHT = "calculation.result.dialog.height";
 
     private int controlConditionDialogWidth = 685;
     private int controlConditionDialogHeight = 295;
     private int inputDialogWidth = 780;
     private int inputDialogHeight = 360;
+    private int resultDialogWidth = 100;
+    private int resultDialogHeight = 100;
 
     public PropertiesCalculationConfigHolder() {
         this(PROPERTIES_FILE_PATH);
@@ -45,6 +49,12 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
 
             Integer inputDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_INPUT_DIALOG_HEIGHT, null));
             if (inputDialogHeight != null) this.inputDialogHeight = inputDialogHeight;
+
+            Integer resultDialogWidth = StringHelper.parseInt(properties.getProperty(KEY_RESULT_DIALOG_WIDTH, null));
+            if (resultDialogWidth != null) this.resultDialogWidth = resultDialogWidth;
+
+            Integer resultDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_RESULT_DIALOG_HEIGHT, null));
+            if (resultDialogHeight != null) this.resultDialogHeight = resultDialogHeight;
 
         } catch (IOException e) {
             logger.warn("Exception was thrown: ", e);
@@ -69,5 +79,15 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     @Override
     public int getInputDialogHeight() {
         return inputDialogHeight;
+    }
+
+    @Override
+    public int getResultDialogWidth() {
+        return resultDialogWidth;
+    }
+
+    @Override
+    public int getResultDialogHeight() {
+        return resultDialogHeight;
     }
 }

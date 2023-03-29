@@ -4,18 +4,20 @@ import model.ui.ButtonCell;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultPanel;
 import service.calculation.dto.Protocol;
-import service.calculation.result.ui.CalculationConclusionPanel;
+import service.calculation.result.ui.CalculationResultConclusionPanel;
 
 import java.awt.*;
+import java.util.List;
 
-public class SwingCalculationConclusionPanel extends DefaultPanel implements CalculationConclusionPanel {
+
+public class SwingCalculationResultConclusionPanel extends DefaultPanel implements CalculationResultConclusionPanel {
     private static final String SUITABLE_TEXT = "Канал придатний";
     private static final String NOT_SUITABLE_TEXT = "Канал не придатний";
 
     private final ButtonCell result;
     private final DefaultComboBox conclusion;
 
-    public SwingCalculationConclusionPanel(Protocol protocol) {
+    public SwingCalculationResultConclusionPanel(Protocol protocol) {
         super();
 
         String resultText = SUITABLE_TEXT;
@@ -32,12 +34,17 @@ public class SwingCalculationConclusionPanel extends DefaultPanel implements Cal
     }
 
     @Override
-    public boolean getResult() {
-        return false;
+    public boolean isSuitable() {
+        return result.getText().equalsIgnoreCase(SUITABLE_TEXT);
     }
 
     @Override
     public String getConclusion() {
-        return null;
+        return conclusion.getSelectedItem();
+    }
+
+    @Override
+    public void setConclusions(List<String> conclusions) {
+        conclusion.setList(conclusions);
     }
 }

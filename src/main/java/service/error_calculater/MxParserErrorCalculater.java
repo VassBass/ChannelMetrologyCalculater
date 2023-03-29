@@ -13,6 +13,7 @@ import repository.repos.measurement_factor.MeasurementFactorRepository;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 public class MxParserErrorCalculater extends ErrorCalculater {
     private static final String CONVERTED_NUMBER_REGEX = "conv\\((.*?)\\)";
@@ -37,17 +38,17 @@ public class MxParserErrorCalculater extends ErrorCalculater {
                     .filter(f -> f.getTransformTo().equals(channel.getMeasurementValue()))
                     .findAny()
                     .map(MeasurementTransformFactor::getTransformFactor)
-                    .orElse(Double.NaN);
-            if (Double.isNaN(factor)) return factor;
+                    .orElse(1D);
 
             String[] numsToConvert = StringUtils.substringsBetween(formula, "conv(", ")");
-            for (String num : numsToConvert) {
-                if (StringHelper.isDouble(num)) {
-                    double n = Double.parseDouble(num) * factor;
-                    formula = formula.replaceFirst(CONVERTED_NUMBER_REGEX, String.valueOf(n));
+            if (Objects.nonNull(numsToConvert)) {
+                for (String num : numsToConvert) {
+                    if (StringHelper.isDouble(num)) {
+                        double n = Double.parseDouble(num) * factor;
+                        formula = formula.replaceFirst(CONVERTED_NUMBER_REGEX, String.valueOf(n));
+                    }
                 }
             }
-
 
             Function function = new Function(String.format("%s = %s",FUNCTION_DEFINITION, formula));
             Argument channelRangeArgument = new Argument(String.format("R = %s", channel.calculateRange()));
@@ -72,17 +73,17 @@ public class MxParserErrorCalculater extends ErrorCalculater {
                     .filter(f -> f.getTransformTo().equals(channel.getMeasurementValue()))
                     .findAny()
                     .map(MeasurementTransformFactor::getTransformFactor)
-                    .orElse(Double.NaN);
-            if (Double.isNaN(factor)) return factor;
+                    .orElse(1D);
 
             String[] numsToConvert = StringUtils.substringsBetween(formula, "conv(", ")");
-            for (String num : numsToConvert) {
-                if (StringHelper.isDouble(num)) {
-                    double n = Double.parseDouble(num) * factor;
-                    formula = formula.replaceFirst(CONVERTED_NUMBER_REGEX, String.valueOf(n));
+            if (Objects.nonNull(numsToConvert)) {
+                for (String num : numsToConvert) {
+                    if (StringHelper.isDouble(num)) {
+                        double n = Double.parseDouble(num) * factor;
+                        formula = formula.replaceFirst(CONVERTED_NUMBER_REGEX, String.valueOf(n));
+                    }
                 }
             }
-
 
             Function function = new Function(String.format("%s = %s",FUNCTION_DEFINITION, formula));
             Argument channelRangeArgument = new Argument(String.format("R = %s", channel.calculateRange()));

@@ -39,8 +39,6 @@ public class StringHelper {
     }
 
     public static String roundingDouble(double value, @Nonnegative int places) {
-        BigDecimal bd = BigDecimal.valueOf(value);
-
         return new BigDecimal(value).setScale(places, java.math.RoundingMode.HALF_UP).toString();
     }
 }

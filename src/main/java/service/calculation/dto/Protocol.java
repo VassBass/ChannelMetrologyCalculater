@@ -5,7 +5,6 @@ import model.dto.Channel;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -30,7 +29,7 @@ public class Protocol implements Serializable {
     private double absoluteError;
     private double relativeError;
     private Map<Double, Double> systematicErrors;
-    private List<String> conclusions;
+    private String conclusion;
     private int decimalPoint = 2;
 
     public int getDecimalPoint() {
@@ -41,12 +40,12 @@ public class Protocol implements Serializable {
         this.decimalPoint = decimalPoint;
     }
 
-    public List<String> getConclusions() {
-        return conclusions;
+    public String getConclusion() {
+        return conclusion;
     }
 
-    public void setConclusions(List<String> conclusions) {
-        this.conclusions = conclusions;
+    public void setConclusion(String conclusion) {
+        this.conclusion = conclusion;
     }
 
     public double getExtendedIndeterminacy() {

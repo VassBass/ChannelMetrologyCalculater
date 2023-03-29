@@ -5,4 +5,6 @@ public interface CalculationConfigHolder {
     int getControlConditionDialogHeight();
     int getInputDialogWidth();
     int getInputDialogHeight();
+    int getResultDialogWidth();
+    int getResultDialogHeight();
 }

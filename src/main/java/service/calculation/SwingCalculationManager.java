@@ -56,7 +56,7 @@ public class SwingCalculationManager implements CalculationManager {
 
     @Override
     public void showInputDialog() {
-        if (Objects.nonNull(resultDialog)) resultDialog.hiding();
+        if (Objects.nonNull(resultDialog)) resultDialog.shutdown();
 
         if (Objects.nonNull(controlConditionDialog) && controlConditionDialog.isVisible()) {
             if (controlConditionDialog.fillProtocol(protocol)) {
@@ -90,11 +90,17 @@ public class SwingCalculationManager implements CalculationManager {
             }
         }
 
-        if (Objects.isNull(resultDialog)) {
-            new SwingCalculationResultExecuter().execute();
-        } else {
-            resultDialog.showing();
-        }
+        new SwingCalculationResultExecuter(applicationScreen, repositoryFactory, configHolder, this, protocol).execute();
+    }
+
+    @Override
+    public void registerPersonDialog(@Nonnull CalculationCollectDialog dialog) {
+
+    }
+
+    @Override
+    public void showPersonDialog() {
+
     }
 
     @Override
