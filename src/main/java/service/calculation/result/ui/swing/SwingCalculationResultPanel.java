@@ -24,23 +24,24 @@ public class SwingCalculationResultPanel extends DefaultPanel {
     public SwingCalculationResultPanel(@Nonnull Protocol protocol) {
         super();
         String measurementValue = protocol.getChannel().getMeasurementValue();
-        int decimalPoint = protocol.getDecimalPoint();
+        int valueDecimalPoint = protocol.getValuesDecimalPoint();
+        int percentDecimalPoint = protocol.getPercentsDecimalPoint();
 
         ButtonCell extendedIndeterminacyLabel = new ButtonCell(HEADER, EXTENDED_INDETERMINACY_LABEL_TEXT);
-        String extendedIndeterminacy = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), decimalPoint);
+        String extendedIndeterminacy = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint);
         ButtonCell extendedIndeterminacyValue = new ButtonCell(SIMPLE, String.format("%s%s", extendedIndeterminacy, measurementValue));
 
         ButtonCell absoluteErrorLabel = new ButtonCell(HEADER, ABSOLUTE_ERROR_LABEL_TEXT);
-        String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), decimalPoint);
+        String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint);
         ButtonCell absoluteErrorValue = new ButtonCell(SIMPLE, String.format("%s%s", absoluteError, measurementValue));
 
         ButtonCell relativeErrorLabel = new ButtonCell(HEADER, RELATIVE_ERROR_LABEL_TEXT);
-        String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), decimalPoint);
+        String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint);
         ButtonCell relativeErrorValue = new ButtonCell(SIMPLE, String.format("%s%%", relativeError));
 
         ButtonCell systematicErrorsLabel = new ButtonCell(HEADER, SYSTEMATIC_ERRORS_LABEL_TEXT);
         List<ButtonCell> systematicErrors = createSystematicErrorsTable(protocol.getInput(), protocol.getSystematicErrors(),
-                decimalPoint, measurementValue);
+                valueDecimalPoint, measurementValue);
 
         this.add(extendedIndeterminacyLabel, new CellBuilder().x(0).y(0).build());
         this.add(extendedIndeterminacyValue, new CellBuilder().x(1).y(0).build());

@@ -46,7 +46,8 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     private final DefaultTextField[] inputsInValue;
     private DefaultTextField[][] measurementValues;
 
-    private int decimalPoint = 2;
+    private int percentDecimalPoint = 2;
+    private int valueDecimalPoint = 2;
 
     public SwingCalculationInputMeasurementPanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull Channel channel) {
         super();
@@ -111,9 +112,10 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
             });
         }
 
-        for (DefaultTextField t : inputsInValue) t.setFocusListener(focusListener);
+        for (DefaultTextField t : inputsInPercent) t.setFocusListener(percentFocusListener);
+        for (DefaultTextField t : inputsInValue) t.setFocusListener(valuesFocusListener);
         for (DefaultTextField[] array : measurementValues) {
-            for (DefaultTextField t : array) t.setFocusListener(focusListener);
+            for (DefaultTextField t : array) t.setFocusListener(valuesFocusListener);
         }
 
         //header
@@ -159,12 +161,13 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         }
     }
 
-    public void setDecimalPoint(int point) {
-        decimalPoint = point;
-        Arrays.stream(inputsInPercent).forEach(e -> e.setText(StringHelper.roundingDouble(Double.parseDouble(e.getText()), point)));
-        Arrays.stream(inputsInValue).forEach(e -> e.setText(StringHelper.roundingDouble(Double.parseDouble(e.getText()), point)));
+    public void setDecimalPoint(int percentPoints, int valuePoints) {
+        percentDecimalPoint = percentPoints;
+        valueDecimalPoint = valuePoints;
+        Arrays.stream(inputsInPercent).forEach(e -> e.setText(StringHelper.roundingDouble(Double.parseDouble(e.getText()), percentPoints)));
+        Arrays.stream(inputsInValue).forEach(e -> e.setText(StringHelper.roundingDouble(Double.parseDouble(e.getText()), valuePoints)));
         Arrays.stream(measurementValues).forEach(e ->
-                Arrays.stream(e).forEach(el -> el.setText(StringHelper.roundingDouble(Double.parseDouble(el.getText()), point))));
+                Arrays.stream(e).forEach(el -> el.setText(StringHelper.roundingDouble(Double.parseDouble(el.getText()), valuePoints))));
     }
 
     private void setInputs(Map<Double, Double> in, int whatInputs) {
@@ -173,12 +176,12 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
             if (whatInputs == INPUTS_BOTH || whatInputs == INPUTS_IN_PERCENT) {
                 if (Objects.isNull(inputsInPercent[index])) inputsInPercent[index] = new DefaultTextField(4);
                 double key = entry.getKey();
-                inputsInPercent[index].setText(StringHelper.roundingDouble(key, decimalPoint));
+                inputsInPercent[index].setText(StringHelper.roundingDouble(key, percentDecimalPoint));
                 inputsInPercent[index].setEnabled(false);
             }
             if (whatInputs == INPUTS_BOTH || whatInputs == INPUTS_IN_VALUE) {
                 if (Objects.isNull(inputsInValue[index])) inputsInValue[index] = new DefaultTextField(4);
-                inputsInValue[index].setText(StringHelper.roundingDouble(entry.getValue(), decimalPoint));
+                inputsInValue[index].setText(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint));
                 inputsInValue[index].setEnabled(false);
             }
             index++;
@@ -351,13 +354,13 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         return result;
     }
 
-    private String buffer;
-    private final FocusListener focusListener = new FocusListener() {
+    private String valuesBuffer;
+    private final FocusListener valuesFocusListener = new FocusListener() {
         @Override
         public void focusGained(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
             source.selectAll();
-            buffer = source.getText();
+            valuesBuffer = source.getText();
         }
 
         @Override
@@ -365,9 +368,9 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
             JTextField source = (JTextField) e.getSource();
             String text = source.getText();
             if (StringHelper.isDouble(text)) {
-                source.setText(StringHelper.roundingDouble(Double.parseDouble(text), decimalPoint));
+                source.setText(StringHelper.roundingDouble(Double.parseDouble(text), valueDecimalPoint));
             } else {
-                source.setText(buffer);
+                source.setText(valuesBuffer);
             }
 
             List<Integer> indexes = new ArrayList<>();
@@ -377,6 +380,27 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
                 }
             }
             setAutoMeasurements(indexes.stream().mapToInt(Integer::intValue).toArray());
+        }
+    };
+
+    private String percentBuffer;
+    private final FocusListener percentFocusListener = new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            JTextField source = (JTextField) e.getSource();
+            source.selectAll();
+            percentBuffer = source.getText();
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            JTextField source = (JTextField) e.getSource();
+            String text = source.getText();
+            if (StringHelper.isDouble(text)) {
+                source.setText(StringHelper.roundingDouble(Double.parseDouble(text), percentDecimalPoint));
+            } else {
+                source.setText(percentBuffer);
+            }
         }
     };
 }

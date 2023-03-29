@@ -3,5 +3,6 @@ package service.calculation.input.ui;
 import javax.annotation.Nonnegative;
 
 public interface CalculationInputNumberFormatPanel {
-    @Nonnegative int getDecimalPoint();
+    @Nonnegative int getValueDecimalPoint();
+    @Nonnegative int getPercentDecimalPoint();
 }

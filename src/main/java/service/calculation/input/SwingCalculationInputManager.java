@@ -12,8 +12,8 @@ public class SwingCalculationInputManager implements CalculationInputManager {
     }
 
     @Override
-    public void setDecimalPoint(int points) {
+    public void setDecimalPoint(int percentPoints, int valuePoints) {
         SwingCalculationInputMeasurementPanel measurementPanel = context.getElement(SwingCalculationInputMeasurementPanel.class);
-        measurementPanel.setDecimalPoint(points);
+        measurementPanel.setDecimalPoint(percentPoints, valuePoints);
     }
 }

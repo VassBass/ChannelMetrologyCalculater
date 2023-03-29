@@ -107,7 +107,8 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
 
         protocol.setInput(input);
         protocol.setOutput(output);
-        protocol.setDecimalPoint(numberFormatPanel.getDecimalPoint());
+        protocol.setValuesDecimalPoint(numberFormatPanel.getValueDecimalPoint());
+        protocol.setPercentsDecimalPoint(numberFormatPanel.getPercentDecimalPoint());
 
         return true;
     }

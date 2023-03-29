@@ -13,9 +13,6 @@ public class Protocol implements Serializable {
 
     private final Channel channel;
 
-    /**
-     * Control conditions
-     */
     private String date;
     private String number;
     private Calibrator calibrator;
@@ -30,14 +27,23 @@ public class Protocol implements Serializable {
     private double relativeError;
     private Map<Double, Double> systematicErrors;
     private String conclusion;
-    private int decimalPoint = 2;
+    private int valuesDecimalPoint = 2;
+    private int percentsDecimalPoint = 2;
 
-    public int getDecimalPoint() {
-        return decimalPoint;
+    public int getValuesDecimalPoint() {
+        return valuesDecimalPoint;
     }
 
-    public void setDecimalPoint(int decimalPoint) {
-        this.decimalPoint = decimalPoint;
+    public void setValuesDecimalPoint(int valuesDecimalPoint) {
+        this.valuesDecimalPoint = valuesDecimalPoint;
+    }
+
+    public int getPercentsDecimalPoint() {
+        return percentsDecimalPoint;
+    }
+
+    public void setPercentsDecimalPoint(int percentsDecimalPoint) {
+        this.percentsDecimalPoint = percentsDecimalPoint;
     }
 
     public String getConclusion() {

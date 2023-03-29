@@ -1,5 +1,5 @@
 package service.calculation.input;
 
 public interface CalculationInputManager {
-    void setDecimalPoint(int points);
+    void setDecimalPoint(int percentPoints, int valuePoints);
 }

@@ -13,6 +13,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 import static model.ui.ButtonCell.SIMPLE;
+import static model.ui.builder.CellBuilder.HORIZONTAL;
 
 public class SwingCalculationInputAlarmPanel extends DefaultPanel implements CalculationInputAlarmPanel {
     private static final String TITLE = "Перевірка сигналізації";
@@ -46,8 +47,8 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
         });
 
         this.add(title, new CellBuilder().x(0).build());
-        this.add(value, new CellBuilder().x(1).build());
-        this.add(val, new CellBuilder().x(2).build());
+        this.add(value, new CellBuilder().x(1).fill(HORIZONTAL).build());
+        this.add(val, new CellBuilder().x(2).fill(HORIZONTAL).build());
     }
 
     @Override
