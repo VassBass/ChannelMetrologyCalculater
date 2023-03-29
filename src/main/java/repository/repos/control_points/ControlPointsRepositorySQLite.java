@@ -4,11 +4,11 @@ import model.dto.ControlPoints;
 import model.dto.builder.ControlPointsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.json.JacksonJsonObjectMapper;
-import service.json.JsonObjectMapper;
 import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.init.ControlPointsRepositoryInitializer;
+import service.json.JacksonJsonObjectMapper;
+import service.json.JsonObjectMapper;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 public class ControlPointsRepositorySQLite implements ControlPointsRepository {
     private static final Logger logger = LoggerFactory.getLogger(ControlPointsRepositorySQLite.class);
@@ -34,7 +33,6 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Collection<ControlPoints> getAll() {
         Collection<ControlPoints> controlPoints = new ArrayList<>();
         String sql = String.format("SELECT * FROM %s;", tableName);
@@ -47,7 +45,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
                 ControlPoints cp = new ControlPointsBuilder()
                         .setName(name)
                         .setSensorType(sensorType)
-                        .setPoints(jsonMapper.JsonToObject(jsonPoints, Map.class))
+                        .setPoints(jsonMapper.jsonToDoubleMap(jsonPoints))
                         .build();
                 controlPoints.add(cp);
             }
@@ -59,7 +57,6 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Collection<ControlPoints> getAllBySensorType(@Nonnull String sensorType) {
         Collection<ControlPoints> controlPoints = new ArrayList<>();
         String sql = String.format("SELECT * FROM %s WHERE sensor_type = '%s';", tableName, sensorType);
@@ -71,7 +68,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
 
                 ControlPoints cp = new ControlPointsBuilder(name)
                         .setSensorType(senType)
-                        .setPoints(jsonMapper.JsonToObject(jsonPoints, Map.class))
+                        .setPoints(jsonMapper.jsonToDoubleMap(jsonPoints))
                         .build();
                 controlPoints.add(cp);
             }
@@ -83,7 +80,6 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ControlPoints get(@Nonnull String name) {
         String sql = String.format("SELECT * FROM %s WHERE name = '%s' LIMIT 1;", tableName, name);
         try (ResultSet resultSet = connector.getResultSet(sql)){
@@ -95,7 +91,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
                 return new ControlPointsBuilder()
                         .setName(n)
                         .setSensorType(sensorType)
-                        .setPoints(jsonMapper.JsonToObject(jsonPoints, Map.class))
+                        .setPoints(jsonMapper.jsonToDoubleMap(jsonPoints))
                         .build();
             }
         }catch (SQLException e){
@@ -111,7 +107,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
         try (PreparedStatement statement = connector.getPreparedStatementWithKey(sql)){
             statement.setString(1, controlPoints.getName());
             statement.setString(2, controlPoints.getSensorType());
-            statement.setString(3, jsonMapper.objectToJson(controlPoints.getValues()));
+            statement.setString(3, jsonMapper.doubleMapToJson(controlPoints.getValues()));
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
@@ -126,7 +122,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
         try (PreparedStatement statement = connector.getPreparedStatement(sql)){
             statement.setString(1, newControlPoints.getName());
             statement.setString(2, newControlPoints.getSensorType());
-            statement.setString(3, jsonMapper.objectToJson(newControlPoints.getValues()));
+            statement.setString(3, jsonMapper.doubleMapToJson(newControlPoints.getValues()));
             statement.setString(4, oldControlPoints.getName());
 
             return statement.executeUpdate() > 0;
@@ -198,7 +194,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
                     String values = String.format("('%s', '%s', '%s'),",
                             cp.getName(),
                             cp.getSensorType(),
-                            jsonMapper.objectToJson(cp.getValues()));
+                            jsonMapper.doubleMapToJson(cp.getValues()));
                     sqlBuilder.append(values);
                 }
                 sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');

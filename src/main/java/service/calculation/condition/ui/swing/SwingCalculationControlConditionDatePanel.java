@@ -1,35 +1,28 @@
 package service.calculation.condition.ui.swing;
 
 import model.ui.DefaultLabel;
-import model.ui.DefaultTextField;
+import model.ui.IntegerTextField;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.condition.ui.CalculationControlConditionDatePanel;
 import util.DateHelper;
 
 import javax.annotation.Nullable;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 public class SwingCalculationControlConditionDatePanel extends TitledPanel implements CalculationControlConditionDatePanel {
     private static final String TITLE = "Дата перевірки";
 
-    private final DefaultTextField dayField;
-    private final DefaultTextField monthField;
-    private final DefaultTextField yearField;
+    private final IntegerTextField dayField;
+    private final IntegerTextField monthField;
+    private final IntegerTextField yearField;
 
     public SwingCalculationControlConditionDatePanel() {
         super(TITLE, Color.BLACK);
 
-        dayField = new DefaultTextField(2);
-        monthField = new DefaultTextField(2);
-        yearField = new DefaultTextField(4);
-
-        dayField.setFocusListener(focusGained);
-        monthField.setFocusListener(focusGained);
-        yearField.setFocusListener(focusGained);
+        dayField = new IntegerTextField(2);
+        monthField = new IntegerTextField(2);
+        yearField = new IntegerTextField(4);
 
         this.add(dayField, new CellBuilder().fill(CellBuilder.NONE).x(0).build());
         this.add(new DefaultLabel("."), new CellBuilder().fill(CellBuilder.NONE).x(1).build());
@@ -45,6 +38,10 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
             dayField.setText(d[0]);
             monthField.setText(d[1]);
             yearField.setText(d[2]);
+
+            dayField.setDefaultValue(Integer.parseInt(dayField.getText()));
+            monthField.setDefaultValue(Integer.parseInt(monthField.getText()));
+            yearField.setDefaultValue(Integer.parseInt(yearField.getText()));
         }
     }
 
@@ -60,12 +57,4 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
             return null;
         }
     }
-
-    private final FocusAdapter focusGained = new FocusAdapter() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            JTextField source = (JTextField) e.getSource();
-            source.selectAll();
-        }
-    };
 }

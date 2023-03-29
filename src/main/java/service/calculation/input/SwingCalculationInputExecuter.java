@@ -39,6 +39,8 @@ public class SwingCalculationInputExecuter implements ServiceExecuter {
     public void execute() {
         SwingCalculationInputContext context = new SwingCalculationInputContext(repositoryFactory, channel);
         context.registerManager(manager);
+        SwingCalculationInputManager inputManager = new SwingCalculationInputManager(context);
+        context.registerManager(inputManager);
         CalculationCollectDialog inputDialog = new SwingCalculationInputDialog(applicationScreen, configHolder,  context);
         manager.registerInputDialog(inputDialog);
         manager.showInputDialog();

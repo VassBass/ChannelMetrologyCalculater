@@ -5,9 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.calculation.CalculationManager;
+import service.calculation.input.CalculationInputManager;
 import service.calculation.input.ui.swing.SwingCalculationInputAlarmPanel;
 import service.calculation.input.ui.swing.SwingCalculationInputButtonsPanel;
 import service.calculation.input.ui.swing.SwingCalculationInputMeasurementPanel;
+import service.calculation.input.ui.swing.SwingCalculationInputNumberFormatPanel;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ public class SwingCalculationInputContext {
     private final Channel channel;
 
     private CalculationManager manager;
+    private CalculationInputManager localManager;
 
     public SwingCalculationInputContext(@Nonnull RepositoryFactory repositoryFactory,
                                         @Nonnull Channel channel) {
@@ -53,6 +56,11 @@ public class SwingCalculationInputContext {
                 element = (T) new SwingCalculationInputButtonsPanel(manager);
                 buffer.put(clazz, element);
             }
+            if (clazz.isAssignableFrom(CalculationInputNumberFormatPanel.class) || clazz.isAssignableFrom(SwingCalculationInputNumberFormatPanel.class)) {
+                element = (T) new SwingCalculationInputNumberFormatPanel(localManager);
+                buffer.put(CalculationInputNumberFormatPanel.class, element);
+                buffer.put(SwingCalculationInputNumberFormatPanel.class, element);
+            }
 
             if (element == null) logger.warn(String.format("Can't find implementation for %s", clazz.getName()));
         }
@@ -62,5 +70,8 @@ public class SwingCalculationInputContext {
 
     public void registerManager(CalculationManager manager) {
         this.manager = manager;
+    }
+    public void registerManager(CalculationInputManager manager) {
+        this.localManager = manager;
     }
 }

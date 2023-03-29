@@ -1,8 +1,13 @@
 package util;
 
+import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class StringHelper {
     public static boolean isDouble(String doubleString) {
@@ -31,5 +36,11 @@ public class StringHelper {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    public static String roundingDouble(double value, @Nonnegative int places) {
+        BigDecimal bd = BigDecimal.valueOf(value);
+
+        return new BigDecimal(value).setScale(places, java.math.RoundingMode.HALF_UP).toString();
     }
 }

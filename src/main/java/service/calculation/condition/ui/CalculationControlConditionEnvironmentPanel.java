@@ -1,15 +1,12 @@
 package service.calculation.condition.ui;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 public interface CalculationControlConditionEnvironmentPanel {
-    void setTemperature(@Nonnull String temperature);
-    @Nullable String getTemperature();
+    void setTemperature(int temperature);
+    int getTemperature();
 
-    void setPressure(@Nonnull String pressure);
-    @Nullable String getPressure();
+    void setPressure(int pressure);
+    int getPressure();
 
-    void setHumidity(@Nonnull String humidity);
-    @Nullable String getHumidity();
+    void setHumidity(int humidity);
+    int getHumidity();
 }

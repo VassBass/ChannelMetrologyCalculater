@@ -208,7 +208,7 @@ public class DefaultImporter implements Importer {
         List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.AREA).collect(Collectors.toList());
         if (input.size() > 0) {
             AreaRepository repository = repositoryFactory.getImplementation(AreaRepository.class);
-            Collection<String> areas = repository.getAll();
+            List<String> areas = new ArrayList<>(repository.getAll());
 
             for (ModelHolder modelHolder : input) {
                 String area = modelHolder.getValue(AREA);
@@ -225,7 +225,7 @@ public class DefaultImporter implements Importer {
         List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.PROCESS).collect(Collectors.toList());
         if (input.size() > 0) {
             ProcessRepository repository = repositoryFactory.getImplementation(ProcessRepository.class);
-            Collection<String> processes = repository.getAll();
+            List<String> processes = new ArrayList<>(repository.getAll());
 
             for (ModelHolder modelHolder : input) {
                 String process = modelHolder.getValue(PROCESS);
@@ -242,7 +242,7 @@ public class DefaultImporter implements Importer {
         List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.INSTALLATION).collect(Collectors.toList());
         if (input.size() > 0) {
             InstallationRepository repository = repositoryFactory.getImplementation(InstallationRepository.class);
-            Collection<String> installations = repository.getAll();
+            List<String> installations = new ArrayList<>(repository.getAll());
 
             for (ModelHolder modelHolder : input) {
                 String installation = modelHolder.getValue(INSTALLATION);

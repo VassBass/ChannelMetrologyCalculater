@@ -7,9 +7,9 @@ import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.calibrator.CalibratorRepository;
-import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationCollectDialog;
-import service.calculation.condition.ui.*;
+import service.calculation.CalculationConfigHolder;
+import service.calculation.condition.ui.SwingCalculationControlConditionContext;
 import service.calculation.dto.Protocol;
 import util.DateHelper;
 import util.ObjectHelper;
@@ -20,8 +20,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import static model.ui.builder.CellBuilder.HORIZONTAL;
 
@@ -57,9 +59,6 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
         calibratorPanel.setCalibratorsNamesList(suitableCalibratorsNames);
 
         datePanel.setDate(DateHelper.dateToString(Calendar.getInstance()));
-        environmentPanel.setTemperature("21.0");
-        environmentPanel.setHumidity("70.0");
-        environmentPanel.setPressure("750.0");
 
         panel.add(datePanel, new CellBuilder().fill(HORIZONTAL).x(0).y(0).width(1).height(1).build());
         panel.add(protocolNumberPanel, new CellBuilder().fill(HORIZONTAL).x(1).y(0).width(1).height(1).build());
@@ -110,9 +109,9 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
         String date = datePanel.getDate();
         String protocolNumber = protocolNumberPanel.getProtocolNumber();
         String calibratorName = calibratorPanel.getSelectedCalibratorName();
-        String temperature = environmentPanel.getTemperature();
-        String humidity = environmentPanel.getHumidity();
-        String pressure = environmentPanel.getPressure();
+        int temperature = environmentPanel.getTemperature();
+        int humidity = environmentPanel.getHumidity();
+        int pressure = environmentPanel.getPressure();
 
         if (ObjectHelper.anyNull(date, temperature, humidity, pressure) ||
                 protocolNumber.isEmpty() || calibratorName.isEmpty()) {

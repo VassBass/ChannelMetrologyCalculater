@@ -22,6 +22,7 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
 
     private final SwingCalculationInputAlarmPanel alarmPanel;
     private final SwingCalculationInputMeasurementPanel measurementPanel;
+    private final SwingCalculationInputNumberFormatPanel numberFormatPanel;
 
     public SwingCalculationInputDialog(@Nonnull ApplicationScreen applicationScreen,
                                        @Nonnull CalculationConfigHolder configHolder,
@@ -33,10 +34,12 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
         alarmPanel = context.getElement(SwingCalculationInputAlarmPanel.class);
         measurementPanel = context.getElement(SwingCalculationInputMeasurementPanel.class);
         SwingCalculationInputButtonsPanel buttonsPanel = context.getElement(SwingCalculationInputButtonsPanel.class);
+        numberFormatPanel = context.getElement(SwingCalculationInputNumberFormatPanel.class);
 
-        panel.add(alarmPanel, new CellBuilder().y(0).build());
-        panel.add(measurementPanel, new CellBuilder().y(1).build());
-        panel.add(buttonsPanel, new CellBuilder().y(2).build());
+        panel.add(alarmPanel, new CellBuilder().x(0).y(0).width(1).build());
+        panel.add(numberFormatPanel, new CellBuilder().x(1).y(0).width(1).build());
+        panel.add(measurementPanel, new CellBuilder().x(0).y(1).width(2).build());
+        panel.add(buttonsPanel, new CellBuilder().x(0).y(2).width(2).build());
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -94,7 +97,6 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
             JOptionPane.showMessageDialog(this, message, "Помилковий ввод", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        protocol.setInput(input);
 
         TreeMap<Double, double[]> output = measurementPanel.getMeasurementValues();
         if (Objects.isNull(output)) {
@@ -102,7 +104,10 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
             JOptionPane.showMessageDialog(this, message, "Помилковий ввод", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+
+        protocol.setInput(input);
         protocol.setOutput(output);
+        protocol.setDecimalPoint(numberFormatPanel.getDecimalPoint());
 
         return true;
     }

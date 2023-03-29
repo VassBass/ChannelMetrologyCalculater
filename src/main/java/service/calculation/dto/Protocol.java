@@ -20,9 +20,9 @@ public class Protocol implements Serializable {
     private String date;
     private String number;
     private Calibrator calibrator;
-    private String temperature;
-    private String humidity;
-    private String pressure;
+    private int temperature;
+    private int humidity;
+    private int pressure;
     private double alarm;
     private TreeMap<Double, Double> input;
     private TreeMap<Double, double[]> output;
@@ -31,6 +31,15 @@ public class Protocol implements Serializable {
     private double relativeError;
     private Map<Double, Double> systematicErrors;
     private List<String> conclusions;
+    private int decimalPoint = 2;
+
+    public int getDecimalPoint() {
+        return decimalPoint;
+    }
+
+    public void setDecimalPoint(int decimalPoint) {
+        this.decimalPoint = decimalPoint;
+    }
 
     public List<String> getConclusions() {
         return conclusions;
@@ -100,27 +109,27 @@ public class Protocol implements Serializable {
         this.calibrator = calibrator;
     }
 
-    public String getTemperature() {
+    public int getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(String temperature) {
+    public void setTemperature(int temperature) {
         this.temperature = temperature;
     }
 
-    public String getHumidity() {
+    public int getHumidity() {
         return humidity;
     }
 
-    public void setHumidity(String humidity) {
+    public void setHumidity(int humidity) {
         this.humidity = humidity;
     }
 
-    public String getPressure() {
+    public int getPressure() {
         return pressure;
     }
 
-    public void setPressure(String pressure) {
+    public void setPressure(int pressure) {
         this.pressure = pressure;
     }
 

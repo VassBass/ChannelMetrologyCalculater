@@ -55,4 +55,22 @@ public class StringHelperTest {
         assertNull(StringHelper.parseInt(invalid3));
         assertNull(StringHelper.parseInt(invalid4));
     }
+
+    @Test
+    public void testRoundingDoubleHardMode() {
+        double d1 = 0.123456789;
+        double d2 = 0.987654321;
+        double d3 = 0.000999;
+        double d4 = 0.000111;
+        double d5 = 1.05;
+        double d6 = 6D;
+
+        assertEquals("0.123", StringHelper.roundingDouble(d1, 3));
+        assertEquals("0.988", StringHelper.roundingDouble(d2, 3));
+        assertEquals("0.001", StringHelper.roundingDouble(d3, 3));
+        assertEquals("0.000", StringHelper.roundingDouble(d4, 3));
+        assertEquals("1.050", StringHelper.roundingDouble(d5, 3));
+        assertEquals("6.000", StringHelper.roundingDouble(d6, 3));
+        assertEquals("1", StringHelper.roundingDouble(d5, 0));
+    }
 }

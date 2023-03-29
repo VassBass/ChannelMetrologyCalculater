@@ -8,6 +8,10 @@ import model.ui.builder.CellBuilder;
 import service.calculation.input.ui.CalculationInputAlarmPanel;
 import util.StringHelper;
 
+import javax.swing.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+
 import static model.ui.ButtonCell.SIMPLE;
 
 public class SwingCalculationInputAlarmPanel extends DefaultPanel implements CalculationInputAlarmPanel {
@@ -30,6 +34,7 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
 
         ButtonCell val = new ButtonCell(SIMPLE, measurementValue);
 
+        value.setFocusListener(focusListener);
         title.addItemListener(e -> {
             if (title.isSelected()) {
                 value.setEnabled(true);
@@ -67,4 +72,25 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
     public boolean isEnabled() {
         return title.isSelected();
     }
+
+    private final FocusListener focusListener = new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            JTextField source = (JTextField) e.getSource();
+            source.selectAll();
+            String text = source.getText();
+            if (StringHelper.isDouble(text)) buffer = Double.parseDouble(text);
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            JTextField source = (JTextField) e.getSource();
+            String text = source.getText();
+            if (StringHelper.isDouble(text)) {
+                buffer = Double.parseDouble(text);
+            } else {
+                source.setText(String.valueOf(buffer));
+            }
+        }
+    };
 }

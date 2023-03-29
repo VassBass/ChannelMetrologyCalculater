@@ -49,7 +49,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 calibratorBuilder.setErrorFormula(resultSet.getString("error_formula"));
 
                 String certificateJson = resultSet.getString("certificate");
-                Calibrator.Certificate certificate = jsonMapper.JsonToObject(certificateJson, Calibrator.Certificate.class);
+                Calibrator.Certificate certificate = jsonMapper.jsonToObject(certificateJson, Calibrator.Certificate.class);
                 if (certificate != null) calibratorBuilder.setCertificate(certificate);
 
                 calibrators.add(calibratorBuilder.build());
@@ -93,7 +93,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 calibratorBuilder.setErrorFormula(resultSet.getString("error_formula"));
 
                 String certificateJson = resultSet.getString("certificate");
-                Calibrator.Certificate certificate = jsonMapper.JsonToObject(certificateJson, Calibrator.Certificate.class);
+                Calibrator.Certificate certificate = jsonMapper.jsonToObject(certificateJson, Calibrator.Certificate.class);
                 if (certificate != null) calibratorBuilder.setCertificate(certificate);
 
                 return calibratorBuilder.build();
