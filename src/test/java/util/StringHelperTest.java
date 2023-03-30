@@ -57,7 +57,7 @@ public class StringHelperTest {
     }
 
     @Test
-    public void testRoundingDoubleHardMode() {
+    public void testRoundingDouble() {
         double d1 = 0.123456789;
         double d2 = 0.987654321;
         double d3 = 0.000999;
@@ -72,5 +72,14 @@ public class StringHelperTest {
         assertEquals("1.050", StringHelper.roundingDouble(d5, 3));
         assertEquals("6.000", StringHelper.roundingDouble(d6, 3));
         assertEquals("1", StringHelper.roundingDouble(d5, 0));
+    }
+
+    @Test
+    public void testNonEmpty() {
+        assertTrue(StringHelper.nonEmpty("ihygfjyadgsf", "lkhfkasfe", "65432"));
+        assertTrue(StringHelper.nonEmpty("ihygfjyadgsf"));
+        assertFalse(StringHelper.nonEmpty(""));
+        assertFalse(StringHelper.nonEmpty("ihygfjyadgsf", "", "65432"));
+        assertFalse(StringHelper.nonEmpty("ihygfjyadgsf", null, "65432"));
     }
 }

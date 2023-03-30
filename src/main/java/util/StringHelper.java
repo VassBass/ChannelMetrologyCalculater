@@ -5,6 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -40,5 +41,10 @@ public class StringHelper {
 
     public static String roundingDouble(double value, @Nonnegative int places) {
         return new BigDecimal(value).setScale(places, java.math.RoundingMode.HALF_UP).toString();
+    }
+
+    public static boolean nonEmpty(String ... strings) {
+        return Arrays.stream(strings).noneMatch(Objects::isNull) &&
+                Arrays.stream(strings).noneMatch(String::isEmpty);
     }
 }
