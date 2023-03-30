@@ -41,7 +41,7 @@ public class SwingCalculationResultPanel extends DefaultPanel {
 
         ButtonCell systematicErrorsLabel = new ButtonCell(HEADER, SYSTEMATIC_ERRORS_LABEL_TEXT);
         List<ButtonCell> systematicErrors = createSystematicErrorsTable(protocol.getInput(), protocol.getSystematicErrors(),
-                valueDecimalPoint, measurementValue);
+                percentDecimalPoint, valueDecimalPoint, measurementValue);
 
         this.add(extendedIndeterminacyLabel, new CellBuilder().x(0).y(0).build());
         this.add(extendedIndeterminacyValue, new CellBuilder().x(1).y(0).build());
@@ -59,14 +59,15 @@ public class SwingCalculationResultPanel extends DefaultPanel {
 
     private List<ButtonCell> createSystematicErrorsTable(Map<Double, Double> input,
                                                          Map<Double, Double> systematicErrors,
-                                                         int decimalPoint,
+                                                         int percentDecimalPoint,
+                                                         int valueDecimalPoint,
                                                          String measurementValue) {
         List<ButtonCell> result = new ArrayList<>();
         TreeMap<Double, Double> sortedInput = new TreeMap<>(input);
         for (Map.Entry<Double, Double> entry : sortedInput.entrySet()) {
-            String percentValue = StringHelper.roundingDouble(entry.getKey(), decimalPoint);
-            String value = StringHelper.roundingDouble(entry.getValue(), decimalPoint);
-            String error = StringHelper.roundingDouble(systematicErrors.get(Double.parseDouble(value)), decimalPoint);
+            String percentValue = StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint);
+            String value = StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint);
+            String error = StringHelper.roundingDouble(systematicErrors.get(Double.parseDouble(value)), valueDecimalPoint);
             String text = String.format("S%s%% = %s%s", percentValue, error, measurementValue);
             result.add(new ButtonCell(SIMPLE, text));
         }

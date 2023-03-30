@@ -18,6 +18,7 @@ import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class SwingCalculationResultExecuter implements ServiceExecuter {
@@ -69,10 +70,9 @@ public class SwingCalculationResultExecuter implements ServiceExecuter {
                 if (get()) {
                     SwingCalculationResultContext context = new SwingCalculationResultContext(protocol);
                     context.registerManager(manager);
-                    SwingCalculationResultDialog dialog = new SwingCalculationResultDialog(applicationScreen, configHolder, manager, context);
+                    SwingCalculationResultDialog dialog = new SwingCalculationResultDialog(applicationScreen, configHolder, manager, context, protocol);
                     manager.registerResultDialog(dialog);
                     dialog.showing();
-
                     logger.info("Service is running");
                     loadDialog.shutdown();
                     return;

@@ -20,23 +20,32 @@ import java.util.Objects;
 public class SwingCalculationResultDialog extends JDialog implements CalculationCollectDialog {
     private static final String TITLE_TEXT = "Результати розрахунку";
 
-    private final SwingCalculationResultPanel resultPanel;
     private final SwingCalculationResultConclusionPanel conclusionPanel;
+    private final SwingCalculationResultReferencePanel referencePanel;
 
     public SwingCalculationResultDialog(@Nonnull ApplicationScreen applicationScreen,
                                         @Nonnull CalculationConfigHolder configHolder,
                                         @Nonnull CalculationManager manager,
-                                        @Nonnull SwingCalculationResultContext context) {
+                                        @Nonnull SwingCalculationResultContext context,
+                                        @Nonnull Protocol protocol) {
         super(applicationScreen, TITLE_TEXT, true);
 
-        resultPanel = context.getElement(SwingCalculationResultPanel.class);
+        SwingCalculationResultPanel resultPanel = context.getElement(SwingCalculationResultPanel.class);
         conclusionPanel = context.getElement(SwingCalculationResultConclusionPanel.class);
         SwingCalculationResultButtonsPanel buttonsPanel = context.getElement(SwingCalculationResultButtonsPanel.class);
 
         DefaultPanel panel = new DefaultPanel();
-        panel.add(resultPanel, new CellBuilder().y(0).build());
-        panel.add(conclusionPanel, new CellBuilder().y(1).build());
-        panel.add(buttonsPanel, new CellBuilder().y(2).build());
+        int y = 0;
+        panel.add(resultPanel, new CellBuilder().y(y++).build());
+        panel.add(conclusionPanel, new CellBuilder().y(y++).build());
+
+        boolean suitable = protocol.getRelativeError() <= protocol.getChannel().getAllowableErrorPercent();
+        if (!suitable) {
+            referencePanel = new SwingCalculationResultReferencePanel();
+            panel.add(referencePanel, new CellBuilder().y(y++).build());
+        } else referencePanel = null;
+
+        panel.add(buttonsPanel, new CellBuilder().y(y).build());
 
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -47,6 +56,7 @@ public class SwingCalculationResultDialog extends JDialog implements Calculation
 
         int width = configHolder.getResultDialogWidth();
         int height = configHolder.getResultDialogHeight();
+        if (!suitable) height += 35;
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.setSize(width, height);
         this.setLocation(ScreenPoint.center(applicationScreen, this));
@@ -79,6 +89,16 @@ public class SwingCalculationResultDialog extends JDialog implements Calculation
     @Override
     public boolean fillProtocol(Protocol protocol) {
         if (Objects.nonNull(conclusionPanel)) {
+            if (Objects.nonNull(referencePanel)) {
+                String referenceNumber = referencePanel.getReferenceNumber();
+                if (referenceNumber.isEmpty()) {
+                    String message = "Поле вводу номера довідки не має бути пустим";
+                    JOptionPane.showMessageDialog(this, message, "Некоректні дані", JOptionPane.ERROR_MESSAGE);
+                    return false;
+                } else {
+                    protocol.setReferenceNumber(referenceNumber);
+                }
+            }
             protocol.setConclusion(conclusionPanel.getConclusion());
             return true;
         } else return false;

@@ -47,8 +47,8 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
         });
 
         this.add(title, new CellBuilder().x(0).build());
-        this.add(value, new CellBuilder().x(1).fill(HORIZONTAL).build());
-        this.add(val, new CellBuilder().x(2).fill(HORIZONTAL).build());
+        this.add(value, new CellBuilder().x(1).build());
+        this.add(val, new CellBuilder().x(2).build());
     }
 
     @Override

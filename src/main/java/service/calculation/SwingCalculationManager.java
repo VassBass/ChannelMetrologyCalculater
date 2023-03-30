@@ -6,6 +6,7 @@ import repository.RepositoryFactory;
 import service.calculation.condition.SwingCalculationControlConditionExecuter;
 import service.calculation.input.SwingCalculationInputExecuter;
 import service.calculation.dto.Protocol;
+import service.calculation.persons.SwingCalculationPersonsExecuter;
 import service.calculation.result.SwingCalculationResultExecuter;
 
 import javax.annotation.Nonnull;
@@ -21,6 +22,7 @@ public class SwingCalculationManager implements CalculationManager {
     private CalculationCollectDialog controlConditionDialog;
     private CalculationCollectDialog inputDialog;
     private CalculationCollectDialog resultDialog;
+    private CalculationCollectDialog personsDialog;
 
     public SwingCalculationManager(@Nonnull ApplicationScreen applicationScreen,
                                    @Nonnull RepositoryFactory repositoryFactory,
@@ -57,6 +59,7 @@ public class SwingCalculationManager implements CalculationManager {
     @Override
     public void showInputDialog() {
         if (Objects.nonNull(resultDialog)) resultDialog.shutdown();
+        if (Objects.nonNull(personsDialog)) personsDialog.shutdown();
 
         if (Objects.nonNull(controlConditionDialog) && controlConditionDialog.isVisible()) {
             if (controlConditionDialog.fillProtocol(protocol)) {
@@ -95,12 +98,18 @@ public class SwingCalculationManager implements CalculationManager {
 
     @Override
     public void registerPersonDialog(@Nonnull CalculationCollectDialog dialog) {
-
+        personsDialog = dialog;
     }
 
     @Override
     public void showPersonDialog() {
+        if (Objects.nonNull(resultDialog)) {
+            if (resultDialog.fillProtocol(protocol)) {
+                resultDialog.shutdown();
+            } else return;
+        }
 
+        new SwingCalculationPersonsExecuter().execute();
     }
 
     @Override
@@ -108,5 +117,6 @@ public class SwingCalculationManager implements CalculationManager {
         if (Objects.nonNull(controlConditionDialog)) controlConditionDialog.shutdown();
         if (Objects.nonNull(inputDialog)) inputDialog.shutdown();
         if (Objects.nonNull(resultDialog)) resultDialog.shutdown();
+        if (Objects.nonNull(personsDialog)) personsDialog.shutdown();
     }
 }

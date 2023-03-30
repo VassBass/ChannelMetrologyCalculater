@@ -19,7 +19,7 @@ public class Protocol implements Serializable {
     private int temperature;
     private int humidity;
     private int pressure;
-    private double alarm;
+    private double alarm = Double.NaN;
     private TreeMap<Double, Double> input;
     private TreeMap<Double, double[]> output;
     private double extendedIndeterminacy;
@@ -29,6 +29,15 @@ public class Protocol implements Serializable {
     private String conclusion;
     private int valuesDecimalPoint = 2;
     private int percentsDecimalPoint = 2;
+    private String referenceNumber;
+
+    public String getReferenceNumber() {
+        return referenceNumber;
+    }
+
+    public void setReferenceNumber(String referenceNumber) {
+        this.referenceNumber = referenceNumber;
+    }
 
     public int getValuesDecimalPoint() {
         return valuesDecimalPoint;

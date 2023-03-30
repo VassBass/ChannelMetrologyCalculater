@@ -17,6 +17,8 @@ import java.awt.event.WindowEvent;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import static model.ui.builder.CellBuilder.HORIZONTAL;
+
 public class SwingCalculationInputDialog extends JDialog implements CalculationCollectDialog {
     private static final String TITLE = "Вхідні дані";
 
@@ -36,7 +38,7 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
         SwingCalculationInputButtonsPanel buttonsPanel = context.getElement(SwingCalculationInputButtonsPanel.class);
         numberFormatPanel = context.getElement(SwingCalculationInputNumberFormatPanel.class);
 
-        panel.add(alarmPanel, new CellBuilder().x(0).y(0).width(1).build());
+        panel.add(alarmPanel, new CellBuilder().x(0).y(0).fill(HORIZONTAL).width(1).build());
         panel.add(numberFormatPanel, new CellBuilder().x(1).y(0).width(1).build());
         panel.add(measurementPanel, new CellBuilder().x(0).y(1).width(2).build());
         panel.add(buttonsPanel, new CellBuilder().x(0).y(2).width(2).build());
