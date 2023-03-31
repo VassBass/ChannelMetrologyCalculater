@@ -31,6 +31,11 @@ public class MxParserErrorCalculaterTest {
         channel = new ChannelBuilder().setRange(-774, 876).setMeasurementValue(Measurement.KGS_MM2).build();
     }
 
+    @After
+    public void dispose() {
+        repositoryFactory.dispose();
+    }
+
     @Test
     public void testIsFormulaValid() {
         String validFormula1 = "R²² - r² + 2.5";
@@ -53,11 +58,6 @@ public class MxParserErrorCalculaterTest {
         assertFalse(MxParserErrorCalculater.isFormulaValid(invalidFormula2));
         assertFalse(MxParserErrorCalculater.isFormulaValid(invalidFormula3));
         assertFalse(MxParserErrorCalculater.isFormulaValid(invalidFormula4));
-    }
-
-    @After
-    public void dispose() {
-        repositoryFactory.dispose();
     }
 
     @Test

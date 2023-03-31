@@ -3,14 +3,9 @@ package service.calculation.result.worker;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.dto.Sensor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import repository.RepositoryFactory;
-import repository.repos.sensor.SensorRepository;
 import service.calculation.dto.Protocol;
 import service.error_calculater.MxParserErrorCalculater;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 
 public abstract class CalculationWorker {
@@ -68,6 +63,7 @@ public abstract class CalculationWorker {
      * @see service.error_calculater.ErrorCalculater
      * @see MxParserErrorCalculater
      */
+    @SuppressWarnings("JavadocReference")
     protected double calculateAbsoluteErrorWithEquipment(double maxAbsoluteError, double sensorError, double calibratorError) {
         return Math.sqrt(Math.pow(maxAbsoluteError, 2) + Math.pow(sensorError, 2) + Math.pow(calibratorError, 2));
     }
@@ -114,13 +110,13 @@ public abstract class CalculationWorker {
      * UA - standard indeterminacy type "A"
      * (Σ(ΔXi²)) - sum of squared absolute errors
      * n - number of measurement
-     * @param errorsAbsolute absolute errors in every set-point. {@link #calculateAbsoluteErrors(Map)} Key = input, Value = output
+     * @param absoluteErrors absolute errors in every set-point. {@link #calculateAbsoluteErrors(Map)} Key = input, Value = output
      * @return value of standard indeterminacy type "A"
      */
-    protected double calculateStandardIndeterminacyA(Map<Double, double[]> errorsAbsolute) {
+    protected double calculateStandardIndeterminacyA(Map<Double, double[]> absoluteErrors) {
         double sum = 0;
         double n = 0;
-        for (Map.Entry<Double, double[]> entry : errorsAbsolute.entrySet()) {
+        for (Map.Entry<Double, double[]> entry : absoluteErrors.entrySet()) {
             sum += Arrays.stream(entry.getValue()).map(d -> Math.pow(d, 2)).sum();
             n += entry.getValue().length;
         }
@@ -140,6 +136,7 @@ public abstract class CalculationWorker {
      * @see service.error_calculater.ErrorCalculater
      * @see MxParserErrorCalculater
      */
+    @SuppressWarnings("JavadocReference")
     protected double calculateStandardIndeterminacyB(double errorSensor, double errorCalibrator) {
         return Math.sqrt(Math.pow(errorSensor, 2) + Math.pow(errorCalibrator, 2));
     }

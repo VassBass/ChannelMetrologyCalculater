@@ -51,6 +51,6 @@ public class SwingCalculationPersonsFormerPanel extends TitledPanel implements C
 
     @Override
     public Map.Entry<String, String> getFormer() {
-        return new AbstractMap.SimpleEntry<>(formerName.getSelectedItem(), formerPosition.getText());
+        return new AbstractMap.SimpleEntry<>(formerName.getSelectedString(), formerPosition.getText());
     }
 }

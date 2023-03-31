@@ -68,13 +68,13 @@ public class SwingCalculationPersonsMakersPanel extends TitledPanel implements C
     public List<Map.Entry<String, String>> getMakers() {
         List<Map.Entry<String, String>> result = new ArrayList<>();
 
-        String firstPersonName = this.firstPersonName.getSelectedItem();
+        String firstPersonName = this.firstPersonName.getSelectedString();
         String firstPersonPosition = this.firstPersonPosition.getText();
         if (StringHelper.nonEmpty(firstPersonName, firstPersonPosition)) {
             result.add(new AbstractMap.SimpleEntry<>(firstPersonName, firstPersonPosition));
         }
 
-        String secondPersonName = this.secondPersonName.getSelectedItem();
+        String secondPersonName = this.secondPersonName.getSelectedString();
         String secondPersonPosition = this.secondPersonPosition.getText();
         if (StringHelper.nonEmpty(secondPersonName, secondPersonPosition)) {
             result.add(new AbstractMap.SimpleEntry<>(secondPersonName, secondPersonPosition));
