@@ -7,4 +7,6 @@ public interface CalculationConfigHolder {
     int getInputDialogHeight();
     int getResultDialogWidth();
     int getResultDialogHeight();
+    int getPersonsDialogWidth();
+    int getPersonsDialogHeight();
 }

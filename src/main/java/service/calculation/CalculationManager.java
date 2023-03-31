@@ -15,5 +15,9 @@ public interface CalculationManager {
     void registerPersonDialog(@Nonnull CalculationCollectDialog dialog);
     void showPersonDialog();
 
+    void printProtocol();
+    void openProtocol();
+    void endCalculation();
+
     void disposeCalculation();
 }

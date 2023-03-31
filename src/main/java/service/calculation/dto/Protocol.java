@@ -5,6 +5,7 @@ import model.dto.Channel;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -30,6 +31,51 @@ public class Protocol implements Serializable {
     private int valuesDecimalPoint = 2;
     private int percentsDecimalPoint = 2;
     private String referenceNumber;
+    private List<Map.Entry<String, String>> makers;
+    private Map.Entry<String, String> former;
+    private String headOfMetrologyDepartment;
+    private String headOfCheckedChannelDepartment;
+    private String headOfASPCDepartment;
+
+    public List<Map.Entry<String, String>> getMakers() {
+        return makers;
+    }
+
+    public void setMakers(List<Map.Entry<String, String>> makers) {
+        this.makers = makers;
+    }
+
+    public Map.Entry<String, String> getFormer() {
+        return former;
+    }
+
+    public void setFormer(Map.Entry<String, String> former) {
+        this.former = former;
+    }
+
+    public String getHeadOfMetrologyDepartment() {
+        return headOfMetrologyDepartment;
+    }
+
+    public void setHeadOfMetrologyDepartment(String headOfMetrologyDepartment) {
+        this.headOfMetrologyDepartment = headOfMetrologyDepartment;
+    }
+
+    public String getHeadOfCheckedChannelDepartment() {
+        return headOfCheckedChannelDepartment;
+    }
+
+    public void setHeadOfCheckedChannelDepartment(String headOfCheckedChannelDepartment) {
+        this.headOfCheckedChannelDepartment = headOfCheckedChannelDepartment;
+    }
+
+    public String getHeadOfASPCDepartment() {
+        return headOfASPCDepartment;
+    }
+
+    public void setHeadOfASPCDepartment(String headOfASPCDepartment) {
+        this.headOfASPCDepartment = headOfASPCDepartment;
+    }
 
     public String getReferenceNumber() {
         return referenceNumber;

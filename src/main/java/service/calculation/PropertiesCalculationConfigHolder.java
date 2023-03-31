@@ -20,13 +20,17 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     private static final String KEY_INPUT_DIALOG_HEIGHT = "calculation.input.dialog.height";
     private static final String KEY_RESULT_DIALOG_WIDTH = "calculation.result.dialog.width";
     private static final String KEY_RESULT_DIALOG_HEIGHT = "calculation.result.dialog.height";
+    private static final String KEY_PERSONS_DIALOG_WIDTH = "calculation.persons.dialog.width";
+    private static final String KEY_PERSONS_DIALOG_HEIGHT = "calculation.persons.dialog.height";
 
     private int controlConditionDialogWidth = 685;
     private int controlConditionDialogHeight = 295;
     private int inputDialogWidth = 780;
     private int inputDialogHeight = 360;
-    private int resultDialogWidth = 100;
-    private int resultDialogHeight = 100;
+    private int resultDialogWidth = 450;
+    private int resultDialogHeight = 350;
+    private int personsDialogWidth = 100;
+    private int personsDialogHeight = 100;
 
     public PropertiesCalculationConfigHolder() {
         this(PROPERTIES_FILE_PATH);
@@ -55,6 +59,12 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
 
             Integer resultDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_RESULT_DIALOG_HEIGHT, null));
             if (resultDialogHeight != null) this.resultDialogHeight = resultDialogHeight;
+
+            Integer personsDialogWidth = StringHelper.parseInt(properties.getProperty(KEY_PERSONS_DIALOG_WIDTH, null));
+            if (personsDialogWidth != null) this.personsDialogWidth = personsDialogWidth;
+
+            Integer personsDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_PERSONS_DIALOG_HEIGHT, null));
+            if (personsDialogHeight != null) this.personsDialogHeight = personsDialogHeight;
 
         } catch (IOException e) {
             logger.warn("Exception was thrown: ", e);
@@ -89,5 +99,15 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     @Override
     public int getResultDialogHeight() {
         return resultDialogHeight;
+    }
+
+    @Override
+    public int getPersonsDialogWidth() {
+        return personsDialogWidth;
+    }
+
+    @Override
+    public int getPersonsDialogHeight() {
+        return personsDialogHeight;
     }
 }
