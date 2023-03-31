@@ -4,7 +4,7 @@ import model.ui.*;
 import model.ui.builder.CellBuilder;
 import service.channel.info.ChannelInfoManager;
 import service.channel.info.ui.ChannelInfoSensorPanel;
-import service.error_calculater.ErrorCalculater;
+import service.error_calculater.MxParserErrorCalculater;
 import util.StringHelper;
 
 import java.awt.*;
@@ -146,12 +146,12 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
 
     @Override
     public String getSelectedSensorType() {
-        return sensorsTypes.getSelectedItem();
+        return sensorsTypes.getSelectedString();
     }
 
     @Override
     public String getSelectedMeasurementValue() {
-        return measurementValues.getSelectedItem();
+        return measurementValues.getSelectedString();
     }
 
     @Override
@@ -177,7 +177,7 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
 
     @Override
     public String getErrorFormula() {
-        return errorFormulas.getSelectedItem();
+        return errorFormulas.getSelectedString();
     }
 
     @Override
@@ -200,7 +200,7 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
 
     @Override
     public boolean isErrorFormulaValid() {
-        if (ErrorCalculater.isFormulaValid(errorFormulas.getSelectedItem())) {
+        if (MxParserErrorCalculater.isFormulaValid(errorFormulas.getSelectedString())) {
             errorLabel.setForeground(Color.BLACK);
             return true;
         } else {

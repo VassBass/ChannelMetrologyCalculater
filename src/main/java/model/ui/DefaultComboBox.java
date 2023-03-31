@@ -18,7 +18,7 @@ public class DefaultComboBox extends JComboBox<String> {
         this.setModel(new DefaultComboBoxModel<>(list.toArray(new String[0])));
     }
 
-    public String getSelectedItem() {
+    public String getSelectedString() {
         Object selected = super.getSelectedItem();
         return selected == null ? EMPTY : selected.toString();
     }

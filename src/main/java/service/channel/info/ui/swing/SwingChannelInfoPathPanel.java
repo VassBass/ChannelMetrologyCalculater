@@ -88,21 +88,21 @@ public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInf
 
     @Override
     public String getSelectedDepartment() {
-        return departments.getSelectedItem();
+        return departments.getSelectedString();
     }
 
     @Override
     public String getSelectedArea() {
-        return areas.getSelectedItem();
+        return areas.getSelectedString();
     }
 
     @Override
     public String getSelectedProcess() {
-        return processes.getSelectedItem();
+        return processes.getSelectedString();
     }
 
     @Override
     public String getSelectedInstallation() {
-        return installations.getSelectedItem();
+        return installations.getSelectedString();
     }
 }

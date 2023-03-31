@@ -51,7 +51,7 @@ public class SwingCalculationResultConclusionPanel extends DefaultPanel implemen
 
     @Override
     public String getConclusion() {
-        return conclusion.getSelectedItem();
+        return conclusion.getSelectedString();
     }
 
     public List<String> createDefaultConclusions(Protocol protocol) {

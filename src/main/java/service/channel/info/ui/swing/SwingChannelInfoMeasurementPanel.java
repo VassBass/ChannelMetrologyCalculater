@@ -58,11 +58,11 @@ public class SwingChannelInfoMeasurementPanel extends TitledPanel implements Cha
 
     @Override
     public String getSelectedMeasurementName() {
-        return measurementName.getSelectedItem();
+        return measurementName.getSelectedString();
     }
 
     @Override
     public String getSelectedMeasurementValue() {
-        return measurementValue.getSelectedItem();
+        return measurementValue.getSelectedString();
     }
 }
