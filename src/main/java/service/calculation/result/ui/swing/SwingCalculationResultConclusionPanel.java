@@ -4,7 +4,7 @@ import model.ui.ButtonCell;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.calculation.result.ui.CalculationResultConclusionPanel;
 
 import java.awt.*;

@@ -7,7 +7,7 @@ import repository.RepositoryFactory;
 import service.ServiceExecuter;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.calculation.persons.ui.SwingCalculationPersonsContext;
 import service.calculation.persons.ui.swing.SwingCalculationPersonsDialog;
 

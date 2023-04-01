@@ -9,4 +9,5 @@ public interface CalculationConfigHolder {
     int getResultDialogHeight();
     int getPersonsDialogWidth();
     int getPersonsDialogHeight();
+    String getProtocolFolderPath();
 }

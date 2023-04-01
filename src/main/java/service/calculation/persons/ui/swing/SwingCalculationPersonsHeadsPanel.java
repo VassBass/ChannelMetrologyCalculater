@@ -7,7 +7,7 @@ import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.person.PersonRepository;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.calculation.persons.ui.CalculationPersonsHeadsPanel;
 import util.ObjectHelper;
 

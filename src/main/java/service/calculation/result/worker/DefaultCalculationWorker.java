@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import repository.repos.sensor.SensorRepository;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.error_calculater.MxParserErrorCalculater;
 
 import javax.annotation.Nonnull;

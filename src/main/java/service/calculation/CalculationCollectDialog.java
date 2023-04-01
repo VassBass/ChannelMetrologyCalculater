@@ -1,9 +1,7 @@
 package service.calculation;
 
 import model.ui.UI;
-import service.calculation.dto.Protocol;
-
-import javax.annotation.Nullable;
+import service.calculation.protocol.Protocol;
 
 public interface CalculationCollectDialog extends UI {
     boolean fillProtocol(Protocol protocol);

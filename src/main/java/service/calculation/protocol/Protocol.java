@@ -1,4 +1,4 @@
-package service.calculation.dto;
+package service.calculation.protocol;
 
 import model.dto.Calibrator;
 import model.dto.Channel;

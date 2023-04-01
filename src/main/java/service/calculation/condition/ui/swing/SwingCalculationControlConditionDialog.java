@@ -10,7 +10,7 @@ import repository.repos.calibrator.CalibratorRepository;
 import service.calculation.CalculationCollectDialog;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.condition.ui.SwingCalculationControlConditionContext;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import util.DateHelper;
 import util.ObjectHelper;
 import util.ScreenPoint;

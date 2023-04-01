@@ -3,7 +3,7 @@ package service.calculation.result.worker;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.dto.Sensor;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.error_calculater.MxParserErrorCalculater;
 
 import java.util.*;
@@ -63,7 +63,6 @@ public abstract class CalculationWorker {
      * @see service.error_calculater.ErrorCalculater
      * @see MxParserErrorCalculater
      */
-    @SuppressWarnings("JavadocReference")
     protected double calculateAbsoluteErrorWithEquipment(double maxAbsoluteError, double sensorError, double calibratorError) {
         return Math.sqrt(Math.pow(maxAbsoluteError, 2) + Math.pow(sensorError, 2) + Math.pow(calibratorError, 2));
     }
@@ -136,7 +135,6 @@ public abstract class CalculationWorker {
      * @see service.error_calculater.ErrorCalculater
      * @see MxParserErrorCalculater
      */
-    @SuppressWarnings("JavadocReference")
     protected double calculateStandardIndeterminacyB(double errorSensor, double errorCalibrator) {
         return Math.sqrt(Math.pow(errorSensor, 2) + Math.pow(errorCalibrator, 2));
     }

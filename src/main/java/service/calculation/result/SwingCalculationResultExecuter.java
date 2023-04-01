@@ -10,7 +10,7 @@ import repository.RepositoryFactory;
 import service.ServiceExecuter;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.calculation.result.ui.SwingCalculationResultContext;
 import service.calculation.result.ui.swing.SwingCalculationResultDialog;
 import service.calculation.result.worker.DefaultCalculationWorker;
@@ -18,7 +18,6 @@ import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class SwingCalculationResultExecuter implements ServiceExecuter {

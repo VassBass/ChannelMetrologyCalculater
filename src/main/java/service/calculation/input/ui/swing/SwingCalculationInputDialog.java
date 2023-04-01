@@ -5,7 +5,7 @@ import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.CalculationCollectDialog;
 import service.calculation.CalculationConfigHolder;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.calculation.input.ui.SwingCalculationInputContext;
 import util.ScreenPoint;
 

@@ -3,7 +3,7 @@ package service.calculation.result.ui;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.calculation.CalculationManager;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.calculation.result.ui.swing.SwingCalculationResultButtonsPanel;
 import service.calculation.result.ui.swing.SwingCalculationResultConclusionPanel;
 import service.calculation.result.ui.swing.SwingCalculationResultPanel;

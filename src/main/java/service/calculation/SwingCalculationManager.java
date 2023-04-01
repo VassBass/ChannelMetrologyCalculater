@@ -5,7 +5,7 @@ import model.dto.Channel;
 import repository.RepositoryFactory;
 import service.calculation.condition.SwingCalculationControlConditionExecuter;
 import service.calculation.input.SwingCalculationInputExecuter;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.calculation.persons.SwingCalculationPersonsExecuter;
 import service.calculation.result.SwingCalculationResultExecuter;
 

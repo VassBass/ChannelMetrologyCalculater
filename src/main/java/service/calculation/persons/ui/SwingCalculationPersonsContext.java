@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.calculation.CalculationManager;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import service.calculation.persons.ui.swing.SwingCalculationPersonsButtonPanel;
 import service.calculation.persons.ui.swing.SwingCalculationPersonsFormerPanel;
 import service.calculation.persons.ui.swing.SwingCalculationPersonsHeadsPanel;

@@ -3,7 +3,7 @@ package service.calculation.result.ui.swing;
 import model.ui.ButtonCell;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
-import service.calculation.dto.Protocol;
+import service.calculation.protocol.Protocol;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
