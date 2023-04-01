@@ -50,8 +50,8 @@ public class SwingCalculationPersonsDialog extends JDialog implements Calculatio
             }
         });
 
-        int width = configHolder.getResultDialogWidth();
-        int height = configHolder.getResultDialogHeight();
+        int width = configHolder.getPersonsDialogWidth();
+        int height = configHolder.getPersonsDialogHeight();
         if (!suitable) height += 35;
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.setSize(width, height);

@@ -109,7 +109,22 @@ public class SwingCalculationManager implements CalculationManager {
             } else return;
         }
 
-        new SwingCalculationPersonsExecuter().execute();
+        new SwingCalculationPersonsExecuter(applicationScreen, repositoryFactory, configHolder, this, protocol ).execute();
+    }
+
+    @Override
+    public void printProtocol() {
+
+    }
+
+    @Override
+    public void openProtocol() {
+
+    }
+
+    @Override
+    public void endCalculation() {
+
     }
 
     @Override
