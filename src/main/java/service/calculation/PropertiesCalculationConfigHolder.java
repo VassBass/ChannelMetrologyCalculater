@@ -110,4 +110,24 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     public int getPersonsDialogHeight() {
         return personsDialogHeight;
     }
+
+    @Override
+    public String getProtocolFolderPath() {
+        return null;
+    }
+
+    @Override
+    public String getTemperatureCalculationMethodName() {
+        return null;
+    }
+
+    @Override
+    public String getPressureCalculationMethodName() {
+        return null;
+    }
+
+    @Override
+    public String getConsumptionCalculationMethodName() {
+        return null;
+    }
 }

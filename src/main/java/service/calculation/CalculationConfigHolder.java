@@ -10,4 +10,7 @@ public interface CalculationConfigHolder {
     int getPersonsDialogWidth();
     int getPersonsDialogHeight();
     String getProtocolFolderPath();
+    String getTemperatureCalculationMethodName();
+    String getPressureCalculationMethodName();
+    String getConsumptionCalculationMethodName();
 }

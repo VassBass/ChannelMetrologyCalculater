@@ -3,6 +3,7 @@ package util;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static util.StringHelper.FOR_LAST_ZERO;
 
 public class StringHelperTest {
 
@@ -72,6 +73,23 @@ public class StringHelperTest {
         assertEquals("1.050", StringHelper.roundingDouble(d5, 3));
         assertEquals("6.000", StringHelper.roundingDouble(d6, 3));
         assertEquals("1", StringHelper.roundingDouble(d5, 0));
+    }
+
+    @Test
+    public void testRoundingDoubleForLastZero() {
+        double d1 = 0.123456089;
+        double d2 = 0.987654320;
+        double d3 = 0.000909;
+        double d4 = 0.000110;
+        double d5 = 1.05;
+        double d6 = 6.00;
+
+        assertEquals("0.123456", StringHelper.roundingDouble(d1, FOR_LAST_ZERO));
+        assertEquals("0.98765432", StringHelper.roundingDouble(d2, FOR_LAST_ZERO));
+        assertEquals("0.0009", StringHelper.roundingDouble(d3, FOR_LAST_ZERO));
+        assertEquals("0.00011", StringHelper.roundingDouble(d4, FOR_LAST_ZERO));
+        assertEquals("1.05", StringHelper.roundingDouble(d5, FOR_LAST_ZERO));
+        assertEquals("6", StringHelper.roundingDouble(d6, FOR_LAST_ZERO));
     }
 
     @Test
