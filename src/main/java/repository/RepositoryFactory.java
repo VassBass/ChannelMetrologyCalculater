@@ -6,6 +6,8 @@ import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.repos.area.AreaRepository;
 import repository.repos.area.BufferedAreaRepositorySQLite;
+import repository.repos.calculation_method.BufferedCalculationMethodRepositorySQLite;
+import repository.repos.calculation_method.CalculationMethodRepository;
 import repository.repos.calibrator.BufferedCalibratorRepositorySQLite;
 import repository.repos.calibrator.CalibratorRepository;
 import repository.repos.channel.BufferedChannelRepositorySQLite;
@@ -73,6 +75,8 @@ public class RepositoryFactory {
                 i = (T) new BufferedMeasurementFactorRepositorySQLite(configHolder, connector);
             if (clazz.isAssignableFrom(SensorErrorRepository.class))
                 i = (T) new BufferedSensorErrorRepositorySQLite(configHolder, connector);
+            if (clazz.isAssignableFrom(CalculationMethodRepository.class))
+                i = (T) new BufferedCalculationMethodRepositorySQLite(configHolder, connector);
 
             if (i == null) logger.warn(String.format("Can't find implementation for %s", clazz.getName()));
             else implementations.put(clazz, i);

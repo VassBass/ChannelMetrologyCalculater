@@ -1,6 +1,7 @@
 package repository.init.reg;
 
 import repository.repos.area.AreaRepository;
+import repository.repos.calculation_method.CalculationMethodRepository;
 import repository.repos.calibrator.CalibratorRepository;
 import repository.repos.channel.ChannelRepository;
 import repository.repos.control_points.ControlPointsRepository;
@@ -35,6 +36,7 @@ public class RepositoryTableRegistrar {
             registeredTables.put(ControlPointsRepository.class, "controlPoints");
             registeredTables.put(MeasurementFactorRepository.class, "measurement_factors");
             registeredTables.put(SensorErrorRepository.class, "sensors_errors");
+            registeredTables.put(CalculationMethodRepository.class, "calculation_methods");
         }
 
         return registeredTables;
