@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
-import repository.repos.calibrator.CalibratorRepository;
+import repository.repos.calculation_method.CalculationMethodRepository;
 
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,7 +20,7 @@ public class CalculationMethodRepositoryInitializer extends RepositoryInitialize
     public void init() {
         super.init();
 
-        String tableName = configHolder.getTableName(CalibratorRepository.class);
+        String tableName = configHolder.getTableName(CalculationMethodRepository.class);
 
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s ("
                 + "measurement_name text NOT NULL UNIQUE"
