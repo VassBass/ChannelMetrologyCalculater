@@ -6,6 +6,7 @@ import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.init.CalculationMethodRepositoryInitializer;
 
+import javax.annotation.Nonnull;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -42,7 +43,7 @@ public class CalculationMethodRepositorySQLite implements  CalculationMethodRepo
     }
 
     @Override
-    public String getMethodNameByMeasurementName(String measurementName) {
+    public String getMethodNameByMeasurementName(@Nonnull String measurementName) {
         String sql = String.format("SELECT method_name FROM %s WHERE measurement_name = '%s' LIMIT 1;", tableName, measurementName);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             if (resultSet.next()){
@@ -55,7 +56,7 @@ public class CalculationMethodRepositorySQLite implements  CalculationMethodRepo
     }
 
     @Override
-    public boolean set(String measurementName, String methodName) {
+    public boolean set(@Nonnull String measurementName, @Nonnull String methodName) {
         String sql = String.format("UPDATE %s SET method_name = '%s' WHERE measurement_name = '%s';", tableName, methodName, measurementName);
         try (Statement statement = connector.getStatement()){
                 return statement.executeUpdate(sql) > 0;
@@ -66,7 +67,7 @@ public class CalculationMethodRepositorySQLite implements  CalculationMethodRepo
     }
 
     @Override
-    public boolean add(String measurementName, String methodName) {
+    public boolean add(@Nonnull String measurementName, @Nonnull String methodName) {
         String sql = String.format("INSERT INTO %s (measurement_name, method_name) VALUES('%s', '%s');", tableName, measurementName, methodName);
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
@@ -77,7 +78,7 @@ public class CalculationMethodRepositorySQLite implements  CalculationMethodRepo
     }
 
     @Override
-    public boolean removeByMeasurementName(String measurementName) {
+    public boolean removeByMeasurementName(@Nonnull String measurementName) {
         String sql = String.format("DELETE FROM %s WHERE measurement_name = '%s';", tableName, measurementName);
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;

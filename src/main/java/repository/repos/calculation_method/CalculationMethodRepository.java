@@ -1,16 +1,17 @@
 package repository.repos.calculation_method;
 
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
 public interface CalculationMethodRepository {
     Map<String, String> getAll();
-    @Nullable String getMethodNameByMeasurementName(String measurementName);
+    @Nullable String getMethodNameByMeasurementName(@Nonnull String measurementName);
 
-    boolean set(String measurementName, String methodName);
+    boolean set(@Nonnull String measurementName, @Nonnull String methodName);
 
-    boolean add(String measurementName, String methodName);
+    boolean add(@Nonnull String measurementName, @Nonnull String methodName);
 
-    boolean removeByMeasurementName(String measurementName);
+    boolean removeByMeasurementName(@Nonnull String measurementName);
 }

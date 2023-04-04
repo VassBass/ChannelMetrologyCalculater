@@ -3,6 +3,7 @@ package repository.repos.calculation_method;
 import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 
+import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,12 +21,12 @@ public class BufferedCalculationMethodRepositorySQLite extends CalculationMethod
     }
 
     @Override
-    public String getMethodNameByMeasurementName(String measurementName) {
+    public String getMethodNameByMeasurementName(@Nonnull String measurementName) {
         return buffer.get(measurementName);
     }
 
     @Override
-    public boolean set(String measurementName, String methodName) {
+    public boolean set(@Nonnull String measurementName, @Nonnull String methodName) {
         if (buffer.containsKey(measurementName)) {
             buffer.put(measurementName, methodName);
             return super.set(measurementName, methodName);
@@ -33,7 +34,7 @@ public class BufferedCalculationMethodRepositorySQLite extends CalculationMethod
     }
 
     @Override
-    public boolean add(String measurementName, String methodName) {
+    public boolean add(@Nonnull String measurementName, @Nonnull String methodName) {
         if (buffer.containsKey(measurementName)) return false;
 
         buffer.put(measurementName, methodName);
@@ -41,7 +42,7 @@ public class BufferedCalculationMethodRepositorySQLite extends CalculationMethod
     }
 
     @Override
-    public boolean removeByMeasurementName(String measurementName) {
+    public boolean removeByMeasurementName(@Nonnull String measurementName) {
         if (Objects.nonNull(buffer.remove(measurementName))) {
             return super.removeByMeasurementName(measurementName);
         } else return false;
