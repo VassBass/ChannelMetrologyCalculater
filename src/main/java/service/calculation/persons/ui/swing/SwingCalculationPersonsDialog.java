@@ -1,11 +1,13 @@
 package service.calculation.persons.ui.swing;
 
 import application.ApplicationScreen;
+import model.OS;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.CalculationCollectDialog;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
+import service.calculation.persons.CalculationPersonValuesBuffer;
 import service.calculation.protocol.Protocol;
 import service.calculation.persons.ui.SwingCalculationPersonsContext;
 import util.ScreenPoint;
@@ -15,6 +17,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Map;
+import java.util.List;
 
 public class SwingCalculationPersonsDialog extends JDialog implements CalculationCollectDialog {
     private static final String TITLE = "Персонал задієний в КМХ";
@@ -92,12 +96,38 @@ public class SwingCalculationPersonsDialog extends JDialog implements Calculatio
 
     @Override
     public boolean fillProtocol(Protocol protocol) {
-        protocol.setMakers(makersPanel.getMakers());
-        protocol.setFormer(formerPanel.getFormer());
-        protocol.setHeadOfMetrologyDepartment(headsPanel.getHeadOfMetrologyDepartment());
-        protocol.setHeadOfCheckedChannelDepartment(headsPanel.getHeadOfCheckedChannelDepartment());
-        protocol.setHeadOfASPCDepartment(headsPanel.getHeadOfASPCDepartment());
-        protocol.setOs(osChooserPanel.getOS());
+        List<Map.Entry<String, String>> makers = makersPanel.getMakers();
+        Map.Entry<String, String> former = formerPanel.getFormer();
+        String headOfMetrologyDepartment = headsPanel.getHeadOfMetrologyDepartment();
+        String headOfCheckedChannelDepartment = headsPanel.getHeadOfCheckedChannelDepartment();
+        String headOfASPCDepartment = headsPanel.getHeadOfASPCDepartment();
+        OS os = osChooserPanel.getOS();
+
+        protocol.setMakers(makers);
+        protocol.setFormer(former);
+        protocol.setHeadOfMetrologyDepartment(headOfMetrologyDepartment);
+        protocol.setHeadOfCheckedChannelDepartment(headOfCheckedChannelDepartment);
+        protocol.setHeadOfASPCDepartment(headOfASPCDepartment);
+        protocol.setOs(os);
+
+        CalculationPersonValuesBuffer buffer = CalculationPersonValuesBuffer.getInstance();
+        int index = 0;
+        if (index < makers.size()) {
+            Map.Entry<String, String> firstMaker = makers.get(index++);
+            buffer.setFirstMakerName(firstMaker.getKey());
+            buffer.setFirstMakerPosition(firstMaker.getValue());
+        }
+        if (index < makers.size()) {
+            Map.Entry<String, String> secondMaker = makers.get(index);
+            buffer.setSecondMakerName(secondMaker.getKey());
+            buffer.setSecondMakerPosition(secondMaker.getValue());
+        }
+        buffer.setFormerName(former.getKey());
+        buffer.setFormerPosition(former.getValue());
+        buffer.setHeadOfMetrologyDepartment(headOfMetrologyDepartment);
+        buffer.setHeadOfCheckedChannelDepartment(headOfCheckedChannelDepartment);
+        buffer.setHeadOfASPCDepartment(headOfASPCDepartment);
+        buffer.setOs(os);
         return true;
     }
 }

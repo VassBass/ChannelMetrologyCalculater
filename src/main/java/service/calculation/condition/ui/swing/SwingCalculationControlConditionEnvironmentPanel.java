@@ -5,6 +5,7 @@ import model.ui.ButtonCell;
 import model.ui.DefaultPanel;
 import model.ui.IntegerTextField;
 import model.ui.builder.CellBuilder;
+import service.calculation.condition.CalculationControlConditionValuesBuffer;
 import service.calculation.condition.ui.CalculationControlConditionEnvironmentPanel;
 
 import static javax.swing.SwingConstants.CENTER;
@@ -26,6 +27,7 @@ public class SwingCalculationControlConditionEnvironmentPanel extends DefaultPan
 
     public SwingCalculationControlConditionEnvironmentPanel() {
         super();
+        CalculationControlConditionValuesBuffer buffer = CalculationControlConditionValuesBuffer.getInstance();
 
         ButtonCell header = new ButtonCell(HEADER, HEADER_TEXT);
         ButtonCell temperatureLabel = new ButtonCell(SIMPLE, TEMPERATURE_TEXT);
@@ -36,9 +38,9 @@ public class SwingCalculationControlConditionEnvironmentPanel extends DefaultPan
         ButtonCell humidityMeasurementValue = new ButtonCell(SIMPLE, HUMIDITY_MEASUREMENT_VALUE);
         ButtonCell pressureMeasurementValue = new ButtonCell(SIMPLE, PRESSURE_MEASUREMENT_VALUE);
 
-        temperatureValue = new IntegerTextField(2, 21, CENTER);
-        humidityValue = new IntegerTextField(2, 70, CENTER);
-        pressureValue = new IntegerTextField(3, 750, CENTER);
+        temperatureValue = new IntegerTextField(2, buffer.getTemperature(), CENTER);
+        humidityValue = new IntegerTextField(2, buffer.getHumidity(), CENTER);
+        pressureValue = new IntegerTextField(3, buffer.getPressure(), CENTER);
 
         this.add(header, new CellBuilder().x(0).y(0).width(3).build());
         this.add(temperatureLabel, new CellBuilder().x(0).y(1).width(1).build());

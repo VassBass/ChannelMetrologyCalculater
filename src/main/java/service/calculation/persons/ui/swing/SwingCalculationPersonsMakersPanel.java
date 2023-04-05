@@ -7,15 +7,14 @@ import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.person.PersonRepository;
+import service.calculation.persons.CalculationPersonValuesBuffer;
 import service.calculation.persons.ui.CalculationPersonsMakersPanel;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.AbstractMap;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -32,6 +31,7 @@ public class SwingCalculationPersonsMakersPanel extends TitledPanel implements C
 
     public SwingCalculationPersonsMakersPanel(@Nonnull RepositoryFactory repositoryFactory) {
         super(TITLE_TEXT, Color.BLACK);
+        CalculationPersonValuesBuffer buffer = CalculationPersonValuesBuffer.getInstance();
 
         PersonRepository personRepository = repositoryFactory.getImplementation(PersonRepository.class);
         personList = new ArrayList<>(personRepository.getAll());
@@ -47,6 +47,8 @@ public class SwingCalculationPersonsMakersPanel extends TitledPanel implements C
                 firstPersonPosition.setText(personList.get(index).getPosition());
             }
         });
+        if (Objects.nonNull(buffer.getFirstMakerName())) firstPersonName.setSelectedItem(buffer.getFirstMakerName());
+        if (Objects.nonNull(buffer.getFirstMakerPosition())) firstPersonPosition.setText(buffer.getFirstMakerPosition());
 
         secondPersonName = new DefaultComboBox(true);
         secondPersonName.setList(personsNames);
@@ -57,6 +59,8 @@ public class SwingCalculationPersonsMakersPanel extends TitledPanel implements C
                 secondPersonPosition.setText(personList.get(index).getPosition());
             }
         });
+        if (Objects.nonNull(buffer.getSecondMakerName())) secondPersonName.setSelectedItem(buffer.getSecondMakerName());
+        if (Objects.nonNull(buffer.getSecondMakerPosition())) secondPersonPosition.setText(buffer.getSecondMakerPosition());
 
         this.add(firstPersonName, new CellBuilder().x(0).y(0).build());
         this.add(firstPersonPosition, new CellBuilder().x(1).y(0).build());

@@ -5,6 +5,7 @@ import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.CalculationCollectDialog;
 import service.calculation.CalculationConfigHolder;
+import service.calculation.input.CalculationInputValuesBuffer;
 import service.calculation.protocol.Protocol;
 import service.calculation.input.ui.SwingCalculationInputContext;
 import util.ScreenPoint;
@@ -49,10 +50,10 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
                 buttonsPanel.clickCloseButton();
             }
         });
+        numberFormatPanel.clickButtonLook();
 
         int width = configHolder.getInputDialogWidth();
         int height = configHolder.getInputDialogHeight();
-
         int inputSize = Objects.nonNull(measurementPanel.getInputs()) ? measurementPanel.getInputs().size() : 3;
         for (int i = 3; i < inputSize; i++) height += 45;
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -119,6 +120,10 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
         protocol.setOutput(output);
         protocol.setValuesDecimalPoint(numberFormatPanel.getValueDecimalPoint());
         protocol.setPercentsDecimalPoint(numberFormatPanel.getPercentDecimalPoint());
+
+        CalculationInputValuesBuffer buffer = CalculationInputValuesBuffer.getInstance();
+        buffer.setValueDecimalPoint(numberFormatPanel.getValueDecimalPoint());
+        buffer.setPercentDecimalPoint(numberFormatPanel.getPercentDecimalPoint());
 
         return true;
     }

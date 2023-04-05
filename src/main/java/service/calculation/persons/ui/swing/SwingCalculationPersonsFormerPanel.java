@@ -7,13 +7,11 @@ import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.person.PersonRepository;
+import service.calculation.persons.CalculationPersonValuesBuffer;
 import service.calculation.persons.ui.CalculationPersonsFormerPanel;
 
 import javax.annotation.Nonnull;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -28,6 +26,7 @@ public class SwingCalculationPersonsFormerPanel extends TitledPanel implements C
 
     public SwingCalculationPersonsFormerPanel(@Nonnull RepositoryFactory repositoryFactory) {
         super(TITLE_TEXT);
+        CalculationPersonValuesBuffer buffer = CalculationPersonValuesBuffer.getInstance();
 
         PersonRepository personRepository = repositoryFactory.getImplementation(PersonRepository.class);
         personList = new ArrayList<>(personRepository.getAll());
@@ -44,6 +43,8 @@ public class SwingCalculationPersonsFormerPanel extends TitledPanel implements C
                 formerPosition.setText(personList.get(index).getPosition());
             }
         });
+        if (Objects.nonNull(buffer.getFormerName())) formerName.setSelectedItem(buffer.getFormerName());
+        if (Objects.nonNull(buffer.getFormerPosition())) formerPosition.setText(buffer.getFormerPosition());
 
         this.add(formerName, new CellBuilder().x(0).build());
         this.add(formerPosition, new CellBuilder().x(1).build());

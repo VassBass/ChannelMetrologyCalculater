@@ -6,6 +6,7 @@ import model.ui.IntegerTextField;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.input.CalculationInputManager;
+import service.calculation.input.CalculationInputValuesBuffer;
 import service.calculation.input.ui.CalculationInputNumberFormatPanel;
 
 import java.awt.*;
@@ -24,16 +25,18 @@ public class SwingCalculationInputNumberFormatPanel extends TitledPanel implemen
 
     private final IntegerTextField valueDecimalPoint;
     private final IntegerTextField percentDecimalPoint;
+    private final DefaultButton buttonLook;
 
     public SwingCalculationInputNumberFormatPanel(CalculationInputManager manager) {
         super(TITLE_TEXT, Color.BLACK);
+        CalculationInputValuesBuffer buffer = CalculationInputValuesBuffer.getInstance();
 
         ButtonCell label = new ButtonCell(HEADER, LABEL_TEXT);
         ButtonCell percentLabel = new ButtonCell(SIMPLE, PERCENT_LABEL_TEXT);
         ButtonCell valueLabel = new ButtonCell(SIMPLE, VALUE_LABEL_TEXT);
-        valueDecimalPoint = new IntegerTextField(2, 2, VALUE_TOOLTIP_TEXT);
-        percentDecimalPoint = new IntegerTextField(2, 2, PERCENT_TOOLTIP_TEXT);
-        DefaultButton buttonLook = new DefaultButton(BUTTON_TEXT);
+        valueDecimalPoint = new IntegerTextField(2, buffer.getValueDecimalPoint(), VALUE_TOOLTIP_TEXT);
+        percentDecimalPoint = new IntegerTextField(2, buffer.getPercentDecimalPoint(), PERCENT_TOOLTIP_TEXT);
+        buttonLook = new DefaultButton(BUTTON_TEXT);
 
         buttonLook.addActionListener(e -> manager.setDecimalPoint(getPercentDecimalPoint(), getValueDecimalPoint()));
 
@@ -53,5 +56,9 @@ public class SwingCalculationInputNumberFormatPanel extends TitledPanel implemen
     @Override
     public int getPercentDecimalPoint() {
         return Integer.parseInt(percentDecimalPoint.getText());
+    }
+
+    public void clickButtonLook() {
+        buttonLook.doClick();
     }
 }

@@ -9,9 +9,9 @@ import repository.RepositoryFactory;
 import repository.repos.calibrator.CalibratorRepository;
 import service.calculation.CalculationCollectDialog;
 import service.calculation.CalculationConfigHolder;
+import service.calculation.condition.CalculationControlConditionValuesBuffer;
 import service.calculation.condition.ui.SwingCalculationControlConditionContext;
 import service.calculation.protocol.Protocol;
-import util.DateHelper;
 import util.ObjectHelper;
 import util.ScreenPoint;
 
@@ -21,7 +21,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -57,8 +56,6 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
         String measurementName = channel.getMeasurementName();
         List<String> suitableCalibratorsNames = Arrays.asList(calibratorRepository.getAllNamesByMeasurementName(measurementName));
         calibratorPanel.setCalibratorsNamesList(suitableCalibratorsNames);
-
-        datePanel.setDate(DateHelper.dateToString(Calendar.getInstance()));
 
         panel.add(datePanel, new CellBuilder().fill(HORIZONTAL).x(0).y(0).width(1).height(1).build());
         panel.add(protocolNumberPanel, new CellBuilder().fill(HORIZONTAL).x(1).y(0).width(1).height(1).build());
@@ -126,12 +123,20 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
             Calibrator calibrator = calibratorRepository.get(calibratorName);
             if (Objects.isNull(calibrator)) return false;
 
+            CalculationControlConditionValuesBuffer buffer = CalculationControlConditionValuesBuffer.getInstance();
+
             protocol.setDate(date);
             protocol.setNumber(protocolNumber);
             protocol.setCalibrator(calibrator);
             protocol.setTemperature(temperature);
             protocol.setHumidity(humidity);
             protocol.setPressure(pressure);
+
+            buffer.setDate(date);
+            buffer.setTemperature(temperature);
+            buffer.setHumidity(humidity);
+            buffer.setPressure(pressure);
+
             return true;
         }
     }

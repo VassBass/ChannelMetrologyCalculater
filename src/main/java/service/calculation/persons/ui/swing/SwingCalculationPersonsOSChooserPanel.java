@@ -2,6 +2,7 @@ package service.calculation.persons.ui.swing;
 
 import model.OS;
 import model.ui.TitledComboBox;
+import service.calculation.persons.CalculationPersonValuesBuffer;
 import service.calculation.persons.ui.CalculationPersonsOSChooserPanel;
 
 import java.awt.*;
@@ -15,9 +16,11 @@ public class SwingCalculationPersonsOSChooserPanel extends TitledComboBox implem
 
     public SwingCalculationPersonsOSChooserPanel() {
         super(false, TITLE_TEXT, Color.BLACK);
+        CalculationPersonValuesBuffer buffer = CalculationPersonValuesBuffer.getInstance();
+
         this.setList(Arrays.asList(WINDOWS_TEXT, LINUX_TEXT));
         this.setToolTipText(TOOLTIP_TEXT);
-        this.setSelectedItem(OS.getCurrentOS() == OS.WINDOWS ? WINDOWS_TEXT : LINUX_TEXT);
+        this.setSelectedItem(buffer.getOs() == OS.WINDOWS ? WINDOWS_TEXT : LINUX_TEXT);
     }
 
     @Override

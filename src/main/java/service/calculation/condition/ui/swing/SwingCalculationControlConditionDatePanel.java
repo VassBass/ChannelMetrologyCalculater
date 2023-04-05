@@ -4,6 +4,7 @@ import model.ui.DefaultLabel;
 import model.ui.IntegerTextField;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
+import service.calculation.condition.CalculationControlConditionValuesBuffer;
 import service.calculation.condition.ui.CalculationControlConditionDatePanel;
 import util.DateHelper;
 
@@ -22,10 +23,13 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
 
     public SwingCalculationControlConditionDatePanel() {
         super(TITLE, Color.BLACK);
+        CalculationControlConditionValuesBuffer buffer = CalculationControlConditionValuesBuffer.getInstance();
 
         dayField = new IntegerTextField(2);
         monthField = new IntegerTextField(2);
         yearField = new IntegerTextField(4);
+
+        this.setDate(buffer.getDate());
 
         dayField.setFocusListener(dayMonthFocusListener);
         monthField.setFocusListener(dayMonthFocusListener);
