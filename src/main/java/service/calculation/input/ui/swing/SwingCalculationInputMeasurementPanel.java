@@ -295,6 +295,7 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     private TreeMap<Double, Double> createDefaultInput(RepositoryFactory repositoryFactory, Channel channel) {
         ControlPointsRepository controlPointsRepository = repositoryFactory.getImplementation(ControlPointsRepository.class);
         SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+
         ControlPoints controlPoints = null;
         if (ObjectHelper.nonNull(controlPointsRepository, sensorRepository)) {
             Sensor sensor = sensorRepository.get(channel.getCode());
@@ -336,20 +337,19 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         TreeMap<Double, double[]> result = new TreeMap<>();
         if (Objects.isNull(input)) return null;
 
-        int x = 0;
+        int y = 0;
         for (Map.Entry<Double, Double> entry : input.entrySet()) {
             List<Double> output = new ArrayList<>();
-            for (int y = 0; y < measurementValues.length; y++) {
-                int i = x * 2;
-                String val1 = measurementValues[x][i].getText();
-                String val2 = measurementValues[x][i + 1].getText();
+            for (DefaultTextField[] measurementValue : measurementValues) {
+                String val1 = measurementValue[y].getText();
+                String val2 = measurementValue[y + 1].getText();
                 if (!StringHelper.isDouble(val1)) return null;
                 if (!StringHelper.isDouble(val2)) return null;
                 output.add(Double.parseDouble(val1));
                 output.add(Double.parseDouble(val2));
             }
             result.put(entry.getValue(), output.stream().mapToDouble(Double::doubleValue).toArray());
-            x++;
+            y += 2;
         }
         return result;
     }

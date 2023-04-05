@@ -2,6 +2,7 @@ package service.calculation.protocol;
 
 import model.dto.Calibrator;
 import model.dto.Channel;
+import model.dto.Person;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class Protocol implements Serializable {
     private double extendedIndeterminacy;
     private double absoluteError;
     private double relativeError;
-    private Map<Double, Double> systematicErrors;
+    private TreeMap<Double, Double> systematicErrors;
     private String conclusion;
     private int valuesDecimalPoint = 2;
     private int percentsDecimalPoint = 2;
@@ -37,6 +38,11 @@ public class Protocol implements Serializable {
     private String headOfCheckedChannelDepartment;
     private String headOfASPCDepartment;
 
+    /**
+     * @return list of mappings of makers where key = full name, value position
+     * @see Person
+     * @see Person#createFullName()
+     */
     public List<Map.Entry<String, String>> getMakers() {
         return makers;
     }
@@ -45,6 +51,11 @@ public class Protocol implements Serializable {
         this.makers = makers;
     }
 
+    /**
+     * @return list of mappings of makers where key = full name, value position
+     * @see Person
+     * @see Person#createFullName()
+     */
     public Map.Entry<String, String> getFormer() {
         return former;
     }
@@ -133,11 +144,11 @@ public class Protocol implements Serializable {
         this.relativeError = relativeError;
     }
 
-    public Map<Double, Double> getSystematicErrors() {
+    public TreeMap<Double, Double> getSystematicErrors() {
         return systematicErrors;
     }
 
-    public void setSystematicErrors(Map<Double, Double> systematicErrors) {
+    public void setSystematicErrors(TreeMap<Double, Double> systematicErrors) {
         this.systematicErrors = systematicErrors;
     }
 

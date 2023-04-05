@@ -64,6 +64,11 @@ public class SwingCalculationPersonsMakersPanel extends TitledPanel implements C
         this.add(secondPersonPosition, new CellBuilder().x(1).y(1).build());
     }
 
+    /**
+     * @return list of mappings of makers where key = full name, value position
+     * @see Person
+     * @see Person#createFullName()
+     */
     @Override
     public List<Map.Entry<String, String>> getMakers() {
         List<Map.Entry<String, String>> result = new ArrayList<>();

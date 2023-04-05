@@ -8,46 +8,52 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import repository.RepositoryFactory;
+import repository.repos.calculation_method.CalculationMethodRepository;
 import repository.repos.sensor.SensorRepository;
-import service.calculation.CalculationConfigHolder;
 import service.calculation.protocol.Protocol;
 import service.error_calculater.MxParserErrorCalculater;
 import util.DateHelper;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static util.StringHelper.FOR_LAST_ZERO;
 
 public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer {
-    private static final String EXTRAORDINARY = "Позачерговий";
+    protected static final String EXTRAORDINARY = "Позачерговий";
 
     private final HSSFWorkbook book;
-    private final CalculationConfigHolder configHolder;
-    private final RepositoryFactory repositoryFactory;
+    protected final RepositoryFactory repositoryFactory;
 
-    private TemplateExelTemperatureProtocolFormer(@Nonnull HSSFWorkbook book,
-                                                  @Nonnull CalculationConfigHolder configHolder,
+    public TemplateExelTemperatureProtocolFormer(@Nonnull HSSFWorkbook book,
                                                   @Nonnull RepositoryFactory repositoryFactory) {
         this.book = book;
-        this.configHolder = configHolder;
         this.repositoryFactory = repositoryFactory;
     }
 
     @Override
     public HSSFWorkbook format(Protocol protocol) {
-        MxParserErrorCalculater errorCalculater = new MxParserErrorCalculater(repositoryFactory, protocol.getChannel());
+        final MxParserErrorCalculater errorCalculater = new MxParserErrorCalculater(repositoryFactory, protocol.getChannel());
 
         appendMainInfo(protocol);
         appendChannelInfo(protocol);
         appendSensorInfo(repositoryFactory, protocol, errorCalculater);
+        appendCalibratorInfo(protocol, errorCalculater);
+        appendCalculationResult(protocol);
+        appendPersons(protocol);
 
         return book;
     }
 
-    void appendMainInfo(Protocol protocol) {
-        boolean suitable = protocol.getChannel().getAllowableErrorPercent() >= protocol.getRelativeError();
+    protected void appendMainInfo(Protocol protocol) {
+        final CalculationMethodRepository calculationMethodRepository = repositoryFactory.getImplementation(CalculationMethodRepository.class);
+
+        final boolean suitable = protocol.getChannel().getAllowableErrorPercent() >= protocol.getRelativeError();
 
         final String protocolNumber = protocol.getNumber();
         cell(12,2).setCellValue(protocolNumber);
@@ -72,8 +78,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         final String atmospherePressure = String.valueOf(protocol.getPressure());
         cell(27,4).setCellValue(atmospherePressure);
 
-        final String methodName = configHolder.getTemperatureCalculationMethodName();
-        cell(32,15).setCellValue(methodName);
+        final String methodName = calculationMethodRepository.getMethodNameByMeasurementName(protocol.getChannel().getMeasurementName());
+        if (Objects.nonNull(methodName)) cell(32,15).setCellValue(methodName);
 
         String nextDate;
         if (suitable){
@@ -81,11 +87,14 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
             if (nextDate.isEmpty()) nextDate = EXTRAORDINARY;
         }else nextDate = EXTRAORDINARY;
         cell(38,14).setCellValue(nextDate);
+
+        final String numberOfReference = protocol.getReferenceNumber();
+        cell(10,21).setCellValue(numberOfReference);
     }
 
-    void appendChannelInfo(Protocol protocol) {
-        Channel channel = protocol.getChannel();
-        boolean suitable = protocol.getRelativeError() <= channel.getAllowableErrorPercent();
+    protected void appendChannelInfo(Protocol protocol) {
+        final Channel channel = protocol.getChannel();
+        final boolean suitable = protocol.getRelativeError() <= channel.getAllowableErrorPercent();
 
         final String name = channel.getName();
         cell(10,0).setCellValue(name);
@@ -149,59 +158,151 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         cell(24,16).setCellValue(String.format("%sр.", frequency));
     }
 
-    private void appendSensorInfo(RepositoryFactory repositoryFactory, Protocol protocol, MxParserErrorCalculater errorCalculater) {
-        Channel channel = protocol.getChannel();
-        SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
-        Sensor sensor = sensorRepository.get(channel.getCode());
+    protected void appendSensorInfo(RepositoryFactory repositoryFactory, Protocol protocol, MxParserErrorCalculater errorCalculater) {
+        final Channel channel = protocol.getChannel();
+        final SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+        final Sensor sensor = sensorRepository.get(channel.getCode());
         if (Objects.isNull(sensor)) return;
 
-        String type = sensor.getType();
+        final String type = sensor.getType();
         cell(20,4).setCellValue(type);
 
-        double errorSensor = errorCalculater.calculate(sensor);
+        final double errorSensor = errorCalculater.calculate(sensor);
         if (Double.isNaN(errorSensor)) return;
-        double eP = errorSensor / (sensor.calculateRange() / 100);
-        String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
+        double eP = errorSensor / (channel.calculateRange() / 100);
+        final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
         cell(21,5).setCellValue(errorPercent);
 
-        String error = StringHelper.roundingDouble(errorSensor, protocol.getValuesDecimalPoint());
-        cell(21,7).setCellValue(error);
+        final String errorValue = StringHelper.roundingDouble(errorSensor, protocol.getValuesDecimalPoint());
+        cell(21,7).setCellValue(errorValue);
 
-        String rangeMin = StringHelper.roundingDouble(sensor.getRangeMin(), protocol.getValuesDecimalPoint());
+        final String rangeMin = StringHelper.roundingDouble(sensor.getRangeMin(), protocol.getValuesDecimalPoint());
         cell(22,5).setCellValue(rangeMin);
 
-        String rangeMax = StringHelper.roundingDouble(sensor.getRangeMax(), protocol.getValuesDecimalPoint());
+        final String rangeMax = StringHelper.roundingDouble(sensor.getRangeMax(), protocol.getValuesDecimalPoint());
         cell(22,7).setCellValue(rangeMax);
     }
 
-    void appendCalibratorInfo(Protocol protocol, MxParserErrorCalculater errorCalculater) {
-        Calibrator calibrator = protocol.getCalibrator();
+    protected void appendCalibratorInfo(Protocol protocol, MxParserErrorCalculater errorCalculater) {
+        final Calibrator calibrator = protocol.getCalibrator();
 
-        String type = calibrator.getType();
+        final String type = calibrator.getType();
         cell(16,15).setCellValue(type);
 
-        String number = calibrator.getNumber();
+        final String number = calibrator.getNumber();
         cell(17,12).setCellValue(number);
 
-        Calibrator.Certificate certificate = calibrator.getCertificate();
+        final Calibrator.Certificate certificate = calibrator.getCertificate();
         cell(18,9).setCellValue(certificate.getType());
         cell(18,12).setCellValue(certificate.toString());
 
-        double errorCalibrator = errorCalculater.calculate(calibrator);
+        final double errorCalibrator = errorCalculater.calculate(calibrator);
         if (Double.isNaN(errorCalibrator)) return;
         double eP = errorCalibrator / (protocol.getChannel().calculateRange() / 100);
-        String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
+        final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
         cell(19,13).setCellValue(errorPercent);
 
-        String error = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint());
-        cell(19,15).setCellValue(error);
+        final String errorValue = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint());
+        cell(19,15).setCellValue(errorValue);
     }
 
-    private void appendCalculationResult(Protocol protocol) {
+    protected void appendCalculationResult(Protocol protocol) {
+        final int valueDecimalPoint = protocol.getValuesDecimalPoint();
+        final int percentDecimalPoint = protocol.getPercentsDecimalPoint();
 
+        final TreeMap<Double, double[]> inputOutput = protocol.getOutput();
+        int row = 33;
+        int column = 3;
+        boolean next = false;
+        for (Map.Entry<Double, double[]> entry : inputOutput.entrySet()) {
+            cell(row, 2).setCellValue(StringHelper.roundingDouble(entry.getKey(), valueDecimalPoint));
+            for (double d : entry.getValue()) {
+                cell(row, column).setCellValue(StringHelper.roundingDouble(d, valueDecimalPoint));
+                if (next) {
+                    next = false;
+                    column++;
+                    row--;
+                } else {
+                    next = true;
+                    row++;
+                }
+            }
+            row = row < 35 ? 35 : 37;
+            column = 3;
+        }
+
+        final String u = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint);
+        cell(24, 14).setCellValue(u);
+
+        final String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint);
+        cell(26, 14).setCellValue(relativeError);
+        cell(36,13).setCellValue(relativeError);
+
+        final String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint);
+        cell(27, 14).setCellValue(absoluteError);
+
+        final TreeMap<Double, Double> systematicErrors = protocol.getSystematicErrors();
+        row = 28;
+        for (Map.Entry<Double, Double> entry : systematicErrors.entrySet()) {
+            cell(row++, 13).setCellValue(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint));
+        }
+
+        final String conclusion = protocol.getConclusion();
+        cell(37, 9).setCellValue(conclusion);
     }
 
-    private HSSFCell cell(int row, int column){
+    protected void appendPersons(Protocol protocol) {
+        final boolean notSuitable = protocol.getChannel().getAllowableErrorPercent() < protocol.getRelativeError();
+
+        String headOfCheckedChannelDepartment = protocol.getHeadOfCheckedChannelDepartment();
+        if (headOfCheckedChannelDepartment.isEmpty()) headOfCheckedChannelDepartment = "________________";
+        cell(41,6).setCellValue(headOfCheckedChannelDepartment);
+        cell(43,15).setCellValue(headOfCheckedChannelDepartment);
+        if (notSuitable){
+            cell(29,24).setCellValue(headOfCheckedChannelDepartment);
+        }
+
+        String headOfMetrologyDepartment = protocol.getHeadOfMetrologyDepartment();
+        if (headOfMetrologyDepartment.isEmpty()) headOfMetrologyDepartment = "________________";
+        cell(43,6).setCellValue(headOfMetrologyDepartment);
+        cell(45,15).setCellValue(headOfMetrologyDepartment);
+        if (notSuitable){
+            cell(32,24).setCellValue(headOfMetrologyDepartment);
+            cell(47,24).setCellValue(headOfMetrologyDepartment);
+        }
+
+        final List<Map.Entry<String, String>> makers = protocol.getMakers();
+        int row = 45;
+        for (int index = 0; index < 2; index++) {
+            if (makers.isEmpty() || index >= makers.size()) {
+                cell(row, 0).setCellValue(EMPTY);
+                cell(row, 4).setCellValue(EMPTY);
+                cell(row, 6).setCellValue(EMPTY);
+            } else {
+                cell(row, 0).setCellValue(makers.get(index).getValue());
+                cell(row, 6).setCellValue(makers.get(index).getKey());
+            }
+            row += 2;
+        }
+
+        final Map.Entry<String, String> former = protocol.getFormer();
+        String formerName = former.getKey().isEmpty() ? "________________" : former.getKey();
+        String formerPosition = former.getValue().isEmpty() ? "________________" : former.getValue();
+        cell(47, 9).setCellValue(formerPosition);
+        cell(47, 15).setCellValue(formerName);
+        if (notSuitable) {
+            cell(35, 18).setCellValue(formerPosition);
+            cell(35, 24).setCellValue(formerName);
+        }
+
+        if (notSuitable){
+            String headOfASUTPDepartment = protocol.getHeadOfASPCDepartment();
+            if (headOfASUTPDepartment.isEmpty()) headOfASUTPDepartment = "________________";
+            cell(26,24).setCellValue(headOfASUTPDepartment);
+        }
+    }
+
+    protected HSSFCell cell(int row, int column){
         HSSFSheet sheet = this.book.getSheetAt(0);
         HSSFRow Row = sheet.getRow(row);
         return Row.getCell(column);

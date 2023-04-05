@@ -18,7 +18,7 @@ import static model.ui.ButtonCell.SIMPLE;
 public class SwingCalculationResultPanel extends DefaultPanel {
     private static final String EXTENDED_INDETERMINACY_LABEL_TEXT = "Розширена невизначеність";
     private static final String ABSOLUTE_ERROR_LABEL_TEXT = "Абсолютна похибка";
-    private static final String RELATIVE_ERROR_LABEL_TEXT = "Відносна похибка";
+    private static final String RELATIVE_ERROR_LABEL_TEXT = "Приведена похибка";
     private static final String SYSTEMATIC_ERRORS_LABEL_TEXT = "Систематичні похибки";
 
     public SwingCalculationResultPanel(@Nonnull Protocol protocol) {

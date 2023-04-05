@@ -20,6 +20,7 @@ public class SwingCalculationResultConclusionPanel extends DefaultPanel implemen
     private static final String CONCLUSION_SETUP = "Порада: налаштувати вимірювальний канал";
     private static final String CONCLUSION_RANGE_SETUP =
             "Порада: для кращих показів налаштуйте вимірювальний канал на вказаний діапазон вимірювання";
+    private static final String CONCLUSION_LIKE_SHOWING = "але ПРИДАТНИМ в якості ІНДИКАТОРА";
     private static final String ALARM_CONCLUSION_PREFIX = "Сигналізація спрацювала при заданні = ";
 
     private final ButtonCell result;
@@ -61,6 +62,9 @@ public class SwingCalculationResultConclusionPanel extends DefaultPanel implemen
             String alarmText = String.format(ALARM_CONCLUSION_PREFIX + "%s %s",
                     protocol.getAlarm(), protocol.getChannel().getMeasurementValue());
             conclusions.add(alarmText);
+        }
+        if (protocol.getChannel().getAllowableErrorPercent() < protocol.getRelativeError()) {
+            conclusions.add(CONCLUSION_LIKE_SHOWING);
         }
         conclusions.add(CONCLUSION_SETUP);
         conclusions.add(CONCLUSION_RANGE_SETUP);

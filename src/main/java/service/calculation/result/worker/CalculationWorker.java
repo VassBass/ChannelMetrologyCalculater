@@ -68,6 +68,21 @@ public abstract class CalculationWorker {
     }
 
     /**
+     * Calculates relative error in channel range from value of max absolute error
+     * ɣch = (Δch * 100) / Rch
+     * where:
+     * ɣch - relative error
+     * Δch - max absolute error of channel
+     * Rch - range of channel
+     * @param absoluteErrorWithEquipment {@link #calculateMaxAbsoluteError(Map)}
+     * @param channelRange {@link Channel#calculateRange()}
+     * @return value of relative error in percent
+     */
+    protected double calculateRelativeError(double maxAbsoluteError, double channelRange) {
+        return (maxAbsoluteError * 100) / channelRange;
+    }
+
+    /**
      * Calculates relative error in channel range from value of absolute error with errors of other equipment involved in control
      * ɣch = (Δch * 100) / Rch
      * where:
@@ -92,8 +107,8 @@ public abstract class CalculationWorker {
      * @param absoluteErrors absolute errors in every set-point. {@link #calculateAbsoluteErrors(Map)} Key = input, Value = output
      * @return map of inputs and corresponding systematic errors. Key = input, Value = systematic error
      */
-    protected Map<Double, Double> calculateSystematicErrors(Map<Double, double[]> absoluteErrors) {
-        Map<Double, Double> result = new TreeMap<>();
+    protected TreeMap<Double, Double> calculateSystematicErrors(Map<Double, double[]> absoluteErrors) {
+        TreeMap<Double, Double> result = new TreeMap<>();
         for (Map.Entry<Double, double[]> entry : absoluteErrors.entrySet()) {
             double sum = Arrays.stream(entry.getValue()).sum();
             double r = sum / (entry.getValue().length);

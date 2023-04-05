@@ -5,12 +5,15 @@ import model.dto.Channel;
 import repository.RepositoryFactory;
 import service.calculation.condition.SwingCalculationControlConditionExecuter;
 import service.calculation.input.SwingCalculationInputExecuter;
-import service.calculation.protocol.Protocol;
 import service.calculation.persons.SwingCalculationPersonsExecuter;
+import service.calculation.protocol.Protocol;
+import service.calculation.protocol.exel.TemplateExelProtocolWrapper;
 import service.calculation.result.SwingCalculationResultExecuter;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingCalculationManager implements CalculationManager {
     private final ApplicationScreen applicationScreen;
@@ -114,17 +117,34 @@ public class SwingCalculationManager implements CalculationManager {
 
     @Override
     public void printProtocol() {
-
+        if (Objects.nonNull(personsDialog)) {
+            personsDialog.fillProtocol(protocol);
+            new TemplateExelProtocolWrapper(repositoryFactory, configHolder, null).wrap(protocol).print();
+            channel.setDate(protocol.getDate());
+            channel.setNumberOfProtocol(protocol.getNumber());
+            String reference = protocol.getReferenceNumber();
+            channel.setReference(Objects.isNull(reference) ? EMPTY : reference);
+            channel.setSuitability(Objects.isNull(reference));
+            disposeCalculation();
+        }
     }
 
     @Override
     public void openProtocol() {
-
+        if (Objects.nonNull(personsDialog)) {
+            personsDialog.fillProtocol(protocol);
+            new TemplateExelProtocolWrapper(repositoryFactory, configHolder, null).wrap(protocol).open();
+            disposeCalculation();
+        }
     }
 
     @Override
     public void endCalculation() {
-
+        if (Objects.nonNull(personsDialog)) {
+            personsDialog.fillProtocol(protocol);
+            new TemplateExelProtocolWrapper(repositoryFactory, configHolder, null).wrap(protocol).save();
+            disposeCalculation();
+        }
     }
 
     @Override

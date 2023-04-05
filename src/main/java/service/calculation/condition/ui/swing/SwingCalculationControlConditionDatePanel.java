@@ -8,7 +8,10 @@ import service.calculation.condition.ui.CalculationControlConditionDatePanel;
 import util.DateHelper;
 
 import javax.annotation.Nullable;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 public class SwingCalculationControlConditionDatePanel extends TitledPanel implements CalculationControlConditionDatePanel {
     private static final String TITLE = "Дата перевірки";
@@ -23,6 +26,10 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
         dayField = new IntegerTextField(2);
         monthField = new IntegerTextField(2);
         yearField = new IntegerTextField(4);
+
+        dayField.setFocusListener(dayMonthFocusListener);
+        monthField.setFocusListener(dayMonthFocusListener);
+        yearField.setFocusListener(yearFocusListener);
 
         this.add(dayField, new CellBuilder().fill(CellBuilder.NONE).x(0).build());
         this.add(new DefaultLabel("."), new CellBuilder().fill(CellBuilder.NONE).x(1).build());
@@ -57,4 +64,37 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
             return null;
         }
     }
+
+    private final FocusListener dayMonthFocusListener = new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            ((JTextField) e.getSource()).selectAll();
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            JTextField textField = (JTextField) e.getSource();
+            String t = textField.getText();
+            if (t.length() == 1) t = "0" + t;
+            textField.setText(t);
+        }
+    };
+
+    private final FocusListener yearFocusListener = new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            ((JTextField) e.getSource()).selectAll();
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            JTextField textField = (JTextField) e.getSource();
+            String t = textField.getText();
+            if (t.length() == 1) t = "200" + t;
+            if (t.length() == 2) t = "20" + t;
+            if (t.length() == 3) t = "2" + t;
+
+            textField.setText(t);
+        }
+    };
 }

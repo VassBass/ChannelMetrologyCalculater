@@ -7,7 +7,10 @@ import util.StringHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
+
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class PropertiesCalculationConfigHolder implements CalculationConfigHolder {
     private static final Logger logger = LoggerFactory.getLogger(PropertiesCalculationConfigHolder.class);
@@ -22,6 +25,7 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     private static final String KEY_RESULT_DIALOG_HEIGHT = "calculation.result.dialog.height";
     private static final String KEY_PERSONS_DIALOG_WIDTH = "calculation.persons.dialog.width";
     private static final String KEY_PERSONS_DIALOG_HEIGHT = "calculation.persons.dialog.height";
+    private static final String KEY_PROTOCOL_FOLDER = "calculation.protocol.folder";
 
     private int controlConditionDialogWidth = 685;
     private int controlConditionDialogHeight = 295;
@@ -29,8 +33,9 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     private int inputDialogHeight = 360;
     private int resultDialogWidth = 450;
     private int resultDialogHeight = 350;
-    private int personsDialogWidth = 100;
-    private int personsDialogHeight = 100;
+    private int personsDialogWidth = 500;
+    private int personsDialogHeight = 300;
+    private String protocolFolder;
 
     public PropertiesCalculationConfigHolder() {
         this(PROPERTIES_FILE_PATH);
@@ -43,28 +48,30 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
             properties.load(in);
 
             Integer controlConditionDialogWidth = StringHelper.parseInt(properties.getProperty(KEY_CONTROL_CONDITION_DIALOG_WIDTH, null));
-            if (controlConditionDialogWidth != null) this.controlConditionDialogWidth = controlConditionDialogWidth;
+            if (Objects.nonNull(controlConditionDialogWidth)) this.controlConditionDialogWidth = controlConditionDialogWidth;
 
             Integer controlConditionDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_CONTROL_CONDITION_DIALOG_HEIGHT, null));
-            if (controlConditionDialogHeight != null) this.controlConditionDialogHeight = controlConditionDialogHeight;
+            if (Objects.nonNull(controlConditionDialogHeight)) this.controlConditionDialogHeight = controlConditionDialogHeight;
 
             Integer inputDialogWidth = StringHelper.parseInt(properties.getProperty(KEY_INPUT_DIALOG_WIDTH, null));
-            if (inputDialogWidth != null) this.inputDialogWidth = inputDialogWidth;
+            if (Objects.nonNull(inputDialogWidth)) this.inputDialogWidth = inputDialogWidth;
 
             Integer inputDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_INPUT_DIALOG_HEIGHT, null));
-            if (inputDialogHeight != null) this.inputDialogHeight = inputDialogHeight;
+            if (Objects.nonNull(inputDialogHeight)) this.inputDialogHeight = inputDialogHeight;
 
             Integer resultDialogWidth = StringHelper.parseInt(properties.getProperty(KEY_RESULT_DIALOG_WIDTH, null));
-            if (resultDialogWidth != null) this.resultDialogWidth = resultDialogWidth;
+            if (Objects.nonNull(resultDialogWidth)) this.resultDialogWidth = resultDialogWidth;
 
             Integer resultDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_RESULT_DIALOG_HEIGHT, null));
-            if (resultDialogHeight != null) this.resultDialogHeight = resultDialogHeight;
+            if (Objects.nonNull(resultDialogHeight)) this.resultDialogHeight = resultDialogHeight;
 
             Integer personsDialogWidth = StringHelper.parseInt(properties.getProperty(KEY_PERSONS_DIALOG_WIDTH, null));
-            if (personsDialogWidth != null) this.personsDialogWidth = personsDialogWidth;
+            if (Objects.nonNull(personsDialogWidth)) this.personsDialogWidth = personsDialogWidth;
 
             Integer personsDialogHeight = StringHelper.parseInt(properties.getProperty(KEY_PERSONS_DIALOG_HEIGHT, null));
-            if (personsDialogHeight != null) this.personsDialogHeight = personsDialogHeight;
+            if (Objects.nonNull(personsDialogHeight)) this.personsDialogHeight = personsDialogHeight;
+
+            protocolFolder = properties.getProperty(KEY_PROTOCOL_FOLDER, EMPTY);
 
         } catch (IOException e) {
             logger.warn("Exception was thrown: ", e);
@@ -112,22 +119,7 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     }
 
     @Override
-    public String getProtocolFolderPath() {
-        return null;
-    }
-
-    @Override
-    public String getTemperatureCalculationMethodName() {
-        return null;
-    }
-
-    @Override
-    public String getPressureCalculationMethodName() {
-        return null;
-    }
-
-    @Override
-    public String getConsumptionCalculationMethodName() {
-        return null;
+    public String getProtocolsFolder() {
+        return protocolFolder;
     }
 }

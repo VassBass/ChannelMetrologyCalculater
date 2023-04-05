@@ -142,6 +142,14 @@ public class SwingChannelListManager implements ChannelListManager {
     }
 
     @Override
+    public void calculateChannel(@Nonnull Channel channel) {
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+        if (channelRepository.isExist(channel.getCode())) {
+            new CalculationExecuter(applicationScreen, repositoryFactory, channel).execute();
+        }
+    }
+
+    @Override
     public void chooseOSBeforeChannelCalculate() {
 
     }

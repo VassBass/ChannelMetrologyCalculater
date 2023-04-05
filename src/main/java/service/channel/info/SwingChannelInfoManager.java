@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static util.StringHelper.FOR_LAST_ZERO;
 
 public class SwingChannelInfoManager implements ChannelInfoManager {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoManager.class);
@@ -283,7 +284,8 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                 double range = Double.parseDouble(rangePanel.getRangeMax()) - Double.parseDouble(rangePanel.getRangeMin());
                 double percent = Double.parseDouble(allowableErrorPanel.getAllowableErrorPercent());
                 double value = (range / 100) * percent;
-                allowableErrorPanel.setAllowableErrorValue(String.valueOf(value));
+                double roundingValue = Double.parseDouble(StringHelper.roundingDouble(value, 5));
+                allowableErrorPanel.setAllowableErrorValue(StringHelper.roundingDouble(roundingValue, FOR_LAST_ZERO));
             }
 
             ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
@@ -305,7 +307,8 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                 double range = Double.parseDouble(rangePanel.getRangeMax()) - Double.parseDouble(rangePanel.getRangeMin());
                 double percent = Double.parseDouble(allowableErrorPanel.getAllowableErrorPercent());
                 double value = (range / 100) * percent;
-                allowableErrorPanel.setAllowableErrorValue(String.valueOf(value));
+                double roundingValue = Double.parseDouble(StringHelper.roundingDouble(value, 5));
+                allowableErrorPanel.setAllowableErrorValue(StringHelper.roundingDouble(roundingValue, FOR_LAST_ZERO));
             }
         }
     }
@@ -319,7 +322,8 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                 double range = Double.parseDouble(rangePanel.getRangeMax()) - Double.parseDouble(rangePanel.getRangeMin());
                 double value = Double.parseDouble(allowableErrorPanel.getAllowableErrorValue());
                 double percent = value / (range / 100);
-                allowableErrorPanel.setAllowableErrorPercent(String.valueOf(percent));
+                double roundingPercent = Double.parseDouble(StringHelper.roundingDouble(percent, 5));
+                allowableErrorPanel.setAllowableErrorPercent(StringHelper.roundingDouble(roundingPercent, FOR_LAST_ZERO));
             }
         }
     }
@@ -357,7 +361,33 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void saveAndCalculateChannel() {
+        Channel channel = createChannelFromPanel();
+        if (Objects.nonNull(channel)) {
+            new Worker("Канал був успішно збережений") {
+                @Override
+                protected Boolean doInBackground() {
+                    ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+                    SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
 
+                    Sensor newSensor = createSensorFromPanel();
+
+                    if (newSensor != null) {
+                        if (oldChannel == null) {
+                            return channelRepository.add(channel) && sensorRepository.add(newSensor);
+                        } else {
+                            Sensor oldSensor = sensorRepository.get(oldChannel.getCode());
+                            if (oldSensor != null) {
+                                return channelRepository.set(oldChannel, channel) && sensorRepository.set(oldSensor, newSensor);
+                            }
+                        }
+                    }
+
+                    return false;
+                }
+            }.runCalculateAfter(channel).execute();
+        } else {
+            channelInfoDialog.refresh();
+        }
     }
 
     @Override
@@ -544,6 +574,8 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         private final DialogWrapper loadingDialog;
 
         private final String successMessage;
+        private boolean runCalculate = false;
+        private Channel channel;
 
         public Worker(String successMessage) {
             super();
@@ -552,6 +584,12 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             LoadingDialog dialog = LoadingDialog.getInstance();
             loadingDialog = new DialogWrapper(channelInfoDialog, dialog, ScreenPoint.center(channelInfoDialog, dialog));
             loadingDialog.showing();
+        }
+
+        public Worker runCalculateAfter(@Nonnull Channel channel) {
+            runCalculate = true;
+            this.channel = channel;
+            return this;
         }
 
         @Override
@@ -566,6 +604,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                 errorReaction(e);
             }
             channelListManager.revaluateChannelTable();
+            if (runCalculate && Objects.nonNull(channel)) channelListManager.calculateChannel(channel);
         }
 
         private void errorReaction(Exception e) {

@@ -2,6 +2,7 @@ package service.calculation.result.worker;
 
 import model.dto.Calibrator;
 import model.dto.Channel;
+import model.dto.Measurement;
 import model.dto.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import service.error_calculater.MxParserErrorCalculater;
 import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TreeMap;
 
 public class DefaultCalculationWorker extends CalculationWorker {
     public static final Logger logger = LoggerFactory.getLogger(DefaultCalculationWorker.class);
@@ -46,8 +48,14 @@ public class DefaultCalculationWorker extends CalculationWorker {
             return false;
         }
         double absoluteErrorWithEquipment = calculateAbsoluteErrorWithEquipment(maxAbsoluteError, sensorError, calibratorError);
-        double relativeError = calculateRelativeErrorWithEquipment(absoluteErrorWithEquipment, channel.calculateRange());
-        Map<Double, Double> systematicErrors = calculateSystematicErrors(absoluteErrors);
+
+        double relativeError;
+        if (channel.getMeasurementName().equals(Measurement.CONSUMPTION)) {
+            relativeError = calculateRelativeError(maxAbsoluteError, channel.calculateRange());
+        } else {
+            relativeError = calculateRelativeErrorWithEquipment(absoluteErrorWithEquipment, channel.calculateRange());
+        }
+        TreeMap<Double, Double> systematicErrors = calculateSystematicErrors(absoluteErrors);
         double standardIndeterminacyA = calculateStandardIndeterminacyA(absoluteErrors);
         double standardIndeterminacyB = calculateStandardIndeterminacyB(sensorError, calibratorError);
         double totalStandardIndeterminacy = calculateTotalStandardIndeterminacy(standardIndeterminacyA, standardIndeterminacyB);

@@ -2,6 +2,7 @@ package repository.repos.calculation_method;
 
 import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
+import repository.init.def.DefaultCalculationMethodList;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
@@ -13,6 +14,7 @@ public class BufferedCalculationMethodRepositorySQLite extends CalculationMethod
     public BufferedCalculationMethodRepositorySQLite(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         super(configHolder, connector);
         buffer = super.getAll();
+        if (buffer.isEmpty()) new DefaultCalculationMethodList(this).insertDefaultList();
     }
 
     @Override

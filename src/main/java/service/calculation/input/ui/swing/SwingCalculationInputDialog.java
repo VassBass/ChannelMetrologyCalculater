@@ -52,6 +52,9 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
 
         int width = configHolder.getInputDialogWidth();
         int height = configHolder.getInputDialogHeight();
+
+        int inputSize = Objects.nonNull(measurementPanel.getInputs()) ? measurementPanel.getInputs().size() : 3;
+        for (int i = 3; i < inputSize; i++) height += 45;
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.setSize(width, height);
         this.setLocation(ScreenPoint.center(applicationScreen, this));
