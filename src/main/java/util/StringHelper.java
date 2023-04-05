@@ -13,10 +13,10 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 public class StringHelper {
     public static final int FOR_LAST_ZERO = Integer.MAX_VALUE;
 
-    public static boolean isDouble(String doubleString) {
+    public static boolean isDouble(String ... doubleString) {
         if (Objects.isNull(doubleString)) return false;
         try {
-            Double.parseDouble(doubleString);
+            Arrays.stream(doubleString).forEach(Double::parseDouble);
             return true;
         } catch (NumberFormatException e) {
             return false;

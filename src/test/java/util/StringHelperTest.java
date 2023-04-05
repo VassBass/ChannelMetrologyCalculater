@@ -19,6 +19,11 @@ public class StringHelperTest {
         assertFalse(StringHelper.isDouble(invalid1));
         assertFalse(StringHelper.isDouble(invalid2));
         assertFalse(StringHelper.isDouble(""));
+
+        assertTrue(StringHelper.isDouble(valid1, valid2));
+        assertFalse(StringHelper.isDouble(valid1, invalid1));
+        assertFalse(StringHelper.isDouble(invalid1, invalid2));
+        assertFalse(StringHelper.isDouble(valid1, ""));
     }
 
     @Test

@@ -427,12 +427,12 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
         ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
         ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
-        if (sensorPanel != null && measurementPanel != null && rangePanel != null) {
+        if (ObjectHelper.nonNull(sensorPanel, measurementPanel, rangePanel)) {
             String currentError = sensorPanel.getErrorFormula();
 
             String channelRangeMin = rangePanel.getRangeMin();
             String channelRangeMax = rangePanel.getRangeMax();
-            if (StringHelper.isDouble(channelRangeMin) && StringHelper.isDouble(channelRangeMax)) {
+            if (StringHelper.isDouble(channelRangeMin, channelRangeMax)) {
                 SensorErrorRepository errorRepository = repositoryFactory.getImplementation(SensorErrorRepository.class);
                 MeasurementFactorRepository measurementFactorRepository = repositoryFactory.getImplementation(MeasurementFactorRepository.class);
 
