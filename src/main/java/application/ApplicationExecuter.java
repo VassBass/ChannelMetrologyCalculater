@@ -6,6 +6,7 @@ import repository.config.RepositoryConfigHolder;
 import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.connection.SqliteRepositoryDBConnector;
+import service.calibrator.list.CalibratorListInitializer;
 import service.channel.list.SwingChannelListExecuter;
 import service.importer.SwingImporterInitializer;
 
@@ -46,6 +47,10 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
         message = "Initialization of import service";
         publish(message);
         new SwingImporterInitializer(applicationScreen, repositoryFactory).init();
+
+        message = "Initialization of calibrator service";
+        publish(message);
+        new CalibratorListInitializer(applicationScreen, repositoryFactory).init();
 
         return null;
     }

@@ -23,7 +23,8 @@ public class StringHelper {
         }
     }
 
-    public static boolean isInt(@Nonnull String intString) {
+    public static boolean isInt(String intString) {
+        if (Objects.isNull(intString)) return false;
         try {
             Integer.parseInt(intString);
             return true;
