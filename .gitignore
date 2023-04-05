@@ -13,3 +13,5 @@ Data.db
 /Certificates
 /ChannelMetrologyCalculater.iml
 /forms
+/target/generated-test-sources
+/target/logging
