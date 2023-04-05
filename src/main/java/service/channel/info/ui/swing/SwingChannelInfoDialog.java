@@ -75,4 +75,9 @@ public class SwingChannelInfoDialog extends JDialog implements UI {
     public void shutdown() {
         this.dispose();
     }
+
+    @Override
+    public Object getSource() {
+        return this;
+    }
 }

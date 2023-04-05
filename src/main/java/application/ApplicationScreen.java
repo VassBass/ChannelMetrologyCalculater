@@ -63,4 +63,9 @@ public class ApplicationScreen extends JFrame implements UI {
     public void shutdown() {
         System.exit(0);
     }
+
+    @Override
+    public Object getSource() {
+        return this;
+    }
 }

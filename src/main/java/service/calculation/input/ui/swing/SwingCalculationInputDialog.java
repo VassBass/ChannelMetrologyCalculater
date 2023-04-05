@@ -85,6 +85,11 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
     }
 
     @Override
+    public Object getSource() {
+        return this;
+    }
+
+    @Override
     public boolean fillProtocol(Protocol protocol) {
         if (alarmPanel.isEnabled()) {
             double alarm = alarmPanel.getAlarmValue();

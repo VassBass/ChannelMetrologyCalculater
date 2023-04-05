@@ -98,4 +98,9 @@ public class ApplicationLogo extends JWindow implements UI {
     public void shutdown() {
         this.dispose();
     }
+
+    @Override
+    public Object getSource() {
+        return this;
+    }
 }

@@ -22,6 +22,7 @@ public class SwingCalculationPersonsDialog extends JDialog implements Calculatio
     private final SwingCalculationPersonsMakersPanel makersPanel;
     private final SwingCalculationPersonsFormerPanel formerPanel;
     private final SwingCalculationPersonsHeadsPanel headsPanel;
+    private final SwingCalculationPersonsOSChooserPanel osChooserPanel;
 
     public SwingCalculationPersonsDialog(@Nonnull ApplicationScreen applicationScreen,
                                          @Nonnull CalculationConfigHolder configHolder,
@@ -33,13 +34,15 @@ public class SwingCalculationPersonsDialog extends JDialog implements Calculatio
         makersPanel = context.getElement(SwingCalculationPersonsMakersPanel.class);
         formerPanel = context.getElement(SwingCalculationPersonsFormerPanel.class);
         headsPanel = context.getElement(SwingCalculationPersonsHeadsPanel.class);
+        osChooserPanel = context.getElement(SwingCalculationPersonsOSChooserPanel.class);
         SwingCalculationPersonsButtonPanel buttonPanel = context.getElement(SwingCalculationPersonsButtonPanel.class);
 
         DefaultPanel panel = new DefaultPanel();
         panel.add(makersPanel, new CellBuilder().y(0).build());
         panel.add(formerPanel, new CellBuilder().y(1).build());
         panel.add(headsPanel, new CellBuilder().y(2).build());
-        panel.add(buttonPanel, new CellBuilder().y(3).build());
+        panel.add(osChooserPanel, new CellBuilder().y(3).build());
+        panel.add(buttonPanel, new CellBuilder().y(4).build());
 
         boolean suitable = protocol.getChannel().getAllowableErrorPercent() >= protocol.getRelativeError();
 
@@ -83,12 +86,18 @@ public class SwingCalculationPersonsDialog extends JDialog implements Calculatio
     }
 
     @Override
+    public Object getSource() {
+        return this;
+    }
+
+    @Override
     public boolean fillProtocol(Protocol protocol) {
         protocol.setMakers(makersPanel.getMakers());
         protocol.setFormer(formerPanel.getFormer());
         protocol.setHeadOfMetrologyDepartment(headsPanel.getHeadOfMetrologyDepartment());
         protocol.setHeadOfCheckedChannelDepartment(headsPanel.getHeadOfCheckedChannelDepartment());
         protocol.setHeadOfASPCDepartment(headsPanel.getHeadOfASPCDepartment());
+        protocol.setOs(osChooserPanel.getOS());
         return true;
     }
 }

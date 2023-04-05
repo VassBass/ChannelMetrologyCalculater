@@ -1,5 +1,6 @@
 package service.calculation.protocol;
 
+import model.OS;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.dto.Person;
@@ -37,6 +38,15 @@ public class Protocol implements Serializable {
     private String headOfMetrologyDepartment;
     private String headOfCheckedChannelDepartment;
     private String headOfASPCDepartment;
+    private OS os;
+
+    public OS getOs() {
+        return os;
+    }
+
+    public void setOs(OS os) {
+        this.os = os;
+    }
 
     /**
      * @return list of mappings of makers where key = full name, value position

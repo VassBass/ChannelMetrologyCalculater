@@ -6,4 +6,5 @@ public interface UI {
     void hiding();
     void shutdown();
     boolean isVisible();
+    Object getSource();
 }

@@ -19,7 +19,7 @@ public class TemplateExelProtocolFormer implements ExelProtocolFormer {
 
     public TemplateExelProtocolFormer(RepositoryFactory repositoryFactory, OS os) {
         this.repositoryFactory = repositoryFactory;
-        this.os = Objects.isNull(os) ? OS.getName() : os;
+        this.os = Objects.isNull(os) ? OS.getCurrentOS() : os;
     }
 
     @Override

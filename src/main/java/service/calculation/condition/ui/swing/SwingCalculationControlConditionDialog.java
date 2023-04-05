@@ -105,6 +105,11 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
     }
 
     @Override
+    public Object getSource() {
+        return this;
+    }
+
+    @Override
     public boolean fillProtocol(Protocol protocol) {
         String date = datePanel.getDate();
         String protocolNumber = protocolNumberPanel.getProtocolNumber();

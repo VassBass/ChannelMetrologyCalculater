@@ -1,8 +1,10 @@
 package service.calculation;
 
 import application.ApplicationScreen;
+import model.OS;
 import model.dto.Channel;
 import repository.RepositoryFactory;
+import repository.repos.channel.ChannelRepository;
 import service.calculation.condition.SwingCalculationControlConditionExecuter;
 import service.calculation.input.SwingCalculationInputExecuter;
 import service.calculation.persons.SwingCalculationPersonsExecuter;
@@ -11,6 +13,8 @@ import service.calculation.protocol.exel.TemplateExelProtocolWrapper;
 import service.calculation.result.SwingCalculationResultExecuter;
 
 import javax.annotation.Nonnull;
+import javax.swing.*;
+import java.awt.*;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -119,13 +123,14 @@ public class SwingCalculationManager implements CalculationManager {
     public void printProtocol() {
         if (Objects.nonNull(personsDialog)) {
             personsDialog.fillProtocol(protocol);
-            new TemplateExelProtocolWrapper(repositoryFactory, configHolder, null).wrap(protocol).print();
-            channel.setDate(protocol.getDate());
-            channel.setNumberOfProtocol(protocol.getNumber());
-            String reference = protocol.getReferenceNumber();
-            channel.setReference(Objects.isNull(reference) ? EMPTY : reference);
-            channel.setSuitability(Objects.isNull(reference));
-            disposeCalculation();
+            if (saveChangedChannel(protocol)) {
+                OS os = protocol.getOs();
+                new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).print();
+                disposeCalculation();
+            } else {
+                String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
+                JOptionPane.showMessageDialog((Component) personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -133,8 +138,14 @@ public class SwingCalculationManager implements CalculationManager {
     public void openProtocol() {
         if (Objects.nonNull(personsDialog)) {
             personsDialog.fillProtocol(protocol);
-            new TemplateExelProtocolWrapper(repositoryFactory, configHolder, null).wrap(protocol).open();
-            disposeCalculation();
+            if (saveChangedChannel(protocol)) {
+                OS os = protocol.getOs();
+                new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).open();
+                disposeCalculation();
+            } else {
+                String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
+                JOptionPane.showMessageDialog((Component) personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -142,8 +153,14 @@ public class SwingCalculationManager implements CalculationManager {
     public void endCalculation() {
         if (Objects.nonNull(personsDialog)) {
             personsDialog.fillProtocol(protocol);
-            new TemplateExelProtocolWrapper(repositoryFactory, configHolder, null).wrap(protocol).save();
-            disposeCalculation();
+            if (saveChangedChannel(protocol)) {
+                OS os = protocol.getOs();
+                new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).save();
+                disposeCalculation();
+            } else {
+                String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
+                JOptionPane.showMessageDialog((Component) personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -153,5 +170,17 @@ public class SwingCalculationManager implements CalculationManager {
         if (Objects.nonNull(inputDialog)) inputDialog.shutdown();
         if (Objects.nonNull(resultDialog)) resultDialog.shutdown();
         if (Objects.nonNull(personsDialog)) personsDialog.shutdown();
+    }
+
+    private boolean saveChangedChannel(Protocol protocol) {
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+
+        channel.setDate(protocol.getDate());
+        channel.setNumberOfProtocol(protocol.getNumber());
+        String reference = protocol.getReferenceNumber();
+        channel.setReference(Objects.isNull(reference) ? EMPTY : reference);
+        channel.setSuitability(Objects.isNull(reference));
+
+        return channelRepository.set(channel, channel);
     }
 }

@@ -5,7 +5,7 @@ import java.util.Locale;
 public enum OS {
     LINUX, WINDOWS, UNKNOWN;
 
-    public static OS getName(){
+    public static OS getCurrentOS(){
         String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
 
         if (os.contains("win")) return WINDOWS;

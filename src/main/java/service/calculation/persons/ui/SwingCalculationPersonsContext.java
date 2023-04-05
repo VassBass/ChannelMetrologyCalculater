@@ -4,11 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.calculation.CalculationManager;
+import service.calculation.persons.ui.swing.*;
 import service.calculation.protocol.Protocol;
-import service.calculation.persons.ui.swing.SwingCalculationPersonsButtonPanel;
-import service.calculation.persons.ui.swing.SwingCalculationPersonsFormerPanel;
-import service.calculation.persons.ui.swing.SwingCalculationPersonsHeadsPanel;
-import service.calculation.persons.ui.swing.SwingCalculationPersonsMakersPanel;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -58,6 +55,11 @@ public class SwingCalculationPersonsContext {
             if (clazz.isAssignableFrom(SwingCalculationPersonsButtonPanel.class)) {
                 element = (T) new SwingCalculationPersonsButtonPanel(manager);
                 buffer.put(clazz, element);
+            }
+            if (clazz.isAssignableFrom(CalculationPersonsOSChooserPanel.class) || clazz.isAssignableFrom(SwingCalculationPersonsOSChooserPanel.class)) {
+                element = (T) new SwingCalculationPersonsOSChooserPanel();
+                buffer.put(CalculationPersonsOSChooserPanel.class, element);
+                buffer.put(SwingCalculationPersonsOSChooserPanel.class, element);
             }
 
             if (element == null) logger.warn(String.format("Can't find implementation for %s", clazz.getName()));

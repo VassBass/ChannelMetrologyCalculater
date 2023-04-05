@@ -87,6 +87,11 @@ public class SwingCalculationResultDialog extends JDialog implements Calculation
     }
 
     @Override
+    public Object getSource() {
+        return this;
+    }
+
+    @Override
     public boolean fillProtocol(Protocol protocol) {
         if (Objects.nonNull(conclusionPanel)) {
             if (Objects.nonNull(referencePanel)) {
