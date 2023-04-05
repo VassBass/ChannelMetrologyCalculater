@@ -45,10 +45,10 @@ public class SwingCalculationResultPanel extends DefaultPanel {
 
         this.add(extendedIndeterminacyLabel, new CellBuilder().x(0).y(0).build());
         this.add(extendedIndeterminacyValue, new CellBuilder().x(1).y(0).build());
-        this.add(absoluteErrorLabel, new CellBuilder().x(0).y(1).build());
-        this.add(absoluteErrorValue, new CellBuilder().x(1).y(1).build());
-        this.add(relativeErrorLabel, new CellBuilder().x(0).y(2).build());
-        this.add(relativeErrorValue, new CellBuilder().x(1).y(2).build());
+        this.add(relativeErrorLabel, new CellBuilder().x(0).y(1).build());
+        this.add(relativeErrorValue, new CellBuilder().x(1).y(1).build());
+        this.add(absoluteErrorLabel, new CellBuilder().x(0).y(2).build());
+        this.add(absoluteErrorValue, new CellBuilder().x(1).y(2).build());
         this.add(systematicErrorsLabel, new CellBuilder().x(0).y(3).height(systematicErrors.size()).build());
 
         int y = 3;

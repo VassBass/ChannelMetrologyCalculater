@@ -119,12 +119,13 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         }
 
         final String rangeMin = StringHelper.roundingDouble(channel.getRangeMin(), protocol.getValuesDecimalPoint());
-        cell(19,5).setCellValue(rangeMin);
+        cell(19,5).setCellValue(rangeMin.replaceAll("\\.", ","));
 
         final String rangeMax = StringHelper.roundingDouble(channel.getRangeMax(), protocol.getValuesDecimalPoint());
-        cell(19,7).setCellValue(rangeMax);
+        cell(19,7).setCellValue(rangeMax.replaceAll("\\.", ","));
 
-        final String allowableErrorInPercent = StringHelper.roundingDouble(channel.getAllowableErrorPercent(), protocol.getPercentsDecimalPoint());
+        final String allowableErrorInPercent = StringHelper.roundingDouble(channel.getAllowableErrorPercent(), protocol.getPercentsDecimalPoint())
+                .replaceAll("\\.", ",");
         cell(20,5).setCellValue(allowableErrorInPercent);
         if (isRosemount8714DQ4Calibrator) {
             cell(37, 15).setCellValue(allowableErrorInPercent);
@@ -133,7 +134,7 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         }
 
         final String allowableErrorInValue = StringHelper.roundingDouble(channel.getAllowableErrorValue(), protocol.getValuesDecimalPoint());
-        cell(20,7).setCellValue(allowableErrorInValue);
+        cell(20,7).setCellValue(allowableErrorInValue.replaceAll("\\.", ","));
 
         final String measurementValue = channel.getMeasurementValue();
         if (isRosemount8714DQ4Calibrator) {
@@ -152,7 +153,7 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         cell(30,15).setCellValue(measurementValue);
         cell(31,15).setCellValue(measurementValue);
 
-        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO);
+        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll("\\.", ",");
         cell(24,16).setCellValue(String.format("%sр.", frequency));
     }
 
@@ -206,10 +207,10 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         double errorCalibrator = errorCalculater.calculate(calibrator);
         if (Double.isNaN(errorCalibrator)) return;
         double eP = errorCalibrator / (protocol.getChannel().calculateRange() / 100);
-        String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
+        String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint()).replaceAll("\\.", ",");
         cell(20,13).setCellValue(errorPercent);
 
-        String errorValue = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint());
+        String errorValue = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint()).replaceAll("\\.", ",");
         cell(20,15).setCellValue(errorValue);
     }
 
@@ -220,15 +221,28 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         final boolean notSuitable = protocol.getChannel().getAllowableErrorPercent() < protocol.getRelativeError();
         final boolean isRosemount8714DQ4Calibrator = protocol.getCalibrator().getName().equals(Calibrator.ROSEMOUNT_8714DQ4);
 
+        if (!isRosemount8714DQ4Calibrator) {
+            final TreeMap<Double, Double> input = protocol.getInput();
+            int row = 30;
+            for (Map.Entry<Double, Double> entry : input.entrySet()) {
+                cell(row, 1).setCellValue(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll("\\.", ","));
+                row += 2;
+            }
+            row = 28;
+            for (Map.Entry<Double, Double> entry : input.entrySet()) {
+                cell(row++, 11).setCellValue(String.format("%s%% ΔS =", StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll("\\.", ",")));
+            }
+        }
+
         final TreeMap<Double, double[]> inputOutput = protocol.getOutput();
         int row = 30;
         if (isRosemount8714DQ4Calibrator) row = 31;
         int column = 3;
         boolean next = false;
         for (Map.Entry<Double, double[]> entry : inputOutput.entrySet()) {
-            cell(row, 2).setCellValue(StringHelper.roundingDouble(entry.getKey(), valueDecimalPoint));
+            cell(row, 2).setCellValue(StringHelper.roundingDouble(entry.getKey(), valueDecimalPoint).replaceAll("\\.", ","));
             for (double d : entry.getValue()) {
-                cell(row, column).setCellValue(StringHelper.roundingDouble(d, valueDecimalPoint));
+                cell(row, column).setCellValue(StringHelper.roundingDouble(d, valueDecimalPoint).replaceAll("\\.", ","));
                 if (next) {
                     next = false;
                     column++;
@@ -246,10 +260,10 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
             column = 3;
         }
 
-        final String u = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint);
+        final String u = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint).replaceAll("\\.", ",");
         cell(24, 14).setCellValue(u);
 
-        final String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint);
+        final String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint).replaceAll("\\.", ",");
         cell(26, 14).setCellValue(relativeError);
         if (isRosemount8714DQ4Calibrator) {
             cell(37, 13).setCellValue(relativeError);
@@ -257,13 +271,13 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
             cell(38, 13).setCellValue(relativeError);
         }
 
-        final String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint);
+        final String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint).replaceAll("\\.", ",");
         cell(27, 14).setCellValue(absoluteError);
 
         final TreeMap<Double, Double> systematicErrors = protocol.getSystematicErrors();
         row = 28;
         for (Map.Entry<Double, Double> entry : systematicErrors.entrySet()) {
-            cell(row++, 13).setCellValue(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint));
+            cell(row++, 13).setCellValue(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint).replaceAll("\\.", ","));
         }
 
         if (notSuitable){
