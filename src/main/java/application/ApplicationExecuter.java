@@ -44,13 +44,13 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
         publish(message);
         new SwingChannelListExecuter(applicationScreen, repositoryFactory).execute();
 
-        message = "Initialization of import service";
-        publish(message);
-        new SwingImporterInitializer(applicationScreen, repositoryFactory).init();
-
         message = "Initialization of calibrator service";
         publish(message);
         new CalibratorListInitializer(applicationScreen, repositoryFactory).init();
+
+        message = "Initialization of import service";
+        publish(message);
+        new SwingImporterInitializer(applicationScreen, repositoryFactory).init();
 
         return null;
     }

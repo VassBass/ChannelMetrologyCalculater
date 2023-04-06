@@ -42,6 +42,11 @@ public class SwingCalibratorListManager implements CalibratorListManager {
     }
 
     @Override
+    public void clickDelete() {
+
+    }
+
+    @Override
     public void clickDetails() {
     }
 

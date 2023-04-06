@@ -1,5 +1,6 @@
 package service.channel.list;
 
+import application.ApplicationMenu;
 import application.ApplicationScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,9 @@ public class SwingChannelListExecuter implements ServiceExecuter {
 
         SwingChannelListPanel panel = new SwingChannelListPanel(context);
         applicationScreen.setContentPane(panel);
-        applicationScreen.addMenu(new SwingMenuChannelList(manager));
+
+        ApplicationMenu applicationMenu = applicationScreen.getMenu();
+        applicationMenu.addMenuIfNotExist(new SwingMenuChannelList(manager));
 
         manager.revaluateChannelTable();
         logger.info("The service is running");

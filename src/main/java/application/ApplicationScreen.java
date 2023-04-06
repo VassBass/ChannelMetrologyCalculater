@@ -10,11 +10,11 @@ import java.awt.event.WindowListener;
 
 public class ApplicationScreen extends JFrame implements UI {
     private static final String TITLE = "ChannelMetrologyCalculater";
-    private final JMenuBar menuBar;
+    private final ApplicationMenu menuBar;
 
     public ApplicationScreen(ApplicationConfigHolder configHolder) {
         super();
-        this.menuBar = new JMenuBar();
+        this.menuBar = new ApplicationMenu();
         
         this.setTitle(TITLE);
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -37,6 +37,10 @@ public class ApplicationScreen extends JFrame implements UI {
 
     public void addMenu(JMenu menu) {
         menuBar.add(menu);
+    }
+
+    public ApplicationMenu getMenu() {
+        return menuBar;
     }
 
     @Override
