@@ -11,7 +11,6 @@ public interface ChannelListManager {
     void removeChannel();
     void calculateChannel();
     void calculateChannel(@Nonnull Channel channel);
-    void chooseOSBeforeChannelCalculate();
     void openChannelCertificateFolder();
     void search();
     void advancedSearch();

@@ -71,9 +71,6 @@ public class SwingChannelListTable extends JTable implements ChannelListTable {
                     case KeyEvent.VK_C:
                         manager.calculateChannel();
                         break;
-                    case KeyEvent.VK_ENTER:
-                        manager.chooseOSBeforeChannelCalculate();
-                        break;
                     case KeyEvent.VK_F:
                         manager.openChannelCertificateFolder();
                         break;

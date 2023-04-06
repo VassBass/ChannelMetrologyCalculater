@@ -1,6 +1,5 @@
 package service.calculation.input.ui;
 
-import model.dto.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -10,6 +9,7 @@ import service.calculation.input.ui.swing.SwingCalculationInputAlarmPanel;
 import service.calculation.input.ui.swing.SwingCalculationInputButtonsPanel;
 import service.calculation.input.ui.swing.SwingCalculationInputMeasurementPanel;
 import service.calculation.input.ui.swing.SwingCalculationInputNumberFormatPanel;
+import service.calculation.protocol.Protocol;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -20,15 +20,15 @@ public class SwingCalculationInputContext {
 
     private final Map<Class<?>, Object> buffer = new HashMap<>();
     private final RepositoryFactory repositoryFactory;
-    private final Channel channel;
+    private final Protocol protocol;
 
     private CalculationManager manager;
     private CalculationInputManager localManager;
 
     public SwingCalculationInputContext(@Nonnull RepositoryFactory repositoryFactory,
-                                        @Nonnull Channel channel) {
+                                        @Nonnull Protocol protocol) {
         this.repositoryFactory = repositoryFactory;
-        this.channel = channel;
+        this.protocol = protocol;
     }
 
     @SuppressWarnings("unchecked")
@@ -43,12 +43,12 @@ public class SwingCalculationInputContext {
 
         if (element == null) {
             if (clazz.isAssignableFrom(CalculationInputAlarmPanel.class) || clazz.isAssignableFrom(SwingCalculationInputAlarmPanel.class)) {
-                element = (T) new SwingCalculationInputAlarmPanel(channel.getMeasurementValue());
+                element = (T) new SwingCalculationInputAlarmPanel(protocol.getChannel().getMeasurementValue());
                 buffer.put(CalculationInputAlarmPanel.class, element);
                 buffer.put(SwingCalculationInputAlarmPanel.class, element);
             }
             if (clazz.isAssignableFrom(CalculationInputMeasurementPanel.class) || clazz.isAssignableFrom(SwingCalculationInputMeasurementPanel.class)) {
-                element = (T) new SwingCalculationInputMeasurementPanel(repositoryFactory, channel);
+                element = (T) new SwingCalculationInputMeasurementPanel(repositoryFactory, protocol);
                 buffer.put(CalculationInputMeasurementPanel.class, element);
                 buffer.put(SwingCalculationInputMeasurementPanel.class, element);
             }

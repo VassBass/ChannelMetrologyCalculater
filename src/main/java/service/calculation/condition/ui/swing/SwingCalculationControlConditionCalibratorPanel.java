@@ -19,11 +19,6 @@ public class SwingCalculationControlConditionCalibratorPanel extends TitledCombo
     }
 
     @Override
-    public void setSelectedCalibrator(String calibratorName) {
-        this.setSelectedItem(calibratorName);
-    }
-
-    @Override
     public String getSelectedCalibratorName() {
         return this.getSelectedString();
     }

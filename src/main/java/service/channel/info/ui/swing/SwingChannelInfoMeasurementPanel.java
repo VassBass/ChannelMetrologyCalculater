@@ -12,7 +12,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class SwingChannelInfoMeasurementPanel extends TitledPanel implements ChannelInfoMeasurementPanel {
     private static final String TITLE_TEXT = "Вид вимірювання";
@@ -27,7 +26,7 @@ public class SwingChannelInfoMeasurementPanel extends TitledPanel implements Cha
         measurementValue = new DefaultComboBox(false);
 
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
-        if (Objects.nonNull(measurementRepository)) setMeasurementNames(Arrays.asList(measurementRepository.getAllNames()));
+        setMeasurementNames(Arrays.asList(measurementRepository.getAllNames()));
 
         measurementName.addItemListener(e -> manager.changeMeasurementName());
         measurementValue.addItemListener(e -> manager.changeMeasurementValue());

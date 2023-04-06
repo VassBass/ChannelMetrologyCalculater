@@ -28,6 +28,7 @@ public class DefaultCalculationWorker extends CalculationWorker {
     @Override
     public boolean calculate(Protocol protocol) {
         SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+
         Channel channel = protocol.getChannel();
         Sensor sensor = sensorRepository.get(channel.getCode());
         if (Objects.isNull(sensor)) {

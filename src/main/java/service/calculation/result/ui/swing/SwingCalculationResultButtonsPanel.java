@@ -12,16 +12,12 @@ public class SwingCalculationResultButtonsPanel extends DefaultPanel {
     private static final String CANCEL_BUTTON_TEXT = "Закрити";
     private static final String BACK_BUTTON_TEXT = "Назад";
 
-    private final DefaultButton backButton;
-    private final DefaultButton cancelButton;
-    private final DefaultButton nextButton;
-
     public SwingCalculationResultButtonsPanel(CalculationManager manager) {
         super();
 
-        backButton = new DefaultButton(BACK_BUTTON_TEXT);
-        cancelButton = new DefaultButton(CANCEL_BUTTON_TEXT);
-        nextButton = new DefaultButton(NEXT_BUTTON_TEXT);
+        DefaultButton backButton = new DefaultButton(BACK_BUTTON_TEXT);
+        DefaultButton cancelButton = new DefaultButton(CANCEL_BUTTON_TEXT);
+        DefaultButton nextButton = new DefaultButton(NEXT_BUTTON_TEXT);
 
         backButton.addActionListener(e -> manager.showInputDialog());
         cancelButton.addActionListener(e -> manager.disposeCalculation());

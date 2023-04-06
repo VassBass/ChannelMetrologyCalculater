@@ -14,8 +14,6 @@ import service.channel.info.SwingChannelInfoExecuter;
 import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListSearchPanel;
 import service.channel.list.ui.ChannelListTable;
-import service.channel.list.ui.swing.SwingChannelListInfoTable;
-import service.channel.list.ui.swing.SwingChannelListTable;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
@@ -46,11 +44,10 @@ public class SwingChannelListManager implements ChannelListManager {
 
     @Override
     public void channelSelected(String channelCode) {
-        ChannelListInfoTable channelInfoTable = context.getElement(SwingChannelListInfoTable.class);
-        if (channelInfoTable != null) {
-            ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
-            channelInfoTable.updateInfo(channelRepository.get(channelCode));
-        }
+        ChannelListInfoTable channelInfoTable = context.getElement(ChannelListInfoTable.class);
+
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+        channelInfoTable.updateInfo(channelRepository.get(channelCode));
     }
 
     @Override
@@ -60,67 +57,64 @@ public class SwingChannelListManager implements ChannelListManager {
 
     @Override
     public void showChannelInfo() {
-        ChannelListTable channelListTable = context.getElement(SwingChannelListTable.class);
-        if (channelListTable != null) {
-            ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
-            String channelCode = channelListTable.getSelectedChannelCode();
-            if (channelCode != null) {
-                Channel channel = channelRepository.get(channelCode);
-                if (channel != null) {
-                    new SwingChannelInfoExecuter(applicationScreen, repositoryFactory, this)
-                            .registerChannel(channel)
-                            .execute();
-                }
+        ChannelListTable channelListTable = context.getElement(ChannelListTable.class);
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+
+        String channelCode = channelListTable.getSelectedChannelCode();
+        if (channelCode != null) {
+            Channel channel = channelRepository.get(channelCode);
+            if (channel != null) {
+                new SwingChannelInfoExecuter(applicationScreen, repositoryFactory, this)
+                        .registerChannel(channel)
+                        .execute();
             }
         }
     }
 
     @Override
     public void removeChannel() {
-        ChannelListTable channelListTable = context.getElement(SwingChannelListTable.class);
+        ChannelListTable channelListTable = context.getElement(ChannelListTable.class);
 
-        if (channelListTable != null) {
-            ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
 
-            String channelCode = channelListTable.getSelectedChannelCode();
-            if (channelCode != null) {
-                Channel channel = channelRepository.get(channelCode);
-                if (channel != null) {
-                    String message = String.format("Ви впевнені що хочете видалити канал: \"%s\"", channel.getName());
-                    String title = String.format("Видалити: \"%s\"", channelCode);
-                    int result = JOptionPane.showConfirmDialog(applicationScreen, message, title, JOptionPane.YES_NO_OPTION);
-                    if (result == 0) {
-                        LoadingDialog dialog = LoadingDialog.getInstance();
-                        DialogWrapper loadingDialog = new DialogWrapper(applicationScreen, dialog, ScreenPoint.center(applicationScreen, dialog));
-                        loadingDialog.showing();
-                        new SwingWorker<Boolean, Void>() {
-                            @Override
-                            protected Boolean doInBackground() {
-                                SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
-                                return channelRepository.remove(channel) && sensorRepository.removeByChannelCode(channel.getCode());
+        String channelCode = channelListTable.getSelectedChannelCode();
+        if (channelCode != null) {
+            Channel channel = channelRepository.get(channelCode);
+            if (channel != null) {
+                String message = String.format("Ви впевнені що хочете видалити канал: \"%s\"", channel.getName());
+                String title = String.format("Видалити: \"%s\"", channelCode);
+                int result = JOptionPane.showConfirmDialog(applicationScreen, message, title, JOptionPane.YES_NO_OPTION);
+                if (result == 0) {
+                    LoadingDialog dialog = LoadingDialog.getInstance();
+                    DialogWrapper loadingDialog = new DialogWrapper(applicationScreen, dialog, ScreenPoint.center(applicationScreen, dialog));
+                    loadingDialog.showing();
+                    new SwingWorker<Boolean, Void>() {
+                        @Override
+                        protected Boolean doInBackground() {
+                            SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+                            return channelRepository.remove(channel) && sensorRepository.removeByChannelCode(channel.getCode());
+                        }
+
+                        @Override
+                        protected void done() {
+                            loadingDialog.shutdown();
+                            try {
+                                if (get()) {
+                                    String message = "Канал був успішно видалений";
+                                    JOptionPane.showMessageDialog(applicationScreen, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                                } else errorReaction(null);
+                            } catch (InterruptedException | ExecutionException e) {
+                                errorReaction(e);
                             }
+                            revaluateChannelTable();
+                        }
 
-                            @Override
-                            protected void done() {
-                                loadingDialog.shutdown();
-                                try {
-                                    if (get()) {
-                                        String message = "Канал був успішно видалений";
-                                        JOptionPane.showMessageDialog(applicationScreen, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
-                                    } else errorReaction(null);
-                                } catch (InterruptedException | ExecutionException e) {
-                                    errorReaction(e);
-                                }
-                                revaluateChannelTable();
-                            }
-
-                            private void errorReaction(Exception e) {
-                                logger.warn("Exception was thrown", e);
-                                String message = "Виникла помилка, будь ласка спробуйте ще раз";
-                                JOptionPane.showMessageDialog(applicationScreen, message, "Помилка", JOptionPane.ERROR_MESSAGE);
-                            }
-                        }.execute();
-                    }
+                        private void errorReaction(Exception e) {
+                            logger.warn("Exception was thrown", e);
+                            String message = "Виникла помилка, будь ласка спробуйте ще раз";
+                            JOptionPane.showMessageDialog(applicationScreen, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }.execute();
                 }
             }
         }
@@ -128,15 +122,14 @@ public class SwingChannelListManager implements ChannelListManager {
 
     @Override
     public void calculateChannel() {
-        ChannelListTable channelListTable = context.getElement(SwingChannelListTable.class);
-        if (channelListTable != null) {
-            ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
-            String channelCode = channelListTable.getSelectedChannelCode();
-            if (channelCode != null) {
-                Channel channel = channelRepository.get(channelCode);
-                if (channel != null) {
-                    new CalculationExecuter(applicationScreen, repositoryFactory, channel).execute();
-                }
+        ChannelListTable channelListTable = context.getElement(ChannelListTable.class);
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+
+        String channelCode = channelListTable.getSelectedChannelCode();
+        if (channelCode != null) {
+            Channel channel = channelRepository.get(channelCode);
+            if (channel != null) {
+                new CalculationExecuter(applicationScreen, repositoryFactory, channel).execute();
             }
         }
     }
@@ -147,11 +140,6 @@ public class SwingChannelListManager implements ChannelListManager {
         if (channelRepository.isExist(channel.getCode())) {
             new CalculationExecuter(applicationScreen, repositoryFactory, channel).execute();
         }
-    }
-
-    @Override
-    public void chooseOSBeforeChannelCalculate() {
-
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -173,25 +161,22 @@ public class SwingChannelListManager implements ChannelListManager {
     @Override
     public void search() {
         ChannelListSearchPanel searchPanel = context.getElement(ChannelListSearchPanel.class);
-        if (Objects.nonNull(searchPanel)) {
-            ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
-            String channelCode = searchPanel.getChannelCode();
-            if (Objects.nonNull(channelRepository)) {
-                Channel channel = channelRepository.get(channelCode);
-                if (Objects.nonNull(channel)) {
-                    String message = String.format("Канал з кодом \"%s\" було знайдено: \"%s\". Відкрити про ньго іформацію?",
-                            channelCode, channel.getName());
-                    int result = JOptionPane.showConfirmDialog(applicationScreen, message, "Знайдено", JOptionPane.YES_NO_OPTION);
-                    if (result == 0) {
-                        new SwingChannelInfoExecuter(applicationScreen, repositoryFactory, this)
-                                .registerChannel(channel)
-                                .execute();
-                    }
-                } else {
-                    String message = String.format("Канал з кодом \"%s\" не знайдено в базі.", channelCode);
-                    JOptionPane.showMessageDialog(applicationScreen, message, "Не знайдено", JOptionPane.INFORMATION_MESSAGE);
-                }
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+
+        String channelCode = searchPanel.getChannelCode();
+        Channel channel = channelRepository.get(channelCode);
+        if (Objects.nonNull(channel)) {
+            String message = String.format("Канал з кодом \"%s\" було знайдено: \"%s\". Відкрити про ньго іформацію?",
+                    channelCode, channel.getName());
+            int result = JOptionPane.showConfirmDialog(applicationScreen, message, "Знайдено", JOptionPane.YES_NO_OPTION);
+            if (result == 0) {
+                new SwingChannelInfoExecuter(applicationScreen, repositoryFactory, this)
+                        .registerChannel(channel)
+                        .execute();
             }
+        } else {
+            String message = String.format("Канал з кодом \"%s\" не знайдено в базі.", channelCode);
+            JOptionPane.showMessageDialog(applicationScreen, message, "Не знайдено", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -207,10 +192,8 @@ public class SwingChannelListManager implements ChannelListManager {
 
     @Override
     public void revaluateChannelTable() {
-        ChannelListTable channelListTable = context.getElement(SwingChannelListTable.class);
-        if (channelListTable != null) {
-            ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
-            channelListTable.setChannelList(new ArrayList<>(channelRepository.getAll()));
-        }
+        ChannelListTable channelListTable = context.getElement(ChannelListTable.class);
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
+        channelListTable.setChannelList(new ArrayList<>(channelRepository.getAll()));
     }
 }

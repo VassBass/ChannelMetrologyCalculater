@@ -1,5 +1,6 @@
 package service.calculation.input.ui.swing;
 
+import model.dto.Calibrator;
 import model.dto.Channel;
 import model.dto.ControlPoints;
 import model.dto.Sensor;
@@ -12,7 +13,7 @@ import repository.RepositoryFactory;
 import repository.repos.control_points.ControlPointsRepository;
 import repository.repos.sensor.SensorRepository;
 import service.calculation.input.ui.CalculationInputMeasurementPanel;
-import util.ObjectHelper;
+import service.calculation.protocol.Protocol;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
@@ -36,6 +37,8 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     private static final String AUTO_TEXT = "Автом.";
     private static final String HEADER_STEP = "Хід";
 
+    private final Protocol protocol;
+
     private final TreeMap<Double, Double> input;
 
     private final DefaultCheckBox autoInputInPercent;
@@ -49,8 +52,10 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     private int percentDecimalPoint = 2;
     private int valueDecimalPoint = 2;
 
-    public SwingCalculationInputMeasurementPanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull Channel channel) {
+    public SwingCalculationInputMeasurementPanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull Protocol protocol) {
         super();
+        this.protocol = protocol;
+        Channel channel = protocol.getChannel();
 
         ButtonCell headerInputInPercent = new ButtonCell(HEADER, HEADER_TEXT_INPUT_IN_PERCENT);
         ButtonCell headerInputInValue = new ButtonCell(HEADER, HEADER_TEXT_INPUT_IN_VALUE_PREFIX + channel.getMeasurementValue());
@@ -295,9 +300,12 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     private TreeMap<Double, Double> createDefaultInput(RepositoryFactory repositoryFactory, Channel channel) {
         ControlPointsRepository controlPointsRepository = repositoryFactory.getImplementation(ControlPointsRepository.class);
         SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+        boolean isCalibratorRosemount = protocol.getCalibrator().getName().equals(Calibrator.ROSEMOUNT_8714DQ4);
 
         ControlPoints controlPoints = null;
-        if (ObjectHelper.nonNull(controlPointsRepository, sensorRepository)) {
+        if (isCalibratorRosemount) {
+            controlPoints = controlPointsRepository.get(Calibrator.ROSEMOUNT_8714DQ4);
+        } else {
             Sensor sensor = sensorRepository.get(channel.getCode());
             if (Objects.nonNull(sensor)) {
                 String controlPointsName = ControlPoints.createName(sensor.getType(), channel.getRangeMin(), channel.getRangeMax());

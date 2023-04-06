@@ -55,28 +55,13 @@ public class SwingCalculationControlConditionEnvironmentPanel extends DefaultPan
     }
 
     @Override
-    public void setTemperature(int temperature) {
-        temperatureValue.setText(temperature);
-    }
-
-    @Override
     public int getTemperature() {
         return Integer.parseInt(temperatureValue.getText());
     }
 
     @Override
-    public void setPressure(int pressure) {
-        pressureValue.setText(pressure);
-    }
-
-    @Override
     public int getPressure() {
         return Integer.parseInt(pressureValue.getText());
-    }
-
-    @Override
-    public void setHumidity(int humidity) {
-        humidityValue.setText(humidity);
     }
 
     @Override

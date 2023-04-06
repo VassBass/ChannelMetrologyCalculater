@@ -6,7 +6,6 @@ import service.channel.list.ChannelListSwingContext;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.util.Objects;
 
 public class SwingChannelListPanel extends DefaultPanel {
     public SwingChannelListPanel(@Nonnull ChannelListSwingContext context) {
@@ -17,11 +16,9 @@ public class SwingChannelListPanel extends DefaultPanel {
         SwingChannelListButtonsPanel buttonsPanel = context.getElement(SwingChannelListButtonsPanel.class);
         SwingChannelListTable channelsTable = context.getElement(SwingChannelListTable.class);
 
-        if (Objects.nonNull(infoTable) && Objects.nonNull(searchPanel) && Objects.nonNull(buttonsPanel) && Objects.nonNull(channelsTable)) {
-            this.add(infoTable, new CellBuilder().x(0).y(0).width(2).weightY(0.05).build());
-            this.add(searchPanel, new CellBuilder().x(0).y(1).width(1).weightY(0.05).build());
-            this.add(buttonsPanel, new CellBuilder().x(1).y(1).width(1).weightY(0.05).build());
-            this.add(new JScrollPane(channelsTable), new CellBuilder().x(0).y(2).width(2).weightY(0.9).build());
-        }
+        this.add(infoTable, new CellBuilder().x(0).y(0).width(2).weightY(0.05).build());
+        this.add(searchPanel, new CellBuilder().x(0).y(1).width(1).weightY(0.05).build());
+        this.add(buttonsPanel, new CellBuilder().x(1).y(1).width(1).weightY(0.05).build());
+        this.add(new JScrollPane(channelsTable), new CellBuilder().x(0).y(2).width(2).weightY(0.9).build());
     }
 }

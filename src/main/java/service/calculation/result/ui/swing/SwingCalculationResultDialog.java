@@ -93,19 +93,17 @@ public class SwingCalculationResultDialog extends JDialog implements Calculation
 
     @Override
     public boolean fillProtocol(Protocol protocol) {
-        if (Objects.nonNull(conclusionPanel)) {
-            if (Objects.nonNull(referencePanel)) {
-                String referenceNumber = referencePanel.getReferenceNumber();
-                if (referenceNumber.isEmpty()) {
-                    String message = "Поле вводу номера довідки не має бути пустим";
-                    JOptionPane.showMessageDialog(this, message, "Некоректні дані", JOptionPane.ERROR_MESSAGE);
-                    return false;
-                } else {
-                    protocol.setReferenceNumber(referenceNumber);
-                }
+        if (Objects.nonNull(referencePanel)) {
+            String referenceNumber = referencePanel.getReferenceNumber();
+            if (referenceNumber.isEmpty()) {
+                String message = "Поле вводу номера довідки не має бути пустим";
+                JOptionPane.showMessageDialog(this, message, "Некоректні дані", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } else {
+                protocol.setReferenceNumber(referenceNumber);
             }
-            protocol.setConclusion(conclusionPanel.getConclusion());
-            return true;
-        } else return false;
+        }
+        protocol.setConclusion(conclusionPanel.getConclusion());
+        return true;
     }
 }

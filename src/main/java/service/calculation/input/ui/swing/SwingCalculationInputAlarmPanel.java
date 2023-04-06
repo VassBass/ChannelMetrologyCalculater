@@ -52,15 +52,6 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
     }
 
     @Override
-    public void setAlarmValue(double value) {
-        if (isEnabled()) {
-            this.value.setText(String.valueOf(value));
-        } else {
-            buffer = value;
-        }
-    }
-
-    @Override
     public double getAlarmValue() {
         if (isEnabled()) {
             String val = value.getText();

@@ -25,21 +25,18 @@ public class DefaultChannelListService implements ChannelListService {
         ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
         Collection<String> result = new HashSet<>();
 
-        if (channelRepository != null) {
-            for (Channel channel : channelRepository.getAll()) {
-                Calendar checkDate = DateHelper.stringToDate(channel.getDate());
-                if (checkDate == null) {
-                    result.add(channel.getCode());
-                } else {
-                    long checkDateInMills = checkDate.getTimeInMillis();
-                    long nextDate = DateHelper.yearsToMills(channel.getFrequency()) + checkDateInMills;
-                    long toNextCheck = nextDate - Calendar.getInstance().getTimeInMillis();
+        for (Channel channel : channelRepository.getAll()) {
+            Calendar checkDate = DateHelper.stringToDate(channel.getDate());
+            if (checkDate == null) {
+                result.add(channel.getCode());
+            } else {
+                long checkDateInMills = checkDate.getTimeInMillis();
+                long nextDate = DateHelper.yearsToMills(channel.getFrequency()) + checkDateInMills;
+                long toNextCheck = nextDate - Calendar.getInstance().getTimeInMillis();
 
-                    if (toNextCheck < 0) result.add(channel.getCode());
-                }
+                if (toNextCheck < 0) result.add(channel.getCode());
             }
         }
-
         return result;
     }
 
@@ -48,20 +45,17 @@ public class DefaultChannelListService implements ChannelListService {
         ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
         Collection<String> result = new HashSet<>();
 
-        if (channelRepository != null) {
-            for (Channel channel : channelRepository.getAll()) {
-                Calendar checkDate = DateHelper.stringToDate(channel.getDate());
-                if (checkDate != null) {
-                    long checkDateInMills = checkDate.getTimeInMillis();
-                    long nextDate = DateHelper.yearsToMills(channel.getFrequency()) + checkDateInMills;
-                    long toNextCheck = nextDate - Calendar.getInstance().getTimeInMillis();
-                    long days90 = 7_776_000_000L;
+        for (Channel channel : channelRepository.getAll()) {
+            Calendar checkDate = DateHelper.stringToDate(channel.getDate());
+            if (checkDate != null) {
+                long checkDateInMills = checkDate.getTimeInMillis();
+                long nextDate = DateHelper.yearsToMills(channel.getFrequency()) + checkDateInMills;
+                long toNextCheck = nextDate - Calendar.getInstance().getTimeInMillis();
+                long days90 = 7_776_000_000L;
 
-                    if (toNextCheck > 0 && toNextCheck <= days90) result.add(channel.getCode());
-                }
+                if (toNextCheck > 0 && toNextCheck <= days90) result.add(channel.getCode());
             }
         }
-
         return result;
     }
 
@@ -90,7 +84,6 @@ public class DefaultChannelListService implements ChannelListService {
     @Override
     public Sensor getSensor(@Nonnull Channel channel) {
         SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
-        if (sensorRepository != null) return sensorRepository.get(channel.getCode());
-        else return null;
+        return sensorRepository.get(channel.getCode());
     }
 }

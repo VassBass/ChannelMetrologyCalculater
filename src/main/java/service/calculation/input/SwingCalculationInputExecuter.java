@@ -11,6 +11,7 @@ import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
 import service.calculation.input.ui.SwingCalculationInputContext;
 import service.calculation.input.ui.swing.SwingCalculationInputDialog;
+import service.calculation.protocol.Protocol;
 
 import javax.annotation.Nonnull;
 
@@ -21,23 +22,23 @@ public class SwingCalculationInputExecuter implements ServiceExecuter {
     private final RepositoryFactory repositoryFactory;
     private final CalculationConfigHolder configHolder;
     private final CalculationManager manager;
-    private final Channel channel;
+    private final Protocol protocol;
 
     public SwingCalculationInputExecuter(@Nonnull ApplicationScreen applicationScreen,
                                          @Nonnull RepositoryFactory repositoryFactory,
                                          @Nonnull CalculationConfigHolder configHolder,
                                          @Nonnull CalculationManager manager,
-                                         @Nonnull Channel channel) {
+                                         @Nonnull Protocol protocol) {
         this.applicationScreen = applicationScreen;
         this.repositoryFactory = repositoryFactory;
         this.configHolder = configHolder;
         this.manager = manager;
-        this.channel = channel;
+        this.protocol = protocol;
     }
 
     @Override
     public void execute() {
-        SwingCalculationInputContext context = new SwingCalculationInputContext(repositoryFactory, channel);
+        SwingCalculationInputContext context = new SwingCalculationInputContext(repositoryFactory, protocol);
         context.registerManager(manager);
         SwingCalculationInputManager inputManager = new SwingCalculationInputManager(context);
         context.registerManager(inputManager);

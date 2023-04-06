@@ -119,7 +119,7 @@ public class MxParserErrorCalculater {
     }
 
     private static String preparedString(String f) {
-        return f.replaceAll("\\,", ".")
+        return f.replaceAll(",", ".")
                 .replaceAll(DEGREE0_REGEX, "^0")
                 .replaceAll(DEGREE1_REGEX, "^1")
                 .replaceAll(DEGREE2_REGEX, "^2")
