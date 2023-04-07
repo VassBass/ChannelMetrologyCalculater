@@ -73,6 +73,4 @@ public class SwingChannelInfoCodePanel extends TitledTextField implements Channe
 
         return popupMenu;
     }
-
-
 }

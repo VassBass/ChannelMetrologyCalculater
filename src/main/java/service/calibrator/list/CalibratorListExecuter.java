@@ -28,7 +28,7 @@ public class CalibratorListExecuter implements ServiceExecuter {
         CalibratorListContext context = new CalibratorListContext(repositoryFactory);
         CalibratorListManager manager = new SwingCalibratorListManager(repositoryFactory, context);
         context.registerManager(manager);
-        SwingCalibratorListDialog dialog = new SwingCalibratorListDialog(applicationScreen, configHolder, context);
+        SwingCalibratorListDialog dialog = new SwingCalibratorListDialog(applicationScreen, repositoryFactory, configHolder, context);
 
         dialog.showing();
         logger.info("Service is running");

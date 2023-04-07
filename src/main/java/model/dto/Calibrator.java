@@ -74,14 +74,14 @@ public class Calibrator implements Serializable {
 
     /**
      * DB field = error_formula [TEXT]
-     * R - Measurement range of channel (Диапазон измерения канала)
+     * R - Measurement range of channel (Діапазон вимірювання каналу)
      * @see Channel#calculateRange()
      *
-     * r - Measurement range of calibrator (Диапазон измерения калибратора)
+     * r - Measurement range of calibrator (Діапазон вимірювання калібратора)
      * @see Calibrator#calculateRange()
      *
      * convR - Measurement range of calibrator converted by measurement channel value
-     * (Диапазон измерения калибратора переконвертированый под измерительную величину канала)
+     * (Діапазон вимірювання калібратора переконвертований під вимірювальну величину каналу)
      */
     @Nonnull private String errorFormula = EMPTY;
 

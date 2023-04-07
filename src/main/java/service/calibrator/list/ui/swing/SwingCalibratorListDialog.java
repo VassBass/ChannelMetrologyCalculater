@@ -1,9 +1,12 @@
 package service.calibrator.list.ui.swing;
 
 import application.ApplicationScreen;
+import model.dto.Calibrator;
 import model.ui.DefaultPanel;
 import model.ui.UI;
 import model.ui.builder.CellBuilder;
+import repository.RepositoryFactory;
+import repository.repos.calibrator.CalibratorRepository;
 import service.calibrator.list.CalibratorListConfigHolder;
 import service.calibrator.list.ui.CalibratorListContext;
 import util.ScreenPoint;
@@ -11,6 +14,8 @@ import util.ScreenPoint;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static model.ui.builder.CellBuilder.BOTH;
 import static model.ui.builder.CellBuilder.VERTICAL;
@@ -18,13 +23,19 @@ import static model.ui.builder.CellBuilder.VERTICAL;
 public class SwingCalibratorListDialog extends JDialog implements UI {
     private static final String TITLE_TEXT = "Список калібраторів";
 
+    private final RepositoryFactory repositoryFactory;
+    private final SwingCalibratorListMeasurementPanel measurementPanel;
+    private final SwingCalibratorListTable table;
+
     public SwingCalibratorListDialog(@Nonnull ApplicationScreen applicationScreen,
+                                     @Nonnull RepositoryFactory repositoryFactory,
                                      @Nonnull CalibratorListConfigHolder configHolder,
                                      @Nonnull CalibratorListContext context) {
         super(applicationScreen, TITLE_TEXT, true);
+        this.repositoryFactory = repositoryFactory;
 
-        SwingCalibratorListMeasurementPanel measurementPanel = context.getElement(SwingCalibratorListMeasurementPanel.class);
-        SwingCalibratorListTable table = context.getElement(SwingCalibratorListTable.class);
+        measurementPanel = context.getElement(SwingCalibratorListMeasurementPanel.class);
+        table = context.getElement(SwingCalibratorListTable.class);
         SwingCalibratorListButtonsPanel buttonsPanel = context.getElement(SwingCalibratorListButtonsPanel.class);
 
         DefaultPanel panel = new DefaultPanel();
@@ -42,6 +53,12 @@ public class SwingCalibratorListDialog extends JDialog implements UI {
 
     @Override
     public void refresh() {
+        CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);
+        String measurementName = measurementPanel.getSelectedMeasurement();
+        List<Calibrator> calibratorList = calibratorRepository.getAll().stream()
+                .filter(c -> c.getMeasurementName().equals(measurementName))
+                .collect(Collectors.toList());
+        table.setCalibratorList(calibratorList);
         EventQueue.invokeLater(() -> {
             this.setVisible(false);
             this.setVisible(true);

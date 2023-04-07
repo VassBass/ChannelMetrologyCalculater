@@ -80,5 +80,4 @@ public class SwingChannelInfoDatePanel extends TitledPanel implements ChannelInf
         this.setTitleColor(Color.RED);
         return false;
     }
-
 }
