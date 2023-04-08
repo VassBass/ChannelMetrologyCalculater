@@ -5,4 +5,5 @@ public interface CalibratorListManager {
     void clickDelete();
     void clickDetails();
     void clickAdd();
+    void updateDialog();
 }

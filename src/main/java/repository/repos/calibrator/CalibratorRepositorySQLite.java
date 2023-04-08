@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class CalibratorRepositorySQLite implements CalibratorRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CalibratorRepositorySQLite.class);
+    private static final Logger logger = LoggerFactory.getLogger(CalibratorRepositorySQLite.class);
 
     private final String tableName;
     private final RepositoryDBConnector connector;
@@ -55,7 +55,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 calibrators.add(calibratorBuilder.build());
             }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
         }
 
         return calibrators;
@@ -71,7 +71,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 calibrators.add(resultSet.getString("name"));
             }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
         }
 
         return calibrators.toArray(new String[0]);
@@ -99,7 +99,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 return calibratorBuilder.build();
             }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
         }
 
         return null;
@@ -123,7 +123,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
             return false;
         }
     }
@@ -134,7 +134,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
             return false;
         }
     }
@@ -145,7 +145,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
         try (Statement statement = connector.getStatement()) {
             return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
             return false;
         }
     }
@@ -177,7 +177,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
             return false;
         }
     }
@@ -190,7 +190,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
         try (Statement statement = connector.getStatement()) {
             return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
             return false;
         }
     }
@@ -202,7 +202,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
             statement.execute(sql);
             return true;
         } catch (SQLException e) {
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
             return false;
         }
     }
@@ -240,7 +240,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
 
             return true;
         } catch (SQLException e) {
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
             return false;
         }
     }
@@ -268,7 +268,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
 
                     statement.execute();
                 } catch (SQLException e) {
-                    LOGGER.warn("Exception was thrown!", e);
+                    logger.warn("Exception was thrown!", e);
                     return false;
                 }
             }
@@ -298,7 +298,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
                 statement.execute(sqlBuilder.toString());
             } catch (SQLException e) {
-                LOGGER.warn("Exception was thrown!", e);
+                logger.warn("Exception was thrown!", e);
                 return false;
             }
         }
@@ -307,12 +307,25 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
     }
 
     @Override
-    public boolean isExists(@Nonnull Calibrator calibrator) {
-        String sql = String.format("SELECT name FROM %s WHERE name = '%s' LIMIT 1;", tableName, calibrator.getName());
+    public boolean isExists(@Nonnull String calibratorName) {
+        String sql = String.format("SELECT name FROM %s WHERE name = '%s' LIMIT 1;", tableName, calibratorName);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            logger.warn("Exception was thrown!", e);
+            return true;
+        }
+    }
+
+    @Override
+    public boolean isExist(@Nonnull String oldCalibratorName, @Nonnull String newCalibratorName) {
+        if (oldCalibratorName.equals(newCalibratorName)) return false;
+
+        String sql = String.format("SELECT code FROM %s WHERE code = '%s' LIMIT 1;", tableName, newCalibratorName);
+        try (ResultSet resultSet = connector.getResultSet(sql)){
+            return resultSet.next();
+        }catch (SQLException e){
+            logger.warn("Exception was thrown!", e);
             return true;
         }
     }

@@ -1,12 +1,12 @@
 package service.calibrator.info.ui.swing;
 
-import application.ApplicationScreen;
 import model.dto.Calibrator;
 import model.ui.DefaultPanel;
 import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.calibrator.info.CalibratorInfoConfigHolder;
 import service.calibrator.info.ui.CalibratorInfoContext;
+import service.calibrator.list.ui.swing.SwingCalibratorListDialog;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
@@ -18,11 +18,11 @@ import java.util.Objects;
 public class SwingCalibratorInfoDialog extends JDialog implements UI {
     private static final String DEFAULT_TITLE = "Калібратор";
 
-    public SwingCalibratorInfoDialog(@Nonnull ApplicationScreen applicationScreen,
+    public SwingCalibratorInfoDialog(@Nonnull SwingCalibratorListDialog calibratorListDialog,
                                      @Nonnull CalibratorInfoConfigHolder configHolder,
                                      @Nonnull CalibratorInfoContext context,
                                      @Nullable Calibrator calibrator) {
-        super(applicationScreen, Objects.isNull(calibrator) ? DEFAULT_TITLE : calibrator.getName(), true);
+        super(calibratorListDialog, Objects.isNull(calibrator) ? DEFAULT_TITLE : calibrator.getName(), true);
 
         SwingCalibratorInfoMeasurementPanel measurementPanel = context.getElement(SwingCalibratorInfoMeasurementPanel.class);
         SwingCalibratorInfoTypePanel typePanel = context.getElement(SwingCalibratorInfoTypePanel.class);
@@ -55,14 +55,14 @@ public class SwingCalibratorInfoDialog extends JDialog implements UI {
         panel.add(numberPanel, new CellBuilder().x(0).y(3).width(1).height(1).build());
         panel.add(rangePanel, new CellBuilder().x(0).y(4).width(1).height(1).build());
         panel.add(errorFormulaPanel, new CellBuilder().x(0).y(5).width(1).height(1).build());
-        panel.add(certificatePanel, new CellBuilder().x(1).y(0).width(1).height(6).build());
+        panel.add(certificatePanel, new CellBuilder().x(1).y(0).width(1).height(3).build());
         panel.add(buttonsPanel, new CellBuilder().x(0).y(6).width(2).height(1).build());
 
         int width = configHolder.getDialogWidth();
         int height = configHolder.getDialogHeight();
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setSize(width, height);
-        this.setLocation(ScreenPoint.center(applicationScreen, this));
+        this.setLocation(ScreenPoint.center(calibratorListDialog, this));
         this.setContentPane(panel);
     }
 

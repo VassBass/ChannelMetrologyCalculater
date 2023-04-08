@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 public class SwingCalibratorInfoMeasurementPanel extends DefaultPanel implements CalibratorInfoMeasurementPanel {
     private final RepositoryFactory repositoryFactory;
+    private final CalibratorInfoManager manager;
 
     private final DefaultComboBox measurementName;
     private final DefaultComboBox measurementValue;
@@ -20,6 +21,7 @@ public class SwingCalibratorInfoMeasurementPanel extends DefaultPanel implements
     public SwingCalibratorInfoMeasurementPanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull CalibratorInfoManager manager) {
         super();
         this.repositoryFactory = repositoryFactory;
+        this.manager = manager;
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
 
         measurementName = new DefaultComboBox(false);

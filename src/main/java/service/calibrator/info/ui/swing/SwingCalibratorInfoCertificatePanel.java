@@ -11,6 +11,7 @@ import util.StringHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -21,20 +22,22 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingCalibratorInfoCertificatePanel extends TitledPanel implements CalibratorInfoCertificatePanel {
     private static final String TITLE_TEXT = "Документ про придатність калібратора";
+    private static final String NAME_LABEL_TEXT = "Назва:";
+    private static final String COMPANY_LABEL_TEXT = "Видав документ:";
 
     private final DefaultComboBox type;
     private final DatePanel datePanel;
-    private final DefaultTextField name;
-    private final DefaultTextField company;
+    private final TitledTextField name;
+    private final TitledTextField company;
 
     public SwingCalibratorInfoCertificatePanel(@Nonnull RepositoryFactory repositoryFactory) {
-        super(TITLE_TEXT);
+        super(TITLE_TEXT, Color.BLACK);
         CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);
 
         type = new DefaultComboBox(true);
         datePanel = new DatePanel();
-        name = new DefaultTextField(20);
-        company = new DefaultTextField(20);
+        name = new TitledTextField(20, NAME_LABEL_TEXT);
+        company = new TitledTextField(20, COMPANY_LABEL_TEXT);
 
         List<String> types = new ArrayList<>();
         types.add(EMPTY);

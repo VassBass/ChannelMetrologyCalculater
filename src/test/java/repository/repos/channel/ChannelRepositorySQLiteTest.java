@@ -4,7 +4,6 @@ import model.dto.Channel;
 import model.dto.Measurement;
 import model.dto.builder.ChannelBuilder;
 import org.junit.*;
-import org.sqlite.JDBC;
 import repository.config.RepositoryConfigHolder;
 import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;

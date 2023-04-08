@@ -109,7 +109,13 @@ public class BufferedCalibratorRepositorySQLite extends CalibratorRepositorySQLi
     }
 
     @Override
-    public boolean isExists(@Nonnull Calibrator calibrator) {
-        return buffer.containsKey(calibrator.getName());
+    public boolean isExists(@Nonnull String calibratorName) {
+        return buffer.containsKey(calibratorName);
+    }
+
+    @Override
+    public boolean isExist(@Nonnull String oldCalibratorName, @Nonnull String newCalibratorName) {
+        if (oldCalibratorName.equals(newCalibratorName)) return false;
+        return buffer.containsKey(newCalibratorName);
     }
 }

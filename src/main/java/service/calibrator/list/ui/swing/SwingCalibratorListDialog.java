@@ -60,7 +60,7 @@ public class SwingCalibratorListDialog extends JDialog implements UI {
                 .collect(Collectors.toList());
         table.setCalibratorList(calibratorList);
         EventQueue.invokeLater(() -> {
-            this.setVisible(false);
+            if (this.isVisible()) this.setVisible(false);
             this.setVisible(true);
         });
     }

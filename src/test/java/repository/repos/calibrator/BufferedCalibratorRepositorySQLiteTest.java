@@ -4,13 +4,12 @@ import model.dto.Calibrator;
 import model.dto.Measurement;
 import model.dto.builder.CalibratorBuilder;
 import org.junit.*;
-import org.sqlite.JDBC;
-import service.json.JacksonJsonObjectMapper;
-import service.json.JsonObjectMapper;
 import repository.config.RepositoryConfigHolder;
 import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.connection.SqliteRepositoryDBConnector;
+import service.json.JacksonJsonObjectMapper;
+import service.json.JsonObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +17,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
@@ -517,7 +519,13 @@ public class BufferedCalibratorRepositorySQLiteTest {
 
     @Test
     public void testIsExists() {
-        assertTrue(repository.isExists(createCalibrator(0)));
-        assertFalse(repository.isExists(createCalibrator(8)));
+        assertTrue(repository.isExists("calibrator0"));
+        assertFalse(repository.isExists("calibrator8"));
+
+        assertFalse(repository.isExist("calibrator1", "calibrator1"));
+        assertFalse(repository.isExist("calibrator1", "calibrator9"));
+        assertFalse(repository.isExist("calibrator9", "calibrator9"));
+        assertTrue(repository.isExist("calibrator1", "calibrator2"));
+        assertTrue(repository.isExist("calibrator9", "calibrator2"));
     }
 }

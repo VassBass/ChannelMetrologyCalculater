@@ -24,5 +24,6 @@ public interface CalibratorRepository {
     boolean importData(@Nonnull Collection<Calibrator> newCalibrators,
                        @Nonnull Collection<Calibrator>calibratorsForChange);
 
-    boolean isExists(@Nonnull Calibrator calibrator);
+    boolean isExists(@Nonnull String calibratorName);
+    boolean isExist(@Nonnull String oldCalibratorName, @Nonnull String newCalibratorName);
 }
