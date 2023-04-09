@@ -28,7 +28,7 @@ public class SwingCalibratorInfoMeasurementPanel extends DefaultPanel implements
         measurementValue = new DefaultComboBox(false);
 
         measurementName.setList(Arrays.asList(measurementRepository.getAllNames()));
-        updateMeasurementValues();
+        measurementValue.setList(Arrays.asList(measurementRepository.getValues(measurementName.getSelectedString())));
 
         measurementName.addItemListener(e -> updateMeasurementValues());
         measurementValue.addItemListener(e -> manager.changingMeasurementValue());
@@ -41,6 +41,7 @@ public class SwingCalibratorInfoMeasurementPanel extends DefaultPanel implements
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
         String measurementName = this.measurementName.getSelectedString();
         measurementValue.setList(Arrays.asList(measurementRepository.getValues(measurementName)));
+        manager.changingMeasurementValue();
     }
 
     @Override

@@ -3,11 +3,11 @@ package service.calibrator.info.ui.swing;
 import model.ui.ButtonCell;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
+import model.ui.builder.CellBuilder;
 import service.calibrator.info.ui.CalibratorInfoRangePanel;
 import util.StringHelper;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -36,14 +36,21 @@ public class SwingCalibratorInfoRangePanel extends TitledPanel implements Calibr
         rangeMax.setFocusListener(focusListener);
 
         measurementValue = new ButtonCell(SIMPLE);
+
+        this.add(rangeMin, new CellBuilder().x(0).build());
+        this.add(new ButtonCell(SIMPLE, "..."), new CellBuilder().x(1).build());
+        this.add(rangeMax, new CellBuilder().x(2).build());
+        this.add(measurementValue, new CellBuilder().x(3).build());
     }
 
     @Override
     public double getRangeMin() {
         String min = rangeMin.getText();
         if (StringHelper.isDouble(min)) {
+            this.setTitleColor(Color.BLACK);
             return Double.parseDouble(min);
         } else {
+            this.setTitleColor(Color.RED);
             return Double.NaN;
         }
     }
@@ -52,10 +59,17 @@ public class SwingCalibratorInfoRangePanel extends TitledPanel implements Calibr
     public double getRangeMax() {
         String max = rangeMax.getText();
         if (StringHelper.isDouble(max)) {
+            this.setTitleColor(Color.BLACK);
             return Double.parseDouble(max);
         } else {
+            this.setTitleColor(Color.RED);
             return Double.NaN;
         }
+    }
+
+    @Override
+    public String getMeasurementValue() {
+        return measurementValue.getText();
     }
 
     @Override

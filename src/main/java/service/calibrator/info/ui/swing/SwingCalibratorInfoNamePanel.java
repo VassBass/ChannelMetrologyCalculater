@@ -6,6 +6,7 @@ import service.calibrator.info.ui.CalibratorInfoNamePanel;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import java.awt.*;
 
 public class SwingCalibratorInfoNamePanel extends TitledTextField implements CalibratorInfoNamePanel {
     private static final String TITLE_TEXT = "Назва калібратора";
@@ -25,7 +26,13 @@ public class SwingCalibratorInfoNamePanel extends TitledTextField implements Cal
 
     @Override
     public String getCalibratorName() {
-        return this.getText();
+        String name = this.getText();
+        if (name.isEmpty()) {
+            this.setTitleColor(Color.RED);
+        } else {
+            this.setTitleColor(Color.BLACK);
+        }
+        return name;
     }
 
     @Override

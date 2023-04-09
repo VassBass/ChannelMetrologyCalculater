@@ -65,13 +65,17 @@ public class SwingCalibratorInfoCertificatePanel extends TitledPanel implements 
         String company = this.company.getText();
 
         if (StringHelper.nonEmpty(type, date, name, company)) {
+            this.setTitleColor(Color.BLACK);
             return new Calibrator.Certificate.CertificateBuilder()
                     .setType(type)
                     .setDate(date)
                     .setName(name)
                     .setCompany(company)
                     .build();
-        } else return null;
+        } else {
+            this.setTitleColor(Color.RED);
+            return null;
+        }
     }
 
     @Override

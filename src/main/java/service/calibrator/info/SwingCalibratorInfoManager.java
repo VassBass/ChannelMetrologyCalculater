@@ -8,6 +8,7 @@ import service.calibrator.info.ui.*;
 import service.calibrator.info.ui.swing.SwingCalibratorInfoDialog;
 import service.calibrator.list.CalibratorListManager;
 import util.DoubleHelper;
+import util.ObjectHelper;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
@@ -69,8 +70,8 @@ public class SwingCalibratorInfoManager implements CalibratorInfoManager {
         String errorFormula = errorFormulaPanel.getErrorFormula();
         Calibrator.Certificate certificate = certificatePanel.getCertificate();
 
-        if (StringHelper.nonEmpty(type, name, errorFormula) &&
-                DoubleHelper.nonNaN(rangeMin, rangeMax) &&
+        if (StringHelper.nonEmpty(type, name, errorFormula) &
+                DoubleHelper.nonNaN(rangeMin, rangeMax) &
                 Objects.nonNull(certificate)) {
             Calibrator calibrator = new CalibratorBuilder(name)
                     .setType(type)
@@ -107,6 +108,32 @@ public class SwingCalibratorInfoManager implements CalibratorInfoManager {
         }
     }
 
+    @Override
+    public void clickCloseDialog() {
+        if (Objects.nonNull(dialog)) dialog.shutdown();
+    }
+
+    @Override
+    public void clickRemove() {
+        if (ObjectHelper.nonNull(calibrator, dialog)) {
+            String name = calibrator.getName();
+            String message = String.format("Ви впевнені що хочете видалити калібратор \"%s\"", name);
+            int result = JOptionPane.showConfirmDialog(dialog, message, "Видалення", JOptionPane.YES_NO_OPTION);
+            if (result == 0) {
+                CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);
+                if (calibratorRepository.removeByName(name)) {
+                    successAction();
+                    dialog.shutdown();
+                    parentManager.updateDialog();
+                } else {
+                    errorAction();
+                }
+            }
+        } else {
+            clickCloseDialog();
+        }
+    }
+
     private void existAction() {
         if (Objects.nonNull(dialog)) {
             String message = "Калібратор з такою назвою вже є у базі. Змініть будь ласка назву калібратора";
@@ -116,7 +143,7 @@ public class SwingCalibratorInfoManager implements CalibratorInfoManager {
 
     private void errorAction() {
         if (Objects.nonNull(dialog)) {
-            String message = "Виникла помилка при збереженні калібратора. Спробуйте ще раз";
+            String message = "Виникла помилка. Спробуйте ще раз";
             JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
             parentManager.updateDialog();
         }
@@ -124,8 +151,9 @@ public class SwingCalibratorInfoManager implements CalibratorInfoManager {
 
     private void successAction() {
         if (Objects.nonNull(dialog)) {
-            String message = "Калібратор успішно збережено";
+            String message = "Операція виконана успішно";
             JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+            dialog.shutdown();
             parentManager.updateDialog();
         }
     }

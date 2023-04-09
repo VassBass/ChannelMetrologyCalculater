@@ -62,6 +62,7 @@ public class SwingCalibratorListManager implements CalibratorListManager {
                 } else {
                     JOptionPane.showMessageDialog(dialog, "Виникла помилка. Спробуйте ще.", "Помилка", JOptionPane.ERROR_MESSAGE);
                 }
+                dialog.refresh();
             }
         }
     }
