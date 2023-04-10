@@ -1,9 +1,6 @@
 package service.calculation.input.ui.swing;
 
-import model.dto.Calibrator;
-import model.dto.Channel;
-import model.dto.ControlPoints;
-import model.dto.Sensor;
+import model.dto.*;
 import model.ui.ButtonCell;
 import model.ui.DefaultCheckBox;
 import model.ui.DefaultPanel;
@@ -314,6 +311,19 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         }
         if (Objects.nonNull(controlPoints)) {
             return new TreeMap<>(controlPoints.getValues());
+        }else if (channel.getMeasurementName().equals(Measurement.CONSUMPTION)) {
+            double value0 = channel.getRangeMin();
+            double value25 = channel.getRangeMin() + ((channel.calculateRange() / 100) * 25);
+            double value50 = channel.getRangeMin() + (channel.calculateRange() / 2);
+            double value75 = channel.getRangeMax() - ((channel.calculateRange() / 100) * 25);
+            double value100 = channel.getRangeMax();
+            TreeMap<Double, Double> input = new TreeMap<>();
+            input.put(0.0, value0);
+            input.put(25.0, value25);
+            input.put(50.0, value50);
+            input.put(75.0, value75);
+            input.put(100.0, value100);
+            return input;
         } else {
             double value5 = channel.getRangeMin() + ((channel.calculateRange() / 100) * 5);
             double value50 = channel.getRangeMin() + (channel.calculateRange() / 2);
