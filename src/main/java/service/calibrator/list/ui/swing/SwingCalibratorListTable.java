@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SwingCalibratorListTable extends JTable implements CalibratorListTable {
-    private static final String COLUMN_NAME = "";
-    private static final String COLUMN_TYPE = "Назва";
+    private static final String COLUMN_NAME = "Назва";
+    private static final String COLUMN_TYPE = "Модель";
     private static final String COLUMN_TYPE_OF_MEASUREMENT = "Вид вимірювання";
 
     public SwingCalibratorListTable(@Nonnull RepositoryFactory repositoryFactory){

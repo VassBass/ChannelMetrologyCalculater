@@ -9,6 +9,7 @@ import repository.connection.SqliteRepositoryDBConnector;
 import service.calibrator.list.CalibratorListInitializer;
 import service.channel.list.SwingChannelListExecuter;
 import service.importer.SwingImporterInitializer;
+import service.sensor_error.list.SensorErrorListInitializer;
 
 import javax.swing.*;
 import java.util.List;
@@ -51,6 +52,10 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
         message = "Initialization of import service";
         publish(message);
         new SwingImporterInitializer(applicationScreen, repositoryFactory).init();
+
+        message = "Initialization of sensor error service";
+        publish(message);
+        new SensorErrorListInitializer(applicationScreen, repositoryFactory).init();
 
         return null;
     }

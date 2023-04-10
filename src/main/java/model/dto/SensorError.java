@@ -4,11 +4,48 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class SensorError implements Serializable {
+    /**
+     * DB field = id
+     *
+     * @see #generateId()
+     */
     private String id;
+
+    /**
+     * DB field = type.
+     *
+     * @see Sensor#type
+     */
     private String type;
+
+    /**
+     * DB field = error_formula
+     *
+     * @see Sensor#errorFormula
+     */
     private String errorFormula;
+
+    /**
+     * DB field = range_min
+     *
+     * If {@link Sensor#rangeMin} >= this value &&
+     * {@link Sensor#rangeMax} <= {@link #rangeMax}
+     * then {@link #errorFormula} should be offered
+     */
     private double rangeMin;
+
+    /**
+     * DB field = range_max
+     *
+     * If {@link Sensor#rangeMin} >= {@link #rangeMin} &&
+     * {@link Sensor#rangeMax} <= this value
+     * then {@link #errorFormula} should be offered
+     */
     private double rangeMax;
+
+    /**
+     * DB field = measurement_value
+     */
     private String measurementValue;
 
     private SensorError() {}
