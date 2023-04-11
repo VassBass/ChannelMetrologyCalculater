@@ -5,4 +5,6 @@ public interface SensorErrorListManager {
     void clickClose();
     void clickChange();
     void clickAdd();
+    void clickRemove();
+    void refreshDialog();
 }

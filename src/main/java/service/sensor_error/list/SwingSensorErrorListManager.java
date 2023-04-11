@@ -1,14 +1,17 @@
 package service.sensor_error.list;
 
+import model.dto.SensorError;
 import repository.RepositoryFactory;
 import repository.repos.measurement.MeasurementRepository;
 import repository.repos.sensor_error.SensorErrorRepository;
+import service.sensor_error.info.SensorErrorInfoExecuter;
 import service.sensor_error.list.ui.SensorErrorListContext;
 import service.sensor_error.list.ui.SensorErrorListMeasurementPanel;
 import service.sensor_error.list.ui.SensorErrorListTable;
 import service.sensor_error.list.ui.swing.SwingSensorErrorListDialog;
 
 import javax.annotation.Nonnull;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,16 +55,45 @@ public class SwingSensorErrorListManager implements SensorErrorListManager {
 
     @Override
     public void clickClose() {
-        if (Objects.nonNull(dialog)) dialog.shutdown();
+        dialog.shutdown();
     }
 
     @Override
     public void clickChange() {
-
+        SensorErrorListTable table = context.getElement(SensorErrorListTable.class);
+        String id = table.getSelectedId();
+        if (Objects.nonNull(id)) {
+            SensorErrorRepository repository = repositoryFactory.getImplementation(SensorErrorRepository.class);
+            SensorError error = repository.getById(id);
+            new SensorErrorInfoExecuter(dialog, repositoryFactory, this, error).execute();
+        }
     }
 
     @Override
     public void clickAdd() {
+        new SensorErrorInfoExecuter(dialog, repositoryFactory, this, null).execute();
+    }
 
+    @Override
+    public void clickRemove() {
+        SensorErrorListTable table = context.getElement(SensorErrorListTable.class);
+        String id = table.getSelectedId();
+        if (Objects.nonNull(id)) {
+            SensorErrorRepository repository = repositoryFactory.getImplementation(SensorErrorRepository.class);
+            String message;
+            if (repository.removeById(id)) {
+                message = "Видалення пройшло успішно";
+                JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                message = "При видаленні виникла помилка";
+                JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.ERROR_MESSAGE);
+            }
+            dialog.refresh();
+        }
+    }
+
+    @Override
+    public void refreshDialog() {
+        dialog.refresh();
     }
 }
