@@ -37,7 +37,7 @@ public class SensorErrorInfoExecuter implements ServiceExecuter {
         SensorErrorInfoContext context = new SensorErrorInfoContext(repositoryFactory, oldError);
         SwingSensorErrorInfoManager manager = new SwingSensorErrorInfoManager(repositoryFactory, parentManager, context, oldError);
         context.registerManager(manager);
-        SwingSensorErrorInfoDialog dialog = new SwingSensorErrorInfoDialog(parentDialog, configHolder, context);
+        SwingSensorErrorInfoDialog dialog = new SwingSensorErrorInfoDialog(parentDialog, configHolder, context, oldError);
         manager.registerDialog(dialog);
 
         dialog.showing();

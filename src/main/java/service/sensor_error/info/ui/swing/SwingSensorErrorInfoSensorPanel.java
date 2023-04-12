@@ -9,13 +9,13 @@ import service.sensor_error.info.ui.SensorErrorInfoSensorPanel;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static javax.swing.SwingConstants.RIGHT;
+import static util.StringHelper.FOR_LAST_ZERO;
 
 public class SwingSensorErrorInfoSensorPanel extends TitledPanel implements SensorErrorInfoSensorPanel {
     private static final String TITLE_TEXT = "Дані ПВП";
@@ -78,20 +78,20 @@ public class SwingSensorErrorInfoSensorPanel extends TitledPanel implements Sens
 
     @Override
     public void setRangeMin(double min) {
-        rangeMin.setText(StringHelper.roundingDouble(min, 4));
+        rangeMin.setText(StringHelper.roundingDouble(min, FOR_LAST_ZERO));
     }
 
     @Override
     public void setRangeMax(double max) {
-        rangeMax.setText(StringHelper.roundingDouble(max, 4));
+        rangeMax.setText(StringHelper.roundingDouble(max, FOR_LAST_ZERO));
     }
 
     @Override
     public void setRange(double r1, double r2) {
         double min = Math.min(r1, r2);
         double max = Math.max(r1, r2);
-        rangeMin.setText(StringHelper.roundingDouble(min, 4));
-        rangeMax.setText(StringHelper.roundingDouble(max, 4));
+        rangeMin.setText(StringHelper.roundingDouble(min, FOR_LAST_ZERO));
+        rangeMax.setText(StringHelper.roundingDouble(max, FOR_LAST_ZERO));
     }
 
     @Override

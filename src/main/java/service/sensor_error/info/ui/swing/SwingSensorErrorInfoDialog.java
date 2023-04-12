@@ -1,5 +1,6 @@
 package service.sensor_error.info.ui.swing;
 
+import model.dto.SensorError;
 import model.ui.DefaultPanel;
 import model.ui.UI;
 import model.ui.builder.CellBuilder;
@@ -9,20 +10,30 @@ import service.sensor_error.list.ui.swing.SwingSensorErrorListDialog;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class SwingSensorErrorInfoDialog extends JDialog implements UI {
     private static final String TITLE_TEXT = "Формула похибки ПВП";
 
     public SwingSensorErrorInfoDialog(@Nonnull SwingSensorErrorListDialog parentDialog,
                                       @Nonnull SensorErrorInfoConfigHolder configHolder,
-                                      @Nonnull SensorErrorInfoContext context) {
+                                      @Nonnull SensorErrorInfoContext context,
+                                      @Nullable SensorError oldError) {
         super(parentDialog, TITLE_TEXT, true);
 
         SwingSensorErrorInfoSensorPanel sensorPanel = context.getElement(SwingSensorErrorInfoSensorPanel.class);
         SwingSensorErrorInfoErrorPanel errorPanel = context.getElement(SwingSensorErrorInfoErrorPanel.class);
         SwingSensorErrorInfoButtonsPanel buttonsPanel = context.getElement(SwingSensorErrorInfoButtonsPanel.class);
+
+        if (Objects.nonNull(oldError)) {
+            sensorPanel.setSensorType(oldError.getType());
+            sensorPanel.setRange(oldError.getRangeMin(), oldError.getRangeMax());
+            sensorPanel.setMeasurementValue(oldError.getMeasurementValue());
+            errorPanel.setErrorFormula(oldError.getErrorFormula());
+        }
 
         DefaultPanel panel = new DefaultPanel();
         panel.add(sensorPanel, new CellBuilder().y(0).build());

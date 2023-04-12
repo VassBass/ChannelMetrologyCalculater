@@ -18,7 +18,7 @@ public class StringHelper {
         try {
             Arrays.stream(doubleString).forEach(Double::parseDouble);
             return true;
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return false;
         }
     }

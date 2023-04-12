@@ -14,15 +14,17 @@ import service.channel.info.SwingChannelInfoExecuter;
 import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListSearchPanel;
 import service.channel.list.ui.ChannelListTable;
+import util.DateHelper;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class SwingChannelListManager implements ChannelListManager {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelListManager.class);
@@ -194,6 +196,19 @@ public class SwingChannelListManager implements ChannelListManager {
     public void revaluateChannelTable() {
         ChannelListTable channelListTable = context.getElement(ChannelListTable.class);
         ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
-        channelListTable.setChannelList(new ArrayList<>(channelRepository.getAll()));
+        List<Channel> channelList = channelRepository.getAll().stream()
+                        .sorted(Comparator.comparingLong(c -> {
+                            String nextDate = DateHelper.getNextDate(c.getDate(), c.getFrequency());
+                            if (nextDate.isEmpty()) return Long.MIN_VALUE;
+
+                            Calendar nextDateCal = DateHelper.stringToDate(nextDate);
+                            if (Objects.isNull(nextDateCal)) return Long.MIN_VALUE;
+
+                            long nextDateLong = nextDateCal.getTimeInMillis();
+                            long currentDate = Calendar.getInstance().getTimeInMillis();
+                            return nextDateLong - currentDate;
+                        }))
+                .collect(Collectors.toList());
+        channelListTable.setChannelList(new ArrayList<>(channelList));
     }
 }

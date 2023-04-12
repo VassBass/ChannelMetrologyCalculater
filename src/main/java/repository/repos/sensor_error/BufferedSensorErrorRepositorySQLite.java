@@ -6,6 +6,7 @@ import repository.connection.RepositoryDBConnector;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -28,7 +29,7 @@ public class BufferedSensorErrorRepositorySQLite extends SensorErrorRepositorySQ
 
     @Override
     public Collection<SensorError> getBySensorType(@Nonnull String sensorType) {
-        return buffer.values().stream().filter(se -> se.getType().equals(sensorType)).collect(Collectors.toSet());
+        return buffer.values().stream().filter(se -> se.getType().contains(sensorType.toLowerCase(Locale.ROOT))).collect(Collectors.toSet());
     }
 
     @Override

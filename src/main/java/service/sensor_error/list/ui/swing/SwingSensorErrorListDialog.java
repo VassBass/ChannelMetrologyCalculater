@@ -42,9 +42,9 @@ public class SwingSensorErrorListDialog extends JDialog implements UI {
         SwingSensorErrorListButtonsPanel buttonsPanel = context.getElement(SwingSensorErrorListButtonsPanel.class);
 
         DefaultPanel panel = new DefaultPanel();
-        panel.add(measurementPanel, new CellBuilder().fill(NONE).y(0).build());
-        panel.add(table, new CellBuilder().fill(BOTH).y(1).build());
-        panel.add(buttonsPanel, new CellBuilder().fill(BOTH).y(2).build());
+        panel.add(measurementPanel, new CellBuilder().fill(NONE).y(0).weightY(0.05).build());
+        panel.add(new JScrollPane(table), new CellBuilder().fill(BOTH).y(1).weightY(0.9).build());
+        panel.add(buttonsPanel, new CellBuilder().fill(BOTH).y(2).weightY(0.05).build());
 
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());

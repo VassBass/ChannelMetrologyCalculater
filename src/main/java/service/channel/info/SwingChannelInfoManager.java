@@ -433,6 +433,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             }
 
             sensorPanel.setErrorFormulas(errors);
+            channelInfoDialog.refresh();
         }
     }
 
