@@ -17,5 +17,5 @@ public interface ChannelInfoManager {
     void saveAndCalculateChannel();
     void resetChannelInfo();
     void deleteChannel();
-    void setErrorFormulasList();
+    void setExpectedSensorInfo(Integer ... options);
 }

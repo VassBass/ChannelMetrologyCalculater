@@ -54,7 +54,7 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
         this.setToolTipText(TOOLTIP_TEXT);
 
         sensorsTypes = new DefaultComboBox(true);
-        sensorsTypes.addItemListener(e -> manager.setErrorFormulasList());
+        sensorsTypes.addItemListener(e -> manager.setExpectedSensorInfo());
 
         serialNumber = new TitledTextField(15, SERIAL_NUMBER_TITLE_TEXT);
         rangeMin = new DefaultTextField(5, null, RIGHT);
