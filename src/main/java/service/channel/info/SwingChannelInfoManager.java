@@ -1,10 +1,7 @@
 package service.channel.info;
 
 import application.ApplicationScreen;
-import model.dto.Channel;
-import model.dto.MeasurementTransformFactor;
-import model.dto.Sensor;
-import model.dto.SensorError;
+import model.dto.*;
 import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
@@ -151,7 +148,6 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             sensorPanel.setRange("0.0", "100.0");
             sensorPanel.setMeasurementValues(measurementValues);
             sensorPanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
-            setErrorFormulasList();
 
             ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
             rangePanel.setRangeMin("0.0");
@@ -170,6 +166,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             frequencyPanel.setFrequency("2.0");
             /* set next date */ changeDateOrFrequency();
         }
+        setErrorFormulasList();
     }
 
     @Override
@@ -400,34 +397,39 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         if (StringHelper.isDouble(channelRangeMin, channelRangeMax)) {
             SensorErrorRepository errorRepository = repositoryFactory.getImplementation(SensorErrorRepository.class);
             MeasurementFactorRepository measurementFactorRepository = repositoryFactory.getImplementation(MeasurementFactorRepository.class);
+            MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
 
             String sensorType = sensorPanel.getSelectedSensorType();
+            String channelMeasurementName = measurementPanel.getSelectedMeasurementName();
             String channelMeasurementValue = measurementPanel.getSelectedMeasurementValue();
 
             List<String> errors = errorRepository.getBySensorType(sensorType).stream()
                     .filter(e -> {
                         String errorMeasurementValue = e.getMeasurementValue();
+                        Measurement errorMeasurement = measurementRepository.getByValue(errorMeasurementValue);
+                        if (Objects.nonNull(errorMeasurement) && channelMeasurementName.equals(errorMeasurement.getName())) {
 
-                        double errRangeMin = e.getRangeMin();
-                        double errRangeMax = e.getRangeMax();
-                        double chRangeMin = Double.parseDouble(channelRangeMin);
-                        double chRangeMax = Double.parseDouble(channelRangeMax);
-                        if (!channelMeasurementValue.equals(errorMeasurementValue)) {
-                            double factor = measurementFactorRepository.getBySource(errorMeasurementValue).stream()
-                                    .filter(mf -> mf.getTransformTo().equals(channelMeasurementValue))
-                                    .findAny()
-                                    .map(MeasurementTransformFactor::getTransformFactor)
-                                    .orElse(1.0);
-                            errRangeMin *= factor;
-                            errRangeMax *= factor;
-                        }
+                            double errRangeMin = e.getRangeMin();
+                            double errRangeMax = e.getRangeMax();
+                            double chRangeMin = Double.parseDouble(channelRangeMin);
+                            double chRangeMax = Double.parseDouble(channelRangeMax);
+                            if (!channelMeasurementValue.equals(errorMeasurementValue)) {
+                                double factor = measurementFactorRepository.getBySource(errorMeasurementValue).stream()
+                                        .filter(mf -> mf.getTransformTo().equals(channelMeasurementValue))
+                                        .findAny()
+                                        .map(MeasurementTransformFactor::getTransformFactor)
+                                        .orElse(1.0);
+                                errRangeMin *= factor;
+                                errRangeMax *= factor;
+                            }
 
-                        return errRangeMin <= chRangeMin && errRangeMax >= chRangeMax;
+                            return errRangeMin <= chRangeMin && errRangeMax >= chRangeMax;
+                        } else return false;
                     })
                     .map(SensorError::getErrorFormula)
                     .collect(Collectors.toList());
 
-            if (!currentError.isEmpty()) {
+            if (!currentError.isEmpty() && !errors.contains(currentError)) {
                 errors.add(currentError);
                 sensorPanel.setErrorFormula(currentError);
             }

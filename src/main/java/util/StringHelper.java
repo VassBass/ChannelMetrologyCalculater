@@ -80,4 +80,12 @@ public class StringHelper {
         return Arrays.stream(strings).noneMatch(Objects::isNull) &&
                 Arrays.stream(strings).noneMatch(String::isEmpty);
     }
+
+    public static boolean containsEachOtherIgnoreCase(String s1, String s2) {
+        String s1Lower = s1.toLowerCase(Locale.ROOT);
+        String s2Lower = s2.toLowerCase(Locale.ROOT);
+        String s1Upper = s1.toUpperCase(Locale.ROOT);
+        String s2Upper = s2.toUpperCase(Locale.ROOT);
+        return s1Lower.contains(s2Lower) || s2Lower.contains(s1Lower) || s1Upper.contains(s2Upper) || s2Upper.contains(s1Upper);
+    }
 }

@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.init.SensorErrorRepositoryInitializer;
+import util.StringHelper;
 
 import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
@@ -15,6 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SensorErrorRepositorySQLite implements SensorErrorRepository {
     private static final Logger logger = LoggerFactory.getLogger(SensorErrorRepositorySQLite.class);
@@ -52,24 +54,10 @@ public class SensorErrorRepositorySQLite implements SensorErrorRepository {
 
     @Override
     public Collection<SensorError> getBySensorType(@Nonnull String sensorType) {
-        List<SensorError> result = new ArrayList<>();
-
-        String sql = String.format("SELECT * FROM %s WHERE type = '%s';", tableName, sensorType);
-        try (ResultSet resultSet = connector.getResultSet(sql)) {
-            while (resultSet.next()) {
-                String type = resultSet.getString("type");
-                double rangeMin = resultSet.getDouble("range_min");
-                double rangeMax = resultSet.getDouble("range_max");
-                String measurementValue = resultSet.getString("measurement_value");
-                String errorFormula = resultSet.getString("error_formula");
-
-                result.add(SensorError.create(type, rangeMin, rangeMax, measurementValue, errorFormula));
-            }
-        } catch (SQLException e) {
-            logger.warn("Exception was thrown.", e);
-        }
-
-        return result;
+        if (sensorType.isEmpty()) return new ArrayList<>(0);
+        return getAll().stream()
+                .filter(se -> StringHelper.containsEachOtherIgnoreCase(se.getType(), sensorType))
+                .collect(Collectors.toList());
     }
 
     @Override

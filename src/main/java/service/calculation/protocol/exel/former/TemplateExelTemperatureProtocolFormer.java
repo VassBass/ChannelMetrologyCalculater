@@ -146,7 +146,6 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         cell(17,8).setCellValue(measurementValue);
         cell(18,8).setCellValue(measurementValue);
         cell(21,8).setCellValue(measurementValue);
-        cell(22,8).setCellValue(measurementValue);
         cell(32,2).setCellValue(measurementValue);
         cell(19,16).setCellValue(measurementValue);
         cell(24,15).setCellValue(measurementValue);
@@ -182,6 +181,9 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
 
         final String rangeMax = StringHelper.roundingDouble(sensor.getRangeMax(), protocol.getValuesDecimalPoint());
         cell(22,7).setCellValue(rangeMax.replaceAll("\\.", ","));
+
+        final String measurementValue = sensor.getMeasurementValue();
+        cell(22,8).setCellValue(measurementValue);
     }
 
     protected void appendCalibratorInfo(Protocol protocol, MxParserErrorCalculater errorCalculater) {
@@ -219,7 +221,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         }
         row = 28;
         for (Map.Entry<Double, Double> entry : input.entrySet()) {
-            cell(row++, 11).setCellValue(String.format("%s%% ΔS =", StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll("\\.", ",")));
+            String pe = StringHelper.roundingDouble(Double.parseDouble(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint)), FOR_LAST_ZERO);
+            cell(row++, 11).setCellValue(String.format("%s%% ΔS =", pe.replaceAll("\\.", ",")));
         }
 
         final TreeMap<Double, double[]> inputOutput = protocol.getOutput();

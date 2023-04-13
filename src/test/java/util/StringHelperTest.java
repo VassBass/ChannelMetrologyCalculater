@@ -105,4 +105,28 @@ public class StringHelperTest {
         assertFalse(StringHelper.nonEmpty("ihygfjyadgsf", "", "65432"));
         assertFalse(StringHelper.nonEmpty("ihygfjyadgsf", null, "65432"));
     }
+
+    @Test
+    public void testContainsEachOtherIgnoreCase() {
+        String s1 = "AbCdEfG";
+        String s1reverse = "aBcDeFg";
+        String s1contains = "AbCdEfGhIjK";
+        String s1reverseContains = "aBcDeFgHiJk";
+        String s2 = "LmNoP";
+
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1, s1));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1, s1reverse));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1reverse, s1));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1, s1contains));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1contains, s1));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1, s1reverseContains));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1reverseContains, s1));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1reverse, s1reverseContains));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1reverseContains, s1reverse));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1reverse, s1contains));
+        assertTrue(StringHelper.containsEachOtherIgnoreCase(s1contains, s1reverse));
+
+        assertFalse(StringHelper.containsEachOtherIgnoreCase(s1, s2));
+        assertFalse(StringHelper.containsEachOtherIgnoreCase(s2, s1));
+    }
 }

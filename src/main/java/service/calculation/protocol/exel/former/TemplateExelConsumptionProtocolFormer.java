@@ -230,7 +230,8 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
             }
             row = 28;
             for (Map.Entry<Double, Double> entry : input.entrySet()) {
-                cell(row++, 11).setCellValue(String.format("%s%% ΔS =", StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll("\\.", ",")));
+                String pe = StringHelper.roundingDouble(Double.parseDouble(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint)), FOR_LAST_ZERO);
+                cell(row++, 11).setCellValue(String.format("%s%% ΔS =", pe.replaceAll("\\.", ",")));
             }
         }
 

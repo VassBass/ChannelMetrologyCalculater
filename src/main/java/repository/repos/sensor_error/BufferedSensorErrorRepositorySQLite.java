@@ -3,10 +3,11 @@ package repository.repos.sensor_error;
 import model.dto.SensorError;
 import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
+import util.StringHelper;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -29,7 +30,10 @@ public class BufferedSensorErrorRepositorySQLite extends SensorErrorRepositorySQ
 
     @Override
     public Collection<SensorError> getBySensorType(@Nonnull String sensorType) {
-        return buffer.values().stream().filter(se -> se.getType().contains(sensorType.toLowerCase(Locale.ROOT))).collect(Collectors.toSet());
+        if (sensorType.isEmpty()) return new ArrayList<>(0);
+        return buffer.values().stream()
+                .filter(se -> StringHelper.containsEachOtherIgnoreCase(se.getType(), sensorType))
+                .collect(Collectors.toSet());
     }
 
     @Override
