@@ -4,4 +4,5 @@ public interface ControlPointsInfoManager {
     void closeDialog();
     void removeControlPoints();
     void saveControlPoints();
+    void updateDialog();
 }

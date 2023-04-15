@@ -2,9 +2,11 @@ package service.control_points.info.ui.swing;
 
 import model.ui.*;
 import model.ui.builder.CellBuilder;
+import service.control_points.info.ControlPointsInfoManager;
 import service.control_points.info.ui.ControlPointsInfoValuesPanel;
 import util.StringHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
 import java.awt.*;
@@ -27,11 +29,14 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
     private static final String REMOVE_BUTTON_TEXT = "Видалити";
     private static final String REMOVE_LAST_BUTTON_TEXT = "Видалити останню";
 
+    private final ControlPointsInfoManager manager;
+
     private final DefaultPanel valuesPanel;
     private final ArrayList<ValuePanel> values = new ArrayList<>();
 
-    public SwingControlPointsInfoValuesPanel() {
+    public SwingControlPointsInfoValuesPanel(@Nonnull ControlPointsInfoManager manager) {
         super(TITLE_TEXT, Color.BLACK);
+        this.manager = manager;
 
         valuesPanel = new DefaultPanel();
 
@@ -42,7 +47,9 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
         DefaultButton removeIndexButton = new DefaultButton(REMOVE_BUTTON_TEXT);
         DefaultButton removeLastButton = new DefaultButton(REMOVE_LAST_BUTTON_TEXT);
         IntegerTextField addIndexField = new IntegerTextField(2);
+        addIndexField.setText("0");
         IntegerTextField removeIndexField = new IntegerTextField(2);
+        removeIndexField.setText("0");
 
         DefaultPanel addIndexPanel = new DefaultPanel();
         addIndexPanel.add(addIndexButton, new CellBuilder().x(0).build());
@@ -81,8 +88,9 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
             vp.setPercentValue(entry.getKey());
             vp.setValue(entry.getValue());
             this.values.add(vp);
-            valuesPanel.add(vp, new CellBuilder().y(index++).build());
+            valuesPanel.add(vp, new CellBuilder().fill(HORIZONTAL).y(index++).build());
         }
+        manager.updateDialog();
     }
 
     @Nullable
@@ -113,8 +121,9 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
         valuesPanel.removeAll();
         int y = 0;
         for (ValuePanel p : values) {
-            valuesPanel.add(p, new CellBuilder().y(y++).build());
+            valuesPanel.add(p, new CellBuilder().fill(HORIZONTAL).y(y++).build());
         }
+        manager.updateDialog();
     }
 
     private void removeValuePanel(int index) {
@@ -131,8 +140,9 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
         valuesPanel.removeAll();
         int y = 0;
         for (ValuePanel p : values) {
-            valuesPanel.add(p, new CellBuilder().y(y++).build());
+            valuesPanel.add(p, new CellBuilder().fill(HORIZONTAL).y(y++).build());
         }
+        manager.updateDialog();
     }
 
     private static class ValuePanel extends DefaultPanel {
@@ -145,6 +155,10 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
             this.index = new ButtonCell(SIMPLE, String.valueOf(index));
             this.percentValue = new DefaultTextField(5, CENTER);
             this.value = new DefaultTextField(5, CENTER);
+
+            this.add(this.index, new CellBuilder().x(0).weightX(0.1).build());
+            this.add(percentValue, new CellBuilder().x(1).weightX(0.45).build());
+            this.add(value, new CellBuilder().x(2).weightX(0.45).build());
         }
 
         void setIndex(int index) {

@@ -28,6 +28,11 @@ public class CellBuilder {
      */
     public static final int VERTICAL = 3;
 
+    /**
+     * @see GridBagConstraints#NORTH
+     */
+    public static final int ALIGNMENT_TOP = 11;
+
     private final GridBagConstraints cell;
 
     public CellBuilder() {
@@ -92,6 +97,11 @@ public class CellBuilder {
 
     public CellBuilder margin(int left, int top, int right, int bottom) {
         cell.insets = new Insets(top, left, bottom, right);
+        return this;
+    }
+
+    public CellBuilder alignment(int alignment) {
+        cell.anchor = alignment;
         return this;
     }
 

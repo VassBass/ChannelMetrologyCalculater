@@ -1,7 +1,9 @@
 package service.control_points.list;
 
+import model.dto.ControlPoints;
 import repository.RepositoryFactory;
 import repository.repos.control_points.ControlPointsRepository;
+import service.control_points.info.ControlPointsInfoExecuter;
 import service.control_points.list.ui.ControlPointsListContext;
 import service.control_points.list.ui.ControlPointsListSortPanel;
 import service.control_points.list.ui.ControlPointsListTable;
@@ -71,12 +73,18 @@ public class SwingControlPointsListManager implements ControlPointsListManager {
 
     @Override
     public void showControlPointsDetails() {
-
+        ControlPointsListTable table = context.getElement(ControlPointsListTable.class);
+        String selectedCP = table.getSelectedControlPointsName();
+        if (Objects.nonNull(selectedCP)) {
+            ControlPointsRepository repository = repositoryFactory.getImplementation(ControlPointsRepository.class);
+            ControlPoints cp = repository.get(selectedCP);
+            if (Objects.nonNull(cp)) new ControlPointsInfoExecuter(repositoryFactory, dialog, this, cp).execute();
+        }
     }
 
     @Override
     public void addControlPoints() {
-
+        new ControlPointsInfoExecuter(repositoryFactory, dialog, this, null).execute();
     }
 
     @Override

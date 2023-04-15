@@ -39,5 +39,8 @@ public class ControlPointsInfoExecuter implements ServiceExecuter {
         ControlPointsInfoConfigHolder configHolder = new PropertiesControlPointsInfoConfigHolder();
         SwingControlPointsInfoDialog dialog = new SwingControlPointsInfoDialog(parentDialog, context, configHolder);
         manager.registerDialog(dialog);
+
+        dialog.showing();
+        logger.info("Service is running");
     }
 }

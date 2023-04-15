@@ -102,6 +102,11 @@ public class SwingControlPointsInfoManager implements ControlPointsInfoManager {
         }
     }
 
+    @Override
+    public void updateDialog() {
+        dialog.refresh();
+    }
+
     private void showExistMessage() {
         String message = "Контрольні точки для такого типу ПВП та в цьому діапазоні вже існують";
         JOptionPane.showMessageDialog(dialog, message, "Помилка", ERROR_MESSAGE);

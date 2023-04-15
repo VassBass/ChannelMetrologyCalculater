@@ -54,7 +54,7 @@ public class ControlPointsInfoContext {
                 buffer.put(SwingControlPointsInfoRangePanel.class, element);
             }
             if (clazz.isAssignableFrom(ControlPointsInfoValuesPanel.class) || clazz.isAssignableFrom(SwingControlPointsInfoValuesPanel.class)) {
-                element = (T) new SwingControlPointsInfoValuesPanel();
+                element = (T) new SwingControlPointsInfoValuesPanel(manager);
                 buffer.put(ControlPointsInfoValuesPanel.class, element);
                 buffer.put(SwingControlPointsInfoValuesPanel.class, element);
             }
