@@ -6,6 +6,7 @@ import service.control_points.info.ui.ControlPointsInfoValuesPanel;
 import util.StringHelper;
 
 import javax.annotation.Nullable;
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
@@ -66,7 +67,7 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
         removeIndexButton.addActionListener(e -> removeValuePanel(Integer.parseInt(removeIndexField.getText())));
         removeLastButton.addActionListener(e -> removeValuePanel(values.size() - 1));
 
-        this.add(valuesPanel, new CellBuilder().weightX(0.8).x(0).build());
+        this.add(new JScrollPane(valuesPanel), new CellBuilder().weightX(0.8).x(0).build());
         this.add(buttonsPanel, new CellBuilder().weightX(0.2).x(1).build());
     }
 

@@ -1,5 +1,6 @@
 package service.control_points.info.ui.swing;
 
+import model.dto.ControlPoints;
 import model.dto.Sensor;
 import model.ui.DefaultComboBox;
 import model.ui.TitledPanel;
@@ -10,6 +11,7 @@ import repository.repos.sensor.SensorRepository;
 import service.control_points.info.ui.ControlPointsInfoSensorTypePanel;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +27,8 @@ public class SwingControlPointsInfoSensorTypePanel extends TitledPanel implement
     private final DefaultComboBox measurementName;
     private final DefaultComboBox sensorType;
 
-    public SwingControlPointsInfoSensorTypePanel(@Nonnull RepositoryFactory repositoryFactory) {
+    public SwingControlPointsInfoSensorTypePanel(@Nonnull RepositoryFactory repositoryFactory,
+                                                 @Nullable ControlPoints oldCP) {
         super(TITLE_TEXT, Color.BLACK);
         this.repositoryFactory = repositoryFactory;
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
@@ -41,6 +44,8 @@ public class SwingControlPointsInfoSensorTypePanel extends TitledPanel implement
             String selected = measurementName.getSelectedString();
             sensorType.setList(new ArrayList<>(sensorRepository.getAllSensorsTypesByMeasurementName(selected)));
         });
+
+        if (Objects.nonNull(oldCP)) setSensorType(oldCP.getSensorType());
 
         this.add(measurementName, new CellBuilder().fill(NONE).x(0).build());
         this.add(sensorType, new CellBuilder().fill(NONE).x(1).build());
