@@ -7,7 +7,7 @@ Used in ASUTP department.
 
     Application : target/ChannelMetrologyCalculater-5.4-jar-with-dependencies.jar
        Platform : desktop (Windows 7,10 / Linux Mint Xfce 20.2 Uma)
-       Language : Java 1.7
+       Language : Java 8
        DataBase : SQLIte
              UI : Swing
           Tests : JUnit4

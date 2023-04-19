@@ -7,3 +7,11 @@
 /target/test-classes
 
 TestData.db
+Data.db
+/.idea
+/images
+/Certificates
+/ChannelMetrologyCalculater.iml
+/forms
+/target/generated-test-sources
+/target/logging

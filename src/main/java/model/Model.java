@@ -1,8 +1,0 @@
-package model;
-
-public enum Model {
-    CHANNEL, SENSOR, PERSON, CALIBRATOR, MEASUREMENT,
-    DEPARTMENT, AREA, PROCESS, INSTALLATION,
-    SENSOR_VALUE,
-    ALL
-}

@@ -1,0 +1,16 @@
+package service.importer.model;
+
+public enum Model {
+    CHANNEL,
+    CALIBRATOR,
+    CALIBRATOR_CERTIFICATE,
+    CONTROL_POINTS,
+    MEASUREMENT,
+    MEASUREMENT_TRANSFORM_FACTOR,
+    PERSON,
+    SENSOR,
+    DEPARTMENT,
+    AREA,
+    INSTALLATION,
+    PROCESS
+}
