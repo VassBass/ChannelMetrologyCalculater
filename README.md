@@ -5,7 +5,7 @@
 Software for calculating the metrological characteristics of measuring channels.
 Used in ASUTP department.
 
-    Application : target/ChannelMetrologyCalculater-5.4-jar-with-dependencies.jar
+    Application : out/artifacts/ChannelMetrologyCalculater_jar/ChannelMetrologyCalculater.jar
        Platform : desktop (Windows 7,10 / Linux Mint Xfce 20.2 Uma)
        Language : Java 8
        DataBase : SQLIte
