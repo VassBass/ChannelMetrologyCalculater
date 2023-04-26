@@ -1,6 +1,7 @@
 package service.calculation.result;
 
 import application.ApplicationScreen;
+import model.dto.Measurement;
 import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import model.ui.UI;
@@ -13,6 +14,8 @@ import service.calculation.CalculationManager;
 import service.calculation.protocol.Protocol;
 import service.calculation.result.ui.SwingCalculationResultContext;
 import service.calculation.result.ui.swing.SwingCalculationResultDialog;
+import service.calculation.result.worker.CalculationWorker;
+import service.calculation.result.worker.ConsumptionCalculationWorker;
 import service.calculation.result.worker.DefaultCalculationWorker;
 import util.ScreenPoint;
 
@@ -60,7 +63,14 @@ public class SwingCalculationResultExecuter implements ServiceExecuter {
 
         @Override
         protected Boolean doInBackground() {
-            return new DefaultCalculationWorker(repositoryFactory).calculate(protocol);
+            String measurementName = protocol.getChannel().getMeasurementName();
+            CalculationWorker worker;
+            if (measurementName.equals(Measurement.CONSUMPTION)) {
+                worker = new ConsumptionCalculationWorker(repositoryFactory);
+            }else {
+                worker = new DefaultCalculationWorker(repositoryFactory);
+            }
+            return worker.calculate(protocol);
         }
 
         @Override

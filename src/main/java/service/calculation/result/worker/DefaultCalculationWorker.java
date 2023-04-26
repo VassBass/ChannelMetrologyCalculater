@@ -50,12 +50,7 @@ public class DefaultCalculationWorker extends CalculationWorker {
         }
         double absoluteErrorWithEquipment = calculateAbsoluteErrorWithEquipment(maxAbsoluteError, sensorError, calibratorError);
 
-        double relativeError;
-        if (channel.getMeasurementName().equals(Measurement.CONSUMPTION)) {
-            relativeError = calculateRelativeError(maxAbsoluteError, channel.calculateRange());
-        } else {
-            relativeError = calculateRelativeErrorWithEquipment(absoluteErrorWithEquipment, channel.calculateRange());
-        }
+        double relativeError = calculateRelativeErrorWithEquipment(absoluteErrorWithEquipment, channel.calculateRange());
         TreeMap<Double, Double> systematicErrors = calculateSystematicErrors(absoluteErrors);
         double standardIndeterminacyA = calculateStandardIndeterminacyA(absoluteErrors);
         double standardIndeterminacyB = calculateStandardIndeterminacyB(sensorError, calibratorError);

@@ -423,7 +423,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
                 List<String> expectedErrors = getExpectedSensorErrorFormulas(sensorType, measurementName, measurementValue, rangeMin, rangeMax, currentError);
                 sensorPanel.setErrorFormulas(expectedErrors);
-                if (!currentError.isEmpty() && !expectedErrors.contains(currentError)) {
+                if (!currentError.isEmpty()) {
                     sensorPanel.setErrorFormula(currentError);
                 }
             }
