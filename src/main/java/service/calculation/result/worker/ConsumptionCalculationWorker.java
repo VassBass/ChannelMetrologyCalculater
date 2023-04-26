@@ -54,6 +54,6 @@ public class ConsumptionCalculationWorker extends CalculationWorker {
 
     @Override
     protected double calculateStandardIndeterminacyB(double errorSensor, double errorCalibrator) {
-        return Math.sqrt(Math.pow(errorCalibrator, 2));
+        return Math.abs(errorCalibrator);
     }
 }
