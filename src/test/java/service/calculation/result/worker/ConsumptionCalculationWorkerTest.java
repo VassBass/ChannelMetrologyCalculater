@@ -81,23 +81,22 @@ public class ConsumptionCalculationWorkerTest {
     @Test
     public void testCalculateAbsoluteErrorWithEquipment() {
         double maxAbsoluteError = 2.333;
-        double sensorError = 0.8;
         double calibratorError = 0.3;
 
-        double actual = worker.calculateAbsoluteErrorWithEquipment(maxAbsoluteError, sensorError, calibratorError);
+        double actual = worker.calculateAbsoluteErrorWithEquipment(maxAbsoluteError, Double.NaN, calibratorError);
 
-        assertEquals(2.484529935, actual, 0.000000001);
+        assertEquals(2.352209387, actual, 0.000000001);
     }
 
     @Test
     public void testCalculateRelativeErrorWithEquipment() {
-        double absoluteErrorWithEquipment = 2.484529935;
+        double absoluteErrorWithEquipment = 2.352209387;
         double channelRangeMin = -20.0;
         double channelRangeMax = 5.0;
         double channelRange = channelRangeMax - channelRangeMin;
 
         double actual = worker.calculateRelativeErrorWithEquipment(absoluteErrorWithEquipment, channelRange);
-        assertEquals(9.93811974, actual, 0.00000001);
+        assertEquals(9.408837548, actual, 0.00000001);
     }
 
     @Test
