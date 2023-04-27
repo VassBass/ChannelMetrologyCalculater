@@ -1,5 +1,6 @@
 package repository.repos.sensor_error;
 
+import model.dto.ControlPoints;
 import model.dto.SensorError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SensorErrorRepositorySQLite implements SensorErrorRepository {
@@ -120,6 +122,17 @@ public class SensorErrorRepositorySQLite implements SensorErrorRepository {
     }
 
     @Override
+    public boolean changeSensorType(@Nonnull String oldType, @Nonnull String newType) {
+        Collection<SensorError> all = getAll().stream().map(e -> {
+            if (e.getType().equals(oldType)) {
+                return SensorError.create(newType, e.getRangeMin(), e.getRangeMax(), e.getMeasurementValue(), e.getErrorFormula());
+            } else return e;
+        }).collect(Collectors.toSet());
+
+        return rewrite(all);
+    }
+
+    @Override
     public boolean removeById(@Nonnull String id) {
         try (Statement statement = connector.getStatement()) {
             String sql = String.format("DELETE FROM %s WHERE id = '%s';", tableName, id);
@@ -170,5 +183,35 @@ public class SensorErrorRepositorySQLite implements SensorErrorRepository {
         if (oldId == null || newId == null || !isExists(oldId)) return true;
         if (oldId.equals(newId)) return false;
         return isExists(newId);
+    }
+
+    @Override
+    public boolean rewrite(Collection<SensorError> newErrors) {
+        String sql = String.format("DELETE FROM %s;", tableName);
+        try (Statement statement = connector.getStatement()) {
+            statement.execute(sql);
+
+            if (!newErrors.isEmpty()) {
+                String insertSql = String.format("INSERT INTO %s (id, type, range_min, range_max, measurement_value, error_formula) VALUES ", tableName);
+                StringBuilder sqlBuilder = new StringBuilder(insertSql);
+                for (SensorError error : newErrors) {
+                    if (Objects.isNull(error)) continue;
+                    String values = String.format("('%s', '%s', %s, %s, '%s', '%s'),",
+                            error.getId(),
+                            error.getType(),
+                            error.getRangeMin(),
+                            error.getRangeMax(),
+                            error.getMeasurementValue(),
+                            error.getErrorFormula());
+                    sqlBuilder.append(values);
+                }
+                sqlBuilder.setCharAt(sqlBuilder.length() - 1, ';');
+                statement.execute(sqlBuilder.toString());
+            }
+            return true;
+        }catch (SQLException e){
+            logger.warn("Exception was thrown!", e);
+            return false;
+        }
     }
 }

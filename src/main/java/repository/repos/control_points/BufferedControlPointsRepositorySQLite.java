@@ -62,10 +62,14 @@ public class BufferedControlPointsRepositorySQLite extends ControlPointsReposito
 
     @Override
     public boolean changeSensorType(@Nonnull String oldSensorType, @Nonnull String newSensorType) {
+        String regex = "^.*(?=\\s\\[)";
         buffer.values().forEach(cp -> {
-            if (cp.getSensorType().equals(oldSensorType)) cp.setSensorType(newSensorType);
+            if (cp.getSensorType().equals(oldSensorType)) {
+                cp.setName(cp.getName().replaceAll(regex, newSensorType));
+                cp.setSensorType(newSensorType);
+            }
         });
-        return super.changeSensorType(oldSensorType, newSensorType);
+        return super.rewrite(buffer.values());
     }
 
     @Override

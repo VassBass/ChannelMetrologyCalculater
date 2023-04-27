@@ -14,6 +14,7 @@ public interface SensorErrorRepository {
     SensorError getById(@Nonnull String id);
 
     boolean set(@Nonnull String oldId, @Nonnull SensorError newError);
+    boolean changeSensorType(@Nonnull String oldType, @Nonnull String newType);
 
     boolean removeById(@Nonnull String id);
     boolean removeBySensorType(@Nonnull String sensorType);
@@ -21,4 +22,6 @@ public interface SensorErrorRepository {
 
     boolean isExists(@Nonnull String id);
     boolean isExists(String oldId, String newId);
+
+    boolean rewrite(Collection<SensorError> newErrors);
 }

@@ -134,15 +134,15 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
 
     @Override
     public boolean changeSensorType(@Nonnull String oldSensorType, @Nonnull String newSensorType) {
-        String sql = String.format("UPDATE %s SET sensor_type = '%s' WHERE sensor_type = '%s';",
-                tableName, newSensorType, oldSensorType);
-        try (Statement statement = connector.getStatement()){
-            statement.execute(sql);
-            return true;
-        } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
-            return false;
-        }
+        String regex = "^.*(?=\\s\\[)";
+        Collection<ControlPoints> all = getAll();
+        all.forEach(cp -> {
+            if (cp.getSensorType().equals(oldSensorType)) {
+                cp.setName(cp.getName().replaceAll(regex, newSensorType));
+                cp.setSensorType(newSensorType);
+            }
+        });
+        return rewrite(all);
     }
 
     @Override

@@ -6,7 +6,9 @@ import model.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
+import repository.repos.control_points.ControlPointsRepository;
 import repository.repos.sensor.SensorRepository;
+import repository.repos.sensor_error.SensorErrorRepository;
 import service.sensor_types.info.ui.SensorTypesInfoContext;
 import service.sensor_types.info.ui.SensorTypesInfoTypePanel;
 import service.sensor_types.info.ui.swing.SwingSensorTypesInfoDialog;
@@ -79,7 +81,12 @@ public class SwingSensorTypesInfoManager implements SensorTypesInfoManager {
         @Override
         protected Boolean doInBackground() {
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
-            return sensorRepository.changeSensorType(oldType, newType);
+            ControlPointsRepository controlPointsRepository = repositoryFactory.getImplementation(ControlPointsRepository.class);
+            SensorErrorRepository sensorErrorRepository = repositoryFactory.getImplementation(SensorErrorRepository.class);
+
+            if (!sensorRepository.changeSensorType(oldType, newType)) return false;
+            if (!controlPointsRepository.changeSensorType(oldType, newType)) return false;
+            return sensorErrorRepository.changeSensorType(oldType, newType);
         }
 
         @Override

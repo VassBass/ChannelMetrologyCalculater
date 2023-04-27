@@ -93,4 +93,24 @@ public class BufferedSensorErrorRepositorySQLite extends SensorErrorRepositorySQ
         if (oldId.equals(newId)) return false;
         return isExists(newId);
     }
+
+    @Override
+    public boolean changeSensorType(@Nonnull String oldType, @Nonnull String newType) {
+        Collection<SensorError> all = getAll().stream().map(e -> {
+            if (e.getType().equals(oldType)) {
+                return SensorError.create(newType, e.getRangeMin(), e.getRangeMax(), e.getMeasurementValue(), e.getErrorFormula());
+            } else return e;
+        }).collect(Collectors.toSet());
+
+        return rewrite(all);
+    }
+
+    @Override
+    public boolean rewrite(Collection<SensorError> newErrors) {
+        buffer.clear();
+        buffer.putAll(newErrors.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toMap(SensorError::getId, Function.identity())));
+        return super.rewrite(newErrors);
+    }
 }

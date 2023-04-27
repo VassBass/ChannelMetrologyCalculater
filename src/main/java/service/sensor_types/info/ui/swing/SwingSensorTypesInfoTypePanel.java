@@ -24,7 +24,7 @@ public class SwingSensorTypesInfoTypePanel extends TitledTextField implements Se
         } else {
             this.setTitleColor(Color.BLACK);
         }
-        return this.getText();
+        return type;
     }
 
     @Override
