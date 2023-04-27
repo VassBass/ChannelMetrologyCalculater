@@ -23,14 +23,13 @@ public class ControlPointsInfoContext {
 
     private final RepositoryFactory repositoryFactory;
     private final ControlPoints oldCP;
+    private ControlPointsInfoManager manager;
 
     public ControlPointsInfoContext(@Nonnull RepositoryFactory repositoryFactory,
                                     @Nullable ControlPoints oldCP) {
         this.repositoryFactory = repositoryFactory;
         this.oldCP= oldCP;
     }
-
-    private ControlPointsInfoManager manager;
 
     @SuppressWarnings("unchecked")
     public <T> T getElement(Class<T> clazz) {

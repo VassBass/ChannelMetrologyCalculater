@@ -1,9 +1,9 @@
-package service.channel.info;
+package service.channel.info.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.channel.info.ui.*;
+import service.channel.info.ChannelInfoManager;
 import service.channel.info.ui.swing.*;
 
 import java.util.HashMap;
@@ -14,12 +14,11 @@ public class ChannelInfoSwingContext {
 
     private final Map<Class<?>, Object> buffer = new HashMap<>();
     private final RepositoryFactory repositoryFactory;
+    private ChannelInfoManager manager;
 
     public ChannelInfoSwingContext(RepositoryFactory repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
     }
-
-    private ChannelInfoManager manager;
 
     @SuppressWarnings("unchecked")
     public <T> T getElement(Class<T> clazz) {

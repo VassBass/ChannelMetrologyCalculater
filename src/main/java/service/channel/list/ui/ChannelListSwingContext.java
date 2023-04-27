@@ -1,10 +1,9 @@
-package service.channel.list;
+package service.channel.list.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.channel.list.ui.ChannelListInfoTable;
-import service.channel.list.ui.ChannelListSearchPanel;
-import service.channel.list.ui.ChannelListTable;
+import service.channel.list.ChannelListManager;
+import service.channel.list.ChannelListService;
 import service.channel.list.ui.swing.SwingChannelListButtonsPanel;
 import service.channel.list.ui.swing.SwingChannelListInfoTable;
 import service.channel.list.ui.swing.SwingChannelListSearchPanel;
@@ -18,12 +17,11 @@ public class ChannelListSwingContext {
 
     private final Map<Class<?>, Object> buffer = new HashMap<>();
     private final ChannelListService service;
+    private ChannelListManager manager;
 
     public ChannelListSwingContext(ChannelListService service) {
         this.service = service;
     }
-
-    private ChannelListManager manager;
 
     @SuppressWarnings("unchecked")
     public <T> T getElement(Class<T> clazz) {

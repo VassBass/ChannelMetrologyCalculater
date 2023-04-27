@@ -19,12 +19,11 @@ public class SensorErrorListContext {
     private final Map<Class<?>, Object> buffer = new HashMap<>();
 
     private final RepositoryFactory repositoryFactory;
+    private SensorErrorListManager manager;
 
     public SensorErrorListContext(@Nonnull RepositoryFactory repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
     }
-
-    private SensorErrorListManager manager;
 
     @SuppressWarnings("unchecked")
     public <T> T getElement(Class<T> clazz) {

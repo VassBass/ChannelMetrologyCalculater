@@ -17,12 +17,11 @@ public class CalibratorInfoContext {
     private final Map<Class<?>, Object> buffer = new HashMap<>();
 
     private final RepositoryFactory repositoryFactory;
+    private CalibratorInfoManager manager;
 
     public CalibratorInfoContext(@Nonnull RepositoryFactory repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
     }
-
-    private CalibratorInfoManager manager;
 
     @SuppressWarnings("unchecked")
     public <T> T getElement(Class<T> clazz) {

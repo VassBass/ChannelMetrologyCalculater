@@ -19,12 +19,11 @@ public class ControlPointsListContext {
     private final Map<Class<?>, Object> buffer = new HashMap<>();
 
     private final RepositoryFactory repositoryFactory;
+    private ControlPointsListManager manager;
 
     public ControlPointsListContext(@Nonnull RepositoryFactory repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
     }
-
-    private ControlPointsListManager manager;
 
     @SuppressWarnings("unchecked")
     public <T> T getElement(Class<T> clazz) {

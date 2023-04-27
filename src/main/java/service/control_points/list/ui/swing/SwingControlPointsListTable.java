@@ -25,7 +25,7 @@ public class SwingControlPointsListTable extends JTable implements ControlPoints
         this.setModel(tableModel(new ArrayList<>(controlPointsRepository.getAll())));
     }
 
-    private static DefaultTableModel tableModel(List<ControlPoints> list){
+    private DefaultTableModel tableModel(List<ControlPoints> list){
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){

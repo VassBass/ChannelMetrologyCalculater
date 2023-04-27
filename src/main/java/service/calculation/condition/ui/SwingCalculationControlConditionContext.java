@@ -12,7 +12,6 @@ public class SwingCalculationControlConditionContext {
     private static final Logger logger = LoggerFactory.getLogger(SwingCalculationControlConditionContext.class);
 
     private final Map<Class<?>, Object> buffer = new HashMap<>();
-
     private CalculationManager manager;
 
     @SuppressWarnings("unchecked")

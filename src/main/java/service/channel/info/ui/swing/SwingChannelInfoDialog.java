@@ -5,7 +5,7 @@ import model.ui.DefaultPanel;
 import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.channel.info.ChannelInfoConfigHolder;
-import service.channel.info.ChannelInfoSwingContext;
+import service.channel.info.ui.ChannelInfoSwingContext;
 import util.ScreenPoint;
 
 import javax.swing.*;

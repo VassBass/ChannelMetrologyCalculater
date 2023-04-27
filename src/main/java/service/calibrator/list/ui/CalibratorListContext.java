@@ -18,12 +18,11 @@ public class CalibratorListContext {
     private final Map<Class<?>, Object> buffer = new HashMap<>();
 
     private final RepositoryFactory repositoryFactory;
+    private CalibratorListManager manager;
 
     public CalibratorListContext(@Nonnull RepositoryFactory repositoryFactory) {
         this.repositoryFactory = repositoryFactory;
     }
-
-    private CalibratorListManager manager;
 
     @SuppressWarnings("unchecked")
     public <T> T getElement(Class<T> clazz) {

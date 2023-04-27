@@ -27,7 +27,7 @@ public class SwingCalibratorListTable extends JTable implements CalibratorListTa
         this.setModel(tableModel(new ArrayList<>(calibratorRepository.getAll())));
     }
 
-    private static DefaultTableModel tableModel(List<Calibrator> calibratorsList){
+    private DefaultTableModel tableModel(List<Calibrator> calibratorsList){
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){

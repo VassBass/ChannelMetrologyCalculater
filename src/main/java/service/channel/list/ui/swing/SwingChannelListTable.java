@@ -108,7 +108,7 @@ public class SwingChannelListTable extends JTable implements ChannelListTable {
         });
     }
 
-    private static DefaultTableModel tableModel(List<Channel>channelList){
+    private DefaultTableModel tableModel(List<Channel>channelList){
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){

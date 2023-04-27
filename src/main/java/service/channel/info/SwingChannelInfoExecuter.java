@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import application.ApplicationScreen;
+import service.channel.info.ui.ChannelInfoSwingContext;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
 import service.channel.list.ChannelListManager;
 import service.ServiceExecuter;

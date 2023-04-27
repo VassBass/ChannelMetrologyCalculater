@@ -5,6 +5,7 @@ import application.ApplicationScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
+import service.channel.list.ui.ChannelListSwingContext;
 import service.channel.list.ui.swing.SwingChannelListPanel;
 import service.channel.list.ui.swing.SwingMenuChannelList;
 import service.ServiceExecuter;

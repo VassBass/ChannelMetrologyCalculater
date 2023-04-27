@@ -2,7 +2,7 @@ package service.channel.list.ui.swing;
 
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
-import service.channel.list.ChannelListSwingContext;
+import service.channel.list.ui.ChannelListSwingContext;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;

@@ -26,7 +26,7 @@ public class SwingSensorErrorListTable extends JTable implements SensorErrorList
         this.setModel(tableModel(new ArrayList<>(sensorErrorRepository.getAll())));
     }
 
-    private static DefaultTableModel tableModel(List<SensorError> sensorErrorList){
+    private DefaultTableModel tableModel(List<SensorError> sensorErrorList){
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){

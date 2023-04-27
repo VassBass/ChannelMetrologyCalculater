@@ -13,6 +13,7 @@ import service.calculation.CalculationExecuter;
 import service.channel.info.SwingChannelInfoExecuter;
 import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListSearchPanel;
+import service.channel.list.ui.ChannelListSwingContext;
 import service.channel.list.ui.ChannelListTable;
 import util.DateHelper;
 import util.ScreenPoint;

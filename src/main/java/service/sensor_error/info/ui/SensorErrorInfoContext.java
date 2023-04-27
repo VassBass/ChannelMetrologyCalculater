@@ -22,13 +22,12 @@ public class SensorErrorInfoContext {
 
     private final RepositoryFactory repositoryFactory;
     private final SensorError oldError;
+    private SensorErrorInfoManager manager;
 
     public SensorErrorInfoContext(@Nonnull RepositoryFactory repositoryFactory, @Nullable SensorError oldError) {
         this.repositoryFactory = repositoryFactory;
         this.oldError = oldError;
     }
-
-    private SensorErrorInfoManager manager;
 
     @SuppressWarnings("unchecked")
     public <T> T getElement(Class<T> clazz) {
