@@ -89,6 +89,14 @@ public class BufferedSensorRepositorySQLite extends SensorRepositorySQLite {
     }
 
     @Override
+    public boolean changeSensorType(@Nonnull String oldType, @Nonnull String newType) {
+        buffer.values().stream()
+                .filter(s -> s.getType().equals(oldType))
+                .forEach(s -> s.setType(newType));
+        return super.changeMeasurementValue(oldType, newType);
+    }
+
+    @Override
     public boolean rewrite(@Nonnull Collection<Sensor> sensors) {
         buffer.clear();
         buffer.putAll(sensors.stream()

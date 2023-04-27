@@ -217,6 +217,18 @@ public class SensorRepositorySQLite implements SensorRepository {
     }
 
     @Override
+    public boolean changeSensorType(@Nonnull String oldType, @Nonnull String newType) {
+        String sql = String.format("UPDATE %s SET type = '%s' WHERE type = '%s';", tableName, newType, oldType);
+        try (Statement statement = connector.getStatement()){
+            statement.execute(sql);
+            return true;
+        } catch (SQLException e) {
+            logger.warn("Exception was thrown!", e);
+            return false;
+        }
+    }
+
+    @Override
     public boolean rewrite(@Nonnull Collection<Sensor> sensors) {
         String sql = String.format("DELETE FROM %s;", tableName);
         try (Statement statement = connector.getStatement()) {

@@ -21,6 +21,7 @@ public interface SensorRepository {
 
     boolean set(@Nonnull Sensor oldSensor, @Nonnull Sensor newSensor);
     boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue);
+    boolean changeSensorType(@Nonnull String oldType, @Nonnull String newType);
     boolean rewrite(@Nonnull Collection<Sensor> sensors);
 
     boolean importData(@Nonnull Collection<Sensor>newSensors,

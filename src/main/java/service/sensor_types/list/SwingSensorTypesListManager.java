@@ -1,7 +1,9 @@
 package service.sensor_types.list;
 
 import repository.RepositoryFactory;
+import service.sensor_types.info.SensorTypesInfoExecutor;
 import service.sensor_types.list.ui.SensorTypesListContext;
+import service.sensor_types.list.ui.SensorTypesListTable;
 import service.sensor_types.list.ui.swing.SwingSensorTypesListDialog;
 
 import javax.annotation.Nonnull;
@@ -35,6 +37,10 @@ public class SwingSensorTypesListManager implements SensorTypesListManager {
 
     @Override
     public void clickChange() {
-        System.out.printf("Width = %s, height = %s", dialog.getWidth(), dialog.getHeight());
+        SensorTypesListTable table = context.getElement(SensorTypesListTable.class);
+        String oldType = table.getSelectedType();
+        if (Objects.nonNull(oldType)) {
+            new SensorTypesInfoExecutor(dialog, repositoryFactory, oldType).execute();
+        }
     }
 }

@@ -440,6 +440,62 @@ public class SensorRepositorySQLiteTest {
     }
 
     @Test
+    public void testChangeTypeToNew() {
+        expected.forEach(s -> {
+            if (s.getType().equals(Sensor.TCM_50M)) s.setType("new type");
+        });
+
+        assertTrue(repository.changeSensorType(Sensor.TCM_50M, "new type"));
+
+        Collection<Sensor> actual = repository.getAll();
+        assertEquals(0, actual.stream().filter(s -> s.getType().equals(Sensor.TCM_50M)).count());
+        assertEquals(2, actual.stream().filter(s -> s.getType().equals("new type")).count());
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testChangeTypeToExisted() {
+        expected.forEach(s -> {
+            if (s.getType().equals(Sensor.TCM_50M)) s.setType(Sensor.Pt100);
+        });
+
+        assertTrue(repository.changeSensorType(Sensor.TCM_50M, Sensor.Pt100));
+
+        Collection<Sensor> actual = repository.getAll();
+        assertEquals(0, actual.stream().filter(s -> s.getType().equals(Sensor.TCM_50M)).count());
+        assertEquals(3, actual.stream().filter(s -> s.getType().equals(Sensor.Pt100)).count());
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testChangeNotExistedTypeToNew() {
+        assertTrue(repository.changeSensorType("not existed", "new"));
+
+        Collection<Sensor> actual = repository.getAll();
+        assertEquals(0, actual.stream().filter(s -> s.getType().equals("not existed")).count());
+        assertEquals(0, actual.stream().filter(s -> s.getType().equals("new")).count());
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testChangeNotExistedTypeToExisted() {
+        assertTrue(repository.changeSensorType("not existed", Sensor.TCM_50M));
+
+        Collection<Sensor> actual = repository.getAll();
+        assertEquals(0, actual.stream().filter(s -> s.getType().equals("not existed")).count());
+        assertEquals(2, actual.stream().filter(s -> s.getType().equals(Sensor.TCM_50M)).count());
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
     public void testRewrite() {
         Sensor sensor0 = createSensor(0);
         Sensor sensor2 = createSensor(2);
