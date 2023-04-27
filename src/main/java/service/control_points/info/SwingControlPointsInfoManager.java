@@ -104,7 +104,7 @@ public class SwingControlPointsInfoManager implements ControlPointsInfoManager {
 
     @Override
     public void updateDialog() {
-        dialog.refresh();
+        if (Objects.nonNull(dialog)) dialog.refresh();
     }
 
     private void showExistMessage() {

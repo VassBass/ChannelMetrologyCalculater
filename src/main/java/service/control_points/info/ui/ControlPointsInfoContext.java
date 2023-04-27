@@ -49,12 +49,12 @@ public class ControlPointsInfoContext {
                 buffer.put(SwingControlPointsInfoSensorTypePanel.class, element);
             }
             if (clazz.isAssignableFrom(ControlPointsInfoRangePanel.class) || clazz.isAssignableFrom(SwingControlPointsInfoRangePanel.class)) {
-                element = (T) new SwingControlPointsInfoRangePanel();
+                element = (T) new SwingControlPointsInfoRangePanel(oldCP);
                 buffer.put(ControlPointsInfoRangePanel.class, element);
                 buffer.put(SwingControlPointsInfoRangePanel.class, element);
             }
             if (clazz.isAssignableFrom(ControlPointsInfoValuesPanel.class) || clazz.isAssignableFrom(SwingControlPointsInfoValuesPanel.class)) {
-                element = (T) new SwingControlPointsInfoValuesPanel(manager);
+                element = (T) new SwingControlPointsInfoValuesPanel(manager, oldCP);
                 buffer.put(ControlPointsInfoValuesPanel.class, element);
                 buffer.put(SwingControlPointsInfoValuesPanel.class, element);
             }

@@ -1,5 +1,6 @@
 package service.control_points.info.ui.swing;
 
+import model.dto.ControlPoints;
 import model.ui.*;
 import model.ui.builder.CellBuilder;
 import service.control_points.info.ControlPointsInfoManager;
@@ -12,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -34,7 +36,7 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
     private final DefaultPanel valuesPanel;
     private final ArrayList<ValuePanel> values = new ArrayList<>();
 
-    public SwingControlPointsInfoValuesPanel(@Nonnull ControlPointsInfoManager manager) {
+    public SwingControlPointsInfoValuesPanel(@Nonnull ControlPointsInfoManager manager, @Nullable ControlPoints cp) {
         super(TITLE_TEXT, Color.BLACK);
         this.manager = manager;
 
@@ -73,6 +75,8 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
         removeFirstButton.addActionListener(e -> removeValuePanel(0));
         removeIndexButton.addActionListener(e -> removeValuePanel(Integer.parseInt(removeIndexField.getText())));
         removeLastButton.addActionListener(e -> removeValuePanel(values.size() - 1));
+
+        if (Objects.nonNull(cp)) setValues(cp.getValues());
 
         this.add(new JScrollPane(valuesPanel), new CellBuilder().weightX(0.8).x(0).build());
         this.add(buttonsPanel, new CellBuilder().weightX(0.2).x(1).build());
