@@ -1,5 +1,5 @@
 package service;
 
-public interface ServiceExecuter {
+public interface ServiceExecutor {
     void execute();
 }

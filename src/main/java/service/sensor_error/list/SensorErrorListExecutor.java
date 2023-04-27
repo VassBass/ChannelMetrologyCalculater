@@ -4,13 +4,13 @@ import application.ApplicationScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.sensor_error.list.ui.SensorErrorListContext;
 import service.sensor_error.list.ui.swing.SwingSensorErrorListDialog;
 
 import javax.annotation.Nonnull;
 
-public class SensorErrorListExecutor implements ServiceExecuter {
+public class SensorErrorListExecutor implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SensorErrorListExecutor.class);
 
     private final ApplicationScreen applicationScreen;

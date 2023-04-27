@@ -4,7 +4,7 @@ import model.dto.Calibrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.calibrator.info.ui.CalibratorInfoContext;
 import service.calibrator.info.ui.swing.SwingCalibratorInfoDialog;
 import service.calibrator.list.CalibratorListManager;
@@ -13,7 +13,7 @@ import service.calibrator.list.ui.swing.SwingCalibratorListDialog;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CalibratorInfoExecuter implements ServiceExecuter {
+public class CalibratorInfoExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(CalibratorInfoExecuter.class);
 
     private final SwingCalibratorListDialog calibratorListDialog;

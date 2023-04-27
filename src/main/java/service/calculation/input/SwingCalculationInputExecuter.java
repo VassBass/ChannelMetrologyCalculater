@@ -1,11 +1,10 @@
 package service.calculation.input;
 
 import application.ApplicationScreen;
-import model.dto.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.calculation.CalculationCollectDialog;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
@@ -15,7 +14,7 @@ import service.calculation.protocol.Protocol;
 
 import javax.annotation.Nonnull;
 
-public class SwingCalculationInputExecuter implements ServiceExecuter {
+public class SwingCalculationInputExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SwingCalculationInputExecuter.class);
 
     private final ApplicationScreen applicationScreen;

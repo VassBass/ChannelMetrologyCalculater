@@ -8,9 +8,9 @@ import repository.RepositoryFactory;
 import service.channel.list.ui.ChannelListSwingContext;
 import service.channel.list.ui.swing.SwingChannelListPanel;
 import service.channel.list.ui.swing.SwingMenuChannelList;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 
-public class SwingChannelListExecuter implements ServiceExecuter {
+public class SwingChannelListExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelListExecuter.class);
 
     private final ApplicationScreen applicationScreen;

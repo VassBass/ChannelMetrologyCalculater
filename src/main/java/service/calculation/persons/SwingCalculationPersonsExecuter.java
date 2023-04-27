@@ -4,7 +4,7 @@ import application.ApplicationScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
 import service.calculation.protocol.Protocol;
@@ -13,7 +13,7 @@ import service.calculation.persons.ui.swing.SwingCalculationPersonsDialog;
 
 import javax.annotation.Nonnull;
 
-public class SwingCalculationPersonsExecuter implements ServiceExecuter {
+public class SwingCalculationPersonsExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SwingCalculationPersonsExecuter.class);
 
     private final ApplicationScreen applicationScreen;

@@ -4,13 +4,13 @@ import application.ApplicationScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.control_points.list.ui.ControlPointsListContext;
 import service.control_points.list.ui.swing.SwingControlPointsListDialog;
 
 import javax.annotation.Nonnull;
 
-public class ControlPointsListExecuter implements ServiceExecuter {
+public class ControlPointsListExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(ControlPointsListExecuter.class);
 
     private final ApplicationScreen applicationScreen;

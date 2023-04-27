@@ -10,7 +10,7 @@ import application.ApplicationScreen;
 import service.channel.info.ui.ChannelInfoSwingContext;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
 import service.channel.list.ChannelListManager;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
@@ -18,7 +18,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 
-public class SwingChannelInfoExecuter implements ServiceExecuter {
+public class SwingChannelInfoExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoExecuter.class);
 
     private final ApplicationScreen applicationScreen;

@@ -4,13 +4,13 @@ import application.ApplicationScreen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.calibrator.list.ui.CalibratorListContext;
 import service.calibrator.list.ui.swing.SwingCalibratorListDialog;
 
 import javax.annotation.Nonnull;
 
-public class CalibratorListExecuter implements ServiceExecuter {
+public class CalibratorListExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(CalibratorListExecuter.class);
 
     private final ApplicationScreen applicationScreen;

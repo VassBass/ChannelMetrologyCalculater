@@ -7,7 +7,7 @@ import model.ui.LoadingDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.ExecutionException;
 
-public class CalculationExecuter implements ServiceExecuter {
+public class CalculationExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(CalculationExecuter.class);
 
     private final ApplicationScreen applicationScreen;

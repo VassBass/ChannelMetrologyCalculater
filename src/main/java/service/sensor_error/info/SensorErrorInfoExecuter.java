@@ -4,7 +4,7 @@ import model.dto.SensorError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.sensor_error.info.ui.SensorErrorInfoContext;
 import service.sensor_error.info.ui.swing.SwingSensorErrorInfoDialog;
 import service.sensor_error.list.SensorErrorListManager;
@@ -13,7 +13,7 @@ import service.sensor_error.list.ui.swing.SwingSensorErrorListDialog;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SensorErrorInfoExecuter implements ServiceExecuter {
+public class SensorErrorInfoExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SensorErrorInfoExecuter.class);
 
     private final SwingSensorErrorListDialog parentDialog;

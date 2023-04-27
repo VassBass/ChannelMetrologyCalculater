@@ -9,7 +9,7 @@ import repository.RepositoryFactory;
 import service.importer.ImportOption;
 import service.importer.Importer;
 import service.importer.model.ModelHolder;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
@@ -18,7 +18,7 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class From_v5_to_v6_ImporterExecuter implements ServiceExecuter {
+public class From_v5_to_v6_ImporterExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(From_v5_to_v6_ImporterExecuter.class);
 
     private static final String HEADER = "Імпорт";

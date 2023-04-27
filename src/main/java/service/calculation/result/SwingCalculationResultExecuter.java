@@ -8,7 +8,7 @@ import model.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
 import service.calculation.protocol.Protocol;
@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.concurrent.ExecutionException;
 
-public class SwingCalculationResultExecuter implements ServiceExecuter {
+public class SwingCalculationResultExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SwingCalculationResultExecuter.class);
 
     private final ApplicationScreen applicationScreen;

@@ -11,6 +11,7 @@ import service.channel.list.SwingChannelListExecuter;
 import service.control_points.list.ControlPointsListInitializer;
 import service.importer.SwingImporterInitializer;
 import service.sensor_error.list.SensorErrorListInitializer;
+import service.sensor_types.list.SensorTypesInitializer;
 
 import javax.swing.*;
 import java.util.List;
@@ -57,6 +58,10 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
         message = "Initialization of sensor error service";
         publish(message);
         new SensorErrorListInitializer(applicationScreen, repositoryFactory).init();
+
+        message = "Initialization of sensor types service";
+        publish(message);
+        new SensorTypesInitializer(applicationScreen, repositoryFactory).init();
 
         message = "Initialization of control points service";
         publish(message);

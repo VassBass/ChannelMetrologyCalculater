@@ -4,7 +4,7 @@ import model.dto.ControlPoints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.control_points.info.ui.ControlPointsInfoContext;
 import service.control_points.info.ui.swing.SwingControlPointsInfoDialog;
 import service.control_points.list.ControlPointsListManager;
@@ -13,7 +13,7 @@ import service.control_points.list.ui.swing.SwingControlPointsListDialog;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ControlPointsInfoExecuter implements ServiceExecuter {
+public class ControlPointsInfoExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(ControlPointsInfoExecuter.class);
 
     private final RepositoryFactory repositoryFactory;

@@ -5,7 +5,7 @@ import model.dto.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import service.ServiceExecuter;
+import service.ServiceExecutor;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
 import service.calculation.condition.ui.SwingCalculationControlConditionContext;
@@ -13,7 +13,7 @@ import service.calculation.condition.ui.swing.SwingCalculationControlConditionDi
 
 import javax.annotation.Nonnull;
 
-public class SwingCalculationControlConditionExecuter implements ServiceExecuter {
+public class SwingCalculationControlConditionExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SwingCalculationControlConditionExecuter.class);
 
     private final ApplicationScreen applicationScreen;
