@@ -25,7 +25,7 @@ public class PersonListExecutor implements ServiceExecutor {
     @Override
     public void execute() {
         PersonListContext context = new PersonListContext(repositoryFactory);
-        SwingPersonListManager manager = new SwingPersonListManager(context);
+        SwingPersonListManager manager = new SwingPersonListManager(repositoryFactory, context);
         context.registerManager(manager);
         PersonListConfigHolder configHolder = new PropertiesPersonListConfigHolder();
         SwingPersonListDialog dialog = new SwingPersonListDialog(applicationScreen, context, configHolder);

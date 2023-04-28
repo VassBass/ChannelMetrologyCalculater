@@ -56,7 +56,7 @@ public class SwingPersonListTable extends JTable implements PersonListTable {
 
     @Nullable
     @Override
-    public Person getSelectedId() {
+    public Person getSelectedPerson() {
         int row = this.getSelectedRow();
         return row < 0 ? null : personList.get(row);
     }

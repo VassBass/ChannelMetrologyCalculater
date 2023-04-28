@@ -5,6 +5,6 @@ import model.dto.Person;
 import javax.annotation.Nullable;
 
 public interface PersonListTable {
-    @Nullable Person getSelectedId();
+    @Nullable Person getSelectedPerson();
     void updateContent();
 }
