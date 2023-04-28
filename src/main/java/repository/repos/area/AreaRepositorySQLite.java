@@ -26,8 +26,15 @@ public class AreaRepositorySQLite implements AreaRepository {
         new AreaRepositoryInitializer(configHolder, connector).init();
     }
 
+    
     /**
-     * @return List of areas or empty list if something go wrong
+     * The getAll function returns a collection of all the areas in the repository.
+     * 
+     *
+     *
+     * @return A list of all the areas in the database
+     *
+     * @docauthor Trelent
      */
     @Override
     public Collection<String> getAll() {
@@ -45,9 +52,16 @@ public class AreaRepositorySQLite implements AreaRepository {
         return areas;
     }
 
+    
     /**
-     * @param object area for adding
-     * @return true if area was added or false if not
+     * The add function adds a new object to the repository.
+     * 
+     *
+     * @param @Nonnull String object Pass the object to be added
+     *
+     * @return True if the object was added successfully, false otherwise
+     *
+     * @docauthor Trelent
      */
     @Override
     public boolean add(@Nonnull String object) {
@@ -59,10 +73,16 @@ public class AreaRepositorySQLite implements AreaRepository {
         }
     }
 
+    
     /**
-     * Add areas from @param if there are not exists in DB
-     * @param areas need to be added
-     * @return true if areas was added or false if not
+     * The addAll function adds all the areas in a collection to the repository.
+     * 
+     *
+     * @param @Nonnull Collection<String> areas Check if the collection contains any null values
+     *
+     * @return True if the objects was added successfully, false otherwise
+     *
+     * @docauthor Trelent
      */
     @Override
     public boolean addAll(@Nonnull Collection<String> areas) {
@@ -71,10 +91,18 @@ public class AreaRepositorySQLite implements AreaRepository {
         return rewrite(old);
     }
 
+    
     /**
-     * @param oldObject to be replaced
-     * @param newObject for replace
-     * @return true if replace was successful or false if not
+     * The set function is used to update the value of an existing key in the repository.
+     * 
+     *
+     * @param @Nonnull String oldObject Find the old object in the database
+     * @param @Nonnull String newObject Set the new value for the area
+    
+     *
+     * @return True if the object is updated in the database
+     *
+     * @docauthor Trelent
      */
     @Override
     public boolean set(@Nonnull String oldObject, @Nonnull String newObject) {
@@ -86,9 +114,16 @@ public class AreaRepositorySQLite implements AreaRepository {
         }
     }
 
+    
     /**
-     * @param object for delete
-     * @return true if delete was successful or false if not
+     * The remove function removes an area from the repository.
+     * 
+     *
+     * @param @Nonnull String object Specify the object to be removed from the database
+     *
+     * @return True if the object is removed from the database
+     *
+     * @docauthor Trelent
      */
     @Override
     public boolean remove(@Nonnull String object) {
@@ -101,9 +136,15 @@ public class AreaRepositorySQLite implements AreaRepository {
         }
     }
 
+    
     /**
-     * Deletes all areas from DB
-     * @return true if delete was successful or false if not
+     * The clear function deletes all the rows in the table.
+     * 
+     *
+     *
+     * @return True if the rows is removed from the database
+     *
+     * @docauthor Trelent
      */
     @Override
     public boolean clear() {
@@ -117,10 +158,16 @@ public class AreaRepositorySQLite implements AreaRepository {
         }
     }
 
+    
     /**
-     * Rewrites all areas in DB
-     * @param newList for rewriting
-     * @return true if rewrite was successful or false if not
+     * The rewrite function is used to rewrite the entire table with a new list of values.
+     * 
+     *
+     * @param @Nonnull Collection<String> newList Pass the new list of strings to be written
+     *
+     * @return True if the rewrite was successful, and false otherwise
+     *
+     * @docauthor Trelent
      */
     @Override
     public boolean rewrite(@Nonnull Collection<String> newList) {

@@ -24,6 +24,18 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
         this(PROPERTIES_FILE_PATH);
     }
 
+    
+    /**
+     * The SqliteRepositoryConfigHolder function is a constructor that takes in the name of a properties file as an argument.
+     * The function then uses this argument to load the properties file and extract its contents into two variables: dbUrl and dbFile.
+     
+     *
+     * @param String propertiesFile Specify the location of the properties file
+     *
+     * @return The dburl and dbfile
+     *
+     * @docauthor Trelent
+     */
     public SqliteRepositoryConfigHolder(String propertiesFile) {
         try (InputStream in = SqliteRepositoryConfigHolder.class.getClassLoader().getResourceAsStream(propertiesFile)){
             Properties properties = new Properties();
