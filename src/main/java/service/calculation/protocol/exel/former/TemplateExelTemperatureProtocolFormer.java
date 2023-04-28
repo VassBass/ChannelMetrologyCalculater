@@ -145,7 +145,7 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         final String measurementValue = channel.getMeasurementValue();
         cell(17,8).setCellValue(measurementValue);
         cell(18,8).setCellValue(measurementValue);
-        cell(21,8).setCellValue(measurementValue);
+        cell(21,7).setCellValue(measurementValue);
         cell(32,2).setCellValue(measurementValue);
         cell(19,16).setCellValue(measurementValue);
         cell(24,15).setCellValue(measurementValue);
@@ -169,12 +169,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
 
         final double errorSensor = errorCalculater.calculate(sensor);
         if (Double.isNaN(errorSensor)) return;
-        double eP = errorSensor / (channel.calculateRange() / 100);
-        final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
-        cell(21,5).setCellValue(errorPercent.replaceAll("\\.", ","));
-
         final String errorValue = StringHelper.roundingDouble(errorSensor, protocol.getValuesDecimalPoint());
-        cell(21,7).setCellValue(errorValue.replaceAll("\\.", ","));
+        cell(21,5).setCellValue(errorValue.replaceAll("\\.", ","));
 
         final String rangeMin = StringHelper.roundingDouble(sensor.getRangeMin(), protocol.getValuesDecimalPoint());
         cell(22,5).setCellValue(rangeMin.replaceAll("\\.", ","));
