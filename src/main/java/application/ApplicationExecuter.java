@@ -10,6 +10,7 @@ import service.calibrator.list.CalibratorListInitializer;
 import service.channel.list.SwingChannelListExecuter;
 import service.control_points.list.ControlPointsListInitializer;
 import service.importer.SwingImporterInitializer;
+import service.measurement.list.MeasurementListInitializer;
 import service.person.list.PersonListInitializer;
 import service.sensor_error.list.SensorErrorListInitializer;
 import service.sensor_types.list.SensorTypesInitializer;
@@ -47,6 +48,10 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
         message = "Execution of channel list service";
         publish(message);
         new SwingChannelListExecuter(applicationScreen, repositoryFactory).execute();
+
+        message = "Initialization of measurement service";
+        publish(message);
+        new MeasurementListInitializer(applicationScreen, repositoryFactory).init();
 
         message = "Initialization of calibrator service";
         publish(message);
