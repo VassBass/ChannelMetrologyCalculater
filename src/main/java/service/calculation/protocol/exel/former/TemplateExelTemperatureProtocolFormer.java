@@ -197,7 +197,9 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
 
         final double errorCalibrator = errorCalculater.calculate(calibrator);
         if (Double.isNaN(errorCalibrator)) return;
-        double eP = errorCalibrator / (protocol.getChannel().calculateRange() / 100);
+        double range = calibrator.calculateRange();
+        if (range == 0D) range = protocol.getChannel().calculateRange();
+        double eP = (errorCalibrator / range) * 100;
         final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
         cell(19,13).setCellValue(errorPercent.replaceAll("\\.", ","));
 
