@@ -2,7 +2,6 @@ package repository.repos.measurement;
 
 import model.dto.Measurement;
 import org.junit.*;
-import org.sqlite.JDBC;
 import repository.config.RepositoryConfigHolder;
 import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
@@ -326,5 +325,18 @@ public class MeasurementRepositorySQLiteTest {
         assertTrue(repository.exists(Measurement.DEGREE_CELSIUS, Measurement.KPA));
         assertTrue(repository.exists(Measurement.M3_HOUR, Measurement.DEGREE_CELSIUS));
         assertTrue(repository.exists(Measurement.M3_HOUR, Measurement.MM_ACVA));
+    }
+
+    @Test
+    public void testGetAnyNotEquals() {
+        Measurement notEqualsSingle = new Measurement(Measurement.TEMPERATURE, Measurement.DEGREE_CELSIUS);
+        Measurement notEqualsNotSingle = new Measurement(Measurement.PRESSURE, Measurement.KPA);
+
+        assertNull(repository.getAnyNotEquals(notEqualsSingle));
+
+        Measurement actual = repository.getAnyNotEquals(notEqualsNotSingle);
+        assertNotNull(actual);
+        assertEquals(notEqualsNotSingle.getName(), actual.getName());
+        assertNotEquals(notEqualsNotSingle.getValue(), actual.getValue());
     }
 }

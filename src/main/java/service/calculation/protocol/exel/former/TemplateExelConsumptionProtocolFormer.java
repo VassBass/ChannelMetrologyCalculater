@@ -192,25 +192,28 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
 
     @Override
     protected void appendCalibratorInfo(Protocol protocol, MxParserErrorCalculater errorCalculater) {
-        Calibrator calibrator = protocol.getCalibrator();
+        final Calibrator calibrator = protocol.getCalibrator();
 
-        String type = calibrator.getType();
+        final String type = calibrator.getType();
         cell(17,15).setCellValue(type);
 
-        String number = calibrator.getNumber();
+        final String number = calibrator.getNumber();
         cell(18,12).setCellValue(number);
 
-        Calibrator.Certificate certificate = calibrator.getCertificate();
+        final Calibrator.Certificate certificate = calibrator.getCertificate();
         cell(19,9).setCellValue(certificate.getType());
         cell(19,12).setCellValue(certificate.toString());
 
-        double errorCalibrator = errorCalculater.calculate(calibrator);
+        double range = calibrator.calculateRange();
+        if (range == 0) range = protocol.getChannel().calculateRange();
+
+        final double errorCalibrator = errorCalculater.calculate(calibrator);
         if (Double.isNaN(errorCalibrator)) return;
-        double eP = errorCalibrator / (protocol.getChannel().calculateRange() / 100);
-        String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint()).replaceAll("\\.", ",");
+        final double eP = errorCalibrator / (range / 100);
+        final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint()).replaceAll("\\.", ",");
         cell(20,13).setCellValue(errorPercent);
 
-        String errorValue = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint()).replaceAll("\\.", ",");
+        final String errorValue = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint()).replaceAll("\\.", ",");
         cell(20,15).setCellValue(errorValue);
     }
 

@@ -93,7 +93,7 @@ public class MeasurementTransformFactor implements Serializable {
 
     @Override
     public String toString() {
-        return "MeasurementTransformFactor{" +
+        return "MeasurementTransformFactor[" + id + "]{" +
                 "transformFrom='" + transformFrom + '\'' +
                 ", transformTo='" + transformTo + '\'' +
                 ", transformFactor=" + transformFactor +

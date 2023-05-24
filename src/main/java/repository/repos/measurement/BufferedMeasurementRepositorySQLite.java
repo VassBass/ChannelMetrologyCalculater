@@ -5,6 +5,7 @@ import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -123,5 +124,13 @@ public class BufferedMeasurementRepositorySQLite extends MeasurementRepositorySQ
         if (!buffer.containsKey(oldValue)) return true;
         if (oldValue.equals(newValue)) return false;
         return buffer.containsKey(newValue);
+    }
+
+    @Override
+    public @Nullable Measurement getAnyNotEquals(Measurement measurement) {
+        return getMeasurementsByName(measurement.getName()).stream()
+                .filter(m -> !m.getValue().equals(measurement.getValue()))
+                .findFirst()
+                .orElse(null);
     }
 }

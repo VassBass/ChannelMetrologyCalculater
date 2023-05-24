@@ -8,6 +8,7 @@ import java.util.Collection;
 
 public interface MeasurementRepository {
     Collection<Measurement> getAll();
+    @Nullable Measurement getAnyNotEquals(Measurement measurement);
     String[]getAllNames();
     String[]getAllValues();
     String[]getValues(@Nonnull String name);

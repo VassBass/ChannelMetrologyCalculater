@@ -5,9 +5,7 @@ import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -66,11 +64,12 @@ public class BufferedMeasurementFactorRepositorySQLite extends MeasurementFactor
 
     @Override
     public boolean rewrite(@Nonnull Collection<MeasurementTransformFactor> mtf) {
+        List<MeasurementTransformFactor> list = new ArrayList<>(mtf);
         buffer.clear();
-        buffer.putAll(mtf.stream()
+        buffer.putAll(list.stream()
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(MeasurementTransformFactor::getId, Function.identity())));
-        return super.rewrite(mtf);
+        return super.rewrite(list);
     }
 
     @Override
