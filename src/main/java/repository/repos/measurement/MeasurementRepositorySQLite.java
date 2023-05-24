@@ -8,6 +8,7 @@ import repository.connection.RepositoryDBConnector;
 import repository.init.MeasurementRepositoryInitializer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -45,6 +46,14 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
         }
 
         return measurements;
+    }
+
+    @Override
+    public @Nullable Measurement getAnyNotEquals(Measurement measurement) {
+        return getMeasurementsByName(measurement.getName()).stream()
+                .filter(m -> !m.getValue().equals(measurement.getValue()))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

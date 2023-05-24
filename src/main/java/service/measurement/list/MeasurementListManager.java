@@ -6,4 +6,5 @@ public interface MeasurementListManager {
     void clickClose();
     void clickChange();
     void clickAdd();
+    void clickRemove();
 }

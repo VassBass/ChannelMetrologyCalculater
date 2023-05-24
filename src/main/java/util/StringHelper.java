@@ -66,7 +66,7 @@ public class StringHelper {
                     return String.format("%s.%s", prefix, suffix);
                 }
             } else if (suffix.length() > 0) {
-                if (Integer.parseInt(suffix) == 0) {
+                if (Long.parseLong(suffix) == 0) {
                     return prefix;
                 } else {
                     return String.format("%s.%s", prefix, suffix);

@@ -403,4 +403,72 @@ public class SensorErrorRepositorySQLiteTest {
         assertEquals(expected.size(), actual.size());
         assertTrue(expected.containsAll(actual));
     }
+
+    @Test
+    public void testChangeMeasurementValueToNew() {
+        final String newValue = "new value";
+        expected.forEach(s -> {
+            if (s.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)) s.setMeasurementValue(newValue);
+        });
+
+        assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, newValue));
+
+        Collection<SensorError> actual = repository.getAll();
+        assertEquals(0, actual.stream().filter(s -> s.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)).count());
+        assertEquals(0, actual.stream().filter(s -> s.getId().contains(Measurement.DEGREE_CELSIUS)).count());
+        assertEquals(2, actual.stream().filter(s -> s.getMeasurementValue().equals(newValue)).count());
+        assertEquals(2, actual.stream().filter(s -> s.getId().contains(newValue)).count());
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testChangeMeasurementValueToExisted() {
+        expected.forEach(s -> {
+            if (s.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)) s.setMeasurementValue(Measurement.M3_HOUR);
+        });
+
+        assertTrue(repository.changeMeasurementValue(Measurement.DEGREE_CELSIUS, Measurement.M3_HOUR));
+
+        Collection<SensorError> actual = repository.getAll();
+        assertEquals(0, actual.stream().filter(s -> s.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)).count());
+        assertEquals(0, actual.stream().filter(s -> s.getId().contains(Measurement.DEGREE_CELSIUS)).count());
+        assertEquals(3, actual.stream().filter(s -> s.getMeasurementValue().equals(Measurement.M3_HOUR)).count());
+        assertEquals(3, actual.stream().filter(s -> s.getId().contains(Measurement.M3_HOUR)).count());
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testChangeNotExistedMeasurementValueToNew() {
+        final String notExistedValue = "not existed value";
+        final String newValue = "new value";
+        assertTrue(repository.changeMeasurementValue(notExistedValue, newValue));
+
+        Collection<SensorError> actual = repository.getAll();
+        assertEquals(0, actual.stream().filter(s -> s.getMeasurementValue().equals(notExistedValue)).count());
+        assertEquals(0, actual.stream().filter(s -> s.getId().contains(notExistedValue)).count());
+        assertEquals(0, actual.stream().filter(s -> s.getMeasurementValue().equals(newValue)).count());
+        assertEquals(0, actual.stream().filter(s -> s.getId().contains(newValue)).count());
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testChangeNotExistedMeasurementValueToExisted() {
+        final String notExistedValue = "not existed value";
+        assertTrue(repository.changeSensorType(notExistedValue, Measurement.DEGREE_CELSIUS));
+
+        Collection<SensorError> actual = repository.getAll();
+        assertEquals(0, actual.stream().filter(s -> s.getMeasurementValue().equals(notExistedValue)).count());
+        assertEquals(0, actual.stream().filter(s -> s.getId().contains(notExistedValue)).count());
+        assertEquals(2, actual.stream().filter(s -> s.getMeasurementValue().equals(Measurement.DEGREE_CELSIUS)).count());
+        assertEquals(2, actual.stream().filter(s -> s.getId().contains(Measurement.DEGREE_CELSIUS)).count());
+
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
 }

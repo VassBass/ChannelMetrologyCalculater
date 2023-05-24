@@ -133,6 +133,17 @@ public class SensorErrorRepositorySQLite implements SensorErrorRepository {
     }
 
     @Override
+    public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
+        Collection<SensorError> all = getAll().stream().map(e -> {
+            if (e.getMeasurementValue().equals(oldValue)) {
+                return SensorError.create(e.getType(), e.getRangeMin(), e.getRangeMax(), newValue, e.getErrorFormula());
+            } else return e;
+        }).collect(Collectors.toSet());
+
+        return rewrite(all);
+    }
+
+    @Override
     public boolean removeById(@Nonnull String id) {
         try (Statement statement = connector.getStatement()) {
             String sql = String.format("DELETE FROM %s WHERE id = '%s';", tableName, id);

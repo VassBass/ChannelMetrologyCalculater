@@ -28,4 +28,8 @@ public class TitledPanel extends DefaultPanel {
     public void setTitleColor(Color color) {
         if (border != null) border.setTitleColor(color);
     }
+
+    public void setTitleText(String text) {
+        border.setTitle(text);
+    }
 }

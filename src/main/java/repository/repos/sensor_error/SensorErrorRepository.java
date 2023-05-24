@@ -15,6 +15,7 @@ public interface SensorErrorRepository {
 
     boolean set(@Nonnull String oldId, @Nonnull SensorError newError);
     boolean changeSensorType(@Nonnull String oldType, @Nonnull String newType);
+    boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue);
 
     boolean removeById(@Nonnull String id);
     boolean removeBySensorType(@Nonnull String sensorType);

@@ -8,7 +8,6 @@ import service.measurement.list.ui.swing.SwingMeasurementListButtonsPanel;
 import service.measurement.list.ui.swing.SwingMeasurementListFactorTable;
 import service.measurement.list.ui.swing.SwingMeasurementListNamePanel;
 import service.measurement.list.ui.swing.SwingMeasurementListValueTable;
-import service.person.list.ui.PersonListContext;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -16,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class MeasurementListContext {
-    private static final Logger logger = LoggerFactory.getLogger(PersonListContext.class);
+    private static final Logger logger = LoggerFactory.getLogger(MeasurementListContext.class);
 
     private final Map<Class<?>, Object> buffer = new HashMap<>();
 

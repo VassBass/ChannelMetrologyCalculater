@@ -106,6 +106,17 @@ public class BufferedSensorErrorRepositorySQLite extends SensorErrorRepositorySQ
     }
 
     @Override
+    public boolean changeMeasurementValue(@Nonnull String oldValue, @Nonnull String newValue) {
+        Collection<SensorError> all = getAll().stream().map(e -> {
+            if (e.getMeasurementValue().equals(oldValue)) {
+                return SensorError.create(e.getType(), e.getRangeMin(), e.getRangeMax(), newValue, e.getErrorFormula());
+            } else return e;
+        }).collect(Collectors.toSet());
+
+        return rewrite(all);
+    }
+
+    @Override
     public boolean rewrite(Collection<SensorError> newErrors) {
         buffer.clear();
         buffer.putAll(newErrors.stream()
