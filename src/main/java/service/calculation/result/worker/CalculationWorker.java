@@ -134,6 +134,7 @@ public abstract class CalculationWorker {
             sum += Arrays.stream(entry.getValue()).map(d -> Math.pow(d, 2)).sum();
             n += entry.getValue().length;
         }
+        n = (n / 2) / absoluteErrors.size();
         return Math.sqrt(sum / (n * (n - 1)));
     }
 
