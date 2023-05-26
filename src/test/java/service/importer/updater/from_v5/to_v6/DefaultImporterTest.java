@@ -10,16 +10,12 @@ import model.dto.builder.SensorBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import repository.repos.area.AreaRepository;
 import repository.repos.calibrator.CalibratorRepository;
 import repository.repos.channel.ChannelRepository;
 import repository.repos.control_points.ControlPointsRepository;
-import repository.repos.department.DepartmentRepository;
-import repository.repos.installation.InstallationRepository;
 import repository.repos.measurement.MeasurementRepository;
 import repository.repos.measurement_factor.MeasurementFactorRepository;
 import repository.repos.person.PersonRepository;
-import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.SensorRepository;
 import service.importer.ImportOption;
 import service.importer.Importer;
@@ -40,10 +36,6 @@ public class DefaultImporterTest {
     private ControlPointsRepository controlPointsRepository;
     private PersonRepository personRepository;
     private SensorRepository sensorRepository;
-    private DepartmentRepository departmentRepository;
-    private AreaRepository areaRepository;
-    private ProcessRepository processRepository;
-    private InstallationRepository installationRepository;
     private MeasurementFactorRepository measurementFactorRepository;
 
     @Before
@@ -55,10 +47,6 @@ public class DefaultImporterTest {
         controlPointsRepository = repositoryMockFactory.getImplementation(ControlPointsRepository.class);
         personRepository = repositoryMockFactory.getImplementation(PersonRepository.class);
         sensorRepository = repositoryMockFactory.getImplementation(SensorRepository.class);
-        departmentRepository = repositoryMockFactory.getImplementation(DepartmentRepository.class);
-        areaRepository = repositoryMockFactory.getImplementation(AreaRepository.class);
-        processRepository = repositoryMockFactory.getImplementation(ProcessRepository.class);
-        installationRepository = repositoryMockFactory.getImplementation(InstallationRepository.class);
         measurementFactorRepository = repositoryMockFactory.getImplementation(MeasurementFactorRepository.class);
 
         assertNotNull(measurementRepository);
@@ -176,26 +164,6 @@ public class DefaultImporterTest {
         Measurement measurement5 = measurementRepository.getByValue("м³/h");
         assertNotNull(measurement5);
         assertEquals("Витрата", measurement5.getName());
-
-        List<String> expectedDepartments = Arrays.asList("ЦВО", "ДЗФ");
-        Collection<String> actualDepartments = departmentRepository.getAll();
-        assertEquals(expectedDepartments.size(), actualDepartments.size());
-        assertTrue(expectedDepartments.containsAll(actualDepartments));
-
-        List<String> expectedAreas = Arrays.asList("ЦВО-1", "ЦВО-2", "ОВДЗ-2", "ОВДЗ-4");
-        Collection<String> actualAreas = areaRepository.getAll();
-        assertEquals(expectedAreas.size(), actualAreas.size());
-        assertTrue(expectedAreas.containsAll(actualAreas));
-
-        List<String> expectedProcesses = Arrays.asList("Бармак", "Секція", "Тракт", "Технологічна лінія");
-        Collection<String> actualProcesses = processRepository.getAll();
-        assertEquals(expectedProcesses.size(), actualProcesses.size());
-        assertTrue(expectedProcesses.containsAll(actualProcesses));
-
-        List<String> expectedInstallations = Arrays.asList("Млин", "Гідроциклон 710мм", "Вентилятор", "Охолоджувач");
-        Collection<String> actualInstallations = installationRepository.getAll();
-        assertEquals(expectedInstallations.size(), actualInstallations.size());
-        assertTrue(expectedInstallations.containsAll(actualInstallations));
 
         assertEquals(5, calibratorRepository.getAll().size());
 
@@ -550,26 +518,6 @@ public class DefaultImporterTest {
         Measurement measurement5 = measurementRepository.getByValue("м³/h");
         assertNotNull(measurement5);
         assertEquals("Витрата", measurement5.getName());
-
-        List<String> expectedDepartments = Arrays.asList("ЦВО", "ДЗФ");
-        Collection<String> actualDepartments = departmentRepository.getAll();
-        assertEquals(expectedDepartments.size(), actualDepartments.size());
-        assertTrue(expectedDepartments.containsAll(actualDepartments));
-
-        List<String> expectedAreas = Arrays.asList("ЦВО-1", "ЦВО-2", "ОВДЗ-2", "ОВДЗ-4");
-        Collection<String> actualAreas = areaRepository.getAll();
-        assertEquals(expectedAreas.size(), actualAreas.size());
-        assertTrue(expectedAreas.containsAll(actualAreas));
-
-        List<String> expectedProcesses = Arrays.asList("Бармак", "Секція", "Тракт", "Технологічна лінія");
-        Collection<String> actualProcesses = processRepository.getAll();
-        assertEquals(expectedProcesses.size(), actualProcesses.size());
-        assertTrue(expectedProcesses.containsAll(actualProcesses));
-
-        List<String> expectedInstallations = Arrays.asList("Млин", "Гідроциклон 710мм", "Вентилятор", "Охолоджувач");
-        Collection<String> actualInstallations = installationRepository.getAll();
-        assertEquals(expectedInstallations.size(), actualInstallations.size());
-        assertTrue(expectedInstallations.containsAll(actualInstallations));
 
         assertEquals(5, calibratorRepository.getAll().size());
 

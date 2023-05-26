@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.config.RepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
-import repository.repos.area.AreaRepository;
-import repository.repos.area.BufferedAreaRepositorySQLite;
 import repository.repos.calculation_method.BufferedCalculationMethodRepositorySQLite;
 import repository.repos.calculation_method.CalculationMethodRepository;
 import repository.repos.calibrator.BufferedCalibratorRepositorySQLite;
@@ -14,18 +12,12 @@ import repository.repos.channel.BufferedChannelRepositorySQLite;
 import repository.repos.channel.ChannelRepository;
 import repository.repos.control_points.BufferedControlPointsRepositorySQLite;
 import repository.repos.control_points.ControlPointsRepository;
-import repository.repos.department.BufferedDepartmentRepositorySQLite;
-import repository.repos.department.DepartmentRepository;
-import repository.repos.installation.BufferedInstallationRepositorySQLite;
-import repository.repos.installation.InstallationRepository;
 import repository.repos.measurement.BufferedMeasurementRepositorySQLite;
 import repository.repos.measurement.MeasurementRepository;
 import repository.repos.measurement_factor.BufferedMeasurementFactorRepositorySQLite;
 import repository.repos.measurement_factor.MeasurementFactorRepository;
 import repository.repos.person.BufferedPersonRepositorySQLite;
 import repository.repos.person.PersonRepository;
-import repository.repos.process.BufferedProcessRepositorySQLite;
-import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.BufferedSensorRepositorySQLite;
 import repository.repos.sensor.SensorRepository;
 import repository.repos.sensor_error.BufferedSensorErrorRepositorySQLite;
@@ -55,14 +47,6 @@ public class RepositoryFactory {
                 i = (T) new BufferedMeasurementRepositorySQLite(configHolder, connector);
             if (clazz.isAssignableFrom(SensorRepository.class))
                 i = (T) new BufferedSensorRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(DepartmentRepository.class))
-                i = (T) new BufferedDepartmentRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(AreaRepository.class))
-                i = (T) new BufferedAreaRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(ProcessRepository.class))
-                i = (T) new BufferedProcessRepositorySQLite(configHolder, connector);
-            if (clazz.isAssignableFrom(InstallationRepository.class))
-                i = (T) new BufferedInstallationRepositorySQLite(configHolder, connector);
             if (clazz.isAssignableFrom(PersonRepository.class))
                 i = (T) new BufferedPersonRepositorySQLite(configHolder, connector);
             if (clazz.isAssignableFrom(CalibratorRepository.class))

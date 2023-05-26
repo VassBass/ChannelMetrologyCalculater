@@ -2,16 +2,12 @@ package service.importer.updater.from_v5.to_v6;
 
 import model.dto.*;
 import repository.RepositoryFactory;
-import repository.repos.area.AreaRepository;
 import repository.repos.calibrator.CalibratorRepository;
 import repository.repos.channel.ChannelRepository;
 import repository.repos.control_points.ControlPointsRepository;
-import repository.repos.department.DepartmentRepository;
-import repository.repos.installation.InstallationRepository;
 import repository.repos.measurement.MeasurementRepository;
 import repository.repos.measurement_factor.MeasurementFactorRepository;
 import repository.repos.person.PersonRepository;
-import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.SensorRepository;
 import service.importer.ImportOption;
 import service.importer.Importer;
@@ -44,10 +40,6 @@ public class DefaultImporter implements Importer {
         if (!importChannels(in, repositoryFactory)) return false;
         if (!importSensors(in, repositoryFactory)) return false;
         if (!importCalibrators(in, repositoryFactory)) return false;
-        if (!importDepartments(in, repositoryFactory)) return false;
-        if (!importAreas(in, repositoryFactory)) return false;
-        if (!importProcesses(in, repositoryFactory)) return false;
-        if (!importInstallations(in, repositoryFactory)) return false;
         if (!importControlPoints(in, repositoryFactory)) return false;
         if (!importMeasurementTransformFactors(in, repositoryFactory)) return false;
 
@@ -183,74 +175,6 @@ public class DefaultImporter implements Importer {
                 }
             }
             return repository.rewrite(oldCalibrators);
-        }
-        return true;
-    }
-
-    private boolean importDepartments(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
-        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.DEPARTMENT).collect(Collectors.toList());
-        if (input.size() > 0) {
-            DepartmentRepository repository = repositoryFactory.getImplementation(DepartmentRepository.class);
-            Collection<String> departments = repository.getAll();
-
-            for (ModelHolder modelHolder : input) {
-                String department = modelHolder.getValue(DEPARTMENT);
-                if (department != null && !departments.contains(department)) {
-                    departments.add(department);
-                }
-            }
-            repository.rewrite(departments);
-        }
-        return true;
-    }
-
-    private boolean importAreas(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
-        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.AREA).collect(Collectors.toList());
-        if (input.size() > 0) {
-            AreaRepository repository = repositoryFactory.getImplementation(AreaRepository.class);
-            List<String> areas = new ArrayList<>(repository.getAll());
-
-            for (ModelHolder modelHolder : input) {
-                String area = modelHolder.getValue(AREA);
-                if (area != null && !areas.contains(area)) {
-                    areas.add(area);
-                }
-            }
-            return repository.rewrite(areas);
-        }
-        return true;
-    }
-
-    private boolean importProcesses(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
-        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.PROCESS).collect(Collectors.toList());
-        if (input.size() > 0) {
-            ProcessRepository repository = repositoryFactory.getImplementation(ProcessRepository.class);
-            List<String> processes = new ArrayList<>(repository.getAll());
-
-            for (ModelHolder modelHolder : input) {
-                String process = modelHolder.getValue(PROCESS);
-                if (process != null && !processes.contains(process)) {
-                    processes.add(process);
-                }
-            }
-            return repository.rewrite(processes);
-        }
-        return true;
-    }
-
-    private boolean importInstallations(List<ModelHolder> in, RepositoryFactory repositoryFactory) {
-        List<ModelHolder> input = in.stream().filter(e -> e.getModel() == Model.INSTALLATION).collect(Collectors.toList());
-        if (input.size() > 0) {
-            InstallationRepository repository = repositoryFactory.getImplementation(InstallationRepository.class);
-            List<String> installations = new ArrayList<>(repository.getAll());
-
-            for (ModelHolder modelHolder : input) {
-                String installation = modelHolder.getValue(INSTALLATION);
-                if (installation != null && !installations.contains(installation)) {
-                    installations.add(installation);
-                }
-            }
-            return repository.rewrite(installations);
         }
         return true;
     }

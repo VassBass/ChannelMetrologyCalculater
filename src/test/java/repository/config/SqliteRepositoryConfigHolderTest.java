@@ -2,14 +2,10 @@ package repository.config;
 
 import org.junit.Before;
 import org.junit.Test;
-import repository.repos.area.AreaRepository;
 import repository.repos.calibrator.CalibratorRepository;
 import repository.repos.channel.ChannelRepository;
-import repository.repos.department.DepartmentRepository;
-import repository.repos.installation.InstallationRepository;
 import repository.repos.measurement.MeasurementRepository;
 import repository.repos.person.PersonRepository;
-import repository.repos.process.ProcessRepository;
 import repository.repos.sensor.SensorRepository;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -77,38 +73,6 @@ public class SqliteRepositoryConfigHolderTest {
 
         assertEquals(channelTableName, configHolder.getTableName(ChannelRepository.class));
         assertEquals(channelTableName, configHolderPropertiesFileNotExists.getTableName(ChannelRepository.class));
-    }
-
-    @Test
-    public void testGetDepartmentTableName() {
-        String departmentTableName = "departments";
-
-        assertEquals(departmentTableName, configHolder.getTableName(DepartmentRepository.class));
-        assertEquals(departmentTableName, configHolderPropertiesFileNotExists.getTableName(DepartmentRepository.class));
-    }
-
-    @Test
-    public void testGetAreaTableName() {
-        String areaTableName = "areas";
-
-        assertEquals(areaTableName, configHolder.getTableName(AreaRepository.class));
-        assertEquals(areaTableName, configHolderPropertiesFileNotExists.getTableName(AreaRepository.class));
-    }
-
-    @Test
-    public void testGetProcessTableName() {
-        String processTableName = "processes";
-
-        assertEquals(processTableName, configHolder.getTableName(ProcessRepository.class));
-        assertEquals(processTableName, configHolderPropertiesFileNotExists.getTableName(ProcessRepository.class));
-    }
-
-    @Test
-    public void testGetInstallationTableName() {
-        String installationTableName = "installations";
-
-        assertEquals(installationTableName, configHolder.getTableName(InstallationRepository.class));
-        assertEquals(installationTableName, configHolderPropertiesFileNotExists.getTableName(InstallationRepository.class));
     }
 
     @Test
