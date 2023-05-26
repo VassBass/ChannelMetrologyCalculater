@@ -36,7 +36,7 @@ public class Protocol implements Serializable {
     private List<Map.Entry<String, String>> makers;
     private Map.Entry<String, String> former;
     private String headOfMetrologyDepartment;
-    private String headOfCheckedChannelDepartment;
+    private Map.Entry<String, String> headOfCheckedChannelDepartment;
     private String headOfASPCDepartment;
     private OS os;
 
@@ -82,11 +82,11 @@ public class Protocol implements Serializable {
         this.headOfMetrologyDepartment = headOfMetrologyDepartment;
     }
 
-    public String getHeadOfCheckedChannelDepartment() {
+    public Map.Entry<String, String> getHeadOfCheckedChannelDepartment() {
         return headOfCheckedChannelDepartment;
     }
 
-    public void setHeadOfCheckedChannelDepartment(String headOfCheckedChannelDepartment) {
+    public void setHeadOfCheckedChannelDepartment(Map.Entry<String, String> headOfCheckedChannelDepartment) {
         this.headOfCheckedChannelDepartment = headOfCheckedChannelDepartment;
     }
 

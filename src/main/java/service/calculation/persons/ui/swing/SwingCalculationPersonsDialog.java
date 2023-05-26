@@ -99,7 +99,7 @@ public class SwingCalculationPersonsDialog extends JDialog implements Calculatio
         List<Map.Entry<String, String>> makers = makersPanel.getMakers();
         Map.Entry<String, String> former = formerPanel.getFormer();
         String headOfMetrologyDepartment = headsPanel.getHeadOfMetrologyDepartment();
-        String headOfCheckedChannelDepartment = headsPanel.getHeadOfCheckedChannelDepartment();
+        Map.Entry<String, String> headOfCheckedChannelDepartment = headsPanel.getHeadOfCheckedChannelDepartment();
         String headOfASPCDepartment = headsPanel.getHeadOfASPCDepartment();
         OS os = osChooserPanel.getOS();
 
@@ -125,7 +125,8 @@ public class SwingCalculationPersonsDialog extends JDialog implements Calculatio
         buffer.setFormerName(former.getKey());
         buffer.setFormerPosition(former.getValue());
         buffer.setHeadOfMetrologyDepartment(headOfMetrologyDepartment);
-        buffer.setHeadOfCheckedChannelDepartment(headOfCheckedChannelDepartment);
+        buffer.setHeadOfCheckedChannelDepartmentName(headOfCheckedChannelDepartment.getKey());
+        buffer.setHeadOfCheckedChannelDepartmentPosition(headOfCheckedChannelDepartment.getValue());
         buffer.setHeadOfASPCDepartment(headOfASPCDepartment);
         buffer.setOs(os);
         return true;

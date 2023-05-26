@@ -1,12 +1,12 @@
 package service.channel.info.ui;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface ChannelInfoPathPanel {
-    void setDepartments(List<String> departments);
-    void setAreas(List<String> areas);
-    void setProcesses(List<String> processes);
-    void setInstallations(List<String> installations);
+    void setDepartments(Collection<String> departments);
+    void setAreas(Collection<String> areas);
+    void setProcesses(Collection<String> processes);
+    void setInstallations(Collection<String> installations);
 
     void setDepartment(String department);
     void setArea(String area);

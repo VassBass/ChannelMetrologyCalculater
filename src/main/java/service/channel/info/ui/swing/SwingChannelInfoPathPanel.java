@@ -1,18 +1,18 @@
 package service.channel.info.ui.swing;
 
+import model.dto.Channel;
 import model.ui.DefaultComboBox;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
-import repository.repos.area.AreaRepository;
-import repository.repos.department.DepartmentRepository;
-import repository.repos.installation.InstallationRepository;
-import repository.repos.process.ProcessRepository;
+import repository.repos.channel.ChannelRepository;
 import service.channel.info.ui.ChannelInfoPathPanel;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInfoPathPanel {
     private static final String TITLE_TEXT = "Розташування";
@@ -24,21 +24,28 @@ public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInf
 
     public SwingChannelInfoPathPanel(RepositoryFactory repositoryFactory) {
         super(TITLE_TEXT, Color.BLACK);
+        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
 
         departments = new DefaultComboBox(true);
         areas = new DefaultComboBox(true);
         processes = new DefaultComboBox(true);
         installations = new DefaultComboBox(true);
 
-        DepartmentRepository departmentRepository = repositoryFactory.getImplementation(DepartmentRepository.class);
-        AreaRepository areaRepository = repositoryFactory.getImplementation(AreaRepository.class);
-        ProcessRepository processRepository = repositoryFactory.getImplementation(ProcessRepository.class);
-        InstallationRepository installationRepository = repositoryFactory.getImplementation(InstallationRepository.class);
+        Set<String> departmentSet = new HashSet<>();
+        Set<String> areaSet = new HashSet<>();
+        Set<String> processSet = new HashSet<>();
+        Set<String> installationSet = new HashSet<>();
+        for (Channel channel : channelRepository.getAll()) {
+            departmentSet.add(channel.getDepartment());
+            areaSet.add(channel.getArea());
+            processSet.add(channel.getProcess());
+            installationSet.add(channel.getInstallation());
+        }
 
-        setDepartments(new ArrayList<>(departmentRepository.getAll()));
-        setAreas(new ArrayList<>(areaRepository.getAll()));
-        setProcesses(new ArrayList<>(processRepository.getAll()));
-        setInstallations(new ArrayList<>(installationRepository.getAll()));
+        setDepartments(departmentSet);
+        setAreas(areaSet);
+        setProcesses(processSet);
+        setInstallations(installationSet);
 
         this.add(departments, new CellBuilder().x(0).y(0).build());
         this.add(areas, new CellBuilder().x(1).y(0).build());
@@ -47,23 +54,23 @@ public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInf
     }
 
     @Override
-    public void setDepartments(List<String> departments) {
-        this.departments.setList(departments);
+    public void setDepartments(Collection<String> departments) {
+        this.departments.setList(new ArrayList<>(departments));
     }
 
     @Override
-    public void setAreas(List<String> areas) {
-        this.areas.setList(areas);
+    public void setAreas(Collection<String> areas) {
+        this.areas.setList(new ArrayList<>(areas));
     }
 
     @Override
-    public void setProcesses(List<String> processes) {
-        this.processes.setList(processes);
+    public void setProcesses(Collection<String> processes) {
+        this.processes.setList(new ArrayList<>(processes));
     }
 
     @Override
-    public void setInstallations(List<String> installations) {
-        this.installations.setList(installations);
+    public void setInstallations(Collection<String> installations) {
+        this.installations.setList(new ArrayList<>(installations));
     }
 
     @Override

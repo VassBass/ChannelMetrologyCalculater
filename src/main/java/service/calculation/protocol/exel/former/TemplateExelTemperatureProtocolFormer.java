@@ -114,11 +114,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         final String area = channel.getArea();
         cell(16,4).setCellValue(area);
         cell(15,13).setCellValue(area);
-        cell(41,3).setCellValue(area);
-        cell(43,12).setCellValue(area);
         if (!suitable) {
             cell(14, 22).setCellValue(area);
-            cell(29, 21).setCellValue(area);
         }
 
         final String process = channel.getProcess();
@@ -268,12 +265,18 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
     protected void appendPersons(Protocol protocol) {
         final boolean notSuitable = protocol.getChannel().getAllowableErrorPercent() < protocol.getRelativeError();
 
-        String headOfCheckedChannelDepartment = protocol.getHeadOfCheckedChannelDepartment();
-        if (headOfCheckedChannelDepartment.isEmpty()) headOfCheckedChannelDepartment = "________________";
-        cell(41,6).setCellValue(headOfCheckedChannelDepartment);
-        cell(43,15).setCellValue(headOfCheckedChannelDepartment);
+        Map.Entry<String, String> headOfCheckedChannelDepartment = protocol.getHeadOfCheckedChannelDepartment();
+        String nameHD = headOfCheckedChannelDepartment.getKey();
+        String positionHD = headOfCheckedChannelDepartment.getValue();
+        if (nameHD.isEmpty()) nameHD = "________________";
+        if (positionHD.isEmpty()) positionHD = "________________";
+        cell(41,0).setCellValue(positionHD);
+        cell(41,6).setCellValue(nameHD);
+        cell(43,9).setCellValue(positionHD);
+        cell(43,15).setCellValue(nameHD);
         if (notSuitable){
-            cell(29,24).setCellValue(headOfCheckedChannelDepartment);
+            cell(29,18).setCellValue(positionHD);
+            cell(29,24).setCellValue(nameHD);
         }
 
         String headOfMetrologyDepartment = protocol.getHeadOfMetrologyDepartment();

@@ -45,11 +45,8 @@ public class TemplateExelPressureProtocolFormer extends TemplateExelTemperatureP
         final String area = channel.getArea();
         cell(16,4).setCellValue(area);
         cell(15,13).setCellValue(area);
-        cell(41,3).setCellValue(area);
-        cell(43,12).setCellValue(area);
         if (!suitable) {
             cell(14, 22).setCellValue(area);
-            cell(29, 21).setCellValue(area);
         }
 
         final String process = channel.getProcess();
