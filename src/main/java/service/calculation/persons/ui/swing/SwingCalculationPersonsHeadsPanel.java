@@ -3,6 +3,7 @@ package service.calculation.persons.ui.swing;
 import model.dto.Person;
 import model.ui.ButtonCell;
 import model.ui.DefaultComboBox;
+import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
@@ -13,9 +14,7 @@ import service.calculation.persons.ui.CalculationPersonsHeadsPanel;
 import util.ObjectHelper;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static model.ui.ButtonCell.SIMPLE;
@@ -24,17 +23,16 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 public class SwingCalculationPersonsHeadsPanel extends TitledPanel implements CalculationPersonsHeadsPanel {
     private static final String TITLE_TEXT = "Відповідальні особи";
     private static final String HEAD_OF_METROLOGY_DEPARTMENT_LABEL = "Начальник дільниці МЗтаП";
-    private static final String HEAD_OF_CHECKED_CHANNEL_DEPARTMENT_LABEL_PREFIX = "Начальник дільниці АСУТП ";
     private static final String HEAD_OF_ASPC_DEPARTMENT_LABEL = "Начальник ЦАСУ ТП";
 
     private final DefaultComboBox headOfMetrologyDepartmentName;
+    private final DefaultTextField headOfCheckedChannelDepartmentPosition;
     private final DefaultComboBox headOfCheckedChannelDepartmentName;
     private final DefaultComboBox headOfASPCDepartmentName;
 
     public SwingCalculationPersonsHeadsPanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull Protocol protocol) {
         super(TITLE_TEXT);
         PersonRepository personRepository = repositoryFactory.getImplementation(PersonRepository.class);
-        String department = protocol.getChannel().getDepartment();
         boolean suitable = protocol.getChannel().getAllowableErrorPercent() >= protocol.getRelativeError();
         CalculationPersonValuesBuffer buffer = CalculationPersonValuesBuffer.getInstance();
 
@@ -43,7 +41,6 @@ public class SwingCalculationPersonsHeadsPanel extends TitledPanel implements Ca
         personsName.add(0, EMPTY);
 
         ButtonCell headOfMetrologyDepartmentLabel = new ButtonCell(SIMPLE, HEAD_OF_METROLOGY_DEPARTMENT_LABEL);
-        ButtonCell headOfCheckedChannelDepartmentLabel = new ButtonCell(SIMPLE, HEAD_OF_CHECKED_CHANNEL_DEPARTMENT_LABEL_PREFIX + department);
 
         headOfMetrologyDepartmentName = new DefaultComboBox(true);
         headOfMetrologyDepartmentName.setList(personsName);
@@ -60,20 +57,23 @@ public class SwingCalculationPersonsHeadsPanel extends TitledPanel implements Ca
             headOfMetrologyDepartmentName.setSelectedItem(buffer.getHeadOfMetrologyDepartment());
         }
 
+        headOfCheckedChannelDepartmentPosition = new DefaultTextField(10);
+        if (Objects.nonNull(buffer.getHeadOfCheckedChannelDepartmentPosition())) {
+            headOfCheckedChannelDepartmentPosition.setText(buffer.getHeadOfCheckedChannelDepartmentPosition());
+        }
+
         headOfCheckedChannelDepartmentName = new DefaultComboBox(true);
         headOfCheckedChannelDepartmentName.setList(personsName);
-        if (Objects.isNull(buffer.getHeadOfCheckedChannelDepartment())) {
-            int index = -1;
-            for (int i = 0; i < persons.size(); i++) {
-                if (persons.get(i).getPosition().contains(HEAD_OF_CHECKED_CHANNEL_DEPARTMENT_LABEL_PREFIX)) {
-                    index = i;
-                    break;
-                }
-            }
-            headOfCheckedChannelDepartmentName.setSelectedIndex(++index);
-        } else {
-            headOfCheckedChannelDepartmentName.setSelectedItem(buffer.getHeadOfCheckedChannelDepartment());
+        if (Objects.nonNull(buffer.getHeadOfCheckedChannelDepartmentName())) {
+            headOfCheckedChannelDepartmentName.setSelectedItem(buffer.getHeadOfCheckedChannelDepartmentName());
         }
+        headOfCheckedChannelDepartmentName.addItemListener(e -> {
+            int index = headOfCheckedChannelDepartmentName.getSelectedIndex() - 1;
+            if (index >= 0 && index < persons.size()) {
+                headOfCheckedChannelDepartmentPosition.setText(persons.get(index).getPosition());
+            }
+        });
+
 
         ButtonCell headOfASPCDepartmentLabel;
         if (!suitable) {
@@ -99,7 +99,7 @@ public class SwingCalculationPersonsHeadsPanel extends TitledPanel implements Ca
 
         this.add(headOfMetrologyDepartmentLabel, new CellBuilder().x(0).y(0).build());
         this.add(headOfMetrologyDepartmentName, new CellBuilder().x(1).y(0).build());
-        this.add(headOfCheckedChannelDepartmentLabel, new CellBuilder().x(0).y(1).build());
+        this.add(headOfCheckedChannelDepartmentPosition, new CellBuilder().x(0).y(1).build());
         this.add(headOfCheckedChannelDepartmentName, new CellBuilder().x(1).y(1).build());
         if (!suitable && ObjectHelper.nonNull(headOfASPCDepartmentLabel, headOfASPCDepartmentName)) {
             this.add(headOfASPCDepartmentLabel, new CellBuilder().x(0).y(2).build());
@@ -113,8 +113,10 @@ public class SwingCalculationPersonsHeadsPanel extends TitledPanel implements Ca
     }
 
     @Override
-    public String getHeadOfCheckedChannelDepartment() {
-        return headOfCheckedChannelDepartmentName.getSelectedString();
+    public Map.Entry<String, String> getHeadOfCheckedChannelDepartment() {
+        String name = headOfCheckedChannelDepartmentName.getSelectedString();
+        String position = headOfCheckedChannelDepartmentPosition.getText();
+        return new AbstractMap.SimpleEntry<>(name, position);
     }
 
     @Override

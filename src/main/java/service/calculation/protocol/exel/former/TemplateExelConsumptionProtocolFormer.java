@@ -104,11 +104,8 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         final String area = channel.getArea();
         cell(17,4).setCellValue(area);
         cell(16,13).setCellValue(area);
-        cell(41,3).setCellValue(area);
-        cell(43,12).setCellValue(area);
         if (!suitable) {
             cell(16, 22).setCellValue(area);
-            if (!isRosemount8714DQ4Calibrator) cell(29, 21).setCellValue(area);
         }
 
         final String process = channel.getProcess();

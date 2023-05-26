@@ -22,7 +22,8 @@ public class CalculationPersonValuesBuffer {
     private String formerName;
     private String formerPosition;
     private String headOfMetrologyDepartment;
-    private String headOfCheckedChannelDepartment;
+    private String headOfCheckedChannelDepartmentName;
+    private String headOfCheckedChannelDepartmentPosition;
     private String headOfASPCDepartment;
     private OS os;
 
@@ -94,12 +95,20 @@ public class CalculationPersonValuesBuffer {
         this.headOfMetrologyDepartment = headOfMetrologyDepartment;
     }
 
-    public String getHeadOfCheckedChannelDepartment() {
-        return headOfCheckedChannelDepartment;
+    public String getHeadOfCheckedChannelDepartmentName() {
+        return headOfCheckedChannelDepartmentName;
     }
 
-    public void setHeadOfCheckedChannelDepartment(String headOfCheckedChannelDepartment) {
-        this.headOfCheckedChannelDepartment = headOfCheckedChannelDepartment;
+    public void setHeadOfCheckedChannelDepartmentName(String name) {
+        this.headOfCheckedChannelDepartmentName = name;
+    }
+
+    public void setHeadOfCheckedChannelDepartmentPosition(String position) {
+        this.headOfCheckedChannelDepartmentPosition = position;
+    }
+
+    public String getHeadOfCheckedChannelDepartmentPosition() {
+        return headOfCheckedChannelDepartmentPosition;
     }
 
     public String getHeadOfASPCDepartment() {
