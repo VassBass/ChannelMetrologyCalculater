@@ -340,8 +340,8 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     public TreeMap<Double, Double> getInputs() {
         TreeMap<Double, Double> result = new TreeMap<>();
         for (int i = 0; i < inputsInPercent.length; i++) {
-            String percent = inputsInPercent[i].getText();
-            String value = inputsInValue[i].getText();
+            String percent = inputsInPercent[i].getText().replaceAll(",", ".");
+            String value = inputsInValue[i].getText().replaceAll(",", ".");
             if (StringHelper.isDouble(percent) && StringHelper.isDouble(value)) {
                 result.put(Double.parseDouble(percent), Double.parseDouble(value));
             } else return null;
@@ -359,8 +359,8 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         for (Map.Entry<Double, Double> entry : input.entrySet()) {
             List<Double> output = new ArrayList<>();
             for (DefaultTextField[] measurementValue : measurementValues) {
-                String val1 = measurementValue[y].getText();
-                String val2 = measurementValue[y + 1].getText();
+                String val1 = measurementValue[y].getText().replaceAll(",", ".");
+                String val2 = measurementValue[y + 1].getText().replaceAll(",", ".");
                 if (!StringHelper.isDouble(val1)) return null;
                 if (!StringHelper.isDouble(val2)) return null;
                 output.add(Double.parseDouble(val1));
@@ -378,13 +378,13 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         public void focusGained(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
             source.selectAll();
-            valuesBuffer = source.getText();
+            valuesBuffer = source.getText().replaceAll(",", ".");
         }
 
         @Override
         public void focusLost(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
-            String text = source.getText();
+            String text = source.getText().replaceAll(",", ".");
             if (StringHelper.isDouble(text)) {
                 source.setText(StringHelper.roundingDouble(Double.parseDouble(text), valueDecimalPoint));
             } else {
@@ -407,13 +407,13 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         public void focusGained(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
             source.selectAll();
-            percentBuffer = source.getText();
+            percentBuffer = source.getText().replaceAll(",", ".");
         }
 
         @Override
         public void focusLost(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
-            String text = source.getText();
+            String text = source.getText().replaceAll(",", ".");
             if (StringHelper.isDouble(text)) {
                 source.setText(StringHelper.roundingDouble(Double.parseDouble(text), percentDecimalPoint));
             } else {

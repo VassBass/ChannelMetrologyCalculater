@@ -54,7 +54,7 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
     @Override
     public double getAlarmValue() {
         if (isEnabled()) {
-            String val = value.getText();
+            String val = value.getText().replaceAll(",", ".");
             if (StringHelper.isDouble(val)) return Double.parseDouble(val);
         }
         return Double.NaN;
@@ -70,19 +70,18 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
         public void focusGained(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
             source.selectAll();
-            String text = source.getText();
+            String text = source.getText().replaceAll(",", ".");
             if (StringHelper.isDouble(text)) buffer = Double.parseDouble(text);
         }
 
         @Override
         public void focusLost(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
-            String text = source.getText();
+            String text = source.getText().replaceAll(",", ".");
             if (StringHelper.isDouble(text)) {
                 buffer = Double.parseDouble(text);
-            } else {
-                source.setText(String.valueOf(buffer));
             }
+            source.setText(String.valueOf(buffer));
         }
     };
 }
