@@ -8,6 +8,7 @@ import java.util.Objects;
 
 public class ApplicationMenu extends JMenuBar {
     public static final String MENU_LISTS = "Списки";
+    public static final String MENU_IMPORT = "Імпорт";
 
     private final Map<String, JMenu> menus;
 

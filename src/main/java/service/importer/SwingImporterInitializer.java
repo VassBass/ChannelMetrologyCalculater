@@ -14,7 +14,6 @@ import javax.swing.*;
 public class SwingImporterInitializer implements ServiceInitializer {
     private static final Logger logger = LoggerFactory.getLogger(SwingImporterInitializer.class);
 
-    private static final String MENU_HEADER_TEXT = "Імпорт";
     private static final String MENU_ITEM_FROM_v5_4_TO_v6_0_TEXT = "Імпортувати з версії 5.4";
 
     private final ApplicationScreen applicationScreen;
@@ -28,13 +27,13 @@ public class SwingImporterInitializer implements ServiceInitializer {
     @Override
     public void init() {
         ApplicationMenu applicationMenu = applicationScreen.getMenu();
-        applicationMenu.addMenuIfNotExist(MENU_HEADER_TEXT);
+        applicationMenu.addMenuIfNotExist(ApplicationMenu.MENU_IMPORT);
 
         JMenuItem btnFrom_v5_4_to_v6_0 = new JMenuItem(MENU_ITEM_FROM_v5_4_TO_v6_0_TEXT);
 
         btnFrom_v5_4_to_v6_0.addActionListener(e ->
                 new From_v5_to_v6_ImporterExecuter(applicationScreen, repositoryFactory).execute());
-        applicationMenu.addMenuItem(MENU_HEADER_TEXT, btnFrom_v5_4_to_v6_0);
+        applicationMenu.addMenuItem(ApplicationMenu.MENU_IMPORT, btnFrom_v5_4_to_v6_0);
 
         logger.info(("Initialization completed successfully"));
     }

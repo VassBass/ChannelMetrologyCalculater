@@ -7,6 +7,7 @@ import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.connection.SqliteRepositoryDBConnector;
 import service.calibrator.list.CalibratorListInitializer;
+import service.channel.exchange.heroku.HerokuExchangerInitializer;
 import service.channel.list.SwingChannelListExecuter;
 import service.control_points.list.ControlPointsListInitializer;
 import service.importer.SwingImporterInitializer;
@@ -76,6 +77,10 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
         message = "Initialization of persons list service";
         publish(message);
         new PersonListInitializer(applicationScreen, repositoryFactory).init();
+
+        message = "Initialization of heroku exchanger service";
+        publish(message);
+        new HerokuExchangerInitializer(applicationScreen).init();
 
         return null;
     }
