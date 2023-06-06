@@ -35,18 +35,18 @@ public class SwingChannelListSearchPanel extends DefaultPanel implements Channel
                 .build();
 
         buttonSearch = new DefaultButton(SEARCH);
-        JButton buttonAdvancedSearch = new DefaultButton(ADVANCED_SEARCH);
+        //JButton buttonAdvancedSearch = new DefaultButton(ADVANCED_SEARCH);
 
         buttonSearch.addActionListener(e -> {
             if (buttonSearch.getText().equals(SEARCH)) manager.search();
             if (buttonSearch.getText().equals(CANCEL)) manager.shutdownSearch();
         });
 
-        buttonAdvancedSearch.addActionListener(e -> manager.advancedSearch());
+        //buttonAdvancedSearch.addActionListener(e -> manager.advancedSearch());
 
         this.add(codeField, new CellBuilder().y(0).build());
         this.add(buttonSearch, new CellBuilder().y(1).build());
-        this.add(buttonAdvancedSearch, new CellBuilder().y(2).build());
+        //this.add(buttonAdvancedSearch, new CellBuilder().y(2).build());
     }
 
     @Override
