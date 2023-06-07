@@ -1,4 +1,6 @@
-package service.measurement_transformer.tc;
+package service.measurement_transformer.tc.transformer;
+
+import service.measurement_transformer.tc.model.Type;
 
 public class Transformer_GOST6651_2009 implements Transformer {
     @Override

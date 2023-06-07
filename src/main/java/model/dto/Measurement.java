@@ -44,6 +44,8 @@ public class Measurement implements Serializable {
     public static String M3_HOUR = "м" + "\u00B3" + "/h";
     public static String M_S = "м/с";
     public static String CM_S = "см/с";
+    //Electric
+    public static String Om = "Ом";
 
     /**
      * DB field = name [TEXT]
