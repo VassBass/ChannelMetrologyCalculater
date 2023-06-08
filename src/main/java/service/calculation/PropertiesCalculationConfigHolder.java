@@ -2,7 +2,6 @@ package service.calculation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.channel.list.PropertiesChannelListConfigHolder;
 import util.StringHelper;
 
 import java.io.IOException;
@@ -42,7 +41,7 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
     }
 
     public PropertiesCalculationConfigHolder(String propertiesFile) {
-        try (InputStream in = PropertiesChannelListConfigHolder.class.getClassLoader()
+        try (InputStream in = PropertiesCalculationConfigHolder.class.getClassLoader()
                 .getResourceAsStream(propertiesFile)) {
             Properties properties = new Properties();
             properties.load(in);

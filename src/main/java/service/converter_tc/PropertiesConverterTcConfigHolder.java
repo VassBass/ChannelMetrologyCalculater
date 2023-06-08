@@ -1,4 +1,4 @@
-package service.channel.info;
+package service.converter_tc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,22 +8,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class PropertiesChannelInfoConfigHolder implements ChannelInfoConfigHolder {
-    private static final Logger logger = LoggerFactory.getLogger(PropertiesChannelInfoConfigHolder.class);
+public class PropertiesConverterTcConfigHolder implements ConverterTcConfigHolder {
+    private static final Logger logger = LoggerFactory.getLogger(PropertiesConverterTcConfigHolder.class);
 
-    private static final String PROPERTIES_FILE_PATH = "properties/channel.properties";
-    private static final String KEY_DIALOG_WIDTH = "channel.info.dialog.width";
-    private static final String KEY_DIALOG_HEIGHT = "channel.info.dialog.height";
+    private static final String PROPERTIES_FILE_PATH = "properties/converter_tc.properties";
+    private static final String KEY_DIALOG_WIDTH = "converter_tc.dialog.width";
+    private static final String KEY_DIALOG_HEIGHT = "converter_tc.dialog.height";
 
-    private int dialogWidth = 475;
-    private int dialogHeight = 730;
+    private int dialogWidth = 500;
+    private int dialogHeight = 250;
 
-    public PropertiesChannelInfoConfigHolder() {
+    public PropertiesConverterTcConfigHolder() {
         this(PROPERTIES_FILE_PATH);
     }
 
-    public PropertiesChannelInfoConfigHolder(String propertiesFile) {
-        try (InputStream in = PropertiesChannelInfoConfigHolder.class.getClassLoader()
+    public PropertiesConverterTcConfigHolder(String propertiesFile) {
+        try (InputStream in = PropertiesConverterTcConfigHolder.class.getClassLoader()
                 .getResourceAsStream(propertiesFile)) {
             Properties properties = new Properties();
             properties.load(in);
