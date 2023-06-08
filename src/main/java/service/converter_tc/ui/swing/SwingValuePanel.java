@@ -34,7 +34,7 @@ public class SwingValuePanel extends TitledPanel implements ValuePanel {
 
     @Override
     public double getNumericValue() {
-        String val = numValue.getText();
+        String val = numValue.getText().replaceAll(",", ".");
         if (StringHelper.isDouble(val)) {
             this.setTitleColor(Color.BLACK);
             return Double.parseDouble(val);

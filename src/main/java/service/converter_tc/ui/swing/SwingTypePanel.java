@@ -46,7 +46,7 @@ public class SwingTypePanel extends TitledPanel implements TypePanel {
     @Override
     @Nullable
     public Map.Entry<Type, Double> getType() {
-        String val0 = value0.getText();
+        String val0 = value0.getText().replaceAll(",", ".");
         Type type = Type.getType(this.type.getSelectedString());
 
         if (StringHelper.isDouble(val0) && nonNull(type)) {
