@@ -1,4 +1,4 @@
-package service.measurement_transformer.tc.ui.swing;
+package service.converter_tc.ui.swing;
 
 import model.dto.Measurement;
 import model.ui.DefaultComboBox;
@@ -6,8 +6,8 @@ import model.ui.DefaultLabel;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
-import service.measurement_transformer.tc.model.Type;
-import service.measurement_transformer.tc.ui.TypePanel;
+import service.converter_tc.model.Type;
+import service.converter_tc.ui.TypePanel;
 import util.StringHelper;
 
 import javax.annotation.Nullable;
@@ -33,8 +33,7 @@ public class SwingTypePanel extends TitledPanel implements TypePanel {
         type.setList(Arrays.asList(
                 Type.Cu.name,
                 Type.Pt.name,
-                Type.Pl.name,
-                Type.Ni.name
+                Type.Pl.name
         ));
         value0 = new DefaultTextField(5, DEFAULT_VALUE0, null);
         DefaultLabel tooltipText = new DefaultLabel(TOOLTIP_TEXT);

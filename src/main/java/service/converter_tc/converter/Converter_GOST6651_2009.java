@@ -1,8 +1,8 @@
-package service.measurement_transformer.tc.transformer;
+package service.converter_tc.converter;
 
-import service.measurement_transformer.tc.model.Type;
+import service.converter_tc.model.Type;
 
-public class Transformer_GOST6651_2009 implements Transformer {
+public class Converter_GOST6651_2009 implements Converter {
     @Override
     public double transformFromTemperature(Type type, double r0, double temperatureValue) {
         double a, b, c;
@@ -33,14 +33,6 @@ public class Transformer_GOST6651_2009 implements Transformer {
                 return t < 0 ?
                         r0 * (1 + (a * t) + (b * Math.pow(t, 2)) + (c * (t - 100) * Math.pow(t, 3))) :
                         r0 * (1 + (a * t) + (b * Math.pow(t, 2)));
-            case Ni:
-                a = 0.00_54963;
-                b = 0.000_00_67556;
-                c = 0.000_000_00_92004;
-
-                return t < 100 ?
-                        r0 * (1 + (a * t) + (b * Math.pow(t, 2))) :
-                        r0 * (1 + (a * t) + (b * Math.pow(t, 2)) + (c * (t - 100) * Math.pow(t, 2)));
 
             default: return Double.NaN;
         }
@@ -75,14 +67,6 @@ public class Transformer_GOST6651_2009 implements Transformer {
                 return r < 100 ?
                         c * ((r / r0) - 1) :
                         (Math.sqrt(Math.pow(a, 2) - (4 * b * (1 - (r / r0)))) - a) / (2 * b);
-            case Ni:
-                a = 0.00_54963;
-                b = 0.000_00_67556;
-                c = 123.0816;
-
-                return r < transformFromTemperature(Type.Ni, r0, 100) ?
-                        (Math.sqrt(Math.pow(a, 2) - (4 * b * (1 - (r / r0)))) - a) / (2 * b) :
-                        100 + (c * ((r / r0) - 1.6172));
 
             default:
                 return Double.NaN;

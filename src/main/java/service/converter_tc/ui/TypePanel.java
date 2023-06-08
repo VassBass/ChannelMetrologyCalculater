@@ -1,6 +1,6 @@
-package service.measurement_transformer.tc.ui;
+package service.converter_tc.ui;
 
-import service.measurement_transformer.tc.model.Type;
+import service.converter_tc.model.Type;
 
 import javax.annotation.Nullable;
 import java.util.Map;

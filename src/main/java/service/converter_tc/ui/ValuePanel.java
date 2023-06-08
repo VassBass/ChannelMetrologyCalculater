@@ -1,4 +1,4 @@
-package service.measurement_transformer.tc.ui;
+package service.converter_tc.ui;
 
 public interface ValuePanel {
     double getNumericValue();

@@ -1,9 +1,9 @@
-package service.measurement_transformer.tc.model;
+package service.converter_tc.model;
 
 import javax.annotation.Nullable;
 
 public enum Type {
-    Cu("Cu"), Pt("Pt"), Pl("П"), Ni("Ni");
+    Cu("Cu"), Pt("Pt"), Pl("П");
 
     public final String name;
     Type(String name) {
@@ -16,7 +16,6 @@ public enum Type {
             case "Cu": return Cu;
             case "Pt": return Pt;
             case "П": return Pl;
-            case "Ni": return Ni;
             default: return null;
         }
     }

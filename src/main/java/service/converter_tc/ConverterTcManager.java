@@ -1,6 +1,6 @@
-package service.measurement_transformer.tc;
+package service.converter_tc;
 
-public interface TransformerTcManager {
+public interface ConverterTcManager {
     void changingInputMeasurementValue();
     void calculate();
     void close();

@@ -1,12 +1,12 @@
-package service.measurement_transformer.tc.ui.swing;
+package service.converter_tc.ui.swing;
 
 import model.dto.Measurement;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
-import service.measurement_transformer.tc.TransformerTcManager;
-import service.measurement_transformer.tc.ui.ValuePanel;
+import service.converter_tc.ConverterTcManager;
+import service.converter_tc.ui.ValuePanel;
 import util.StringHelper;
 
 import java.awt.*;
@@ -20,7 +20,7 @@ public class SwingValuePanel extends TitledPanel implements ValuePanel {
     private final DefaultTextField numValue;
     private final DefaultComboBox measurementValue;
 
-    public SwingValuePanel(TransformerTcManager manager) {
+    public SwingValuePanel(ConverterTcManager manager) {
         super(TITLE_TEXT, Color.BLACK);
 
         numValue = new DefaultTextField(5);

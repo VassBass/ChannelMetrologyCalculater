@@ -2,8 +2,6 @@ package service.calibrator.info;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.calibrator.list.PropertiesCalibratorListConfigHolder;
-import service.channel.list.PropertiesChannelListConfigHolder;
 import util.StringHelper;
 
 import java.io.IOException;
@@ -25,7 +23,7 @@ public class PropertiesCalibratorInfoConfigHolder implements CalibratorInfoConfi
     }
 
     public PropertiesCalibratorInfoConfigHolder(String propertiesFile) {
-        try (InputStream in = PropertiesChannelListConfigHolder.class.getClassLoader().getResourceAsStream(propertiesFile)) {
+        try (InputStream in = PropertiesCalibratorInfoConfigHolder.class.getClassLoader().getResourceAsStream(propertiesFile)) {
             Properties properties = new Properties();
             properties.load(in);
 

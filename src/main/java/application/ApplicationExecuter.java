@@ -9,6 +9,7 @@ import repository.connection.SqliteRepositoryDBConnector;
 import service.calibrator.list.CalibratorListInitializer;
 import service.channel.list.SwingChannelListExecuter;
 import service.control_points.list.ControlPointsListInitializer;
+import service.converter_tc.ConverterTcInitializer;
 import service.importer.SwingImporterInitializer;
 import service.measurement.list.MeasurementListInitializer;
 import service.person.list.PersonListInitializer;
@@ -76,6 +77,10 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
         message = "Initialization of persons list service";
         publish(message);
         new PersonListInitializer(applicationScreen, repositoryFactory).init();
+
+        message = "Initialization of converter TC service";
+        publish(message);
+        new ConverterTcInitializer(applicationScreen).init();
 
         return null;
     }
