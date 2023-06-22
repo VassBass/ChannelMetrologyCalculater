@@ -381,4 +381,9 @@ public class ChannelRepositorySQLite implements ChannelRepository {
             return true;
         }
     }
+
+    @Override
+    public Collection<Channel> search(SearchParams params) {
+        return null;
+    }
 }

@@ -53,6 +53,11 @@ public class IntegerTextField extends DefaultTextField {
         }
     }
 
+    public int getInput() {
+        this.setText(this.getText());
+        return Integer.parseInt(this.getText());
+    }
+
     public void setDefaultValue(int defaultValue) {
         this.defaultValue = defaultValue;
     }
