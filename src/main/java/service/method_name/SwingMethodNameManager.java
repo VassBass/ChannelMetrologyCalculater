@@ -8,6 +8,7 @@ import service.method_name.ui.MethodNamePanel;
 import service.method_name.ui.swing.SwingMethodNameDialog;
 
 import javax.annotation.Nonnull;
+import javax.swing.*;
 import java.util.Objects;
 
 public class SwingMethodNameManager implements MethodNameManager {
@@ -40,8 +41,10 @@ public class SwingMethodNameManager implements MethodNameManager {
         String measurementName = measurementNamePanel.getMeasurementName();
         String methodName = methodNamePanel.getMethodName();
         repository.set(measurementName, methodName);
+        JOptionPane.showMessageDialog(dialog, "Назва успішно змінена","Успіх", JOptionPane.INFORMATION_MESSAGE);
 
         dialog.shutdown();
+
     }
 
     @Override
