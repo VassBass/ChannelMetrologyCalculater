@@ -135,15 +135,26 @@ public class BufferedChannelRepositorySQLite extends ChannelRepositorySQLite {
         Matcher matcher;
         String date = channel.getDate();
 
-        if (month > 0) {
+        if (month > 0 && year > 0) {
             matcher = Pattern.compile(MONTH_REGEX).matcher(date);
             int m = matcher.find() ? Integer.parseInt(matcher.group()) : 0;
             match = m == month;
-        }
-        if (year > 0) {
-            matcher = Pattern.compile(YEAR_REGEX).matcher(date);
-            int y = matcher.find() ? Integer.parseInt(matcher.group()) : 0;
-            match = y == year;
+            if (match) {
+                matcher = Pattern.compile(YEAR_REGEX).matcher(date);
+                int y = matcher.find() ? Integer.parseInt(matcher.group()) : 0;
+                match = y == year;
+            }
+        } else {
+            if (month > 0) {
+                matcher = Pattern.compile(MONTH_REGEX).matcher(date);
+                int m = matcher.find() ? Integer.parseInt(matcher.group()) : 0;
+                match = m == month;
+            }
+            if (year > 0) {
+                matcher = Pattern.compile(YEAR_REGEX).matcher(date);
+                int y = matcher.find() ? Integer.parseInt(matcher.group()) : 0;
+                match = y == year;
+            }
         }
 
         return match;

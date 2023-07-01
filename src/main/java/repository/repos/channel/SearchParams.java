@@ -14,6 +14,6 @@ public class SearchParams {
 
     public int month;
     public int year;
-    public int locationZone = LOCATION_ZONE_ALL;
+    public int locationZone;
     public String locationValue = EMPTY;
 }

@@ -14,6 +14,5 @@ public interface ChannelListManager {
     void openChannelCertificateFolder();
     void search();
     void advancedSearch();
-    void shutdownSearch();
     void revaluateChannelTable();
 }

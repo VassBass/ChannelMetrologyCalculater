@@ -25,6 +25,6 @@ public class SwingButtonPanel extends DefaultPanel {
 
         this.add(closeButton, new CellBuilder().fill(NONE).x(0).build());
         this.add(cancelButton, new CellBuilder().fill(NONE).x(1).build());
-        this.add(closeButton, new CellBuilder().fill(NONE).x(2).build());
+        this.add(startButton, new CellBuilder().fill(NONE).x(2).build());
     }
 }

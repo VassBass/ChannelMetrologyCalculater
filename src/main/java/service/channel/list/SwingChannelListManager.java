@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
+import repository.repos.channel.SearchParams;
 import repository.repos.sensor.SensorRepository;
 import service.calculation.CalculationExecuter;
 import service.channel.info.SwingChannelInfoExecuter;
@@ -15,6 +16,7 @@ import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListSearchPanel;
 import service.channel.list.ui.ChannelListSwingContext;
 import service.channel.list.ui.ChannelListTable;
+import service.channel.search.ChannelSearchExecutor;
 import util.DateHelper;
 import util.ScreenPoint;
 
@@ -22,8 +24,10 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.*;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -185,31 +189,29 @@ public class SwingChannelListManager implements ChannelListManager {
 
     @Override
     public void advancedSearch() {
-
-    }
-
-    @Override
-    public void shutdownSearch() {
-
+        new ChannelSearchExecutor(applicationScreen, this).execute();
     }
 
     @Override
     public void revaluateChannelTable() {
         ChannelListTable channelListTable = context.getElement(ChannelListTable.class);
         ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
-        List<Channel> channelList = channelRepository.getAll().stream()
-                        .sorted(Comparator.comparingLong(c -> {
-                            String nextDate = DateHelper.getNextDate(c.getDate(), c.getFrequency());
-                            if (nextDate.isEmpty()) return Long.MIN_VALUE;
+        Collection<Channel> channelList = Objects.isNull(SearchParams.SEARCH_BUFFER) ?
+                channelRepository.getAll() :
+                channelRepository.search(SearchParams.SEARCH_BUFFER);
 
-                            Calendar nextDateCal = DateHelper.stringToDate(nextDate);
-                            if (Objects.isNull(nextDateCal)) return Long.MIN_VALUE;
+        channelListTable.setChannelList(channelList.stream()
+                .sorted(Comparator.comparingLong(c -> {
+                    String nextDate = DateHelper.getNextDate(c.getDate(), c.getFrequency());
+                    if (nextDate.isEmpty()) return Long.MIN_VALUE;
 
-                            long nextDateLong = nextDateCal.getTimeInMillis();
-                            long currentDate = Calendar.getInstance().getTimeInMillis();
-                            return nextDateLong - currentDate;
-                        }))
-                .collect(Collectors.toList());
-        channelListTable.setChannelList(new ArrayList<>(channelList));
+                    Calendar nextDateCal = DateHelper.stringToDate(nextDate);
+                    if (Objects.isNull(nextDateCal)) return Long.MIN_VALUE;
+
+                    long nextDateLong = nextDateCal.getTimeInMillis();
+                    long currentDate = Calendar.getInstance().getTimeInMillis();
+                    return nextDateLong - currentDate;
+                }))
+                .collect(Collectors.toList()));
     }
 }
