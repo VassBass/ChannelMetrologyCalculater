@@ -23,4 +23,6 @@ public interface ChannelRepository {
 
     boolean isExist(@Nonnull String code);
     boolean isExist(@Nonnull String oldChannelCode, @Nonnull String newChannelCode);
+
+    Collection<Channel> search(SearchParams params);
 }

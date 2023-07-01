@@ -31,6 +31,11 @@ public class BufferedChannelRepositorySQLiteTest {
     private static Channel createChannel(int number, String measurementValue){
         return new ChannelBuilder(String.valueOf(number))
                 .setName("name" + number)
+                .setDate(String.format("0%s.0%s.%s", (number + 1), ((number % 2) + 1), (2000 + number)))
+                .setDepartment("department" + number)
+                .setArea("area" + number)
+                .setProcess("process" + number)
+                .setInstallation("installation" + number)
                 .setMeasurementValue(measurementValue)
                 .build();
     }
@@ -472,5 +477,123 @@ public class BufferedChannelRepositorySQLiteTest {
         assertFalse(repository.isExist("9", "9"));
         assertTrue(repository.isExist("1", "2"));
         assertTrue(repository.isExist("9", "2"));
+    }
+
+    @Test
+    public void testSearchByMonth() {
+        SearchParams params = new SearchParams();
+        params.month = 1;
+
+        Collection<Channel> expected = Arrays.asList(
+                createChannel(0, Measurement.DEGREE_CELSIUS),
+                createChannel(2, Measurement.DEGREE_CELSIUS),
+                createChannel(4, Measurement.KPA),
+                createChannel(6, Measurement.M3_HOUR)
+        );
+
+        Collection<Channel> actual = repository.search(params);
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testSearchByMonthAndYear() {
+        SearchParams params = new SearchParams();
+        params.month = 1;
+        params.year = 2004;
+
+        Collection<Channel> expected = Collections.singletonList(createChannel(4, Measurement.KPA));
+
+        Collection<Channel> actual = repository.search(params);
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testSearchByYear() {
+        SearchParams params = new SearchParams();
+        params.year = 2004;
+
+        Collection<Channel> expected = Collections.singletonList(createChannel(4, Measurement.KPA));
+
+        Collection<Channel> actual = repository.search(params);
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testSearchByAllPath() {
+        SearchParams params = new SearchParams();
+        params.locationZone = SearchParams.LOCATION_ZONE_ALL;
+        params.locationValue = "4";
+
+        Collection<Channel> expected = Collections.singletonList(createChannel(4, Measurement.KPA));
+
+        Collection<Channel> actual = repository.search(params);
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testSearchByDepartments() {
+        SearchParams params = new SearchParams();
+        params.locationZone = SearchParams.LOCATION_ZONE_DEPARTMENT;
+        params.locationValue = "Department4";
+
+        Collection<Channel> expected = Collections.singletonList(createChannel(4, Measurement.KPA));
+
+        Collection<Channel> actual = repository.search(params);
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testSearchByArea() {
+        SearchParams params = new SearchParams();
+        params.locationZone = SearchParams.LOCATION_ZONE_AREA;
+        params.locationValue = "Area4";
+
+        Collection<Channel> expected = Collections.singletonList(createChannel(4, Measurement.KPA));
+
+        Collection<Channel> actual = repository.search(params);
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testSearchByProcess() {
+        SearchParams params = new SearchParams();
+        params.locationZone = SearchParams.LOCATION_ZONE_PROCESS;
+        params.locationValue = "Process4";
+
+        Collection<Channel> expected = Collections.singletonList(createChannel(4, Measurement.KPA));
+
+        Collection<Channel> actual = repository.search(params);
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testSearchByInstallation() {
+        SearchParams params = new SearchParams();
+        params.locationZone = SearchParams.LOCATION_ZONE_INSTALLATION;
+        params.locationValue = "Installation4";
+
+        Collection<Channel> expected = Collections.singletonList(createChannel(4, Measurement.KPA));
+
+        Collection<Channel> actual = repository.search(params);
+        assertEquals(expected.size(), actual.size());
+        assertTrue(expected.containsAll(actual));
+    }
+
+    @Test
+    public void testSearchByAllPathAndMonth() {
+        SearchParams params = new SearchParams();
+        params.locationZone = SearchParams.LOCATION_ZONE_ALL;
+        params.month = 2;
+        params.locationValue = "4";
+
+        Collection<Channel> actual = repository.search(params);
+        assertEquals(0, actual.size());
     }
 }

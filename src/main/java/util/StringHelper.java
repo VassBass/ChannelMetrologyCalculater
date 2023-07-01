@@ -88,4 +88,12 @@ public class StringHelper {
         String s2Upper = s2.toUpperCase(Locale.ROOT);
         return s1Lower.contains(s2Lower) || s2Lower.contains(s1Lower) || s1Upper.contains(s2Upper) || s2Upper.contains(s1Upper);
     }
+
+    public static boolean containsIgnoreCaseAndSpaces(String base, String containValue) {
+        String baseLow = base.toLowerCase(Locale.ROOT).replaceAll("\\s", "");
+        String baseUp = base.toUpperCase(Locale.ROOT).replaceAll("\\s", "");
+        String valLow = containValue.toLowerCase(Locale.ROOT).replaceAll("\\s", "");
+        String valUp = containValue.toUpperCase(Locale.ROOT).replaceAll("\\s", "");
+        return baseLow.contains(valLow) && baseUp.contains(valUp);
+    }
 }
