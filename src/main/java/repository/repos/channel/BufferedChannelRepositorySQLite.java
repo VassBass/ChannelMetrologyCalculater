@@ -120,8 +120,12 @@ public class BufferedChannelRepositorySQLite extends ChannelRepositorySQLite {
                 .filter(c -> {
                     boolean match = false;
 
-                    if (params.month > 0 || params.year > 0) match = isDateMatch(c, params.month, params.year);
-                    if (params.locationZone > 0) match = isLocationMatch(c, params.locationZone, params.locationValue);
+                    if ((params.month > 0 || params.year > 0) && params.locationZone > 0) {
+                        match = isDateMatch(c, params.month, params.year) && isLocationMatch(c, params.locationZone, params.locationValue);
+                    } else {
+                        if (params.month > 0 || params.year > 0) match = isDateMatch(c, params.month, params.year);
+                        if (params.locationZone > 0) match = isLocationMatch(c, params.locationZone, params.locationValue);
+                    }
 
                     return match;
                 })
