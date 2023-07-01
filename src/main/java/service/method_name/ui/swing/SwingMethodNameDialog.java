@@ -12,6 +12,8 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 
+import static model.ui.builder.CellBuilder.HORIZONTAL;
+
 public class SwingMethodNameDialog extends JDialog implements UI {
     private static final String TITLE = "Методика розрахунку";
 
@@ -25,8 +27,8 @@ public class SwingMethodNameDialog extends JDialog implements UI {
         SwingButtonsPanel buttonsPanel = context.getElement(SwingButtonsPanel.class);
 
         DefaultPanel panel = new DefaultPanel();
-        panel.add(measurementNamePanel, new CellBuilder().weightY(0.9).width(1).x(0).y(0).build());
-        panel.add(namePanel, new CellBuilder().weightY(0.9).width(1).x(1).y(0).build());
+        panel.add(measurementNamePanel, new CellBuilder().fill(HORIZONTAL).weightY(0.9).width(1).x(0).y(0).build());
+        panel.add(namePanel, new CellBuilder().fill(HORIZONTAL).weightY(0.9).width(1).x(1).y(0).build());
         panel.add(buttonsPanel, new CellBuilder().weightY(0.1).width(2).x(0).y(1).margin(0, 20, 0, 0).build());
 
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
