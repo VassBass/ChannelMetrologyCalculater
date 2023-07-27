@@ -142,7 +142,7 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         }
         cell(19,8).setCellValue(measurementValue);
         cell(20,8).setCellValue(measurementValue);
-        cell(19,16).setCellValue(measurementValue);
+        cell(20,16).setCellValue(measurementValue);
         cell(24,15).setCellValue(measurementValue);
         cell(27,15).setCellValue(measurementValue);
         cell(28,15).setCellValue(measurementValue);
