@@ -84,7 +84,9 @@ public class SwingChannelInfoAllowableErrorPanel extends TitledPanel implements 
 
     @Override
     public boolean isAllowableErrorPercentValid() {
-        if (StringHelper.isDouble(errorPercent.getText())) {
+        String error = errorPercent.getText().replaceAll(",", ".");
+        if (StringHelper.isDouble(error)) {
+            errorPercent.setText(error);
             this.setTitleColor(Color.BLACK);
             return true;
         } else {
@@ -95,7 +97,9 @@ public class SwingChannelInfoAllowableErrorPanel extends TitledPanel implements 
 
     @Override
     public boolean isAllowableErrorValueValid() {
-        if (StringHelper.isDouble(errorValue.getText())) {
+        String error = errorValue.getText().replaceAll(",", ".");
+        if (StringHelper.isDouble(error)) {
+            errorValue.setText(error);
             this.setTitleColor(Color.BLACK);
             return true;
         } else {
