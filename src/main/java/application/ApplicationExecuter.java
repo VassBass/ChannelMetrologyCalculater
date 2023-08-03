@@ -11,6 +11,7 @@ import service.channel.list.SwingChannelListExecuter;
 import service.control_points.list.ControlPointsListInitializer;
 import service.converter_tc.ConverterTcInitializer;
 import service.importer.SwingImporterInitializer;
+import service.measurement.converter.ConverterInitializer;
 import service.measurement.list.MeasurementListInitializer;
 import service.method_name.MethodNameInitializer;
 import service.person.list.PersonListInitializer;
@@ -86,6 +87,10 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
         message = "Initialization of calculation methods service";
         publish(message);
         new MethodNameInitializer(applicationScreen, repositoryFactory).init();
+
+        message = "Initialization of converter service";
+        publish(message);
+        new ConverterInitializer(applicationScreen, repositoryFactory).init();
 
         return null;
     }
