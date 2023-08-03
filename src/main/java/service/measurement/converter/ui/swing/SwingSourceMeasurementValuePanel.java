@@ -3,12 +3,12 @@ package service.measurement.converter.ui.swing;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultPanel;
 import model.ui.DefaultTextField;
-import repository.RepositoryFactory;
-import repository.repos.measurement.MeasurementRepository;
+import model.ui.builder.CellBuilder;
 import service.measurement.converter.ui.MeasurementValuePanel;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
+import javax.swing.*;
 import java.util.List;
 
 public class SwingSourceMeasurementValuePanel extends DefaultPanel implements MeasurementValuePanel {
@@ -20,7 +20,11 @@ public class SwingSourceMeasurementValuePanel extends DefaultPanel implements Me
         super();
 
         value = new DefaultTextField(10);
+        value.setHorizontalAlignment(SwingConstants.RIGHT);
         measurementValue = new DefaultComboBox(false);
+
+        this.add(value, new CellBuilder().x(0).build());
+        this.add(measurementValue, new CellBuilder().x(1).build());
     }
 
     @Override
@@ -35,7 +39,7 @@ public class SwingSourceMeasurementValuePanel extends DefaultPanel implements Me
 
     @Override
     public double getValue() {
-        String val = value.getText();
+        String val = value.getText().replaceAll(",", ".");
         return StringHelper.isDouble(val) ? Double.parseDouble(val) : Double.NaN;
     }
 }

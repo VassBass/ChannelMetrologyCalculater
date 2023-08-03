@@ -1,4 +1,4 @@
-package service.measurement.converter;
+package service.measurement.converter.service;
 
 import model.dto.MeasurementTransformFactor;
 import repository.RepositoryFactory;
@@ -16,6 +16,8 @@ public class DefaultConverter implements Converter {
 
     @Override
     public double convert(String fromMeasurementValue, String toMeasurementValue, double value) {
+        if (fromMeasurementValue.equals(toMeasurementValue)) return value;
+
         MeasurementFactorRepository factorRepository = repositoryFactory.getImplementation(MeasurementFactorRepository.class);
 
         double factor = factorRepository.getBySource(fromMeasurementValue).stream()

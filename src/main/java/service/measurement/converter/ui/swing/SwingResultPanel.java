@@ -11,12 +11,12 @@ public class SwingResultPanel extends TitledTextArea implements ResultPanel {
     public SwingResultPanel() {
         super(Integer.MAX_VALUE, 50, TITLE_TEXT);
         buffer = new StringBuilder();
+        this.setEditable(false);
     }
 
     @Override
     public void appendResult(String sourceMeasurementValue, double sourceValue, String resultMeasurementValue, double resultValue) {
-        buffer.append(this.getText());
-        buffer.append(String.format("%s %s = %s %s%n", sourceMeasurementValue, sourceValue, resultMeasurementValue, resultValue));
+        buffer.append(String.format("%s %s = %s %s%n", sourceValue, sourceMeasurementValue, resultValue, resultMeasurementValue));
         this.setText(buffer.toString());
     }
 }
