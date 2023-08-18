@@ -7,6 +7,7 @@ import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
 import repository.connection.SqliteRepositoryDBConnector;
 import service.calibrator.list.CalibratorListInitializer;
+import service.certificate.archive.CertificateArchiveExecutor;
 import service.channel.list.SwingChannelListExecuter;
 import service.control_points.list.ControlPointsListInitializer;
 import service.converter_tc.ConverterTcInitializer;
@@ -91,6 +92,10 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
         message = "Initialization of converter service";
         publish(message);
         new ConverterInitializer(applicationScreen, repositoryFactory).init();
+
+        message = "Start certificate archiving service";
+        publish(message);
+        new CertificateArchiveExecutor().execute();
 
         return null;
     }
