@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class DefaultCertificateArchiver implements CertificateArchiver {
-    private static final String YEAR_REGEX = "(?<=\\d\\(\\d{2}\\.\\d{2}\\.)\\d{4}(?=\\))";
-    private static final String MONTH_REGEX = "(?<=\\d\\(\\d{2}\\.)\\d{2}(?=\\.\\d{4}\\))";
+    private static final String YEAR_REGEX = "(?<=\\(\\d{2}\\.\\d{2}\\.)\\d{4}(?=\\))";
+    private static final String MONTH_REGEX = "(?<=\\(\\d{2}\\.)\\d{2}(?=\\.\\d{4}\\))";
 
     private static final String ARCHIVE_FOLDER_NAME = "archive";
 
@@ -56,10 +56,7 @@ public class DefaultCertificateArchiver implements CertificateArchiver {
                     File holderFolder = null;
                     Matcher monthMatcher = Pattern.compile(MONTH_REGEX).matcher(fileName);
                     if (monthMatcher.find()) {
-                        Integer month = StringHelper.parseInt(monthMatcher.group());
-                        if (Objects.nonNull(month)) {
-                            holderFolder = new File(archiveFolder, String.format("%s%s%s", year, File.separator, month));
-                        }
+                        holderFolder = new File(archiveFolder, String.format("%s%s%s", year, File.separator, monthMatcher.group()));
                     }
                     if (holderFolder == null) holderFolder = archiveFolder;
 
