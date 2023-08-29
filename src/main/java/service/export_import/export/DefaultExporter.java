@@ -24,6 +24,7 @@ public class DefaultExporter implements Exporter {
     private static final Logger logger = LoggerFactory.getLogger(DefaultExporter.class);
 
     private static final String EXCEPTION_MESSAGE = "Exception was thrown!";
+    private static final String EXPORT_FILE_EXTENSION = "cmce";
 
     private final RepositoryFactory repositoryFactory;
     private final ExportConfigHolder configHolder;
@@ -77,7 +78,7 @@ public class DefaultExporter implements Exporter {
         String fullHours = hours < 10 ? "0" + hours : String.valueOf(hours);
         String fullMinutes = minutes < 10 ? "0" + minutes : String.valueOf(minutes);
 
-        String fileName = String.format("export(%s.%s.%s[%s:%s])", fullDay, fullMonth, year, fullHours, fullMinutes);
+        String fileName = String.format("export(%s.%s.%s[%s:%s]).%s", fullDay, fullMonth, year, fullHours, fullMinutes, EXPORT_FILE_EXTENSION);
 
         File file = new File(folder, fileName);
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
