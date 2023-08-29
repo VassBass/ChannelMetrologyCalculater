@@ -1,8 +1,9 @@
 package model.dto;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Range {
+public class Range implements Serializable {
     private final double rangeMin;
     private final double rangeMax;
     private final String value;
