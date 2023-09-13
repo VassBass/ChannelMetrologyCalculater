@@ -31,6 +31,15 @@ import static util.StringHelper.FOR_LAST_ZERO;
 public class SwingChannelInfoManager implements ChannelInfoManager {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoManager.class);
 
+    private static final String DEFAULT_FREQUENCY_VALUE_TEXT = "2.0";
+    private static final double DEFAULT_FREQUENCY_VALUE = 2.0;
+    private static final String DEFAULT_MIN_RANGE_VALUE_TEXT = "0.0";
+    private static final double DEFAULT_MIN_RANGE_VALUE = 0.0;
+    private static final String DEFAULT_MAX_RANGE_VALUE_TEXT = "100.0";
+    private static final double DEFAULT_MAX_RANGE_VALUE = 100.0;
+    private static final String DEFAULT_ALLOWABLE_ERROR_VALUE_TEXT = "1.5";
+    private static final String DEFAULT_ALLOWABLE_ERROR_PERCENT_TEXT = "1.5";
+
     private static final int SENSOR_PANEL_OPTION_SET_RANGE = 0;
     private static final int SENSOR_PANEL_OPTION_SET_ERROR_FORMULAS = 1;
 
@@ -76,101 +85,110 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
     @Override
     public void setChannelInfo(Channel channel) {
+        oldChannel = channel;
+
+        ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
+        ChannelInfoNamePanel namePanel = context.getElement(ChannelInfoNamePanel.class);
+        ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
+        ChannelInfoTechnologyNumberPanel technologyNumberPanel = context.getElement(ChannelInfoTechnologyNumberPanel.class);
+        ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
+        ChannelInfoProtocolNumberPanel protocolNumberPanel = context.getElement(ChannelInfoProtocolNumberPanel.class);
+        ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
+        ChannelInfoNextDatePanel nextDatePanel = context.getElement(ChannelInfoNextDatePanel.class);
+        ChannelInfoPathPanel pathPanel = context.getElement(ChannelInfoPathPanel.class);
+        ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
+        ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
+        ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
+
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
-        if (Objects.nonNull(channel)) {
-            SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+        SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
+        SensorErrorRepository errorRepository = repositoryFactory.getImplementation(SensorErrorRepository.class);
 
-            ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
-            codePanel.setCode(channel.getCode());
+        if (channel == null) {
+            String measurementName = measurementPanel.getSelectedMeasurementName();
+            List<String> measurementValues = Arrays.asList(measurementRepository.getValues(measurementName));
+            measurementPanel.setMeasurementValues(measurementValues);
 
-            ChannelInfoNamePanel namePanel = context.getElement(ChannelInfoNamePanel.class);
+            datePanel.setDate(DateHelper.dateToString(Calendar.getInstance()));
+
+            frequencyPanel.setFrequency(DEFAULT_FREQUENCY_VALUE_TEXT);
+            nextDatePanel.setNextDate(DateHelper.getNextDate(datePanel.getDate(), DEFAULT_FREQUENCY_VALUE));
+
+            sensorPanel.setSensorsTypes(new ArrayList<>(sensorRepository.getAllSensorsTypesByMeasurementName(measurementName)));
+            sensorPanel.setRange(DEFAULT_MIN_RANGE_VALUE_TEXT, DEFAULT_MAX_RANGE_VALUE_TEXT);
+            sensorPanel.setMeasurementValues(measurementValues);
+            String sensorType = sensorPanel.getSelectedSensorType();
+            Collection<SensorError> sensorErrors = errorRepository.getBySensorType(sensorType);
+            sensorPanel.setErrorFormulas(sensorErrors.stream().map(SensorError::getErrorFormula).collect(Collectors.toList()));
+            for (SensorError error : sensorErrors) {
+                if (error.getRangeMin() >= DEFAULT_MIN_RANGE_VALUE && error.getRangeMax() <= DEFAULT_MAX_RANGE_VALUE) {
+                    sensorPanel.setErrorFormula(error.getErrorFormula());
+                    break;
+                }
+            }
+
+            String measurementValue = measurementPanel.getSelectedMeasurementValue();
+            rangePanel.setRangeMin(DEFAULT_MIN_RANGE_VALUE_TEXT);
+            rangePanel.setRangeMax(DEFAULT_MAX_RANGE_VALUE_TEXT);
+            rangePanel.setMeasurementValue(measurementValue);
+
+            allowableErrorPanel.setAllowableErrorValue(DEFAULT_ALLOWABLE_ERROR_VALUE_TEXT);
+            allowableErrorPanel.setAllowableErrorPercent(DEFAULT_ALLOWABLE_ERROR_PERCENT_TEXT);
+            allowableErrorPanel.setMeasurementValue(measurementValue);
+        } else {
+            String channelCode = channel.getCode();
+            codePanel.setCode(channelCode);
+
             namePanel.setChannelName(channel.getName());
 
-            ChannelInfoTechnologyNumberPanel technologyNumberPanel = context.getElement(ChannelInfoTechnologyNumberPanel.class);
+            String measurementName = channel.getMeasurementName();
+            String measurementValue = channel.getMeasurementValue();
+            measurementPanel.setMeasurementName(measurementName);
+            List<String> measurementValues = Arrays.asList(measurementRepository.getValues(measurementName));
+            measurementPanel.setMeasurementValues(measurementValues);
+            measurementPanel.setMeasurementValue(measurementValue);
+
             technologyNumberPanel.setTechnologyNumber(channel.getTechnologyNumber());
 
-            ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
-            datePanel.setDate(channel.getDate());
+            String date = channel.getDate();
+            datePanel.setDate(date);
 
-            ChannelInfoProtocolNumberPanel protocolNumberPanel = context.getElement(ChannelInfoProtocolNumberPanel.class);
             protocolNumberPanel.setProtocolNumber(channel.getNumberOfProtocol());
 
-            ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
-            frequencyPanel.setFrequency(String.valueOf(channel.getFrequency()));
-            /* set next date */ changeDateOrFrequency();
+            double frequency = channel.getFrequency();
+            frequencyPanel.setFrequency(StringHelper.roundingDouble(frequency, 2));
+            nextDatePanel.setNextDate(DateHelper.getNextDate(date, frequency));
 
-            ChannelInfoPathPanel pathPanel = context.getElement(ChannelInfoPathPanel.class);
             pathPanel.setDepartment(channel.getDepartment());
             pathPanel.setArea(channel.getArea());
             pathPanel.setProcess(channel.getProcess());
             pathPanel.setInstallation(channel.getInstallation());
 
-            ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
-            measurementPanel.setMeasurementName(channel.getMeasurementName());
-            String selectedMeasurementName = measurementPanel.getSelectedMeasurementName();
-            measurementPanel.setMeasurementValues(Arrays.asList(measurementRepository.getValues(selectedMeasurementName)));
-            measurementPanel.setMeasurementValue(channel.getMeasurementValue());
-
-            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
-            if (Objects.nonNull(sensorPanel)) {
-                sensorPanel.setSensorsTypes(new ArrayList<>(
-                        sensorRepository.getAllSensorsTypesByMeasurementName(measurementPanel.getSelectedMeasurementName())));
-                sensorPanel.setMeasurementValues(Arrays.asList(measurementRepository.getValues(selectedMeasurementName)));
-                Sensor sensor = sensorRepository.get(channel.getCode());
-                if (Objects.nonNull(sensor)) {
-                    sensorPanel.setSensorType(sensor.getType());
-                    sensorPanel.setSerialNumber(sensor.getSerialNumber());
-                    sensorPanel.setMeasurementValue(sensor.getMeasurementValue());
-                    sensorPanel.setRange(String.valueOf(sensor.getRangeMin()), String.valueOf(sensor.getRangeMax()));
-                    sensorPanel.setErrorFormula(sensor.getErrorFormula());
-                }
-            }
-
-            ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
-            rangePanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
-            rangePanel.setRangeMin(String.valueOf(channel.getRangeMin()));
-            rangePanel.setRangeMax(String.valueOf(channel.getRangeMax()));
-
-            ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
-            allowableErrorPanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
-            allowableErrorPanel.setAllowableErrorPercent(String.valueOf(channel.getAllowableErrorPercent()));
-            allowableErrorPanel.setAllowableErrorValue(String.valueOf(channel.getAllowableErrorValue()));
-
-            oldChannel = channel;
-            setExpectedSensorInfo(SENSOR_PANEL_OPTION_SET_ERROR_FORMULAS);
-        } else {
-            ChannelInfoMeasurementPanel measurementPanel = context.getElement(ChannelInfoMeasurementPanel.class);
-            String selectedMeasurementName = measurementPanel.getSelectedMeasurementName();
-            List<String> measurementValues = Arrays.asList(measurementRepository.getValues(selectedMeasurementName));
-            measurementPanel.setMeasurementValues(measurementValues);
-
-            ChannelInfoSensorPanel sensorPanel = context.getElement(ChannelInfoSensorPanel.class);
-            SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
-
-            sensorPanel.setSensorsTypes(new ArrayList<>(
-                    sensorRepository.getAllSensorsTypesByMeasurementName(measurementPanel.getSelectedMeasurementName())));
-            sensorPanel.setRange("0.0", "100.0");
+            Sensor sensor = sensorRepository.get(channelCode);
+            sensorPanel.setSensorsTypes(new ArrayList<>(sensorRepository.getAllSensorsTypesByMeasurementName(measurementName)));
+            sensorPanel.setSensorType(sensor.getType());
+            double sensorRangeMin = sensor.getRangeMin();
+            String sensorRangeMinText = StringHelper.roundingDouble(sensorRangeMin, FOR_LAST_ZERO);
+            double sensorRangeMax = sensor.getRangeMax();
+            String sensorRangeMaxText = StringHelper.roundingDouble(sensorRangeMax, FOR_LAST_ZERO);
+            sensorPanel.setRange(sensorRangeMinText, sensorRangeMaxText);
             sensorPanel.setMeasurementValues(measurementValues);
-            sensorPanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
+            sensorPanel.setMeasurementValue(sensor.getMeasurementValue());
+            Collection<SensorError> sensorErrors = errorRepository.getBySensorType(sensor.getType());
+            sensorPanel.setErrorFormulas(sensorErrors.stream().map(SensorError::getErrorFormula).collect(Collectors.toList()));
+            sensorPanel.setErrorFormula(sensor.getErrorFormula());
 
-            ChannelInfoRangePanel rangePanel = context.getElement(ChannelInfoRangePanel.class);
-            rangePanel.setRangeMin("0.0");
-            rangePanel.setRangeMax("100.0");
-            rangePanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
+            String channelRangeMinText = StringHelper.roundingDouble(channel.getRangeMin(), FOR_LAST_ZERO);
+            String channelRangeMaxText = StringHelper.roundingDouble(channel.getRangeMax(), FOR_LAST_ZERO);
+            rangePanel.setRangeMin(channelRangeMinText);
+            rangePanel.setRangeMax(channelRangeMaxText);
+            rangePanel.setMeasurementValue(measurementValue);
 
-            ChannelInfoAllowableErrorPanel allowableErrorPanel = context.getElement(ChannelInfoAllowableErrorPanel.class);
-            allowableErrorPanel.setAllowableErrorPercent("1.5");
-            allowableErrorPanel.setAllowableErrorValue("1.5");
-            allowableErrorPanel.setMeasurementValue(measurementPanel.getSelectedMeasurementValue());
-
-            ChannelInfoDatePanel datePanel = context.getElement(ChannelInfoDatePanel.class);
-            datePanel.setDate(DateHelper.dateToString(Calendar.getInstance()));
-
-            ChannelInfoFrequencyPanel frequencyPanel = context.getElement(ChannelInfoFrequencyPanel.class);
-            frequencyPanel.setFrequency("2.0");
-            /* set next date */ changeDateOrFrequency();
-
-            setExpectedSensorInfo();
+            String allowableErrorValueText = StringHelper.roundingDouble(channel.getAllowableErrorValue(), FOR_LAST_ZERO);
+            String allowableErrorPercentText = StringHelper.roundingDouble(channel.getAllowableErrorPercent(), FOR_LAST_ZERO);
+            allowableErrorPanel.setAllowableErrorValue(allowableErrorValueText);
+            allowableErrorPanel.setAllowableErrorPercent(allowableErrorPercentText);
+            allowableErrorPanel.setMeasurementValue(measurementValue);
         }
     }
 

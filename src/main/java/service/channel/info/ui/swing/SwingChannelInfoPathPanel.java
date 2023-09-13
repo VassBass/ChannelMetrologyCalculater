@@ -1,18 +1,13 @@
 package service.channel.info.ui.swing;
 
-import model.dto.Channel;
 import model.ui.DefaultComboBox;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
-import repository.RepositoryFactory;
-import repository.repos.channel.ChannelRepository;
 import service.channel.info.ui.ChannelInfoPathPanel;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInfoPathPanel {
     private static final String TITLE_TEXT = "Розташування";
@@ -22,30 +17,13 @@ public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInf
     private final DefaultComboBox processes;
     private final DefaultComboBox installations;
 
-    public SwingChannelInfoPathPanel(RepositoryFactory repositoryFactory) {
+    public SwingChannelInfoPathPanel() {
         super(TITLE_TEXT, Color.BLACK);
-        ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
 
         departments = new DefaultComboBox(true);
         areas = new DefaultComboBox(true);
         processes = new DefaultComboBox(true);
         installations = new DefaultComboBox(true);
-
-        Set<String> departmentSet = new HashSet<>();
-        Set<String> areaSet = new HashSet<>();
-        Set<String> processSet = new HashSet<>();
-        Set<String> installationSet = new HashSet<>();
-        for (Channel channel : channelRepository.getAll()) {
-            departmentSet.add(channel.getDepartment());
-            areaSet.add(channel.getArea());
-            processSet.add(channel.getProcess());
-            installationSet.add(channel.getInstallation());
-        }
-
-        setDepartments(departmentSet);
-        setAreas(areaSet);
-        setProcesses(processSet);
-        setInstallations(installationSet);
 
         this.add(departments, new CellBuilder().x(0).y(0).build());
         this.add(areas, new CellBuilder().x(1).y(0).build());

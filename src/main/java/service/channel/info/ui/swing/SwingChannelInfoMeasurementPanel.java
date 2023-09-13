@@ -19,14 +19,11 @@ public class SwingChannelInfoMeasurementPanel extends TitledPanel implements Cha
     private final DefaultComboBox measurementName;
     private final DefaultComboBox measurementValue;
 
-    public SwingChannelInfoMeasurementPanel(RepositoryFactory repositoryFactory, ChannelInfoManager manager) {
+    public SwingChannelInfoMeasurementPanel(ChannelInfoManager manager) {
         super(TITLE_TEXT, Color.BLACK);
 
         measurementName = new DefaultComboBox(false);
         measurementValue = new DefaultComboBox(false);
-
-        MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
-        setMeasurementNames(Arrays.asList(measurementRepository.getAllNames()));
 
         measurementName.addItemListener(e -> manager.changeMeasurementName());
         measurementValue.addItemListener(e -> manager.changeMeasurementValue());
