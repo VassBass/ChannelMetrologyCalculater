@@ -72,6 +72,7 @@ public class TemplateExelPressureProtocolFormer extends TemplateExelTemperatureP
 
         final String measurementValue = channel.getMeasurementValue();
         cell(17,8).setCellValue(measurementValue);
+        cell(18,8).setCellValue(measurementValue);
         cell(21,8).setCellValue(measurementValue);
         cell(21,7).setCellValue(measurementValue);
         cell(32,2).setCellValue(measurementValue);
