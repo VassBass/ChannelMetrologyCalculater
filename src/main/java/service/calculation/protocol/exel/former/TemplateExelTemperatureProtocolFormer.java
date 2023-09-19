@@ -26,6 +26,7 @@ import static util.StringHelper.FOR_LAST_ZERO;
 
 public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer {
     protected static final String EXTRAORDINARY = "Позачерговий";
+    protected static final String METROLOGY_HEAD_POSITION = "Начальник дільниці МЗ та П";
 
     private final HSSFWorkbook book;
     protected final RepositoryFactory repositoryFactory;
@@ -88,8 +89,10 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         }else nextDate = EXTRAORDINARY;
         cell(38,14).setCellValue(nextDate);
 
-        final String numberOfReference = protocol.getReferenceNumber();
-        cell(10,21).setCellValue(numberOfReference);
+        if (!suitable) {
+            final String numberOfReference = protocol.getReferenceNumber();
+            cell(10, 21).setCellValue(numberOfReference);
+        }
     }
 
     protected void appendChannelInfo(Protocol protocol) {
@@ -281,9 +284,13 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
 
         String headOfMetrologyDepartment = protocol.getHeadOfMetrologyDepartment();
         if (headOfMetrologyDepartment.isEmpty()) headOfMetrologyDepartment = "________________";
+        cell(43, 0).setCellValue(METROLOGY_HEAD_POSITION);
         cell(43,6).setCellValue(headOfMetrologyDepartment);
+        cell(45,9).setCellValue(METROLOGY_HEAD_POSITION);
         cell(45,15).setCellValue(headOfMetrologyDepartment);
         if (notSuitable){
+            cell(32,18).setCellValue(METROLOGY_HEAD_POSITION);
+            cell(47,18).setCellValue(METROLOGY_HEAD_POSITION);
             cell(32,24).setCellValue(headOfMetrologyDepartment);
             cell(47,24).setCellValue(headOfMetrologyDepartment);
         }

@@ -70,15 +70,17 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         if (suitable){
             nextDate = DateHelper.getNextDate(checkDate, protocol.getChannel().getFrequency());
             if (nextDate.isEmpty()) nextDate = EXTRAORDINARY;
-        }else nextDate = EXTRAORDINARY;
+        } else nextDate = EXTRAORDINARY;
         if (isRosemount8714DQ4Calibrator) {
             cell(38, 14).setCellValue(nextDate);
         } else {
             cell(39, 14).setCellValue(nextDate);
         }
 
-        final String numberOfReference = protocol.getReferenceNumber();
-        cell(10,21).setCellValue(numberOfReference);
+        if (!suitable) {
+            final String numberOfReference = protocol.getReferenceNumber();
+            cell(10, 21).setCellValue(numberOfReference);
+        }
     }
 
     @Override
