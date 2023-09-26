@@ -2,7 +2,6 @@ package service.measurement.list;
 
 import model.dto.Measurement;
 import model.dto.MeasurementTransformFactor;
-import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import repository.RepositoryFactory;
 import repository.repos.calibrator.CalibratorRepository;
@@ -18,7 +17,6 @@ import service.measurement.list.ui.MeasurementListNamePanel;
 import service.measurement.list.ui.MeasurementListValueTable;
 import service.measurement.list.ui.swing.SwingMeasurementListDialog;
 import util.ObjectHelper;
-import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -107,9 +105,7 @@ public class SwingMeasurementListManager implements MeasurementListManager {
                     Measurement measurementToChange = measurementRepository.getAnyNotEquals(measurement);
 
                     if (ObjectHelper.nonNull(measurement, measurementToChange)) {
-                        final DialogWrapper loadingDialog;
-                        LoadingDialog lDialog = LoadingDialog.getInstance();
-                        loadingDialog = new DialogWrapper(dialog, lDialog, ScreenPoint.center(dialog, lDialog));
+                        LoadingDialog loadingDialog = new LoadingDialog(dialog);
                         loadingDialog.showing();
                         new SwingWorker<Void, Void>() {
                             @Override

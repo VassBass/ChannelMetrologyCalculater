@@ -1,6 +1,7 @@
 package service.calculation.result.ui.swing;
 
 import application.ApplicationScreen;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.CalculationCollectDialog;
@@ -12,12 +13,11 @@ import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Objects;
 
-public class SwingCalculationResultDialog extends JDialog implements CalculationCollectDialog {
+public class SwingCalculationResultDialog extends DefaultDialog implements CalculationCollectDialog {
     private static final String TITLE_TEXT = "Результати розрахунку";
 
     private final SwingCalculationResultConclusionPanel conclusionPanel;
@@ -28,7 +28,7 @@ public class SwingCalculationResultDialog extends JDialog implements Calculation
                                         @Nonnull CalculationManager manager,
                                         @Nonnull SwingCalculationResultContext context,
                                         @Nonnull Protocol protocol) {
-        super(applicationScreen, TITLE_TEXT, true);
+        super(applicationScreen, TITLE_TEXT);
 
         SwingCalculationResultPanel resultPanel = context.getElement(SwingCalculationResultPanel.class);
         conclusionPanel = context.getElement(SwingCalculationResultConclusionPanel.class);
@@ -61,34 +61,6 @@ public class SwingCalculationResultDialog extends JDialog implements Calculation
         this.setSize(width, height);
         this.setLocation(ScreenPoint.center(applicationScreen, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 
     @Override

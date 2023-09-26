@@ -1,8 +1,8 @@
 package service.control_points.list.ui.swing;
 
 import application.ApplicationScreen;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.control_points.list.ControlPointsListConfigHolder;
 import service.control_points.list.ControlPointsListManager;
@@ -16,7 +16,7 @@ import java.awt.*;
 import static model.ui.builder.CellBuilder.BOTH;
 import static model.ui.builder.CellBuilder.NONE;
 
-public class SwingControlPointsListDialog extends JDialog implements UI {
+public class SwingControlPointsListDialog extends DefaultDialog {
     private static final String TITLE_TEXT = "Контрольні точки";
 
     private final ControlPointsListManager manager;
@@ -26,7 +26,7 @@ public class SwingControlPointsListDialog extends JDialog implements UI {
                                         @Nonnull ControlPointsListConfigHolder configHolder,
                                         @Nonnull ControlPointsListContext context,
                                         @Nonnull ControlPointsListManager manager) {
-        super(applicationScreen, TITLE_TEXT, true);
+        super(applicationScreen, TITLE_TEXT);
         this.manager = manager;
 
         sortPanel = context.getElement(SwingControlPointsListSortPanel.class);
@@ -55,25 +55,5 @@ public class SwingControlPointsListDialog extends JDialog implements UI {
             this.setVisible(false);
             this.setVisible(true);
         });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

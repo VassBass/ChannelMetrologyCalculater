@@ -1,18 +1,18 @@
 package service.calculation.input.ui.swing;
 
 import application.ApplicationScreen;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.CalculationCollectDialog;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.input.CalculationInputValuesBuffer;
-import service.calculation.protocol.Protocol;
 import service.calculation.input.ui.SwingCalculationInputContext;
+import service.calculation.protocol.Protocol;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Objects;
@@ -20,7 +20,7 @@ import java.util.TreeMap;
 
 import static model.ui.builder.CellBuilder.HORIZONTAL;
 
-public class SwingCalculationInputDialog extends JDialog implements CalculationCollectDialog {
+public class SwingCalculationInputDialog extends DefaultDialog implements CalculationCollectDialog {
     private static final String TITLE = "Вхідні дані";
 
     private final SwingCalculationInputAlarmPanel alarmPanel;
@@ -30,7 +30,7 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
     public SwingCalculationInputDialog(@Nonnull ApplicationScreen applicationScreen,
                                        @Nonnull CalculationConfigHolder configHolder,
                                        @Nonnull SwingCalculationInputContext context) {
-        super(applicationScreen, TITLE, true);
+        super(applicationScreen, TITLE);
 
         DefaultPanel panel = new DefaultPanel();
 
@@ -60,34 +60,6 @@ public class SwingCalculationInputDialog extends JDialog implements CalculationC
         this.setSize(width, height);
         this.setLocation(ScreenPoint.center(applicationScreen, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 
     @Override

@@ -1,8 +1,8 @@
 package service.person.info.ui.swing;
 
 import model.dto.Person;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.person.info.PersonInfoConfigHolder;
 import service.person.info.ui.PersonInfoContext;
@@ -11,11 +11,9 @@ import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.*;
-import java.awt.*;
 import java.util.Objects;
 
-public class SwingPersonInfoDialog extends JDialog implements UI {
+public class SwingPersonInfoDialog extends DefaultDialog {
 
 
     public SwingPersonInfoDialog(@Nonnull SwingPersonListDialog parentDialog,
@@ -23,8 +21,7 @@ public class SwingPersonInfoDialog extends JDialog implements UI {
                                  @Nonnull PersonInfoContext context,
                                  @Nullable Person oldPerson) {
         super(parentDialog,
-                Objects.isNull(oldPerson) ? "Новий співробітник" : String.format("ID співробітника %s", oldPerson.getId()),
-                true);
+                Objects.isNull(oldPerson) ? "Новий співробітник" : String.format("ID співробітника %s", oldPerson.getId()));
 
         SwingPersonInfoSurnamePanel surnamePanel = context.getElement(SwingPersonInfoSurnamePanel.class);
         SwingPersonInfoNamePanel namePanel = context.getElement(SwingPersonInfoNamePanel.class);
@@ -50,33 +47,5 @@ public class SwingPersonInfoDialog extends JDialog implements UI {
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(parentDialog, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

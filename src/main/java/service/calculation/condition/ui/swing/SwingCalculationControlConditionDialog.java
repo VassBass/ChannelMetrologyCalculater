@@ -3,6 +3,7 @@ package service.calculation.condition.ui.swing;
 import application.ApplicationScreen;
 import model.dto.Calibrator;
 import model.dto.Channel;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
@@ -16,8 +17,6 @@ import util.ObjectHelper;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
@@ -26,7 +25,7 @@ import java.util.Objects;
 
 import static model.ui.builder.CellBuilder.HORIZONTAL;
 
-public class SwingCalculationControlConditionDialog extends JDialog implements CalculationCollectDialog {
+public class SwingCalculationControlConditionDialog extends DefaultDialog implements CalculationCollectDialog {
     private static final String TITLE = "Розрахунок ВК: ";
 
     private final RepositoryFactory repositoryFactory;
@@ -41,7 +40,7 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
                                                   @Nonnull CalculationConfigHolder configHolder,
                                                   @Nonnull SwingCalculationControlConditionContext context,
                                                   @Nonnull Channel channel) {
-        super(applicationScreen, TITLE + channel.getName(), true);
+        super(applicationScreen, TITLE + channel.getName());
         this.repositoryFactory = repositoryFactory;
 
         DefaultPanel panel = new DefaultPanel();
@@ -76,34 +75,6 @@ public class SwingCalculationControlConditionDialog extends JDialog implements C
         this.setSize(width, height);
         this.setLocation(ScreenPoint.center(applicationScreen, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 
     @Override

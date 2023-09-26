@@ -6,15 +6,18 @@ import model.dto.Channel;
 import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
 import service.calculation.condition.SwingCalculationControlConditionExecuter;
+import service.calculation.condition.ui.swing.SwingCalculationControlConditionDialog;
 import service.calculation.input.SwingCalculationInputExecuter;
+import service.calculation.input.ui.swing.SwingCalculationInputDialog;
 import service.calculation.persons.SwingCalculationPersonsExecuter;
+import service.calculation.persons.ui.swing.SwingCalculationPersonsDialog;
 import service.calculation.protocol.Protocol;
 import service.calculation.protocol.exel.TemplateExelProtocolWrapper;
 import service.calculation.result.SwingCalculationResultExecuter;
+import service.calculation.result.ui.swing.SwingCalculationResultDialog;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.awt.*;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
@@ -26,10 +29,10 @@ public class SwingCalculationManager implements CalculationManager {
     private final Channel channel;
     private final Protocol protocol;
 
-    private CalculationCollectDialog controlConditionDialog;
-    private CalculationCollectDialog inputDialog;
-    private CalculationCollectDialog resultDialog;
-    private CalculationCollectDialog personsDialog;
+    private SwingCalculationControlConditionDialog controlConditionDialog;
+    private SwingCalculationInputDialog inputDialog;
+    private SwingCalculationResultDialog resultDialog;
+    private SwingCalculationPersonsDialog personsDialog;
 
     public SwingCalculationManager(@Nonnull ApplicationScreen applicationScreen,
                                    @Nonnull RepositoryFactory repositoryFactory,
@@ -43,7 +46,7 @@ public class SwingCalculationManager implements CalculationManager {
     }
 
     @Override
-    public void registerConditionDialog(@Nonnull CalculationCollectDialog dialog) {
+    public void registerConditionDialog(@Nonnull SwingCalculationControlConditionDialog dialog) {
         controlConditionDialog = dialog;
     }
 
@@ -59,7 +62,7 @@ public class SwingCalculationManager implements CalculationManager {
     }
 
     @Override
-    public void registerInputDialog(@Nonnull CalculationCollectDialog dialog) {
+    public void registerInputDialog(@Nonnull SwingCalculationInputDialog dialog) {
         inputDialog = dialog;
     }
 
@@ -85,7 +88,7 @@ public class SwingCalculationManager implements CalculationManager {
     }
 
     @Override
-    public void registerResultDialog(@Nonnull CalculationCollectDialog dialog) {
+    public void registerResultDialog(@Nonnull SwingCalculationResultDialog dialog) {
         resultDialog = dialog;
     }
 
@@ -104,7 +107,7 @@ public class SwingCalculationManager implements CalculationManager {
     }
 
     @Override
-    public void registerPersonDialog(@Nonnull CalculationCollectDialog dialog) {
+    public void registerPersonDialog(@Nonnull SwingCalculationPersonsDialog dialog) {
         personsDialog = dialog;
     }
 
@@ -129,7 +132,7 @@ public class SwingCalculationManager implements CalculationManager {
                 disposeCalculation();
             } else {
                 String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
-                JOptionPane.showMessageDialog((Component) personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -144,7 +147,7 @@ public class SwingCalculationManager implements CalculationManager {
                 disposeCalculation();
             } else {
                 String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
-                JOptionPane.showMessageDialog((Component) personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -159,7 +162,7 @@ public class SwingCalculationManager implements CalculationManager {
                 disposeCalculation();
             } else {
                 String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
-                JOptionPane.showMessageDialog((Component) personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

@@ -2,17 +2,14 @@ package service.calculation;
 
 import application.ApplicationScreen;
 import model.dto.Channel;
-import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.ServiceExecutor;
-import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.awt.*;
 import java.util.concurrent.ExecutionException;
 
 public class CalculationExecuter implements ServiceExecutor {
@@ -32,10 +29,8 @@ public class CalculationExecuter implements ServiceExecutor {
 
     @Override
     public void execute() {
-        LoadingDialog loadingDialog = LoadingDialog.getInstance();
-        Point location = ScreenPoint.center(applicationScreen, loadingDialog);
-        DialogWrapper loadingDialogWrapper = new DialogWrapper(applicationScreen, loadingDialog, location);
-        loadingDialogWrapper.showing();
+        LoadingDialog loadingDialog = new LoadingDialog(applicationScreen);
+        loadingDialog.showing();
 
         new SwingWorker<Boolean, Void>() {
             private CalculationManager manager;
@@ -49,7 +44,7 @@ public class CalculationExecuter implements ServiceExecutor {
 
             @Override
             protected void done() {
-                loadingDialogWrapper.shutdown();
+                loadingDialog.shutdown();
                 try {
                     if (get()) manager.showConditionDialog();
                 } catch (InterruptedException | ExecutionException e) {

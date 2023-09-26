@@ -2,7 +2,6 @@ package service.measurement.info;
 
 import model.dto.Measurement;
 import model.dto.MeasurementTransformFactor;
-import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import repository.RepositoryFactory;
 import repository.repos.calibrator.CalibratorRepository;
@@ -17,7 +16,6 @@ import service.measurement.info.ui.MeasurementInfoNamePanel;
 import service.measurement.info.ui.MeasurementInfoValuePanel;
 import service.measurement.info.ui.swing.SwingMeasurementInfoDialog;
 import service.measurement.list.ui.swing.SwingMeasurementListDialog;
-import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -117,9 +115,7 @@ public class SwingMeasurementInfoManager implements MeasurementInfoManager {
                 if (measurementRepository.exists(value)) {
                     showExistMessage();
                 } else {
-                    final DialogWrapper loadingDialog;
-                    LoadingDialog lDialog = LoadingDialog.getInstance();
-                    loadingDialog = new DialogWrapper(dialog, lDialog, ScreenPoint.center(dialog, lDialog));
+                    LoadingDialog loadingDialog = new LoadingDialog(dialog);
                     loadingDialog.showing();
                     new SwingWorker<Void, Void>() {
                         @Override
@@ -150,9 +146,7 @@ public class SwingMeasurementInfoManager implements MeasurementInfoManager {
                 if (measurementRepository.exists(oldValue, value)) {
                     showExistMessage();
                 } else {
-                    final DialogWrapper loadingDialog;
-                    LoadingDialog lDialog = LoadingDialog.getInstance();
-                    loadingDialog = new DialogWrapper(dialog, lDialog, ScreenPoint.center(dialog, lDialog));
+                    LoadingDialog loadingDialog = new LoadingDialog(dialog);
                     loadingDialog.showing();
                     new SwingWorker<Void, Void>() {
                         @Override

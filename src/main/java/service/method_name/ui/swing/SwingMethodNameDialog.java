@@ -1,26 +1,24 @@
 package service.method_name.ui.swing;
 
 import application.ApplicationScreen;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.method_name.MethodNameConfigHolder;
 import service.method_name.ui.MethodNameContext;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
-import java.awt.*;
 
 import static model.ui.builder.CellBuilder.HORIZONTAL;
 
-public class SwingMethodNameDialog extends JDialog implements UI {
+public class SwingMethodNameDialog extends DefaultDialog {
     private static final String TITLE = "Методика розрахунку";
 
     public SwingMethodNameDialog(@Nonnull ApplicationScreen applicationScreen,
                                  @Nonnull MethodNameConfigHolder configHolder,
                                  @Nonnull MethodNameContext context) {
-        super(applicationScreen, TITLE, true);
+        super(applicationScreen, TITLE);
 
         SwingMeasurementNamePanel measurementNamePanel = context.getElement(SwingMeasurementNamePanel.class);
         SwingMethodNamePanel namePanel = context.getElement(SwingMethodNamePanel.class);
@@ -35,33 +33,5 @@ public class SwingMethodNameDialog extends JDialog implements UI {
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(applicationScreen, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

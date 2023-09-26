@@ -1,6 +1,5 @@
 package service.channel.search;
 
-import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import repository.repos.channel.SearchParams;
 import service.channel.list.ChannelListManager;
@@ -8,7 +7,6 @@ import service.channel.search.ui.ChannelSearchContext;
 import service.channel.search.ui.DatePanel;
 import service.channel.search.ui.LocationPanel;
 import service.channel.search.ui.swing.SwingChannelSearchDialog;
-import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -59,11 +57,10 @@ public class SwingChannelSearchManager implements ChannelSearchManager {
 
     private final class Worker extends SwingWorker<Boolean, Void> {
 
-        private DialogWrapper loadingDialog;
+        private LoadingDialog loadingDialog;
 
         void start() {
-            LoadingDialog d = LoadingDialog.getInstance();
-            loadingDialog = new DialogWrapper(dialog, d, ScreenPoint.center(dialog, d));
+            loadingDialog = new LoadingDialog(dialog);
             loadingDialog.showing();
             this.execute();
         }

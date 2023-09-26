@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.ServiceExecutor;
-import service.calculation.CalculationCollectDialog;
 import service.calculation.CalculationConfigHolder;
 import service.calculation.CalculationManager;
 import service.calculation.input.ui.SwingCalculationInputContext;
@@ -41,7 +40,7 @@ public class SwingCalculationInputExecuter implements ServiceExecutor {
         context.registerManager(manager);
         SwingCalculationInputManager inputManager = new SwingCalculationInputManager(context);
         context.registerManager(inputManager);
-        CalculationCollectDialog inputDialog = new SwingCalculationInputDialog(applicationScreen, configHolder,  context);
+        SwingCalculationInputDialog inputDialog = new SwingCalculationInputDialog(applicationScreen, configHolder,  context);
         manager.registerInputDialog(inputDialog);
         manager.showInputDialog();
         logger.info("Service is running");

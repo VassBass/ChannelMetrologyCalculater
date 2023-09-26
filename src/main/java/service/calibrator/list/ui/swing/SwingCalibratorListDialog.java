@@ -2,8 +2,8 @@ package service.calibrator.list.ui.swing;
 
 import application.ApplicationScreen;
 import model.dto.Calibrator;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.calibrator.CalibratorRepository;
@@ -12,7 +12,6 @@ import service.calibrator.list.ui.CalibratorListContext;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 import static model.ui.builder.CellBuilder.BOTH;
 import static model.ui.builder.CellBuilder.VERTICAL;
 
-public class SwingCalibratorListDialog extends JDialog implements UI {
+public class SwingCalibratorListDialog extends DefaultDialog {
     private static final String TITLE_TEXT = "Список калібраторів";
 
     private final RepositoryFactory repositoryFactory;
@@ -31,7 +30,7 @@ public class SwingCalibratorListDialog extends JDialog implements UI {
                                      @Nonnull RepositoryFactory repositoryFactory,
                                      @Nonnull CalibratorListConfigHolder configHolder,
                                      @Nonnull CalibratorListContext context) {
-        super(applicationScreen, TITLE_TEXT, true);
+        super(applicationScreen, TITLE_TEXT);
         this.repositoryFactory = repositoryFactory;
 
         measurementPanel = context.getElement(SwingCalibratorListMeasurementPanel.class);
@@ -63,25 +62,5 @@ public class SwingCalibratorListDialog extends JDialog implements UI {
             if (this.isVisible()) this.setVisible(false);
             this.setVisible(true);
         });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

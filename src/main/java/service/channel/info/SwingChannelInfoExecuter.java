@@ -1,22 +1,18 @@
 package service.channel.info;
 
+import application.ApplicationScreen;
 import model.dto.Channel;
-import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
-import application.ApplicationScreen;
+import service.ServiceExecutor;
 import service.channel.info.ui.ChannelInfoSwingContext;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
 import service.channel.list.ChannelListManager;
-import service.ServiceExecutor;
-import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.awt.*;
-import java.util.Objects;
 
 public class SwingChannelInfoExecuter implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoExecuter.class);
@@ -47,13 +43,11 @@ public class SwingChannelInfoExecuter implements ServiceExecutor {
 
     private class Worker extends SwingWorker<Void, Void> {
 
-        private final DialogWrapper loadingDialogWrapper;
+        private final LoadingDialog loadingDialog;
         private SwingChannelInfoDialog dialog;
 
         private Worker() {
-            LoadingDialog loadingDialog = LoadingDialog.getInstance();
-            Point location = ScreenPoint.center(Objects.requireNonNull(applicationScreen), loadingDialog);
-            loadingDialogWrapper = new DialogWrapper(applicationScreen, loadingDialog, location);
+            loadingDialog = new LoadingDialog(applicationScreen);
         }
 
         @Override
@@ -74,7 +68,7 @@ public class SwingChannelInfoExecuter implements ServiceExecutor {
 
         @Override
         protected void done() {
-            loadingDialogWrapper.shutdown();
+            loadingDialog.shutdown();
             dialog.showing();
             logger.info("The service is running");
         }
