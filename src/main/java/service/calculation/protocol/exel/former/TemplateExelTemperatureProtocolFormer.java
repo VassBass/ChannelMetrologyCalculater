@@ -2,6 +2,7 @@ package service.calculation.protocol.exel.former;
 
 import model.dto.Calibrator;
 import model.dto.Channel;
+import model.dto.MeasurementTransformFactor;
 import model.dto.Sensor;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -9,6 +10,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import repository.RepositoryFactory;
 import repository.repos.calculation_method.CalculationMethodRepository;
+import repository.repos.measurement_factor.MeasurementFactorRepository;
 import repository.repos.sensor.SensorRepository;
 import service.calculation.protocol.Protocol;
 import service.error_calculater.MxParserErrorCalculater;
@@ -196,10 +198,22 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         cell(18,12).setCellValue(certificate.toString());
 
         double range = calibrator.calculateRange();
-        if (range == 0) range = protocol.getChannel().calculateRange();
+        if (range == 0) {
+            range = protocol.getChannel().calculateRange();
+        } else {
+            MeasurementFactorRepository factorRepository = repositoryFactory.getImplementation(MeasurementFactorRepository.class);
+            double factor = factorRepository.getBySource(calibrator.getMeasurementValue())
+                    .stream()
+                    .filter(f -> f.getTransformTo().equals(protocol.getChannel().getMeasurementValue()))
+                    .findAny()
+                    .map(MeasurementTransformFactor::getTransformFactor)
+                    .orElse(1D);
+            range = range * factor;
+        }
 
         final double errorCalibrator = errorCalculater.calculate(calibrator);
         if (Double.isNaN(errorCalibrator)) return;
+        MeasurementFactorRepository factorRepository = repositoryFactory.getImplementation(MeasurementFactorRepository.class);
         double eP = errorCalibrator / (range / 100);
         final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
         cell(19,13).setCellValue(errorPercent.replaceAll("\\.", ","));
