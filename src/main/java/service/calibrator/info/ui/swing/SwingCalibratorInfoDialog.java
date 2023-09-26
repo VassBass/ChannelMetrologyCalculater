@@ -1,8 +1,8 @@
 package service.calibrator.info.ui.swing;
 
 import model.dto.Calibrator;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.calibrator.info.CalibratorInfoConfigHolder;
 import service.calibrator.info.ui.CalibratorInfoContext;
@@ -11,18 +11,16 @@ import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.*;
-import java.awt.*;
 import java.util.Objects;
 
-public class SwingCalibratorInfoDialog extends JDialog implements UI {
+public class SwingCalibratorInfoDialog extends DefaultDialog {
     private static final String DEFAULT_TITLE = "Калібратор";
 
     public SwingCalibratorInfoDialog(@Nonnull SwingCalibratorListDialog calibratorListDialog,
                                      @Nonnull CalibratorInfoConfigHolder configHolder,
                                      @Nonnull CalibratorInfoContext context,
                                      @Nullable Calibrator calibrator) {
-        super(calibratorListDialog, Objects.isNull(calibrator) ? DEFAULT_TITLE : calibrator.getName(), true);
+        super(calibratorListDialog, Objects.isNull(calibrator) ? DEFAULT_TITLE : calibrator.getName());
 
         SwingCalibratorInfoMeasurementPanel measurementPanel = context.getElement(SwingCalibratorInfoMeasurementPanel.class);
         SwingCalibratorInfoTypePanel typePanel = context.getElement(SwingCalibratorInfoTypePanel.class);
@@ -64,33 +62,5 @@ public class SwingCalibratorInfoDialog extends JDialog implements UI {
         this.setSize(width, height);
         this.setLocation(ScreenPoint.center(calibratorListDialog, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

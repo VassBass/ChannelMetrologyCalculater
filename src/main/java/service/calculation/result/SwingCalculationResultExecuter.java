@@ -2,9 +2,8 @@ package service.calculation.result;
 
 import application.ApplicationScreen;
 import model.dto.Measurement;
-import model.ui.DialogWrapper;
+import model.ui.DefaultDialog;
 import model.ui.LoadingDialog;
-import model.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -17,7 +16,6 @@ import service.calculation.result.ui.swing.SwingCalculationResultDialog;
 import service.calculation.result.worker.CalculationWorker;
 import service.calculation.result.worker.ConsumptionCalculationWorker;
 import service.calculation.result.worker.DefaultCalculationWorker;
-import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -46,8 +44,7 @@ public class SwingCalculationResultExecuter implements ServiceExecutor {
 
     @Override
     public void execute() {
-        LoadingDialog dialog = LoadingDialog.getInstance();
-        DialogWrapper loadingDialog = new DialogWrapper(applicationScreen, dialog, ScreenPoint.center(applicationScreen, dialog));
+        LoadingDialog loadingDialog = new LoadingDialog(applicationScreen);
         loadingDialog.showing();
 
         new Worker(loadingDialog).execute();
@@ -55,9 +52,9 @@ public class SwingCalculationResultExecuter implements ServiceExecutor {
 
 
     private class Worker extends SwingWorker<Boolean, Void> {
-        private final UI loadDialog;
+        private final DefaultDialog loadDialog;
 
-        private Worker(UI loadDialog) {
+        private Worker(DefaultDialog loadDialog) {
             this.loadDialog = loadDialog;
         }
 

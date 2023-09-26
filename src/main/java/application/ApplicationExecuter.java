@@ -36,7 +36,7 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
     }
 
     @Override
-    protected Void doInBackground() {
+    protected Void doInBackground() throws Exception {
         new ApplicationInitializer().init();
 
         String message = "Initialization of main screen";

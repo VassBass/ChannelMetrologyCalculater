@@ -1,8 +1,8 @@
 package service.sensor_error.info.ui.swing;
 
 import model.dto.SensorError;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.sensor_error.info.SensorErrorInfoConfigHolder;
 import service.sensor_error.info.ui.SensorErrorInfoContext;
@@ -11,18 +11,16 @@ import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.swing.*;
-import java.awt.*;
 import java.util.Objects;
 
-public class SwingSensorErrorInfoDialog extends JDialog implements UI {
+public class SwingSensorErrorInfoDialog extends DefaultDialog {
     private static final String TITLE_TEXT = "Формула похибки ПВП";
 
     public SwingSensorErrorInfoDialog(@Nonnull SwingSensorErrorListDialog parentDialog,
                                       @Nonnull SensorErrorInfoConfigHolder configHolder,
                                       @Nonnull SensorErrorInfoContext context,
                                       @Nullable SensorError oldError) {
-        super(parentDialog, TITLE_TEXT, true);
+        super(parentDialog, TITLE_TEXT);
 
         SwingSensorErrorInfoSensorPanel sensorPanel = context.getElement(SwingSensorErrorInfoSensorPanel.class);
         SwingSensorErrorInfoErrorPanel errorPanel = context.getElement(SwingSensorErrorInfoErrorPanel.class);
@@ -44,33 +42,5 @@ public class SwingSensorErrorInfoDialog extends JDialog implements UI {
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(parentDialog, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

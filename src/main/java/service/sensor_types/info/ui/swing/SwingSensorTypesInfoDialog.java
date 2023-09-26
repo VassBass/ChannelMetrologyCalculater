@@ -1,7 +1,7 @@
 package service.sensor_types.info.ui.swing;
 
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.sensor_types.info.SensorTypesInfoConfigHolder;
 import service.sensor_types.info.ui.SensorTypesInfoContext;
@@ -9,16 +9,14 @@ import service.sensor_types.list.ui.swing.SwingSensorTypesListDialog;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
-import java.awt.*;
 
-public class SwingSensorTypesInfoDialog extends JDialog implements UI {
+public class SwingSensorTypesInfoDialog extends DefaultDialog {
 
     public SwingSensorTypesInfoDialog(@Nonnull SwingSensorTypesListDialog parent,
                                       @Nonnull String oldType,
                                       @Nonnull SensorTypesInfoConfigHolder configHolder,
                                       @Nonnull SensorTypesInfoContext context) {
-        super(parent, oldType, true);
+        super(parent, oldType);
 
         SwingSensorTypesInfoTypePanel typePanel = context.getElement(SwingSensorTypesInfoTypePanel.class);
         SwingSensorTypesInfoButtonsPanel buttonsPanel = context.getElement(SwingSensorTypesInfoButtonsPanel.class);
@@ -31,33 +29,5 @@ public class SwingSensorTypesInfoDialog extends JDialog implements UI {
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(parent, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

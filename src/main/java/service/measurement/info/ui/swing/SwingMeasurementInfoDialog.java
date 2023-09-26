@@ -1,7 +1,7 @@
 package service.measurement.info.ui.swing;
 
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.measurement.info.MeasurementInfoConfigHolder;
 import service.measurement.info.ui.MeasurementInfoContext;
@@ -9,19 +9,14 @@ import service.measurement.list.ui.swing.SwingMeasurementListDialog;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
-public class SwingMeasurementInfoDialog extends JDialog implements UI {
+public class SwingMeasurementInfoDialog extends DefaultDialog {
     private static final String TITLE_TEXT = "Величина вимірюваннь";
 
     public SwingMeasurementInfoDialog(@Nonnull SwingMeasurementListDialog parentDialog,
                                       @Nonnull MeasurementInfoContext context,
                                       @Nonnull MeasurementInfoConfigHolder configHolder) {
-        super(parentDialog, TITLE_TEXT, true);
+        super(parentDialog, TITLE_TEXT);
 
         SwingMeasurementInfoNamePanel namePanel = context.getElement(SwingMeasurementInfoNamePanel.class);
         SwingMeasurementInfoValuePanel valuePanel = context.getElement(SwingMeasurementInfoValuePanel.class);
@@ -38,33 +33,5 @@ public class SwingMeasurementInfoDialog extends JDialog implements UI {
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(parentDialog, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

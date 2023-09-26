@@ -1,7 +1,7 @@
 package service.control_points.info.ui.swing;
 
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.control_points.info.ControlPointsInfoConfigHolder;
 import service.control_points.info.ui.ControlPointsInfoContext;
@@ -9,16 +9,14 @@ import service.control_points.list.ui.swing.SwingControlPointsListDialog;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
-import java.awt.*;
 
-public class SwingControlPointsInfoDialog extends JDialog implements UI {
+public class SwingControlPointsInfoDialog extends DefaultDialog {
     private static final String TITLE_TEXT = "Контрольні точки";
 
     public SwingControlPointsInfoDialog(@Nonnull SwingControlPointsListDialog parent,
                                         @Nonnull ControlPointsInfoContext context,
                                         @Nonnull ControlPointsInfoConfigHolder configHolder) {
-        super(parent, TITLE_TEXT, true);
+        super(parent, TITLE_TEXT);
 
         SwingControlPointsInfoSensorTypePanel sensorTypePanel = context.getElement(SwingControlPointsInfoSensorTypePanel.class);
         SwingControlPointsInfoRangePanel rangePanel = context.getElement(SwingControlPointsInfoRangePanel.class);
@@ -35,33 +33,5 @@ public class SwingControlPointsInfoDialog extends JDialog implements UI {
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(parent, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

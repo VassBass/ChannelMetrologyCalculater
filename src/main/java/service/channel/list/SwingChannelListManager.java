@@ -2,7 +2,6 @@ package service.channel.list;
 
 import application.ApplicationScreen;
 import model.dto.Channel;
-import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import service.channel.list.ui.ChannelListSwingContext;
 import service.channel.list.ui.ChannelListTable;
 import service.channel.search.ChannelSearchExecutor;
 import util.DateHelper;
-import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -104,8 +102,7 @@ public class SwingChannelListManager implements ChannelListManager {
                 String title = String.format(REMOVE_QUESTION_TITLE_FORM, channelCode);
                 int result = JOptionPane.showConfirmDialog(applicationScreen, message, title, JOptionPane.YES_NO_OPTION);
                 if (result == 0) {
-                    LoadingDialog dialog = LoadingDialog.getInstance();
-                    DialogWrapper loadingDialog = new DialogWrapper(applicationScreen, dialog, ScreenPoint.center(applicationScreen, dialog));
+                    LoadingDialog loadingDialog = new LoadingDialog(applicationScreen);
                     loadingDialog.showing();
                     new SwingWorker<Boolean, Void>() {
                         @Override

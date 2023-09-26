@@ -1,8 +1,7 @@
 package service.calculation;
 
-import model.ui.UI;
 import service.calculation.protocol.Protocol;
 
-public interface CalculationCollectDialog extends UI {
+public interface CalculationCollectDialog {
     boolean fillProtocol(Protocol protocol);
 }

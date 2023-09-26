@@ -1,22 +1,19 @@
 package service.channel.info.ui.swing;
 
 import application.ApplicationScreen;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.channel.info.ChannelInfoConfigHolder;
 import service.channel.info.ui.ChannelInfoSwingContext;
 import util.ScreenPoint;
 
-import javax.swing.*;
-import java.awt.*;
-
-public class SwingChannelInfoDialog extends JDialog implements UI {
+public class SwingChannelInfoDialog extends DefaultDialog {
     private static final String TITLE_TEXT = "Інформація вимірювального каналу";
 
 
     public SwingChannelInfoDialog(ApplicationScreen applicationScreen, ChannelInfoConfigHolder configHolder, ChannelInfoSwingContext context) {
-        super(applicationScreen, TITLE_TEXT, true);
+        super(applicationScreen, TITLE_TEXT);
 
         DefaultPanel panel = new DefaultPanel();
 
@@ -51,33 +48,5 @@ public class SwingChannelInfoDialog extends JDialog implements UI {
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(applicationScreen, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

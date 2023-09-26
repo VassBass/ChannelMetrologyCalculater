@@ -1,8 +1,8 @@
 package service.measurement.converter.ui.swing;
 
 import application.ApplicationScreen;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.measurement.converter.ConverterConfigHolder;
 import service.measurement.converter.ui.ConverterContext;
@@ -10,15 +10,14 @@ import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.awt.*;
 
-public class ConverterDialog extends JDialog implements UI {
+public class ConverterDialog extends DefaultDialog {
     private static final String TITLE_TEXT = "Перетворювач величин";
 
     public ConverterDialog(@Nonnull ApplicationScreen applicationScreen,
                            @Nonnull ConverterConfigHolder configHolder,
                            @Nonnull ConverterContext context) {
-        super(applicationScreen, TITLE_TEXT, true);
+        super(applicationScreen, TITLE_TEXT);
 
         SwingMeasurementNamePanel measurementNamePanel = context.getElement(SwingMeasurementNamePanel.class);
         SwingSourceMeasurementValuePanel sourceValuePanel = context.getElement(SwingSourceMeasurementValuePanel.class);
@@ -37,33 +36,5 @@ public class ConverterDialog extends JDialog implements UI {
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(applicationScreen, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

@@ -1,16 +1,14 @@
 package service.importer.updater.from_v5.to_v6;
 
 import application.ApplicationScreen;
-import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
+import service.ServiceExecutor;
 import service.importer.ImportOption;
 import service.importer.Importer;
 import service.importer.model.ModelHolder;
-import service.ServiceExecutor;
-import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -47,8 +45,7 @@ public class From_v5_to_v6_ImporterExecuter implements ServiceExecutor {
             if (secondResult == 1) option = ImportOption.IGNORE_EXISTED;
             if (option != null) {
                 final Importer importer = new DefaultImporter(option, repositoryFactory);
-                LoadingDialog dialog = LoadingDialog.getInstance();
-                final DialogWrapper loadDialog = new DialogWrapper(applicationScreen, dialog, ScreenPoint.center(applicationScreen, dialog));
+                final LoadingDialog loadDialog = new LoadingDialog(applicationScreen);
                 loadDialog.showing();
                 new SwingWorker<Boolean, Void>() {
                     @Override

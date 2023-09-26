@@ -1,8 +1,7 @@
 package service.sensor_types.info;
 
-import model.ui.DialogWrapper;
+import model.ui.DefaultDialog;
 import model.ui.LoadingDialog;
-import model.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -12,7 +11,6 @@ import repository.repos.sensor_error.SensorErrorRepository;
 import service.sensor_types.info.ui.SensorTypesInfoContext;
 import service.sensor_types.info.ui.SensorTypesInfoTypePanel;
 import service.sensor_types.info.ui.swing.SwingSensorTypesInfoDialog;
-import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
@@ -22,13 +20,13 @@ public class SwingSensorTypesInfoManager implements SensorTypesInfoManager {
     private static final Logger logger = LoggerFactory.getLogger(SwingSensorTypesInfoManager.class);
 
     private final RepositoryFactory repositoryFactory;
-    private final UI parentDialog;
+    private final DefaultDialog parentDialog;
     private final SensorTypesInfoContext context;
     private SwingSensorTypesInfoDialog dialog;
     private final String oldType;
 
     public SwingSensorTypesInfoManager(@Nonnull RepositoryFactory repositoryFactory,
-                                       @Nonnull UI parentDialog,
+                                       @Nonnull DefaultDialog parentDialog,
                                        @Nonnull SensorTypesInfoContext context,
                                        @Nonnull String oldType) {
         this.repositoryFactory = repositoryFactory;
@@ -64,7 +62,7 @@ public class SwingSensorTypesInfoManager implements SensorTypesInfoManager {
     }
 
     private class Worker extends SwingWorker<Boolean, Void> {
-        private final DialogWrapper loadingDialog;
+        private final LoadingDialog loadingDialog;
 
         private final String oldType, newType;
 
@@ -73,8 +71,7 @@ public class SwingSensorTypesInfoManager implements SensorTypesInfoManager {
             this.oldType = oldType;
             this.newType = newType;
 
-            LoadingDialog lDialog = LoadingDialog.getInstance();
-            loadingDialog = new DialogWrapper(dialog, lDialog, ScreenPoint.center(dialog, lDialog));
+            loadingDialog = new LoadingDialog(dialog);
             loadingDialog.showing();
         }
 

@@ -1,18 +1,23 @@
 package service.calculation;
 
+import service.calculation.condition.ui.swing.SwingCalculationControlConditionDialog;
+import service.calculation.input.ui.swing.SwingCalculationInputDialog;
+import service.calculation.persons.ui.swing.SwingCalculationPersonsDialog;
+import service.calculation.result.ui.swing.SwingCalculationResultDialog;
+
 import javax.annotation.Nonnull;
 
 public interface CalculationManager {
-    void registerConditionDialog(@Nonnull CalculationCollectDialog dialog);
+    void registerConditionDialog(@Nonnull SwingCalculationControlConditionDialog dialog);
     void showConditionDialog();
 
-    void registerInputDialog(@Nonnull CalculationCollectDialog dialog);
+    void registerInputDialog(@Nonnull SwingCalculationInputDialog dialog);
     void showInputDialog();
 
-    void registerResultDialog(@Nonnull CalculationCollectDialog dialog);
+    void registerResultDialog(@Nonnull SwingCalculationResultDialog dialog);
     void showResultDialog();
 
-    void registerPersonDialog(@Nonnull CalculationCollectDialog dialog);
+    void registerPersonDialog(@Nonnull SwingCalculationPersonsDialog dialog);
     void showPersonDialog();
 
     void printProtocol();

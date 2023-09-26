@@ -2,8 +2,8 @@ package service.sensor_error.list.ui.swing;
 
 import application.ApplicationScreen;
 import model.dto.SensorError;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.measurement.MeasurementRepository;
@@ -20,9 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static model.ui.builder.CellBuilder.*;
+import static model.ui.builder.CellBuilder.BOTH;
+import static model.ui.builder.CellBuilder.NONE;
 
-public class SwingSensorErrorListDialog extends JDialog implements UI {
+public class SwingSensorErrorListDialog extends DefaultDialog {
     public static final String TITLE_TEXT = "Формули похибок ПВП";
 
     private final RepositoryFactory repositoryFactory;
@@ -34,7 +35,7 @@ public class SwingSensorErrorListDialog extends JDialog implements UI {
                                       @Nonnull RepositoryFactory repositoryFactory,
                                       @Nonnull SensorErrorListConfigHolder configHolder,
                                       @Nonnull SensorErrorListContext context) {
-        super(applicationScreen, TITLE_TEXT, true);
+        super(applicationScreen, TITLE_TEXT);
         this.repositoryFactory = repositoryFactory;
 
         measurementPanel = context.getElement(SwingSensorErrorListMeasurementPanel.class);
@@ -73,25 +74,5 @@ public class SwingSensorErrorListDialog extends JDialog implements UI {
             if (this.isVisible()) this.setVisible(false);
             this.setVisible(true);
         });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

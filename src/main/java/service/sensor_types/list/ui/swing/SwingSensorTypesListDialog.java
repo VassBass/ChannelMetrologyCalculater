@@ -1,8 +1,8 @@
 package service.sensor_types.list.ui.swing;
 
 import application.ApplicationScreen;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.sensor.SensorRepository;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import static model.ui.builder.CellBuilder.BOTH;
 import static model.ui.builder.CellBuilder.NONE;
 
-public class SwingSensorTypesListDialog extends JDialog implements UI {
+public class SwingSensorTypesListDialog extends DefaultDialog {
     private static final String TITLE_TEXT = "Типи ПВП";
 
     private final SensorTypesListContext context;
@@ -28,7 +28,7 @@ public class SwingSensorTypesListDialog extends JDialog implements UI {
                                       @Nonnull RepositoryFactory repositoryFactory,
                                       @Nonnull SensorTypesListConfigHolder configHolder,
                                       @Nonnull SensorTypesListContext context) {
-        super(applicationScreen, TITLE_TEXT, true);
+        super(applicationScreen, TITLE_TEXT);
         this.repositoryFactory = repositoryFactory;
         this.context = context;
         SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
@@ -62,25 +62,5 @@ public class SwingSensorTypesListDialog extends JDialog implements UI {
             this.setVisible(false);
             this.setVisible(true);
         });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

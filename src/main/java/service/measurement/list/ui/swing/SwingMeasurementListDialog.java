@@ -1,8 +1,8 @@
 package service.measurement.list.ui.swing;
 
 import application.ApplicationScreen;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import repository.RepositoryFactory;
 import repository.repos.measurement.MeasurementRepository;
@@ -15,7 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
-public class SwingMeasurementListDialog extends JDialog implements UI {
+public class SwingMeasurementListDialog extends DefaultDialog {
     private static final String TITLE_TEXT = "Вид вимірюваннь";
 
     private final RepositoryFactory repositoryFactory;
@@ -27,7 +27,7 @@ public class SwingMeasurementListDialog extends JDialog implements UI {
                                       @Nonnull RepositoryFactory repositoryFactory,
                                       @Nonnull MeasurementListConfigHolder configHolder,
                                       @Nonnull MeasurementListContext context) {
-        super(applicationScreen, TITLE_TEXT, true);
+        super(applicationScreen, TITLE_TEXT);
         this.repositoryFactory = repositoryFactory;
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
 
@@ -63,25 +63,5 @@ public class SwingMeasurementListDialog extends JDialog implements UI {
             this.setVisible(false);
             this.setVisible(true);
         });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

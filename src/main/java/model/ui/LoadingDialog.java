@@ -1,59 +1,43 @@
 package model.ui;
 
+import util.ScreenPoint;
+
 import javax.swing.*;
+
 import java.awt.*;
 
-public class LoadingDialog extends JDialog implements UI {
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
+public class LoadingDialog extends DefaultDialog {
     public static final String MESSAGE_TEXT = "Завантаження...будь ласка зачекайте...";
 
-    private static volatile LoadingDialog instance;
-    public static LoadingDialog getInstance() {
-        if (instance == null) {
-            synchronized (LoadingDialog.class) {
-                if (instance == null) instance = new LoadingDialog();
-            }
-        }
-        return instance;
+    private static final int width = 300;
+    private static final int height = 30;
+
+    private final Window owner;
+
+    public LoadingDialog(DefaultDialog owner){
+        super(owner, EMPTY);
+        this.owner = owner;
+        init();
     }
 
-    private LoadingDialog(){
-        super();
+    public LoadingDialog(MainScreen owner) {
+        super(owner, EMPTY);
+        this.owner = owner;
+        init();
+    }
+
+    private void init() {
         JProgressBar progressBar = new JProgressBar();
         progressBar.setIndeterminate(true);
         progressBar.setStringPainted(true);
         progressBar.setString(MESSAGE_TEXT);
 
-        this.setSize(300, 30);
+        this.setSize(width, height);
         this.setAlwaysOnTop(true);
         this.setUndecorated(true);
         this.setContentPane(progressBar);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
+        this.setLocation(ScreenPoint.center(owner, this));
     }
 }

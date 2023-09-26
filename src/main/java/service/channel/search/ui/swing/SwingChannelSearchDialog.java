@@ -1,24 +1,22 @@
 package service.channel.search.ui.swing;
 
 import application.ApplicationScreen;
+import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
-import model.ui.UI;
 import model.ui.builder.CellBuilder;
 import service.channel.search.ChannelSearchConfigHolder;
 import service.channel.search.ui.ChannelSearchContext;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
-import javax.swing.*;
-import java.awt.*;
 
-public class SwingChannelSearchDialog extends JDialog implements UI {
+public class SwingChannelSearchDialog extends DefaultDialog {
     private static final String TITLE = "Розширений пошук ВК";
 
     public SwingChannelSearchDialog(@Nonnull ApplicationScreen applicationScreen,
                                     @Nonnull ChannelSearchConfigHolder configHolder,
                                     @Nonnull ChannelSearchContext context) {
-        super(applicationScreen, TITLE, true);
+        super(applicationScreen, TITLE);
 
         SwingDatePanel datePanel = context.getElement(SwingDatePanel.class);
         SwingLocationPanel locationPanel = context.getElement(SwingLocationPanel.class);
@@ -33,33 +31,5 @@ public class SwingChannelSearchDialog extends JDialog implements UI {
         this.setSize(configHolder.getDialogWidth(), configHolder.getDialogHeight());
         this.setLocation(ScreenPoint.center(applicationScreen, this));
         this.setContentPane(panel);
-    }
-
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
-    public void showing() {
-        EventQueue.invokeLater(() -> this.setVisible(true));
-    }
-
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
-    public void shutdown() {
-        this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

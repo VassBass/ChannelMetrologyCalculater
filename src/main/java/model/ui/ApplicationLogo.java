@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 
-public class ApplicationLogo extends JWindow implements UI {
+public class ApplicationLogo extends JWindow {
     private static final String LOGO_FILE_NAME = "logo.png";
     private static final String INIT_TEXT_MESSAGE = "Завантаження...";
     private static final String DEVELOPER = "VassBassApp";
@@ -76,31 +76,11 @@ public class ApplicationLogo extends JWindow implements UI {
         this.message.setText(message);
     }
 
-    @Override
-    public void refresh() {
-        EventQueue.invokeLater(() -> {
-            this.setVisible(false);
-            this.setVisible(true);
-        });
-    }
-
-    @Override
     public void showing() {
         EventQueue.invokeLater(() -> this.setVisible(true));
     }
 
-    @Override
-    public void hiding() {
-        EventQueue.invokeLater(() -> this.setVisible(false));
-    }
-
-    @Override
     public void shutdown() {
         this.dispose();
-    }
-
-    @Override
-    public Object getSource() {
-        return this;
     }
 }

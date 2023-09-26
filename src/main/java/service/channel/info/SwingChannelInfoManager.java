@@ -2,7 +2,6 @@ package service.channel.info;
 
 import application.ApplicationScreen;
 import model.dto.*;
-import model.ui.DialogWrapper;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +15,6 @@ import service.channel.info.ui.*;
 import service.channel.info.ui.swing.SwingChannelInfoDialog;
 import service.channel.list.ChannelListManager;
 import util.DateHelper;
-import util.ScreenPoint;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
@@ -606,7 +604,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     }
 
     private abstract class Worker extends SwingWorker<Boolean, Void> {
-        private final DialogWrapper loadingDialog;
+        private final LoadingDialog loadingDialog;
 
         private final String successMessage;
         private boolean runCalculate = false;
@@ -616,8 +614,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             super();
             this.successMessage = successMessage;
 
-            LoadingDialog dialog = LoadingDialog.getInstance();
-            loadingDialog = new DialogWrapper(channelInfoDialog, dialog, ScreenPoint.center(channelInfoDialog, dialog));
+            loadingDialog = new LoadingDialog(channelInfoDialog);
             loadingDialog.showing();
         }
 
