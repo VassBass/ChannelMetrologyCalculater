@@ -39,7 +39,7 @@ public class SwingChannelListManager implements ChannelListManager {
     private static final String REMOVE_SUCCESS_MESSAGE = "Канал був успішно видалений";
     private static final String EXCEPTION_MESSAGE = "Exception was thrown";
     private static final String ERROR_MESSAGE = "Виникла помилка, будь ласка спробуйте ще раз";
-    private static final String SEARCH_SUCCESS_MESSAGE_FORM = "Канал з кодом \"%s\" було знайдено: \"%s\". Відкрити про ньго інформацію?";
+    private static final String SEARCH_SUCCESS_MESSAGE_FORM = "Канал з кодом \"%s\" було знайдено: \"%s\". Відкрити про нього інформацію?";
     private static final String SEARCH_SUCCESS_TITLE = "Знайдено";
     private static final String SEARCH_FAIL_MESSAGE_FORM = "Канал з кодом \"%s\" не знайдено в базі.";
     private static final String SEARCH_FAIL_TITLE = "Не знайдено";
