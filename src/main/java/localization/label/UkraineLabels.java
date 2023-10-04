@@ -1,4 +1,4 @@
-package localization;
+package localization.label;
 
 public class UkraineLabels extends Labels {
 

@@ -1,4 +1,6 @@
-package localization;
+package localization.label;
+
+import localization.Localization;
 
 public abstract class Labels {
 
