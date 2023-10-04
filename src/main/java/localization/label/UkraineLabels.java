@@ -25,10 +25,12 @@ public class UkraineLabels extends Labels {
         type = "Тип";
         toMain = "На головну";
         list = "Список";
+        lists = "Списки";
         createNewFolder = "Створити нову папку";
         update = "Оновити";
         upLevel = "На один рівень вверх";
         view = "Відображення";
         error = "Помилка";
+        calibratorsList = "Список калібраторів";
     }
 }

@@ -19,6 +19,7 @@ public abstract class Messages {
     public String init_converterService;
     public String init_archivingService;
     public String init_error;
+    public String init_success;
 
     private static volatile Messages instance;
 

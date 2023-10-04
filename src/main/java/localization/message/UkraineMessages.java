@@ -25,5 +25,6 @@ public class UkraineMessages extends Messages {
         init_error = "Виникла помилка при ініціалізації. Спробуйте ще." +
                 "\nЯкщо помилка не зникне перевстановіть програму або зверніться до розробника." +
                 "\nvassbassapp@gmail.com";
+        init_success = "Ініціалізація пройшла успішно";
     }
 }

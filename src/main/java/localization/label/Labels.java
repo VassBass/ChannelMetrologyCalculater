@@ -21,11 +21,13 @@ public abstract class Labels {
     public String type;
     public String toMain;
     public String list;
+    public String lists;
     public String createNewFolder;
     public String update;
     public String upLevel;
     public String view;
     public String error;
+    public String calibratorsList;
 
     private static volatile Labels instance;
 
