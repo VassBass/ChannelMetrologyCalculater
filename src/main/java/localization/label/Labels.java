@@ -25,6 +25,7 @@ public abstract class Labels {
     public String update;
     public String upLevel;
     public String view;
+    public String error;
 
     private static volatile Labels instance;
 

@@ -29,5 +29,6 @@ public class UkraineLabels extends Labels {
         update = "Оновити";
         upLevel = "На один рівень вверх";
         view = "Відображення";
+        error = "Помилка";
     }
 }
