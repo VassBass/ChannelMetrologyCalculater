@@ -1,6 +1,6 @@
 package application;
 
-import localization.Labels;
+import localization.label.Labels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ServiceInitializer;
