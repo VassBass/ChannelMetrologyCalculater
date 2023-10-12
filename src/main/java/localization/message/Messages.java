@@ -49,4 +49,8 @@ public abstract class Messages {
     private static Localization getCurrentLocalization() {
         return DEFAULT_LOCALIZATION;
     }
+
+    public static class Log {
+        public static final String INIT_SUCCESS = "Initialization completed successfully";
+    }
 }

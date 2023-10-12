@@ -27,7 +27,25 @@ public abstract class Labels {
     public String upLevel;
     public String view;
     public String error;
+
+    //Calibrator
     public String calibratorsList;
+
+    //Control points
+    public String controlPointsOfMeasurements;
+
+    //Measurement
+    public String measurementsList;
+
+    //Method
+    public String calculationMethods;
+
+    //Person
+    public String personsList;
+
+    //Sensor
+    public String sensorsErrorList;
+    public String sensorTypesList;
 
     private static volatile Labels instance;
 

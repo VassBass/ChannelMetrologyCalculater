@@ -2,20 +2,18 @@ package service.person.list;
 
 import application.ApplicationMenu;
 import application.ApplicationScreen;
+import localization.label.Labels;
+import localization.message.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 import service.ServiceInitializer;
-import service.sensor_error.list.SensorErrorListExecutor;
-import service.sensor_error.list.SensorErrorListInitializer;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
 
 public class PersonListInitializer implements ServiceInitializer {
     private static final Logger logger = LoggerFactory.getLogger(PersonListInitializer.class);
-
-    private static final String MENU_ITEM_PERSON_LIST_TEXT = "Список персоналу";
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -28,14 +26,16 @@ public class PersonListInitializer implements ServiceInitializer {
 
     @Override
     public void init() {
-        ApplicationMenu applicationMenu = applicationScreen.getMenu();
-        applicationMenu.addMenuIfNotExist(ApplicationMenu.MENU_LISTS);
+        Labels labels = Labels.getInstance();
 
-        JMenuItem list = new JMenuItem(MENU_ITEM_PERSON_LIST_TEXT);
+        ApplicationMenu applicationMenu = applicationScreen.getMenu();
+        applicationMenu.addMenuIfNotExist(labels.lists);
+
+        JMenuItem list = new JMenuItem(labels.personsList);
         list.addActionListener(e -> new PersonListExecutor(applicationScreen, repositoryFactory).execute());
 
-        applicationMenu.addMenuItem(ApplicationMenu.MENU_LISTS, list);
+        applicationMenu.addMenuItem(labels.lists, list);
 
-        logger.info(("Initialization completed successfully"));
+        logger.info(Messages.Log.INIT_SUCCESS);
     }
 }
