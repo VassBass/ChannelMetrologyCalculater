@@ -52,5 +52,6 @@ public abstract class Messages {
 
     public static class Log {
         public static final String INIT_SUCCESS = "Initialization completed successfully";
+        public static final String EXCEPTION_THROWN = "Exception was thrown!";
     }
 }

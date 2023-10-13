@@ -4,6 +4,8 @@ import localization.Localization;
 
 public abstract class Labels {
 
+    public String applicationName = "ChannelMetrologyCalculater";
+
     public String cancel;
     public String importing;
     public String fileName;
