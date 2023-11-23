@@ -1,5 +1,6 @@
 package service.calculation;
 
+import localization.message.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.StringHelper;
@@ -73,7 +74,7 @@ public class PropertiesCalculationConfigHolder implements CalculationConfigHolde
             protocolFolder = properties.getProperty(KEY_PROTOCOL_FOLDER, EMPTY);
 
         } catch (IOException e) {
-            logger.warn("Exception was thrown: ", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 

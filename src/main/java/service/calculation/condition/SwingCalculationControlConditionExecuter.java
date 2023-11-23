@@ -1,6 +1,7 @@
 package service.calculation.condition;
 
 import application.ApplicationScreen;
+import localization.message.Messages;
 import model.dto.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,6 @@ public class SwingCalculationControlConditionExecuter implements ServiceExecutor
         manager.registerConditionDialog(dialog);
         manager.showConditionDialog();
 
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

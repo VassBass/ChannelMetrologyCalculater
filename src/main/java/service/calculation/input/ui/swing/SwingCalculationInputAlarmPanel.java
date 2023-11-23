@@ -1,5 +1,6 @@
 package service.calculation.input.ui.swing;
 
+import localization.label.Labels;
 import model.ui.ButtonCell;
 import model.ui.DefaultCheckBox;
 import model.ui.DefaultPanel;
@@ -13,24 +14,23 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 import static model.ui.ButtonCell.SIMPLE;
-import static model.ui.builder.CellBuilder.HORIZONTAL;
 
 public class SwingCalculationInputAlarmPanel extends DefaultPanel implements CalculationInputAlarmPanel {
-    private static final String TITLE = "Перевірка сигналізації";
-    private static final String TOOLTIP_TEXT = "Величина при якій спрацювала сигналізація";
-
     private double buffer;
 
     private final DefaultCheckBox title;
     private final DefaultTextField value;
 
+    private final Labels labels;
+
     public SwingCalculationInputAlarmPanel(String measurementValue) {
         super();
+        labels = Labels.getInstance();
 
-        title = new DefaultCheckBox(TITLE);
+        title = new DefaultCheckBox(labels.alarmCheck);
         title.setSelected(false);
 
-        value = new DefaultTextField(4, "-", TOOLTIP_TEXT);
+        value = new DefaultTextField(4, labels.dash, labels.alarmOnValue);
         value.setEnabled(false);
 
         ButtonCell val = new ButtonCell(SIMPLE, measurementValue);
@@ -41,7 +41,7 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
                 value.setEnabled(true);
                 value.setText(String.valueOf(buffer));
             } else {
-                value.setText("-");
+                value.setText(labels.dash);
                 value.setEnabled(false);
             }
         });
@@ -54,7 +54,7 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
     @Override
     public double getAlarmValue() {
         if (isEnabled()) {
-            String val = value.getText().replaceAll(",", ".");
+            String val = value.getText().replaceAll(labels.comma, labels.dot);
             if (StringHelper.isDouble(val)) return Double.parseDouble(val);
         }
         return Double.NaN;
@@ -70,14 +70,14 @@ public class SwingCalculationInputAlarmPanel extends DefaultPanel implements Cal
         public void focusGained(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
             source.selectAll();
-            String text = source.getText().replaceAll(",", ".");
+            String text = source.getText().replaceAll(labels.comma, labels.dot);
             if (StringHelper.isDouble(text)) buffer = Double.parseDouble(text);
         }
 
         @Override
         public void focusLost(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
-            String text = source.getText().replaceAll(",", ".");
+            String text = source.getText().replaceAll(labels.comma, labels.dot);
             if (StringHelper.isDouble(text)) {
                 buffer = Double.parseDouble(text);
             }

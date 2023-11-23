@@ -1,5 +1,6 @@
 package service.calculation.input.ui.swing;
 
+import localization.label.Labels;
 import model.ui.ButtonCell;
 import model.ui.DefaultButton;
 import model.ui.IntegerTextField;
@@ -23,7 +24,6 @@ public class SwingCalculationInputNumberFormatPanel extends TitledPanel implemen
     private static final String VALUE_LABEL_TEXT = "Для інших чисел:";
     private static final String VALUE_TOOLTIP_TEXT = "Кількість чисел після крапки у числах з плаваючою точкою";
     private static final String PERCENT_TOOLTIP_TEXT = "Кількість чисел після крапки у відсоткових значеннях";
-    private static final String BUTTON_TEXT = "Застосувати";
 
     private final IntegerTextField valueDecimalPoint;
     private final IntegerTextField percentDecimalPoint;
@@ -43,7 +43,7 @@ public class SwingCalculationInputNumberFormatPanel extends TitledPanel implemen
         percentDecimalPoint = new IntegerTextField(2, buffer.getPercentDecimalPoint(), PERCENT_TOOLTIP_TEXT);
         percentDecimalPoint.getDocument().addDocumentListener(changePoint);
 
-        buttonConfirm = new DefaultButton(BUTTON_TEXT);
+        buttonConfirm = new DefaultButton(Labels.getInstance().apply);
         buttonConfirm.setEnabled(false);
 
         buttonConfirm.addActionListener(e -> {

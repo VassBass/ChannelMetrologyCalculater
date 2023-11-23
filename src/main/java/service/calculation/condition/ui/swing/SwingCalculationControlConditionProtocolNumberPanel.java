@@ -1,5 +1,6 @@
 package service.calculation.condition.ui.swing;
 
+import localization.label.Labels;
 import model.ui.TitledTextField;
 import service.calculation.condition.ui.CalculationControlConditionProtocolNumberPanel;
 
@@ -9,10 +10,8 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 public class SwingCalculationControlConditionProtocolNumberPanel extends TitledTextField implements CalculationControlConditionProtocolNumberPanel {
-    private static final String TITLE = "Номер протоколу";
-
     public SwingCalculationControlConditionProtocolNumberPanel() {
-        super(4, TITLE);
+        super(4, Labels.getInstance().protocolNumber);
         this.setHorizontalAlignment(CENTER);
         this.addFocusListener(new FocusAdapter() {
             @Override

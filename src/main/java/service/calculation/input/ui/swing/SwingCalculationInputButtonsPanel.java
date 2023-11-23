@@ -1,5 +1,6 @@
 package service.calculation.input.ui.swing;
 
+import localization.label.Labels;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -8,18 +9,16 @@ import service.calculation.CalculationManager;
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingCalculationInputButtonsPanel extends DefaultPanel {
-    private static final String BUTTON_CALCULATE_TEXT = "Розрахувати";
-    private static final String BUTTON_BACK_TEXT = "Назад";
-    private static final String BUTTON_CLOSE_TEXT = "Закрити";
 
     private final DefaultButton buttonClose;
 
     public SwingCalculationInputButtonsPanel(CalculationManager manager) {
         super();
+        Labels labels = Labels.getInstance();
 
-        DefaultButton buttonCalculate = new DefaultButton(BUTTON_CALCULATE_TEXT);
-        DefaultButton buttonBack = new DefaultButton(BUTTON_BACK_TEXT);
-        buttonClose = new DefaultButton(BUTTON_CLOSE_TEXT);
+        DefaultButton buttonCalculate = new DefaultButton(labels.calculate);
+        DefaultButton buttonBack = new DefaultButton(labels.back);
+        buttonClose = new DefaultButton(labels.close);
 
         buttonCalculate.addActionListener(e -> manager.showResultDialog());
         buttonBack.addActionListener(e -> manager.showConditionDialog());

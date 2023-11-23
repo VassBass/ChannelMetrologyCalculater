@@ -1,6 +1,7 @@
 package service.calculation.input.ui.swing;
 
 import application.ApplicationScreen;
+import localization.label.Labels;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -21,7 +22,9 @@ import java.util.TreeMap;
 import static model.ui.builder.CellBuilder.HORIZONTAL;
 
 public class SwingCalculationInputDialog extends DefaultDialog implements CalculationCollectDialog {
-    private static final String TITLE = "Вхідні дані";
+    private static final String ALARM_VALUE_NOT_VALID = "Значення сигналізації не коректні";
+    private static final String SET_VALUES_NOT_VALID = "В полях вводу заданих величин присутні некорекні дані";
+    private static final String GET_VALUES_NOT_VALID = "В полях вводу отриманих даних присутні некорекні дані";
 
     private final SwingCalculationInputAlarmPanel alarmPanel;
     private final SwingCalculationInputMeasurementPanel measurementPanel;
@@ -30,7 +33,7 @@ public class SwingCalculationInputDialog extends DefaultDialog implements Calcul
     public SwingCalculationInputDialog(@Nonnull ApplicationScreen applicationScreen,
                                        @Nonnull CalculationConfigHolder configHolder,
                                        @Nonnull SwingCalculationInputContext context) {
-        super(applicationScreen, TITLE);
+        super(applicationScreen, Labels.getInstance().inputData);
 
         DefaultPanel panel = new DefaultPanel();
 
@@ -64,11 +67,12 @@ public class SwingCalculationInputDialog extends DefaultDialog implements Calcul
 
     @Override
     public boolean fillProtocol(Protocol protocol) {
+        Labels labels = Labels.getInstance();
+
         if (alarmPanel.isEnabled()) {
             double alarm = alarmPanel.getAlarmValue();
             if (Double.isNaN(alarm)) {
-                String message = "Значення сигналізації не коректні";
-                JOptionPane.showMessageDialog(this, message, "Помилковий ввод", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ALARM_VALUE_NOT_VALID, labels.inputNotValid, JOptionPane.ERROR_MESSAGE);
                 return false;
             }
             protocol.setAlarm(alarm);
@@ -76,15 +80,13 @@ public class SwingCalculationInputDialog extends DefaultDialog implements Calcul
 
         TreeMap<Double, Double> input = measurementPanel.getInputs();
         if (Objects.isNull(input)) {
-            String message = "В полях вводу заданих величин присутні некорекні дані";
-            JOptionPane.showMessageDialog(this, message, "Помилковий ввод", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, SET_VALUES_NOT_VALID, labels.inputNotValid, JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
         TreeMap<Double, double[]> output = measurementPanel.getMeasurementValues();
         if (Objects.isNull(output)) {
-            String message = "В полях вводу отриманих даних присутні некорекні дані";
-            JOptionPane.showMessageDialog(this, message, "Помилковий ввод", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, GET_VALUES_NOT_VALID, labels.inputNotValid, JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

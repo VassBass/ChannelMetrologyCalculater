@@ -1,6 +1,7 @@
 package service.calculation.input;
 
 import application.ApplicationScreen;
+import localization.message.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -43,6 +44,6 @@ public class SwingCalculationInputExecuter implements ServiceExecutor {
         SwingCalculationInputDialog inputDialog = new SwingCalculationInputDialog(applicationScreen, configHolder,  context);
         manager.registerInputDialog(inputDialog);
         manager.showInputDialog();
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

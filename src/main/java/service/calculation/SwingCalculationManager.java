@@ -1,6 +1,8 @@
 package service.calculation;
 
 import application.ApplicationScreen;
+import localization.label.Labels;
+import localization.message.Messages;
 import model.OS;
 import model.dto.Channel;
 import repository.RepositoryFactory;
@@ -23,6 +25,9 @@ import java.util.Objects;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingCalculationManager implements CalculationManager {
+    private final Labels labels;
+    private final Messages messages;
+
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
     private final CalculationConfigHolder configHolder;
@@ -38,6 +43,9 @@ public class SwingCalculationManager implements CalculationManager {
                                    @Nonnull RepositoryFactory repositoryFactory,
                                    @Nonnull CalculationConfigHolder configHolder,
                                    @Nonnull Channel channel) {
+        labels = Labels.getInstance();
+        messages = Messages.getInstance();
+
         this.applicationScreen = applicationScreen;
         this.repositoryFactory = repositoryFactory;
         this.configHolder = configHolder;
@@ -131,8 +139,7 @@ public class SwingCalculationManager implements CalculationManager {
                 new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).print();
                 disposeCalculation();
             } else {
-                String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
-                JOptionPane.showMessageDialog(personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(personsDialog, messages.modifyChannel_error, labels.error, JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -146,8 +153,7 @@ public class SwingCalculationManager implements CalculationManager {
                 new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).open();
                 disposeCalculation();
             } else {
-                String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
-                JOptionPane.showMessageDialog(personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(personsDialog, messages.modifyChannel_error, labels.error, JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -161,8 +167,7 @@ public class SwingCalculationManager implements CalculationManager {
                 new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).save();
                 disposeCalculation();
             } else {
-                String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
-                JOptionPane.showMessageDialog(personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(personsDialog, messages.modifyChannel_error, labels.error, JOptionPane.ERROR_MESSAGE);
             }
         }
     }

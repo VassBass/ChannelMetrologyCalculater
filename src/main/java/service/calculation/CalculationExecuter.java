@@ -1,6 +1,7 @@
 package service.calculation;
 
 import application.ApplicationScreen;
+import localization.message.Messages;
 import model.dto.Channel;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
@@ -48,7 +49,7 @@ public class CalculationExecuter implements ServiceExecutor {
                 try {
                     if (get()) manager.showConditionDialog();
                 } catch (InterruptedException | ExecutionException e) {
-                    logger.warn("Exception was thrown.", e);
+                    logger.warn(Messages.Log.EXCEPTION_THROWN, e);
                 }
             }
         }.execute();

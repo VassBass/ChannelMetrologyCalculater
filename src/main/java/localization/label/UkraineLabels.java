@@ -31,9 +31,22 @@ public class UkraineLabels extends Labels {
         upLevel = "На один рівень вверх";
         view = "Відображення";
         error = "Помилка";
+        start = "Почати";
+        checkDate = "Дата перевірки";
+        calculate = "Розрахувати";
+        back = "Назад";
+        close = "Закрити";
+        inputData = "Вхідні дані";
+        inputNotValid = "Помилковий ввод";
+        apply = "Застосувати";
+        print = "Друкувати";
+        done = "Готово";
+        further = "Далі";
+        invalidData = "Некоректні дані";
 
         //Calibrator
         calibratorsList = "Список калібраторів";
+        calibrator = "Калібратор";
 
         //Control points
         controlPointsOfMeasurements = "Контрольні точки вимірюваннь";
@@ -50,5 +63,17 @@ public class UkraineLabels extends Labels {
         //Sensor
         sensorsErrorList = "Список похибок ПВП";
         sensorTypesList = "Список типів ПВП";
+
+        //Channel calculation
+        calculatingOfMeasurementChannel_short = "Розрахунок ВК";
+        controlConditions = "Умови проведення контролю";
+        environmentTemperature = "Температура навколишнього середовища";
+        airHumidity = "Відносна вологість повітря";
+        atmospherePressure = "Атмосферний тиск";
+        alarmCheck = "Перевірка сигналізації";
+        alarmOnValue = "Величина при якій спрацювала сигналізація";
+
+        //Channel
+        protocolNumber = "Номер протоколу";
     }
 }

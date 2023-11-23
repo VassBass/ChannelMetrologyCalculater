@@ -1,6 +1,7 @@
 package service.calculation.persons;
 
 import application.ApplicationScreen;
+import localization.message.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -41,6 +42,6 @@ public class SwingCalculationPersonsExecuter implements ServiceExecutor {
         SwingCalculationPersonsDialog dialog = new SwingCalculationPersonsDialog(applicationScreen, configHolder, manager, context, protocol);
         manager.registerPersonDialog(dialog);
         dialog.showing();
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

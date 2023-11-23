@@ -1,5 +1,6 @@
 package service.calculation.condition.ui.swing;
 
+import localization.label.Labels;
 import model.ui.DefaultLabel;
 import model.ui.IntegerTextField;
 import model.ui.TitledPanel;
@@ -15,15 +16,16 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 public class SwingCalculationControlConditionDatePanel extends TitledPanel implements CalculationControlConditionDatePanel {
-    private static final String TITLE = "Дата перевірки";
+    private static final String DATE_FORMAT = "%s.%s.%s";
 
     private final IntegerTextField dayField;
     private final IntegerTextField monthField;
     private final IntegerTextField yearField;
 
     public SwingCalculationControlConditionDatePanel() {
-        super(TITLE, Color.BLACK);
+        super(Labels.getInstance().checkDate, Color.BLACK);
         CalculationControlConditionValuesBuffer buffer = CalculationControlConditionValuesBuffer.getInstance();
+        Labels labels = Labels.getInstance();
 
         dayField = new IntegerTextField(2);
         monthField = new IntegerTextField(2);
@@ -36,9 +38,9 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
         yearField.setFocusListener(yearFocusListener);
 
         this.add(dayField, new CellBuilder().fill(CellBuilder.NONE).x(0).build());
-        this.add(new DefaultLabel("."), new CellBuilder().fill(CellBuilder.NONE).x(1).build());
+        this.add(new DefaultLabel(labels.dot), new CellBuilder().fill(CellBuilder.NONE).x(1).build());
         this.add(monthField, new CellBuilder().fill(CellBuilder.NONE).x(2).build());
-        this.add(new DefaultLabel("."), new CellBuilder().fill(CellBuilder.NONE).x(3).build());
+        this.add(new DefaultLabel(labels.dot), new CellBuilder().fill(CellBuilder.NONE).x(3).build());
         this.add(yearField, new CellBuilder().fill(CellBuilder.NONE).x(4).build());
     }
 
@@ -59,7 +61,7 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
     @Nullable
     @Override
     public String getDate() {
-        String date = String.format("%s.%s.%s", dayField.getText(), monthField.getText(), yearField.getText());
+        String date = String.format(DATE_FORMAT, dayField.getText(), monthField.getText(), yearField.getText());
         if (DateHelper.isDateValid(date)) {
             this.setTitleColor(Color.BLACK);
             return date;

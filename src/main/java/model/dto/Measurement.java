@@ -46,6 +46,8 @@ public class Measurement implements Serializable {
     public static String CM_S = "см/с";
     //Electric
     public static String Om = "Ом";
+    //Relative
+    public static String PERCENT = "%";
 
     /**
      * DB field = name [TEXT]

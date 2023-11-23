@@ -1,6 +1,7 @@
 package service.calculation.result.ui.swing;
 
 import application.ApplicationScreen;
+import localization.label.Labels;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -69,7 +70,7 @@ public class SwingCalculationResultDialog extends DefaultDialog implements Calcu
             String referenceNumber = referencePanel.getReferenceNumber();
             if (referenceNumber.isEmpty()) {
                 String message = "Поле вводу номера довідки не має бути пустим";
-                JOptionPane.showMessageDialog(this, message, "Некоректні дані", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, message, Labels.getInstance().invalidData, JOptionPane.ERROR_MESSAGE);
                 return false;
             } else {
                 protocol.setReferenceNumber(referenceNumber);

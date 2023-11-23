@@ -27,6 +27,21 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class ApplicationExecuter extends SwingWorker<Void, String> {
+    private static final String INIT_MAIN_SCREEN = "Ініціалізація головного екрану";
+    private static final String INIT_REPOSITORY = "Ініціалізація репозіторіїв";
+    private static final String EXEC_CHANNEL_LIST_SERVICE = "Запуск сервісу \"список вимірювальних каналів\"";
+    private static final String INIT_MEASUREMENT_SERVICE = "Ініціалізація сервісу \"вимірювання\"";
+    private static final String INIT_CALIBRATOR_SERVICE = "Ініціалізація сервісу \"калібратор\"";
+    private static final String INIT_IMPORT_SERVICE = "Ініціалізація сервісу \"імпорт\"";
+    private static final String INIT_SENSOR_ERROR_SERVICE = "Ініціалізація сервісу \"похибка ПВП\"";
+    private static final String INIT_SENSORS_TYPES_SERVICE = "Ініціалізація сервісу \"тип ПВП\"";
+    private static final String INIT_CONTROL_POINTS_SERVICE = "Ініціалізація сервісу \"контрольні точки\"";
+    private static final String INIT_PERSON_SERVICE = "Ініціалізація сервісу \"працівники\"";
+    private static final String INIT_CONVERTOR_TC_SERVICE = "Ініціалізація сервісу \"перетворювач величин ТО\"";
+    private static final String INIT_CALCULATION_METHODS_SERVICE = "Ініціалізація сервісу \"метод розрахунку\"";
+    private static final String INIT_CONVERTER_SERVICE = "Ініціалізація сервісу \"перетворювач вимірювальних величин\"";
+    private static final String INIT_ARCHIVING_SERVICE = "Ініціалізація сервісу \"архівування протоколів\"";
+
     private final Labels labels;
     private final Messages messages;
 
@@ -47,61 +62,61 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
     protected Void doInBackground() throws Exception {
         new ApplicationInitializer().init();
 
-        String message = messages.init_mainScreen;
+        String message = INIT_MAIN_SCREEN;
         publish(message);
         applicationScreen = new ApplicationScreen(applicationConfigHolder);
 
-        message = messages.init_repository;
+        message = INIT_REPOSITORY;
         publish(message);
         RepositoryConfigHolder repositoryConfigHolder = new SqliteRepositoryConfigHolder();
         RepositoryDBConnector repositoryDBConnector = new SqliteRepositoryDBConnector(repositoryConfigHolder);
         RepositoryFactory repositoryFactory = new RepositoryFactory(repositoryConfigHolder, repositoryDBConnector);
 
-        message = messages.exec_channelListService;
+        message = EXEC_CHANNEL_LIST_SERVICE;
         publish(message);
         new SwingChannelListExecuter(applicationScreen, repositoryFactory).execute();
 
-        message = messages.init_measurementService;
+        message = INIT_MEASUREMENT_SERVICE;
         publish(message);
         new MeasurementListInitializer(applicationScreen, repositoryFactory).init();
 
-        message = messages.init_calibratorService;
+        message = INIT_CALIBRATOR_SERVICE;
         publish(message);
         new CalibratorListInitializer(applicationScreen, repositoryFactory).init();
 
-        message = messages.init_importService;
+        message = INIT_IMPORT_SERVICE;
         publish(message);
         new SwingImporterInitializer(applicationScreen, repositoryFactory).init();
 
-        message = messages.init_sensorErrorService;
+        message = INIT_SENSOR_ERROR_SERVICE;
         publish(message);
         new SensorErrorListInitializer(applicationScreen, repositoryFactory).init();
 
-        message = messages.init_sensorsTypesService;
+        message = INIT_SENSORS_TYPES_SERVICE;
         publish(message);
         new SensorTypesInitializer(applicationScreen, repositoryFactory).init();
 
-        message = messages.init_controlPointsService;
+        message = INIT_CONTROL_POINTS_SERVICE;
         publish(message);
         new ControlPointsListInitializer(applicationScreen, repositoryFactory).init();
 
-        message = messages.init_personService;
+        message = INIT_PERSON_SERVICE;
         publish(message);
         new PersonListInitializer(applicationScreen, repositoryFactory).init();
 
-        message = messages.init_convertorTCService;
+        message = INIT_CONVERTOR_TC_SERVICE;
         publish(message);
         new ConverterTcInitializer(applicationScreen).init();
 
-        message = messages.init_calculationMethodsService;
+        message = INIT_CALCULATION_METHODS_SERVICE;
         publish(message);
         new MethodNameInitializer(applicationScreen, repositoryFactory).init();
 
-        message = messages.init_converterService;
+        message = INIT_CONVERTER_SERVICE;
         publish(message);
         new ConverterInitializer(applicationScreen, repositoryFactory).init();
 
-        message = messages.init_archivingService;
+        message = INIT_ARCHIVING_SERVICE;
         publish(message);
         new CertificateArchiveExecutor().execute();
 

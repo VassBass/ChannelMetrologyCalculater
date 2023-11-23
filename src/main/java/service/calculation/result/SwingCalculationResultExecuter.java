@@ -1,6 +1,8 @@
 package service.calculation.result;
 
 import application.ApplicationScreen;
+import localization.label.Labels;
+import localization.message.Messages;
 import model.dto.Measurement;
 import model.ui.DefaultDialog;
 import model.ui.LoadingDialog;
@@ -79,15 +81,15 @@ public class SwingCalculationResultExecuter implements ServiceExecutor {
                     SwingCalculationResultDialog dialog = new SwingCalculationResultDialog(applicationScreen, configHolder, manager, context, protocol);
                     manager.registerResultDialog(dialog);
                     dialog.showing();
-                    logger.info("Service is running");
+                    logger.info(Messages.Log.SERVICE_RUNNING);
                     loadDialog.shutdown();
                     return;
                 }
             } catch (InterruptedException | ExecutionException e) {
-                logger.warn("Exception was thrown", e);
+                logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             }
             String message = "Під час розрахунку виникла помилка. Спробуйте ще раз.";
-            JOptionPane.showMessageDialog(applicationScreen, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(applicationScreen, message, Labels.getInstance().error, JOptionPane.ERROR_MESSAGE);
             loadDialog.shutdown();
         }
     }

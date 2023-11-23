@@ -29,9 +29,25 @@ public abstract class Labels {
     public String upLevel;
     public String view;
     public String error;
+    public String start;
+    public String checkDate;
+    public String dot = ".";
+    public String dash = "-";
+    public String comma = ",";
+    public String calculate;
+    public String back;
+    public String close;
+    public String inputData;
+    public String inputNotValid;
+    public String apply;
+    public String print;
+    public String done;
+    public String further;
+    public String invalidData;
 
     //Calibrator
     public String calibratorsList;
+    public String calibrator;
 
     //Control points
     public String controlPointsOfMeasurements;
@@ -48,6 +64,18 @@ public abstract class Labels {
     //Sensor
     public String sensorsErrorList;
     public String sensorTypesList;
+
+    //Channel calculation
+    public String calculatingOfMeasurementChannel_short;
+    public String controlConditions;
+    public String environmentTemperature;
+    public String airHumidity;
+    public String atmospherePressure;
+    public String alarmCheck;
+    public String alarmOnValue;
+
+    //Channel
+    public String protocolNumber;
 
     private static volatile Labels instance;
 

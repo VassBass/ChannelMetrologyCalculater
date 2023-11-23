@@ -1,5 +1,6 @@
 package service.calculation.protocol.exel.former;
 
+import localization.label.Labels;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.dto.MeasurementTransformFactor;
@@ -24,11 +25,16 @@ import java.util.Objects;
 import java.util.TreeMap;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static util.RegexHelper.DOT_REGEX;
 import static util.StringHelper.FOR_LAST_ZERO;
 
 public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer {
     protected static final String EXTRAORDINARY = "Позачерговий";
     protected static final String METROLOGY_HEAD_POSITION = "Начальник дільниці МЗ та П";
+
+    private static final String UNDERLINED_EMPTY = "________________";
+
+    private final Labels labels;
 
     private final HSSFWorkbook book;
     protected final RepositoryFactory repositoryFactory;
@@ -37,6 +43,7 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
                                                   @Nonnull RepositoryFactory repositoryFactory) {
         this.book = book;
         this.repositoryFactory = repositoryFactory;
+        labels = Labels.getInstance();
     }
 
     @Override
@@ -131,18 +138,18 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         }
 
         final String rangeMin = StringHelper.roundingDouble(channel.getRangeMin(), protocol.getValuesDecimalPoint());
-        cell(17,5).setCellValue(rangeMin.replaceAll("\\.", ","));
+        cell(17,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, labels.comma));
 
         final String rangeMax = StringHelper.roundingDouble(channel.getRangeMax(), protocol.getValuesDecimalPoint());
-        cell(17,7).setCellValue(rangeMax.replaceAll("\\.", ","));
+        cell(17,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, labels.comma));
 
         final String allowableErrorInPercent = StringHelper.roundingDouble(channel.getAllowableErrorPercent(), protocol.getPercentsDecimalPoint())
-                .replaceAll("\\.", ",");
+                .replaceAll(DOT_REGEX, labels.comma);
         cell(18,5).setCellValue(allowableErrorInPercent);
         cell(36,15).setCellValue(allowableErrorInPercent);
 
         final String allowableErrorInValue = StringHelper.roundingDouble(channel.getAllowableErrorValue(), protocol.getValuesDecimalPoint());
-        cell(18,7).setCellValue(allowableErrorInValue.replaceAll("\\.", ","));
+        cell(18,7).setCellValue(allowableErrorInValue.replaceAll(DOT_REGEX, labels.comma));
 
         final String measurementValue = channel.getMeasurementValue();
         cell(17,8).setCellValue(measurementValue);
@@ -156,7 +163,7 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         cell(29,15).setCellValue(measurementValue);
         cell(30,15).setCellValue(measurementValue);
 
-        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll("\\.", ",");
+        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll(DOT_REGEX, labels.comma);
         cell(24,16).setCellValue(String.format("%sр.", frequency));
     }
 
@@ -172,13 +179,13 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         final double errorSensor = errorCalculater.calculate(sensor);
         if (Double.isNaN(errorSensor)) return;
         final String errorValue = StringHelper.roundingDouble(errorSensor, protocol.getValuesDecimalPoint());
-        cell(21,5).setCellValue(errorValue.replaceAll("\\.", ","));
+        cell(21,5).setCellValue(errorValue.replaceAll(DOT_REGEX, labels.comma));
 
         final String rangeMin = StringHelper.roundingDouble(sensor.getRangeMin(), protocol.getValuesDecimalPoint());
-        cell(22,5).setCellValue(rangeMin.replaceAll("\\.", ","));
+        cell(22,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, labels.comma));
 
         final String rangeMax = StringHelper.roundingDouble(sensor.getRangeMax(), protocol.getValuesDecimalPoint());
-        cell(22,7).setCellValue(rangeMax.replaceAll("\\.", ","));
+        cell(22,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, labels.comma));
 
         final String measurementValue = sensor.getMeasurementValue();
         cell(22,8).setCellValue(measurementValue);
@@ -213,13 +220,12 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
 
         final double errorCalibrator = errorCalculater.calculate(calibrator);
         if (Double.isNaN(errorCalibrator)) return;
-        MeasurementFactorRepository factorRepository = repositoryFactory.getImplementation(MeasurementFactorRepository.class);
         double eP = errorCalibrator / (range / 100);
         final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
-        cell(19,13).setCellValue(errorPercent.replaceAll("\\.", ","));
+        cell(19,13).setCellValue(errorPercent.replaceAll(DOT_REGEX, labels.comma));
 
         final String errorValue = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint());
-        cell(19,15).setCellValue(errorValue.replaceAll("\\.", ","));
+        cell(19,15).setCellValue(errorValue.replaceAll(DOT_REGEX, labels.comma));
     }
 
     protected void appendCalculationResult(Protocol protocol) {
@@ -229,13 +235,13 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         final TreeMap<Double, Double> input = protocol.getInput();
         int row = 33;
         for (Map.Entry<Double, Double> entry : input.entrySet()) {
-            cell(row, 1).setCellValue(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll("\\.", ","));
+            cell(row, 1).setCellValue(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll(DOT_REGEX, labels.comma));
             row += 2;
         }
         row = 28;
         for (Map.Entry<Double, Double> entry : input.entrySet()) {
             String pe = StringHelper.roundingDouble(Double.parseDouble(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint)), FOR_LAST_ZERO);
-            cell(row++, 11).setCellValue(String.format("%s%% ΔS =", pe.replaceAll("\\.", ",")));
+            cell(row++, 11).setCellValue(String.format("%s%% ΔS =", pe.replaceAll(DOT_REGEX, labels.comma)));
         }
 
         final TreeMap<Double, double[]> inputOutput = protocol.getOutput();
@@ -243,9 +249,9 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         int column = 3;
         boolean next = false;
         for (Map.Entry<Double, double[]> entry : inputOutput.entrySet()) {
-            cell(row, 2).setCellValue(StringHelper.roundingDouble(entry.getKey(), valueDecimalPoint).replaceAll("\\.", ","));
+            cell(row, 2).setCellValue(StringHelper.roundingDouble(entry.getKey(), valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma));
             for (double d : entry.getValue()) {
-                cell(row, column).setCellValue(StringHelper.roundingDouble(d, valueDecimalPoint).replaceAll("\\.", ","));
+                cell(row, column).setCellValue(StringHelper.roundingDouble(d, valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma));
                 if (next) {
                     next = false;
                     column++;
@@ -259,20 +265,20 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
             column = 3;
         }
 
-        final String u = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint).replaceAll("\\.", ",");
+        final String u = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma);
         cell(24, 14).setCellValue(u);
 
-        final String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint).replaceAll("\\.", ",");
+        final String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint).replaceAll(DOT_REGEX, labels.comma);
         cell(26, 14).setCellValue(relativeError);
         cell(36,13).setCellValue(relativeError);
 
-        final String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint).replaceAll("\\.", ",");
+        final String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma);
         cell(27, 14).setCellValue(absoluteError);
 
         final TreeMap<Double, Double> systematicErrors = protocol.getSystematicErrors();
         row = 28;
         for (Map.Entry<Double, Double> entry : systematicErrors.entrySet()) {
-            cell(row++, 13).setCellValue(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint).replaceAll("\\.", ","));
+            cell(row++, 13).setCellValue(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma));
         }
 
         final String conclusion = protocol.getConclusion();
@@ -285,8 +291,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         Map.Entry<String, String> headOfCheckedChannelDepartment = protocol.getHeadOfCheckedChannelDepartment();
         String nameHD = headOfCheckedChannelDepartment.getKey();
         String positionHD = headOfCheckedChannelDepartment.getValue();
-        if (nameHD.isEmpty()) nameHD = "________________";
-        if (positionHD.isEmpty()) positionHD = "________________";
+        if (nameHD.isEmpty()) nameHD = UNDERLINED_EMPTY;
+        if (positionHD.isEmpty()) positionHD = UNDERLINED_EMPTY;
         cell(41,0).setCellValue(positionHD);
         cell(41,6).setCellValue(nameHD);
         cell(43,9).setCellValue(positionHD);
@@ -297,7 +303,7 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         }
 
         String headOfMetrologyDepartment = protocol.getHeadOfMetrologyDepartment();
-        if (headOfMetrologyDepartment.isEmpty()) headOfMetrologyDepartment = "________________";
+        if (headOfMetrologyDepartment.isEmpty()) headOfMetrologyDepartment = UNDERLINED_EMPTY;
         cell(43, 0).setCellValue(METROLOGY_HEAD_POSITION);
         cell(43,6).setCellValue(headOfMetrologyDepartment);
         cell(45,9).setCellValue(METROLOGY_HEAD_POSITION);
@@ -324,8 +330,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         }
 
         final Map.Entry<String, String> former = protocol.getFormer();
-        String formerName = former.getKey().isEmpty() ? "________________" : former.getKey();
-        String formerPosition = former.getValue().isEmpty() ? "________________" : former.getValue();
+        String formerName = former.getKey().isEmpty() ? UNDERLINED_EMPTY : former.getKey();
+        String formerPosition = former.getValue().isEmpty() ? UNDERLINED_EMPTY : former.getValue();
         cell(47, 9).setCellValue(formerPosition);
         cell(47, 15).setCellValue(formerName);
         if (notSuitable) {
@@ -335,7 +341,7 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
 
         if (notSuitable){
             String headOfASUTPDepartment = protocol.getHeadOfASPCDepartment();
-            if (headOfASUTPDepartment.isEmpty()) headOfASUTPDepartment = "________________";
+            if (headOfASUTPDepartment.isEmpty()) headOfASUTPDepartment = UNDERLINED_EMPTY;
             cell(26,24).setCellValue(headOfASUTPDepartment);
         }
     }

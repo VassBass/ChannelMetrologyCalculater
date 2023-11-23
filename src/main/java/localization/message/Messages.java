@@ -4,22 +4,11 @@ import localization.Localization;
 
 public abstract class Messages {
 
-    public String init_mainScreen;
-    public String init_repository;
-    public String exec_channelListService;
-    public String init_measurementService;
-    public String init_calibratorService;
-    public String init_importService;
-    public String init_sensorErrorService;
-    public String init_sensorsTypesService;
-    public String init_controlPointsService;
-    public String init_personService;
-    public String init_convertorTCService;
-    public String init_calculationMethodsService;
-    public String init_converterService;
-    public String init_archivingService;
     public String init_error;
     public String init_success;
+
+    //Channel
+    public String modifyChannel_error;
 
     private static volatile Messages instance;
 
@@ -53,5 +42,11 @@ public abstract class Messages {
     public static class Log {
         public static final String INIT_SUCCESS = "Initialization completed successfully";
         public static final String EXCEPTION_THROWN = "Exception was thrown!";
+        public static final String SERVICE_RUNNING = "Service is running";
+        public static final String MISSING_UI_MANAGER_ERROR = "Before use context you must register manager!";
+
+        public static String missingImplementation(Class<?> c) {
+            return String.format("Can't find implementation for %s", c.getName());
+        }
     }
 }

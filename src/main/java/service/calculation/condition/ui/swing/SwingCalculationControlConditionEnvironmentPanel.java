@@ -1,5 +1,6 @@
 package service.calculation.condition.ui.swing;
 
+import localization.label.Labels;
 import model.dto.Measurement;
 import model.ui.ButtonCell;
 import model.ui.DefaultPanel;
@@ -13,12 +14,8 @@ import static model.ui.ButtonCell.HEADER;
 import static model.ui.ButtonCell.SIMPLE;
 
 public class SwingCalculationControlConditionEnvironmentPanel extends DefaultPanel implements CalculationControlConditionEnvironmentPanel {
-    private static final String HEADER_TEXT = "Умови проведення контролю";
-    private static final String TEMPERATURE_TEXT = "Температура навколишнього середовища";
-    private static final String HUMIDITY_TEXT = "Відносна вологість повітря";
-    private static final String PRESSURE_TEXT = "Атмосферний тиск";
     private static final String TEMPERATURE_MEASUREMENT_VALUE = Measurement.DEGREE_CELSIUS;
-    private static final String HUMIDITY_MEASUREMENT_VALUE = "%";
+    private static final String HUMIDITY_MEASUREMENT_VALUE = Measurement.PERCENT;
     private static final String PRESSURE_MEASUREMENT_VALUE = Measurement.MM_ACVA;
 
     private final IntegerTextField temperatureValue;
@@ -27,12 +24,13 @@ public class SwingCalculationControlConditionEnvironmentPanel extends DefaultPan
 
     public SwingCalculationControlConditionEnvironmentPanel() {
         super();
+        Labels labels = Labels.getInstance();
         CalculationControlConditionValuesBuffer buffer = CalculationControlConditionValuesBuffer.getInstance();
 
-        ButtonCell header = new ButtonCell(HEADER, HEADER_TEXT);
-        ButtonCell temperatureLabel = new ButtonCell(SIMPLE, TEMPERATURE_TEXT);
-        ButtonCell humidityLabel = new ButtonCell(SIMPLE, HUMIDITY_TEXT);
-        ButtonCell pressureLabel = new ButtonCell(SIMPLE, PRESSURE_TEXT);
+        ButtonCell header = new ButtonCell(HEADER, labels.controlConditions);
+        ButtonCell temperatureLabel = new ButtonCell(SIMPLE, labels.environmentTemperature);
+        ButtonCell humidityLabel = new ButtonCell(SIMPLE, labels.airHumidity);
+        ButtonCell pressureLabel = new ButtonCell(SIMPLE, labels.atmospherePressure);
 
         ButtonCell temperatureMeasurementValue = new ButtonCell(SIMPLE, TEMPERATURE_MEASUREMENT_VALUE);
         ButtonCell humidityMeasurementValue = new ButtonCell(SIMPLE, HUMIDITY_MEASUREMENT_VALUE);
