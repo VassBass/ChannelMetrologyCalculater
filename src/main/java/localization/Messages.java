@@ -1,6 +1,5 @@
 package localization;
 
-import localization.message.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,25 +15,21 @@ import java.util.regex.Pattern;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @SuppressWarnings("all")
-public class Labels {
-    private Labels(){}
+public class Messages {
+    private Messages(){}
 
-    private static final Logger logger = LoggerFactory.getLogger(Labels.class);
+    private static final Logger logger = LoggerFactory.getLogger(Messages.class);
     private static final Localization DEFAULT_LOCALIZATION = Localization.UA;
 
     private static final String ROOT_REGEX = "^\\_\\.";
 
-    public static final String DOT = ".";
-    public static final String DASH = "-";
-    public static final String COMMA = ",";
-
-    private static final Map<String, Map<String, String>> l;
+    private static final Map<String, Map<String, String>> m;
 
     static {
-        l = new HashMap<>();
+        m = new HashMap<>();
 
         Localization localization = getCurrentLocalization();
-        StringBuilder labelsFilePath = new StringBuilder("localization/labels/");
+        StringBuilder labelsFilePath = new StringBuilder("localization/messages/");
         switch (localization) {
             case UA:
                 labelsFilePath.append("ukr");
@@ -52,7 +47,7 @@ public class Labels {
 
             readLabels(properties);
         } catch (IOException e) {
-            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
+            logger.warn(localization.message.Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 
@@ -61,21 +56,21 @@ public class Labels {
     }
 
     private static void readLabels(Properties properties) {
-        Map<String, String> rootLabels = l.containsKey(null) ? l.get(null) : new HashMap<>();
+        Map<String, String> rootLabels = m.containsKey(null) ? m.get(null) : new HashMap<>();
         for (String key : properties.stringPropertyNames()) {
             if (isRoot(key)) {
                 String k = key.replaceAll(ROOT_REGEX, EMPTY);
                 rootLabels.put(k, properties.getProperty(key));
             } else {
-                int dotIndex = key.indexOf(DOT);
+                int dotIndex = key.indexOf(Labels.DOT);
                 String className = key.substring(0, dotIndex);
                 String valueName = key.substring(++dotIndex);
-                Map<String, String> classLabels = l.containsKey(className) ? l.get(className) : new HashMap<>();
+                Map<String, String> classLabels = m.containsKey(className) ? m.get(className) : new HashMap<>();
                 classLabels.put(valueName, properties.getProperty(key));
-                l.put(className, classLabels);
+                m.put(className, classLabels);
             }
         }
-        l.put(null, rootLabels);
+        m.put(null, rootLabels);
     }
 
     private static boolean isRoot(String key) {
