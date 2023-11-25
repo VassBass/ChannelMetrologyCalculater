@@ -25,7 +25,7 @@ public class SwingValuePanel extends TitledPanel implements ValuePanel {
 
         numValue = new DefaultTextField(5);
         measurementValue = new DefaultComboBox(false);
-        measurementValue.setList(Arrays.asList(Measurement.Om, Measurement.DEGREE_CELSIUS));
+        measurementValue.setList(Arrays.asList(Measurement.OM, Measurement.DEGREE_CELSIUS));
         measurementValue.addItemListener(e -> manager.changingInputMeasurementValue());
 
         this.add(numValue, new CellBuilder().x(0).fill(NONE).build());

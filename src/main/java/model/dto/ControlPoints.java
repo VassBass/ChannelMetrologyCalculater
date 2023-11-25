@@ -2,6 +2,7 @@ package model.dto;
 
 import java.io.Serializable;
 import java.util.*;
+import localization.Labels;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -69,7 +70,7 @@ public class ControlPoints implements Serializable {
                     .append(v)
                     .append("%-")
                     .append(values.get(v))
-                    .append(",");
+                    .append(Labels.COMMA);
         }
         builder.setCharAt(builder.length()-1, ']');
         return builder.toString();

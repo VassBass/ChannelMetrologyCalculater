@@ -1,8 +1,10 @@
 package model.dto;
 
+import java.util.Map;
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Objects;
+import localization.Labels;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -12,6 +14,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 public class Measurement implements Serializable {
     public static final long serialVersionUID = 6L;
 
+    private static final Map<String, String> LABELS = Labels.getRootLabels();
     /**
      * Measurement names
      * 
@@ -19,9 +22,9 @@ public class Measurement implements Serializable {
      * @see Calibrator#getMeasurementName() {@link Calibrator#setMeasurementName(String)}
      * @see Sensor#getMeasurementName() {@link Sensor#setMeasurementName(String)}
      */
-    public static String TEMPERATURE= "Температура";
-    public static String PRESSURE = "Тиск";
-    public static String CONSUMPTION = "Витрата";
+    public static final String TEMPERATURE= LABELS.get("temperature");
+    public static final String PRESSURE = LABELS.get("pressure");
+    public static final String CONSUMPTION = LABELS.get("consumption");
 
     /**
      * Measurement values
@@ -31,23 +34,23 @@ public class Measurement implements Serializable {
      * @see Sensor#getMeasurementValue()  {@link Sensor#setMeasurementValue(String)}
      */
     //Temperature
-    public static String DEGREE_CELSIUS = "\u2103";
+    public static final String DEGREE_CELSIUS = LABELS.get("degreeCelsius");
     //Pressure
-    public static String KPA = "кПа";
-    public static String PA = "Па";
-    public static String MM_ACVA = "мм вод ст";
-    public static String KGS_SM2 = "кгс/см" + "\u00B2";
-    public static String BAR = "бар";
-    public static String KGS_MM2 = "кгc/мм" + "\u00B2";
-    public static String ML_BAR = "мбар";
+    public static final String KPA = LABELS.get("kPa");
+    public static final String PA = LABELS.get("pa");
+    public static final String MM_ACVA = LABELS.get("mmAcva");
+    public static final String KGS_SM2 = LABELS.get("kgsSm2");
+    public static final String BAR = LABELS.get("bar");
+    public static final String KGS_MM2 = LABELS.get("kgsMm2");
+    public static final String ML_BAR = LABELS.get("mBar");
     //Consumption
-    public static String M3_HOUR = "м" + "\u00B3" + "/h";
-    public static String M_S = "м/с";
-    public static String CM_S = "см/с";
+    public static final String M3_HOUR = LABELS.get("m3H");
+    public static final String M_S = LABELS.get("mS");
+    public static final String CM_S = LABELS.get("smS");
     //Electric
-    public static String Om = "Ом";
+    public static final String OM = LABELS.get("om");
     //Relative
-    public static String PERCENT = "%";
+    public static final String PERCENT = LABELS.get("percent");
 
     /**
      * DB field = name [TEXT]

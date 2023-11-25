@@ -51,12 +51,12 @@ public class SwingConverterTcManager implements ConverterTcManager {
                 String input = valuePanel.getMeasurementValue();
                 String result;
                 String output;
-                if (input.equals(Measurement.Om)) {
+                if (input.equals(Measurement.OM)) {
                     result = StringHelper.roundingDouble(converter.transformFromResistance(type.getKey(), type.getValue(), numValue), FOR_LAST_ZERO);
                     output = Measurement.DEGREE_CELSIUS;
                 } else {
                     result = StringHelper.roundingDouble(converter.transformFromTemperature(type.getKey(), type.getValue(), numValue), FOR_LAST_ZERO);
-                    output = Measurement.Om;
+                    output = Measurement.OM;
                 }
                 String old = resultPanel.getResult();
                 String prefix = old.isEmpty() ? EMPTY : String.format("%s\n", old);
