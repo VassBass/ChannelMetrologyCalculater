@@ -5,11 +5,12 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import localization.Labels;
 
 public abstract class MainScreen extends JFrame {
 
-    private static final String CLOSE_TITLE = "Закрити";
-    private static final String CLOSE_MESSAGE = "Закрити програму?";
+    private static final String CLOSE_TITLE = Labels.getRootLabels().get("close");
+    private static final String CLOSE_MESSAGE = Labels.getLabels(MainScreen.class).get("closeApp?");
 
     private DefaultDialog activeDialog;
 

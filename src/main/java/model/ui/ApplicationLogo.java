@@ -1,5 +1,6 @@
 package model.ui;
 
+import localization.Labels;
 import model.ui.builder.CellBuilder;
 import application.ApplicationConfigHolder;
 import service.file_extractor.FileExtractor;
@@ -12,7 +13,7 @@ import java.io.File;
 
 public class ApplicationLogo extends JWindow {
     private static final String LOGO_FILE_NAME = "logo.png";
-    private static final String INIT_TEXT_MESSAGE = "Завантаження...";
+    private static final String INIT_TEXT_MESSAGE = Labels.getRootLabels().get("loading") + "...";
     private static final String DEVELOPER = "VassBassApp";
 
     private final ApplicationConfigHolder configHolder;
