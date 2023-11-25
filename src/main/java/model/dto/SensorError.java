@@ -14,31 +14,29 @@ public class SensorError implements Serializable {
     /**
      * DB field = type.
      *
-     * @see Sensor#type
+     * @see Sensor#getType()
      */
     private String type;
 
     /**
      * DB field = error_formula
      *
-     * @see Sensor#errorFormula
+     * @see Sensor#getErrorFormula()
      */
     private String errorFormula;
 
     /**
      * DB field = range_min
-     *
-     * If {@link Sensor#rangeMin} >= this value &&
-     * {@link Sensor#rangeMax} <= {@link #rangeMax}
+     * If {@link Sensor#getRangeMin()} >= this value &&
+     * {@link Sensor#getRangeMax()} <= {@link #rangeMax}
      * then {@link #errorFormula} should be offered
      */
     private double rangeMin;
 
     /**
      * DB field = range_max
-     *
-     * If {@link Sensor#rangeMin} >= {@link #rangeMin} &&
-     * {@link Sensor#rangeMax} <= this value
+     * If {@link Sensor#getRangeMin()} >= {@link #rangeMin} &&
+     * {@link Sensor#getRangeMax()} <= this value
      * then {@link #errorFormula} should be offered
      */
     private double rangeMax;

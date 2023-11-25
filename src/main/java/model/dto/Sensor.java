@@ -9,7 +9,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = sensors
  */
 public class Sensor implements Serializable {
-    public static final long serialVersionUID = 6L;
+    private static final long serialVersionUID = 6L;
 
     /**
      * Default sensors types
@@ -63,9 +63,6 @@ public class Sensor implements Serializable {
 
     /**
      * DB field = error_formula [TEXT]
-     *
-     * @see #getError(Channel)
-     *
      * R - Measurement range of channel (Диапазон измерения канала)
      * @see Channel#calculateRange()
      *
