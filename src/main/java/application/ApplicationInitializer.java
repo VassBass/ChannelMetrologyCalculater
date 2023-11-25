@@ -1,6 +1,8 @@
 package application;
 
-import localization.label.Labels;
+import java.util.Map;
+import localization.Labels;
+import localization.RootLabelName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ServiceInitializer;
@@ -12,34 +14,34 @@ public class ApplicationInitializer implements ServiceInitializer {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationInitializer.class);
 
     private void setUkraineLocalization(){
-        Labels labels = Labels.getInstance();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        logger.info("Set Ukrainian localization of \"FileChooser\" components");
+        logger.info("Set localization of \"FileChooser\" components");
         //File chooser
-        UIManager.put("FileChooser.cancelButtonText", labels.cancel);
-        UIManager.put("FileChooser.openButtonText", labels.importing);
-        UIManager.put("FileChooser.fileNameLabelText", labels.fileName);
-        UIManager.put("FileChooser.filesOfTypeLabelText", labels.typesOfFiles);
-        UIManager.put("FileChooser.lookInLabelText", labels.directory);
-        UIManager.put("FileChooser.acceptAllFileFilterText", labels.allFiles);
-        UIManager.put("FileChooser.cancelButtonToolTipText", labels.closeWindow);
-        UIManager.put("FileChooser.directoryOpenButtonText", labels.open);
-        UIManager.put("FileChooser.directoryOpenButtonToolTipText", labels.openSelectedDirectory);
-        UIManager.put("FileChooser.openButtonToolTipText", labels.openSelectedFile);
-        UIManager.put("FileChooser.detailsViewActionLabelText", labels.table);
-        UIManager.put("FileChooser.detailsViewButtonToolTipText", labels.table);
-        UIManager.put("FileChooser.fileDateHeaderText", labels.edited);
-        UIManager.put("FileChooser.fileNameHeaderText", labels.name);
-        UIManager.put("FileChooser.fileSizeHeaderText", labels.size);
-        UIManager.put("FileChooser.fileTypeHeaderText", labels.type);
-        UIManager.put("FileChooser.homeFolderToolTipText", labels.toMain);
-        UIManager.put("FileChooser.listViewActionLabelText", labels.list);
-        UIManager.put("FileChooser.listViewButtonToolTipText", labels.list);
-        UIManager.put("FileChooser.newFolderActionLabelText", labels.createNewFolder);
-        UIManager.put("FileChooser.newFolderToolTipText", labels.createNewFolder);
-        UIManager.put("FileChooser.refreshActionLabelText", labels.update);
-        UIManager.put("FileChooser.upFolderToolTipText", labels.upLevel);
-        UIManager.put("FileChooser.viewMenuLabelText", labels.view);
+        UIManager.put("FileChooser.cancelButtonText", labels.get(RootLabelName.CANCEL));
+        UIManager.put("FileChooser.openButtonText", labels.get(RootLabelName.IMPORTING));
+        UIManager.put("FileChooser.fileNameLabelText", labels.get(RootLabelName.FILE_NAME));
+        UIManager.put("FileChooser.filesOfTypeLabelText", labels.get(RootLabelName.TYPES_OF_FILES));
+        UIManager.put("FileChooser.lookInLabelText", labels.get(RootLabelName.DIRECTORY));
+        UIManager.put("FileChooser.acceptAllFileFilterText", labels.get(RootLabelName.ALL_FILES));
+        UIManager.put("FileChooser.cancelButtonToolTipText", labels.get(RootLabelName.CLOSE_WINDOW));
+        UIManager.put("FileChooser.directoryOpenButtonText", labels.get(RootLabelName.OPEN));
+        UIManager.put("FileChooser.directoryOpenButtonToolTipText", labels.get(RootLabelName.OPEN_SELECTED_DIRECTORY));
+        UIManager.put("FileChooser.openButtonToolTipText", labels.get(RootLabelName.OPEN_SELECTED_FILE));
+        UIManager.put("FileChooser.detailsViewActionLabelText", labels.get(RootLabelName.TABLE));
+        UIManager.put("FileChooser.detailsViewButtonToolTipText", labels.get(RootLabelName.TABLE));
+        UIManager.put("FileChooser.fileDateHeaderText", labels.get(RootLabelName.EDITED));
+        UIManager.put("FileChooser.fileNameHeaderText", labels.get(RootLabelName.NAME));
+        UIManager.put("FileChooser.fileSizeHeaderText", labels.get(RootLabelName.SIZE));
+        UIManager.put("FileChooser.fileTypeHeaderText", labels.get(RootLabelName.TYPE));
+        UIManager.put("FileChooser.homeFolderToolTipText", labels.get(RootLabelName.TO_MAIN));
+        UIManager.put("FileChooser.listViewActionLabelText", labels.get(RootLabelName.LIST));
+        UIManager.put("FileChooser.listViewButtonToolTipText", labels.get(RootLabelName.LIST));
+        UIManager.put("FileChooser.newFolderActionLabelText", labels.get(RootLabelName.CREATE_NEW_FOLDER));
+        UIManager.put("FileChooser.newFolderToolTipText", labels.get(RootLabelName.CREATE_NEW_FOLDER));
+        UIManager.put("FileChooser.refreshActionLabelText", labels.get(RootLabelName.UPDATE));
+        UIManager.put("FileChooser.upFolderToolTipText", labels.get(RootLabelName.UP_LEVEL));
+        UIManager.put("FileChooser.viewMenuLabelText", labels.get(RootLabelName.VIEW));
 
         //ToolTip
         UIManager.put("ToolTip.background", Color.BLACK);
