@@ -1,7 +1,6 @@
 package service.calculation.condition;
 
 import application.ApplicationScreen;
-import localization.message.Messages;
 import model.dto.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

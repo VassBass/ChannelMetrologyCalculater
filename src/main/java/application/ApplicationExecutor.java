@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import localization.Labels;
 import localization.Messages;
+import localization.RootLabelName;
 import model.ui.ApplicationLogo;
 import repository.RepositoryFactory;
 import repository.config.RepositoryConfigHolder;
@@ -27,7 +28,7 @@ import service.person.list.PersonListInitializer;
 import service.sensor_error.list.SensorErrorListInitializer;
 import service.sensor_types.list.SensorTypesInitializer;
 
-public class ApplicationExecuter extends SwingWorker<Void, String> {
+public class ApplicationExecutor extends SwingWorker<Void, String> {
     private static final String INIT_MAIN_SCREEN = "initMainScreen";
     private static final String INIT_REPOSITORY = "initRepository";
     private static final String EXEC_CHANNEL_LIST_SERVICE = "execChannelListService";
@@ -42,7 +43,6 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
     private static final String INIT_CALCULATION_METHODS_SERVICE = "initCalculationMethodsService";
     private static final String INIT_CONVERTER_SERVICE = "initConverterService";
     private static final String INIT_ARCHIVING_SERVICE = "initArchivingService";
-    private static final String ERROR = "error";
     private static final String INIT_ERROR = "initError";
 
     private final Map<String, String> labels;
@@ -52,9 +52,9 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
     private final ApplicationConfigHolder applicationConfigHolder;
     private ApplicationScreen applicationScreen;
 
-    public ApplicationExecuter() {
+    public ApplicationExecutor() {
         labels = Labels.getRootLabels();
-        messages = Messages.getMessages(ApplicationExecuter.class);
+        messages = Messages.getMessages(ApplicationExecutor.class);
         applicationConfigHolder = new PropertiesApplicationConfigHolder();
         logo = new ApplicationLogo(applicationConfigHolder);
         logo.showing();
@@ -135,7 +135,7 @@ public class ApplicationExecuter extends SwingWorker<Void, String> {
     protected void done() {
         logo.shutdown();
         if (applicationScreen == null) {
-            JOptionPane.showMessageDialog(logo, messages.get(INIT_ERROR), labels.get(ERROR), JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(logo, messages.get(INIT_ERROR), labels.get(RootLabelName.ERROR), JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         } else {
             applicationScreen.showing();

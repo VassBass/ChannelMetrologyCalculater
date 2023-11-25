@@ -1,8 +1,6 @@
 package service.calculation;
 
 import application.ApplicationScreen;
-import localization.label.Labels;
-import localization.message.Messages;
 import model.OS;
 import model.dto.Channel;
 import repository.RepositoryFactory;

@@ -1,6 +1,5 @@
 package service.calculation.condition.ui.swing;
 
-import localization.label.Labels;
 import model.ui.DefaultLabel;
 import model.ui.IntegerTextField;
 import model.ui.TitledPanel;

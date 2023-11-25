@@ -1,6 +1,5 @@
 package service.calculation.condition.ui.swing;
 
-import localization.label.Labels;
 import model.dto.Measurement;
 import model.ui.ButtonCell;
 import model.ui.DefaultPanel;

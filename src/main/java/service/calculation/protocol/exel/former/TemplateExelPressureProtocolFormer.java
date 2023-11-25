@@ -1,6 +1,5 @@
 package service.calculation.protocol.exel.former;
 
-import localization.label.Labels;
 import model.dto.Channel;
 import model.dto.Sensor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;

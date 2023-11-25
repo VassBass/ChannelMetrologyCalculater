@@ -1,6 +1,5 @@
 package service.calculation.condition.ui.swing;
 
-import localization.label.Labels;
 import model.ui.TitledComboBox;
 import service.calculation.condition.ui.CalculationControlConditionCalibratorPanel;
 

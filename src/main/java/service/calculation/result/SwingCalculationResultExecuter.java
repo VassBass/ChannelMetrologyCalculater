@@ -1,8 +1,6 @@
 package service.calculation.result;
 
 import application.ApplicationScreen;
-import localization.label.Labels;
-import localization.message.Messages;
 import model.dto.Measurement;
 import model.ui.DefaultDialog;
 import model.ui.LoadingDialog;

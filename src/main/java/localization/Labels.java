@@ -1,6 +1,5 @@
 package localization;
 
-import localization.message.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +23,7 @@ public class Labels {
 
     private static final String ROOT_REGEX = "^\\_\\.";
 
+    public static final String APPLICATION_NAME = "ChannelMetrologyCalculater";
     public static final String DOT = ".";
     public static final String DASH = "-";
     public static final String COMMA = ",";

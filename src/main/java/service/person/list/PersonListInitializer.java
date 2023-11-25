@@ -2,8 +2,6 @@ package service.person.list;
 
 import application.ApplicationMenu;
 import application.ApplicationScreen;
-import localization.label.Labels;
-import localization.message.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;

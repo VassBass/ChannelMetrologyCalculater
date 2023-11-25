@@ -1,6 +1,5 @@
 package application;
 
-import localization.label.Labels;
 import model.ui.MainScreen;
 
 import javax.swing.*;

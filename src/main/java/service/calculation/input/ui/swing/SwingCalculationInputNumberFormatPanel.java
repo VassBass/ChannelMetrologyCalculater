@@ -1,6 +1,5 @@
 package service.calculation.input.ui.swing;
 
-import localization.label.Labels;
 import model.ui.ButtonCell;
 import model.ui.DefaultButton;
 import model.ui.IntegerTextField;

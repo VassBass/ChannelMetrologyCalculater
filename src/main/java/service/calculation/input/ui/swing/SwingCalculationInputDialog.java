@@ -1,7 +1,6 @@
 package service.calculation.input.ui.swing;
 
 import application.ApplicationScreen;
-import localization.label.Labels;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;

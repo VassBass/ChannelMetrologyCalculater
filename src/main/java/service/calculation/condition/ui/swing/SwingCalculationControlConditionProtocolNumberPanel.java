@@ -1,6 +1,5 @@
 package service.calculation.condition.ui.swing;
 
-import localization.label.Labels;
 import model.ui.TitledTextField;
 import service.calculation.condition.ui.CalculationControlConditionProtocolNumberPanel;
 

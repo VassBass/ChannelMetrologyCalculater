@@ -1,7 +1,6 @@
 package service.calculation.condition.ui.swing;
 
 import application.ApplicationScreen;
-import localization.label.Labels;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.ui.DefaultDialog;
