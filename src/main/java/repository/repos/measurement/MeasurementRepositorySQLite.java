@@ -1,5 +1,6 @@
 package repository.repos.measurement;
 
+import localization.Messages;
 import model.dto.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
                 measurements.add(new Measurement(name, value));
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return measurements;
@@ -67,7 +68,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
                 names.add(name);
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return names.toArray(new String[0]);
@@ -84,7 +85,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
                 values.add(val);
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return values.toArray(new String[0]);
@@ -101,7 +102,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
                 values.add(val);
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return values.toArray(new String[0]);
@@ -117,7 +118,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
                 return new Measurement(name, value);
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return null;
@@ -133,7 +134,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
 
             return true;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -148,7 +149,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return false;
@@ -160,7 +161,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return false;
@@ -173,7 +174,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
             statement.execute(sql);
             return true;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -189,7 +190,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
                 measurements.add(new Measurement(name, value));
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return measurements;
@@ -217,7 +218,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
 
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -232,7 +233,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
                     return resultSet.getInt("n") <= 1;
                 }
             } catch (SQLException e) {
-                logger.warn("Exception was thrown!", e);
+                logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             }
         }
 
@@ -245,7 +246,7 @@ public class MeasurementRepositorySQLite implements MeasurementRepository {
         try (ResultSet resultSet = connector.getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }

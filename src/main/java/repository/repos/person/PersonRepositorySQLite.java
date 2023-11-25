@@ -1,5 +1,6 @@
 package repository.repos.person;
 
+import localization.Messages;
 import model.dto.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class PersonRepositorySQLite implements PersonRepository {
                 persons.add(person);
             }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return persons;
@@ -64,7 +65,7 @@ public class PersonRepositorySQLite implements PersonRepository {
                 return person;
             }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return null;
@@ -89,7 +90,7 @@ public class PersonRepositorySQLite implements PersonRepository {
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -120,7 +121,7 @@ public class PersonRepositorySQLite implements PersonRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -137,7 +138,7 @@ public class PersonRepositorySQLite implements PersonRepository {
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -149,7 +150,7 @@ public class PersonRepositorySQLite implements PersonRepository {
             statement.execute(sql);
             return true;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -179,7 +180,7 @@ public class PersonRepositorySQLite implements PersonRepository {
 
             return true;
         } catch (SQLException e) {
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }

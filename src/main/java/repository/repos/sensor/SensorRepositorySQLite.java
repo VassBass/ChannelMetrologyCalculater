@@ -1,5 +1,6 @@
 package repository.repos.sensor;
 
+import localization.Messages;
 import model.dto.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ public class SensorRepositorySQLite implements SensorRepository {
                 sensors.add(sensor);
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return sensors;
@@ -72,7 +73,7 @@ public class SensorRepositorySQLite implements SensorRepository {
                 sensors.add(sensor);
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return sensors;
@@ -87,7 +88,7 @@ public class SensorRepositorySQLite implements SensorRepository {
                 types.add(resultSet.getString("type"));
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return types;
@@ -105,7 +106,7 @@ public class SensorRepositorySQLite implements SensorRepository {
                 names.add(type);
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return names;
@@ -129,7 +130,7 @@ public class SensorRepositorySQLite implements SensorRepository {
                 return sensor;
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return null;
@@ -153,7 +154,7 @@ public class SensorRepositorySQLite implements SensorRepository {
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -164,7 +165,7 @@ public class SensorRepositorySQLite implements SensorRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -175,7 +176,7 @@ public class SensorRepositorySQLite implements SensorRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -199,7 +200,7 @@ public class SensorRepositorySQLite implements SensorRepository {
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -211,7 +212,7 @@ public class SensorRepositorySQLite implements SensorRepository {
             statement.execute(sql);
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -223,7 +224,7 @@ public class SensorRepositorySQLite implements SensorRepository {
             statement.execute(sql);
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -259,7 +260,7 @@ public class SensorRepositorySQLite implements SensorRepository {
 
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -271,7 +272,7 @@ public class SensorRepositorySQLite implements SensorRepository {
             statement.execute(sql);
             return true;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -298,7 +299,7 @@ public class SensorRepositorySQLite implements SensorRepository {
 
                     statement.execute();
                 } catch (SQLException e) {
-                    logger.warn("Exception was thrown!", e);
+                    logger.warn(Messages.Log.EXCEPTION_THROWN, e);
                     return false;
                 }
             }
@@ -320,7 +321,7 @@ public class SensorRepositorySQLite implements SensorRepository {
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
                 statement.execute(sqlBuilder.toString());
             } catch (SQLException e) {
-                logger.warn("Exception was thrown!", e);
+                logger.warn(Messages.Log.EXCEPTION_THROWN, e);
                 return false;
             }
         }
@@ -334,7 +335,7 @@ public class SensorRepositorySQLite implements SensorRepository {
         try (ResultSet resultSet = connector.getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return true;
         }
     }

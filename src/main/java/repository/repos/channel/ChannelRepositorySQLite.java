@@ -1,5 +1,6 @@
 package repository.repos.channel;
 
+import localization.Messages;
 import model.dto.Channel;
 import model.dto.builder.ChannelBuilder;
 import org.slf4j.Logger;
@@ -61,7 +62,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                         .build());
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return channels;
@@ -92,7 +93,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                         .build();
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return null;
@@ -126,7 +127,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
 
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -137,7 +138,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -149,7 +150,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
             statement.execute(sql);
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -199,7 +200,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
 
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -211,7 +212,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
             statement.execute(sql);
             return true;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -262,7 +263,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -274,7 +275,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
             statement.execute(sql);
             return true;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -313,7 +314,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
 
                     statement.execute();
                 } catch (SQLException e) {
-                    logger.warn("Exception was thrown!", e);
+                    logger.warn(Messages.Log.EXCEPTION_THROWN, e);
                     return false;
                 }
             }
@@ -355,7 +356,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
                 sqlBuilder.setCharAt(sqlBuilder.length()-1, ';');
                 statement.execute(sqlBuilder.toString());
             } catch (SQLException e) {
-                logger.warn("Exception was thrown!", e);
+                logger.warn(Messages.Log.EXCEPTION_THROWN, e);
                 return false;
             }
         }
@@ -369,7 +370,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
         try (ResultSet resultSet = connector.getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return true;
         }
     }
@@ -382,7 +383,7 @@ public class ChannelRepositorySQLite implements ChannelRepository {
         try (ResultSet resultSet = connector.getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return true;
         }
     }
