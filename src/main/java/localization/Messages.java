@@ -77,4 +77,31 @@ public class Messages {
         Pattern pattern = Pattern.compile(ROOT_REGEX);
         return pattern.matcher(key).find();
     }
+
+    public static Map<String, String> getRootMessages() {
+        return m.get(null);
+    }
+
+    public static Map<String, String> getMessages(Class<?> c) {
+        return m.get(c.getSimpleName());
+    }
+
+    public static Map<String, String> getMessagesWithRoot(Class<?> c) {
+        Map<String, String> result = m.get(null);
+        if (c != null && m.containsKey(c.getSimpleName())) {
+            result.putAll(m.get(c.getSimpleName()));
+        }
+        return result;
+    }
+
+    public static class Log {
+        public static final String INIT_SUCCESS = "Initialization completed successfully";
+        public static final String EXCEPTION_THROWN = "Exception was thrown!";
+        public static final String SERVICE_RUNNING = "Service is running";
+        public static final String MISSING_UI_MANAGER_ERROR = "Before use context you must register manager!";
+
+        public static String missingImplementation(Class<?> c) {
+            return String.format("Can't find implementation for %s", c.getName());
+        }
+    }
 }

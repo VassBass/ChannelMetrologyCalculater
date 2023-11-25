@@ -82,4 +82,20 @@ public class Labels {
         Pattern pattern = Pattern.compile(ROOT_REGEX);
         return pattern.matcher(key).find();
     }
+
+    public static Map<String, String> getRootLabels() {
+        return l.get(null);
+    }
+
+    public static Map<String, String> getLabels(Class<?> c) {
+        return l.get(c.getSimpleName());
+    }
+
+    public static Map<String, String> getLabelsWithRoot(Class<?> c) {
+        Map<String, String> result = l.get(null);
+        if (c != null && l.containsKey(c.getSimpleName())) {
+            result.putAll(l.get(c.getSimpleName()));
+        }
+        return result;
+    }
 }
