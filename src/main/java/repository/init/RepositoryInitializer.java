@@ -1,5 +1,6 @@
 package repository.init;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.config.RepositoryConfigHolder;
@@ -14,7 +15,7 @@ public abstract class RepositoryInitializer {
     protected final RepositoryConfigHolder configHolder;
     protected final RepositoryDBConnector connector;
 
-    public RepositoryInitializer(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
+    protected RepositoryInitializer(RepositoryConfigHolder configHolder, RepositoryDBConnector connector) {
         this.configHolder = configHolder;
         this.connector = connector;
     }
@@ -26,7 +27,7 @@ public abstract class RepositoryInitializer {
             if (dbFile.createNewFile())
                 logger.info(String.format("%s was created successfully", fileName));
         } catch (IOException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 }

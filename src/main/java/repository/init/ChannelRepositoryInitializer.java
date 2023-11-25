@@ -1,5 +1,6 @@
 package repository.init;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.repos.channel.ChannelRepository;
@@ -46,9 +47,9 @@ public class ChannelRepositoryInitializer extends RepositoryInitializer {
 
         try (Statement statement = connector.getStatement()) {
             statement.execute(sql);
-            logger.info("Initialization completed successfully");
+            logger.info(Messages.Log.INIT_SUCCESS);
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 }
