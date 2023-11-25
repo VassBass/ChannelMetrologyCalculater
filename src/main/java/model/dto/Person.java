@@ -1,9 +1,11 @@
 package model.dto;
 
+import java.util.Map;
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Objects;
+import localization.Labels;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
@@ -11,13 +13,14 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = persons
  */
 public class Person implements Serializable {
-    public static final long serialVersionUID = 6L;
+    private static final long serialVersionUID = 6L;
+    private static final Map<String, String> LABELS = Labels.getLabels(Person.class);
 
-    public static final String JUNIOR_ENGINEER = "Мол.інженер з АСКВ";
-    public static final String ELECTRONIC_ENGINEER = "Інженер-електронік";
-    public static final String ENGINEER_ASKV = "Інженер з АСКВ";
-    public static final String HEAD_OF_AREA = "Начальник дільниці";
-    public static final String HEAD_OF_DEPARTMENT_ASUTP = "Начальник ЦАСУ ТП";
+    public static final String JUNIOR_ENGINEER = LABELS.get("juniorEngineerASKV");
+    public static final String ELECTRONIC_ENGINEER = LABELS.get("electronicEngineer");
+    public static final String ENGINEER_ASKV = LABELS.get("engineerASKV");
+    public static final String HEAD_OF_AREA = LABELS.get("headOfArea");
+    public static final String HEAD_OF_DEPARTMENT_ASUTP = LABELS.get("headOfASUTPDepartment");
 
     /**
      * DB field = id (primary key)[INTEGER]

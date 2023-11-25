@@ -1,6 +1,8 @@
 package model.dto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Map;
+import localization.Labels;
 import util.DateHelper;
 
 import javax.annotation.Nonnull;
@@ -14,7 +16,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = calibrators
  */
 public class Calibrator implements Serializable {
-    public static final long serialVersionUID = 6L;
+    private static final long serialVersionUID = 6L;
 
     /**
      * Default calibrators types
@@ -114,9 +116,9 @@ public class Calibrator implements Serializable {
     public double calculateRange(){return this.rangeMax - this.rangeMin;}
 
     public static class Certificate implements Serializable {
-        public static final long serialVersionUID = 6L;
+        private static final long serialVersionUID = 6L;
 
-        private static final String DEFAULT_TYPE = "Сертифікат калібрування";
+        private static final String DEFAULT_TYPE = Labels.getLabels(Calibrator.class).get("certificate");
         private static final String DEFAULT_DATE = "23.03.2022";
 
         @Nonnull private String name = EMPTY;
@@ -160,7 +162,7 @@ public class Calibrator implements Serializable {
 
         @Override
         public String toString() {
-            return String.format("%s від %sр %s", name, date, company);
+            return String.format("%s %s %sр %s", name, Labels.getRootLabels().get("from"), date, company);
         }
 
         public static class CertificateBuilder {

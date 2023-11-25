@@ -10,7 +10,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = measurement_factors
  */
 public class MeasurementTransformFactor implements Serializable {
-    public static final long serialVersionUID = 6L;
+    private static final long serialVersionUID = 6L;
 
     /**
      * DB field = id (primary key)[INTEGER]

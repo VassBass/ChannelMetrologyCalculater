@@ -90,12 +90,4 @@ public class Labels {
     public static Map<String, String> getLabels(Class<?> c) {
         return l.get(c.getSimpleName());
     }
-
-    public static Map<String, String> getLabelsWithRoot(Class<?> c) {
-        Map<String, String> result = l.get(null);
-        if (c != null && l.containsKey(c.getSimpleName())) {
-            result.putAll(l.get(c.getSimpleName()));
-        }
-        return result;
-    }
 }
