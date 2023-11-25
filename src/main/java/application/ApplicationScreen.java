@@ -1,5 +1,6 @@
 package application;
 
+import localization.Labels;
 import model.ui.MainScreen;
 
 import javax.swing.*;
@@ -11,7 +12,7 @@ public class ApplicationScreen extends MainScreen {
         super();
         this.menuBar = new ApplicationMenu();
 
-        this.setTitle(Labels.getInstance().applicationName);
+        this.setTitle(Labels.APPLICATION_NAME);
         this.setJMenuBar(menuBar);
 
         this.setSize(configHolder.getScreenWidth(), configHolder.getScreenHeight());
