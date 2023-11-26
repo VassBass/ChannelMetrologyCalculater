@@ -1,5 +1,8 @@
 package service.calculation.condition.ui.swing;
 
+import java.util.Map;
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -10,10 +13,10 @@ public class SwingCalculationControlConditionButtonsPanel extends DefaultPanel {
 
     public SwingCalculationControlConditionButtonsPanel(CalculationManager manager) {
         super();
-        Labels labels = Labels.getInstance();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        DefaultButton positiveButton = new DefaultButton(labels.start);
-        negativeButton = new DefaultButton(labels.cancel);
+        DefaultButton positiveButton = new DefaultButton(labels.get(RootLabelName.START));
+        negativeButton = new DefaultButton(labels.get(RootLabelName.CANCEL));
 
         this.add(negativeButton, new CellBuilder().x(0).build());
         this.add(positiveButton, new CellBuilder().x(1).build());

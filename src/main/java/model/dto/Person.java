@@ -13,7 +13,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = persons
  */
 public class Person implements Serializable {
-    private static final long serialVersionUID = 6L;
+    public static final long serialVersionUID = 6L;
     private static final Map<String, String> LABELS = Labels.getLabels(Person.class);
 
     public static final String JUNIOR_ENGINEER = LABELS.get("juniorEngineerASKV");
@@ -51,7 +51,7 @@ public class Person implements Serializable {
      * format {@link #name} + in upper case {@link #surname}
      */
     public String createFullName(){
-        return this.name + " " + this.surname.toUpperCase(Locale.ROOT);
+        return this.name + Labels.SPACE + this.surname.toUpperCase(Locale.ROOT);
     }
 
     public void setId(int id){this.id = id;}

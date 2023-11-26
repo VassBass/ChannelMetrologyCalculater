@@ -28,8 +28,16 @@ public class Labels {
     public static final char dot = '.';
     public static final String DASH = "-";
     public static final String COMMA = ",";
+    public static final String COLON = ":";
+    public static final String SPACE = " ";
+    public static final String COLON_SPACE = COLON + SPACE;
+    public static final String PERCENT = "%";
+
     public static final String ZERRO = "0";
     public static final char zerro = '0';
+    public static final String TWO = "2";
+    public static final String TWENTY = "20";
+    public static final String TWO_HUNDRED = "200";
 
     private static final Map<String, Map<String, String>> l;
 

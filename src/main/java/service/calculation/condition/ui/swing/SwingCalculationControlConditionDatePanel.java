@@ -1,5 +1,7 @@
 package service.calculation.condition.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultLabel;
 import model.ui.IntegerTextField;
 import model.ui.TitledPanel;
@@ -22,9 +24,8 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
     private final IntegerTextField yearField;
 
     public SwingCalculationControlConditionDatePanel() {
-        super(Labels.getInstance().checkDate, Color.BLACK);
+        super(Labels.getRootLabels().get(RootLabelName.CHECK_DATE), Color.BLACK);
         CalculationControlConditionValuesBuffer buffer = CalculationControlConditionValuesBuffer.getInstance();
-        Labels labels = Labels.getInstance();
 
         dayField = new IntegerTextField(2);
         monthField = new IntegerTextField(2);
@@ -37,9 +38,9 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
         yearField.setFocusListener(yearFocusListener);
 
         this.add(dayField, new CellBuilder().fill(CellBuilder.NONE).x(0).build());
-        this.add(new DefaultLabel(labels.dot), new CellBuilder().fill(CellBuilder.NONE).x(1).build());
+        this.add(new DefaultLabel(Labels.DOT), new CellBuilder().fill(CellBuilder.NONE).x(1).build());
         this.add(monthField, new CellBuilder().fill(CellBuilder.NONE).x(2).build());
-        this.add(new DefaultLabel(labels.dot), new CellBuilder().fill(CellBuilder.NONE).x(3).build());
+        this.add(new DefaultLabel(Labels.DOT), new CellBuilder().fill(CellBuilder.NONE).x(3).build());
         this.add(yearField, new CellBuilder().fill(CellBuilder.NONE).x(4).build());
     }
 
@@ -80,7 +81,7 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
         public void focusLost(FocusEvent e) {
             JTextField textField = (JTextField) e.getSource();
             String t = textField.getText();
-            if (t.length() == 1) t = "0" + t;
+            if (t.length() == 1) t = Labels.ZERRO + t;
             textField.setText(t);
         }
     };
@@ -95,9 +96,9 @@ public class SwingCalculationControlConditionDatePanel extends TitledPanel imple
         public void focusLost(FocusEvent e) {
             JTextField textField = (JTextField) e.getSource();
             String t = textField.getText();
-            if (t.length() == 1) t = "200" + t;
-            if (t.length() == 2) t = "20" + t;
-            if (t.length() == 3) t = "2" + t;
+            if (t.length() == 1) t = Labels.TWO_HUNDRED + t;
+            if (t.length() == 2) t = Labels.TWENTY + t;
+            if (t.length() == 3) t = Labels.TWO + t;
 
             textField.setText(t);
         }

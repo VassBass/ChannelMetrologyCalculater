@@ -65,11 +65,12 @@ public class ControlPoints implements Serializable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder(String.format("%s(%s) = [", name, sensorType));
-        for (Double v : values.keySet()) {
+        for (Map.Entry<Double, Double> e : values.entrySet()) {
             builder
-                    .append(v)
-                    .append("%-")
-                    .append(values.get(v))
+                    .append(e.getKey())
+                    .append(Labels.PERCENT)
+                    .append(Labels.DASH)
+                    .append(e.getValue())
                     .append(Labels.COMMA);
         }
         builder.setCharAt(builder.length()-1, ']');

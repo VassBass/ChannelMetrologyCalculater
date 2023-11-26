@@ -1,6 +1,7 @@
 package service.calculation.condition.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.ui.DefaultDialog;
@@ -33,14 +34,16 @@ public class SwingCalculationControlConditionDialog extends DefaultDialog implem
     private final SwingCalculationControlConditionCalibratorPanel calibratorPanel;
     private final SwingCalculationControlConditionEnvironmentPanel environmentPanel;
 
+    private static final String TITLE = "calculatingOfMeasurementChannel_short";
+
     public SwingCalculationControlConditionDialog(@Nonnull ApplicationScreen applicationScreen,
                                                   @Nonnull RepositoryFactory repositoryFactory,
                                                   @Nonnull CalculationConfigHolder configHolder,
                                                   @Nonnull SwingCalculationControlConditionContext context,
                                                   @Nonnull Channel channel) {
         super(applicationScreen,
-                Labels.getInstance().calculatingOfMeasurementChannel_short +
-                        ": " +
+                Labels.getLabels(SwingCalculationControlConditionDialog.class).get(TITLE) +
+                        Labels.COLON_SPACE +
                         channel.getName());
         this.repositoryFactory = repositoryFactory;
 

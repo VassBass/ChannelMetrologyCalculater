@@ -5,7 +5,7 @@ import model.OS;
 import model.dto.Channel;
 import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
-import service.calculation.condition.SwingCalculationControlConditionExecuter;
+import service.calculation.condition.SwingCalculationControlConditionExecutor;
 import service.calculation.condition.ui.swing.SwingCalculationControlConditionDialog;
 import service.calculation.input.SwingCalculationInputExecuter;
 import service.calculation.input.ui.swing.SwingCalculationInputDialog;
@@ -61,7 +61,7 @@ public class SwingCalculationManager implements CalculationManager {
         if (Objects.nonNull(inputDialog)) inputDialog.hiding();
 
         if (Objects.isNull(controlConditionDialog)) {
-            new SwingCalculationControlConditionExecuter(applicationScreen, repositoryFactory, configHolder, this, channel).execute();
+            new SwingCalculationControlConditionExecutor(applicationScreen, repositoryFactory, configHolder, this, channel).execute();
         } else {
             controlConditionDialog.showing();
         }

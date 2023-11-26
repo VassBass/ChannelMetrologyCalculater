@@ -1,5 +1,7 @@
 package service.calculation.condition.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.TitledComboBox;
 import service.calculation.condition.ui.CalculationControlConditionCalibratorPanel;
 
@@ -8,7 +10,7 @@ import java.util.List;
 
 public class SwingCalculationControlConditionCalibratorPanel extends TitledComboBox implements CalculationControlConditionCalibratorPanel {
     public SwingCalculationControlConditionCalibratorPanel() {
-        super(false, Labels.getInstance().calibrator, Color.BLACK);
+        super(false, Labels.getRootLabels().get(RootLabelName.CALIBRATOR), Color.BLACK);
     }
 
     @Override

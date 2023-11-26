@@ -9,7 +9,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
  * DB table = sensors
  */
 public class Sensor implements Serializable {
-    private static final long serialVersionUID = 6L;
+    public static final long serialVersionUID = 6L;
 
     /**
      * Default sensors types
