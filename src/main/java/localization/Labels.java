@@ -25,8 +25,11 @@ public class Labels {
 
     public static final String APPLICATION_NAME = "ChannelMetrologyCalculater";
     public static final String DOT = ".";
+    public static final char dot = '.';
     public static final String DASH = "-";
     public static final String COMMA = ",";
+    public static final String ZERRO = "0";
+    public static final char zerro = '0';
 
     private static final Map<String, Map<String, String>> l;
 

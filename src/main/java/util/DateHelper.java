@@ -2,16 +2,20 @@ package util;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import localization.Labels;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @SuppressWarnings("MagicConstant")
 public class DateHelper {
+    private DateHelper(){}
+
+    public static final long YEAR_IN_MILLS = 31_536_000_000L;
 
     public static boolean isDateValid(String date) {
         if (date == null || date.isEmpty()) return false;
 
-        String splitter = "\\.";
+        String splitter = RegexHelper.DOT_REGEX;
         String[] splittedString = date.split(splitter);
 
         try {
@@ -35,10 +39,10 @@ public class DateHelper {
 
     public static Calendar stringToDate(String date){
         if (isDateValid(date)) {
-            if (date.charAt(1) == '.') date = '0' + date;
+            if (date.charAt(1) == Labels.dot) date = Labels.zerro + date;
             int day = Integer.parseInt(date.substring(0, 2));
 
-            if (date.charAt(4) == '.') date = date.substring(0,3) + '0' + date.substring(3);
+            if (date.charAt(4) == Labels.dot) date = date.substring(0,3) + Labels.zerro + date.substring(3);
             int month = Integer.parseInt(date.substring(3, 5));
 
             int year = Integer.parseInt(date.substring(6));
@@ -54,27 +58,27 @@ public class DateHelper {
             String day;
             String month;
             if (date.get(Calendar.DAY_OF_MONTH) < 10) {
-                day = "0" + date.get(Calendar.DAY_OF_MONTH);
+                day = Labels.ZERRO + date.get(Calendar.DAY_OF_MONTH);
             } else {
                 day = String.valueOf(date.get(Calendar.DAY_OF_MONTH));
             }
             int m = date.get(Calendar.MONTH) + 1;
             if (m < 10) {
-                month = "0" + m;
+                month = Labels.ZERRO + m;
             } else {
                 month = String.valueOf(m);
             }
-            builder.append(day).append(".").append(month).append(".").append(date.get(Calendar.YEAR));
+            builder.append(day).append(Labels.DOT).append(month).append(Labels.DOT).append(date.get(Calendar.YEAR));
             return builder.toString();
         }
     }
 
     public static String getDayFromDateString(String date) {
         if (isDateValid(date)) {
-            String[] splittedDate = date.split("\\.");
+            String[] splittedDate = date.split(RegexHelper.DOT_REGEX);
             String day = splittedDate[0];
             return day.length() == 1 ?
-                    "0" + day :
+                    Labels.ZERRO + day :
                     day;
         }
         return EMPTY;
@@ -82,10 +86,10 @@ public class DateHelper {
 
     public static String getMonthFromDateString(String date) {
         if (isDateValid(date)) {
-            String[] splittedDate = date.split("\\.");
+            String[] splittedDate = date.split(RegexHelper.DOT_REGEX);
             String month = splittedDate[1];
             return month.length() == 1 ?
-                    "0" + month :
+                    Labels.ZERRO + month :
                     month;
         }
         return EMPTY;
@@ -93,7 +97,7 @@ public class DateHelper {
 
     public static String getYearFromDateString(String date) {
         if (isDateValid(date)) {
-            String[] splittedDate = date.split("\\.");
+            String[] splittedDate = date.split(RegexHelper.DOT_REGEX);
             return splittedDate[2];
         }
         return EMPTY;
@@ -109,9 +113,9 @@ public class DateHelper {
      */
     public static String[] getSplittedDate(String date) {
         if (isDateValid(date)) {
-            String[] splittedDate = date.split("\\.");
-            if (splittedDate[0].length() == 1) splittedDate[0] = "0" + splittedDate[0];
-            if (splittedDate[1].length() == 1) splittedDate[1] = "0" + splittedDate[1];
+            String[] splittedDate = date.split(RegexHelper.DOT_REGEX);
+            if (splittedDate[0].length() == 1) splittedDate[0] = Labels.ZERRO + splittedDate[0];
+            if (splittedDate[1].length() == 1) splittedDate[1] = Labels.ZERRO + splittedDate[1];
             return splittedDate;
         } else return new String[] { EMPTY, EMPTY, EMPTY };
     }
@@ -119,8 +123,7 @@ public class DateHelper {
     public static String getNextDate(String date, double period) {
         Calendar dateCal = stringToDate(date);
         if (dateCal != null) {
-            long yearInMills = 31_536_000_000L;
-            long nextDateInMills = dateCal.getTimeInMillis() + ((long) (yearInMills * period));
+            long nextDateInMills = dateCal.getTimeInMillis() + ((long) (YEAR_IN_MILLS * period));
             dateCal.setTimeInMillis(nextDateInMills);
             return dateToString(dateCal);
         }

@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class ArrayHelper {
+    private ArrayHelper(){}
+
     public static boolean isArrayOfDoubles(String[] array) {
         return Arrays.stream(array).allMatch(StringHelper::isDouble);
     }

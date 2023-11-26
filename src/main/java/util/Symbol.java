@@ -1,9 +1,11 @@
 package util;
 
 public class Symbol {
-    public static String DEGREE_CELSIUS = "\u2103";
-    public static String PLUS_MINUS = "\u00B1";
-    public static String UP_MINUS = "\u207B";
-    public static String UP_SEVEN = "\u2077";
-    public static String RESISTANCE = "\u2126";
+    private Symbol(){}
+
+    public static final String DEGREE_CELSIUS = "\u2103";
+    public static final String PLUS_MINUS = "\u00B1";
+    public static final String UP_MINUS = "\u207B";
+    public static final String UP_SEVEN = "\u2077";
+    public static final String RESISTANCE = "\u2126";
 }
