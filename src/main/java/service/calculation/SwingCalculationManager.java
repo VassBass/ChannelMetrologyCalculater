@@ -1,6 +1,9 @@
 package service.calculation;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.OS;
 import model.dto.Channel;
 import repository.RepositoryFactory;
@@ -18,13 +21,16 @@ import service.calculation.result.ui.swing.SwingCalculationResultDialog;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingCalculationManager implements CalculationManager {
-    private final Labels labels;
-    private final Messages messages;
+    private static final String ERROR_MODIFY_CHANNEL = "errorModifyChannel";
+
+    private final Map<String, String> labels;
+    private final Map<String, String> messages;
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -41,8 +47,8 @@ public class SwingCalculationManager implements CalculationManager {
                                    @Nonnull RepositoryFactory repositoryFactory,
                                    @Nonnull CalculationConfigHolder configHolder,
                                    @Nonnull Channel channel) {
-        labels = Labels.getInstance();
-        messages = Messages.getInstance();
+        labels = Labels.getRootLabels();
+        messages = Messages.getMessages(SwingCalculationManager.class);
 
         this.applicationScreen = applicationScreen;
         this.repositoryFactory = repositoryFactory;
@@ -137,7 +143,12 @@ public class SwingCalculationManager implements CalculationManager {
                 new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).print();
                 disposeCalculation();
             } else {
-                JOptionPane.showMessageDialog(personsDialog, messages.modifyChannel_error, labels.error, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        personsDialog,
+                        messages.get(ERROR_MODIFY_CHANNEL),
+                        labels.get(RootLabelName.ERROR),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
     }
@@ -151,7 +162,12 @@ public class SwingCalculationManager implements CalculationManager {
                 new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).open();
                 disposeCalculation();
             } else {
-                JOptionPane.showMessageDialog(personsDialog, messages.modifyChannel_error, labels.error, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        personsDialog,
+                        messages.get(ERROR_MODIFY_CHANNEL),
+                        labels.get(RootLabelName.ERROR),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
     }
@@ -165,7 +181,12 @@ public class SwingCalculationManager implements CalculationManager {
                 new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).save();
                 disposeCalculation();
             } else {
-                JOptionPane.showMessageDialog(personsDialog, messages.modifyChannel_error, labels.error, JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        personsDialog,
+                        messages.get(ERROR_MODIFY_CHANNEL),
+                        labels.get(RootLabelName.ERROR),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
     }

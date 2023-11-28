@@ -1,5 +1,8 @@
 package service.calculation.input.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.ui.ButtonCell;
 import model.ui.DefaultButton;
 import model.ui.IntegerTextField;
@@ -12,37 +15,41 @@ import service.calculation.input.ui.CalculationInputNumberFormatPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.util.Map;
 
 import static model.ui.ButtonCell.HEADER;
 import static model.ui.ButtonCell.SIMPLE;
 
 public class SwingCalculationInputNumberFormatPanel extends TitledPanel implements CalculationInputNumberFormatPanel {
-    private static final String TITLE_TEXT = "Форматування чисел";
-    private static final String LABEL_TEXT = "Чисел після крапки";
-    private static final String PERCENT_LABEL_TEXT = "Для відсотків:";
-    private static final String VALUE_LABEL_TEXT = "Для інших чисел:";
-    private static final String VALUE_TOOLTIP_TEXT = "Кількість чисел після крапки у числах з плаваючою точкою";
-    private static final String PERCENT_TOOLTIP_TEXT = "Кількість чисел після крапки у відсоткових значеннях";
+    private static final String NUMBER_FORMATTING = "numberFormatting";
+    private static final String DECIMAL_POINT = "decimalPoint";
+    private static final String FOR_PERCENTS = "forPercents";
+    private static final String FOR_NUMBERS = "forNumbers";
+
+    private static final Map<String, String> labels = Labels.getLabels(SwingCalculationInputNumberFormatPanel.class);
 
     private final IntegerTextField valueDecimalPoint;
     private final IntegerTextField percentDecimalPoint;
     private final DefaultButton buttonConfirm;
 
     public SwingCalculationInputNumberFormatPanel(CalculationInputManager manager) {
-        super(TITLE_TEXT, Color.BLACK);
+        super(labels.get(NUMBER_FORMATTING), Color.BLACK);
+        Map<String, String> rootLabels = Labels.getRootLabels();
+        Map<String, String> messages = Messages.getMessages(SwingCalculationInputNumberFormatPanel.class);
+
         CalculationInputValuesBuffer buffer = CalculationInputValuesBuffer.getInstance();
 
-        ButtonCell label = new ButtonCell(HEADER, LABEL_TEXT);
-        ButtonCell percentLabel = new ButtonCell(SIMPLE, PERCENT_LABEL_TEXT);
-        ButtonCell valueLabel = new ButtonCell(SIMPLE, VALUE_LABEL_TEXT);
+        ButtonCell label = new ButtonCell(HEADER, labels.get(DECIMAL_POINT));
+        ButtonCell percentLabel = new ButtonCell(SIMPLE, labels.get(FOR_PERCENTS));
+        ButtonCell valueLabel = new ButtonCell(SIMPLE, labels.get(FOR_NUMBERS));
 
-        valueDecimalPoint = new IntegerTextField(2, buffer.getValueDecimalPoint(), VALUE_TOOLTIP_TEXT);
+        valueDecimalPoint = new IntegerTextField(2, buffer.getValueDecimalPoint(), messages.get(DECIMAL_POINT));
         valueDecimalPoint.getDocument().addDocumentListener(changePoint);
 
-        percentDecimalPoint = new IntegerTextField(2, buffer.getPercentDecimalPoint(), PERCENT_TOOLTIP_TEXT);
+        percentDecimalPoint = new IntegerTextField(2, buffer.getPercentDecimalPoint(), messages.get(FOR_PERCENTS));
         percentDecimalPoint.getDocument().addDocumentListener(changePoint);
 
-        buttonConfirm = new DefaultButton(Labels.getInstance().apply);
+        buttonConfirm = new DefaultButton(rootLabels.get(RootLabelName.APPLY));
         buttonConfirm.setEnabled(false);
 
         buttonConfirm.addActionListener(e -> {

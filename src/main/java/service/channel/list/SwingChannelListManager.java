@@ -9,7 +9,7 @@ import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
 import repository.repos.channel.SearchParams;
 import repository.repos.sensor.SensorRepository;
-import service.calculation.CalculationExecuter;
+import service.calculation.CalculationExecutor;
 import service.channel.info.SwingChannelInfoExecuter;
 import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListSearchPanel;
@@ -143,7 +143,7 @@ public class SwingChannelListManager implements ChannelListManager {
         if (channelCode != null) {
             Channel channel = channelRepository.get(channelCode);
             if (channel != null) {
-                new CalculationExecuter(applicationScreen, repositoryFactory, channel).execute();
+                new CalculationExecutor(applicationScreen, repositoryFactory, channel).execute();
             }
         }
     }
@@ -152,7 +152,7 @@ public class SwingChannelListManager implements ChannelListManager {
     public void calculateChannel(@Nonnull Channel channel) {
         ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
         if (channelRepository.isExist(channel.getCode())) {
-            new CalculationExecuter(applicationScreen, repositoryFactory, channel).execute();
+            new CalculationExecutor(applicationScreen, repositoryFactory, channel).execute();
         }
     }
 

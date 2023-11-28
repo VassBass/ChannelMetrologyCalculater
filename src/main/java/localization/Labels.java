@@ -35,7 +35,11 @@ public class Labels {
 
     public static final String ZERRO = "0";
     public static final char zerro = '0';
+    public static final String ONE = "1";
     public static final String TWO = "2";
+    public static final String THREE = "3";
+    public static final String FOUR = "4";
+    public static final String FIVE = "5";
     public static final String TWENTY = "20";
     public static final String TWO_HUNDRED = "200";
 

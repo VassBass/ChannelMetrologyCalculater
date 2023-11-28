@@ -1,6 +1,7 @@
 package service.calculation;
 
 import application.ApplicationScreen;
+import localization.Messages;
 import model.dto.Channel;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
@@ -12,14 +13,14 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.concurrent.ExecutionException;
 
-public class CalculationExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(CalculationExecuter.class);
+public class CalculationExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(CalculationExecutor.class);
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
     private final Channel channel;
 
-    public CalculationExecuter(@Nonnull ApplicationScreen applicationScreen,
+    public CalculationExecutor(@Nonnull ApplicationScreen applicationScreen,
                                @Nonnull RepositoryFactory repositoryFactory,
                                @Nonnull Channel channel) {
         this.applicationScreen = applicationScreen;

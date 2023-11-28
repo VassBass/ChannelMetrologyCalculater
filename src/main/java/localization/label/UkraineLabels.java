@@ -26,9 +26,5 @@ public class UkraineLabels extends Labels {
         //Sensor
         sensorsErrorList = "Список похибок ПВП";
         sensorTypesList = "Список типів ПВП";
-
-        //Channel calculation
-        alarmCheck = "Перевірка сигналізації";
-        alarmOnValue = "Величина при якій спрацювала сигналізація";
     }
 }
