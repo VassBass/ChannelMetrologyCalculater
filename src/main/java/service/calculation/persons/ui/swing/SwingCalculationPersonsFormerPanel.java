@@ -1,5 +1,6 @@
 package service.calculation.persons.ui.swing;
 
+import localization.Labels;
 import model.dto.Person;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultTextField;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingCalculationPersonsFormerPanel extends TitledPanel implements CalculationPersonsFormerPanel {
-    private static final String TITLE_TEXT = "Формувальник протоколу";
+    private static final String FORMER = "former";
 
     private final List<Person> personList;
 
@@ -25,7 +26,7 @@ public class SwingCalculationPersonsFormerPanel extends TitledPanel implements C
     private final DefaultTextField formerPosition;
 
     public SwingCalculationPersonsFormerPanel(@Nonnull RepositoryFactory repositoryFactory) {
-        super(TITLE_TEXT);
+        super(Labels.getLabels(SwingCalculationPersonsFormerPanel.class).get(FORMER));
         CalculationPersonValuesBuffer buffer = CalculationPersonValuesBuffer.getInstance();
 
         PersonRepository personRepository = repositoryFactory.getImplementation(PersonRepository.class);

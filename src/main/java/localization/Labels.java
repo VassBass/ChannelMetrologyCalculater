@@ -24,6 +24,7 @@ public class Labels {
     private static final String ROOT_REGEX = "^\\_\\.";
 
     public static final String APPLICATION_NAME = "ChannelMetrologyCalculater";
+
     public static final String DOT = ".";
     public static final char dot = '.';
     public static final String DASH = "-";

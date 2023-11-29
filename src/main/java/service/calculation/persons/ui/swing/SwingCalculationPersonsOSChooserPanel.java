@@ -1,5 +1,7 @@
 package service.calculation.persons.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
 import model.OS;
 import model.ui.TitledComboBox;
 import service.calculation.persons.CalculationPersonValuesBuffer;
@@ -7,24 +9,25 @@ import service.calculation.persons.ui.CalculationPersonsOSChooserPanel;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Map;
 
 public class SwingCalculationPersonsOSChooserPanel extends TitledComboBox implements CalculationPersonsOSChooserPanel {
-    private static final String TITLE_TEXT = "Сформувати протокол для ОС:";
-    private static final String TOOLTIP_TEXT = "Вихідні файли протоколу для різних операційних систем формуються з різних шаблонів";
-    private static final String WINDOWS_TEXT = "Windows";
-    private static final String LINUX_TEXT = "Linux";
+    private static final String FORM_PROTOCOL_FOR_OS = "formProtocolForOS";
+    private static final String FORM_PROTOCOL_FOR_OS_TOOLTIP = "formProtocolForOSTooltip";
+
+    private static final Map<String, String> messages = Messages.getMessages(SwingCalculationPersonsOSChooserPanel.class);
 
     public SwingCalculationPersonsOSChooserPanel() {
-        super(false, TITLE_TEXT, Color.BLACK);
+        super(false, messages.get(FORM_PROTOCOL_FOR_OS) + Labels.COLON, Color.BLACK);
         CalculationPersonValuesBuffer buffer = CalculationPersonValuesBuffer.getInstance();
 
-        this.setList(Arrays.asList(WINDOWS_TEXT, LINUX_TEXT));
-        this.setToolTipText(TOOLTIP_TEXT);
-        this.setSelectedItem(buffer.getOs() == OS.WINDOWS ? WINDOWS_TEXT : LINUX_TEXT);
+        this.setList(Arrays.asList(OS.WINDOWS.getName(), OS.LINUX.getName()));
+        this.setToolTipText(messages.get(FORM_PROTOCOL_FOR_OS_TOOLTIP));
+        this.setSelectedItem(buffer.getOs().getName());
     }
 
     @Override
     public OS getOS() {
-        return this.getSelectedString().equals(WINDOWS_TEXT) ? OS.WINDOWS : OS.LINUX;
+        return this.getSelectedString().equals(OS.WINDOWS.getName()) ? OS.WINDOWS : OS.LINUX;
     }
 }

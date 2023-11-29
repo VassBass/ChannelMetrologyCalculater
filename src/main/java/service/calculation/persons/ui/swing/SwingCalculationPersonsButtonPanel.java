@@ -1,22 +1,25 @@
 package service.calculation.persons.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.CalculationManager;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 
 public class SwingCalculationPersonsButtonPanel extends DefaultPanel {
 
     public SwingCalculationPersonsButtonPanel(@Nonnull CalculationManager manager) {
         super();
-        Labels labels = Labels.getInstance();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        DefaultButton printButton = new DefaultButton(labels.print);
-        DefaultButton openButton = new DefaultButton(labels.open);
-        DefaultButton cancelButton = new DefaultButton(labels.cancel);
-        DefaultButton doneButton = new DefaultButton(labels.done);
+        DefaultButton printButton = new DefaultButton(labels.get(RootLabelName.PRINT));
+        DefaultButton openButton = new DefaultButton(labels.get(RootLabelName.OPEN));
+        DefaultButton cancelButton = new DefaultButton(labels.get(RootLabelName.CANCEL));
+        DefaultButton doneButton = new DefaultButton(labels.get(RootLabelName.DONE));
 
         printButton.addActionListener(e -> manager.printProtocol());
         openButton.addActionListener(e -> manager.openProtocol());
