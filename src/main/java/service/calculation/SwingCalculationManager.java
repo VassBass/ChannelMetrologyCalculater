@@ -12,7 +12,7 @@ import service.calculation.condition.SwingCalculationControlConditionExecutor;
 import service.calculation.condition.ui.swing.SwingCalculationControlConditionDialog;
 import service.calculation.input.SwingCalculationInputExecuter;
 import service.calculation.input.ui.swing.SwingCalculationInputDialog;
-import service.calculation.persons.SwingCalculationPersonsExecuter;
+import service.calculation.persons.SwingCalculationPersonsExecutor;
 import service.calculation.persons.ui.swing.SwingCalculationPersonsDialog;
 import service.calculation.protocol.Protocol;
 import service.calculation.protocol.exel.TemplateExelProtocolWrapper;
@@ -131,7 +131,7 @@ public class SwingCalculationManager implements CalculationManager {
             } else return;
         }
 
-        new SwingCalculationPersonsExecuter(applicationScreen, repositoryFactory, configHolder, this, protocol ).execute();
+        new SwingCalculationPersonsExecutor(applicationScreen, repositoryFactory, configHolder, this, protocol ).execute();
     }
 
     @Override

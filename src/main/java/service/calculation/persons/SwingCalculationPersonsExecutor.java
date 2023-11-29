@@ -13,8 +13,8 @@ import service.calculation.persons.ui.swing.SwingCalculationPersonsDialog;
 
 import javax.annotation.Nonnull;
 
-public class SwingCalculationPersonsExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationPersonsExecuter.class);
+public class SwingCalculationPersonsExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationPersonsExecutor.class);
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -22,7 +22,7 @@ public class SwingCalculationPersonsExecuter implements ServiceExecutor {
     private final CalculationManager manager;
     private final Protocol protocol;
 
-    public SwingCalculationPersonsExecuter(@Nonnull ApplicationScreen applicationScreen,
+    public SwingCalculationPersonsExecutor(@Nonnull ApplicationScreen applicationScreen,
                                            @Nonnull RepositoryFactory repositoryFactory,
                                            @Nonnull CalculationConfigHolder configHolder,
                                            @Nonnull CalculationManager manager,
