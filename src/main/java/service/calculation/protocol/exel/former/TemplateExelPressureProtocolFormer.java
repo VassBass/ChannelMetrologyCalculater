@@ -1,5 +1,7 @@
 package service.calculation.protocol.exel.former;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Channel;
 import model.dto.Sensor;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -17,12 +19,9 @@ import static util.RegexHelper.DOT_REGEX;
 import static util.StringHelper.FOR_LAST_ZERO;
 
 public class TemplateExelPressureProtocolFormer extends TemplateExelTemperatureProtocolFormer {
-    private final Labels labels;
-
     public TemplateExelPressureProtocolFormer(@Nonnull HSSFWorkbook book,
                                                @Nonnull RepositoryFactory repositoryFactory) {
         super(book, repositoryFactory);
-        labels = Labels.getInstance();
     }
 
     @Override
@@ -60,18 +59,18 @@ public class TemplateExelPressureProtocolFormer extends TemplateExelTemperatureP
         }
 
         final String rangeMin = StringHelper.roundingDouble(channel.getRangeMin(), protocol.getValuesDecimalPoint());
-        cell(17,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, labels.comma));
+        cell(17,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String rangeMax = StringHelper.roundingDouble(channel.getRangeMax(), protocol.getValuesDecimalPoint());
-        cell(17,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, labels.comma));
+        cell(17,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String allowableErrorInPercent = StringHelper.roundingDouble(channel.getAllowableErrorPercent(), protocol.getPercentsDecimalPoint())
-                .replaceAll(DOT_REGEX, labels.comma);
+                .replaceAll(DOT_REGEX, Labels.COMMA);
         cell(18,5).setCellValue(allowableErrorInPercent);
         cell(36,15).setCellValue(allowableErrorInPercent);
 
         final String allowableErrorInValue = StringHelper.roundingDouble(channel.getAllowableErrorValue(), protocol.getValuesDecimalPoint());
-        cell(18,7).setCellValue(allowableErrorInValue.replaceAll(DOT_REGEX, labels.comma));
+        cell(18,7).setCellValue(allowableErrorInValue.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String measurementValue = channel.getMeasurementValue();
         cell(17,8).setCellValue(measurementValue);
@@ -86,8 +85,8 @@ public class TemplateExelPressureProtocolFormer extends TemplateExelTemperatureP
         cell(29,15).setCellValue(measurementValue);
         cell(30,15).setCellValue(measurementValue);
 
-        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll(DOT_REGEX, labels.comma);
-        cell(24,16).setCellValue(String.format("%sр.", frequency));
+        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll(DOT_REGEX, Labels.COMMA);
+        cell(24,16).setCellValue(String.format("%s%s", frequency, Labels.getRootLabels().get(RootLabelName.YEAR_SHORT)));
     }
 
     @Override
@@ -106,14 +105,14 @@ public class TemplateExelPressureProtocolFormer extends TemplateExelTemperatureP
         final double errorSensorPercent = (errorSensor / range) * 100;
         final String errorPercent = StringHelper.roundingDouble(errorSensorPercent, protocol.getPercentsDecimalPoint());
         final String errorValue = StringHelper.roundingDouble(errorSensor, protocol.getValuesDecimalPoint());
-        cell(21,5).setCellValue(errorPercent.replaceAll(DOT_REGEX, labels.comma));
-        cell(21,7).setCellValue(errorValue.replaceAll(DOT_REGEX, labels.comma));
+        cell(21,5).setCellValue(errorPercent.replaceAll(DOT_REGEX, Labels.COMMA));
+        cell(21,7).setCellValue(errorValue.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String rangeMin = StringHelper.roundingDouble(sensor.getRangeMin(), protocol.getValuesDecimalPoint());
-        cell(22,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, labels.comma));
+        cell(22,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String rangeMax = StringHelper.roundingDouble(sensor.getRangeMax(), protocol.getValuesDecimalPoint());
-        cell(22,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, labels.comma));
+        cell(22,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String measurementValue = sensor.getMeasurementValue();
         cell(22,8).setCellValue(measurementValue);

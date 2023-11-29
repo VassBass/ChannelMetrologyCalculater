@@ -47,7 +47,7 @@ public class Messages {
 
             readLabels(properties);
         } catch (IOException e) {
-            logger.warn(localization.message.Messages.Log.EXCEPTION_THROWN, e);
+            logger.warn(Log.EXCEPTION_THROWN, e);
         }
     }
 
@@ -99,6 +99,7 @@ public class Messages {
         public static final String EXCEPTION_THROWN = "Exception was thrown!";
         public static final String SERVICE_RUNNING = "Service is running";
         public static final String MISSING_UI_MANAGER_ERROR = "Before use context you must register manager!";
+        public static final String PRINT_COMMAND_NOT_REGISTRATED = "The Print command is not registered in the system by default.";
 
         public static String missingImplementation(Class<?> c) {
             return String.format("Can't find implementation for %s", c.getName());

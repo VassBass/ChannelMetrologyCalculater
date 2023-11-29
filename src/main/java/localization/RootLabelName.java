@@ -57,4 +57,5 @@ public class RootLabelName {
 	public static final String LOADING = "loading";
 	public static final String CALIBRATOR = "calibrator";
 	public static final String PROTOCOL_NUMBER = "protocolNumber";
+	public static final String YEAR_SHORT = "yearShort";
 }

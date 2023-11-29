@@ -1,5 +1,6 @@
 package service.calculation.protocol.exel;
 
+import localization.Messages;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,8 +66,7 @@ public class TemplateExelProtocol implements ProtocolWrap {
                     if (desktop.isSupported(Desktop.Action.PRINT)) {
                         desktop.print(file);
                     } else {
-                        String message = "Команда \"Друк\" за замовчуванням не зарегестрована в системі.";
-                        logger.warn(message);
+                        logger.warn(Messages.Log.PRINT_COMMAND_NOT_REGISTRATED);
                     }
                 } catch (Exception e) {
                     logger.warn(Messages.Log.EXCEPTION_THROWN, e);

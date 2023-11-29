@@ -1,5 +1,7 @@
 package service.calculation.protocol.exel.former;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.dto.MeasurementTransformFactor;
@@ -28,12 +30,12 @@ import static util.RegexHelper.DOT_REGEX;
 import static util.StringHelper.FOR_LAST_ZERO;
 
 public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer {
-    protected static final String EXTRAORDINARY = "Позачерговий";
-    protected static final String METROLOGY_HEAD_POSITION = "Начальник дільниці МЗ та П";
+    protected static final String EXTRAORDINARY = "extraordinary";
+    protected static final String METROLOGY_HEAD_POSITION = "metrologyHeadPosition";
 
-    private static final String UNDERLINED_EMPTY = "________________";
+    private static final String UNDERLINED_EMPTY = "underlineEmpty";
 
-    private final Labels labels;
+    private final Map<String, String> labels;
 
     private final HSSFWorkbook book;
     protected final RepositoryFactory repositoryFactory;
@@ -42,7 +44,7 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
                                                   @Nonnull RepositoryFactory repositoryFactory) {
         this.book = book;
         this.repositoryFactory = repositoryFactory;
-        labels = Labels.getInstance();
+        labels = Labels.getLabels(TemplateExelTemperatureProtocolFormer.class);
     }
 
     @Override
@@ -93,8 +95,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         String nextDate;
         if (suitable){
             nextDate = DateHelper.getNextDate(checkDate, protocol.getChannel().getFrequency());
-            if (nextDate.isEmpty()) nextDate = EXTRAORDINARY;
-        }else nextDate = EXTRAORDINARY;
+            if (nextDate.isEmpty()) nextDate = labels.get(EXTRAORDINARY);
+        }else nextDate = labels.get(EXTRAORDINARY);
         cell(38,14).setCellValue(nextDate);
 
         if (!suitable) {
@@ -137,18 +139,18 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         }
 
         final String rangeMin = StringHelper.roundingDouble(channel.getRangeMin(), protocol.getValuesDecimalPoint());
-        cell(17,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, labels.comma));
+        cell(17,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String rangeMax = StringHelper.roundingDouble(channel.getRangeMax(), protocol.getValuesDecimalPoint());
-        cell(17,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, labels.comma));
+        cell(17,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String allowableErrorInPercent = StringHelper.roundingDouble(channel.getAllowableErrorPercent(), protocol.getPercentsDecimalPoint())
-                .replaceAll(DOT_REGEX, labels.comma);
+                .replaceAll(DOT_REGEX, Labels.COMMA);
         cell(18,5).setCellValue(allowableErrorInPercent);
         cell(36,15).setCellValue(allowableErrorInPercent);
 
         final String allowableErrorInValue = StringHelper.roundingDouble(channel.getAllowableErrorValue(), protocol.getValuesDecimalPoint());
-        cell(18,7).setCellValue(allowableErrorInValue.replaceAll(DOT_REGEX, labels.comma));
+        cell(18,7).setCellValue(allowableErrorInValue.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String measurementValue = channel.getMeasurementValue();
         cell(17,8).setCellValue(measurementValue);
@@ -162,8 +164,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         cell(29,15).setCellValue(measurementValue);
         cell(30,15).setCellValue(measurementValue);
 
-        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll(DOT_REGEX, labels.comma);
-        cell(24,16).setCellValue(String.format("%sр.", frequency));
+        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll(DOT_REGEX, Labels.COMMA);
+        cell(24,16).setCellValue(String.format("%s%s", frequency, Labels.getRootLabels().get(RootLabelName.YEAR_SHORT)));
     }
 
     protected void appendSensorInfo(RepositoryFactory repositoryFactory, Protocol protocol, MxParserErrorCalculater errorCalculater) {
@@ -178,13 +180,13 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         final double errorSensor = errorCalculater.calculate(sensor);
         if (Double.isNaN(errorSensor)) return;
         final String errorValue = StringHelper.roundingDouble(errorSensor, protocol.getValuesDecimalPoint());
-        cell(21,5).setCellValue(errorValue.replaceAll(DOT_REGEX, labels.comma));
+        cell(21,5).setCellValue(errorValue.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String rangeMin = StringHelper.roundingDouble(sensor.getRangeMin(), protocol.getValuesDecimalPoint());
-        cell(22,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, labels.comma));
+        cell(22,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String rangeMax = StringHelper.roundingDouble(sensor.getRangeMax(), protocol.getValuesDecimalPoint());
-        cell(22,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, labels.comma));
+        cell(22,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String measurementValue = sensor.getMeasurementValue();
         cell(22,8).setCellValue(measurementValue);
@@ -221,10 +223,10 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         if (Double.isNaN(errorCalibrator)) return;
         double eP = errorCalibrator / (range / 100);
         final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint());
-        cell(19,13).setCellValue(errorPercent.replaceAll(DOT_REGEX, labels.comma));
+        cell(19,13).setCellValue(errorPercent.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String errorValue = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint());
-        cell(19,15).setCellValue(errorValue.replaceAll(DOT_REGEX, labels.comma));
+        cell(19,15).setCellValue(errorValue.replaceAll(DOT_REGEX, Labels.COMMA));
     }
 
     protected void appendCalculationResult(Protocol protocol) {
@@ -234,13 +236,13 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         final TreeMap<Double, Double> input = protocol.getInput();
         int row = 33;
         for (Map.Entry<Double, Double> entry : input.entrySet()) {
-            cell(row, 1).setCellValue(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll(DOT_REGEX, labels.comma));
+            cell(row, 1).setCellValue(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA));
             row += 2;
         }
         row = 28;
         for (Map.Entry<Double, Double> entry : input.entrySet()) {
             String pe = StringHelper.roundingDouble(Double.parseDouble(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint)), FOR_LAST_ZERO);
-            cell(row++, 11).setCellValue(String.format("%s%% ΔS =", pe.replaceAll(DOT_REGEX, labels.comma)));
+            cell(row++, 11).setCellValue(String.format("%s%% ΔS =", pe.replaceAll(DOT_REGEX, Labels.COMMA)));
         }
 
         final TreeMap<Double, double[]> inputOutput = protocol.getOutput();
@@ -248,9 +250,9 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         int column = 3;
         boolean next = false;
         for (Map.Entry<Double, double[]> entry : inputOutput.entrySet()) {
-            cell(row, 2).setCellValue(StringHelper.roundingDouble(entry.getKey(), valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma));
+            cell(row, 2).setCellValue(StringHelper.roundingDouble(entry.getKey(), valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA));
             for (double d : entry.getValue()) {
-                cell(row, column).setCellValue(StringHelper.roundingDouble(d, valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma));
+                cell(row, column).setCellValue(StringHelper.roundingDouble(d, valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA));
                 if (next) {
                     next = false;
                     column++;
@@ -264,20 +266,20 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
             column = 3;
         }
 
-        final String u = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma);
+        final String u = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA);
         cell(24, 14).setCellValue(u);
 
-        final String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint).replaceAll(DOT_REGEX, labels.comma);
+        final String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA);
         cell(26, 14).setCellValue(relativeError);
         cell(36,13).setCellValue(relativeError);
 
-        final String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma);
+        final String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA);
         cell(27, 14).setCellValue(absoluteError);
 
         final TreeMap<Double, Double> systematicErrors = protocol.getSystematicErrors();
         row = 28;
         for (Map.Entry<Double, Double> entry : systematicErrors.entrySet()) {
-            cell(row++, 13).setCellValue(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint).replaceAll(DOT_REGEX, labels.comma));
+            cell(row++, 13).setCellValue(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA));
         }
 
         final String conclusion = protocol.getConclusion();
@@ -290,8 +292,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         Map.Entry<String, String> headOfCheckedChannelDepartment = protocol.getHeadOfCheckedChannelDepartment();
         String nameHD = headOfCheckedChannelDepartment.getKey();
         String positionHD = headOfCheckedChannelDepartment.getValue();
-        if (nameHD.isEmpty()) nameHD = UNDERLINED_EMPTY;
-        if (positionHD.isEmpty()) positionHD = UNDERLINED_EMPTY;
+        if (nameHD.isEmpty()) nameHD = labels.get(UNDERLINED_EMPTY);
+        if (positionHD.isEmpty()) positionHD = labels.get(UNDERLINED_EMPTY);
         cell(41,0).setCellValue(positionHD);
         cell(41,6).setCellValue(nameHD);
         cell(43,9).setCellValue(positionHD);
@@ -302,14 +304,14 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         }
 
         String headOfMetrologyDepartment = protocol.getHeadOfMetrologyDepartment();
-        if (headOfMetrologyDepartment.isEmpty()) headOfMetrologyDepartment = UNDERLINED_EMPTY;
-        cell(43, 0).setCellValue(METROLOGY_HEAD_POSITION);
+        if (headOfMetrologyDepartment.isEmpty()) headOfMetrologyDepartment = labels.get(UNDERLINED_EMPTY);
+        cell(43, 0).setCellValue(labels.get(METROLOGY_HEAD_POSITION));
         cell(43,6).setCellValue(headOfMetrologyDepartment);
-        cell(45,9).setCellValue(METROLOGY_HEAD_POSITION);
+        cell(45,9).setCellValue(labels.get(METROLOGY_HEAD_POSITION));
         cell(45,15).setCellValue(headOfMetrologyDepartment);
         if (notSuitable){
-            cell(32,18).setCellValue(METROLOGY_HEAD_POSITION);
-            cell(47,18).setCellValue(METROLOGY_HEAD_POSITION);
+            cell(32,18).setCellValue(labels.get(METROLOGY_HEAD_POSITION));
+            cell(47,18).setCellValue(labels.get(METROLOGY_HEAD_POSITION));
             cell(32,24).setCellValue(headOfMetrologyDepartment);
             cell(47,24).setCellValue(headOfMetrologyDepartment);
         }
@@ -329,8 +331,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         }
 
         final Map.Entry<String, String> former = protocol.getFormer();
-        String formerName = former.getKey().isEmpty() ? UNDERLINED_EMPTY : former.getKey();
-        String formerPosition = former.getValue().isEmpty() ? UNDERLINED_EMPTY : former.getValue();
+        String formerName = former.getKey().isEmpty() ? labels.get(UNDERLINED_EMPTY) : former.getKey();
+        String formerPosition = former.getValue().isEmpty() ? labels.get(UNDERLINED_EMPTY) : former.getValue();
         cell(47, 9).setCellValue(formerPosition);
         cell(47, 15).setCellValue(formerName);
         if (notSuitable) {
@@ -340,7 +342,7 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
 
         if (notSuitable){
             String headOfASUTPDepartment = protocol.getHeadOfASPCDepartment();
-            if (headOfASUTPDepartment.isEmpty()) headOfASUTPDepartment = UNDERLINED_EMPTY;
+            if (headOfASUTPDepartment.isEmpty()) headOfASUTPDepartment = labels.get(UNDERLINED_EMPTY);
             cell(26,24).setCellValue(headOfASUTPDepartment);
         }
     }
