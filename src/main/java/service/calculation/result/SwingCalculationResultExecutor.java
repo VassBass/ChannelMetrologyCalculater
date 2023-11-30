@@ -21,8 +21,8 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.concurrent.ExecutionException;
 
-public class SwingCalculationResultExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationResultExecuter.class);
+public class SwingCalculationResultExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationResultExecutor.class);
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -30,7 +30,7 @@ public class SwingCalculationResultExecuter implements ServiceExecutor {
     private final CalculationManager manager;
     private final Protocol protocol;
 
-    public SwingCalculationResultExecuter(@Nonnull ApplicationScreen applicationScreen,
+    public SwingCalculationResultExecutor(@Nonnull ApplicationScreen applicationScreen,
                                           @Nonnull RepositoryFactory repositoryFactory,
                                           @Nonnull CalculationConfigHolder configHolder,
                                           @Nonnull CalculationManager manager,

@@ -16,7 +16,7 @@ import service.calculation.persons.SwingCalculationPersonsExecutor;
 import service.calculation.persons.ui.swing.SwingCalculationPersonsDialog;
 import service.calculation.protocol.Protocol;
 import service.calculation.protocol.exel.TemplateExelProtocolWrapper;
-import service.calculation.result.SwingCalculationResultExecuter;
+import service.calculation.result.SwingCalculationResultExecutor;
 import service.calculation.result.ui.swing.SwingCalculationResultDialog;
 
 import javax.annotation.Nonnull;
@@ -115,7 +115,7 @@ public class SwingCalculationManager implements CalculationManager {
             }
         }
 
-        new SwingCalculationResultExecuter(applicationScreen, repositoryFactory, configHolder, this, protocol).execute();
+        new SwingCalculationResultExecutor(applicationScreen, repositoryFactory, configHolder, this, protocol).execute();
     }
 
     @Override
