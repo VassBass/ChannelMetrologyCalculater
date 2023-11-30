@@ -1,9 +1,13 @@
 package service.calculation.result.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.CalculationManager;
+
+import java.util.Map;
 
 import static model.ui.builder.CellBuilder.NONE;
 
@@ -11,11 +15,11 @@ public class SwingCalculationResultButtonsPanel extends DefaultPanel {
 
     public SwingCalculationResultButtonsPanel(CalculationManager manager) {
         super();
-        Labels labels = Labels.getInstance();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        DefaultButton backButton = new DefaultButton(labels.back);
-        DefaultButton cancelButton = new DefaultButton(labels.cancel);
-        DefaultButton nextButton = new DefaultButton(labels.further);
+        DefaultButton backButton = new DefaultButton(labels.get(RootLabelName.BACK));
+        DefaultButton cancelButton = new DefaultButton(labels.get(RootLabelName.CANCEL));
+        DefaultButton nextButton = new DefaultButton(labels.get(RootLabelName.FURTHER));
 
         backButton.addActionListener(e -> manager.showInputDialog());
         cancelButton.addActionListener(e -> manager.disposeCalculation());

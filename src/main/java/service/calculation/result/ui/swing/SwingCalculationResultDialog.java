@@ -1,6 +1,9 @@
 package service.calculation.result.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -18,7 +21,8 @@ import java.awt.event.WindowEvent;
 import java.util.Objects;
 
 public class SwingCalculationResultDialog extends DefaultDialog implements CalculationCollectDialog {
-    private static final String TITLE_TEXT = "Результати розрахунку";
+    private static final String CALCULATION_RESULT = "calculationResult";
+    private static final String EMPTY_REFERENCE_NUMBER = "emptyReferenceNumber";
 
     private final SwingCalculationResultConclusionPanel conclusionPanel;
     private final SwingCalculationResultReferencePanel referencePanel;
@@ -28,7 +32,7 @@ public class SwingCalculationResultDialog extends DefaultDialog implements Calcu
                                         @Nonnull CalculationManager manager,
                                         @Nonnull SwingCalculationResultContext context,
                                         @Nonnull Protocol protocol) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getLabels(SwingCalculationResultDialog.class).get(CALCULATION_RESULT));
 
         SwingCalculationResultPanel resultPanel = context.getElement(SwingCalculationResultPanel.class);
         conclusionPanel = context.getElement(SwingCalculationResultConclusionPanel.class);
@@ -68,8 +72,9 @@ public class SwingCalculationResultDialog extends DefaultDialog implements Calcu
         if (Objects.nonNull(referencePanel)) {
             String referenceNumber = referencePanel.getReferenceNumber();
             if (referenceNumber.isEmpty()) {
-                String message = "Поле вводу номера довідки не має бути пустим";
-                JOptionPane.showMessageDialog(this, message, Labels.getInstance().invalidData, JOptionPane.ERROR_MESSAGE);
+                String title = Labels.getRootLabels().get(RootLabelName.INVALID_DATA);
+                String message = Messages.getMessages(SwingCalculationResultDialog.class).get(EMPTY_REFERENCE_NUMBER);
+                JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
                 return false;
             } else {
                 protocol.setReferenceNumber(referenceNumber);

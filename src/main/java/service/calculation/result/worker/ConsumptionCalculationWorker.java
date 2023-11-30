@@ -1,13 +1,10 @@
 package service.calculation.result.worker;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
 
 import javax.annotation.Nonnull;
 
 public class ConsumptionCalculationWorker extends DefaultCalculationWorker {
-    public static final Logger logger = LoggerFactory.getLogger(ConsumptionCalculationWorker.class);
 
     public ConsumptionCalculationWorker(@Nonnull RepositoryFactory repositoryFactory) {
         super(repositoryFactory);

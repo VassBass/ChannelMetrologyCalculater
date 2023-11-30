@@ -1,6 +1,9 @@
 package service.calculation.result;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.dto.Measurement;
 import model.ui.DefaultDialog;
 import model.ui.LoadingDialog;
@@ -23,6 +26,8 @@ import java.util.concurrent.ExecutionException;
 
 public class SwingCalculationResultExecutor implements ServiceExecutor {
     private static final Logger logger = LoggerFactory.getLogger(SwingCalculationResultExecutor.class);
+
+    private static final String CALCULATION_ERROR = "calculationError";
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -86,8 +91,8 @@ public class SwingCalculationResultExecutor implements ServiceExecutor {
             } catch (InterruptedException | ExecutionException e) {
                 logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             }
-            String message = "Під час розрахунку виникла помилка. Спробуйте ще раз.";
-            JOptionPane.showMessageDialog(applicationScreen, message, Labels.getInstance().error, JOptionPane.ERROR_MESSAGE);
+            String message = Messages.getMessages(SwingCalculationResultExecutor.class).get(CALCULATION_ERROR);
+            JOptionPane.showMessageDialog(applicationScreen, message, Labels.getRootLabels().get(RootLabelName.ERROR), JOptionPane.ERROR_MESSAGE);
             loadDialog.shutdown();
         }
     }

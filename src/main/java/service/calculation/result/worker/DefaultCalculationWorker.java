@@ -2,7 +2,6 @@ package service.calculation.result.worker;
 
 import model.dto.Calibrator;
 import model.dto.Channel;
-import model.dto.Measurement;
 import model.dto.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
