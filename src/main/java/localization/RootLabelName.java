@@ -58,4 +58,12 @@ public class RootLabelName {
 	public static final String CALIBRATOR = "calibrator";
 	public static final String PROTOCOL_NUMBER = "protocolNumber";
 	public static final String YEAR_SHORT = "yearShort";
+	public static final String DELETING = "deleting";
+	public static final String SUCCESS = "success";
+	public static final String SAVE = "save";
+	public static final String DELETE = "delete";
+	public static final String DAY = "day";
+	public static final String MONTH = "month";
+	public static final String YEAR = "year";
+	public static final String RANGE = "range";
 }

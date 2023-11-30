@@ -1,5 +1,9 @@
 package service.calibrator.info;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.Calibrator;
 import model.dto.builder.CalibratorBuilder;
 import repository.RepositoryFactory;
@@ -14,19 +18,31 @@ import util.StringHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
+import java.util.Map;
 import java.util.Objects;
 
 public class SwingCalibratorInfoManager implements CalibratorInfoManager {
+    private static final String CALIBRATOR_DELETE_QUESTION = "calibratorDeleteQuestion";
+    private static final String CALIBRATOR_EXISTS = "calibratorExists";
+
     private final RepositoryFactory repositoryFactory;
     private final CalibratorInfoContext context;
     private final CalibratorListManager parentManager;
     private final Calibrator calibrator;
     private SwingCalibratorInfoDialog dialog;
 
+    private final Map<String, String> messages;
+    private final Map<String, String> rootMessages;
+    private final Map<String, String> labels;
+
     public SwingCalibratorInfoManager(@Nonnull RepositoryFactory repositoryFactory,
                                       @Nonnull CalibratorInfoContext context,
                                       @Nonnull CalibratorListManager parentManager,
                                       @Nullable Calibrator calibrator) {
+        messages = Messages.getMessages(SwingCalibratorInfoManager.class);
+        rootMessages = Messages.getRootMessages();
+        labels = Labels.getRootLabels();
+
         this.repositoryFactory = repositoryFactory;
         this.context = context;
         this.parentManager = parentManager;
@@ -117,8 +133,10 @@ public class SwingCalibratorInfoManager implements CalibratorInfoManager {
     public void clickRemove() {
         if (ObjectHelper.nonNull(calibrator, dialog)) {
             String name = calibrator.getName();
-            String message = String.format("Ви впевнені що хочете видалити калібратор \"%s\"", name);
-            int result = JOptionPane.showConfirmDialog(dialog, message, "Видалення", JOptionPane.YES_NO_OPTION);
+            String title = labels.get(RootLabelName.DELETING);
+            String messageTemplate = messages.get(CALIBRATOR_DELETE_QUESTION);
+            String message = String.format(messageTemplate, name);
+            int result = JOptionPane.showConfirmDialog(dialog, message, title, JOptionPane.YES_NO_OPTION);
             if (result == 0) {
                 CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);
                 if (calibratorRepository.removeByName(name)) {
@@ -136,23 +154,26 @@ public class SwingCalibratorInfoManager implements CalibratorInfoManager {
 
     private void existAction() {
         if (Objects.nonNull(dialog)) {
-            String message = "Калібратор з такою назвою вже є у базі. Змініть будь ласка назву калібратора";
-            JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            String message = messages.get(CALIBRATOR_EXISTS);
+            String title = labels.get(RootLabelName.ERROR);
+            JOptionPane.showMessageDialog(dialog, message, title, JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void errorAction() {
         if (Objects.nonNull(dialog)) {
-            String message = "Виникла помилка. Спробуйте ще раз";
-            JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            String message = rootMessages.get(RootMessageName.ERROR_TRY_AGAIN);
+            String title = labels.get(RootLabelName.ERROR);
+            JOptionPane.showMessageDialog(dialog, message, title, JOptionPane.ERROR_MESSAGE);
             parentManager.updateDialog();
         }
     }
 
     private void successAction() {
         if (Objects.nonNull(dialog)) {
-            String message = "Операція виконана успішно";
-            JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+            String message = rootMessages.get(RootMessageName.OPERATION_SUCCESS);
+            String title = labels.get(RootLabelName.SUCCESS);
+            JOptionPane.showMessageDialog(dialog, message, title, JOptionPane.INFORMATION_MESSAGE);
             dialog.shutdown();
             parentManager.updateDialog();
         }

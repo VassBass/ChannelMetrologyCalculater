@@ -1,17 +1,19 @@
 package service.calibrator.info.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
 import model.ui.TitledTextField;
 import service.calibrator.info.ui.CalibratorInfoTypePanel;
 
 import java.awt.*;
 
 public class SwingCalibratorInfoTypePanel extends TitledTextField implements CalibratorInfoTypePanel {
-    private static final String TITLE_TEXT = "Тип калібратора";
-    private static final String TOOLTIP_TEXT = "Використовується у протоколі про перевірку МХ ВК";
+    private static final String CALIBRATOR_TYPE = "calibratorType";
+    private static final String CALIBRATOR_TYPE_TOOLTIP = "calibratorTypeTooltip";
 
     public SwingCalibratorInfoTypePanel() {
-        super(20, TITLE_TEXT, Color.BLACK);
-        this.setToolTipText(TOOLTIP_TEXT);
+        super(20, Labels.getLabels(SwingCalibratorInfoTypePanel.class).get(CALIBRATOR_TYPE), Color.BLACK);
+        this.setToolTipText(Messages.getMessages(SwingCalibratorInfoTypePanel.class).get(CALIBRATOR_TYPE_TOOLTIP));
     }
 
     @Override

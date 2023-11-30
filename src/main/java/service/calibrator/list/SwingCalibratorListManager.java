@@ -4,7 +4,7 @@ import model.dto.Calibrator;
 import repository.RepositoryFactory;
 import repository.repos.calibrator.CalibratorRepository;
 import repository.repos.measurement.MeasurementRepository;
-import service.calibrator.info.CalibratorInfoExecuter;
+import service.calibrator.info.CalibratorInfoExecutor;
 import service.calibrator.list.ui.CalibratorListContext;
 import service.calibrator.list.ui.CalibratorListMeasurementPanel;
 import service.calibrator.list.ui.CalibratorListTable;
@@ -75,14 +75,14 @@ public class SwingCalibratorListManager implements CalibratorListManager {
             CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);
             Calibrator calibrator = calibratorRepository.get(calibratorName);
             if (ObjectHelper.nonNull(calibrator, dialog)) {
-                new CalibratorInfoExecuter(dialog, repositoryFactory, this, calibrator).execute();
+                new CalibratorInfoExecutor(dialog, repositoryFactory, this, calibrator).execute();
             }
         }
     }
 
     @Override
     public void clickAdd() {
-        if (Objects.nonNull(dialog)) new CalibratorInfoExecuter(dialog, repositoryFactory, this, null).execute();
+        if (Objects.nonNull(dialog)) new CalibratorInfoExecutor(dialog, repositoryFactory, this, null).execute();
     }
 
     @Override

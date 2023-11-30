@@ -1,5 +1,6 @@
 package service.calibrator.info;
 
+import localization.Messages;
 import model.dto.Calibrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,15 +14,15 @@ import service.calibrator.list.ui.swing.SwingCalibratorListDialog;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CalibratorInfoExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(CalibratorInfoExecuter.class);
+public class CalibratorInfoExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(CalibratorInfoExecutor.class);
 
     private final SwingCalibratorListDialog calibratorListDialog;
     private final RepositoryFactory repositoryFactory;
     private final CalibratorListManager parentManager;
     private final Calibrator calibrator;
 
-    public CalibratorInfoExecuter(@Nonnull SwingCalibratorListDialog calibratorListDialog,
+    public CalibratorInfoExecutor(@Nonnull SwingCalibratorListDialog calibratorListDialog,
                                   @Nonnull RepositoryFactory repositoryFactory,
                                   @Nonnull CalibratorListManager parentManager,
                                   @Nullable Calibrator calibrator) {
@@ -41,6 +42,6 @@ public class CalibratorInfoExecuter implements ServiceExecutor {
         manager.registerDialog(dialog);
         dialog.showing();
 
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

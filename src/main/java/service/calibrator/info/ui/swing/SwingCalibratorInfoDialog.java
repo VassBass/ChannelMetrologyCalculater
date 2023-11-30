@@ -1,5 +1,6 @@
 package service.calibrator.info.ui.swing;
 
+import localization.Labels;
 import model.dto.Calibrator;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
@@ -14,7 +15,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class SwingCalibratorInfoDialog extends DefaultDialog {
-    private static final String DEFAULT_TITLE = "Калібратор";
+    private static final String DEFAULT_TITLE = Labels.getRootLabels().get("calibrator");
 
     public SwingCalibratorInfoDialog(@Nonnull SwingCalibratorListDialog calibratorListDialog,
                                      @Nonnull CalibratorInfoConfigHolder configHolder,
