@@ -19,7 +19,6 @@ public class Labels {
     private Labels(){}
 
     private static final Logger logger = LoggerFactory.getLogger(Labels.class);
-    private static final Localization DEFAULT_LOCALIZATION = Localization.UA;
 
     private static final String ROOT_REGEX = "^\\_\\.";
 
@@ -49,9 +48,8 @@ public class Labels {
     static {
         l = new HashMap<>();
 
-        Localization localization = getCurrentLocalization();
         StringBuilder labelsFilePath = new StringBuilder("localization/labels/");
-        switch (localization) {
+        switch (Localization.getCurrentLocalization()) {
             case UA:
                 labelsFilePath.append("ukr");
                 break;
@@ -70,10 +68,6 @@ public class Labels {
         } catch (IOException e) {
             logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
-    }
-
-    private static Localization getCurrentLocalization() {
-        return DEFAULT_LOCALIZATION;
     }
 
     private static void readLabels(Properties properties) {
