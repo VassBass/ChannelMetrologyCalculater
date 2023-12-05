@@ -1,5 +1,6 @@
 package service.certificate.archive;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ServiceExecutor;
@@ -18,7 +19,7 @@ public class CertificateArchiveExecutor implements ServiceExecutor {
             archiver.archive();
             logger.info("Archiving was successful");
         } catch (IOException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 }
