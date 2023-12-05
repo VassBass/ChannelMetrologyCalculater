@@ -66,4 +66,10 @@ public class RootLabelName {
 	public static final String MONTH = "month";
 	public static final String YEAR = "year";
 	public static final String RANGE = "range";
+	public static final String DETAILS = "details";
+	public static final String ADD = "add";
+	public static final String CALIBRATORS_LIST = "calibratorsList";
+	public static final String ALL = "all";
+	public static final String MODEL = "model";
+	public static final String TYPE_OF_MEASUREMENT = "typeOfMeasurement";
 }

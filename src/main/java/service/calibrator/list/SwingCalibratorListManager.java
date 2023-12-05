@@ -1,5 +1,9 @@
 package service.calibrator.list;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.Calibrator;
 import repository.RepositoryFactory;
 import repository.repos.calibrator.CalibratorRepository;
@@ -13,13 +17,13 @@ import util.ObjectHelper;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SwingCalibratorListManager implements CalibratorListManager {
+    private static final String DELETE_QUESTION = "deleteQuestion";
+    private static final String DELETE_SUCCESS = "deleteSuccess";
+
     private final RepositoryFactory repositoryFactory;
     private final CalibratorListContext context;
     private SwingCalibratorListDialog dialog;
@@ -50,17 +54,20 @@ public class SwingCalibratorListManager implements CalibratorListManager {
 
     @Override
     public void clickDelete() {
+        Map<String, String> messages = Messages.getMessages(SwingCalibratorListManager.class);
+        Map<String, String> labels = Labels.getRootLabels();
+
         CalibratorListTable table = context.getElement(CalibratorListTable.class);
         String calibratorName = table.getSelectedCalibratorName();
         if (ObjectHelper.nonNull(calibratorName, dialog)) {
-            String message = String.format("Ви впевнені що хочете видалити калібратор \"%s\"?", calibratorName);
-            int result = JOptionPane.showConfirmDialog(dialog, message, "Видалення", JOptionPane.YES_NO_OPTION);
+            String message = String.format(messages.get(DELETE_QUESTION), calibratorName);
+            int result = JOptionPane.showConfirmDialog(dialog, message, labels.get(RootLabelName.DELETING), JOptionPane.YES_NO_OPTION);
             if (result == 0) {
                 CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);
                 if (calibratorRepository.removeByName(calibratorName)) {
-                    JOptionPane.showMessageDialog(dialog, "Калібратор успішно видалено", "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(dialog, messages.get(DELETE_SUCCESS), labels.get(RootLabelName.SUCCESS), JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(dialog, "Виникла помилка. Спробуйте ще.", "Помилка", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(dialog, Messages.getRootMessages().get(RootMessageName.ERROR_TRY_AGAIN), labels.get(RootLabelName.ERROR), JOptionPane.ERROR_MESSAGE);
                 }
                 dialog.refresh();
             }

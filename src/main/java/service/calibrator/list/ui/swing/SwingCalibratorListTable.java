@@ -1,5 +1,7 @@
 package service.calibrator.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Calibrator;
 import repository.RepositoryFactory;
 import repository.repos.calibrator.CalibratorRepository;
@@ -11,11 +13,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SwingCalibratorListTable extends JTable implements CalibratorListTable {
-    private static final String COLUMN_NAME = "Назва";
-    private static final String COLUMN_TYPE = "Модель";
-    private static final String COLUMN_TYPE_OF_MEASUREMENT = "Вид вимірювання";
 
     public SwingCalibratorListTable(@Nonnull RepositoryFactory repositoryFactory){
         super();
@@ -28,6 +28,8 @@ public class SwingCalibratorListTable extends JTable implements CalibratorListTa
     }
 
     private DefaultTableModel tableModel(List<Calibrator> calibratorsList){
+        Map<String, String> labels = Labels.getRootLabels();
+
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){
@@ -36,9 +38,9 @@ public class SwingCalibratorListTable extends JTable implements CalibratorListTa
         };
 
         String[]columnsHeader = new String[] {
-                COLUMN_NAME,
-                COLUMN_TYPE,
-                COLUMN_TYPE_OF_MEASUREMENT
+                labels.get(RootLabelName.NAME),
+                labels.get(RootLabelName.MODEL),
+                labels.get(RootLabelName.TYPE_OF_MEASUREMENT)
         };
         model.setColumnIdentifiers(columnsHeader);
 

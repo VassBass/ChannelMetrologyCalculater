@@ -130,7 +130,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
     }
 
     @Override
-    public boolean removeByName(@Nonnull String name) {
+    public boolean removeByName(String name) {
         String sql = String.format("DELETE FROM %s WHERE name = '%s';", tableName, name);
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;

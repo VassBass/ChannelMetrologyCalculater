@@ -1,13 +1,12 @@
 package localization.message;
 
-public class UkraineMessages extends Messages {
+public class UkraineMessages {
 
     protected UkraineMessages() {
         super();
     }
 
-    @Override
     protected void init() {
-        init_success = "Ініціалізація пройшла успішно";
+//        init_success = "Ініціалізація пройшла успішно";
     }
 }

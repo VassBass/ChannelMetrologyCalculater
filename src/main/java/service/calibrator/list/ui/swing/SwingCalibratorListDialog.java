@@ -1,6 +1,8 @@
 package service.calibrator.list.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Calibrator;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
@@ -20,8 +22,6 @@ import static model.ui.builder.CellBuilder.BOTH;
 import static model.ui.builder.CellBuilder.VERTICAL;
 
 public class SwingCalibratorListDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Список калібраторів";
-
     private final RepositoryFactory repositoryFactory;
     private final SwingCalibratorListMeasurementPanel measurementPanel;
     private final SwingCalibratorListTable table;
@@ -30,7 +30,7 @@ public class SwingCalibratorListDialog extends DefaultDialog {
                                      @Nonnull RepositoryFactory repositoryFactory,
                                      @Nonnull CalibratorListConfigHolder configHolder,
                                      @Nonnull CalibratorListContext context) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getRootLabels().get(RootLabelName.CALIBRATORS_LIST));
         this.repositoryFactory = repositoryFactory;
 
         measurementPanel = context.getElement(SwingCalibratorListMeasurementPanel.class);
