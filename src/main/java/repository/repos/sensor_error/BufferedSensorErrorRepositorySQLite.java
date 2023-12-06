@@ -29,8 +29,8 @@ public class BufferedSensorErrorRepositorySQLite extends SensorErrorRepositorySQ
     }
 
     @Override
-    public Collection<SensorError> getBySensorType(@Nonnull String sensorType) {
-        if (sensorType.isEmpty()) return new ArrayList<>(0);
+    public Collection<SensorError> getBySensorType(String sensorType) {
+        if (sensorType == null || sensorType.isEmpty()) return new ArrayList<>(0);
         return buffer.values().stream()
                 .filter(se -> StringHelper.containsEachOtherIgnoreCase(se.getType(), sensorType))
                 .collect(Collectors.toSet());

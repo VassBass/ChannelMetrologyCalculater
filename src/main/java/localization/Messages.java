@@ -43,28 +43,28 @@ public class Messages {
             Properties properties = new Properties();
             properties.load(new InputStreamReader(in, StandardCharsets.UTF_8));
 
-            readLabels(properties);
+            readMessages(properties);
         } catch (IOException e) {
             logger.warn(Log.EXCEPTION_THROWN, e);
         }
     }
 
-    private static void readLabels(Properties properties) {
-        Map<String, String> rootLabels = m.containsKey(null) ? m.get(null) : new HashMap<>();
+    private static void readMessages(Properties properties) {
+        Map<String, String> rootMessages = m.containsKey(null) ? m.get(null) : new HashMap<>();
         for (String key : properties.stringPropertyNames()) {
             if (isRoot(key)) {
                 String k = key.replaceAll(ROOT_REGEX, EMPTY);
-                rootLabels.put(k, properties.getProperty(key));
+                rootMessages.put(k, properties.getProperty(key));
             } else {
                 int dotIndex = key.indexOf(Labels.DOT);
                 String className = key.substring(0, dotIndex);
                 String valueName = key.substring(++dotIndex);
-                Map<String, String> classLabels = m.containsKey(className) ? m.get(className) : new HashMap<>();
-                classLabels.put(valueName, properties.getProperty(key));
-                m.put(className, classLabels);
+                Map<String, String> classMessages = m.containsKey(className) ? m.get(className) : new HashMap<>();
+                classMessages.put(valueName, properties.getProperty(key));
+                m.put(className, classMessages);
             }
         }
-        m.put(null, rootLabels);
+        m.put(null, rootMessages);
     }
 
     private static boolean isRoot(String key) {
@@ -78,14 +78,6 @@ public class Messages {
 
     public static Map<String, String> getMessages(Class<?> c) {
         return m.get(c.getSimpleName());
-    }
-
-    public static Map<String, String> getMessagesWithRoot(Class<?> c) {
-        Map<String, String> result = m.get(null);
-        if (c != null && m.containsKey(c.getSimpleName())) {
-            result.putAll(m.get(c.getSimpleName()));
-        }
-        return result;
     }
 
     public static class Log {

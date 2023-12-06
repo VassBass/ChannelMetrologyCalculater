@@ -1,17 +1,19 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.ui.TitledTextField;
 import service.channel.info.ui.ChannelInfoProtocolNumberPanel;
 
 import java.awt.*;
 
 public class SwingChannelInfoProtocolNumberPanel extends TitledTextField implements ChannelInfoProtocolNumberPanel {
-    private static final String TITLE_TEXT = "Номер протоколу";
-    private static final String TOOLTIP_TEXT = "Номер протоколу результатів останньої перевірки";
+    private static final String PROTOCOL_TOOLTIP = "protocolTooltip";
 
     public SwingChannelInfoProtocolNumberPanel() {
-        super(15, TITLE_TEXT, Color.BLACK);
-        this.setToolTipText(TOOLTIP_TEXT);
+        super(15, Labels.getRootLabels().get(RootLabelName.PROTOCOL_NUMBER), Color.BLACK);
+        this.setToolTipText(Messages.getMessages(SwingChannelInfoProtocolNumberPanel.class).get(PROTOCOL_TOOLTIP));
     }
 
     @Override

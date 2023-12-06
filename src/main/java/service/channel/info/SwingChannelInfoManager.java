@@ -1,6 +1,10 @@
 package service.channel.info;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.*;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
@@ -29,6 +33,9 @@ import static util.StringHelper.FOR_LAST_ZERO;
 public class SwingChannelInfoManager implements ChannelInfoManager {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoManager.class);
 
+    private final Map<String, String> messages;
+    private final Map<String, String> labels;
+
     private static final String DEFAULT_FREQUENCY_VALUE_TEXT = "2.0";
     private static final double DEFAULT_FREQUENCY_VALUE = 2.0;
     private static final String DEFAULT_MIN_RANGE_VALUE_TEXT = "0.0";
@@ -41,10 +48,11 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     private static final int SENSOR_PANEL_OPTION_SET_RANGE = 0;
     private static final int SENSOR_PANEL_OPTION_SET_ERROR_FORMULAS = 1;
 
-    private static final String SEARCH_TEXT = "Пошук";
-
-    private static final String CHANNEL_NOT_FOUND_MESSAGE = "Канал з данним кодом не знайдений.";
-    private static final String CHANNEL_FOUND_MESSAGE = "Канал знайдено. Відкрити інформацію про канал у данному вікні?";
+    private static final String CHANNEL_NOT_FOUND = "channelNotFound";
+    private static final String CHANNEL_FOUND = "channelFound";
+    private static final String CHANNEL_SAVE = "channelSave";
+    private static final String DELETE_CHANNEL_QUESTION = "deleteChannelQuestion";
+    private static final String CHANNEL_DELETED = "channelDeleted";
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -57,6 +65,9 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
                                    @Nonnull RepositoryFactory repositoryFactory,
                                    @Nonnull ChannelListManager channelListManager,
                                    @Nonnull ChannelInfoSwingContext context) {
+        messages = Messages.getMessages(SwingChannelInfoManager.class);
+        labels = Labels.getRootLabels();
+
         this.applicationScreen = applicationScreen;
         this.repositoryFactory = repositoryFactory;
         this.channelListManager = channelListManager;
@@ -74,9 +85,19 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
         Channel channel = repository.get(codePanel.getCode());
         if (channel == null) {
-            JOptionPane.showMessageDialog(channelInfoDialog, CHANNEL_NOT_FOUND_MESSAGE, SEARCH_TEXT, JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    channelInfoDialog,
+                    messages.get(CHANNEL_NOT_FOUND),
+                    labels.get(RootLabelName.SEARCH),
+                    JOptionPane.INFORMATION_MESSAGE
+            );
         } else {
-            int result = JOptionPane.showConfirmDialog(channelInfoDialog, CHANNEL_FOUND_MESSAGE, SEARCH_TEXT, JOptionPane.OK_CANCEL_OPTION);
+            int result = JOptionPane.showConfirmDialog(
+                    channelInfoDialog,
+                    messages.get(CHANNEL_FOUND),
+                    labels.get(RootLabelName.SEARCH),
+                    JOptionPane.OK_CANCEL_OPTION
+            );
             if (result == 0) setChannelInfo(channel);
         }
     }
@@ -164,17 +185,17 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
 
             Sensor sensor = sensorRepository.get(channelCode);
             sensorPanel.setSensorsTypes(new ArrayList<>(sensorRepository.getAllSensorsTypesByMeasurementName(measurementName)));
-            sensorPanel.setSensorType(sensor.getType());
-            double sensorRangeMin = sensor.getRangeMin();
+            sensorPanel.setSensorType(sensor == null ? null : sensor.getType());
+            double sensorRangeMin = sensor == null ? DEFAULT_MIN_RANGE_VALUE : sensor.getRangeMin();
             String sensorRangeMinText = StringHelper.roundingDouble(sensorRangeMin, FOR_LAST_ZERO);
-            double sensorRangeMax = sensor.getRangeMax();
+            double sensorRangeMax = sensor == null ? DEFAULT_MAX_RANGE_VALUE : sensor.getRangeMax();
             String sensorRangeMaxText = StringHelper.roundingDouble(sensorRangeMax, FOR_LAST_ZERO);
             sensorPanel.setRange(sensorRangeMinText, sensorRangeMaxText);
             sensorPanel.setMeasurementValues(measurementValues);
-            sensorPanel.setMeasurementValue(sensor.getMeasurementValue());
-            Collection<SensorError> sensorErrors = errorRepository.getBySensorType(sensor.getType());
+            sensorPanel.setMeasurementValue(sensor == null ? null : sensor.getMeasurementValue());
+            Collection<SensorError> sensorErrors = errorRepository.getBySensorType(sensor == null ? null : sensor.getType());
             sensorPanel.setErrorFormulas(sensorErrors.stream().map(SensorError::getErrorFormula).collect(Collectors.toList()));
-            sensorPanel.setErrorFormula(sensor.getErrorFormula());
+            sensorPanel.setErrorFormula(sensor == null ? null : sensor.getErrorFormula());
 
             String channelRangeMinText = StringHelper.roundingDouble(channel.getRangeMin(), FOR_LAST_ZERO);
             String channelRangeMaxText = StringHelper.roundingDouble(channel.getRangeMax(), FOR_LAST_ZERO);
@@ -317,7 +338,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     public void saveChannel() {
         Channel channel = createChannelFromPanel();
         if (Objects.nonNull(channel)) {
-            new Worker("Канал був успішно збережений") {
+            new Worker(messages.get(CHANNEL_SAVE)) {
                 @Override
                 protected Boolean doInBackground() {
                     ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
@@ -348,7 +369,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
     public void saveAndCalculateChannel() {
         Channel channel = createChannelFromPanel();
         if (Objects.nonNull(channel)) {
-            new Worker("Канал був успішно збережений") {
+            new Worker(messages.get(CHANNEL_SAVE)) {
                 @Override
                 protected Boolean doInBackground() {
                     ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
@@ -387,11 +408,11 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         ChannelInfoCodePanel codePanel = context.getElement(ChannelInfoCodePanel.class);
         String code = codePanel.getCode();
         if (oldChannel != null && oldChannel.getCode().equals(code)) {
-            String message = String.format("Ви впевнені що хочете видалити канал: \"%s\"", oldChannel.getName());
-            String title = String.format("Видалити: \"%s\"", code);
+            String message = String.format(messages.get(DELETE_CHANNEL_QUESTION), oldChannel.getName());
+            String title = String.format("%s: \"%s\"", labels.get(RootLabelName.DELETE), code);
             int result = JOptionPane.showConfirmDialog(channelInfoDialog, message, title, JOptionPane.YES_NO_OPTION);
             if (result == 0) {
-                Worker worker = new Worker("Канал був успішно видалений") {
+                Worker worker = new Worker(messages.get(CHANNEL_DELETED)) {
                     @Override
                     protected Boolean doInBackground() {
                         ChannelRepository channelRepository = repositoryFactory.getImplementation(ChannelRepository.class);
@@ -630,7 +651,7 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
             try {
                 if (get()) {
                     channelInfoDialog.shutdown();
-                    JOptionPane.showMessageDialog(applicationScreen, successMessage, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(applicationScreen, successMessage, labels.get(RootLabelName.SUCCESS), JOptionPane.INFORMATION_MESSAGE);
                 } else errorReaction(null);
             } catch (InterruptedException | ExecutionException e) {
                 errorReaction(e);
@@ -640,9 +661,9 @@ public class SwingChannelInfoManager implements ChannelInfoManager {
         }
 
         private void errorReaction(Exception e) {
-            logger.warn("Exception was thrown", e);
-            String message = "Виникла помилка, будь ласка спробуйте ще раз";
-            JOptionPane.showMessageDialog(channelInfoDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
+            String message = Messages.getRootMessages().get(RootMessageName.ERROR_TRY_AGAIN);
+            JOptionPane.showMessageDialog(channelInfoDialog, message, labels.get(RootLabelName.ERROR), JOptionPane.ERROR_MESSAGE);
         }
     }
 }

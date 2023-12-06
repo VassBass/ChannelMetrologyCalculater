@@ -10,7 +10,7 @@ import repository.repos.channel.ChannelRepository;
 import repository.repos.channel.SearchParams;
 import repository.repos.sensor.SensorRepository;
 import service.calculation.CalculationExecutor;
-import service.channel.info.SwingChannelInfoExecuter;
+import service.channel.info.SwingChannelInfoExecutor;
 import service.channel.list.ui.ChannelListInfoTable;
 import service.channel.list.ui.ChannelListSearchPanel;
 import service.channel.list.ui.ChannelListSwingContext;
@@ -69,7 +69,7 @@ public class SwingChannelListManager implements ChannelListManager {
 
     @Override
     public void addChannel() {
-        new SwingChannelInfoExecuter(applicationScreen, repositoryFactory, this).execute();
+        new SwingChannelInfoExecutor(applicationScreen, repositoryFactory, this).execute();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class SwingChannelListManager implements ChannelListManager {
         if (channelCode != null) {
             Channel channel = channelRepository.get(channelCode);
             if (channel != null) {
-                new SwingChannelInfoExecuter(applicationScreen, repositoryFactory, this)
+                new SwingChannelInfoExecutor(applicationScreen, repositoryFactory, this)
                         .registerChannel(channel)
                         .execute();
             }
@@ -183,7 +183,7 @@ public class SwingChannelListManager implements ChannelListManager {
             String message = String.format(SEARCH_SUCCESS_MESSAGE_FORM, channelCode, channel.getName());
             int result = JOptionPane.showConfirmDialog(applicationScreen, message, SEARCH_SUCCESS_TITLE, JOptionPane.YES_NO_OPTION);
             if (result == 0) {
-                new SwingChannelInfoExecuter(applicationScreen, repositoryFactory, this)
+                new SwingChannelInfoExecutor(applicationScreen, repositoryFactory, this)
                         .registerChannel(channel)
                         .execute();
             }

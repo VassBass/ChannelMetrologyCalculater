@@ -72,4 +72,15 @@ public class RootLabelName {
 	public static final String ALL = "all";
 	public static final String MODEL = "model";
 	public static final String TYPE_OF_MEASUREMENT = "typeOfMeasurement";
+	public static final String SEARCH = "search";
+	public static final String SAVE_CALCULATE = "saveCalculate";
+	public static final String RESET = "reset";
+	public static final String LAST_CHECK_DATE = "lastCheckDate";
+	public static final String CHANNEL_NAME_SHORT= "channelNameShort";
+	public static final String NEXT_CHECK_DATE = "nextCheckDate";
+	public static final String LOCATION = "location";
+	public static final String CHANNEL_SHORT = "channelShort";
+	public static final String SENSOR_SHORT = "sensorShort";
+	public static final String SENSOR_LONG = "sensorLong";
+	public static final String SERIAL_NUMBER_SHORT = "_serialNumberShort";
 }

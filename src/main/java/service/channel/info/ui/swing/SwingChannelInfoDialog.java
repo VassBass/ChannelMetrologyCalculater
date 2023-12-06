@@ -1,6 +1,7 @@
 package service.channel.info.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -9,11 +10,11 @@ import service.channel.info.ui.ChannelInfoSwingContext;
 import util.ScreenPoint;
 
 public class SwingChannelInfoDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Інформація вимірювального каналу";
+    private static final String CHANNEL_INFO = "channelInfo";
 
 
     public SwingChannelInfoDialog(ApplicationScreen applicationScreen, ChannelInfoConfigHolder configHolder, ChannelInfoSwingContext context) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getLabels(SwingChannelInfoDialog.class).get(CHANNEL_INFO));
 
         DefaultPanel panel = new DefaultPanel();
 

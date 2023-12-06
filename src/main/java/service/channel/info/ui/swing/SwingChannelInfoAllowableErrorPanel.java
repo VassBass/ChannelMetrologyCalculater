@@ -1,5 +1,6 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
 import model.ui.DefaultLabel;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
@@ -11,33 +12,36 @@ import util.StringHelper;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.util.Map;
 
 import static javax.swing.SwingConstants.CENTER;
 import static javax.swing.SwingConstants.RIGHT;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingChannelInfoAllowableErrorPanel extends TitledPanel implements ChannelInfoAllowableErrorPanel {
-    private static final String TITLE_TEXT = "Допустима похибка ВК";
-    private static final String TOOLTIP_TEXT = "Допустима похибка вимірювального каналу";
-    private static final String PERCENT_VALUE_TOOLTIP_TEXT = "Величина представлена у відсотках";
-    private static final String VALUE_TOOLTIP_TEXT = "Величина представлена у натуральних величинах";
+    private static final String ALLOWABLE_ERROR_SHORT = "allowableErrorShort";
+    private static final String ALLOWABLE_ERROR = "allowableError";
+    private static final String PERCENT_VALUE = "percentValue";
+    private static final String NATURE_VALUE = "natureValue";
+
+    private static final Map<String, String> labels = Labels.getLabels(SwingChannelInfoAllowableErrorPanel.class);
 
     private final DefaultTextField errorPercent;
     private final DefaultTextField errorValue;
     private final DefaultLabel measurementValue;
 
     public SwingChannelInfoAllowableErrorPanel(final ChannelInfoManager manager) {
-        super(TITLE_TEXT, Color.BLACK);
-        this.setToolTipText(TOOLTIP_TEXT);
+        super(labels.get(ALLOWABLE_ERROR_SHORT), Color.BLACK);
+        this.setToolTipText(labels.get(ALLOWABLE_ERROR));
 
-        errorPercent = new DefaultTextField(3, PERCENT_VALUE_TOOLTIP_TEXT, RIGHT).setFocusListener(new FocusAdapter() {
+        errorPercent = new DefaultTextField(3, labels.get(PERCENT_VALUE), RIGHT).setFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
                 if (isAllowableErrorPercentValid()) manager.changedAllowableErrorPercent();
             }
         });
 
-        errorValue = new DefaultTextField(4, VALUE_TOOLTIP_TEXT).setFocusListener(new FocusAdapter() {
+        errorValue = new DefaultTextField(4, labels.get(NATURE_VALUE)).setFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
                 if (isAllowableErrorValueValid()) manager.changedAllowableErrorValue();
@@ -84,7 +88,7 @@ public class SwingChannelInfoAllowableErrorPanel extends TitledPanel implements 
 
     @Override
     public boolean isAllowableErrorPercentValid() {
-        String error = errorPercent.getText().replaceAll(",", ".");
+        String error = errorPercent.getText().replaceAll(Labels.COMMA, Labels.DOT);
         if (StringHelper.isDouble(error)) {
             errorPercent.setText(error);
             this.setTitleColor(Color.BLACK);
@@ -97,7 +101,7 @@ public class SwingChannelInfoAllowableErrorPanel extends TitledPanel implements 
 
     @Override
     public boolean isAllowableErrorValueValid() {
-        String error = errorValue.getText().replaceAll(",", ".");
+        String error = errorValue.getText().replaceAll(Labels.COMMA, Labels.DOT);
         if (StringHelper.isDouble(error)) {
             errorValue.setText(error);
             this.setTitleColor(Color.BLACK);

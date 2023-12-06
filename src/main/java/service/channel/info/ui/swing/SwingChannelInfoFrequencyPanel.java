@@ -1,5 +1,8 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.ui.DefaultLabel;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
@@ -16,17 +19,16 @@ import java.awt.event.FocusListener;
 import static javax.swing.SwingConstants.RIGHT;
 
 public class SwingChannelInfoFrequencyPanel extends TitledPanel implements ChannelInfoFrequencyPanel {
-    private static final String TITLE_TEXT = "Міжконтрольний інтервал";
-    private static final String VALUE_TEXT = "р.";
-    private static final String TOOLTIP_TEXT = "Пів року = 0.51; місяць = 0.083 (приблизно)";
+    private static final String FREQUENCY = "frequency";
+    private static final String TOOLTIP = "tooltip";
 
     private final ChannelInfoManager manager;
     private final DefaultTextField frequency;
 
     public SwingChannelInfoFrequencyPanel(ChannelInfoManager manager) {
-        super(TITLE_TEXT, Color.BLACK);
+        super(Labels.getLabels(SwingChannelInfoFrequencyPanel.class).get(FREQUENCY), Color.BLACK);
         this.manager = manager;
-        this.setToolTipText(TOOLTIP_TEXT);
+        this.setToolTipText(Messages.getMessages(SwingChannelInfoFrequencyPanel.class).get(TOOLTIP));
 
         FocusListener frequencyFocusListener = new FocusAdapter() {
             @Override
@@ -37,7 +39,7 @@ public class SwingChannelInfoFrequencyPanel extends TitledPanel implements Chann
 
         frequency = new DefaultTextField(3, null, RIGHT).setFocusListener(frequencyFocusListener);
 
-        DefaultLabel frequencyValue = new DefaultLabel(VALUE_TEXT);
+        DefaultLabel frequencyValue = new DefaultLabel(Labels.getRootLabels().get(RootLabelName.YEAR_SHORT));
 
         this.add(frequency, new CellBuilder().x(0).build());
         this.add(frequencyValue, new CellBuilder().x(1).build());
