@@ -1,5 +1,9 @@
 package service.sensor_error.list;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.SensorError;
 import repository.RepositoryFactory;
 import repository.repos.measurement.MeasurementRepository;
@@ -12,10 +16,7 @@ import service.sensor_error.list.ui.swing.SwingSensorErrorListDialog;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SwingSensorErrorListManager implements SensorErrorListManager {
@@ -25,10 +26,13 @@ public class SwingSensorErrorListManager implements SensorErrorListManager {
 
     private SwingSensorErrorListDialog dialog;
 
+    private final Map<String, String> labels;
+
     public SwingSensorErrorListManager(@Nonnull RepositoryFactory repositoryFactory,
                                        @Nonnull SensorErrorListContext context) {
         this.repositoryFactory = repositoryFactory;
         this.context = context;
+        labels = Labels.getRootLabels();
     }
 
     public void registerDialog(@Nonnull SwingSensorErrorListDialog dialog) {
@@ -42,7 +46,7 @@ public class SwingSensorErrorListManager implements SensorErrorListManager {
         SensorErrorListMeasurementPanel measurementPanel = context.getElement(SensorErrorListMeasurementPanel.class);
         SensorErrorListTable table = context.getElement(SensorErrorListTable.class);
         String measurementName = measurementPanel.getMeasurementName();
-        if (measurementName.equalsIgnoreCase("Всі")) {
+        if (measurementName.equalsIgnoreCase(labels.get(RootLabelName.ALL_ALT))) {
             table.setSensorErrorsList(new ArrayList<>(sensorErrorRepository.getAll()));
         } else {
             MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
@@ -76,17 +80,26 @@ public class SwingSensorErrorListManager implements SensorErrorListManager {
 
     @Override
     public void clickRemove() {
+        Map<String, String> messages = Messages.getRootMessages();
+
         SensorErrorListTable table = context.getElement(SensorErrorListTable.class);
         String id = table.getSelectedId();
         if (Objects.nonNull(id)) {
             SensorErrorRepository repository = repositoryFactory.getImplementation(SensorErrorRepository.class);
-            String message;
             if (repository.removeById(id)) {
-                message = "Видалення пройшло успішно";
-                JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        messages.get(RootMessageName.DELETING_SUCCESS),
+                        labels.get(RootLabelName.SUCCESS),
+                        JOptionPane.INFORMATION_MESSAGE
+                );
             } else {
-                message = "При видаленні виникла помилка";
-                JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        messages.get(RootMessageName.ERROR_TRY_AGAIN),
+                        labels.get(RootLabelName.ERROR),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
             dialog.refresh();
         }

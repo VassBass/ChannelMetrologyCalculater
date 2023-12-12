@@ -8,7 +8,6 @@ public class UkraineLabels {
 
     protected void init() {
 //        //Sensor
-//        sensorsErrorList = "Список похибок ПВП";
 //        sensorTypesList = "Список типів ПВП";
     }
 }

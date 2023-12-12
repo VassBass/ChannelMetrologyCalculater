@@ -1,6 +1,8 @@
 package service.sensor_error.list.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.SensorError;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
@@ -24,7 +26,7 @@ import static model.ui.builder.CellBuilder.BOTH;
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingSensorErrorListDialog extends DefaultDialog {
-    public static final String TITLE_TEXT = "Формули похибок ПВП";
+    public static final String ERROR_FORMULAS = "errorFormulas";
 
     private final RepositoryFactory repositoryFactory;
 
@@ -35,7 +37,7 @@ public class SwingSensorErrorListDialog extends DefaultDialog {
                                       @Nonnull RepositoryFactory repositoryFactory,
                                       @Nonnull SensorErrorListConfigHolder configHolder,
                                       @Nonnull SensorErrorListContext context) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getLabels(SwingSensorErrorListDialog.class).get(ERROR_FORMULAS));
         this.repositoryFactory = repositoryFactory;
 
         measurementPanel = context.getElement(SwingSensorErrorListMeasurementPanel.class);
@@ -60,7 +62,7 @@ public class SwingSensorErrorListDialog extends DefaultDialog {
 
         String measurementName = measurementPanel.getMeasurementName();
         List<SensorError> list = new ArrayList<>();
-        if (measurementName.equalsIgnoreCase("Всі")) {
+        if (measurementName.equalsIgnoreCase(Labels.getRootLabels().get(RootLabelName.ALL_ALT))) {
             list.addAll(sensorErrorRepository.getAll());
         } else {
             List<String> measurementValues = Arrays.asList(measurementRepository.getValues(measurementName));

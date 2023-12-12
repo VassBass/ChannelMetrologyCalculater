@@ -1,5 +1,7 @@
 package service.sensor_error.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultComboBox;
 import repository.RepositoryFactory;
 import repository.repos.measurement.MeasurementRepository;
@@ -18,7 +20,7 @@ public class SwingSensorErrorListMeasurementPanel extends DefaultComboBox implem
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
 
         List<String> measurementsNameList = new ArrayList<>();
-        measurementsNameList.add("Всі");
+        measurementsNameList.add(Labels.getRootLabels().get(RootLabelName.ALL_ALT));
         measurementsNameList.addAll(Arrays.asList(measurementRepository.getAllNames()));
         this.setList(measurementsNameList);
         this.addItemListener(e -> manager.changingOfMeasurementName());
