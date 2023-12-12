@@ -81,6 +81,8 @@ public class Messages {
     }
 
     public static class Log {
+        private static final String MISSING_IMPL = "Can't find implementation for %s";
+
         public static final String INIT_SUCCESS = "Initialization completed successfully";
         public static final String EXCEPTION_THROWN = "Exception was thrown!";
         public static final String SERVICE_RUNNING = "Service is running";
@@ -88,7 +90,7 @@ public class Messages {
         public static final String PRINT_COMMAND_NOT_REGISTRATED = "The Print command is not registered in the system by default.";
 
         public static String missingImplementation(Class<?> c) {
-            return String.format("Can't find implementation for %s", c.getName());
+            return String.format(MISSING_IMPL, c.getName());
         }
     }
 }
