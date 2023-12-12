@@ -1,5 +1,6 @@
 package service.sensor_error.info.ui.swing;
 
+import localization.Labels;
 import model.dto.SensorError;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
@@ -14,13 +15,13 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class SwingSensorErrorInfoDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Формула похибки ПВП";
+    private static final String ERROR_FORMULA = "errorFormula";
 
     public SwingSensorErrorInfoDialog(@Nonnull SwingSensorErrorListDialog parentDialog,
                                       @Nonnull SensorErrorInfoConfigHolder configHolder,
                                       @Nonnull SensorErrorInfoContext context,
                                       @Nullable SensorError oldError) {
-        super(parentDialog, TITLE_TEXT);
+        super(parentDialog, Labels.getLabels(SwingSensorErrorInfoDialog.class).get(ERROR_FORMULA));
 
         SwingSensorErrorInfoSensorPanel sensorPanel = context.getElement(SwingSensorErrorInfoSensorPanel.class);
         SwingSensorErrorInfoErrorPanel errorPanel = context.getElement(SwingSensorErrorInfoErrorPanel.class);

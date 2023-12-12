@@ -1,5 +1,7 @@
 package service.sensor_error.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.SensorError;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
@@ -8,22 +10,21 @@ import service.sensor_error.info.SensorErrorInfoManager;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Objects;
 
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingSensorErrorInfoButtonsPanel extends DefaultPanel {
-    private static final String CLOSE_BUTTON_TEXT = "Відмінити";
-    private static final String REMOVE_BUTTON_TEXT = "Видалити";
-    private static final String SAVE_BUTTON_TEXT = "Зберегти";
 
     public SwingSensorErrorInfoButtonsPanel(@Nonnull SensorErrorInfoManager manager,
                                             @Nullable SensorError oldError) {
         super();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        DefaultButton closeButton = new DefaultButton(CLOSE_BUTTON_TEXT);
-        DefaultButton removeButton = new DefaultButton(REMOVE_BUTTON_TEXT);
-        DefaultButton saveButton = new DefaultButton(SAVE_BUTTON_TEXT);
+        DefaultButton closeButton = new DefaultButton(labels.get(RootLabelName.CLOSE));
+        DefaultButton removeButton = new DefaultButton(labels.get(RootLabelName.DELETE));
+        DefaultButton saveButton = new DefaultButton(labels.get(RootLabelName.SAVE));
 
         closeButton.addActionListener(e -> manager.clickClose());
         removeButton.addActionListener(e -> manager.clickRemove());

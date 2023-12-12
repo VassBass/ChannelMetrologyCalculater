@@ -4,7 +4,7 @@ import model.dto.SensorError;
 import repository.RepositoryFactory;
 import repository.repos.measurement.MeasurementRepository;
 import repository.repos.sensor_error.SensorErrorRepository;
-import service.sensor_error.info.SensorErrorInfoExecuter;
+import service.sensor_error.info.SensorErrorInfoExecutor;
 import service.sensor_error.list.ui.SensorErrorListContext;
 import service.sensor_error.list.ui.SensorErrorListMeasurementPanel;
 import service.sensor_error.list.ui.SensorErrorListTable;
@@ -65,13 +65,13 @@ public class SwingSensorErrorListManager implements SensorErrorListManager {
         if (Objects.nonNull(id)) {
             SensorErrorRepository repository = repositoryFactory.getImplementation(SensorErrorRepository.class);
             SensorError error = repository.getById(id);
-            new SensorErrorInfoExecuter(dialog, repositoryFactory, this, error).execute();
+            new SensorErrorInfoExecutor(dialog, repositoryFactory, this, error).execute();
         }
     }
 
     @Override
     public void clickAdd() {
-        new SensorErrorInfoExecuter(dialog, repositoryFactory, this, null).execute();
+        new SensorErrorInfoExecutor(dialog, repositoryFactory, this, null).execute();
     }
 
     @Override
