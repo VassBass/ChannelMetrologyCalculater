@@ -2,6 +2,8 @@ package service.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import localization.Labels;
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.StringHelper;
@@ -54,7 +56,7 @@ public class JacksonJsonObjectMapper implements JsonObjectMapper {
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return EMPTY;
         }
     }
@@ -72,7 +74,7 @@ public class JacksonJsonObjectMapper implements JsonObjectMapper {
         try {
             return mapper.readValue(json, clazz);
         } catch (JsonProcessingException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return null;
         }
     }
@@ -80,9 +82,9 @@ public class JacksonJsonObjectMapper implements JsonObjectMapper {
     @Override
     public Map<Double, Double> jsonToDoubleMap(@Nonnull String json) {
         Map<Double, Double> result = new HashMap<>();
-        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
+        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, EMPTY).replaceAll(NEW_STRING_REGEX, EMPTY).split(Labels.COMMA);
         for (String f : fields) {
-            String[] d = f.split(":");
+            String[] d = f.split(Labels.COLON);
 
             if (d.length < 2) continue;
             if (!StringHelper.isDouble(d[0])) continue;
