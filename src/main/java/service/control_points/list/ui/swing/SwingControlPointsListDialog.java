@@ -1,6 +1,8 @@
 package service.control_points.list.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -17,8 +19,6 @@ import static model.ui.builder.CellBuilder.BOTH;
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingControlPointsListDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Контрольні точки";
-
     private final ControlPointsListManager manager;
     private final SwingControlPointsListSortPanel sortPanel;
 
@@ -26,7 +26,7 @@ public class SwingControlPointsListDialog extends DefaultDialog {
                                         @Nonnull ControlPointsListConfigHolder configHolder,
                                         @Nonnull ControlPointsListContext context,
                                         @Nonnull ControlPointsListManager manager) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getRootLabels().get(RootLabelName.CONTROL_POINTS));
         this.manager = manager;
 
         sortPanel = context.getElement(SwingControlPointsListSortPanel.class);

@@ -116,4 +116,7 @@ public class RootLabelName {
 	public static final String DELETE_FIRST = "deleteFirst";
 	public static final String ADD_LAST = "addLast";
 	public static final String DELETE_LAST = "deleteLast";
+	public static final String WATCH = "watch";
+	public static final String ALL_ALT = "allAlt";
+	public static final String SORT_PARAMS = "sortParams";
 }

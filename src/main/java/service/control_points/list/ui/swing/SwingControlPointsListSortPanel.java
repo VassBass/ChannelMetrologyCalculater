@@ -1,5 +1,7 @@
 package service.control_points.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultComboBox;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
@@ -11,25 +13,21 @@ import service.control_points.list.ui.ControlPointsListSortPanel;
 import util.StringHelper;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class SwingControlPointsListSortPanel extends TitledPanel implements ControlPointsListSortPanel {
-    private static final String TITLE_TEXT = "Параметри сортування";
-    public static final String ALL_TEXT = "Всі";
+    private static final Map<String, String> labels = Labels.getRootLabels();
 
     private final DefaultComboBox measurementNameList;
     private final DefaultComboBox sensorTypeList;
 
     public SwingControlPointsListSortPanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull ControlPointsListManager manager) {
-        super(TITLE_TEXT);
+        super(labels.get(RootLabelName.SORT_PARAMS));
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
 
         measurementNameList = new DefaultComboBox(false);
         List<String> measurementNames = new ArrayList<>();
-        measurementNames.add(ALL_TEXT);
+        measurementNames.add(labels.get(RootLabelName.ALL_ALT));
         measurementNames.addAll(Arrays.asList(measurementRepository.getAllNames()));
         measurementNameList.setList(measurementNames);
 
@@ -39,7 +37,7 @@ public class SwingControlPointsListSortPanel extends TitledPanel implements Cont
         measurementNameList.addItemListener(e -> {
             SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);
             String selected = measurementNameList.getSelectedString();
-            if (selected.equals(ALL_TEXT)) {
+            if (selected.equals(labels.get(RootLabelName.ALL_ALT))) {
                 setSensorTypeList(Collections.emptyList());
                 manager.showAllControlPointsInTable();
             } else {
@@ -49,7 +47,7 @@ public class SwingControlPointsListSortPanel extends TitledPanel implements Cont
         });
 
         sensorTypeList.addItemListener(e -> {
-            if (StringHelper.nonEmpty(sensorTypeList.getSelectedString()) || !measurementNameList.getSelectedString().equals(ALL_TEXT)) {
+            if (StringHelper.nonEmpty(sensorTypeList.getSelectedString()) || !measurementNameList.getSelectedString().equals(labels.get(RootLabelName.ALL_ALT))) {
                 manager.showSortedControlPointsInTable();
             }
         });
