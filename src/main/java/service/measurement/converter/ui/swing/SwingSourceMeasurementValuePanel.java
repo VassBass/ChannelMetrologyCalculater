@@ -1,5 +1,6 @@
 package service.measurement.converter.ui.swing;
 
+import localization.Labels;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultPanel;
 import model.ui.DefaultTextField;
@@ -39,7 +40,7 @@ public class SwingSourceMeasurementValuePanel extends DefaultPanel implements Me
 
     @Override
     public double getValue() {
-        String val = value.getText().replaceAll(",", ".");
+        String val = value.getText().replaceAll(Labels.COMMA, Labels.DOT);
         return StringHelper.isDouble(val) ? Double.parseDouble(val) : Double.NaN;
     }
 }

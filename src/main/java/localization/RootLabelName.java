@@ -123,4 +123,6 @@ public class RootLabelName {
 	public static final String CONVERTER_TC = "converterTC";
 	public static final String RESULT = "result";
 	public static final String INPUT_VALUE = "inputValue";
+	public static final String CONVERTER = "converter";
+	public static final String RECALCULATE = "recalculate";
 }

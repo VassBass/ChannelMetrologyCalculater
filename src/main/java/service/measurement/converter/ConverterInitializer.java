@@ -2,6 +2,9 @@ package service.measurement.converter;
 
 import application.ApplicationMenu;
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -9,12 +12,10 @@ import service.ServiceInitializer;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import java.util.Map;
 
 public class ConverterInitializer implements ServiceInitializer {
     private static final Logger logger = LoggerFactory.getLogger(ConverterInitializer.class);
-
-    private static final String MENU_HEADER_TEXT = "Інструменти";
-    private static final String MENU_ITEM_CONVERTER_TEXT = "Перетворювач величин";
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -27,15 +28,17 @@ public class ConverterInitializer implements ServiceInitializer {
 
     @Override
     public void init() {
-        ApplicationMenu applicationMenu = applicationScreen.getMenu();
-        applicationMenu.addMenuIfNotExist(MENU_HEADER_TEXT);
+        Map<String, String> labels = Labels.getRootLabels();
 
-        JMenuItem btnConverter = new JMenuItem(MENU_ITEM_CONVERTER_TEXT);
+        ApplicationMenu applicationMenu = applicationScreen.getMenu();
+        applicationMenu.addMenuIfNotExist(labels.get(RootLabelName.TOOLS));
+
+        JMenuItem btnConverter = new JMenuItem(labels.get(RootLabelName.CONVERTER));
 
         btnConverter.addActionListener(e ->
                 new ConverterExecutor(applicationScreen, repositoryFactory).execute());
-        applicationMenu.addMenuItem(MENU_HEADER_TEXT, btnConverter);
+        applicationMenu.addMenuItem(labels.get(RootLabelName.TOOLS), btnConverter);
 
-        logger.info(("Initialization completed successfully"));
+        logger.info((Messages.Log.INIT_SUCCESS));
     }
 }
