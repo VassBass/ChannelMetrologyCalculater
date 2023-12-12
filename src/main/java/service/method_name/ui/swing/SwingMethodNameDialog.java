@@ -1,6 +1,7 @@
 package service.method_name.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -13,12 +14,12 @@ import javax.annotation.Nonnull;
 import static model.ui.builder.CellBuilder.HORIZONTAL;
 
 public class SwingMethodNameDialog extends DefaultDialog {
-    private static final String TITLE = "Методика розрахунку";
+    private static final String CALCULATION_METHOD = "calculationMethod";
 
     public SwingMethodNameDialog(@Nonnull ApplicationScreen applicationScreen,
                                  @Nonnull MethodNameConfigHolder configHolder,
                                  @Nonnull MethodNameContext context) {
-        super(applicationScreen, TITLE);
+        super(applicationScreen, Labels.getLabels(SwingMethodNameDialog.class).get(CALCULATION_METHOD));
 
         SwingMeasurementNamePanel measurementNamePanel = context.getElement(SwingMeasurementNamePanel.class);
         SwingMethodNamePanel namePanel = context.getElement(SwingMethodNamePanel.class);

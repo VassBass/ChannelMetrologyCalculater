@@ -1,5 +1,8 @@
 package service.method_name;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import repository.RepositoryFactory;
 import repository.repos.calculation_method.CalculationMethodRepository;
 import service.method_name.ui.MeasurementNamePanel;
@@ -12,6 +15,7 @@ import javax.swing.*;
 import java.util.Objects;
 
 public class SwingMethodNameManager implements MethodNameManager {
+    private static final String NAME_CHANGED_SUCCESS = "nameChangedSuccess";
 
     private final  RepositoryFactory repositoryFactory;
     private final MethodNameContext context;
@@ -41,7 +45,12 @@ public class SwingMethodNameManager implements MethodNameManager {
         String measurementName = measurementNamePanel.getMeasurementName();
         String methodName = methodNamePanel.getMethodName();
         repository.set(measurementName, methodName);
-        JOptionPane.showMessageDialog(dialog, "Назва успішно змінена","Успіх", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(
+                dialog,
+                Messages.getMessages(SwingMethodNameManager.class).get(NAME_CHANGED_SUCCESS),
+                Labels.getRootLabels().get(RootLabelName.SUCCESS),
+                JOptionPane.INFORMATION_MESSAGE
+        );
 
         dialog.shutdown();
 

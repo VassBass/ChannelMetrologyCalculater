@@ -7,9 +7,6 @@ public class UkraineLabels {
     }
 
     protected void init() {
-//        //Method
-//        calculationMethods = "Методи розрахунку";
-//
 //        //Person
 //        personsList = "Список персоналу";
 //
