@@ -1,5 +1,9 @@
 package service.sensor_types.info;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.ui.DefaultDialog;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
@@ -14,16 +18,21 @@ import service.sensor_types.info.ui.swing.SwingSensorTypesInfoDialog;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public class SwingSensorTypesInfoManager implements SensorTypesInfoManager {
     private static final Logger logger = LoggerFactory.getLogger(SwingSensorTypesInfoManager.class);
+
+    private static final String CHANGE_SUCCESS = "changeSuccess";
 
     private final RepositoryFactory repositoryFactory;
     private final DefaultDialog parentDialog;
     private final SensorTypesInfoContext context;
     private SwingSensorTypesInfoDialog dialog;
     private final String oldType;
+
+    private final Map<String, String> labels;
 
     public SwingSensorTypesInfoManager(@Nonnull RepositoryFactory repositoryFactory,
                                        @Nonnull DefaultDialog parentDialog,
@@ -33,6 +42,7 @@ public class SwingSensorTypesInfoManager implements SensorTypesInfoManager {
         this.parentDialog = parentDialog;
         this.context = context;
         this.oldType = oldType;
+        labels = Labels.getRootLabels();
     }
 
     public void registerDialog(SwingSensorTypesInfoDialog dialog) {
@@ -91,20 +101,28 @@ public class SwingSensorTypesInfoManager implements SensorTypesInfoManager {
             loadingDialog.shutdown();
             try {
                 if (get()) {
-                    String message = "Тип ПВП успішно змінено";
-                    JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            Messages.getMessages(SwingSensorTypesInfoManager.class).get(CHANGE_SUCCESS),
+                            labels.get(RootLabelName.SUCCESS),
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
                     dialog.shutdown();
                     parentDialog.refresh();
                 } else errorReaction();
             } catch (InterruptedException | ExecutionException e) {
-                logger.warn("Exception was thrown", e);
+                logger.warn(Messages.Log.EXCEPTION_THROWN, e);
                 errorReaction();
             }
         }
 
         private void errorReaction() {
-            String message = "Виникла помилка. Спробуйте ще";
-            JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    dialog,
+                    Messages.getRootMessages().get(RootMessageName.ERROR_TRY_AGAIN),
+                    labels.get(RootLabelName.ERROR),
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 }
