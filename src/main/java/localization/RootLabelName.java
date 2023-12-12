@@ -130,4 +130,5 @@ public class RootLabelName {
 	public static final String TYPE_OF_MEASUREMENTS = "typeOfMeasurements";
 	public static final String VALUE = "value";
 	public static final String CALCULATION_METHODS = "calculationMethods";
+	public static final String PERSONS_LIST = "personsList";
 }

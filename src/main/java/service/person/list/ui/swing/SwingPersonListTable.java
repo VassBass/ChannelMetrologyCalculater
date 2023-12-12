@@ -1,5 +1,6 @@
 package service.person.list.ui.swing;
 
+import localization.Labels;
 import model.dto.Person;
 import repository.RepositoryFactory;
 import repository.repos.person.PersonRepository;
@@ -11,10 +12,11 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SwingPersonListTable extends JTable implements PersonListTable {
-    private static final String COLUMN_NAME = "ПІБ";
-    private static final String COLUMN_POSITION = "Посада";
+    private static final String FULL_NAME = "fullName";
+    private static final String POSITION = "position";
 
     private final PersonRepository personRepository;
     private final List<Person> personList;
@@ -31,6 +33,8 @@ public class SwingPersonListTable extends JTable implements PersonListTable {
     }
 
     private DefaultTableModel tableModel(List<Person> personList){
+        Map<String, String> labels = Labels.getLabels(SwingPersonListTable.class);
+
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){
@@ -39,8 +43,8 @@ public class SwingPersonListTable extends JTable implements PersonListTable {
         };
 
         String[]columnsHeader = new String[] {
-                COLUMN_NAME,
-                COLUMN_POSITION
+                labels.get(FULL_NAME),
+                labels.get(POSITION)
         };
         model.setColumnIdentifiers(columnsHeader);
 

@@ -1,6 +1,8 @@
 package service.person.list.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -13,14 +15,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class SwingPersonListDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Список персоналу";
 
     private final SwingPersonListTable table;
 
     public SwingPersonListDialog(@Nonnull ApplicationScreen applicationScreen,
                                  @Nonnull PersonListContext context,
                                  @Nonnull PersonListConfigHolder configHolder) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getRootLabels().get(RootLabelName.PERSONS_LIST));
 
         table = context.getElement(SwingPersonListTable.class);
         SwingPersonListButtonsPanel buttonsPanel = context.getElement(SwingPersonListButtonsPanel.class);

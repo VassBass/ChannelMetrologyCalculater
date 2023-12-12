@@ -7,9 +7,6 @@ public class UkraineLabels {
     }
 
     protected void init() {
-//        //Person
-//        personsList = "Список персоналу";
-//
 //        //Sensor
 //        sensorsErrorList = "Список похибок ПВП";
 //        sensorTypesList = "Список типів ПВП";
