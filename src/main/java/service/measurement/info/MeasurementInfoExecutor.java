@@ -1,5 +1,6 @@
 package service.measurement.info;
 
+import localization.Messages;
 import model.dto.Measurement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,6 @@ public class MeasurementInfoExecutor implements ServiceExecutor {
         if (Objects.isNull(oldMeasurement)) manager.changeName();
 
         dialog.showing();
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

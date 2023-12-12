@@ -1,5 +1,9 @@
 package service.measurement.info;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.Measurement;
 import model.dto.MeasurementTransformFactor;
 import model.ui.LoadingDialog;
@@ -29,12 +33,17 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingMeasurementInfoManager implements MeasurementInfoManager {
+    private static final String EMPTY_VALUE_ERROR = "emptyValueError";
+    private static final String VALUE_EXISTS = "valueExists";
 
     private final RepositoryFactory repositoryFactory;
     private final MeasurementInfoContext context;
     private final Measurement oldMeasurement;
     private final SwingMeasurementListDialog parentDialog;
     private SwingMeasurementInfoDialog dialog;
+
+    private final Map<String, String> messages;
+    private final Map<String, String> labels;
 
     public SwingMeasurementInfoManager(@Nonnull RepositoryFactory repositoryFactory,
                                        @Nonnull MeasurementInfoContext context,
@@ -44,6 +53,9 @@ public class SwingMeasurementInfoManager implements MeasurementInfoManager {
         this.context = context;
         this.oldMeasurement = oldMeasurement;
         this.parentDialog = parentDialog;
+
+        messages = Messages.getMessages(SwingMeasurementInfoManager.class);
+        labels = Labels.getRootLabels();
     }
 
     public void registerDialog(@Nonnull SwingMeasurementInfoDialog dialog) {
@@ -103,8 +115,7 @@ public class SwingMeasurementInfoManager implements MeasurementInfoManager {
         Map<String, Double> factors = factorsPanel.getFactorList();
 
         if (value.isEmpty()) {
-            String message = "Назва величини не може бути пустою!";
-            JOptionPane.showMessageDialog(dialog, message, "Помилковий ввод", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(dialog, messages.get(EMPTY_VALUE_ERROR), labels.get(RootLabelName.INPUT_NOT_VALID), JOptionPane.ERROR_MESSAGE);
         } else if (Objects.isNull(factors)) {
             dialog.refresh();
         } else {
@@ -203,12 +214,10 @@ public class SwingMeasurementInfoManager implements MeasurementInfoManager {
     }
 
     private void showExistMessage() {
-        String message = "Величина з такою назвою вже існує в базі";
-        JOptionPane.showMessageDialog(dialog, message, "Помилковий ввод", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(dialog, messages.get(VALUE_EXISTS), labels.get(RootLabelName.INPUT_NOT_VALID), JOptionPane.ERROR_MESSAGE);
     }
 
     private void showSaveSuccessMessage() {
-        String message = "Дані успішно збережено";
-        JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(dialog, Messages.getRootMessages().get(RootMessageName.DATA_SAVE_SUCCESS), labels.get(RootLabelName.SUCCESS), JOptionPane.INFORMATION_MESSAGE);
     }
 }
