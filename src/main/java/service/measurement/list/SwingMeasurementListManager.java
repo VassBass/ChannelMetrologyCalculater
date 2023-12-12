@@ -1,5 +1,9 @@
 package service.measurement.list;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.Measurement;
 import model.dto.MeasurementTransformFactor;
 import model.ui.LoadingDialog;
@@ -25,15 +29,22 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SwingMeasurementListManager implements MeasurementListManager {
+    private static final String DELETE_LAST_ERROR = "deleteLastError";
+    private static final String DELETE_QUESTION = "deleteQuestion";
 
     private final RepositoryFactory repositoryFactory;
     private final MeasurementListContext context;
     private SwingMeasurementListDialog dialog;
 
+    private final Map<String, String> messages;
+    private final Map<String, String> labels;
+
     public SwingMeasurementListManager(@Nonnull RepositoryFactory repositoryFactory,
                                        @Nonnull MeasurementListContext context) {
         this.repositoryFactory = repositoryFactory;
         this.context = context;
+        messages = Messages.getMessages(SwingMeasurementListManager.class);
+        labels = Labels.getRootLabels();
     }
 
     public void registerDialog(SwingMeasurementListDialog dialog) {
@@ -82,6 +93,7 @@ public class SwingMeasurementListManager implements MeasurementListManager {
         new MeasurementInfoExecutor(dialog, repositoryFactory, null).execute();
     }
 
+    @SuppressWarnings("all")
     @Override
     public void clickRemove() {
         MeasurementListValueTable valueTable = context.getElement(MeasurementListValueTable.class);
@@ -94,12 +106,11 @@ public class SwingMeasurementListManager implements MeasurementListManager {
                 MeasurementListNamePanel namePanel = context.getElement(MeasurementListNamePanel.class);
 
                 String measurementName = namePanel.getSelectedName();
-                String message = String.format("Не можна видалити останню вимірювальну величину для вимірюваннь типу \"%s\"!", measurementName);
-                JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                String message = String.format(messages.get(DELETE_LAST_ERROR), measurementName);
+                JOptionPane.showMessageDialog(dialog, message, labels.get(RootLabelName.ERROR), JOptionPane.ERROR_MESSAGE);
             } else {
-                String message = String.format("Ви впевнені що хочете видалити вимірювальну величину \"%s\"?" +
-                        " Всі записи в базі данних, де фігурує ця величина будуть змінені на іншу для данного типу вимірюваннь", selectedValue);
-                int result = JOptionPane.showConfirmDialog(dialog, message, "Видалення", JOptionPane.YES_NO_OPTION);
+                String message = String.format(messages.get(DELETE_QUESTION), selectedValue);
+                int result = JOptionPane.showConfirmDialog(dialog, message, labels.get(RootLabelName.DELETING), JOptionPane.YES_NO_OPTION);
                 if (result == 0) {
                     Measurement measurement = measurementRepository.getByValue(selectedValue);
                     Measurement measurementToChange = measurementRepository.getAnyNotEquals(measurement);
@@ -130,8 +141,12 @@ public class SwingMeasurementListManager implements MeasurementListManager {
                             @Override
                             protected void done() {
                                 loadingDialog.shutdown();
-                                String message = "Видалення пройшло успішно";
-                                JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                                JOptionPane.showMessageDialog(
+                                        dialog,
+                                        Messages.getRootMessages().get(RootMessageName.DELETING_SUCCESS),
+                                        labels.get(RootLabelName.SUCCESS),
+                                        JOptionPane.INFORMATION_MESSAGE
+                                );
                                 dialog.refresh();
                             }
                         }.execute();

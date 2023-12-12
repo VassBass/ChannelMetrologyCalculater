@@ -125,4 +125,8 @@ public class RootLabelName {
 	public static final String INPUT_VALUE = "inputValue";
 	public static final String CONVERTER = "converter";
 	public static final String RECALCULATE = "recalculate";
+	public static final String MEASUREMENT_LIST = "measurementList";
+	public static final String CHANGE = "change";
+	public static final String TYPE_OF_MEASUREMENTS = "typeOfMeasurements";
+	public static final String VALUE = "value";
 }

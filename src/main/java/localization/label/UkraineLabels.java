@@ -7,15 +7,6 @@ public class UkraineLabels {
     }
 
     protected void init() {
-//        //Calibrator
-//        calibratorsList = ;
-//
-//        //Control points
-//        controlPointsOfMeasurements = "Контрольні точки вимірюваннь";
-//
-//        //Measurement
-//        measurementsList = "Список вимірювальних величин";
-//
 //        //Method
 //        calculationMethods = "Методи розрахунку";
 //

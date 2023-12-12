@@ -1,5 +1,7 @@
 package service.measurement.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import service.measurement.list.MeasurementListManager;
 import service.measurement.list.ui.MeasurementListValueTable;
 
@@ -10,7 +12,6 @@ import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
 public class SwingMeasurementListValueTable extends JTable implements MeasurementListValueTable {
-     private static final String COLUMN_VALUE = "Величина";
 
     public SwingMeasurementListValueTable(@Nonnull MeasurementListManager manager){
         super();
@@ -30,7 +31,7 @@ public class SwingMeasurementListValueTable extends JTable implements Measuremen
                 }
             };
 
-        String[]columnsHeader = new String[] { COLUMN_VALUE };
+        String[]columnsHeader = new String[] {Labels.getRootLabels().get(RootLabelName.VALUE) };
         model.setColumnIdentifiers(columnsHeader);
 
         for (String val : valueList) {
