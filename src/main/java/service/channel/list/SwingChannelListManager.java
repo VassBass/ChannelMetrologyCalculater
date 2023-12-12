@@ -1,6 +1,10 @@
 package service.channel.list;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.Channel;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
@@ -22,27 +26,21 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class SwingChannelListManager implements ChannelListManager {
     private static final Logger logger = LoggerFactory.getLogger(SwingChannelListManager.class);
 
-    private static final String SUCCESS = "Успіх";
-    private static final String ERROR = "Помилка";
-    private static final String REMOVE_QUESTION_TITLE_FORM = "Видалити: \"%s\"";
-    private static final String REMOVE_QUESTION_FORM = "Ви впевнені що хочете видалити канал: \"%s\"";
-    private static final String REMOVE_SUCCESS_MESSAGE = "Канал був успішно видалений";
-    private static final String EXCEPTION_MESSAGE = "Exception was thrown";
-    private static final String ERROR_MESSAGE = "Виникла помилка, будь ласка спробуйте ще раз";
-    private static final String SEARCH_SUCCESS_MESSAGE_FORM = "Канал з кодом \"%s\" було знайдено: \"%s\". Відкрити про нього інформацію?";
-    private static final String SEARCH_SUCCESS_TITLE = "Знайдено";
-    private static final String SEARCH_FAIL_MESSAGE_FORM = "Канал з кодом \"%s\" не знайдено в базі.";
-    private static final String SEARCH_FAIL_TITLE = "Не знайдено";
+    private static final String DELETE_CHANNEL_QUESTION = "deleteChannelQuestion";
+    private static final String DELETE_CHANNEL_SUCCESS = "deleteChannelSuccess";
+    private static final String SEARCH_SUCCESS_QUESTION = "searchSuccessQuestion";
+    private static final String SEARCH_FAIL = "searchFail";
+
+    private final Map<String, String> rootLabels;
+    private final Map<String, String> rootMessages;
+    private final Map<String, String> messages;
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -57,6 +55,9 @@ public class SwingChannelListManager implements ChannelListManager {
         this.repositoryFactory = repositoryFactory;
         this.configHolder = configHolder;
         this.context = context;
+        rootLabels = Labels.getRootLabels();
+        rootMessages = Messages.getRootMessages();
+        messages = Messages.getMessages(SwingChannelListManager.class);
     }
 
     @Override
@@ -98,8 +99,8 @@ public class SwingChannelListManager implements ChannelListManager {
         if (channelCode != null) {
             Channel channel = channelRepository.get(channelCode);
             if (channel != null) {
-                String message = String.format(REMOVE_QUESTION_FORM, channel.getName());
-                String title = String.format(REMOVE_QUESTION_TITLE_FORM, channelCode);
+                String message = String.format("%s: \"%s\"", messages.get(DELETE_CHANNEL_QUESTION), channel.getName());
+                String title = String.format("%s: \"%s\"", rootLabels.get(RootLabelName.DELETE), channelCode);
                 int result = JOptionPane.showConfirmDialog(applicationScreen, message, title, JOptionPane.YES_NO_OPTION);
                 if (result == 0) {
                     LoadingDialog loadingDialog = new LoadingDialog(applicationScreen);
@@ -116,7 +117,7 @@ public class SwingChannelListManager implements ChannelListManager {
                             loadingDialog.shutdown();
                             try {
                                 if (get()) {
-                                    JOptionPane.showMessageDialog(applicationScreen, REMOVE_SUCCESS_MESSAGE, SUCCESS, JOptionPane.INFORMATION_MESSAGE);
+                                    JOptionPane.showMessageDialog(applicationScreen, messages.get(DELETE_CHANNEL_SUCCESS), rootLabels.get(RootLabelName.SUCCESS), JOptionPane.INFORMATION_MESSAGE);
                                 } else errorReaction(null);
                             } catch (InterruptedException | ExecutionException e) {
                                 errorReaction(e);
@@ -125,8 +126,8 @@ public class SwingChannelListManager implements ChannelListManager {
                         }
 
                         private void errorReaction(Exception e) {
-                            logger.warn(EXCEPTION_MESSAGE, e);
-                            JOptionPane.showMessageDialog(applicationScreen, ERROR_MESSAGE, ERROR, JOptionPane.ERROR_MESSAGE);
+                            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
+                            JOptionPane.showMessageDialog(applicationScreen, rootMessages.get(RootMessageName.ERROR_TRY_AGAIN), rootLabels.get(RootLabelName.ERROR), JOptionPane.ERROR_MESSAGE);
                         }
                     }.execute();
                 }
@@ -167,7 +168,7 @@ public class SwingChannelListManager implements ChannelListManager {
                 if (!certificateFolder.exists()) certificateFolder.mkdirs();
                 desktop.open(certificateFolder);
             } catch (Exception ex) {
-                logger.warn(EXCEPTION_MESSAGE, ex);
+                logger.warn(Messages.Log.EXCEPTION_THROWN, ex);
             }
         }
     }
@@ -180,16 +181,16 @@ public class SwingChannelListManager implements ChannelListManager {
         String channelCode = searchPanel.getChannelCode();
         Channel channel = channelRepository.get(channelCode);
         if (Objects.nonNull(channel)) {
-            String message = String.format(SEARCH_SUCCESS_MESSAGE_FORM, channelCode, channel.getName());
-            int result = JOptionPane.showConfirmDialog(applicationScreen, message, SEARCH_SUCCESS_TITLE, JOptionPane.YES_NO_OPTION);
+            String message = String.format(messages.get(SEARCH_SUCCESS_QUESTION), channelCode, channel.getName());
+            int result = JOptionPane.showConfirmDialog(applicationScreen, message, rootLabels.get(RootLabelName.FOUNDED), JOptionPane.YES_NO_OPTION);
             if (result == 0) {
                 new SwingChannelInfoExecutor(applicationScreen, repositoryFactory, this)
                         .registerChannel(channel)
                         .execute();
             }
         } else {
-            String message = String.format(SEARCH_FAIL_MESSAGE_FORM, channelCode);
-            JOptionPane.showMessageDialog(applicationScreen, message, SEARCH_FAIL_TITLE, JOptionPane.INFORMATION_MESSAGE);
+            String message = String.format(messages.get(SEARCH_FAIL), channelCode);
+            JOptionPane.showMessageDialog(applicationScreen, message, rootLabels.get(RootLabelName.NOT_FOUNDED), JOptionPane.INFORMATION_MESSAGE);
         }
     }
 

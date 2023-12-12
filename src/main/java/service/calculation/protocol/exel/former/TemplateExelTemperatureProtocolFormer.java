@@ -30,8 +30,7 @@ import static util.RegexHelper.DOT_REGEX;
 import static util.StringHelper.FOR_LAST_ZERO;
 
 public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer {
-    protected static final String EXTRAORDINARY = "extraordinary";
-    protected static final String METROLOGY_HEAD_POSITION = "metrologyHeadPosition";
+    private static final String METROLOGY_HEAD_POSITION = "metrologyHeadPosition";
 
     private static final String UNDERLINED_EMPTY = "underlineEmpty";
 
@@ -62,6 +61,7 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
     }
 
     protected void appendMainInfo(Protocol protocol) {
+        Map<String, String> rootLabels = Labels.getRootLabels();
         final CalculationMethodRepository calculationMethodRepository = repositoryFactory.getImplementation(CalculationMethodRepository.class);
 
         final boolean suitable = protocol.getChannel().getAllowableErrorPercent() >= protocol.getRelativeError();
@@ -95,8 +95,8 @@ public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer
         String nextDate;
         if (suitable){
             nextDate = DateHelper.getNextDate(checkDate, protocol.getChannel().getFrequency());
-            if (nextDate.isEmpty()) nextDate = labels.get(EXTRAORDINARY);
-        }else nextDate = labels.get(EXTRAORDINARY);
+            if (nextDate.isEmpty()) nextDate = labels.get(rootLabels.get(RootLabelName.EXTRAORDINARY));
+        }else nextDate = labels.get(rootLabels.get(RootLabelName.EXTRAORDINARY));
         cell(38,14).setCellValue(nextDate);
 
         if (!suitable) {

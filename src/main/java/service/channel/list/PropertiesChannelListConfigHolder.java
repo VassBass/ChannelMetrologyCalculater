@@ -1,5 +1,6 @@
 package service.channel.list;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,7 @@ public class PropertiesChannelListConfigHolder implements ChannelListConfigHolde
 
             channelCertificateFolder = properties.getProperty(KEY_CHANNELS_CERTIFICATE_FOLDER, EMPTY);
         } catch (IOException e) {
-            logger.warn("Exception was thrown: ", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 

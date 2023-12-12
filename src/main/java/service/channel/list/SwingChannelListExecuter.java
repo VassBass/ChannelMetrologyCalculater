@@ -2,6 +2,7 @@ package service.channel.list;
 
 import application.ApplicationMenu;
 import application.ApplicationScreen;
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -36,6 +37,6 @@ public class SwingChannelListExecuter implements ServiceExecutor {
         applicationMenu.addMenuIfNotExist(new SwingMenuChannelList(manager));
 
         manager.revaluateChannelTable();
-        logger.info("The service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

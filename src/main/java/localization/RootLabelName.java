@@ -83,4 +83,14 @@ public class RootLabelName {
 	public static final String SENSOR_SHORT = "sensorShort";
 	public static final String SENSOR_LONG = "sensorLong";
 	public static final String SERIAL_NUMBER_SHORT = "_serialNumberShort";
+	public static final String FOUNDED = "founded";
+	public static final String NOT_FOUNDED = "notFounded";
+	public static final String CERTIFICATES = "certificates";
+	public static final String PROTOCOLS = "protocols";
+	public static final String EXTRAORDINARY = "extraordinary";
+	public static final String CODE = "code";
+	public static final String START_SEARCH = "startSearch";
+	public static final String ADVANCED_SEARCH = "advancedSearch";
+	public static final String TECHNOLOGICAL_NUMBER = "technologicalNumber";
+	public static final String CHANNEL = "channel";
 }

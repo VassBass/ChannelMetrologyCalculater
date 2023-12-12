@@ -1,5 +1,7 @@
 package service.channel.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Channel;
 import model.dto.Sensor;
 import model.ui.ButtonCell;
@@ -11,17 +13,16 @@ import util.DateHelper;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Calendar;
+import java.util.Map;
 
 import static model.ui.ButtonCell.HEADER;
 import static model.ui.ButtonCell.SIMPLE;
 
 public class SwingChannelListInfoTable extends JPanel implements ChannelListInfoTable {
-    private static final String COLUMN_NEXT_DATE = "Дата наступної перевірки";
-    private static final String COLUMN_PATH = "Розташування";
-    private static final String COLUMN_SENSOR = "Первинний вимірювальний пристрій";
     private static final String DEFAULT_NEXT_DATE = "XX.XX.XXXX";
-    private static final String DASH = " - ";
-    private static final String EXTRAORDINARY = "Позачерговий";
+    private static final String DASH = Labels.SPACE + Labels.DASH + Labels.SPACE;
+
+    private final Map<String, String> labels;
 
     private final ChannelListService service;
 
@@ -31,11 +32,12 @@ public class SwingChannelListInfoTable extends JPanel implements ChannelListInfo
 
     public SwingChannelListInfoTable(ChannelListService service){
         super(new GridBagLayout());
+        this.labels = Labels.getRootLabels();
         this.service = service;
 
-        ButtonCell nextDateHeader = new ButtonCell(HEADER, COLUMN_NEXT_DATE);
-        ButtonCell pathHeader = new ButtonCell(HEADER, COLUMN_PATH);
-        ButtonCell sensorHeader = new ButtonCell(HEADER, COLUMN_SENSOR);
+        ButtonCell nextDateHeader = new ButtonCell(HEADER, labels.get(RootLabelName.NEXT_CHECK_DATE));
+        ButtonCell pathHeader = new ButtonCell(HEADER, labels.get(RootLabelName.LOCATION));
+        ButtonCell sensorHeader = new ButtonCell(HEADER, labels.get(RootLabelName.SENSOR_LONG));
 
         nextDate = new ButtonCell(SIMPLE, DEFAULT_NEXT_DATE);
         path = new ButtonCell(SIMPLE, DASH);
@@ -59,7 +61,7 @@ public class SwingChannelListInfoTable extends JPanel implements ChannelListInfo
         }else {
             Calendar nextDateCal = service.getDateOfNextCheck(channel);
             String nextDateText = nextDateCal == null ?
-                    EXTRAORDINARY :
+                    labels.get(RootLabelName.EXTRAORDINARY) :
                     DateHelper.dateToString(nextDateCal);
             nextDate.setText(nextDateText);
             nextDate.setBackground(setBackgroundColorFromDate(nextDateCal));

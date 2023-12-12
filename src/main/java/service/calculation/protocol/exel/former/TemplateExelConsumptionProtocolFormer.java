@@ -1,6 +1,7 @@
 package service.calculation.protocol.exel.former;
 
 import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.dto.Sensor;
@@ -24,9 +25,12 @@ import static util.StringHelper.FOR_LAST_ZERO;
 public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatureProtocolFormer {
     private static final String NOT_SUITABLE = "notSuitable";
 
+    private final Map<String, String> rootLabels;
+
     public TemplateExelConsumptionProtocolFormer(@Nonnull HSSFWorkbook book,
                                                  @Nonnull RepositoryFactory repositoryFactory) {
         super(book, repositoryFactory);
+        rootLabels = Labels.getRootLabels();
     }
 
     @Override
@@ -71,8 +75,8 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         String nextDate;
         if (suitable){
             nextDate = DateHelper.getNextDate(checkDate, protocol.getChannel().getFrequency());
-            if (nextDate.isEmpty()) nextDate = EXTRAORDINARY;
-        } else nextDate = EXTRAORDINARY;
+            if (nextDate.isEmpty()) nextDate = rootLabels.get(RootLabelName.EXTRAORDINARY);
+        } else nextDate = rootLabels.get(RootLabelName.EXTRAORDINARY);
         if (isRosemount8714DQ4Calibrator) {
             cell(38, 14).setCellValue(nextDate);
         } else {
@@ -155,7 +159,7 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         cell(31,15).setCellValue(measurementValue);
 
         final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll(DOT_REGEX, Labels.COMMA);
-        cell(24,16).setCellValue(String.format("%sр.", frequency));
+        cell(24,16).setCellValue(String.format("%s%s", frequency, rootLabels.get(RootLabelName.YEAR_SHORT)));
     }
 
     @Override
