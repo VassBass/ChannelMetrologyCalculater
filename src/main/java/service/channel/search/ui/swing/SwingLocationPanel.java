@@ -1,5 +1,7 @@
 package service.channel.search.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
@@ -7,38 +9,34 @@ import model.ui.builder.CellBuilder;
 import service.channel.search.ui.LocationPanel;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingLocationPanel extends TitledPanel implements LocationPanel {
-    private static final String TITLE = "Місце знаходження каналу";
-    private static final String LIST_ITEM_IGNORE = " - ";
-    private static final String LIST_ITEM_ALL = "Все";
-    private static final String LIST_ITEM_DEPARTMENT = "Цех";
-    private static final String LIST_ITEM_AREA = "Дільниця";
-    private static final String LIST_ITEM_PROCESS = "Секція, технологічна лінія, тощо";
-    private static final String LIST_ITEM_INSTALLATION = "Установка";
+    private static final String CHANNEL_LOCATION = "channelLocation";
 
     private final DefaultComboBox zone;
     private final DefaultTextField value;
 
     public SwingLocationPanel() {
-        super(TITLE);
+        super(Labels.getLabels(SwingLocationPanel.class).get(CHANNEL_LOCATION));
+        Map<String, String> rootLabels = Labels.getRootLabels();
 
         zone = new DefaultComboBox(false);
         zone.setList(Arrays.asList(
-                LIST_ITEM_IGNORE,
-                LIST_ITEM_ALL,
-                LIST_ITEM_DEPARTMENT,
-                LIST_ITEM_AREA,
-                LIST_ITEM_PROCESS,
-                LIST_ITEM_INSTALLATION
+                Labels.SPACE_DASH_SPACE,
+                rootLabels.get(RootLabelName.ALL),
+                rootLabels.get(RootLabelName.DEPARTMENT),
+                rootLabels.get(RootLabelName.AREA),
+                rootLabels.get(RootLabelName.PROCESS),
+                rootLabels.get(RootLabelName.INSTALLATION)
         ));
 
         value = new DefaultTextField(20);
         value.setEnabled(false);
 
-        zone.addItemListener(e -> value.setEnabled(!zone.getSelectedString().equals(LIST_ITEM_IGNORE)));
+        zone.addItemListener(e -> value.setEnabled(!zone.getSelectedString().equals(Labels.SPACE_DASH_SPACE)));
 
         this.add(zone, new CellBuilder().fill(NONE).x(0).build());
         this.add(value, new CellBuilder().fill(NONE).x(1).build());

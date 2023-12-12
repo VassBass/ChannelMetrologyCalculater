@@ -1,6 +1,8 @@
 package service.channel.search.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -9,14 +11,21 @@ import service.channel.search.ui.ChannelSearchContext;
 import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 
 public class SwingChannelSearchDialog extends DefaultDialog {
-    private static final String TITLE = "Розширений пошук ВК";
+
+    private static final Map<String, String> labels = Labels.getRootLabels();
 
     public SwingChannelSearchDialog(@Nonnull ApplicationScreen applicationScreen,
                                     @Nonnull ChannelSearchConfigHolder configHolder,
                                     @Nonnull ChannelSearchContext context) {
-        super(applicationScreen, TITLE);
+        super(
+                applicationScreen,
+                labels.get(RootLabelName.ADVANCED_SEARCH) +
+                        Labels.SPACE +
+                        labels.get(RootLabelName.CHANNEL_SHORT)
+        );
 
         SwingDatePanel datePanel = context.getElement(SwingDatePanel.class);
         SwingLocationPanel locationPanel = context.getElement(SwingLocationPanel.class);

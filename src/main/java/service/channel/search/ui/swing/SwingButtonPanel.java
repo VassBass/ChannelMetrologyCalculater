@@ -1,23 +1,25 @@
 package service.channel.search.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.channel.search.ChannelSearchManager;
 
+import java.util.Map;
+
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingButtonPanel extends DefaultPanel {
-    private static final String START_BUTTON_TEXT = "Шукати";
-    private static final String CANCEL_BUTTON_TEXT = "Відмінити пошук";
-    private static final String CLOSE_BUTTON_TEXT = "Закрити";
 
     public SwingButtonPanel(ChannelSearchManager manager) {
         super();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        DefaultButton startButton = new DefaultButton(START_BUTTON_TEXT);
-        DefaultButton cancelButton = new DefaultButton(CANCEL_BUTTON_TEXT);
-        DefaultButton closeButton = new DefaultButton(CLOSE_BUTTON_TEXT);
+        DefaultButton startButton = new DefaultButton(labels.get(RootLabelName.START_SEARCH));
+        DefaultButton cancelButton = new DefaultButton(labels.get(RootLabelName.CANCEL_SEARCH));
+        DefaultButton closeButton = new DefaultButton(labels.get(RootLabelName.CLOSE));
 
         startButton.addActionListener(e -> manager.clickStart());
         cancelButton.addActionListener(e -> manager.clickCancel());

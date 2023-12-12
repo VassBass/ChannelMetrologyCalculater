@@ -20,7 +20,6 @@ import static model.ui.ButtonCell.SIMPLE;
 
 public class SwingChannelListInfoTable extends JPanel implements ChannelListInfoTable {
     private static final String DEFAULT_NEXT_DATE = "XX.XX.XXXX";
-    private static final String DASH = Labels.SPACE + Labels.DASH + Labels.SPACE;
 
     private final Map<String, String> labels;
 
@@ -40,8 +39,8 @@ public class SwingChannelListInfoTable extends JPanel implements ChannelListInfo
         ButtonCell sensorHeader = new ButtonCell(HEADER, labels.get(RootLabelName.SENSOR_LONG));
 
         nextDate = new ButtonCell(SIMPLE, DEFAULT_NEXT_DATE);
-        path = new ButtonCell(SIMPLE, DASH);
-        sensor = new ButtonCell(SIMPLE, DASH);
+        path = new ButtonCell(SIMPLE, Labels.SPACE_DASH_SPACE);
+        sensor = new ButtonCell(SIMPLE, Labels.SPACE_DASH_SPACE);
 
         this.add(nextDateHeader, new CellBuilder().coordinates(0,0).build());
         this.add(pathHeader, new CellBuilder().coordinates(1,0).build());
@@ -56,8 +55,8 @@ public class SwingChannelListInfoTable extends JPanel implements ChannelListInfo
         if (channel == null){
             nextDate.setText(DEFAULT_NEXT_DATE);
             nextDate.setBackground(Color.WHITE);
-            path.setText(DASH);
-            sensor.setText(DASH);
+            path.setText(Labels.SPACE_DASH_SPACE);
+            sensor.setText(Labels.SPACE_DASH_SPACE);
         }else {
             Calendar nextDateCal = service.getDateOfNextCheck(channel);
             String nextDateText = nextDateCal == null ?

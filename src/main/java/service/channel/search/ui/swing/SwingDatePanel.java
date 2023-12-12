@@ -1,5 +1,8 @@
 package service.channel.search.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.ui.IntegerTextField;
 import model.ui.TitledComboBox;
 import model.ui.TitledPanel;
@@ -8,41 +11,42 @@ import service.channel.search.ui.DatePanel;
 
 import javax.swing.*;
 import java.util.Arrays;
+import java.util.Map;
 
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingDatePanel extends TitledPanel implements DatePanel {
-    private static final String TITLE = "Дата останнього КМХ";
-    private static final String YEAR_TOOLTIP_TEXT = "Щоб проігнорувати в пошуку рік введіть в поле вводу \"0\"";
-    private static final String MONTH_TITLE = "Місяць";
-    private static final String YEAR_TITLE = "Рік";
+    private static final String YEAR_IGNORING = "yearIgnoring";
 
     private final TitledComboBox month;
     private final IntegerTextField year;
 
-    public SwingDatePanel() {
-        super(TITLE);
+    private static final Map<String, String> labels = Labels.getRootLabels();
 
-        month = new TitledComboBox(false, MONTH_TITLE);
+    public SwingDatePanel() {
+        super(labels.get(RootLabelName.LAST_CHECK_DATE));
+        Map<String, String> messages = Messages.getMessages(SwingDatePanel.class);
+
+        month = new TitledComboBox(false, labels.get(RootLabelName.MONTH));
         month.setList(Arrays.asList(
-                " - ",
-                "Січень",
-                "Лютий",
-                "Березень",
-                "Квітень",
-                "Травень",
-                "Червень",
-                "Липень",
-                "Серпень",
-                "Вересень",
-                "Жовтень",
-                "Листопад",
-                "Грудень"
+                Labels.SPACE_DASH_SPACE,
+                labels.get(RootLabelName.JANUARY),
+                labels.get(RootLabelName.FEBRUARY),
+                labels.get(RootLabelName.MARCH),
+                labels.get(RootLabelName.APRIL),
+                labels.get(RootLabelName.MAY),
+                labels.get(RootLabelName.JUNE),
+                labels.get(RootLabelName.JULY),
+                labels.get(RootLabelName.AUGUST),
+                labels.get(RootLabelName.SEPTEMBER),
+                labels.get(RootLabelName.OCTOBER),
+                labels.get(RootLabelName.NOVEMBER),
+                labels.get(RootLabelName.DECEMBER)
         ));
 
-        year = new IntegerTextField(4, YEAR_TOOLTIP_TEXT);
-        year.setText("0");
-        year.setBorder(BorderFactory.createTitledBorder(YEAR_TITLE));
+        year = new IntegerTextField(4, messages.get(YEAR_IGNORING));
+        year.setText(Labels.ZERRO);
+        year.setBorder(BorderFactory.createTitledBorder(labels.get(RootLabelName.YEAR)));
 
         this.add(month, new CellBuilder().fill(NONE).x(0).build());
         this.add(year, new CellBuilder().fill(NONE).x(1).build());

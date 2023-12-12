@@ -93,4 +93,21 @@ public class RootLabelName {
 	public static final String ADVANCED_SEARCH = "advancedSearch";
 	public static final String TECHNOLOGICAL_NUMBER = "technologicalNumber";
 	public static final String CHANNEL = "channel";
+	public static final String CANCEL_SEARCH = "cancelSearch";
+	public static final String JANUARY = "january";
+	public static final String FEBRUARY = "february";
+	public static final String MARCH = "march";
+	public static final String APRIL = "april";
+	public static final String MAY = "may";
+	public static final String JUNE = "june";
+	public static final String JULY = "july";
+	public static final String AUGUST = "august";
+	public static final String SEPTEMBER = "september";
+	public static final String OCTOBER = "october";
+	public static final String NOVEMBER = "november";
+	public static final String DECEMBER = "december";
+	public static final String DEPARTMENT = "department";
+	public static final String AREA = "area";
+	public static final String PROCESS = "process";
+	public static final String INSTALLATION = "installation";
 }

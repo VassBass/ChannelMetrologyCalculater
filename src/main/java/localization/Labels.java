@@ -27,6 +27,7 @@ public class Labels {
     public static final String DOT = ".";
     public static final char dot = '.';
     public static final String DASH = "-";
+    public static final String SPACE_DASH_SPACE = " - ";
     public static final String COMMA = ",";
     public static final String COLON = ":";
     public static final String SPACE = " ";

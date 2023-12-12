@@ -1,5 +1,9 @@
 package service.channel.search;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.ui.LoadingDialog;
 import repository.repos.channel.SearchParams;
 import service.channel.list.ChannelListManager;
@@ -84,7 +88,12 @@ public class SwingChannelSearchManager implements ChannelSearchManager {
         }
 
         private void showErrorMessage() {
-            JOptionPane.showMessageDialog(dialog, "Виникла помилка", "Помилка", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    dialog,
+                    Messages.getRootMessages().get(RootMessageName.ERROR_TRY_AGAIN),
+                    Labels.getRootLabels().get(RootLabelName.ERROR),
+                    JOptionPane.ERROR_MESSAGE
+            );
             SearchParams.SEARCH_BUFFER = null;
         }
     }
