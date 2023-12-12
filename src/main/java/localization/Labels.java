@@ -42,6 +42,7 @@ public class Labels {
     public static final String FOUR = "4";
     public static final String FIVE = "5";
     public static final String TWENTY = "20";
+    public static final String ONE_HUNDRED = "100";
     public static final String TWO_HUNDRED = "200";
 
     private static final Map<String, Map<String, String>> l;

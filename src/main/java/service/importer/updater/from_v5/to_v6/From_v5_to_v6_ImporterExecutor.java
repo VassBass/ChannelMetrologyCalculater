@@ -1,6 +1,9 @@
 package service.importer.updater.from_v5.to_v6;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,20 +17,20 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-public class From_v5_to_v6_ImporterExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(From_v5_to_v6_ImporterExecuter.class);
+public class From_v5_to_v6_ImporterExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(From_v5_to_v6_ImporterExecutor.class);
 
-    private static final String HEADER = "Імпорт";
-    private static final String QUESTION_TEXT = "Чи заміняти існуючі дані імпортованими у разі винекнення конфліктів?";
-    private static final String SUCCESS_TEXT = "Дані вдало імпортовані. Щоб данні збереглися программа буде закрита.";
-    private static final String ERROR_TEXT = "При імпорті виникла помилка. Будь ласка спробуйте ще раз.";
+    private static final String QUESTION = "question";
+    private static final String SUCCESS = "success";
+    private static final String ERROR = "error";
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
 
-    public From_v5_to_v6_ImporterExecuter(@Nonnull ApplicationScreen applicationScreen,
+    public From_v5_to_v6_ImporterExecutor(@Nonnull ApplicationScreen applicationScreen,
                                           @Nonnull RepositoryFactory repositoryFactory) {
         this.applicationScreen = applicationScreen;
         this.repositoryFactory = repositoryFactory;
@@ -35,11 +38,14 @@ public class From_v5_to_v6_ImporterExecuter implements ServiceExecutor {
 
     @Override
     public void execute() {
+        Map<String, String> labels = Labels.getRootLabels();
+        Map<String, String> messages = Messages.getMessages(From_v5_to_v6_ImporterExecutor.class);
+
         JFileChooser fileChooser = new JFileChooser();
         int result = fileChooser.showOpenDialog(applicationScreen);
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            int secondResult = JOptionPane.showConfirmDialog(applicationScreen, QUESTION_TEXT, HEADER, JOptionPane.YES_NO_CANCEL_OPTION);
+            int secondResult = JOptionPane.showConfirmDialog(applicationScreen, messages.get(QUESTION), labels.get(RootLabelName.IMPORTING), JOptionPane.YES_NO_CANCEL_OPTION);
             ImportOption option = null;
             if (secondResult == 0) option = ImportOption.REPLACE_EXISTED;
             if (secondResult == 1) option = ImportOption.IGNORE_EXISTED;
@@ -59,13 +65,13 @@ public class From_v5_to_v6_ImporterExecuter implements ServiceExecutor {
                         loadDialog.shutdown();
                         try {
                             boolean success = get();
-                            String message = success ? SUCCESS_TEXT : ERROR_TEXT;
+                            String message = success ? messages.get(SUCCESS) : messages.get(ERROR);
                             int messageType = success ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE;
-                            JOptionPane.showMessageDialog(applicationScreen, message, HEADER, messageType);
+                            JOptionPane.showMessageDialog(applicationScreen, message, labels.get(RootLabelName.IMPORTING), messageType);
                             System.exit(0);
                         } catch (InterruptedException | ExecutionException e) {
-                            logger.warn("Exception was thrown", e);
-                            JOptionPane.showMessageDialog(applicationScreen, ERROR_TEXT, HEADER, JOptionPane.ERROR_MESSAGE);
+                            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
+                            JOptionPane.showMessageDialog(applicationScreen, messages.get(ERROR), labels.get(RootLabelName.IMPORTING), JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 }.execute();

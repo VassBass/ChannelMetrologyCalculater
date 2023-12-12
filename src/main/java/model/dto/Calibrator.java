@@ -117,7 +117,7 @@ public class Calibrator implements Serializable {
     public double calculateRange(){return this.rangeMax - this.rangeMin;}
 
     public static class Certificate implements Serializable {
-        private static final long serialVersionUID = 6L;
+        public static final long serialVersionUID = 6L;
 
         private static final String CERTIFICATE = "certificate";
 
