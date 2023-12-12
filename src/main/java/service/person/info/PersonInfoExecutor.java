@@ -1,5 +1,6 @@
 package service.person.info;
 
+import localization.Messages;
 import model.dto.Person;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,6 @@ public class PersonInfoExecutor implements ServiceExecutor {
         manager.registerDialog(dialog);
 
         dialog.showing();
-        logger.info("Service is running!");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

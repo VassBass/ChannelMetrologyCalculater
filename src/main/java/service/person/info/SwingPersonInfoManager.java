@@ -1,5 +1,9 @@
 package service.person.info;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.Person;
 import repository.RepositoryFactory;
 import repository.repos.person.PersonRepository;
@@ -11,6 +15,7 @@ import util.StringHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
+import java.util.Map;
 import java.util.Objects;
 
 public class SwingPersonInfoManager implements PersonInfoManager {
@@ -21,10 +26,16 @@ public class SwingPersonInfoManager implements PersonInfoManager {
     private final Person oldPerson;
     private SwingPersonInfoDialog dialog;
 
+    private final Map<String, String> labels;
+    private final Map<String, String> messages;
+
     public SwingPersonInfoManager(@Nonnull RepositoryFactory repositoryFactory,
                                   @Nonnull SwingPersonListDialog parentDialog,
                                   @Nonnull PersonInfoContext context,
                                   @Nullable Person oldPerson) {
+        labels = Labels.getRootLabels();
+        messages = Messages.getRootMessages();
+
         this.repositoryFactory = repositoryFactory;
         this.parentDialog = parentDialog;
         this.context = context;
@@ -89,15 +100,23 @@ public class SwingPersonInfoManager implements PersonInfoManager {
     }
 
     private void successAction() {
-        String message = "Збережено успішно!";
-        JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(
+                dialog,
+                messages.get(RootMessageName.DATA_SAVE_SUCCESS),
+                labels.get(RootLabelName.SUCCESS),
+                JOptionPane.INFORMATION_MESSAGE
+        );
         dialog.shutdown();
         parentDialog.refresh();
     }
 
     private void errorAction() {
-        String message = "Виникла помилка. Спробуйте ще";
-        JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(
+                dialog,
+                messages.get(RootMessageName.ERROR_TRY_AGAIN),
+                labels.get(RootLabelName.ERROR),
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 
     public void registerDialog(SwingPersonInfoDialog dialog) {

@@ -1,5 +1,6 @@
 package service.person.info.ui.swing;
 
+import localization.Labels;
 import model.dto.Person;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
@@ -11,17 +12,23 @@ import util.ScreenPoint;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Objects;
 
 public class SwingPersonInfoDialog extends DefaultDialog {
+    private static final String NEW_EMPLOYEE = "newEmployee";
+    private static final String EMPLOYEE_WITH_ID = "employeeWithId";
 
+    private static final Map<String, String> labels = Labels.getLabels(SwingPersonInfoDialog.class);
 
     public SwingPersonInfoDialog(@Nonnull SwingPersonListDialog parentDialog,
                                  @Nonnull PersonInfoConfigHolder configHolder,
                                  @Nonnull PersonInfoContext context,
                                  @Nullable Person oldPerson) {
         super(parentDialog,
-                Objects.isNull(oldPerson) ? "Новий співробітник" : String.format("ID співробітника %s", oldPerson.getId()));
+                Objects.isNull(oldPerson) ?
+                        labels.get(NEW_EMPLOYEE) :
+                        String.format(labels.get(EMPLOYEE_WITH_ID), oldPerson.getId()));
 
         SwingPersonInfoSurnamePanel surnamePanel = context.getElement(SwingPersonInfoSurnamePanel.class);
         SwingPersonInfoNamePanel namePanel = context.getElement(SwingPersonInfoNamePanel.class);
