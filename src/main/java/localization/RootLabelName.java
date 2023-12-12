@@ -110,4 +110,10 @@ public class RootLabelName {
 	public static final String AREA = "area";
 	public static final String PROCESS = "process";
 	public static final String INSTALLATION = "installation";
+	public static final String CONTROL_POINTS = "controlPoints";
+	public static final String MEASUREMENTS_RANGE = "measurementsRange";
+	public static final String ADD_FIRST = "addFirst";
+	public static final String DELETE_FIRST = "deleteFirst";
+	public static final String ADD_LAST = "addLast";
+	public static final String DELETE_LAST = "deleteLast";
 }

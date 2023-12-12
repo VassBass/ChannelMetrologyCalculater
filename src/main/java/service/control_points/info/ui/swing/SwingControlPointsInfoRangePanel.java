@@ -1,12 +1,14 @@
 package service.control_points.info.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.dto.ControlPoints;
 import model.ui.ButtonCell;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
 import service.control_points.info.ui.ControlPointsInfoRangePanel;
-import util.ObjectHelper;
 import util.StringHelper;
 
 import javax.annotation.Nullable;
@@ -19,18 +21,14 @@ import static model.ui.builder.CellBuilder.VERTICAL;
 import static util.StringHelper.FOR_LAST_ZERO;
 
 public class SwingControlPointsInfoRangePanel extends TitledPanel implements ControlPointsInfoRangePanel {
-    private static final String TITLE_TEXT = "Діапазон вимірюваннь";
-    private static final String TOOLTIP_TEXT = "<html>" +
-            "Контрольні точки будуть використовуватись якщо діапазон вимірюваннь" +
-            "<br>буде співпадати з діапазоном перевіряємого каналу" +
-            "</html>";
+    private static final String CONTROL_POINTS_TOOLTIP = "controlPointsTooltip";
 
     private final DefaultTextField rangeMin;
     private final DefaultTextField rangeMax;
 
     public SwingControlPointsInfoRangePanel(@Nullable ControlPoints cp) {
-        super(TITLE_TEXT, Color.BLACK);
-        this.setToolTipText(TOOLTIP_TEXT);
+        super(Labels.getRootLabels().get(RootLabelName.MEASUREMENTS_RANGE), Color.BLACK);
+        this.setToolTipText(Messages.getMessages(SwingControlPointsInfoRangePanel.class).get(CONTROL_POINTS_TOOLTIP));
 
         rangeMin = new DefaultTextField(5, RIGHT);
         rangeMax = new DefaultTextField(5);

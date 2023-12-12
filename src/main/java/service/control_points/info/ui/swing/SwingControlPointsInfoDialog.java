@@ -1,5 +1,7 @@
 package service.control_points.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -11,12 +13,11 @@ import util.ScreenPoint;
 import javax.annotation.Nonnull;
 
 public class SwingControlPointsInfoDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Контрольні точки";
 
     public SwingControlPointsInfoDialog(@Nonnull SwingControlPointsListDialog parent,
                                         @Nonnull ControlPointsInfoContext context,
                                         @Nonnull ControlPointsInfoConfigHolder configHolder) {
-        super(parent, TITLE_TEXT);
+        super(parent, Labels.getRootLabels().get(RootLabelName.CONTROL_POINTS));
 
         SwingControlPointsInfoSensorTypePanel sensorTypePanel = context.getElement(SwingControlPointsInfoSensorTypePanel.class);
         SwingControlPointsInfoRangePanel rangePanel = context.getElement(SwingControlPointsInfoRangePanel.class);

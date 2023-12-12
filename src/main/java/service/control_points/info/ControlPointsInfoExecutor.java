@@ -1,5 +1,6 @@
 package service.control_points.info;
 
+import localization.Messages;
 import model.dto.ControlPoints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,15 +14,15 @@ import service.control_points.list.ui.swing.SwingControlPointsListDialog;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ControlPointsInfoExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(ControlPointsInfoExecuter.class);
+public class ControlPointsInfoExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(ControlPointsInfoExecutor.class);
 
     private final RepositoryFactory repositoryFactory;
     private final SwingControlPointsListDialog parentDialog;
     private final ControlPointsListManager parentManager;
     private final ControlPoints oldCP;
 
-    public ControlPointsInfoExecuter(@Nonnull RepositoryFactory repositoryFactory,
+    public ControlPointsInfoExecutor(@Nonnull RepositoryFactory repositoryFactory,
                                      @Nonnull SwingControlPointsListDialog parentDialog,
                                      @Nonnull ControlPointsListManager parentManager,
                                      @Nullable ControlPoints oldCP){
@@ -41,6 +42,6 @@ public class ControlPointsInfoExecuter implements ServiceExecutor {
         manager.registerDialog(dialog);
 
         dialog.showing();
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }
