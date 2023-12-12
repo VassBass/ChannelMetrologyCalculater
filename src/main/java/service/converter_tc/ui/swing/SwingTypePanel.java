@@ -1,6 +1,7 @@
 package service.converter_tc.ui.swing;
 
-import model.dto.Measurement;
+import localization.Labels;
+import localization.Messages;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultLabel;
 import model.ui.DefaultTextField;
@@ -19,15 +20,15 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 
 public class SwingTypePanel extends TitledPanel implements TypePanel {
-    private static final String TITLE_TEXT = "Тип ТО";
-    private static final String TOOLTIP_TEXT = String.format("При 0%s опір = ", Measurement.DEGREE_CELSIUS);
+    private static final String TYPE_TC = "typeTC";
+    private static final String TOOLTIP = "tooltip";
     private static final String DEFAULT_VALUE0 = "100";
 
     private final DefaultComboBox type;
     private final DefaultTextField value0;
 
     public SwingTypePanel() {
-        super(TITLE_TEXT, Color.BLACK);
+        super(Labels.getLabels(SwingTypePanel.class).get(TYPE_TC), Color.BLACK);
 
         type = new DefaultComboBox(false);
         type.setList(Arrays.asList(
@@ -36,7 +37,7 @@ public class SwingTypePanel extends TitledPanel implements TypePanel {
                 Type.Pl.name
         ));
         value0 = new DefaultTextField(5, DEFAULT_VALUE0, null);
-        DefaultLabel tooltipText = new DefaultLabel(TOOLTIP_TEXT);
+        DefaultLabel tooltipText = new DefaultLabel(Messages.getMessages(SwingTypePanel.class).get(TOOLTIP));
 
         this.add(type, new CellBuilder().x(0).fill(CellBuilder.NONE).build());
         this.add(tooltipText, new CellBuilder().x(1).fill(CellBuilder.NONE).build());
@@ -46,7 +47,7 @@ public class SwingTypePanel extends TitledPanel implements TypePanel {
     @Override
     @Nullable
     public Map.Entry<Type, Double> getType() {
-        String val0 = value0.getText().replaceAll(",", ".");
+        String val0 = value0.getText().replaceAll(Labels.COMMA, Labels.DOT);
         Type type = Type.getType(this.type.getSelectedString());
 
         if (StringHelper.isDouble(val0) && nonNull(type)) {

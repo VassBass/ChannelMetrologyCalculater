@@ -2,18 +2,19 @@ package service.converter_tc;
 
 import application.ApplicationMenu;
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ServiceInitializer;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import java.util.Map;
 
 public class ConverterTcInitializer implements ServiceInitializer {
     private static final Logger logger = LoggerFactory.getLogger(ConverterTcInitializer.class);
-
-    private static final String MENU_HEADER_TEXT = "Інструменти";
-    private static final String MENU_ITEM_CONVERTER_TC_TEXT = "Перетворювач величин ТО";
 
     private final ApplicationScreen applicationScreen;
 
@@ -23,15 +24,17 @@ public class ConverterTcInitializer implements ServiceInitializer {
 
     @Override
     public void init() {
-        ApplicationMenu applicationMenu = applicationScreen.getMenu();
-        applicationMenu.addMenuIfNotExist(MENU_HEADER_TEXT);
+        Map<String, String> labels = Labels.getRootLabels();
 
-        JMenuItem btnConverterTc = new JMenuItem(MENU_ITEM_CONVERTER_TC_TEXT);
+        ApplicationMenu applicationMenu = applicationScreen.getMenu();
+        applicationMenu.addMenuIfNotExist(labels.get(RootLabelName.TOOLS));
+
+        JMenuItem btnConverterTc = new JMenuItem(Labels.getRootLabels().get(RootLabelName.CONVERTER_TC));
 
         btnConverterTc.addActionListener(e ->
                 new ConverterTcExecutor(applicationScreen).execute());
-        applicationMenu.addMenuItem(MENU_HEADER_TEXT, btnConverterTc);
+        applicationMenu.addMenuItem(labels.get(RootLabelName.TOOLS), btnConverterTc);
 
-        logger.info(("Initialization completed successfully"));
+        logger.info((Messages.Log.INIT_SUCCESS));
     }
 }

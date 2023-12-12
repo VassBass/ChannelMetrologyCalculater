@@ -1,5 +1,6 @@
 package service.converter_tc;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.StringHelper;
@@ -35,7 +36,7 @@ public class PropertiesConverterTcConfigHolder implements ConverterTcConfigHolde
             if (dialogHeight != null) this.dialogHeight = dialogHeight;
 
         } catch (IOException e) {
-            logger.warn("Exception was thrown: ", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 

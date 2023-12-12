@@ -1,6 +1,8 @@
 package service.converter_tc.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -12,12 +14,11 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 
 public class SwingConverterTcDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Перетворювач величин ТО";
 
     public SwingConverterTcDialog(@Nonnull ApplicationScreen applicationScreen,
                                   @Nonnull ConverterTcConfigHolder configHolder,
                                   @Nonnull ConverterTcContext context) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getRootLabels().get(RootLabelName.CONVERTER_TC));
 
         SwingTypePanel typePanel = context.getElement(SwingTypePanel.class);
         SwingValuePanel valuePanel = context.getElement(SwingValuePanel.class);

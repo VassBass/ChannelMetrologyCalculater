@@ -119,4 +119,8 @@ public class RootLabelName {
 	public static final String WATCH = "watch";
 	public static final String ALL_ALT = "allAlt";
 	public static final String SORT_PARAMS = "sortParams";
+	public static final String TOOLS = "tools";
+	public static final String CONVERTER_TC = "converterTC";
+	public static final String RESULT = "result";
+	public static final String INPUT_VALUE = "inputValue";
 }
