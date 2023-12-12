@@ -133,4 +133,6 @@ public class RootLabelName {
 	public static final String PERSONS_LIST = "personsList";
 	public static final String SENSOR_ERRORS_LIST = "sensorErrorsList";
 	public static final String FORMULA = "formula";
+	public static final String SENSOR_TYPES_LIST = "sensorTypesList";
+	public static final String SENSOR_TYPES = "sensorTypes";
 }

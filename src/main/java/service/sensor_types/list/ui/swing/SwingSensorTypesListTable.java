@@ -1,14 +1,16 @@
 package service.sensor_types.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import service.sensor_types.list.ui.SensorTypesListTable;
 
 import javax.annotation.Nullable;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
+import java.util.Map;
 
 public class SwingSensorTypesListTable extends JTable implements SensorTypesListTable {
-    private static final String COLUMN_TYPE = "Тип ПВП";
 
     public SwingSensorTypesListTable(){
         super();
@@ -18,6 +20,8 @@ public class SwingSensorTypesListTable extends JTable implements SensorTypesList
     }
 
     private DefaultTableModel tableModel(List<String> sensorTypesList){
+        Map<String, String> labels = Labels.getRootLabels();
+
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){
@@ -26,7 +30,7 @@ public class SwingSensorTypesListTable extends JTable implements SensorTypesList
         };
 
         String[]columnsHeader = new String[] {
-                COLUMN_TYPE
+                labels.get(RootLabelName.TYPE) + Labels.SPACE + labels.get(RootLabelName.SENSOR_SHORT)
         };
         model.setColumnIdentifiers(columnsHeader);
 
