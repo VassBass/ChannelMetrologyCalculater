@@ -31,7 +31,6 @@ import static util.StringHelper.FOR_LAST_ZERO;
 
 public class TemplateExelTemperatureProtocolFormer implements ExelProtocolFormer {
     private static final String METROLOGY_HEAD_POSITION = "metrologyHeadPosition";
-
     private static final String UNDERLINED_EMPTY = "underlineEmpty";
 
     private final Map<String, String> labels;
