@@ -1,5 +1,6 @@
 package service.sensor_error.info;
 
+import localization.Messages;
 import model.dto.SensorError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,15 +14,15 @@ import service.sensor_error.list.ui.swing.SwingSensorErrorListDialog;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SensorErrorInfoExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(SensorErrorInfoExecuter.class);
+public class SensorErrorInfoExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(SensorErrorInfoExecutor.class);
 
     private final SwingSensorErrorListDialog parentDialog;
     private final RepositoryFactory repositoryFactory;
     private final SensorErrorListManager parentManager;
     private final SensorError oldError;
 
-    public SensorErrorInfoExecuter(@Nonnull SwingSensorErrorListDialog parentDialog,
+    public SensorErrorInfoExecutor(@Nonnull SwingSensorErrorListDialog parentDialog,
                                    @Nonnull RepositoryFactory repositoryFactory,
                                    @Nonnull SensorErrorListManager parentManager,
                                    @Nullable SensorError oldError) {
@@ -41,6 +42,6 @@ public class SensorErrorInfoExecuter implements ServiceExecutor {
         manager.registerDialog(dialog);
 
         dialog.showing();
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

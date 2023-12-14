@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public interface SensorErrorRepository {
     Collection<SensorError> getAll();
-    Collection<SensorError> getBySensorType(@Nonnull String sensorType);
+    Collection<SensorError> getBySensorType(String sensorType);
 
     boolean add(@Nonnull SensorError error);
 

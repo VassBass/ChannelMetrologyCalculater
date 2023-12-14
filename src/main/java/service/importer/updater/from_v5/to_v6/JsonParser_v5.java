@@ -1,8 +1,10 @@
 package service.importer.updater.from_v5.to_v6;
 
+import localization.Labels;
 import service.importer.JsonParser;
 import service.importer.model.Model;
 import service.importer.model.ModelHolder;
+import util.RegexHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -69,12 +71,12 @@ public class JsonParser_v5 implements JsonParser {
     @Override
     public Map<String, String> parse(@Nonnull String json) {
         Map<String, String> result = new HashMap<>();
-        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
+        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, EMPTY).replaceAll(NEW_STRING_REGEX, EMPTY).split(Labels.COMMA);
         for (String f : fields) {
-            String checkStr = f.replaceAll("\\s", "");
+            String checkStr = f.replaceAll(RegexHelper.SPACE_REGEX, EMPTY);
             if (checkStr.isEmpty()) continue;
 
-            String[] vals = f.replaceAll(UNNECESSARY_SYMBOLS_REGEX, "").split(COLON_REGEX);
+            String[] vals = f.replaceAll(UNNECESSARY_SYMBOLS_REGEX, EMPTY).split(COLON_REGEX);
             result.put(vals[0], vals[1]);
         }
         return result;
@@ -101,9 +103,9 @@ public class JsonParser_v5 implements JsonParser {
      */
     private ModelHolder parseSensor(String json) {
         ModelHolder sensor = new ModelHolder(Model.SENSOR);
-        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
+        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, EMPTY).replaceAll(NEW_STRING_REGEX, EMPTY).split(Labels.COMMA);
         for (String f : fields) {
-            String[] vals = f.replaceAll(UNNECESSARY_SYMBOLS_REGEX, "").split(COLON_REGEX);
+            String[] vals = f.replaceAll(UNNECESSARY_SYMBOLS_REGEX, EMPTY).split(COLON_REGEX);
             switch (vals[0]) {
                 case "type":
                     if (vals.length > 1) {
@@ -123,14 +125,14 @@ public class JsonParser_v5 implements JsonParser {
                     if (vals.length > 1) {
                         sensor.setField(SENSOR_RANGE_MIN, vals[1]);
                     } else {
-                        sensor.setField(SENSOR_RANGE_MIN, "0");
+                        sensor.setField(SENSOR_RANGE_MIN, Labels.ZERRO);
                     }
                     break;
                 case "rangeMax":
                     if (vals.length > 1) {
                         sensor.setField(SENSOR_RANGE_MAX, vals[1]);
                     } else {
-                        sensor.setField(SENSOR_RANGE_MAX, "100");
+                        sensor.setField(SENSOR_RANGE_MAX, Labels.ONE_HUNDRED);
                     }
                     break;
                 case "number":
@@ -183,9 +185,9 @@ public class JsonParser_v5 implements JsonParser {
      */
     private ModelHolder parseCalibratorCertificate(String json) {
         ModelHolder certificate = new ModelHolder(Model.CALIBRATOR_CERTIFICATE);
-        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, "").replaceAll(NEW_STRING_REGEX, "").split("\\,");
+        String[] fields = json.replaceAll(CURLY_BRACKETS_REGEX, EMPTY).replaceAll(NEW_STRING_REGEX, EMPTY).split(Labels.COMMA);
         for (String f : fields) {
-            String[] vals = f.replaceAll(UNNECESSARY_SYMBOLS_REGEX, "").split(COLON_REGEX);
+            String[] vals = f.replaceAll(UNNECESSARY_SYMBOLS_REGEX, EMPTY).split(COLON_REGEX);
             switch (vals[0]) {
                 case "name":
                     if (vals.length > 1) {

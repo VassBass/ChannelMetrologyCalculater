@@ -1,5 +1,9 @@
 package service.sensor_error.info;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.SensorError;
 import repository.RepositoryFactory;
 import repository.repos.sensor_error.SensorErrorRepository;
@@ -14,15 +18,24 @@ import util.StringHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.swing.*;
+import java.util.Map;
 import java.util.Objects;
 
 public class SwingSensorErrorInfoManager implements SensorErrorInfoManager {
+    private static final String DELETE_QUESTION = "deleteQuestion";
+    private static final String ERROR_EXISTS = "errorExists";
+    private static final String ERROR_CHANGED = "errorChanged";
+
     private SwingSensorErrorInfoDialog dialog;
 
     private final RepositoryFactory repositoryFactory;
     private final SensorErrorListManager parentManager;
     private final SensorErrorInfoContext context;
     private final SensorError oldError;
+
+    private final Map<String, String> messages;
+    private final Map<String, String> rootMessages;
+    private final Map<String, String> labels;
 
     public SwingSensorErrorInfoManager(@Nonnull RepositoryFactory repositoryFactory,
                                        @Nonnull SensorErrorListManager parentManager,
@@ -32,6 +45,9 @@ public class SwingSensorErrorInfoManager implements SensorErrorInfoManager {
         this.parentManager = parentManager;
         this.context = context;
         this.oldError = oldError;
+        messages = Messages.getMessages(SwingSensorErrorInfoManager.class);
+        rootMessages = Messages.getRootMessages();
+        labels = Labels.getRootLabels();
     }
 
     public void registerDialog(@Nonnull SwingSensorErrorInfoDialog dialog) {
@@ -47,17 +63,22 @@ public class SwingSensorErrorInfoManager implements SensorErrorInfoManager {
     public void clickRemove() {
         if (Objects.nonNull(oldError)) {
             String id = oldError.getId();
-            String message = String.format("Ви впевнені що хочете видалити похибку ПВП для \"%s\"?", oldError);
-            int result = JOptionPane.showConfirmDialog(dialog, message, "Видалити", JOptionPane.YES_NO_OPTION);
+            String message = String.format(messages.get(DELETE_QUESTION), oldError);
+            int result = JOptionPane.showConfirmDialog(dialog, message, labels.get(RootLabelName.DELETE), JOptionPane.YES_NO_OPTION);
             if (result == 0) {
                 SensorErrorRepository repository = repositoryFactory.getImplementation(SensorErrorRepository.class);
                 if (repository.removeById(id)) {
-                    message = "Видалення пройшло успішно";
-                    JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            rootMessages.get(RootMessageName.DELETING_SUCCESS),
+                            labels.get(RootLabelName.SUCCESS),
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
 
                 } else {
-                    message = "При видаленні виникла помилка";
-                    JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(dialog,
+                            rootMessages.get(RootMessageName.ERROR_TRY_AGAIN),
+                            labels.get(RootLabelName.ERROR), JOptionPane.ERROR_MESSAGE);
                 }
                 dialog.shutdown();
                 parentManager.refreshDialog();
@@ -81,30 +102,54 @@ public class SwingSensorErrorInfoManager implements SensorErrorInfoManager {
             SensorError newError = SensorError.create(type, rangeMin, rangeMax, measurementValue, errorFormula);
             if (Objects.isNull(oldError)) {
                 if (repository.isExists(newError.getId())) {
-                    String message = "Похибка для такого типу ПВП у данному діапазоні вже існує у базі";
-                    JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            messages.get(ERROR_EXISTS),
+                            labels.get(RootLabelName.ERROR),
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 } else if (repository.add(newError)) {
-                    String message = "Похибка успішно додана";
-                    JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            rootMessages.get(RootMessageName.DATA_SAVE_SUCCESS),
+                            labels.get(RootLabelName.SUCCESS),
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
                     dialog.shutdown();
                     parentManager.refreshDialog();
                 } else {
-                    String message = "Виникла помилка. Спробуйте ще раз";
-                    JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            rootMessages.get(RootMessageName.ERROR_TRY_AGAIN),
+                            labels.get(RootLabelName.ERROR),
+                            JOptionPane.ERROR_MESSAGE
+                    );
                     dialog.refresh();
                 }
             } else {
                 if (repository.isExists(oldError.getId(), newError.getId())) {
-                    String message = "Похибка для такого типу ПВП у данному діапазоні вже існує у базі";
-                    JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            messages.get(ERROR_EXISTS),
+                            labels.get(RootLabelName.ERROR),
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 } else if (repository.set(oldError.getId(), newError)) {
-                    String message = "Похибка успішно змінена";
-                    JOptionPane.showMessageDialog(dialog, message, "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            messages.get(ERROR_CHANGED),
+                            labels.get(RootLabelName.SUCCESS),
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
                     dialog.shutdown();
                     parentManager.refreshDialog();
                 } else {
-                    String message = "Виникла помилка. Спробуйте ще раз";
-                    JOptionPane.showMessageDialog(dialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            dialog,
+                            rootMessages.get(RootMessageName.ERROR_TRY_AGAIN),
+                            labels.get(RootLabelName.ERROR),
+                            JOptionPane.ERROR_MESSAGE
+                    );
                     dialog.refresh();
                 }
             }

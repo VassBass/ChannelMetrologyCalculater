@@ -1,5 +1,7 @@
 package service.sensor_error.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.SensorError;
 import repository.RepositoryFactory;
 import repository.repos.sensor_error.SensorErrorRepository;
@@ -11,10 +13,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SwingSensorErrorListTable extends JTable implements SensorErrorListTable {
-    private static final String COLUMN_NAME = "Назва";
-    private static final String COLUMN_ERROR = "Формула";
 
     public SwingSensorErrorListTable(@Nonnull RepositoryFactory repositoryFactory){
         super();
@@ -27,6 +28,8 @@ public class SwingSensorErrorListTable extends JTable implements SensorErrorList
     }
 
     private DefaultTableModel tableModel(List<SensorError> sensorErrorList){
+        Map<String, String> labels = Labels.getRootLabels();
+
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){
@@ -35,8 +38,8 @@ public class SwingSensorErrorListTable extends JTable implements SensorErrorList
         };
 
         String[]columnsHeader = new String[] {
-                COLUMN_NAME,
-                COLUMN_ERROR
+                labels.get(RootLabelName.NAME),
+                labels.get(RootLabelName.FORMULA)
         };
         model.setColumnIdentifiers(columnsHeader);
 

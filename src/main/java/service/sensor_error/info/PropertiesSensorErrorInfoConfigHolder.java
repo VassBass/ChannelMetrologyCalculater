@@ -1,5 +1,6 @@
 package service.sensor_error.info;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.StringHelper;
@@ -34,7 +35,7 @@ public class PropertiesSensorErrorInfoConfigHolder implements SensorErrorInfoCon
             if (StringHelper.isInt(dialogHeight)) this.dialogHeight = Integer.parseInt(dialogHeight);
 
         } catch (IOException e) {
-            logger.warn("Exception was thrown: ", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 

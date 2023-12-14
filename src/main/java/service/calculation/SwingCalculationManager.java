@@ -1,28 +1,37 @@
 package service.calculation;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.OS;
 import model.dto.Channel;
 import repository.RepositoryFactory;
 import repository.repos.channel.ChannelRepository;
-import service.calculation.condition.SwingCalculationControlConditionExecuter;
+import service.calculation.condition.SwingCalculationControlConditionExecutor;
 import service.calculation.condition.ui.swing.SwingCalculationControlConditionDialog;
 import service.calculation.input.SwingCalculationInputExecuter;
 import service.calculation.input.ui.swing.SwingCalculationInputDialog;
-import service.calculation.persons.SwingCalculationPersonsExecuter;
+import service.calculation.persons.SwingCalculationPersonsExecutor;
 import service.calculation.persons.ui.swing.SwingCalculationPersonsDialog;
 import service.calculation.protocol.Protocol;
 import service.calculation.protocol.exel.TemplateExelProtocolWrapper;
-import service.calculation.result.SwingCalculationResultExecuter;
+import service.calculation.result.SwingCalculationResultExecutor;
 import service.calculation.result.ui.swing.SwingCalculationResultDialog;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import java.util.Map;
 import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingCalculationManager implements CalculationManager {
+    private static final String ERROR_MODIFY_CHANNEL = "errorModifyChannel";
+
+    private final Map<String, String> labels;
+    private final Map<String, String> messages;
+
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
     private final CalculationConfigHolder configHolder;
@@ -38,6 +47,9 @@ public class SwingCalculationManager implements CalculationManager {
                                    @Nonnull RepositoryFactory repositoryFactory,
                                    @Nonnull CalculationConfigHolder configHolder,
                                    @Nonnull Channel channel) {
+        labels = Labels.getRootLabels();
+        messages = Messages.getMessages(SwingCalculationManager.class);
+
         this.applicationScreen = applicationScreen;
         this.repositoryFactory = repositoryFactory;
         this.configHolder = configHolder;
@@ -55,7 +67,7 @@ public class SwingCalculationManager implements CalculationManager {
         if (Objects.nonNull(inputDialog)) inputDialog.hiding();
 
         if (Objects.isNull(controlConditionDialog)) {
-            new SwingCalculationControlConditionExecuter(applicationScreen, repositoryFactory, configHolder, this, channel).execute();
+            new SwingCalculationControlConditionExecutor(applicationScreen, repositoryFactory, configHolder, this, channel).execute();
         } else {
             controlConditionDialog.showing();
         }
@@ -103,7 +115,7 @@ public class SwingCalculationManager implements CalculationManager {
             }
         }
 
-        new SwingCalculationResultExecuter(applicationScreen, repositoryFactory, configHolder, this, protocol).execute();
+        new SwingCalculationResultExecutor(applicationScreen, repositoryFactory, configHolder, this, protocol).execute();
     }
 
     @Override
@@ -119,7 +131,7 @@ public class SwingCalculationManager implements CalculationManager {
             } else return;
         }
 
-        new SwingCalculationPersonsExecuter(applicationScreen, repositoryFactory, configHolder, this, protocol ).execute();
+        new SwingCalculationPersonsExecutor(applicationScreen, repositoryFactory, configHolder, this, protocol ).execute();
     }
 
     @Override
@@ -131,8 +143,12 @@ public class SwingCalculationManager implements CalculationManager {
                 new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).print();
                 disposeCalculation();
             } else {
-                String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
-                JOptionPane.showMessageDialog(personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        personsDialog,
+                        messages.get(ERROR_MODIFY_CHANNEL),
+                        labels.get(RootLabelName.ERROR),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
     }
@@ -146,8 +162,12 @@ public class SwingCalculationManager implements CalculationManager {
                 new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).open();
                 disposeCalculation();
             } else {
-                String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
-                JOptionPane.showMessageDialog(personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        personsDialog,
+                        messages.get(ERROR_MODIFY_CHANNEL),
+                        labels.get(RootLabelName.ERROR),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
     }
@@ -161,8 +181,12 @@ public class SwingCalculationManager implements CalculationManager {
                 new TemplateExelProtocolWrapper(repositoryFactory, configHolder, os).wrap(protocol).save();
                 disposeCalculation();
             } else {
-                String message = "Виникла помилка при зміні інформації про канал. Будь ласка спробуйте ще раз.";
-                JOptionPane.showMessageDialog(personsDialog, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        personsDialog,
+                        messages.get(ERROR_MODIFY_CHANNEL),
+                        labels.get(RootLabelName.ERROR),
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
     }

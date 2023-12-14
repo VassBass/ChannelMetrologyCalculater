@@ -63,9 +63,6 @@ public class Sensor implements Serializable {
 
     /**
      * DB field = error_formula [TEXT]
-     *
-     * @see #getError(Channel)
-     *
      * R - Measurement range of channel (Диапазон измерения канала)
      * @see Channel#calculateRange()
      *

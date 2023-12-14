@@ -48,7 +48,7 @@ public class BufferedCalibratorRepositorySQLite extends CalibratorRepositorySQLi
     }
 
     @Override
-    public boolean removeByName(@Nonnull String name) {
+    public boolean removeByName(String name) {
         return buffer.remove(name) != null && super.removeByName(name);
     }
 

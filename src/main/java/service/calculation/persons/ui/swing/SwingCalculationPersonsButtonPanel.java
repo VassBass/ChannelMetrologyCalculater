@@ -1,25 +1,25 @@
 package service.calculation.persons.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.calculation.CalculationManager;
 
 import javax.annotation.Nonnull;
+import java.util.Map;
 
 public class SwingCalculationPersonsButtonPanel extends DefaultPanel {
-    private static final String PRINT_TEXT = "Друкувати";
-    private static final String OPEN_TEXT = "Відкрити";
-    private static final String CANCEL_TEXT = "Відмінити";
-    private static final String DONE_TEXT = "Готово";
 
     public SwingCalculationPersonsButtonPanel(@Nonnull CalculationManager manager) {
         super();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        DefaultButton printButton = new DefaultButton(PRINT_TEXT);
-        DefaultButton openButton = new DefaultButton(OPEN_TEXT);
-        DefaultButton cancelButton = new DefaultButton(CANCEL_TEXT);
-        DefaultButton doneButton = new DefaultButton(DONE_TEXT);
+        DefaultButton printButton = new DefaultButton(labels.get(RootLabelName.PRINT));
+        DefaultButton openButton = new DefaultButton(labels.get(RootLabelName.OPEN));
+        DefaultButton cancelButton = new DefaultButton(labels.get(RootLabelName.CANCEL));
+        DefaultButton doneButton = new DefaultButton(labels.get(RootLabelName.DONE));
 
         printButton.addActionListener(e -> manager.printProtocol());
         openButton.addActionListener(e -> manager.openProtocol());

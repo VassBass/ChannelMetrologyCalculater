@@ -1,6 +1,8 @@
 package service.measurement.list.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -16,7 +18,6 @@ import java.awt.*;
 import java.util.Arrays;
 
 public class SwingMeasurementListDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Вид вимірюваннь";
 
     private final RepositoryFactory repositoryFactory;
     private final SwingMeasurementListNamePanel namePanel;
@@ -27,7 +28,7 @@ public class SwingMeasurementListDialog extends DefaultDialog {
                                       @Nonnull RepositoryFactory repositoryFactory,
                                       @Nonnull MeasurementListConfigHolder configHolder,
                                       @Nonnull MeasurementListContext context) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getRootLabels().get(RootLabelName.TYPE_OF_MEASUREMENTS));
         this.repositoryFactory = repositoryFactory;
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
 

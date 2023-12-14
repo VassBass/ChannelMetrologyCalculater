@@ -2,6 +2,9 @@ package service.control_points.list;
 
 import application.ApplicationMenu;
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -9,11 +12,10 @@ import service.ServiceInitializer;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import java.util.Map;
 
 public class ControlPointsListInitializer implements ServiceInitializer {
     private static final Logger logger = LoggerFactory.getLogger(ControlPointsListInitializer.class);
-
-    private static final String MENU_ITEM_CONTROL_POINTS_LIST_TEXT = "Контрольні точки вимірюваннь";
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -26,14 +28,16 @@ public class ControlPointsListInitializer implements ServiceInitializer {
 
     @Override
     public void init() {
+        Map<String, String> labels = Labels.getRootLabels();
+
         ApplicationMenu applicationMenu = applicationScreen.getMenu();
-        applicationMenu.addMenuIfNotExist(ApplicationMenu.MENU_LISTS);
+        applicationMenu.addMenuIfNotExist(labels.get(RootLabelName.LISTS));
 
-        JMenuItem list = new JMenuItem(MENU_ITEM_CONTROL_POINTS_LIST_TEXT);
-        list.addActionListener(e -> new ControlPointsListExecuter(applicationScreen, repositoryFactory).execute());
+        JMenuItem list = new JMenuItem(labels.get(RootLabelName.CONTROL_POINTS));
+        list.addActionListener(e -> new ControlPointsListExecutor(applicationScreen, repositoryFactory).execute());
 
-        applicationMenu.addMenuItem(ApplicationMenu.MENU_LISTS, list);
+        applicationMenu.addMenuItem(labels.get(RootLabelName.LISTS), list);
 
-        logger.info(("Initialization completed successfully"));
+        logger.info(Messages.Log.INIT_SUCCESS);
     }
 }

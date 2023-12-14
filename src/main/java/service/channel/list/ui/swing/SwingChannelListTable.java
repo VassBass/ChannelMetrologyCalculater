@@ -1,5 +1,7 @@
 package service.channel.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Channel;
 import service.channel.list.ChannelListManager;
 import service.channel.list.ChannelListService;
@@ -15,13 +17,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class SwingChannelListTable extends JTable implements ChannelListTable {
-    private static final String COLUMN_CODE = "Код";
-    private static final String COLUMN_NAME = "Назва";
-    private static final String COLUMN_TYPE_OF_MEASUREMENT = "Вид вимірювання";
-    private static final String COLUMN_TECHNOLOGY_NUMBER = "Технологічний номер";
-
     private final ChannelListManager manager;
     private final ChannelListService service;
 
@@ -109,6 +107,8 @@ public class SwingChannelListTable extends JTable implements ChannelListTable {
     }
 
     private DefaultTableModel tableModel(List<Channel>channelList){
+        Map<String, String> labels = Labels.getRootLabels();
+
         DefaultTableModel model = new DefaultTableModel(){
             @Override
             public boolean isCellEditable(int row, int column){
@@ -117,10 +117,10 @@ public class SwingChannelListTable extends JTable implements ChannelListTable {
         };
 
         String[]columnsHeader = new String[] {
-                COLUMN_CODE,
-                COLUMN_TYPE_OF_MEASUREMENT,
-                COLUMN_NAME,
-                COLUMN_TECHNOLOGY_NUMBER
+                labels.get(RootLabelName.CODE),
+                labels.get(RootLabelName.TYPE_OF_MEASUREMENT),
+                labels.get(RootLabelName.NAME),
+                labels.get(RootLabelName.TECHNOLOGICAL_NUMBER)
         };
         model.setColumnIdentifiers(columnsHeader);
 

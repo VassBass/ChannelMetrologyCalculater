@@ -1,5 +1,8 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.ui.DefaultLabel;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
@@ -12,21 +15,23 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Map;
 
 import static javax.swing.SwingConstants.CENTER;
 import static javax.swing.SwingConstants.RIGHT;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingChannelInfoRangePanel extends TitledPanel implements ChannelInfoRangePanel {
-    private static final String TITLE_TEXT = "Діапазон ВК";
-    private static final String TOOLTIP_TEXT = "Діапазон вимірювального каналу";
+    private static final String CHANNEL_RANGE_TOOLTIP = "channelRangeTooltip";
+
+    private static final Map<String, String> labels = Labels.getRootLabels();
 
     private final DefaultTextField rangeMin, rangeMax;
     private final DefaultLabel measurementValue;
 
     public SwingChannelInfoRangePanel(final ChannelInfoManager manager) {
-        super(TITLE_TEXT, Color.BLACK);
-        this.setToolTipText(TOOLTIP_TEXT);
+        super(labels.get(RootLabelName.RANGE + Labels.SPACE + labels.get(RootLabelName.CHANNEL_SHORT)), Color.BLACK);
+        this.setToolTipText(Messages.getMessages(SwingChannelInfoRangePanel.class).get(CHANNEL_RANGE_TOOLTIP));
 
         FocusListener textFocusListener = new FocusAdapter() {
             @Override

@@ -1,5 +1,7 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultLabel;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
@@ -12,22 +14,20 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Map;
 
 import static model.ui.DefaultLabel.CENTER;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingChannelInfoDatePanel extends TitledPanel implements ChannelInfoDatePanel {
-    private static final String TITLE_TEXT = "Дата останньої перевірки";
-    private static final String DAY_TOOLTIP_TEXT = "День";
-    private static final String MONTH_TOOLTIP_TEXT = "Місяць";
-    private static final String YEAR_TOOLTIP_TEXT = "Рік";
+    private static final Map<String, String> labels = Labels.getRootLabels();
 
     private final DefaultTextField dayField;
     private final DefaultTextField monthField;
     private final DefaultTextField yearField;
 
     public SwingChannelInfoDatePanel(ChannelInfoManager manager) {
-        super(TITLE_TEXT, Color.BLACK);
+        super(labels.get(RootLabelName.LAST_CHECK_DATE), Color.BLACK);
 
         FocusListener focusListener = new FocusAdapter() {
             @Override
@@ -36,11 +36,11 @@ public class SwingChannelInfoDatePanel extends TitledPanel implements ChannelInf
             }
         };
 
-        dayField = new DefaultTextField(2, DAY_TOOLTIP_TEXT, CENTER).setFocusListener(focusListener);
-        monthField = new DefaultTextField(2, MONTH_TOOLTIP_TEXT, CENTER).setFocusListener(focusListener);
-        yearField = new DefaultTextField(4, YEAR_TOOLTIP_TEXT, CENTER).setFocusListener(focusListener);
-        DefaultLabel dot1 = new DefaultLabel(".", CENTER);
-        DefaultLabel dot2 = new DefaultLabel(".", CENTER);
+        dayField = new DefaultTextField(2, labels.get(RootLabelName.DAY), CENTER).setFocusListener(focusListener);
+        monthField = new DefaultTextField(2, labels.get(RootLabelName.MONTH), CENTER).setFocusListener(focusListener);
+        yearField = new DefaultTextField(4, labels.get(RootLabelName.YEAR), CENTER).setFocusListener(focusListener);
+        DefaultLabel dot1 = new DefaultLabel(Labels.DOT, CENTER);
+        DefaultLabel dot2 = new DefaultLabel(Labels.DOT, CENTER);
 
         this.add(dayField, new CellBuilder().x(0).build());
         this.add(dot1, new CellBuilder().x(1).build());

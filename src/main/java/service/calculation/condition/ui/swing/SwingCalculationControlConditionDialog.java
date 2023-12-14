@@ -1,6 +1,7 @@
 package service.calculation.condition.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.ui.DefaultDialog;
@@ -26,8 +27,6 @@ import java.util.Objects;
 import static model.ui.builder.CellBuilder.HORIZONTAL;
 
 public class SwingCalculationControlConditionDialog extends DefaultDialog implements CalculationCollectDialog {
-    private static final String TITLE = "Розрахунок ВК: ";
-
     private final RepositoryFactory repositoryFactory;
 
     private final SwingCalculationControlConditionDatePanel datePanel;
@@ -35,12 +34,17 @@ public class SwingCalculationControlConditionDialog extends DefaultDialog implem
     private final SwingCalculationControlConditionCalibratorPanel calibratorPanel;
     private final SwingCalculationControlConditionEnvironmentPanel environmentPanel;
 
+    private static final String TITLE = "calculatingOfMeasurementChannel_short";
+
     public SwingCalculationControlConditionDialog(@Nonnull ApplicationScreen applicationScreen,
                                                   @Nonnull RepositoryFactory repositoryFactory,
                                                   @Nonnull CalculationConfigHolder configHolder,
                                                   @Nonnull SwingCalculationControlConditionContext context,
                                                   @Nonnull Channel channel) {
-        super(applicationScreen, TITLE + channel.getName());
+        super(applicationScreen,
+                Labels.getLabels(SwingCalculationControlConditionDialog.class).get(TITLE) +
+                        Labels.COLON_SPACE +
+                        channel.getName());
         this.repositoryFactory = repositoryFactory;
 
         DefaultPanel panel = new DefaultPanel();

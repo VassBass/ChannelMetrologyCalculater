@@ -1,5 +1,6 @@
 package service.calculation.persons.ui.swing;
 
+import localization.Labels;
 import model.dto.Person;
 import model.ui.ButtonCell;
 import model.ui.DefaultComboBox;
@@ -21,9 +22,11 @@ import static model.ui.ButtonCell.SIMPLE;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingCalculationPersonsHeadsPanel extends TitledPanel implements CalculationPersonsHeadsPanel {
-    private static final String TITLE_TEXT = "Відповідальні особи";
-    private static final String HEAD_OF_METROLOGY_DEPARTMENT_LABEL = "Начальник дільниці МЗтаП";
-    private static final String HEAD_OF_ASPC_DEPARTMENT_LABEL = "Начальник ЦАСУ ТП";
+    private static final String HEADS = "heads";
+    private static final String HEAD_OF_METROLOGY_DEPARTMENT = "headOfMetrologyDepartment";
+    private static final String HEAD_OF_ASCP_DEPARTMENT = "headOfASCPDepartment";
+
+    private static final Map<String, String> labels = Labels.getLabels(SwingCalculationPersonsHeadsPanel.class);
 
     private final DefaultComboBox headOfMetrologyDepartmentName;
     private final DefaultTextField headOfCheckedChannelDepartmentPosition;
@@ -31,7 +34,7 @@ public class SwingCalculationPersonsHeadsPanel extends TitledPanel implements Ca
     private final DefaultComboBox headOfASPCDepartmentName;
 
     public SwingCalculationPersonsHeadsPanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull Protocol protocol) {
-        super(TITLE_TEXT);
+        super(labels.get(HEADS));
         PersonRepository personRepository = repositoryFactory.getImplementation(PersonRepository.class);
         boolean suitable = protocol.getChannel().getAllowableErrorPercent() >= protocol.getRelativeError();
         CalculationPersonValuesBuffer buffer = CalculationPersonValuesBuffer.getInstance();
@@ -40,14 +43,15 @@ public class SwingCalculationPersonsHeadsPanel extends TitledPanel implements Ca
         List<String> personsName = persons.stream().map(Person::createFullName).collect(Collectors.toList());
         personsName.add(0, EMPTY);
 
-        ButtonCell headOfMetrologyDepartmentLabel = new ButtonCell(SIMPLE, HEAD_OF_METROLOGY_DEPARTMENT_LABEL);
+        String headOfMetrologyDepartment = labels.get(HEAD_OF_METROLOGY_DEPARTMENT);
+        ButtonCell headOfMetrologyDepartmentLabel = new ButtonCell(SIMPLE, headOfMetrologyDepartment);
 
         headOfMetrologyDepartmentName = new DefaultComboBox(true);
         headOfMetrologyDepartmentName.setList(personsName);
         if (Objects.isNull(buffer.getHeadOfMetrologyDepartment())) {
             int index = -1;
             for (int i = 0; i < persons.size(); i++) {
-                if (persons.get(i).getPosition().equalsIgnoreCase(HEAD_OF_METROLOGY_DEPARTMENT_LABEL)) {
+                if (persons.get(i).getPosition().equalsIgnoreCase(headOfMetrologyDepartment)) {
                     index = i;
                     break;
                 }
@@ -77,13 +81,14 @@ public class SwingCalculationPersonsHeadsPanel extends TitledPanel implements Ca
 
         ButtonCell headOfASPCDepartmentLabel;
         if (!suitable) {
-            headOfASPCDepartmentLabel = new ButtonCell(SIMPLE, HEAD_OF_ASPC_DEPARTMENT_LABEL);
+            String headOfASCPDepartment = labels.get(HEAD_OF_ASCP_DEPARTMENT);
+            headOfASPCDepartmentLabel = new ButtonCell(SIMPLE, headOfASCPDepartment);
             headOfASPCDepartmentName = new DefaultComboBox(true);
             headOfASPCDepartmentName.setList(personsName);
             if (Objects.isNull(buffer.getHeadOfASPCDepartment())) {
                 int index = -1;
                 for (int i = 0; i < persons.size(); i++) {
-                    if (persons.get(i).getPosition().equalsIgnoreCase(HEAD_OF_ASPC_DEPARTMENT_LABEL)) {
+                    if (persons.get(i).getPosition().equalsIgnoreCase(headOfASCPDepartment)) {
                         index = i;
                         break;
                     }

@@ -1,5 +1,7 @@
 package service.person.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -7,19 +9,19 @@ import service.person.info.PersonInfoManager;
 
 import javax.annotation.Nonnull;
 
+import java.util.Map;
+
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingPersonInfoButtonsPanel extends DefaultPanel {
-    private static final String CANCEL_TEXT = "Відмінити";
-    private static final String REFRESH_TEXT = "Скинути";
-    private static final String SAVE_TEXT = "Зберегти";
 
     public SwingPersonInfoButtonsPanel(@Nonnull PersonInfoManager manager) {
         super();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        DefaultButton cancelButton = new DefaultButton(CANCEL_TEXT);
-        DefaultButton refreshButton = new DefaultButton(REFRESH_TEXT);
-        DefaultButton saveButton = new DefaultButton(SAVE_TEXT);
+        DefaultButton cancelButton = new DefaultButton(labels.get(RootLabelName.CANCEL));
+        DefaultButton refreshButton = new DefaultButton(labels.get(RootLabelName.RESET));
+        DefaultButton saveButton = new DefaultButton(labels.get(RootLabelName.SAVE));
 
         cancelButton.addActionListener(e -> manager.clickClose());
         refreshButton.addActionListener(e -> manager.clickRefresh());

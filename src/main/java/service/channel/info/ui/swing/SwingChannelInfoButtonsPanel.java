@@ -1,23 +1,24 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
 import service.channel.info.ChannelInfoManager;
 
+import java.util.Map;
+
 public class SwingChannelInfoButtonsPanel extends DefaultPanel {
-    private static final String SAVE_TEXT = "Зберегти";
-    private static final String SAVE_CALCULATE_TEXT = "Зберегти та розрахувати";
-    private static final String RESET_TEXT = "Скинути";
-    private static final String DELETE_TEXT = "Видалити";
 
     public SwingChannelInfoButtonsPanel(final ChannelInfoManager manager) {
         super();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        DefaultButton buttonSave = new DefaultButton(SAVE_TEXT);
-        DefaultButton buttonSaveAndCalculate = new DefaultButton(SAVE_CALCULATE_TEXT);
-        DefaultButton buttonReset = new DefaultButton(RESET_TEXT);
-        DefaultButton buttonDelete = new DefaultButton(DELETE_TEXT);
+        DefaultButton buttonSave = new DefaultButton(labels.get(RootLabelName.SAVE));
+        DefaultButton buttonSaveAndCalculate = new DefaultButton(labels.get(RootLabelName.SAVE_CALCULATE));
+        DefaultButton buttonReset = new DefaultButton(labels.get(RootLabelName.RESET));
+        DefaultButton buttonDelete = new DefaultButton(labels.get(RootLabelName.DELETE));
 
         buttonSave.addActionListener(e -> manager.saveChannel());
         buttonSaveAndCalculate.addActionListener(e -> manager.saveAndCalculateChannel());

@@ -1,5 +1,6 @@
 package repository.repos.control_points;
 
+import localization.Messages;
 import model.dto.ControlPoints;
 import model.dto.builder.ControlPointsBuilder;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
                 controlPoints.add(cp);
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return controlPoints;
@@ -73,7 +74,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
                 controlPoints.add(cp);
             }
         }catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return controlPoints;
@@ -95,7 +96,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
                         .build();
             }
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return null;
@@ -111,7 +112,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -127,7 +128,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
 
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -151,7 +152,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -163,7 +164,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
             statement.execute(sql);
             return true;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -175,7 +176,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
             statement.execute(sql);
             return true;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -203,7 +204,7 @@ public class ControlPointsRepositorySQLite implements ControlPointsRepository {
 
             return true;
         }catch (SQLException e){
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }

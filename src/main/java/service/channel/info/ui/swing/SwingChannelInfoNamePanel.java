@@ -1,15 +1,16 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.TitledTextField;
 import service.channel.info.ui.ChannelInfoNamePanel;
 
 import java.awt.*;
 
 public class SwingChannelInfoNamePanel extends TitledTextField implements ChannelInfoNamePanel {
-    private static final String TITLE_TEXT = "Назва ВК";
 
     public SwingChannelInfoNamePanel() {
-        super(15, TITLE_TEXT, Color.BLACK);
+        super(15, Labels.getRootLabels().get(RootLabelName.CHANNEL_NAME_SHORT), Color.BLACK);
     }
 
     @Override

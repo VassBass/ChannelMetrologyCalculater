@@ -1,5 +1,9 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.ui.*;
 import model.ui.builder.CellBuilder;
 import service.channel.info.ChannelInfoManager;
@@ -9,36 +13,15 @@ import util.StringHelper;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 import static javax.swing.SwingConstants.CENTER;
 import static javax.swing.SwingConstants.RIGHT;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelInfoSensorPanel {
-    private static final String TITLE_TEXT = "ПВП";
-    private static final String SERIAL_NUMBER_TITLE_TEXT = "SN.";
-    private static final String TOOLTIP_TEXT = "Первинний вимірювальний пристрій";
-    private static final String RANGE_TITLE_TEXT = "Діапазон";
-    private static final String CHECK_BOX_TEXT = "Однакові діапазони";
-    private static final String ERROR_FORMULA_TEXT = "Формула розрахунку похибки вимірювання ПВП";
-    private static final String ERROR_FORMULA_TOOLTIP_TEXT = "<html>"
-            + "Щоб написати формулу користуйтеся:"
-            + "<br>0...9, 0.1, 0,1 - Натуральні та дробні числа"
-            + "<br>() - Дужки, для розстановки послідовності дій"
-            + "<br>+, -, *, / - сума, різниця, множення, ділення"
-            + "<br>R - Діапазон вимірювання вимірювального каналу"
-            + "<br>convR - Діапазон вимірювання ПВП переконвертований під вимірювальну величину вимірювального каналу"
-            + "<br>r - Діапазон вимірювання ПВП"
-            + "<br>conv(...) - Число переконвертоване з вимірювальної величини ПВП до вимірювальної величини каналу"
-            + "<br>-----------------------------------------------------------------------------------"
-            + "<br>Приклад: ((0.005 * R) / r) + convR - conv(10)"
-            + "<br>Дія №1 - 0.005 помножено на діапазон вимірювання вимірювального каналу(R)"
-            + "<br>Дія №2 - Результат першої дії поділено на діапазон вимірювання ПВП(r)"
-            + "<br>Дія №3 - До результату другої дії додати діапазон вимірювання ПВП переконвертований під вимірювальну"
-            + "<br>величину вимірювального каналу(convR)"
-            + "<br>Дія №4 - Від результату третьої дії відняти число 10 переконвертоване з вимірювальної величини ПВП"
-            + "<br>до вимірювальної величини вимірювального каналу (conv(10))"
-            + "</html>";
+    private static final String RANGES_EQUALS = "rangesEquals";
+    private static final String SENSOR_ERROR_FORMULA = "sensorErrorFormula";
 
     private final DefaultComboBox sensorsTypes;
     private final TitledTextField serialNumber;
@@ -49,19 +32,23 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
     private final DefaultLabel errorLabel;
     private final DefaultComboBox errorFormulas;
 
+    private static final Map<String, String> rootLabels = Labels.getRootLabels();
+
     public SwingChannelInfoSensorPanel(final ChannelInfoManager manager) {
-        super(TITLE_TEXT, Color.BLACK);
-        this.setToolTipText(TOOLTIP_TEXT);
+        super(rootLabels.get(RootLabelName.SENSOR_SHORT), Color.BLACK);
+        this.setToolTipText(rootLabels.get(RootLabelName.SENSOR_LONG));
+        Map<String, String> labels = Labels.getLabels(SwingChannelInfoSensorPanel.class);
+        Map<String, String> messages = Messages.getRootMessages();
 
         sensorsTypes = new DefaultComboBox(true);
         sensorsTypes.addItemListener(e -> manager.setExpectedSensorInfo());
 
-        serialNumber = new TitledTextField(15, SERIAL_NUMBER_TITLE_TEXT);
+        serialNumber = new TitledTextField(15, rootLabels.get(RootLabelName.SERIAL_NUMBER_SHORT));
         rangeMin = new DefaultTextField(5, null, RIGHT);
         rangeMax = new DefaultTextField(5);
         DefaultLabel separator = new DefaultLabel("...", CENTER);
 
-        equalsRanges = new DefaultCheckBox(CHECK_BOX_TEXT);
+        equalsRanges = new DefaultCheckBox(labels.get(RANGES_EQUALS));
         equalsRanges.addItemListener(e -> {
             if (equalsRanges.isSelected()) {
                 manager.setChannelAndSensorRangesEqual();
@@ -70,16 +57,16 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
 
         measurementValues = new DefaultComboBox(false);
 
-        rangePanel = new TitledPanel(RANGE_TITLE_TEXT);
+        rangePanel = new TitledPanel(rootLabels.get(RootLabelName.RANGE));
         rangePanel.add(rangeMin, new CellBuilder().x(0).y(0).build());
         rangePanel.add(separator, new CellBuilder().x(1).y(0).build());
         rangePanel.add(rangeMax, new CellBuilder().x(2).y(0).build());
         rangePanel.add(measurementValues, new CellBuilder().x(3).y(0).build());
         rangePanel.add(equalsRanges, new CellBuilder().x(3).y(1).width(4).build());
 
-        errorLabel = new DefaultLabel(ERROR_FORMULA_TEXT, ERROR_FORMULA_TOOLTIP_TEXT);
+        errorLabel = new DefaultLabel(labels.get(SENSOR_ERROR_FORMULA), messages.get(RootMessageName.ERROR_FORMULA_TOOLTIP));
         errorFormulas = new DefaultComboBox(true);
-        errorFormulas.setToolTipText(ERROR_FORMULA_TOOLTIP_TEXT);
+        errorFormulas.setToolTipText(messages.get(RootMessageName.ERROR_FORMULA_TOOLTIP));
 
         this.add(sensorsTypes, new CellBuilder().x(0).y(0).build());
         this.add(serialNumber, new CellBuilder().x(1).y(0).build());
@@ -105,7 +92,7 @@ public class SwingChannelInfoSensorPanel extends TitledPanel implements ChannelI
 
     @Override
     public void setSensorType(String type) {
-        sensorsTypes.setSelectedItem(type);
+        sensorsTypes.setSelectedItem(type == null ? EMPTY : type);
     }
 
     @Override

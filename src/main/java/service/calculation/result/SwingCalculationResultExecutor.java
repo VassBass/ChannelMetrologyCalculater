@@ -1,6 +1,9 @@
 package service.calculation.result;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.dto.Measurement;
 import model.ui.DefaultDialog;
 import model.ui.LoadingDialog;
@@ -21,8 +24,10 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.concurrent.ExecutionException;
 
-public class SwingCalculationResultExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationResultExecuter.class);
+public class SwingCalculationResultExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationResultExecutor.class);
+
+    private static final String CALCULATION_ERROR = "calculationError";
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -30,7 +35,7 @@ public class SwingCalculationResultExecuter implements ServiceExecutor {
     private final CalculationManager manager;
     private final Protocol protocol;
 
-    public SwingCalculationResultExecuter(@Nonnull ApplicationScreen applicationScreen,
+    public SwingCalculationResultExecutor(@Nonnull ApplicationScreen applicationScreen,
                                           @Nonnull RepositoryFactory repositoryFactory,
                                           @Nonnull CalculationConfigHolder configHolder,
                                           @Nonnull CalculationManager manager,
@@ -79,15 +84,15 @@ public class SwingCalculationResultExecuter implements ServiceExecutor {
                     SwingCalculationResultDialog dialog = new SwingCalculationResultDialog(applicationScreen, configHolder, manager, context, protocol);
                     manager.registerResultDialog(dialog);
                     dialog.showing();
-                    logger.info("Service is running");
+                    logger.info(Messages.Log.SERVICE_RUNNING);
                     loadDialog.shutdown();
                     return;
                 }
             } catch (InterruptedException | ExecutionException e) {
-                logger.warn("Exception was thrown", e);
+                logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             }
-            String message = "Під час розрахунку виникла помилка. Спробуйте ще раз.";
-            JOptionPane.showMessageDialog(applicationScreen, message, "Помилка", JOptionPane.ERROR_MESSAGE);
+            String message = Messages.getMessages(SwingCalculationResultExecutor.class).get(CALCULATION_ERROR);
+            JOptionPane.showMessageDialog(applicationScreen, message, Labels.getRootLabels().get(RootLabelName.ERROR), JOptionPane.ERROR_MESSAGE);
             loadDialog.shutdown();
         }
     }

@@ -2,6 +2,9 @@ package service.sensor_types.list;
 
 import application.ApplicationMenu;
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -9,11 +12,10 @@ import service.ServiceInitializer;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import java.util.Map;
 
 public class SensorTypesInitializer implements ServiceInitializer {
     private static final Logger logger = LoggerFactory.getLogger(SensorTypesInitializer.class);
-
-    private static final String MENU_ITEM_SENSOR_TYPES_LIST_TEXT = "Список типів ПВП";
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -26,14 +28,16 @@ public class SensorTypesInitializer implements ServiceInitializer {
 
     @Override
     public void init() {
-        ApplicationMenu applicationMenu = applicationScreen.getMenu();
-        applicationMenu.addMenuIfNotExist(ApplicationMenu.MENU_LISTS);
+        Map<String, String> labels = Labels.getRootLabels();
 
-        JMenuItem list = new JMenuItem(MENU_ITEM_SENSOR_TYPES_LIST_TEXT);
+        ApplicationMenu applicationMenu = applicationScreen.getMenu();
+        applicationMenu.addMenuIfNotExist(labels.get(RootLabelName.LISTS));
+
+        JMenuItem list = new JMenuItem(labels.get(RootLabelName.SENSOR_TYPES_LIST));
         list.addActionListener(e -> new SensorTypesListExecutor(applicationScreen, repositoryFactory).execute());
 
-        applicationMenu.addMenuItem(ApplicationMenu.MENU_LISTS, list);
+        applicationMenu.addMenuItem(labels.get(RootLabelName.LISTS), list);
 
-        logger.info(("Initialization completed successfully"));
+        logger.info(Messages.Log.INIT_SUCCESS);
     }
 }

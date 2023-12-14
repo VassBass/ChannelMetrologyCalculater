@@ -1,5 +1,6 @@
 package service.importer.updater.from_v5.to_v6;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.importer.model.Model;
@@ -40,7 +41,7 @@ public class SqliteReaderOfv5 implements Reader {
                 appendSensors(result, statement);
             }
         } catch (SQLException e) {
-            logger.warn("Exception was thrown", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return result;

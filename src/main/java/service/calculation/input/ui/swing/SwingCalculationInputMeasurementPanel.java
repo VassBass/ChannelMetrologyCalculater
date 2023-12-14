@@ -1,5 +1,6 @@
 package service.calculation.input.ui.swing;
 
+import localization.Labels;
 import model.dto.*;
 import model.ui.ButtonCell;
 import model.ui.DefaultCheckBox;
@@ -28,11 +29,13 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     private static final int INPUTS_IN_VALUE = 1;
     private static final int INPUTS_BOTH = 0;
 
-    private static final String HEADER_TEXT_INPUT_IN_PERCENT = "% від шкали";
-    private static final String HEADER_TEXT_INPUT_IN_VALUE_PREFIX = "Задано в ";
-    private static final String HEADER_TEXT_MEASUREMENT_VALUES_PREFIX = "Отримані дані в ";
-    private static final String AUTO_TEXT = "Автом.";
-    private static final String HEADER_STEP = "Хід";
+    private static final String INPUT_IN_PERCENT = "inputInPercent";
+    private static final String INPUT_IN_VALUE = "inputInValue";
+    private static final String GET_VALUES = "getValues";
+    private static final String AUTO = "auto";
+    private static final String STEP = "step";
+    private static final String UP = "up";
+    private static final String DOWN = "down";
 
     private final Protocol protocol;
 
@@ -51,22 +54,23 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
 
     public SwingCalculationInputMeasurementPanel(@Nonnull RepositoryFactory repositoryFactory, @Nonnull Protocol protocol) {
         super();
+        Map<String, String> labels = Labels.getLabels(SwingCalculationInputMeasurementPanel.class);
         this.protocol = protocol;
         Channel channel = protocol.getChannel();
 
-        ButtonCell headerInputInPercent = new ButtonCell(HEADER, HEADER_TEXT_INPUT_IN_PERCENT);
-        ButtonCell headerInputInValue = new ButtonCell(HEADER, HEADER_TEXT_INPUT_IN_VALUE_PREFIX + channel.getMeasurementValue());
-        ButtonCell headerMeasurementValues = new ButtonCell(HEADER, HEADER_TEXT_MEASUREMENT_VALUES_PREFIX + channel.getMeasurementValue());
-        ButtonCell headerStep = new ButtonCell(HEADER, HEADER_STEP);
+        ButtonCell headerInputInPercent = new ButtonCell(HEADER, labels.get(INPUT_IN_PERCENT));
+        ButtonCell headerInputInValue = new ButtonCell(HEADER, labels.get(INPUT_IN_VALUE) + channel.getMeasurementValue());
+        ButtonCell headerMeasurementValues = new ButtonCell(HEADER, labels.get(GET_VALUES) + channel.getMeasurementValue());
+        ButtonCell headerStep = new ButtonCell(HEADER, labels.get(STEP));
 
-        autoInputInPercent = new DefaultCheckBox(AUTO_TEXT);
-        autoInputInValue = new DefaultCheckBox(AUTO_TEXT);
+        autoInputInPercent = new DefaultCheckBox(labels.get(AUTO));
+        autoInputInValue = new DefaultCheckBox(labels.get(AUTO));
         autoMeasurementValue = new DefaultCheckBox[] {
-                new DefaultCheckBox(AUTO_TEXT),
-                new DefaultCheckBox(AUTO_TEXT),
-                new DefaultCheckBox(AUTO_TEXT),
-                new DefaultCheckBox(AUTO_TEXT),
-                new DefaultCheckBox(AUTO_TEXT)
+                new DefaultCheckBox(labels.get(AUTO)),
+                new DefaultCheckBox(labels.get(AUTO)),
+                new DefaultCheckBox(labels.get(AUTO)),
+                new DefaultCheckBox(labels.get(AUTO)),
+                new DefaultCheckBox(labels.get(AUTO))
         };
         autoInputInPercent.setSelected(true);
         autoInputInValue.setSelected(true);
@@ -84,8 +88,8 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         ButtonCell[] steps = new ButtonCell[input.size() * 2];
         for (int index = 0; index < input.size(); index++) {
             int i = index * 2;
-            steps[i] = new ButtonCell(SIMPLE, "П");
-            steps[++i] = new ButtonCell(SIMPLE, "З");
+            steps[i] = new ButtonCell(SIMPLE, labels.get(UP));
+            steps[++i] = new ButtonCell(SIMPLE, labels.get(DOWN));
         }
 
         autoInputInPercent.addItemListener(e -> {
@@ -125,11 +129,11 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         this.add(headerInputInValue, new CellBuilder().x(1).y(0).width(1).height(2).build());
         this.add(headerStep, new CellBuilder().x(2).y(0).width(1).height(3).build());
         this.add(headerMeasurementValues, new CellBuilder().x(3).y(0).width(5).height(1).build());
-        this.add(new ButtonCell(SIMPLE, "1"), new CellBuilder().x(3).y(1).width(1).height(1).build());
-        this.add(new ButtonCell(SIMPLE, "2"), new CellBuilder().x(4).y(1).width(1).height(1).build());
-        this.add(new ButtonCell(SIMPLE, "3"), new CellBuilder().x(5).y(1).width(1).height(1).build());
-        this.add(new ButtonCell(SIMPLE, "4"), new CellBuilder().x(6).y(1).width(1).height(1).build());
-        this.add(new ButtonCell(SIMPLE, "5"), new CellBuilder().x(7).y(1).width(1).height(1).build());
+        this.add(new ButtonCell(SIMPLE, Labels.ONE), new CellBuilder().x(3).y(1).width(1).height(1).build());
+        this.add(new ButtonCell(SIMPLE, Labels.TWO), new CellBuilder().x(4).y(1).width(1).height(1).build());
+        this.add(new ButtonCell(SIMPLE, Labels.THREE), new CellBuilder().x(5).y(1).width(1).height(1).build());
+        this.add(new ButtonCell(SIMPLE, Labels.FOUR), new CellBuilder().x(6).y(1).width(1).height(1).build());
+        this.add(new ButtonCell(SIMPLE, Labels.FIVE), new CellBuilder().x(7).y(1).width(1).height(1).build());
 
         //check boxes
         this.add(autoInputInPercent, new CellBuilder().x(0).y(2).width(1).height(1).build());
@@ -340,8 +344,8 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
     public TreeMap<Double, Double> getInputs() {
         TreeMap<Double, Double> result = new TreeMap<>();
         for (int i = 0; i < inputsInPercent.length; i++) {
-            String percent = inputsInPercent[i].getText().replaceAll(",", ".");
-            String value = inputsInValue[i].getText().replaceAll(",", ".");
+            String percent = inputsInPercent[i].getText().replaceAll(Labels.COMMA, Labels.DOT);
+            String value = inputsInValue[i].getText().replaceAll(Labels.COMMA, Labels.DOT);
             if (StringHelper.isDouble(percent) && StringHelper.isDouble(value)) {
                 result.put(Double.parseDouble(percent), Double.parseDouble(value));
             } else return null;
@@ -359,8 +363,8 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         for (Map.Entry<Double, Double> entry : input.entrySet()) {
             List<Double> output = new ArrayList<>();
             for (DefaultTextField[] measurementValue : measurementValues) {
-                String val1 = measurementValue[y].getText().replaceAll(",", ".");
-                String val2 = measurementValue[y + 1].getText().replaceAll(",", ".");
+                String val1 = measurementValue[y].getText().replaceAll(Labels.COMMA, Labels.DOT);
+                String val2 = measurementValue[y + 1].getText().replaceAll(Labels.COMMA, Labels.DOT);
                 if (!StringHelper.isDouble(val1)) return null;
                 if (!StringHelper.isDouble(val2)) return null;
                 output.add(Double.parseDouble(val1));
@@ -378,13 +382,13 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         public void focusGained(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
             source.selectAll();
-            valuesBuffer = source.getText().replaceAll(",", ".");
+            valuesBuffer = source.getText().replaceAll(Labels.COMMA, Labels.DOT);
         }
 
         @Override
         public void focusLost(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
-            String text = source.getText().replaceAll(",", ".");
+            String text = source.getText().replaceAll(Labels.COMMA, Labels.DOT);
             if (StringHelper.isDouble(text)) {
                 source.setText(StringHelper.roundingDouble(Double.parseDouble(text), valueDecimalPoint));
             } else {
@@ -407,13 +411,13 @@ public class SwingCalculationInputMeasurementPanel extends DefaultPanel implemen
         public void focusGained(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
             source.selectAll();
-            percentBuffer = source.getText().replaceAll(",", ".");
+            percentBuffer = source.getText().replaceAll(Labels.COMMA, Labels.DOT);
         }
 
         @Override
         public void focusLost(FocusEvent e) {
             JTextField source = (JTextField) e.getSource();
-            String text = source.getText().replaceAll(",", ".");
+            String text = source.getText().replaceAll(Labels.COMMA, Labels.DOT);
             if (StringHelper.isDouble(text)) {
                 source.setText(StringHelper.roundingDouble(Double.parseDouble(text), percentDecimalPoint));
             } else {

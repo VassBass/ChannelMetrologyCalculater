@@ -1,5 +1,6 @@
 package service.calculation.result.ui.swing;
 
+import localization.Labels;
 import model.ui.ButtonCell;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -16,30 +17,32 @@ import static model.ui.ButtonCell.HEADER;
 import static model.ui.ButtonCell.SIMPLE;
 
 public class SwingCalculationResultPanel extends DefaultPanel {
-    private static final String EXTENDED_INDETERMINACY_LABEL_TEXT = "Розширена невизначеність";
-    private static final String ABSOLUTE_ERROR_LABEL_TEXT = "Абсолютна похибка";
-    private static final String RELATIVE_ERROR_LABEL_TEXT = "Приведена похибка";
-    private static final String SYSTEMATIC_ERRORS_LABEL_TEXT = "Систематичні похибки";
+    private static final String EXTENDED_INDETERMINACY = "extendedIndeterminacy";
+    private static final String ABSOLUTE_ERROR = "absoluteError";
+    private static final String RELATIVE_ERROR = "relativeError";
+    private static final String SYSTEMATIC_ERRORS = "systematicErrors";
 
     public SwingCalculationResultPanel(@Nonnull Protocol protocol) {
         super();
+        Map<String, String> labels = Labels.getLabels(SwingCalculationResultPanel.class);
+
         String measurementValue = protocol.getChannel().getMeasurementValue();
         int valueDecimalPoint = protocol.getValuesDecimalPoint();
         int percentDecimalPoint = protocol.getPercentsDecimalPoint();
 
-        ButtonCell extendedIndeterminacyLabel = new ButtonCell(HEADER, EXTENDED_INDETERMINACY_LABEL_TEXT);
+        ButtonCell extendedIndeterminacyLabel = new ButtonCell(HEADER, labels.get(EXTENDED_INDETERMINACY));
         String extendedIndeterminacy = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint);
         ButtonCell extendedIndeterminacyValue = new ButtonCell(SIMPLE, String.format("%s%s", extendedIndeterminacy, measurementValue));
 
-        ButtonCell absoluteErrorLabel = new ButtonCell(HEADER, ABSOLUTE_ERROR_LABEL_TEXT);
+        ButtonCell absoluteErrorLabel = new ButtonCell(HEADER, labels.get(ABSOLUTE_ERROR));
         String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint);
         ButtonCell absoluteErrorValue = new ButtonCell(SIMPLE, String.format("%s%s", absoluteError, measurementValue));
 
-        ButtonCell relativeErrorLabel = new ButtonCell(HEADER, RELATIVE_ERROR_LABEL_TEXT);
+        ButtonCell relativeErrorLabel = new ButtonCell(HEADER, labels.get(RELATIVE_ERROR));
         String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint);
         ButtonCell relativeErrorValue = new ButtonCell(SIMPLE, String.format("%s%%", relativeError));
 
-        ButtonCell systematicErrorsLabel = new ButtonCell(HEADER, SYSTEMATIC_ERRORS_LABEL_TEXT);
+        ButtonCell systematicErrorsLabel = new ButtonCell(HEADER, labels.get(SYSTEMATIC_ERRORS));
         List<ButtonCell> systematicErrors = createSystematicErrorsTable(protocol.getInput(), protocol.getSystematicErrors(),
                 percentDecimalPoint, valueDecimalPoint, measurementValue);
 

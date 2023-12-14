@@ -1,5 +1,8 @@
 package service.channel.list.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.TitledTextField;
@@ -9,29 +12,28 @@ import service.channel.list.ChannelListManager;
 import service.channel.list.ui.ChannelListSearchPanel;
 
 import javax.swing.*;
+import java.util.Map;
 
 public class SwingChannelListSearchPanel extends DefaultPanel implements ChannelListSearchPanel {
-    private static final String CODE = "Код";
-    private static final String SEARCH = "Шукати";
-    private static final String ADVANCED_SEARCH = "Розширений пошук";
-
-    private static final String CODE_TOOLTIP_TEXT = "Код каналу для пошуку";
+    private static final String CHANNEL_CODE_FOR_SEARCH = "channelCodeForSearch";
 
     private final JTextField codeField;
 
     public SwingChannelListSearchPanel(ChannelListManager manager) {
         super();
+        Map<String, String> labels = Labels.getRootLabels();
+        Map<String, String> messages = Messages.getMessages(SwingChannelListSearchPanel.class);
 
         codeField = new TitledTextFieldBuilder()
                 .setColumns(15)
-                .setTitle(CODE)
+                .setTitle(labels.get(RootLabelName.CODE))
                 .setTitleLocation(TitledTextField.TITLE_TOP_CENTER)
-                .setTooltipText(CODE_TOOLTIP_TEXT)
+                .setTooltipText(messages.get(CHANNEL_CODE_FOR_SEARCH))
                 .setTextLocation(TitledTextField.TEXT_CENTER)
                 .build();
 
-        JButton buttonSearch = new DefaultButton(SEARCH);
-        JButton buttonAdvancedSearch = new DefaultButton(ADVANCED_SEARCH);
+        JButton buttonSearch = new DefaultButton(labels.get(RootLabelName.START_SEARCH));
+        JButton buttonAdvancedSearch = new DefaultButton(labels.get(RootLabelName.ADVANCED_SEARCH));
 
         buttonSearch.addActionListener(e -> manager.search());
 

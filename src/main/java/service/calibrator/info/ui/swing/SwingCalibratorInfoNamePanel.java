@@ -1,5 +1,7 @@
 package service.calibrator.info.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
 import model.ui.TitledTextField;
 import service.calibrator.info.CalibratorInfoManager;
 import service.calibrator.info.ui.CalibratorInfoNamePanel;
@@ -7,20 +9,18 @@ import service.calibrator.info.ui.CalibratorInfoNamePanel;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 public class SwingCalibratorInfoNamePanel extends TitledTextField implements CalibratorInfoNamePanel {
-    private static final String TITLE_TEXT = "Назва калібратора";
-    private static final String TOOLTIP_TEXT = "<html>" +
-            "Має бути унікальним." +
-            "<br>Використовується лише всередині системи для ідентифікування калібратора." +
-            "<br>НЕ використовується у протоколі перевірки МХ ВК" +
-            "</html>";
-    private static final String COPY_TYPE_TEXT = "Скопіювати тип калібратора";
+    private static final String CALIBRATOR_NAME = "calibratorName";
+    private static final String CALIBRATOR_NAME_TOOLTIP = "calibratorNameTooltip";
+    private static final String COPY_CALIBRATOR_TYPE = "copyCalibratorType";
 
+    private static final Map<String, String> labels = Labels.getLabels(SwingCalibratorInfoNamePanel.class);
 
     public SwingCalibratorInfoNamePanel(@Nonnull CalibratorInfoManager manager) {
-        super(20, TITLE_TEXT);
-        this.setToolTipText(TOOLTIP_TEXT);
+        super(20, labels.get(CALIBRATOR_NAME));
+        this.setToolTipText(Messages.getMessages(SwingCalibratorInfoNamePanel.class).get(CALIBRATOR_NAME_TOOLTIP));
         this.setComponentPopupMenu(popupMenu(manager));
     }
 
@@ -41,8 +41,8 @@ public class SwingCalibratorInfoNamePanel extends TitledTextField implements Cal
     }
 
     private JPopupMenu popupMenu(CalibratorInfoManager manager) {
-        JPopupMenu popupMenu = new JPopupMenu(COPY_TYPE_TEXT);
-        JMenuItem check = new JMenuItem(COPY_TYPE_TEXT);
+        JPopupMenu popupMenu = new JPopupMenu(labels.get(COPY_CALIBRATOR_TYPE));
+        JMenuItem check = new JMenuItem(labels.get(COPY_CALIBRATOR_TYPE));
         check.addActionListener(e -> manager.copyTypeToNameField());
         popupMenu.add(check);
 

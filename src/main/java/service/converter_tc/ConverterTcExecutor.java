@@ -1,6 +1,7 @@
 package service.converter_tc;
 
 import application.ApplicationScreen;
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.ServiceExecutor;
@@ -32,6 +33,6 @@ public class ConverterTcExecutor implements ServiceExecutor {
         manager.registerDialog(dialog);
 
         dialog.showing();
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

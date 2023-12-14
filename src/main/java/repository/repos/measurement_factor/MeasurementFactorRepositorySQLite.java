@@ -1,5 +1,6 @@
 package repository.repos.measurement_factor;
 
+import localization.Messages;
 import model.dto.MeasurementTransformFactor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
                 factors.add(new MeasurementTransformFactor(id, source, result, factor));
             }
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
         return factors;
     }
@@ -59,7 +60,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
                 return new MeasurementTransformFactor(id, source, result, factor);
             }
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
         return null;
     }
@@ -77,7 +78,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
                 factors.add(new MeasurementTransformFactor(id, source, result, factor));
             }
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
         return factors;
     }
@@ -95,7 +96,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
                 factors.add(new MeasurementTransformFactor(id, source, result, factor));
             }
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
         return factors;
     }
@@ -113,7 +114,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
             statement.executeUpdate();
             return id;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
         return -1;
     }
@@ -129,7 +130,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
 
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -154,7 +155,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
                     return statement.executeUpdate(sqlBuilder.toString()) > 0;
                 } else return true;
             } catch (SQLException e) {
-                logger.warn("Exception was thrown!", e);
+                logger.warn(Messages.Log.EXCEPTION_THROWN, e);
                 return false;
             }
     }
@@ -166,7 +167,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
             statement.executeUpdate(sql);
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -178,7 +179,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
             statement.executeUpdate(sql);
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -189,7 +190,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
         try (Statement statement = connector.getStatement()) {
             return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -200,7 +201,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
         try (Statement statement = connector.getStatement()) {
             return statement.executeUpdate(sql) > 0;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -212,7 +213,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
             statement.executeUpdate(sql);
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -224,7 +225,7 @@ public class MeasurementFactorRepositorySQLite implements MeasurementFactorRepos
             statement.executeUpdate(sql);
             return true;
         } catch (SQLException e) {
-            logger.warn("Exception was thrown!", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }

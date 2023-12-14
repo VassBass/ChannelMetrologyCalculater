@@ -5,10 +5,7 @@ import model.dto.Measurement;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import repository.RepositoryFactory;
 import service.calculation.protocol.Protocol;
-import service.calculation.protocol.exel.template.ExelTemplateHolder;
-import service.calculation.protocol.exel.template.LinuxSuitableExelTemplateHolder;
-import service.calculation.protocol.exel.template.WindowsNotSuitableExelTemplateHolder;
-import service.calculation.protocol.exel.template.WindowsSuitableExelTemplateHolder;
+import service.calculation.protocol.exel.template.*;
 
 import java.util.Objects;
 
@@ -54,7 +51,7 @@ public class TemplateExelProtocolFormer implements ExelProtocolFormer {
             default:
                 return suitable ?
                         new LinuxSuitableExelTemplateHolder() :
-                        new WindowsNotSuitableExelTemplateHolder();
+                        new LinuxNotSuitableExelTemplateHolder();
         }
     }
 }

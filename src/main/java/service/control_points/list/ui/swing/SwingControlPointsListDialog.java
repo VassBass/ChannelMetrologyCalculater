@@ -1,6 +1,8 @@
 package service.control_points.list.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -12,21 +14,22 @@ import util.ScreenPoint;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 import static model.ui.builder.CellBuilder.BOTH;
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingControlPointsListDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Контрольні точки";
-
     private final ControlPointsListManager manager;
     private final SwingControlPointsListSortPanel sortPanel;
+
+    private static final Map<String, String> labels = Labels.getRootLabels();
 
     public SwingControlPointsListDialog(@Nonnull ApplicationScreen applicationScreen,
                                         @Nonnull ControlPointsListConfigHolder configHolder,
                                         @Nonnull ControlPointsListContext context,
                                         @Nonnull ControlPointsListManager manager) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, labels.get(RootLabelName.CONTROL_POINTS));
         this.manager = manager;
 
         sortPanel = context.getElement(SwingControlPointsListSortPanel.class);
@@ -46,7 +49,7 @@ public class SwingControlPointsListDialog extends DefaultDialog {
 
     @Override
     public void refresh() {
-        if (sortPanel.getSelectedMeasurementName().equals(SwingControlPointsListSortPanel.ALL_TEXT)) {
+        if (sortPanel.getSelectedMeasurementName().equals(labels.get(RootLabelName.ALL_ALT))) {
             manager.showAllControlPointsInTable();
         } else {
             manager.showSortedControlPointsInTable();

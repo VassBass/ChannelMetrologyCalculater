@@ -1,5 +1,6 @@
 package service.calculation.persons.ui.swing;
 
+import localization.Labels;
 import model.dto.Person;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultTextField;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingCalculationPersonsMakersPanel extends TitledPanel implements CalculationPersonsMakersPanel {
-    private static final String TITLE_TEXT = "Виконувачі КМХ";
+    private static final String EXECUTORS = "executors";
 
     private final List<Person> personList;
 
@@ -30,7 +31,7 @@ public class SwingCalculationPersonsMakersPanel extends TitledPanel implements C
     private final DefaultTextField secondPersonPosition;
 
     public SwingCalculationPersonsMakersPanel(@Nonnull RepositoryFactory repositoryFactory) {
-        super(TITLE_TEXT, Color.BLACK);
+        super(Labels.getLabels(SwingCalculationPersonsMakersPanel.class).get(EXECUTORS), Color.BLACK);
         CalculationPersonValuesBuffer buffer = CalculationPersonValuesBuffer.getInstance();
 
         PersonRepository personRepository = repositoryFactory.getImplementation(PersonRepository.class);

@@ -3,6 +3,8 @@ package util;
 import java.awt.*;
 
 public class ScreenPoint {
+    private ScreenPoint(){}
+
     public static Point center(Component parent, Component child) {
         int x0 = parent.getLocation().x;
         int pw = parent.getWidth();

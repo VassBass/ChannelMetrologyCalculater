@@ -1,15 +1,15 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.TitledTextField;
 import service.channel.info.ui.ChannelInfoTechnologyNumberPanel;
 
 import java.awt.*;
 
 public class SwingChannelInfoTechnologyNumberPanel extends TitledTextField implements ChannelInfoTechnologyNumberPanel {
-    private static final String TITLE_TEXT = "Технологічний номер";
-
     public SwingChannelInfoTechnologyNumberPanel() {
-        super(15, TITLE_TEXT, Color.BLACK);
+        super(15, Labels.getRootLabels().get(RootLabelName.TECHNOLOGICAL_NUMBER), Color.BLACK);
     }
 
     @Override

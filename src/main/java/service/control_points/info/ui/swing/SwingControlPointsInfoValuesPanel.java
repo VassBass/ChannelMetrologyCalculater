@@ -1,5 +1,7 @@
 package service.control_points.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.ControlPoints;
 import model.ui.*;
 import model.ui.builder.CellBuilder;
@@ -23,13 +25,7 @@ import static model.ui.builder.CellBuilder.HORIZONTAL;
 import static util.StringHelper.FOR_LAST_ZERO;
 
 public class SwingControlPointsInfoValuesPanel extends TitledPanel implements ControlPointsInfoValuesPanel {
-    private static final String TITLE_TEXT = "Контрольні точки";
-    private static final String ADD_FIRST_BUTTON_TEXT = "Додати першу";
-    private static final String ADD_BUTTON_TEXT = "Додати";
-    private static final String ADD_LAST_BUTTON_TEXT = "Додати останню";
-    private static final String REMOVE_FIRST_BUTTON_TEXT = "Видалити першу";
-    private static final String REMOVE_BUTTON_TEXT = "Видалити";
-    private static final String REMOVE_LAST_BUTTON_TEXT = "Видалити останню";
+    private static final Map<String, String> labels = Labels.getRootLabels();
 
     private final ControlPointsInfoManager manager;
 
@@ -37,21 +33,21 @@ public class SwingControlPointsInfoValuesPanel extends TitledPanel implements Co
     private final ArrayList<ValuePanel> values = new ArrayList<>();
 
     public SwingControlPointsInfoValuesPanel(@Nonnull ControlPointsInfoManager manager, @Nullable ControlPoints cp) {
-        super(TITLE_TEXT, Color.BLACK);
+        super(labels.get(RootLabelName.CONTROL_POINTS), Color.BLACK);
         this.manager = manager;
 
         valuesPanel = new DefaultPanel();
 
-        DefaultButton addFirstButton = new DefaultButton(ADD_FIRST_BUTTON_TEXT);
-        DefaultButton addIndexButton = new DefaultButton(ADD_BUTTON_TEXT);
-        DefaultButton addLastButton = new DefaultButton(ADD_LAST_BUTTON_TEXT);
-        DefaultButton removeFirstButton = new DefaultButton(REMOVE_FIRST_BUTTON_TEXT);
-        DefaultButton removeIndexButton = new DefaultButton(REMOVE_BUTTON_TEXT);
-        DefaultButton removeLastButton = new DefaultButton(REMOVE_LAST_BUTTON_TEXT);
+        DefaultButton addFirstButton = new DefaultButton(labels.get(RootLabelName.ADD_FIRST));
+        DefaultButton addIndexButton = new DefaultButton(labels.get(RootLabelName.ADD));
+        DefaultButton addLastButton = new DefaultButton(labels.get(RootLabelName.ADD_LAST));
+        DefaultButton removeFirstButton = new DefaultButton(labels.get(RootLabelName.DELETE_FIRST));
+        DefaultButton removeIndexButton = new DefaultButton(labels.get(RootLabelName.DELETE));
+        DefaultButton removeLastButton = new DefaultButton(labels.get(RootLabelName.DELETE_LAST));
         IntegerTextField addIndexField = new IntegerTextField(2);
-        addIndexField.setText("0");
+        addIndexField.setText(Labels.ZERRO);
         IntegerTextField removeIndexField = new IntegerTextField(2);
-        removeIndexField.setText("0");
+        removeIndexField.setText(Labels.ZERRO);
 
         DefaultPanel addIndexPanel = new DefaultPanel();
         addIndexPanel.add(addIndexButton, new CellBuilder().x(0).build());

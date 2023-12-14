@@ -1,15 +1,17 @@
 package service.calibrator.info.ui.swing;
 
+import localization.Labels;
+import localization.Messages;
 import model.ui.TitledTextField;
 import service.calibrator.info.ui.CalibratorInfoNumberPanel;
 
 public class SwingCalibratorInfoNumberPanel extends TitledTextField implements CalibratorInfoNumberPanel {
-    private static final String TITLE_TEXT = "Серійний номер";
-    private static final String TOOLTIP_TEXT = "Використовується у протоколі про перевірку МХ ВК";
+    private static final String SERIAL_NUMBER = "serialNumber";
+    private static final String SERIAL_NUMBER_TOOLTIP = "serialNumberTooltip";
 
     public SwingCalibratorInfoNumberPanel() {
-        super(20, TITLE_TEXT);
-        this.setToolTipText(TOOLTIP_TEXT);
+        super(20, Labels.getLabels(SwingCalibratorInfoNumberPanel.class).get(SERIAL_NUMBER));
+        this.setToolTipText(Messages.getMessages(SwingCalibratorInfoNumberPanel.class).get(SERIAL_NUMBER_TOOLTIP));
     }
 
     @Override

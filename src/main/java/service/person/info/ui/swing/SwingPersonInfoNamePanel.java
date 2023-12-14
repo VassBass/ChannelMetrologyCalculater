@@ -1,5 +1,6 @@
 package service.person.info.ui.swing;
 
+import localization.Labels;
 import model.ui.TitledTextField;
 import service.person.info.ui.PersonInfoNamePanel;
 
@@ -7,10 +8,10 @@ import javax.annotation.Nonnull;
 import java.awt.*;
 
 public class SwingPersonInfoNamePanel extends TitledTextField implements PersonInfoNamePanel {
-    private static final String TITLE_TEXT = "Ім'я";
+    private static final String NAME = "name";
 
     public SwingPersonInfoNamePanel() {
-        super(20, TITLE_TEXT, Color.BLACK);
+        super(20, Labels.getLabels(SwingPersonInfoNamePanel.class).get(NAME), Color.BLACK);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package service.calculation.protocol.exel.former;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Calibrator;
 import model.dto.Channel;
 import model.dto.Sensor;
@@ -17,14 +19,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import static util.RegexHelper.DOT_REGEX;
 import static util.StringHelper.FOR_LAST_ZERO;
 
 public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatureProtocolFormer {
-    private static final String NOT_SUITABLE_TEXT = "НЕ ПРИДАТНИМ ДО ЕКСПЛУАТАЦІЇ для комерційного обліку";
+    private static final String NOT_SUITABLE = "notSuitable";
+
+    private final Map<String, String> rootLabels;
 
     public TemplateExelConsumptionProtocolFormer(@Nonnull HSSFWorkbook book,
                                                  @Nonnull RepositoryFactory repositoryFactory) {
         super(book, repositoryFactory);
+        rootLabels = Labels.getRootLabels();
     }
 
     @Override
@@ -69,8 +75,8 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         String nextDate;
         if (suitable){
             nextDate = DateHelper.getNextDate(checkDate, protocol.getChannel().getFrequency());
-            if (nextDate.isEmpty()) nextDate = EXTRAORDINARY;
-        } else nextDate = EXTRAORDINARY;
+            if (nextDate.isEmpty()) nextDate = rootLabels.get(RootLabelName.EXTRAORDINARY);
+        } else nextDate = rootLabels.get(RootLabelName.EXTRAORDINARY);
         if (isRosemount8714DQ4Calibrator) {
             cell(38, 14).setCellValue(nextDate);
         } else {
@@ -118,13 +124,13 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         }
 
         final String rangeMin = StringHelper.roundingDouble(channel.getRangeMin(), protocol.getValuesDecimalPoint());
-        cell(19,5).setCellValue(rangeMin.replaceAll("\\.", ","));
+        cell(19,5).setCellValue(rangeMin.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String rangeMax = StringHelper.roundingDouble(channel.getRangeMax(), protocol.getValuesDecimalPoint());
-        cell(19,7).setCellValue(rangeMax.replaceAll("\\.", ","));
+        cell(19,7).setCellValue(rangeMax.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String allowableErrorInPercent = StringHelper.roundingDouble(channel.getAllowableErrorPercent(), protocol.getPercentsDecimalPoint())
-                .replaceAll("\\.", ",");
+                .replaceAll(DOT_REGEX, Labels.COMMA);
         cell(20,5).setCellValue(allowableErrorInPercent);
         if (isRosemount8714DQ4Calibrator) {
             cell(37, 15).setCellValue(allowableErrorInPercent);
@@ -133,7 +139,7 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         }
 
         final String allowableErrorInValue = StringHelper.roundingDouble(channel.getAllowableErrorValue(), protocol.getValuesDecimalPoint());
-        cell(20,7).setCellValue(allowableErrorInValue.replaceAll("\\.", ","));
+        cell(20,7).setCellValue(allowableErrorInValue.replaceAll(DOT_REGEX, Labels.COMMA));
 
         final String measurementValue = channel.getMeasurementValue();
         if (isRosemount8714DQ4Calibrator) {
@@ -152,8 +158,8 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         cell(30,15).setCellValue(measurementValue);
         cell(31,15).setCellValue(measurementValue);
 
-        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll("\\.", ",");
-        cell(24,16).setCellValue(String.format("%sр.", frequency));
+        final String frequency = StringHelper.roundingDouble(channel.getFrequency(), FOR_LAST_ZERO).replaceAll(DOT_REGEX, Labels.COMMA);
+        cell(24,16).setCellValue(String.format("%s%s", frequency, rootLabels.get(RootLabelName.YEAR_SHORT)));
     }
 
     @Override
@@ -209,10 +215,10 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         final double errorCalibrator = errorCalculater.calculate(calibrator);
         if (Double.isNaN(errorCalibrator)) return;
         final double eP = errorCalibrator / (range / 100);
-        final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint()).replaceAll("\\.", ",");
+        final String errorPercent = StringHelper.roundingDouble(eP, protocol.getPercentsDecimalPoint()).replaceAll(DOT_REGEX, Labels.COMMA);
         cell(20,13).setCellValue(errorPercent);
 
-        final String errorValue = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint()).replaceAll("\\.", ",");
+        final String errorValue = StringHelper.roundingDouble(errorCalibrator, protocol.getValuesDecimalPoint()).replaceAll(DOT_REGEX, Labels.COMMA);
         cell(20,15).setCellValue(errorValue);
     }
 
@@ -227,13 +233,13 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
             final TreeMap<Double, Double> input = protocol.getInput();
             int row = 30;
             for (Map.Entry<Double, Double> entry : input.entrySet()) {
-                cell(row, 1).setCellValue(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll("\\.", ","));
+                cell(row, 1).setCellValue(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA));
                 row += 2;
             }
             row = 28;
             for (Map.Entry<Double, Double> entry : input.entrySet()) {
                 String pe = StringHelper.roundingDouble(Double.parseDouble(StringHelper.roundingDouble(entry.getKey(), percentDecimalPoint)), FOR_LAST_ZERO);
-                cell(row++, 11).setCellValue(String.format("%s%% ΔS =", pe.replaceAll("\\.", ",")));
+                cell(row++, 11).setCellValue(String.format("%s%% ΔS =", pe.replaceAll(DOT_REGEX, Labels.COMMA)));
             }
         }
 
@@ -243,9 +249,9 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
         int column = 3;
         boolean next = false;
         for (Map.Entry<Double, double[]> entry : inputOutput.entrySet()) {
-            cell(row, 2).setCellValue(StringHelper.roundingDouble(entry.getKey(), valueDecimalPoint).replaceAll("\\.", ","));
+            cell(row, 2).setCellValue(StringHelper.roundingDouble(entry.getKey(), valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA));
             for (double d : entry.getValue()) {
-                cell(row, column).setCellValue(StringHelper.roundingDouble(d, valueDecimalPoint).replaceAll("\\.", ","));
+                cell(row, column).setCellValue(StringHelper.roundingDouble(d, valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA));
                 if (next) {
                     next = false;
                     column++;
@@ -263,10 +269,10 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
             column = 3;
         }
 
-        final String u = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint).replaceAll("\\.", ",");
+        final String u = StringHelper.roundingDouble(protocol.getExtendedIndeterminacy(), valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA);
         cell(24, 14).setCellValue(u);
 
-        final String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint).replaceAll("\\.", ",");
+        final String relativeError = StringHelper.roundingDouble(protocol.getRelativeError(), percentDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA);
         cell(26, 14).setCellValue(relativeError);
         if (isRosemount8714DQ4Calibrator) {
             cell(37, 13).setCellValue(relativeError);
@@ -274,20 +280,20 @@ public class TemplateExelConsumptionProtocolFormer extends TemplateExelTemperatu
             cell(38, 13).setCellValue(relativeError);
         }
 
-        final String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint).replaceAll("\\.", ",");
+        final String absoluteError = StringHelper.roundingDouble(protocol.getAbsoluteError(), valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA);
         cell(27, 14).setCellValue(absoluteError);
 
         final TreeMap<Double, Double> systematicErrors = protocol.getSystematicErrors();
         row = 28;
         for (Map.Entry<Double, Double> entry : systematicErrors.entrySet()) {
-            cell(row++, 13).setCellValue(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint).replaceAll("\\.", ","));
+            cell(row++, 13).setCellValue(StringHelper.roundingDouble(entry.getValue(), valueDecimalPoint).replaceAll(DOT_REGEX, Labels.COMMA));
         }
 
         if (notSuitable){
             if (isRosemount8714DQ4Calibrator) {
-                cell(35, 11).setCellValue(NOT_SUITABLE_TEXT);
+                cell(35, 11).setCellValue(NOT_SUITABLE);
             } else {
-                cell(36, 11).setCellValue(NOT_SUITABLE_TEXT);
+                cell(36, 11).setCellValue(NOT_SUITABLE);
             }
         }
 

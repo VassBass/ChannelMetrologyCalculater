@@ -1,5 +1,7 @@
 package service.converter_tc.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Measurement;
 import model.ui.DefaultComboBox;
 import model.ui.DefaultTextField;
@@ -15,17 +17,15 @@ import java.util.Arrays;
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingValuePanel extends TitledPanel implements ValuePanel {
-    private static final String TITLE_TEXT = "Вхідна величина";
-
     private final DefaultTextField numValue;
     private final DefaultComboBox measurementValue;
 
     public SwingValuePanel(ConverterTcManager manager) {
-        super(TITLE_TEXT, Color.BLACK);
+        super(Labels.getRootLabels().get(RootLabelName.INPUT_VALUE), Color.BLACK);
 
         numValue = new DefaultTextField(5);
         measurementValue = new DefaultComboBox(false);
-        measurementValue.setList(Arrays.asList(Measurement.Om, Measurement.DEGREE_CELSIUS));
+        measurementValue.setList(Arrays.asList(Measurement.OM, Measurement.DEGREE_CELSIUS));
         measurementValue.addItemListener(e -> manager.changingInputMeasurementValue());
 
         this.add(numValue, new CellBuilder().x(0).fill(NONE).build());
@@ -34,7 +34,7 @@ public class SwingValuePanel extends TitledPanel implements ValuePanel {
 
     @Override
     public double getNumericValue() {
-        String val = numValue.getText().replaceAll(",", ".");
+        String val = numValue.getText().replaceAll(Labels.COMMA, Labels.DOT);
         if (StringHelper.isDouble(val)) {
             this.setTitleColor(Color.BLACK);
             return Double.parseDouble(val);

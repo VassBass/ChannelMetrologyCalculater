@@ -1,5 +1,7 @@
 package service.calibrator.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.ButtonCell;
 import model.ui.DefaultTextField;
 import model.ui.TitledPanel;
@@ -17,14 +19,12 @@ import static model.ui.ButtonCell.SIMPLE;
 import static util.StringHelper.FOR_LAST_ZERO;
 
 public class SwingCalibratorInfoRangePanel extends TitledPanel implements CalibratorInfoRangePanel {
-    private static final String TITLE_TEXT = "Діапазон";
-
     private final DefaultTextField rangeMin;
     private final DefaultTextField rangeMax;
     private final ButtonCell measurementValue;
 
     public SwingCalibratorInfoRangePanel() {
-        super(TITLE_TEXT);
+        super(Labels.getRootLabels().get(RootLabelName.RANGE));
 
         rangeMin = new DefaultTextField(6);
         rangeMin.setText("0.00");

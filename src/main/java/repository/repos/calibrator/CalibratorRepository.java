@@ -13,7 +13,7 @@ public interface CalibratorRepository {
 
     boolean add(@Nonnull Calibrator calibrator);
 
-    boolean removeByName(@Nonnull String name);
+    boolean removeByName(String name);
     boolean removeByMeasurementValue(@Nonnull String value);
     boolean clear();
 

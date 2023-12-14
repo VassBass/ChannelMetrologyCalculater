@@ -1,5 +1,7 @@
 package service.calibrator.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.Calibrator;
 import model.ui.*;
 import model.ui.builder.CellBuilder;
@@ -15,15 +17,18 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static javax.swing.SwingConstants.CENTER;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SwingCalibratorInfoCertificatePanel extends TitledPanel implements CalibratorInfoCertificatePanel {
-    private static final String TITLE_TEXT = "Документ про придатність калібратора";
-    private static final String NAME_LABEL_TEXT = "Назва:";
-    private static final String COMPANY_LABEL_TEXT = "Видав документ:";
+    private static final String CALIBRATOR_SUITABLE_DOCUMENT = "calibratorSuitableDocument";
+    private static final String ISSUE_DOCUMENT = "issueDocument";
+
+    private static final Map<String, String> labels = Labels.getLabels(SwingCalibratorInfoCertificatePanel.class);
+    private static final Map<String, String> rootLabels = Labels.getRootLabels();
 
     private final DefaultComboBox type;
     private final DatePanel datePanel;
@@ -31,13 +36,13 @@ public class SwingCalibratorInfoCertificatePanel extends TitledPanel implements 
     private final TitledTextField company;
 
     public SwingCalibratorInfoCertificatePanel(@Nonnull RepositoryFactory repositoryFactory) {
-        super(TITLE_TEXT, Color.BLACK);
+        super(labels.get(CALIBRATOR_SUITABLE_DOCUMENT), Color.BLACK);
         CalibratorRepository calibratorRepository = repositoryFactory.getImplementation(CalibratorRepository.class);
 
         type = new DefaultComboBox(true);
         datePanel = new DatePanel();
-        name = new TitledTextField(20, NAME_LABEL_TEXT);
-        company = new TitledTextField(20, COMPANY_LABEL_TEXT);
+        name = new TitledTextField(20, Labels.getRootLabels().get(RootLabelName.NAME) + Labels.COLON);
+        company = new TitledTextField(20, labels.get(ISSUE_DOCUMENT) + Labels.COLON);
 
         List<String> types = new ArrayList<>();
         types.add(EMPTY);
@@ -50,7 +55,7 @@ public class SwingCalibratorInfoCertificatePanel extends TitledPanel implements 
         datePanel.setDate(DateHelper.dateToString(Calendar.getInstance()));
 
         this.add(type, new CellBuilder().x(0).y(0).width(1).build());
-        this.add(new DefaultLabel(" від "), new CellBuilder().x(1).y(0).width(1).build());
+        this.add(new DefaultLabel(Labels.SPACE + labels.get(RootLabelName.FROM) + Labels.SPACE), new CellBuilder().x(1).y(0).width(1).build());
         this.add(datePanel, new CellBuilder().x(2).y(0).width(1).build());
         this.add(name, new CellBuilder().x(0).y(1).width(3).build());
         this.add(company, new CellBuilder().x(0).y(2).width(3).build());
@@ -87,9 +92,6 @@ public class SwingCalibratorInfoCertificatePanel extends TitledPanel implements 
     }
 
     private static class DatePanel extends DefaultPanel {
-        private static final String DAY_TOOLTIP_TEXT = "День";
-        private static final String MONTH_TOOLTIP_TEXT = "Місяць";
-        private static final String YEAR_TOOLTIP_TEXT = "Рік";
 
         private final IntegerTextField dayField;
         private final IntegerTextField monthField;
@@ -98,11 +100,11 @@ public class SwingCalibratorInfoCertificatePanel extends TitledPanel implements 
         public DatePanel() {
             super();
 
-            dayField = new IntegerTextField(2, DAY_TOOLTIP_TEXT, CENTER);
-            monthField = new IntegerTextField(2, MONTH_TOOLTIP_TEXT, CENTER);
-            yearField = new IntegerTextField(4, YEAR_TOOLTIP_TEXT, CENTER);
-            DefaultLabel dot1 = new DefaultLabel(".", CENTER);
-            DefaultLabel dot2 = new DefaultLabel(".", CENTER);
+            dayField = new IntegerTextField(2, rootLabels.get(RootLabelName.DAY), CENTER);
+            monthField = new IntegerTextField(2, rootLabels.get(RootLabelName.MONTH), CENTER);
+            yearField = new IntegerTextField(4, rootLabels.get(RootLabelName.YEAR), CENTER);
+            DefaultLabel dot1 = new DefaultLabel(Labels.DOT, CENTER);
+            DefaultLabel dot2 = new DefaultLabel(Labels.DOT, CENTER);
 
             this.add(dayField, new CellBuilder().x(0).build());
             this.add(dot1, new CellBuilder().x(1).build());

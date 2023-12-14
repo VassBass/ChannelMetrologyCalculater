@@ -1,5 +1,6 @@
 package application;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,7 +38,7 @@ public class PropertiesApplicationConfigHolder implements ApplicationConfigHolde
             applicationVersion = properties.getProperty(KEY_APPLICATION_VERSION, EMPTY);
             folderImages = properties.getProperty(KEY_FOLDER_IMAGES, EMPTY);
         } catch (IOException e) {
-            logger.warn("Exception was thrown: ",e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 

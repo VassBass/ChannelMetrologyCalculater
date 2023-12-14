@@ -1,5 +1,7 @@
 package service.control_points.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultButton;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -7,21 +9,20 @@ import service.control_points.list.ControlPointsListManager;
 
 import javax.annotation.Nonnull;
 
+import java.util.Map;
+
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingControlPointsListButtonsPanel extends DefaultPanel {
-    private static final String CLOSE_BUTTON_TEXT = "Закрити";
-    private static final String REMOVE_BUTTON_TEXT = "Видалити";
-    private static final String DETAILS_BUTTON_TEXT = "Дивитись";
-    private static final String ADD_BUTTON_TEXT = "Додати";
 
     public SwingControlPointsListButtonsPanel(@Nonnull ControlPointsListManager manager) {
         super();
+        Map<String, String> labels = Labels.getRootLabels();
 
-        DefaultButton closeButton = new DefaultButton(CLOSE_BUTTON_TEXT);
-        DefaultButton removeButton = new DefaultButton(REMOVE_BUTTON_TEXT);
-        DefaultButton detailsButton = new DefaultButton(DETAILS_BUTTON_TEXT);
-        DefaultButton addButton = new DefaultButton(ADD_BUTTON_TEXT);
+        DefaultButton closeButton = new DefaultButton(labels.get(RootLabelName.CLOSE));
+        DefaultButton removeButton = new DefaultButton(labels.get(RootLabelName.DELETE));
+        DefaultButton detailsButton = new DefaultButton(labels.get(RootLabelName.WATCH));
+        DefaultButton addButton = new DefaultButton(labels.get(RootLabelName.ADD));
 
         closeButton.addActionListener(e -> manager.shutdownService());
         removeButton.addActionListener(e -> manager.removeControlPoints());

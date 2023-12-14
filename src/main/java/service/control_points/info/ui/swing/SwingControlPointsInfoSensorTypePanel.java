@@ -1,5 +1,7 @@
 package service.control_points.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.ControlPoints;
 import model.dto.Sensor;
 import model.ui.DefaultComboBox;
@@ -15,12 +17,13 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingControlPointsInfoSensorTypePanel extends TitledPanel implements ControlPointsInfoSensorTypePanel {
-    private static final String TITLE_TEXT = "Тип ПВП";
+    private static final Map<String, String> labels = Labels.getRootLabels();
 
     private final RepositoryFactory repositoryFactory;
 
@@ -29,7 +32,11 @@ public class SwingControlPointsInfoSensorTypePanel extends TitledPanel implement
 
     public SwingControlPointsInfoSensorTypePanel(@Nonnull RepositoryFactory repositoryFactory,
                                                  @Nullable ControlPoints oldCP) {
-        super(TITLE_TEXT, Color.BLACK);
+        super(
+                labels.get(RootLabelName.TYPE) +
+                        Labels.SPACE +
+                        labels.get(RootLabelName.SENSOR_SHORT)
+                , Color.BLACK);
         this.repositoryFactory = repositoryFactory;
         MeasurementRepository measurementRepository = repositoryFactory.getImplementation(MeasurementRepository.class);
         SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);

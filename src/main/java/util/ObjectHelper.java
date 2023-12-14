@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class ObjectHelper {
+    private ObjectHelper(){}
+
     public static boolean nonNull(Object ... o) {
         return Arrays.stream(o).noneMatch(Objects::isNull);
     }

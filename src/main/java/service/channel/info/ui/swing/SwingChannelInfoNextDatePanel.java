@@ -1,15 +1,16 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.TitledLabel;
 import service.channel.info.ui.ChannelInfoNextDatePanel;
 
 import java.awt.*;
 
 public class SwingChannelInfoNextDatePanel extends TitledLabel implements ChannelInfoNextDatePanel {
-    private static final String TITLE_TEXT = " Дата наступної перевірки";
 
     public SwingChannelInfoNextDatePanel() {
-        super(TITLE_TEXT, Color.BLACK);
+        super(Labels.getRootLabels().get(RootLabelName.NEXT_CHECK_DATE), Color.BLACK);
     }
 
     @Override

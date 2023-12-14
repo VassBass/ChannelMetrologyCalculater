@@ -3,7 +3,9 @@ package model;
 import java.util.Locale;
 
 public enum OS {
-    LINUX, WINDOWS, UNKNOWN;
+    LINUX("Linux"), WINDOWS("Windows"), UNKNOWN("Unknown");
+
+    private final String name;
 
     public static OS getCurrentOS(){
         String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
@@ -12,5 +14,13 @@ public enum OS {
         if (os.contains("nix") || os.contains("nux")) return LINUX;
 
         return UNKNOWN;
+    }
+
+    OS(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }

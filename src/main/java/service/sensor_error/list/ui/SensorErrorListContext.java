@@ -1,5 +1,6 @@
 package service.sensor_error.list.ui;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -28,8 +29,7 @@ public class SensorErrorListContext {
     @SuppressWarnings("unchecked")
     public <T> T getElement(Class<T> clazz) {
         if (manager == null) {
-            String message = "Before use context you must register manager!";
-            logger.warn(message);
+            logger.warn(Messages.Log.MISSING_UI_MANAGER_ERROR);
             return null;
         }
 
@@ -51,7 +51,7 @@ public class SensorErrorListContext {
                 buffer.put(clazz, element);
             }
 
-            if (Objects.isNull(element)) logger.warn(String.format("Can't find implementation for %s", clazz.getName()));
+            if (Objects.isNull(element)) logger.warn(Messages.Log.missingImplementation(clazz));
         }
 
         return element;

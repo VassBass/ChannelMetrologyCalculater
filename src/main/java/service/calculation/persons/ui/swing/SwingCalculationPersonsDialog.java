@@ -1,6 +1,7 @@
 package service.calculation.persons.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
 import model.OS;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SwingCalculationPersonsDialog extends DefaultDialog implements CalculationCollectDialog {
-    private static final String TITLE = "Персонал задієний в КМХ";
+    private static final String PERSONS = "persons";
 
     private final SwingCalculationPersonsMakersPanel makersPanel;
     private final SwingCalculationPersonsFormerPanel formerPanel;
@@ -32,7 +33,7 @@ public class SwingCalculationPersonsDialog extends DefaultDialog implements Calc
                                          @Nonnull CalculationManager manager,
                                          @Nonnull SwingCalculationPersonsContext context,
                                          @Nonnull Protocol protocol) {
-        super(applicationScreen, TITLE);
+        super(applicationScreen, Labels.getLabels(SwingCalculationPersonsDialog.class).get(PERSONS));
 
         makersPanel = context.getElement(SwingCalculationPersonsMakersPanel.class);
         formerPanel = context.getElement(SwingCalculationPersonsFormerPanel.class);

@@ -1,9 +1,13 @@
 package service.control_points.list;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.ControlPoints;
 import repository.RepositoryFactory;
 import repository.repos.control_points.ControlPointsRepository;
-import service.control_points.info.ControlPointsInfoExecuter;
+import service.control_points.info.ControlPointsInfoExecutor;
 import service.control_points.list.ui.ControlPointsListContext;
 import service.control_points.list.ui.ControlPointsListSortPanel;
 import service.control_points.list.ui.ControlPointsListTable;
@@ -13,9 +17,12 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 public class SwingControlPointsListManager implements ControlPointsListManager {
+    private static final String DELETE_QUESTION = "deleteQuestion";
+
     private final RepositoryFactory repositoryFactory;
     private final ControlPointsListContext context;
 
@@ -54,17 +61,20 @@ public class SwingControlPointsListManager implements ControlPointsListManager {
 
     @Override
     public void removeControlPoints() {
+        Map<String, String> labels = Labels.getRootLabels();
+        Map<String, String> messages = Messages.getRootMessages();
+
         ControlPointsListTable table = context.getElement(ControlPointsListTable.class);
         String selectedCP = table.getSelectedControlPointsName();
         if (Objects.nonNull(selectedCP)) {
-            String message = String.format("Ви впевнені що хочете видалити контрольні точки для \"%s\"?", selectedCP);
-            int result = JOptionPane.showConfirmDialog(dialog, message, "Видалення", JOptionPane.YES_NO_OPTION);
+            String message = String.format(Messages.getMessages(SwingControlPointsListManager.class).get(DELETE_QUESTION), selectedCP);
+            int result = JOptionPane.showConfirmDialog(dialog, message, labels.get(RootLabelName.DELETING), JOptionPane.YES_NO_OPTION);
             if (result == 0) {
                 ControlPointsRepository repository = repositoryFactory.getImplementation(ControlPointsRepository.class);
                 if (repository.removeByName(selectedCP)) {
-                    JOptionPane.showMessageDialog(dialog, "Операція завершена успішно", "Успіх", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(dialog, messages.get(RootMessageName.OPERATION_SUCCESS), labels.get(RootLabelName.SUCCESS), JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(dialog, "Виникла помилка. Спробуйте ще раз", "Помилка", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(dialog, messages.get(RootMessageName.ERROR_TRY_AGAIN), labels.get(RootLabelName.ERROR), JOptionPane.ERROR_MESSAGE);
                 }
                 dialog.refresh();
             }
@@ -78,13 +88,13 @@ public class SwingControlPointsListManager implements ControlPointsListManager {
         if (Objects.nonNull(selectedCP)) {
             ControlPointsRepository repository = repositoryFactory.getImplementation(ControlPointsRepository.class);
             ControlPoints cp = repository.get(selectedCP);
-            if (Objects.nonNull(cp)) new ControlPointsInfoExecuter(repositoryFactory, dialog, this, cp).execute();
+            if (Objects.nonNull(cp)) new ControlPointsInfoExecutor(repositoryFactory, dialog, this, cp).execute();
         }
     }
 
     @Override
     public void addControlPoints() {
-        new ControlPointsInfoExecuter(repositoryFactory, dialog, this, null).execute();
+        new ControlPointsInfoExecutor(repositoryFactory, dialog, this, null).execute();
     }
 
     @Override

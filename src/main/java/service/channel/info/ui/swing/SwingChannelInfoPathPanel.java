@@ -1,5 +1,7 @@
 package service.channel.info.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultComboBox;
 import model.ui.TitledPanel;
 import model.ui.builder.CellBuilder;
@@ -10,15 +12,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class SwingChannelInfoPathPanel extends TitledPanel implements ChannelInfoPathPanel {
-    private static final String TITLE_TEXT = "Розташування";
-
     private final DefaultComboBox departments;
     private final DefaultComboBox areas;
     private final DefaultComboBox processes;
     private final DefaultComboBox installations;
 
     public SwingChannelInfoPathPanel() {
-        super(TITLE_TEXT, Color.BLACK);
+        super(Labels.getRootLabels().get(RootLabelName.LOCATION), Color.BLACK);
 
         departments = new DefaultComboBox(true);
         areas = new DefaultComboBox(true);

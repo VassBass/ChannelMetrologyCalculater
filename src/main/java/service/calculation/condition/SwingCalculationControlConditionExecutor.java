@@ -1,6 +1,7 @@
 package service.calculation.condition;
 
 import application.ApplicationScreen;
+import localization.Messages;
 import model.dto.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,8 @@ import service.calculation.condition.ui.swing.SwingCalculationControlConditionDi
 
 import javax.annotation.Nonnull;
 
-public class SwingCalculationControlConditionExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationControlConditionExecuter.class);
+public class SwingCalculationControlConditionExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationControlConditionExecutor.class);
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -22,7 +23,7 @@ public class SwingCalculationControlConditionExecuter implements ServiceExecutor
     private final CalculationManager manager;
     private final Channel channel;
 
-    public SwingCalculationControlConditionExecuter(@Nonnull ApplicationScreen applicationScreen,
+    public SwingCalculationControlConditionExecutor(@Nonnull ApplicationScreen applicationScreen,
                                                     @Nonnull RepositoryFactory repositoryFactory,
                                                     @Nonnull CalculationConfigHolder configHolder,
                                                     @Nonnull CalculationManager manager,
@@ -45,6 +46,6 @@ public class SwingCalculationControlConditionExecuter implements ServiceExecutor
         manager.registerConditionDialog(dialog);
         manager.showConditionDialog();
 
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

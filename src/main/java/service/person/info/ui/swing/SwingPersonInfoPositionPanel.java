@@ -1,5 +1,6 @@
 package service.person.info.ui.swing;
 
+import localization.Labels;
 import model.dto.Person;
 import model.ui.TitledComboBox;
 import repository.RepositoryFactory;
@@ -13,10 +14,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SwingPersonInfoPositionPanel extends TitledComboBox implements PersonInfoPositionPanel {
-    private static final String TITLE_TEXT = "Посада";
+    private static final String POSITION = "position";
 
     public SwingPersonInfoPositionPanel(@Nonnull RepositoryFactory repositoryFactory) {
-        super(true, TITLE_TEXT, Color.BLACK);
+        super(true, Labels.getLabels(SwingPersonInfoPositionPanel.class).get(POSITION), Color.BLACK);
         PersonRepository personRepository = repositoryFactory.getImplementation(PersonRepository.class);
         this.setList(personRepository.getAll().stream()
                 .map(Person::getPosition)

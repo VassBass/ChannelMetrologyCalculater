@@ -1,6 +1,7 @@
 package service.control_points.list;
 
 import application.ApplicationScreen;
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -10,13 +11,13 @@ import service.control_points.list.ui.swing.SwingControlPointsListDialog;
 
 import javax.annotation.Nonnull;
 
-public class ControlPointsListExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(ControlPointsListExecuter.class);
+public class ControlPointsListExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(ControlPointsListExecutor.class);
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
 
-    public ControlPointsListExecuter(@Nonnull ApplicationScreen applicationScreen,
+    public ControlPointsListExecutor(@Nonnull ApplicationScreen applicationScreen,
                                      @Nonnull RepositoryFactory repositoryFactory) {
         this.applicationScreen = applicationScreen;
         this.repositoryFactory = repositoryFactory;
@@ -32,6 +33,6 @@ public class ControlPointsListExecuter implements ServiceExecutor {
         manager.registerDialog(dialog);
 
         dialog.showing();
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

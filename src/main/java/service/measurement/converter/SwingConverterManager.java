@@ -1,5 +1,7 @@
 package service.measurement.converter;
 
+import localization.Labels;
+import localization.RootLabelName;
 import repository.RepositoryFactory;
 import repository.repos.measurement.MeasurementRepository;
 import service.measurement.converter.service.Converter;
@@ -14,10 +16,9 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class SwingConverterManager implements ConverterManager {
-    private static final String ERROR_MESSAGE = "Помилка введення данних";
-
     private final RepositoryFactory repositoryFactory;
     private final ConverterContext context;
     private final Converter converter;
@@ -42,6 +43,8 @@ public class SwingConverterManager implements ConverterManager {
 
     @Override
     public void convert() {
+        Map<String, String> labels = Labels.getRootLabels();
+
         SwingSourceMeasurementValuePanel sourceValuePanel = context.getElement(SwingSourceMeasurementValuePanel.class);
         SwingResultMeasurementValuePanel resultValuePanel = context.getElement(SwingResultMeasurementValuePanel.class);
         ResultPanel resultPanel = context.getElement(ResultPanel.class);
@@ -51,7 +54,7 @@ public class SwingConverterManager implements ConverterManager {
         double sourceValue = sourceValuePanel.getValue();
 
         if (Double.isNaN(sourceValue)) {
-            JOptionPane.showMessageDialog(dialog, ERROR_MESSAGE, "Помилковий ввід", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(dialog, labels.get(RootLabelName.INPUT_NOT_VALID), labels.get(RootLabelName.INPUT_NOT_VALID), JOptionPane.ERROR_MESSAGE);
         } else {
             double resultValue = converter.convert(sourceMeasurementValue, resultMeasurementValue, sourceValue);
             resultPanel.appendResult(sourceMeasurementValue, sourceValue, resultMeasurementValue, resultValue);

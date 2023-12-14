@@ -1,5 +1,6 @@
 package service.certificate.archive;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ public class PropertiesCertificateArchiveConfigHolder implements CertificateArch
             certificateFolder = properties.getProperty(KEY_CERTIFICATE_FOLDER, EMPTY);
 
         } catch (IOException e) {
-            logger.warn("Exception was thrown: ", e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 

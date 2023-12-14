@@ -1,6 +1,8 @@
 package service.sensor_types.list.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -19,7 +21,6 @@ import static model.ui.builder.CellBuilder.BOTH;
 import static model.ui.builder.CellBuilder.NONE;
 
 public class SwingSensorTypesListDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Типи ПВП";
 
     private final SensorTypesListContext context;
     private final RepositoryFactory repositoryFactory;
@@ -28,7 +29,7 @@ public class SwingSensorTypesListDialog extends DefaultDialog {
                                       @Nonnull RepositoryFactory repositoryFactory,
                                       @Nonnull SensorTypesListConfigHolder configHolder,
                                       @Nonnull SensorTypesListContext context) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getRootLabels().get(RootLabelName.SENSOR_TYPES));
         this.repositoryFactory = repositoryFactory;
         this.context = context;
         SensorRepository sensorRepository = repositoryFactory.getImplementation(SensorRepository.class);

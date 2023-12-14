@@ -1,25 +1,28 @@
 package service.channel.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import service.channel.list.ChannelListManager;
 
 import javax.swing.*;
+import java.io.File;
+import java.util.Map;
 
 public class SwingMenuChannelList extends JMenu {
-    private static final String HEADER_TEXT = "Канал";
-    private static final String ADD_BUTTON_TEXT = "Додати";
-    private static final String CALCULATE_BUTTON_TEXT = "Розрахувати";
-    private static final String INFO_BUTTON_TEXT = "Детальніше";
-    private static final String REMOVE_BUTTON_TEXT = "Видалити";
-    private static final String FOLDER_BUTTON_TEXT = "Сертифікати/Протоколи";
+    private static final Map<String, String> labels = Labels.getRootLabels();
 
     public SwingMenuChannelList(final ChannelListManager manager){
-        super(HEADER_TEXT);
+        super(labels.get(RootLabelName.CHANNEL));
 
-        JMenuItem btnAdd = new JMenuItem(ADD_BUTTON_TEXT);
-        JMenuItem btnCalculate = new JMenuItem(CALCULATE_BUTTON_TEXT);
-        JMenuItem btnInfo = new JMenuItem(INFO_BUTTON_TEXT);
-        JMenuItem btnRemove = new JMenuItem(REMOVE_BUTTON_TEXT);
-        JMenuItem btnFolder = new JMenuItem(FOLDER_BUTTON_TEXT);
+        JMenuItem btnAdd = new JMenuItem(labels.get(RootLabelName.ADD));
+        JMenuItem btnCalculate = new JMenuItem(labels.get(RootLabelName.CALCULATE));
+        JMenuItem btnInfo = new JMenuItem(labels.get(RootLabelName.DETAILS));
+        JMenuItem btnRemove = new JMenuItem(labels.get(RootLabelName.DELETE));
+        JMenuItem btnFolder = new JMenuItem(
+                labels.get(RootLabelName.CERTIFICATES) +
+                        File.separator +
+                        labels.get(RootLabelName.PROTOCOLS)
+                );
 
         btnInfo.addActionListener(e -> manager.showChannelInfo());
         btnAdd.addActionListener(e -> manager.addChannel());

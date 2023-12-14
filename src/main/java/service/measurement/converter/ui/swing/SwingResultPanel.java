@@ -1,15 +1,15 @@
 package service.measurement.converter.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.TitledTextArea;
 import service.measurement.converter.ui.ResultPanel;
 
 public class SwingResultPanel extends TitledTextArea implements ResultPanel {
-    private static final String TITLE_TEXT = "Результтат";
-
     private final StringBuilder buffer;
 
     public SwingResultPanel() {
-        super(Integer.MAX_VALUE, 50, TITLE_TEXT);
+        super(Integer.MAX_VALUE, 50, Labels.getRootLabels().get(RootLabelName.RESULT));
         buffer = new StringBuilder();
         this.setEditable(false);
     }

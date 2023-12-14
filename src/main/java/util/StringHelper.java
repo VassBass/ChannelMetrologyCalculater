@@ -7,10 +7,13 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
+import localization.Labels;
 
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class StringHelper {
+    private StringHelper(){}
+
     public static final int FOR_LAST_ZERO = Integer.MAX_VALUE;
 
     public static boolean isDouble(String ... doubleString) {
@@ -46,18 +49,18 @@ public class StringHelper {
         if (places == FOR_LAST_ZERO) {
             return roundingForLastZero(value);
         } else {
-            return new BigDecimal(value).setScale(places, java.math.RoundingMode.HALF_UP).toString();
+            return BigDecimal.valueOf(value).setScale(places, java.math.RoundingMode.HALF_UP).toString();
         }
     }
 
     private static String roundingForLastZero(double value) {
         String d = String.valueOf(value);
         if (d.contains("e") || d.contains("E")) d = String.format(Locale.US, "%.50f", value);
-        String[] splitted = d.split("\\.");
+        String[] splitted = d.split(RegexHelper.DOT_REGEX);
         if (splitted.length > 1) {
             String prefix = splitted[0];
-            String suffix = splitted[1].replaceFirst("(?<=[1-9])0", ".");
-            int index = suffix.indexOf('.');
+            String suffix = splitted[1].replaceFirst("(?<=[1-9])0", Labels.DOT);
+            int index = suffix.indexOf(Labels.dot);
             if (index >= 0) {
                 suffix = suffix.substring(0, index);
                 if (suffix.isEmpty()) {
@@ -90,10 +93,10 @@ public class StringHelper {
     }
 
     public static boolean containsIgnoreCaseAndSpaces(String base, String containValue) {
-        String baseLow = base.toLowerCase(Locale.ROOT).replaceAll("\\s", "");
-        String baseUp = base.toUpperCase(Locale.ROOT).replaceAll("\\s", "");
-        String valLow = containValue.toLowerCase(Locale.ROOT).replaceAll("\\s", "");
-        String valUp = containValue.toUpperCase(Locale.ROOT).replaceAll("\\s", "");
+        String baseLow = base.toLowerCase(Locale.ROOT).replaceAll(RegexHelper.SPACE_REGEX, EMPTY);
+        String baseUp = base.toUpperCase(Locale.ROOT).replaceAll(RegexHelper.SPACE_REGEX, EMPTY);
+        String valLow = containValue.toLowerCase(Locale.ROOT).replaceAll(RegexHelper.SPACE_REGEX, EMPTY);
+        String valUp = containValue.toUpperCase(Locale.ROOT).replaceAll(RegexHelper.SPACE_REGEX, EMPTY);
         return baseLow.contains(valLow) && baseUp.contains(valUp);
     }
 }

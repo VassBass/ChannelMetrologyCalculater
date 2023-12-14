@@ -1,5 +1,6 @@
 package repository.repos.calculation_method;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.config.RepositoryConfigHolder;
@@ -50,7 +51,7 @@ public class CalculationMethodRepositorySQLite implements  CalculationMethodRepo
                 return resultSet.getString("method_name");
             }
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
         return null;
     }
@@ -61,7 +62,7 @@ public class CalculationMethodRepositorySQLite implements  CalculationMethodRepo
         try (Statement statement = connector.getStatement()){
                 return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -72,7 +73,7 @@ public class CalculationMethodRepositorySQLite implements  CalculationMethodRepo
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }
@@ -83,7 +84,7 @@ public class CalculationMethodRepositorySQLite implements  CalculationMethodRepo
         try (Statement statement = connector.getStatement()){
             return statement.executeUpdate(sql) > 0;
         }catch (SQLException e){
-            LOGGER.warn("Exception was thrown!", e);
+            LOGGER.warn(Messages.Log.EXCEPTION_THROWN, e);
             return false;
         }
     }

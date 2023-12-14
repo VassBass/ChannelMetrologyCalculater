@@ -1,5 +1,7 @@
 package service.control_points.list.ui.swing;
 
+import localization.Labels;
+import localization.RootLabelName;
 import model.dto.ControlPoints;
 import repository.RepositoryFactory;
 import repository.repos.control_points.ControlPointsRepository;
@@ -13,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SwingControlPointsListTable extends JTable implements ControlPointsListTable {
-    private static final String COLUMN_NAME = "Назва";
 
     public SwingControlPointsListTable(@Nonnull RepositoryFactory repositoryFactory){
         super();
@@ -34,7 +35,7 @@ public class SwingControlPointsListTable extends JTable implements ControlPoints
         };
 
         String[]columnsHeader = new String[] {
-                COLUMN_NAME
+                Labels.getRootLabels().get(RootLabelName.NAME)
         };
         model.setColumnIdentifiers(columnsHeader);
 

@@ -1,5 +1,6 @@
 package repository;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.config.RepositoryConfigHolder;
@@ -62,7 +63,7 @@ public class RepositoryFactory {
             if (clazz.isAssignableFrom(CalculationMethodRepository.class))
                 i = (T) new BufferedCalculationMethodRepositorySQLite(configHolder, connector);
 
-            if (i == null) logger.warn(String.format("Can't find implementation for %s", clazz.getName()));
+            if (i == null) logger.warn(Messages.Log.missingImplementation(clazz));
             else implementations.put(clazz, i);
         }
 

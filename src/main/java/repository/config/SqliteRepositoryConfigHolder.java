@@ -1,5 +1,6 @@
 package repository.config;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.init.reg.RepositoryTableRegistrar;
@@ -44,7 +45,7 @@ public class SqliteRepositoryConfigHolder implements RepositoryConfigHolder {
             dbUrl = properties.getProperty(KEY_DB_URL, EMPTY);
             dbFile = properties.getProperty(KEY_DB_FILE, EMPTY);
         } catch (IOException e) {
-            logger.warn("Exception was thrown: ",e);
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
     }
 

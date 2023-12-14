@@ -1,15 +1,16 @@
 package service.person.info.ui.swing;
 
+import localization.Labels;
 import model.ui.TitledTextField;
 import service.person.info.ui.PersonInfoPatronymicPanel;
 
 import java.awt.*;
 
 public class SwingPersonInfoPatronymicPanel extends TitledTextField implements PersonInfoPatronymicPanel {
-    private static final String TITLE_TEXT = "По батькові";
+    private static final String PATRONYMIC = "patronymic";
 
     public SwingPersonInfoPatronymicPanel() {
-        super(20, TITLE_TEXT, Color.BLACK);
+        super(20, Labels.getLabels(SwingPersonInfoPatronymicPanel.class).get(PATRONYMIC), Color.BLACK);
     }
 
 

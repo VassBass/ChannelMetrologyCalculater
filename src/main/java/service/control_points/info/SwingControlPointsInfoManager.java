@@ -1,5 +1,9 @@
 package service.control_points.info;
 
+import localization.Labels;
+import localization.Messages;
+import localization.RootLabelName;
+import localization.RootMessageName;
 import model.dto.ControlPoints;
 import model.dto.builder.ControlPointsBuilder;
 import repository.RepositoryFactory;
@@ -21,6 +25,14 @@ import java.util.Objects;
 import static javax.swing.JOptionPane.*;
 
 public class SwingControlPointsInfoManager implements ControlPointsInfoManager {
+    private static final String DELETE_QUESTION = "deleteQuestion";
+    private static final String CHANGE_SUCCESS = "changeSuccess";
+    private static final String SAVE_SUCCESS = "saveSuccess";
+    private static final String CONTROL_POINTS_EXISTS = "controlPointsExists";
+
+    private final Map<String, String> messages;
+    Map<String, String> rootLabels;
+
     private final RepositoryFactory repositoryFactory;
     private final ControlPointsListManager parentManager;
     private final ControlPointsInfoContext context;
@@ -32,6 +44,9 @@ public class SwingControlPointsInfoManager implements ControlPointsInfoManager {
                                          @Nonnull ControlPointsListManager parentManager,
                                          @Nonnull ControlPointsInfoContext context,
                                          @Nullable ControlPoints oldCP) {
+        messages = Messages.getMessages(SwingControlPointsInfoManager.class);
+        rootLabels = Labels.getRootLabels();
+
         this.repositoryFactory = repositoryFactory;
         this.parentManager = parentManager;
         this.context = context;
@@ -45,18 +60,20 @@ public class SwingControlPointsInfoManager implements ControlPointsInfoManager {
 
     @Override
     public void removeControlPoints() {
+        Map<String, String> rootMessages = Messages.getRootMessages();
+
         if (Objects.nonNull(oldCP)) {
             String name = oldCP.getName();
-            String message = String.format("Ви впевнені що хочете видалити контрольні точки для \"%s\"?", name);
-            int result = JOptionPane.showConfirmDialog(dialog, message, "Видалення", YES_NO_OPTION);
+            String message = String.format(messages.get(DELETE_QUESTION), name);
+            int result = JOptionPane.showConfirmDialog(dialog, message, rootLabels.get(RootLabelName.DELETING), YES_NO_OPTION);
             if (result == 0) {
                 ControlPointsRepository repository = repositoryFactory.getImplementation(ControlPointsRepository.class);
                 if (repository.removeByName(name)) {
-                    message = "Видалення пройшло успішно";
-                    JOptionPane.showMessageDialog(dialog, message, "Успіх", INFORMATION_MESSAGE);
+                    message = rootMessages.get(RootMessageName.DELETING_SUCCESS);
+                    JOptionPane.showMessageDialog(dialog, message, rootLabels.get(RootLabelName.SUCCESS), INFORMATION_MESSAGE);
                 } else {
-                    message = "Виникла помилка. Спробуйте ще раз";
-                    JOptionPane.showMessageDialog(dialog, message, "Помилка", ERROR_MESSAGE);
+                    message = rootMessages.get(RootMessageName.ERROR_TRY_AGAIN);
+                    JOptionPane.showMessageDialog(dialog, message, rootLabels.get(RootLabelName.ERROR), ERROR_MESSAGE);
                 }
                 dialog.shutdown();
                 parentManager.updateControlPointsList();
@@ -87,15 +104,13 @@ public class SwingControlPointsInfoManager implements ControlPointsInfoManager {
         ControlPoints newCp = new ControlPointsBuilder(name).setSensorType(sensorType).setPoints(values).build();
         if (Objects.nonNull(oldCP)) {
             if (repository.set(oldCP, newCp)) {
-                String message = "Контрольні точки успішно змінені";
-                JOptionPane.showMessageDialog(dialog, message, "Успіх", INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(dialog, messages.get(CHANGE_SUCCESS), rootLabels.get(RootLabelName.SUCCESS), INFORMATION_MESSAGE);
                 dialog.shutdown();
                 parentManager.updateControlPointsList();
             } else showExistMessage();
         } else {
             if (repository.add(newCp)) {
-                String message = "Контрольні точки успішно збережені";
-                JOptionPane.showMessageDialog(dialog, message, "Успіх", INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(dialog, messages.get(SAVE_SUCCESS), rootLabels.get(RootLabelName.SUCCESS), INFORMATION_MESSAGE);
                 dialog.shutdown();
                 parentManager.updateControlPointsList();
             } else showExistMessage();
@@ -108,8 +123,7 @@ public class SwingControlPointsInfoManager implements ControlPointsInfoManager {
     }
 
     private void showExistMessage() {
-        String message = "Контрольні точки для такого типу ПВП та в цьому діапазоні вже існують";
-        JOptionPane.showMessageDialog(dialog, message, "Помилка", ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(dialog, messages.get(CONTROL_POINTS_EXISTS), rootLabels.get(RootLabelName.ERROR), ERROR_MESSAGE);
     }
 
     public void registerDialog(SwingControlPointsInfoDialog dialog) {

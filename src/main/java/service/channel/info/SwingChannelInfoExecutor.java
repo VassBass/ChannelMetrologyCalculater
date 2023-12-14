@@ -1,6 +1,7 @@
 package service.channel.info;
 
 import application.ApplicationScreen;
+import localization.Messages;
 import model.dto.Channel;
 import model.ui.LoadingDialog;
 import org.slf4j.Logger;
@@ -14,15 +15,15 @@ import service.channel.list.ChannelListManager;
 import javax.annotation.Nonnull;
 import javax.swing.*;
 
-public class SwingChannelInfoExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoExecuter.class);
+public class SwingChannelInfoExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(SwingChannelInfoExecutor.class);
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
     private final ChannelListManager channelListManager;
     private Channel channel;
 
-    public SwingChannelInfoExecuter(@Nonnull ApplicationScreen applicationScreen,
+    public SwingChannelInfoExecutor(@Nonnull ApplicationScreen applicationScreen,
                                     @Nonnull RepositoryFactory repositoryFactory,
                                     @Nonnull ChannelListManager channelListManager){
         this.applicationScreen = applicationScreen;
@@ -30,14 +31,13 @@ public class SwingChannelInfoExecuter implements ServiceExecutor {
         this.channelListManager = channelListManager;
     }
 
-    public SwingChannelInfoExecuter registerChannel(Channel channel) {
+    public SwingChannelInfoExecutor registerChannel(Channel channel) {
         this.channel = channel;
         return this;
     }
 
     @Override
     public void execute() {
-        logger.info("Start of service execution");
         new Worker().execute();
     }
 
@@ -70,7 +70,7 @@ public class SwingChannelInfoExecuter implements ServiceExecutor {
         protected void done() {
             loadingDialog.shutdown();
             dialog.showing();
-            logger.info("The service is running");
+            logger.info(Messages.Log.SERVICE_RUNNING);
         }
     }
 }

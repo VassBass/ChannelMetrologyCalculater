@@ -1,6 +1,7 @@
 package service.calculation.persons;
 
 import application.ApplicationScreen;
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import repository.RepositoryFactory;
@@ -13,8 +14,8 @@ import service.calculation.persons.ui.swing.SwingCalculationPersonsDialog;
 
 import javax.annotation.Nonnull;
 
-public class SwingCalculationPersonsExecuter implements ServiceExecutor {
-    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationPersonsExecuter.class);
+public class SwingCalculationPersonsExecutor implements ServiceExecutor {
+    private static final Logger logger = LoggerFactory.getLogger(SwingCalculationPersonsExecutor.class);
 
     private final ApplicationScreen applicationScreen;
     private final RepositoryFactory repositoryFactory;
@@ -22,7 +23,7 @@ public class SwingCalculationPersonsExecuter implements ServiceExecutor {
     private final CalculationManager manager;
     private final Protocol protocol;
 
-    public SwingCalculationPersonsExecuter(@Nonnull ApplicationScreen applicationScreen,
+    public SwingCalculationPersonsExecutor(@Nonnull ApplicationScreen applicationScreen,
                                            @Nonnull RepositoryFactory repositoryFactory,
                                            @Nonnull CalculationConfigHolder configHolder,
                                            @Nonnull CalculationManager manager,
@@ -41,6 +42,6 @@ public class SwingCalculationPersonsExecuter implements ServiceExecutor {
         SwingCalculationPersonsDialog dialog = new SwingCalculationPersonsDialog(applicationScreen, configHolder, manager, context, protocol);
         manager.registerPersonDialog(dialog);
         dialog.showing();
-        logger.info("Service is running");
+        logger.info(Messages.Log.SERVICE_RUNNING);
     }
 }

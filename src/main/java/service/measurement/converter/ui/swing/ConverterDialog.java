@@ -1,6 +1,8 @@
 package service.measurement.converter.ui.swing;
 
 import application.ApplicationScreen;
+import localization.Labels;
+import localization.RootLabelName;
 import model.ui.DefaultDialog;
 import model.ui.DefaultPanel;
 import model.ui.builder.CellBuilder;
@@ -12,12 +14,11 @@ import javax.annotation.Nonnull;
 import javax.swing.*;
 
 public class ConverterDialog extends DefaultDialog {
-    private static final String TITLE_TEXT = "Перетворювач величин";
 
     public ConverterDialog(@Nonnull ApplicationScreen applicationScreen,
                            @Nonnull ConverterConfigHolder configHolder,
                            @Nonnull ConverterContext context) {
-        super(applicationScreen, TITLE_TEXT);
+        super(applicationScreen, Labels.getRootLabels().get(RootLabelName.CONVERTER));
 
         SwingMeasurementNamePanel measurementNamePanel = context.getElement(SwingMeasurementNamePanel.class);
         SwingSourceMeasurementValuePanel sourceValuePanel = context.getElement(SwingSourceMeasurementValuePanel.class);
