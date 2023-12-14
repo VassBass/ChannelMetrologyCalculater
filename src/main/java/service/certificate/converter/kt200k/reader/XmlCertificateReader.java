@@ -1,5 +1,6 @@
 package service.certificate.converter.kt200k.reader;
 
+import localization.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.helpers.DefaultHandler;
@@ -13,21 +14,10 @@ public class XmlCertificateReader extends DefaultHandler implements CertificateR
     private static final Logger logger = LoggerFactory.getLogger(XmlCertificateReader.class);
 
     private static final String ENVIRONMENT_TEMPERATURE_MARK = "Температура окружающей среды";
+    private static final String ENVIRONMENT_PRESSURE_MARK = "Атмосферное давление";
+    private static final String ENVIRONMENT_HUMIDITY_MARK = "Относительная влажность";
 
     private static final String STRING_DATA_REGEX = "(?<=String\"\\>)(.*)(?=\\<\\/Data\\>)";
-
-    private static final String DATA = "Data";
-    private static final String ROW = "Row";
-    private static final String CELL = "Cell";
-    private static final String TABLE = "Table";
-    private static final String WORKSHEET = "Worksheet";
-
-    private boolean isCell;
-    private boolean isData;
-
-    private boolean isEnvironmentTemperatureMark;
-
-    private StringBuilder elementValue;
 
     private final Certificate certificate;
 
@@ -38,9 +28,22 @@ public class XmlCertificateReader extends DefaultHandler implements CertificateR
     @Override
     public Certificate read(File file) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            String row;
+            while ((row = reader.readLine()) != null) {
+                if (certificate.getEnvironmentTemperature() == null && isEnvironmentTemperatureMark(row)) {
+                    certificate.setEnvironmentTemperature(extractDataValue(reader.readLine()));
+                }
 
+                if (certificate.getEnvironmentPressure() == null && isEnvironmentPressureMark(row)) {
+                    certificate.setEnvironmentPressure(extractDataValue(reader.readLine()));
+                }
+
+                if (certificate.getEnvironmentHumidity() == null && isEnvironmentHumidityMark(row)) {
+                    certificate.setEnvironmentHumidity(extractDataValue(reader.readLine()));
+                }
+            }
         }catch (IOException e) {
-            logger.warn();
+            logger.warn(Messages.Log.EXCEPTION_THROWN, e);
         }
 
         return certificate;
@@ -48,7 +51,24 @@ public class XmlCertificateReader extends DefaultHandler implements CertificateR
 
 
     private boolean isEnvironmentTemperatureMark(String row) {
+        String data = extractDataValue(row);
+        return data != null && data.contains(ENVIRONMENT_TEMPERATURE_MARK);
+    }
+
+    private boolean isEnvironmentPressureMark(String row) {
+        String data = extractDataValue(row);
+        return data != null && data.contains(ENVIRONMENT_PRESSURE_MARK);
+    }
+
+    private boolean isEnvironmentHumidityMark(String row) {
+        String data = extractDataValue(row);
+        return data != null && data.contains(ENVIRONMENT_HUMIDITY_MARK);
+    }
+
+    private String extractDataValue(String row) {
+        if (row == null) return null;
+
         Matcher matcher = Pattern.compile(STRING_DATA_REGEX).matcher(row);
-        return ENVIRONMENT_TEMPERATURE_MARK.equalsIgnoreCase(matcher.group());
+        return matcher.find() ? matcher.group() : null;
     }
 }

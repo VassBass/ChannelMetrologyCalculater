@@ -99,16 +99,16 @@ public class Certificate {
     @Override
     public String toString() {
         return "Certificate{" +
-                "protocolNumber='" + protocolNumber + '\'' +
-                ", channelName='" + channelName + '\'' +
-                ", environmentTemperature='" + environmentTemperature + '\'' +
-                ", environmentPressure='" + environmentPressure + '\'' +
-                ", environmentHumidity='" + environmentHumidity + '\'' +
-                ", benchmarkSensor=" + benchmarkSensor +
-                ", sensors=" + sensors +
-                ", worker=" + worker +
-                ", headOfMetrologyDepartment=" + headOfMetrologyDepartment +
-                ", sensorOwner=" + sensorOwner +
-                '}';
+                "\n\tprotocolNumber=" + protocolNumber +
+                ",\n\tchannelName=" + channelName +
+                ",\n\tenvironmentTemperature=" + environmentTemperature +
+                ",\n\tenvironmentPressure=" + environmentPressure +
+                ",\n\tenvironmentHumidity=" + environmentHumidity +
+                ",\n\tbenchmarkSensor=" + benchmarkSensor +
+                ",\n\tsensors=" + sensors +
+                ",\n\tworker=" + worker +
+                ",\n\theadOfMetrologyDepartment=" + headOfMetrologyDepartment +
+                ",\n\tsensorOwner=" + sensorOwner +
+                "\n}";
     }
 }
