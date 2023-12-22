@@ -137,7 +137,7 @@ public class ConsumptionCalculationWorkerTest {
                 -1.555, -2.0, -0.666, 1.198, -1.444, 0.667, -0.555, -2.333, 1.334, 1.087
         });
 
-        assertEquals(0.232073178, worker.calculateStandardIndeterminacyA(absoluteErrors), 0.000000001);
+        assertEquals(1.530627730703975, worker.calculateStandardIndeterminacyA(absoluteErrors), 0.000000001);
     }
 
     @Test

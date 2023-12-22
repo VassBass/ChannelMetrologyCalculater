@@ -99,4 +99,8 @@ public class StringHelper {
         String valUp = containValue.toUpperCase(Locale.ROOT).replaceAll(RegexHelper.SPACE_REGEX, EMPTY);
         return baseLow.contains(valLow) && baseUp.contains(valUp);
     }
+
+    public static boolean isBlank(String s) {
+        return s.isEmpty() || s.replaceAll(RegexHelper.SPACE_REGEX, EMPTY).isEmpty();
+    }
 }

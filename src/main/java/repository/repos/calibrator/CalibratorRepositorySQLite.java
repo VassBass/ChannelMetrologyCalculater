@@ -322,7 +322,7 @@ public class CalibratorRepositorySQLite implements CalibratorRepository {
     public boolean isExist(@Nonnull String oldCalibratorName, @Nonnull String newCalibratorName) {
         if (oldCalibratorName.equals(newCalibratorName)) return false;
 
-        String sql = String.format("SELECT code FROM %s WHERE code = '%s' LIMIT 1;", tableName, newCalibratorName);
+        String sql = String.format("SELECT name FROM %s WHERE name = '%s' LIMIT 1;", tableName, newCalibratorName);
         try (ResultSet resultSet = connector.getResultSet(sql)){
             return resultSet.next();
         }catch (SQLException e){

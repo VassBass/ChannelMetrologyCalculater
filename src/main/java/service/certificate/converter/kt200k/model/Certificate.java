@@ -2,6 +2,7 @@ package service.certificate.converter.kt200k.model;
 
 import model.dto.Person;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Certificate {
@@ -15,6 +16,7 @@ public class Certificate {
     private Person worker;
     private Person headOfMetrologyDepartment;
     private Person sensorOwner;
+    private String date;
 
     public String getProtocolNumber() {
         return protocolNumber;
@@ -64,12 +66,22 @@ public class Certificate {
         this.benchmarkSensor = benchmarkSensor;
     }
 
-    public List<Sensor> getSensors() {
-        return sensors;
+    public Sensor getSensor(int index) {
+        return sensors.get(index);
     }
 
-    public void setSensors(List<Sensor> sensors) {
-        this.sensors = sensors;
+    public void addSensor(Sensor sensor) {
+        if (sensors == null) sensors = new ArrayList<>();
+        sensors.add(sensor);
+    }
+
+    public int getSensorsCount() {
+        return sensors.size();
+    }
+
+    public Sensor getSensor(String number) {
+        int index = sensors.indexOf(Sensor.getMock(number));
+        return index < 0 ? null : sensors.get(index);
     }
 
     public Person getWorker() {
@@ -96,6 +108,14 @@ public class Certificate {
         this.sensorOwner = sensorOwner;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
         return "Certificate{" +
@@ -109,6 +129,7 @@ public class Certificate {
                 ",\n\tworker=" + worker +
                 ",\n\theadOfMetrologyDepartment=" + headOfMetrologyDepartment +
                 ",\n\tsensorOwner=" + sensorOwner +
+                ",\n\tdate=" + date +
                 "\n}";
     }
 }

@@ -2,7 +2,6 @@ package repository.repos.person;
 
 import model.dto.Person;
 import org.junit.*;
-import org.sqlite.JDBC;
 import repository.config.RepositoryConfigHolder;
 import repository.config.SqliteRepositoryConfigHolder;
 import repository.connection.RepositoryDBConnector;
@@ -288,5 +287,20 @@ public class PersonRepositorySQLiteTest {
     public void testRewriteEmpty() {
         assertTrue(repository.rewrite(new ArrayList<>()));
         assertEquals(0, repository.getAll().size());
+    }
+
+    @Test
+    public void testFindMostSimilarByLastName() {
+        String n = "n";
+        String am = "am";
+        String bla = "bla";
+        String name3 = "name3";
+
+        Person person3 = createPerson(3);
+        Person person0 = createPerson(0);
+        assertEquals(person3, repository.findMostSimilarByLastName(name3));
+        assertNull(repository.findMostSimilarByLastName(bla));
+        assertEquals(person0, repository.findMostSimilarByLastName(am));
+        assertEquals(person0, repository.findMostSimilarByLastName(n));
     }
 }

@@ -19,4 +19,6 @@ public interface PersonRepository {
 
     boolean remove(@Nonnull Person person);
     boolean clear();
+
+    Person findMostSimilarByLastName(String lastName);
 }

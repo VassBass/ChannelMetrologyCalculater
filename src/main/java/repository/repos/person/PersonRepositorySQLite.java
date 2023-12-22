@@ -156,6 +156,20 @@ public class PersonRepositorySQLite implements PersonRepository {
     }
 
     @Override
+    public Person findMostSimilarByLastName(String lastName) {
+        List<Person> result = new ArrayList<>();
+        for (int i = lastName.length(); i > 0; i--) {
+            String s = lastName.substring(0, i);
+            for (Person p : getAll()) {
+                if (!result.contains(p) && p.getSurname().contains(s)) {
+                    result.add(p);
+                }
+            }
+        }
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    @Override
     public boolean rewrite(@Nonnull Collection<Person> persons) {
         String sql = String.format("DELETE FROM %s;", tableName);
         try (Statement statement = connector.getStatement()) {

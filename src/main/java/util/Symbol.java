@@ -8,4 +8,6 @@ public class Symbol {
     public static final String UP_MINUS = "\u207B";
     public static final String UP_SEVEN = "\u2077";
     public static final String RESISTANCE = "\u2126";
+    public static final String NUMBER = "№";
+    public static final String DELTA = "∆";
 }

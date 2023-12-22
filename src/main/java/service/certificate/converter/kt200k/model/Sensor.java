@@ -1,7 +1,7 @@
 package service.certificate.converter.kt200k.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Sensor {
@@ -9,17 +9,18 @@ public class Sensor {
     private String zeroResistance;
     private String type;
     private String number;
-    private String clearanceClass;
+    private ClearanceClass clearanceClass;
     private String owner;
     private String rangeMin;
     private String rangeMax;
-    private String status;
-    private final Map<String, Point> points;
-    private String result;
+    private String remark;
+    private final List<Point> points;
+
+    private static final Sensor mock = new Sensor(false);
 
     public Sensor(boolean benchmark) {
         this.benchmark = benchmark;
-        points = new HashMap<>();
+        points = new ArrayList<>();
     }
 
     public boolean isBenchmark() {
@@ -50,11 +51,11 @@ public class Sensor {
         this.number = number;
     }
 
-    public String getClearanceClass() {
+    public ClearanceClass getClearanceClass() {
         return clearanceClass;
     }
 
-    public void setClearanceClass(String clearanceClass) {
+    public void setClearanceClass(ClearanceClass clearanceClass) {
         this.clearanceClass = clearanceClass;
     }
 
@@ -82,20 +83,24 @@ public class Sensor {
         this.rangeMax = rangeMax;
     }
 
-    public String getStatus() {
-        return status;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setRemark(String status) {
+        this.remark = status;
     }
 
-    public Point getPoint(String benchmarkPoint) {
-        return points.get(benchmarkPoint);
+    public Point getPoint(int index) {
+        return points.get(index);
     }
 
-    public void setPoint(String benchmarkPoint, Point point) {
-        points.put(benchmarkPoint, point);
+    public Point getLastPoint() {
+        return points.isEmpty() ? null : points.get(points.size() - 1);
+    }
+
+    public void addPoint(Point point) {
+        points.add(point);
     }
 
     @Override
@@ -109,5 +114,26 @@ public class Sensor {
     @Override
     public int hashCode() {
         return Objects.hash(number);
+    }
+
+    @Override
+    public String toString() {
+        return "Sensor{" +
+                "\n\tbenchmark=" + benchmark +
+                ",\n\tzeroResistance=" + zeroResistance +
+                ",\n\ttype=" + type +
+                ",\n\tnumber=" + number +
+                ",\n\tclearanceClass=" + clearanceClass +
+                ",\n\towner=" + owner +
+                ",\n\trangeMin=" + rangeMin +
+                ",\n\trangeMax=" + rangeMax +
+                ",\n\tremark=" + remark +
+                ",\n\tpoints=" + points +
+                "\n}";
+    }
+
+    public static Sensor getMock(String number) {
+        mock.setNumber(number);
+        return mock;
     }
 }
