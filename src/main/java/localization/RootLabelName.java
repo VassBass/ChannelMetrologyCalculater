@@ -48,7 +48,7 @@ public class RootLabelName {
 	public static final String KGS_SM_2 = "kgsSm2";
 	public static final String BAR = "bar";
 	public static final String KGS_MM_2 = "kgsMm2";
-	public static final String M_BAR = "nBar";
+	public static final String M_BAR = "mBar";
 	public static final String M_3_H = "m3H";
 	public static final String M_S = "mS";
 	public static final String SM_S = "smS";
