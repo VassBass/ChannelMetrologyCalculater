@@ -20,7 +20,6 @@ import service.certificate.archive.CertificateArchiveExecutor;
 import service.channel.list.SwingChannelListExecuter;
 import service.control_points.list.ControlPointsListInitializer;
 import service.converter_tc.ConverterTcInitializer;
-import service.importer.SwingImporterInitializer;
 import service.measurement.converter.ConverterInitializer;
 import service.measurement.list.MeasurementListInitializer;
 import service.method_name.MethodNameInitializer;
@@ -34,7 +33,6 @@ public class ApplicationExecutor extends SwingWorker<Void, String> {
     private static final String EXEC_CHANNEL_LIST_SERVICE = "execChannelListService";
     private static final String INIT_MEASUREMENT_SERVICE = "initMeasurementService";
     private static final String INIT_CALIBRATOR_SERVICE = "initCalibratorService";
-    private static final String INIT_IMPORT_SERVICE = "initImportService";
     private static final String INIT_SENSOR_ERROR_SERVICE = "initSensorErrorService";
     private static final String INIT_SENSORS_TYPES_SERVICE = "initSensorsTypesService";
     private static final String INIT_CONTROL_POINTS_SERVICE = "initControlPointsService";
@@ -85,10 +83,6 @@ public class ApplicationExecutor extends SwingWorker<Void, String> {
         message = messages.get(INIT_CALIBRATOR_SERVICE);
         publish(message);
         new CalibratorListInitializer(applicationScreen, repositoryFactory).init();
-
-        message = messages.get(INIT_IMPORT_SERVICE);
-        publish(message);
-        new SwingImporterInitializer(applicationScreen, repositoryFactory).init();
 
         message = messages.get(INIT_SENSOR_ERROR_SERVICE);
         publish(message);
